@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+//import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
+import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
+import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
+import org.jboss.resteasy.util.Encode;
+
+import com.ibm.websphere.jaxrs.server.IBMRestServlet;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -26,15 +36,6 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.Provider;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-
-import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
-import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
-import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
-import org.jboss.resteasy.util.Encode;
 
 @Trivial
 @HandlesTypes({Application.class, Path.class, Provider.class})
@@ -127,7 +128,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             for (ServletRegistration servletReg : servletsForApp) {
                 String servletClassName = servletReg.getClassName();
                 if (servletClassName == null) {
-                    ServletRegistration.Dynamic dynReg = servletContext.addServlet(servletReg.getName(), HttpServlet30Dispatcher.class);
+                    ServletRegistration.Dynamic dynReg = servletContext.addServlet(servletReg.getName(), IBMRestServlet.class);
                     dynReg.setAsyncSupported(true);
                     dynReg.setInitParameter(APPLICATION, applicationClass.getName());
                 }
@@ -159,7 +160,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             else mapping += "/*";
         }
 
-        reg = servletContext.addServlet(applicationClass.getName(), HttpServlet30Dispatcher.class);
+        reg = servletContext.addServlet(applicationClass.getName(), IBMRestServlet.class);
         reg.setLoadOnStartup(1);
         reg.setAsyncSupported(true);
         reg.addMapping(mapping);

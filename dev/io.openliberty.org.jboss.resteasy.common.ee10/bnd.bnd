@@ -33,7 +33,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyReader | \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
-  META-INF/services/jakarta.ws.rs.ext.Providers
+  META-INF/services/jakarta.ws.rs.ext.Providers | \
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
 
 -cdiannotations:
 
@@ -79,7 +80,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
-  org.jboss.resteasy.concurrent;version=${resteasy-version}, \
+  org.jboss.resteasy.concurrent;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
   org.jboss.resteasy.core.messagebody;version=${resteasy-version}, \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \

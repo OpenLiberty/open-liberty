@@ -2461,16 +2461,16 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             AnnotationInfo mpCfgAnnotation = classInfo.getAnnotation(javax.servlet.annotation.MultipartConfig.class);
 
             AnnotationValue locationValue = mpCfgAnnotation.getValue("location");
-            final String location = locationValue.getStringValue();
+            final String location = (null == locationValue ? "" : locationValue.getStringValue());
 
             AnnotationValue maxFileSizeValue = mpCfgAnnotation.getValue("maxFileSize");
-            final long maxFileSize = maxFileSizeValue.getLongValue();
+            final long maxFileSize = (null == maxFileSizeValue ? -1 : maxFileSizeValue.getLongValue());
 
             AnnotationValue maxRequestSizeValue = mpCfgAnnotation.getValue("maxRequestSize");
-            final long maxReqSize = maxRequestSizeValue.getLongValue();
+            final long maxReqSize = (null == maxRequestSizeValue ? -1 : maxRequestSizeValue.getLongValue());
 
             AnnotationValue fileSizeThresholdValue = mpCfgAnnotation.getValue("fileSizeThreshold");
-            final int fileSizeThreshold = fileSizeThresholdValue.getIntValue();
+            final int fileSizeThreshold = (null == fileSizeThresholdValue ? 0 : fileSizeThresholdValue.getIntValue());
 
             allActions.add(new DeferredAction() {
                 @Override
