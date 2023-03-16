@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,9 +28,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -61,8 +60,9 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
                                            MicroProfileActions.MP22, // 1.2
                                            MicroProfileActions.MP30, // 1.3
                                            MicroProfileActions.MP33, // 1.4
-                                           MicroProfileActions.MP40); // 2.0
-
+                                           MicroProfileActions.MP40, // 1.4
+                                           MicroProfileActions.MP50, // 3.0+EE9
+                                           MicroProfileActions.MP60); //3.0+EE10
         } else {
             r = MicroProfileActions.repeat(SERVER_NAME, 
                                            MicroProfileActions.MP20, //mpRestClient-1.1
@@ -81,22 +81,16 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", new DeployOptions[] {DeployOptions.OVERWRITE}, "remoteApp.basic");
-        if (JakartaEE9Action.isActive()) {
-            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
-        }
         remoteAppServer.startServer();
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient11.cdiPropsAndProviders");
-        if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.0", "cdi-3.0", "jsonb-2.0"));
-        }
         server.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         try {
-            if (!JakartaEE9Action.isActive()) {
+            if (!JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
                 List<String> requestScopedIntfMsgs = server.findStringsInLogs("CWWKW0750I.*" + CdiPropsAndProvidersClient.class.getName());
                 assertNotNull("Did not find expected CWWKW0750I message about request scoped interfaces", requestScopedIntfMsgs);
                 assertEquals("Found unexpected number of CWWKW0750I messages about request scoped interfaces (should be 1)",
