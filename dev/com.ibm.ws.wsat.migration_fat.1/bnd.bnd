@@ -15,8 +15,6 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/LPSClient/src,\
-  test-applications/LPSServer/src,\
   test-applications/simpleClient/src,\
   test-applications/simpleServer/src
 
