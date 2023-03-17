@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
 
+import java.nio.file.Paths;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -20,7 +23,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-		InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class
+	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class
 
 })
 public class FATSuite {
@@ -32,6 +35,15 @@ public class FATSuite {
      */
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        // TODO
+	FeatureUtilityToolTest.setupEnv();
+	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
+	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/archive/Archive-1.0.zip"));
     }
+
+    @AfterClass
+    public static void afterSuite() throws Exception {
+	FeatureUtilityToolTest.cleanUpTempFiles();
+	FeatureUtilityToolTest.deleteRepo("afterSuite");
+    }
+
 }

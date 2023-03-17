@@ -10,19 +10,24 @@
 *     IBM Corporation - initial API and implementation
 *******************************************************************************/
 
+
 configurations {
-	usrLibs
+	usrFeatures
+	features
 }
 
 dependencies {
-  usrLibs 'com.ibm.ws.userFeature:testesa1:19.0.0.8@esa'
+  usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
+  features 'test.featureUtility_fat:Archive:1.0@zip'
+  
 }
 
-task addAppLibs (type: Copy) {
-	from configurations.usrLibs
-	into "publish/repo/com/ibm/ws/userFeature/testesa1/19.0.0.8"
+copy {
+    from configurations.features
+    into "publish/repo/archive"
 }
 
-addRequiredLibraries {
-	dependsOn addAppLibs
+copy {
+    from configurations.usrFeatures
+    into "publish/repo/userFeature"
 }

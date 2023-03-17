@@ -12,14 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.log.Log;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.log.Log;
 
 public class HelpActionTest extends  FeatureUtilityToolTest {
     private static final Class<?> c = HelpActionTest.class;
@@ -28,20 +29,13 @@ public class HelpActionTest extends  FeatureUtilityToolTest {
     @BeforeClass
     public static void beforeClassSetup() throws Exception {
         final String methodName = "beforeClassSetup";
-        Log.entering(c, methodName);
-        setupEnv();
-
-        // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
-        replaceWlpProperties(getPreviousWlpVersion());
-        replaceWlpProperties(getPreviousWlpVersion());
+	replaceWlpProperties(libertyVersion);
         Log.exiting(c, methodName);
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        // TODO
         resetOriginalWlpProps();
-        cleanUpTempFiles();
     }
 
     @Test
