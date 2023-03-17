@@ -106,9 +106,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         for (Method method : repositoryInterface.getMethods()) {
             Class<?> returnArrayType = null;
-            List<Class<?>> returnTypeAtDepth = new ArrayList<>(3);
+            List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
-            for (int depth = 0; depth < 3 && type != null; depth++) {
+            for (int depth = 0; depth < 5 && type != null; depth++) {
                 if (type instanceof ParameterizedType) {
                     returnTypeAtDepth.add((Class<?>) ((ParameterizedType) type).getRawType());
                     Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
@@ -734,7 +734,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
-        boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
+        boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
         if (isCollection)
             condition.verifyCollectionsSupported(name, ignoreCase);
 
@@ -1061,7 +1061,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
                 for (Map.Entry<String, Class<?>> entry : queryInfo.entityInfo.attributeTypes.entrySet()) {
-                    Class<?> attributeType = entry.getValue();
+                    Class<?> collectionElementType = queryInfo.entityInfo.collectionElementTypes.get(entry.getKey());
+                    Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
                     if (attributeType.isPrimitive())
                         attributeType = toWrapperClass(attributeType);
                     if (singleType.isAssignableFrom(attributeType)) {
@@ -1408,7 +1409,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else
                 attributeExpr.append(o).append('.').append(name);
 
-            boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
+            boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
             if (isCollection)
                 verifyCollectionsSupported(name, ignoreCase, comparison);
 

@@ -170,6 +170,11 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
                                        buildUpdatedConfigMap("AuthAppInjectRedirectEmptyUseSessionEmptyServlet", "OP1", BooleanPlusValues.EMPTY, BooleanPlusValues.EMPTY),
                                        "oidc.authAppInjection.servlets",
                                        "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "AuthAppInjectRedirectTrueUseSessionFalseExpiredTokenServlet.war", "AuthAppInjectServlet.war",
+                                       buildUpdatedConfigMap("AuthAppInjectRedirectTrueUseSessionFalseExpiredTokenServlet", "OP4", BooleanPlusValues.TRUE,
+                                                             BooleanPlusValues.FALSE, true),
+                                       "oidc.authAppInjection.servlets",
+                                       "oidc.client.base.*");
 
         // Apps that do not inject OpenIdContext
         swh.deployConfigurableTestApps(rpServer, "AuthAppNoInjectRedirectFalseUseSessionFalseServlet.war", "AuthAppNoInjectServlet.war",
@@ -233,6 +238,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     public static Map<String, Object> buildUpdatedConfigMap(String appName, String provider, BooleanPlusValues redirectToOriginalResource,
                                                             BooleanPlusValues useSession) throws Exception {
 
+        return buildUpdatedConfigMap(appName, provider, redirectToOriginalResource, useSession, false);
+    }
+
+    public static Map<String, Object> buildUpdatedConfigMap(String appName, String provider, BooleanPlusValues redirectToOriginalResource,
+                                                            BooleanPlusValues useSession, boolean expiredToken) throws Exception {
+
         // init the map with the provider info that the app should use
         Map<String, Object> testPropMap = TestConfigMaps.getProviderUri(opHttpsBase, provider);
 
@@ -256,6 +267,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
             case FALSE:
                 testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getUseSessionExpressionFalse());
                 break;
+        }
+
+        // for tests with short lived tokens
+        if (expiredToken) {
+            // tokenAutoRefresh is false by default - don't override it
+            // notifyProvider is false by default - don't override it
+            testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getAccessTokenExpiryExpressionTrue());
+            testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getIdentityTokenExpiryExpressionTrue());
         }
 
         Map<String, Object> updatedMap = buildUpdatedConfigMap(opServer, rpServer, appName, "allValues.openIdConfig.properties", testPropMap);
@@ -296,7 +315,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * @return - returns the built app name
      * @throws Exception
      */
-    public String buildAppName(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
+    public String buildAppName(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, boolean expiredToken) throws Exception {
 
         String appRoot = "AuthApp";
         if (usesInjection) {
@@ -329,6 +348,9 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
                 break;
         }
 
+        if (expiredToken) {
+            appRoot = appRoot + "ExpiredToken";
+        }
         appRoot = appRoot + "Servlet";
         Log.info(thisClass, _testName, "AppRoot is: " + appRoot);
 
@@ -384,6 +406,10 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      */
 
     public Page genericAuthTest(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
+        return genericAuthTest(usesInjection, redirect, useSession, newAuth, false);
+    }
+
+    public Page genericAuthTest(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth, boolean expiredToken) throws Exception {
 
         rspValues.setRPServer(rpServer);
         // the initial invocation of the apps should hit the app, then the callback and then the app again
@@ -393,7 +419,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         int requestCount2 = 1;
         int callbackCount2 = 0;
 
-        String appRoot = buildAppName(usesInjection, redirect, useSession, newAuth);
+        String appRoot = buildAppName(usesInjection, redirect, useSession, expiredToken);
 
         // setup newAuth parm and adjust counters for the second app invocation based on setting newAuth to true
         if (newAuth != BooleanPlusValues.EMPTY) {
@@ -430,42 +456,50 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         resetAuthAppFlags(appRoot); // reset the call counters (counters for number of invocations of the app and the apps callback)
         // invoke the app again, but use the context from the first call (we shouldn't need to re-authenticate, but, we're specifically invoking authenticate and will validate the proper behavior base on the annotation setting and the flag passed to authenticate
 
+        String url = rpHttpsBase + "/" + appRoot + "/AuthenticationApp";
+
         Page response2 = null;
-        boolean extraChecks = true;
-        // if we're going to pass newAuthentication = true, we'll have to handle different behavior
-        // if we don't, we'll get to the app without having to log in again
-        if (newAuth == BooleanPlusValues.TRUE) {
-            rspValues.setSubject("user1");
-            // if we're using the same session, the app will hit an UnauthorizedSessionRequestException exception because the session was created by testuser, but now user1 is trying to use it
-            if (useSession != BooleanPlusValues.FALSE & (!(!usesInjection && redirect == BooleanPlusValues.TRUE))) {
-                extraChecks = false;
-                String url = rpHttpsBase + "/" + appRoot + "/" + app;
-                Page response = invokeAppReturnLoginPage(webClient, url);
-                response = actions.doFormLogin(response, "user1", "user1pwd");
-                // confirm protected resource was accessed
-                validationUtils.validateResult(response, setUnauthorizedSessionRequestExpectations());
-            } else {
-                // expect to login again and get different user info - no issues with conflicting sessions since we're not using session
-                response2 = runGoodEndToEndTest(webClient, appRoot, app, "user1", "user1pwd");
-            }
+        // special case where we're testing with a token that expires between the first and second call
+        if (expiredToken) {
+            // sleep long enough to let the token expire
+            actions.testLogAndSleep(25);
+            // token should have expired - expect a login prompt
+            response2 = invokeAppReturnLoginPage(webClient, url);
         } else {
-            // invoke the app and expect to land on it without having to log in
-            String url = rpHttpsBase + "/" + appRoot + "/AuthenticationApp";
-            response2 = invokeApp(webClient, url, getProcessLoginExpectations(app));
+
+            boolean extraChecks = true;
+            // if we're going to pass newAuthentication = true, we'll have to handle different behavior
+            // if we don't, we'll get to the app without having to log in again
+            if (newAuth == BooleanPlusValues.TRUE) {
+                rspValues.setSubject("user1");
+                // if we're using the same session, the app will hit an UnauthorizedSessionRequestException exception because the session was created by testuser, but now user1 is trying to use it
+                if (useSession != BooleanPlusValues.FALSE & (!(!usesInjection && redirect == BooleanPlusValues.TRUE))) {
+                    extraChecks = false;
+                    response2 = invokeAppReturnLoginPage(webClient, url);
+                    response2 = actions.doFormLogin(response2, "user1", "user1pwd");
+                    // confirm protected resource was accessed
+                    validationUtils.validateResult(response2, setUnauthorizedSessionRequestExpectations());
+                } else {
+                    // expect to login again and get different user info - no issues with conflicting sessions since we're not using session
+                    response2 = runGoodEndToEndTest(webClient, appRoot, app, "user1", "user1pwd");
+                }
+            } else {
+                // invoke the app and expect to land on it without having to log in
+                response2 = invokeApp(webClient, url, getProcessLoginExpectations(app));
+            }
+
+            // Extra checks for the second app invocation as well as comparison of results from the first and second call
+            // Skipped if we expect an UnauthorizedSessionRequestException exception
+            if (extraChecks) {
+                Expectations extraExpectations2 = new Expectations();
+                extraExpectations2 = setServletMessageExpectations(extraExpectations2, requestCount2);
+                extraExpectations2 = setCallbackMessageExpectations(extraExpectations2, callbackCount2);
+
+                validationUtils.validateResult(response2, extraExpectations2);
+
+                compareOpenIdContext(response1, response2, usesInjection);
+            }
         }
-
-        // Extra checks for the second app invocation as well as comparison of results from the first and second call
-        // Skipped if we expect an UnauthorizedSessionRequestException exception
-        if (extraChecks) {
-            Expectations extraExpectations2 = new Expectations();
-            extraExpectations2 = setServletMessageExpectations(extraExpectations2, requestCount2);
-            extraExpectations2 = setCallbackMessageExpectations(extraExpectations2, callbackCount2);
-
-            validationUtils.validateResult(response2, extraExpectations2);
-
-            compareOpenIdContext(response1, response2, usesInjection);
-        }
-
         return response2;
     }
 
@@ -943,6 +977,21 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {
 
         genericAuthTest(true, BooleanPlusValues.EMPTY, BooleanPlusValues.EMPTY, BooleanPlusValues.TRUE);
+
+    }
+
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we get the login page since the token passed has expired (expiry checking is true for access and id
+     * tokens)
+     *
+     */
+    @Test
+    public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionFalse_newAuthFalse_ExpiredToken() throws Exception {
+
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP4");
+        genericAuthTest(true, BooleanPlusValues.TRUE, BooleanPlusValues.FALSE, BooleanPlusValues.FALSE, true);
 
     }
 

@@ -346,6 +346,8 @@ public class OidcRpInitiatedLogoutTest {
                     will(returnValue(oauth20clientprovider));
                     one(oauth20tokencache).get(with(HashUtils.digest(idTokenHint)));
                     will(returnValue(null));
+                    one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
+                    will(returnValue("HS256"));
                     allowing(principal).getName();
                     will(returnValue(IDTokenUtil.KEY_STRING));
                     one(oauth20Provider).isTrackOAuthClients();

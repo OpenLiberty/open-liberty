@@ -26,6 +26,7 @@
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    <httpSessionCache appInCacheName="true" />
     
     <!-- 
          Include the session cache configuration file for this specific run.

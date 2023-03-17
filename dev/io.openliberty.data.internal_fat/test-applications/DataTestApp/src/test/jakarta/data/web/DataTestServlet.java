@@ -67,9 +67,12 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionRequiredException;
+import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -3875,6 +3878,150 @@ public class DataTestServlet extends FATServlet {
                              page4.stream().map(p -> p.number).collect(Collectors.toList()));
 
         assertEquals(null, page4.nextPageable());
+    }
+
+    /**
+     * Use a repository interface that uses the Transactional annotation to manage transactions.
+     */
+    @Test
+    public void testTransactional() throws ExecutionException, IllegalStateException, InterruptedException, //
+                    NotSupportedException, SecurityException, SystemException, TimeoutException {
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        Person p1 = new Person();
+        p1.firstName = "Thomas";
+        p1.lastName = "TestTransactional";
+        p1.ssn = 300201001;
+
+        Person p2 = new Person();
+        p2.firstName = "Timothy";
+        p2.lastName = "TestTransactional";
+        p2.ssn = 300201002;
+
+        Person p3 = new Person();
+        p3.firstName = "Tyler";
+        p3.lastName = "TestTransactional";
+        p3.ssn = 300201003;
+
+        people.save(List.of(p1, p2, p3));
+
+        System.out.println("TxType.SUPPORTS in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn, "Ty")); // update with MANDATORY
+            assertEquals("Ty", people.getFirstNameInCurrentOrNoTransaction(p3.ssn)); // read value with SUPPORTS
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.SUPPORTS from no transaction");
+
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn));
+
+        System.out.println("TxType.REQUIRED in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn, "Tommy"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.REQUIRED from no transaction");
+
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn, "Tom"));
+
+        assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.MANDATORY in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn, "Ty"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.MANDATORY from no transaction is an error");
+
+        try {
+            boolean result = people.setFirstNameInCurrentTransaction(p3.ssn, "Ty");
+            fail("Invoked TxType.MANDATORY operation with no transaction on thread. Result: " + result);
+        } catch (TransactionalException x) {
+            if (!(x.getCause() instanceof TransactionRequiredException))
+                throw x;
+        }
+
+        System.out.println("TxType.REQUIRES_NEW in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInNewTransaction(p2.ssn, "Timmy"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Timmy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.REQUIRES_NEW from no transaction");
+
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p2.ssn, "Tim"));
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NEVER in transaction");
+
+        tran.begin();
+        try {
+            boolean result = people.setFirstNameWhenNoTransactionIsPresent(p3.ssn, "Ty");
+            fail("Invoked TxType.NEVER operation with transaction on thread. Result: " + result);
+        } catch (TransactionalException x) {
+            if (!(x.getCause() instanceof InvalidTransactionException))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NEVER from no transaction");
+
+        assertEquals(true, people.setFirstNameWhenNoTransactionIsPresent(p3.ssn, "Ty"));
+
+        assertIterableEquals(List.of("Tim", "Tom", "Ty"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NOT_SUPPORTED in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameWithCurrentTransactionSuspended(p3.ssn, "Tyler"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NOT_SUPPORTED from no transaction");
+
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn));
+
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
 
     /**
