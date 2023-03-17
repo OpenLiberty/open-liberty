@@ -94,9 +94,9 @@ public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<S
     protected void prepareStackTrace(SoapMessage message, SoapFault fault) throws Exception {
         // Liberty Change Start: Reveals only the hidden stack trace. It does not repeat stack trace shown already in the log.
         if (fault.getCause() != null && TraceComponent.isAnyTracingEnabled()) {
-            LOG.info("Fault occured, but exception message cause will be printed to trace only: ");
+            LOG.fine("Fault occured, printing Exception cause to trace.");
             String stackTraceString = buildStackTrace(fault);
-            LOG.info(stackTraceString);
+            LOG.fine(stackTraceString);
         }// Liberty Change End
 
         boolean config = MessageUtils.getContextualBoolean(message, Message.FAULT_STACKTRACE_ENABLED, false);
