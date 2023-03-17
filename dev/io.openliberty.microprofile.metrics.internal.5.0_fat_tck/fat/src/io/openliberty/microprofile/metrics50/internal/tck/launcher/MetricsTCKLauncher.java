@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,16 @@ package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
 import static org.junit.Assume.assumeTrue;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -40,9 +43,36 @@ public class MetricsTCKLauncher {
     @Server("MetricsTCKServer")
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        server.startServer();
+    /*
+     * Java 11.0.14 known to cause issues.
+     */
+    private static boolean isBadJava() throws IOException {
+        JavaInfo javaInfo = JavaInfo.forServer(server);
+
+        Log.info(MetricsTCKLauncher.class, "isBadJava",
+                 "Major.minor.micro : [" + JavaInfo.forServer(server).majorVersion()
+                                                        + "."
+                                                        + JavaInfo.forServer(server).minorVersion()
+                                                        + "." + JavaInfo.forServer(server).microVersion()
+                                                        + "]");
+        if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 14) {
+            Log.info(MetricsTCKLauncher.class, "isBadJava", "JDK matches with 11.0.14. Will be skipping due to issue with JIT");
+            return true;
+        } else if (javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
+                   && javaInfo.microVersion() <= 3) {
+            //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
+            Log.info(MetricsTCKLauncher.class, "isBadJava", "JDK matches with 11.0.0-11.3. Will be skipping due to TLS 1.3 implementation issue");
+            return true;
+        }
+
+        return false;
+    }
+
+    @Before
+    public void checkJava() throws Exception {
+        //Skip running FAT if (remote) server JVM detected to be 11.0.14
+        assumeTrue(!isBadJava());
+
     }
 
     @AfterClass
@@ -54,11 +84,7 @@ public class MetricsTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMetrics50Tck() throws Exception {
-
-        //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
-        JavaInfo javaInfo = JavaInfo.forServer(server);
-        assumeTrue(!(javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
-                     && javaInfo.microVersion() <= 3));
+        server.startServer();
 
         String protocol = "https";
         String host = server.getHostname();

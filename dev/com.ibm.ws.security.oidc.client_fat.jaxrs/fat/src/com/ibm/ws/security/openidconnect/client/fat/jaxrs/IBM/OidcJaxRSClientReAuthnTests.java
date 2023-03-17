@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM;
 
@@ -100,6 +100,8 @@ public class OidcJaxRSClientReAuthnTests extends JaxRSClientReAuthnTests {
         map.put(Constants.TOKEN_CONTENT, Constants.API_VALUE);
         map.put(Constants.CONTEXT_SET, "true");
         testSettings.setRequestParms(map);
+
+        needsOPWakeup = true;
     }
 
 }

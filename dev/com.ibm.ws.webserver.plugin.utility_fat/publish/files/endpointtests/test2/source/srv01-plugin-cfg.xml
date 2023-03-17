@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!--HTTP server plugin config file for srv01 generated on 2023.01.16 at 08:38:30 MEZ-->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" ConfigHash="-529687613" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/opt/IBM/WebSphere/Plugins/logs/webserver1/http_plugin.log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/opt/IBM/WebSphere/Plugins"/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- No virtual hosts are configured to accept requests from the webserver http port (*:80).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+<!-- No virtual hosts are configured to accept requests from the webserver https port (*:443).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="srv1.some.com:8080"/>
+      <VirtualHost Name="srv1.some.com:9443"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="srv01_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="68dd49c9-77e0-425a-85ce-453d3ade595f" ConnectTimeout="5" ExtendedHandshake="false" LoadBalanceWeight="20" MaxConnections="-1" Name="default_node_srv01" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="srv01.was.some.com" Port="9003" Protocol="http"/>
+         <Transport Hostname="srv01.was.some.com" Port="9403" Protocol="https">
+            <Property Name="keyring" Value="/opt/IBM/WebSphere/Plugins/config/webserver1/plugin-key.kdb"/>
+            <Property Name="stashfile" Value="/opt/IBM/WebSphere/Plugins/config/webserver1/plugin-key.sth"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_srv01"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_srv01_default_node_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/IBMJMXConnectorREST/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/metrics/*"/>
+   </UriGroup>
+   <Route ServerCluster="srv01_default_node_Cluster" UriGroup="default_host_srv01_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>

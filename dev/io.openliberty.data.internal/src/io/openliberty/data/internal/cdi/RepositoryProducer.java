@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import jakarta.enterprise.inject.spi.InterceptionFactory;
 import jakarta.enterprise.inject.spi.Producer;
 import jakarta.enterprise.inject.spi.ProducerFactory;
 import jakarta.enterprise.inject.spi.configurator.AnnotatedMethodConfigurator;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 /**
  * Producer for repository implementation that is provided by the container/runtime.
@@ -96,9 +97,17 @@ public class RepositoryProducer<R, P> implements Producer<R> {
         InterceptionFactory<R> interception = factory.beanMgr.createInterceptionFactory(cc, repositoryInterface);
 
         boolean intercept = false;
-        for (AnnotatedMethodConfigurator<? super R> method : interception.configure().methods())
+        AnnotatedTypeConfigurator<R> configurator = interception.configure();
+        for (Annotation anno : configurator.getAnnotated().getAnnotations())
+            if (factory.beanMgr.isInterceptorBinding(anno.annotationType())) {
+                intercept = true;
+                configurator.add(anno);
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
+            }
+        for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
             for (Annotation anno : method.getAnnotated().getAnnotations())
-                if ("jakarta.enterprise.concurrent.Asynchronous".equals(anno.annotationType().getName())) {
+                if (factory.beanMgr.isInterceptorBinding(anno.annotationType())) {
                     intercept = true;
                     method.add(anno);
                     if (trace && tc.isDebugEnabled())

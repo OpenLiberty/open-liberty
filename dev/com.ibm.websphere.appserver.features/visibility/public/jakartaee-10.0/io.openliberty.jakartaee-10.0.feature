@@ -7,7 +7,6 @@ IBM-ShortName: jakartaee-10.0
 Subsystem-Version: 10.0.0
 Subsystem-Name: Jakarta EE Platform 10.0
 -features=io.openliberty.mail-2.1, \
-  com.ibm.websphere.appserver.restConnector-2.0, \
   io.openliberty.messagingClient-3.0, \
   io.openliberty.connectors-2.1, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
