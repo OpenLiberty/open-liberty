@@ -26,6 +26,7 @@
 	<classpathentry kind="src" path="test-applications/jsonb/src"/>
 	<classpathentry kind="src" path="test-applications/jsonp/src"/>
 	<classpathentry kind="src" path="test-applications/managedBeans/src"/>
+	<classpathentry kind="src" path="test-applications/mpTelemetry/src"/>
 	<classpathentry kind="src" path="test-bundles/test.checkpoint.bells.bundle/src"/>
 	<classpathentry kind="src" path="test-applications/bells/src"/>
 	<classpathentry kind="src" path="test-applications/virtualhost/src"/>
