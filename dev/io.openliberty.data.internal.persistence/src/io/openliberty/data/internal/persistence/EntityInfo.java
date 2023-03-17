@@ -38,6 +38,9 @@ class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
+    // properly cased/qualified JPQL attribute name --> type of collection
+    final Map<String, Class<?>> collectionElementTypes;
+
     final Class<?> idClass; // null if no IdClass
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
@@ -56,6 +59,7 @@ class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedMap<String, Class<?>> attributeTypes,
+               Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
                Class<?> idClass,
                SortedMap<String, Member> idClassAttributeAccessors,
@@ -65,6 +69,7 @@ class EntityInfo {
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeTypes = attributeTypes;
+        this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
         this.idClass = idClass;
         this.idClassAttributeAccessors = idClassAttributeAccessors;

@@ -52,6 +52,7 @@ import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.Metamodel;
+import jakarta.persistence.metamodel.PluralAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.Type;
 
@@ -183,6 +184,7 @@ class EntityDefiner implements Runnable {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
+                Map<String, Class<?>> collectionElementTypes = new HashMap<>();
                 Map<Class<?>, List<String>> relationAttributeNames = new HashMap<>();
                 Queue<Attribute<?, ?>> relationships = new LinkedList<>();
                 Queue<String> relationPrefixes = new LinkedList<>();
@@ -202,12 +204,14 @@ class EntityDefiner implements Runnable {
                         relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     }
                     attributeNames.put(attributeName.toLowerCase(), attributeName);
-                    if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
-                        attributeNames.put("id", attributeName);
                     attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
-                    attributeTypes.put(attributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
-                                    ? Collection.class //
-                                    : attr.getJavaType());
+                    attributeTypes.put(attributeName, attr.getJavaType());
+                    if (attr.isCollection()) {
+                        if (attr instanceof PluralAttribute)
+                            collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
+                    } else if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId()) {
+                        attributeNames.put("id", attributeName);
+                    }
                 }
 
                 // Guard against recursive processing of OneToOne (and similar) relationships
@@ -255,13 +259,15 @@ class EntityDefiner implements Runnable {
                         String relationAttributeNameUndelimited = relationAttributeName.replace(".", "");
                         attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
 
-                        if (relAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) relAttr).isId())
-                            attributeNames.put("id", fullAttributeName);
-
                         attributeAccessors.put(fullAttributeName, relAccessors);
-                        attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
-                                        ? Collection.class //
-                                        : relAttr.getJavaType());
+
+                        attributeTypes.put(fullAttributeName, relAttr.getJavaType());
+                        if (relAttr.isCollection()) {
+                            if (relAttr instanceof PluralAttribute)
+                                collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
+                        } else if (relAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) relAttr).isId()) {
+                            attributeNames.put("id", fullAttributeName);
+                        }
                     }
                 }
 
@@ -304,6 +310,7 @@ class EntityDefiner implements Runnable {
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
+                                collectionElementTypes, //
                                 relationAttributeNames, //
                                 idClass, //
                                 idClassAttributeAccessors, //

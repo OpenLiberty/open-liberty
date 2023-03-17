@@ -13,6 +13,8 @@
 package test.jakarta.data.jpa.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.time.LocalDate;
@@ -56,6 +58,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     CreditCards creditCards;
+
+    @Inject
+    Customers customers;
 
     @Inject
     Drivers drivers;
@@ -124,7 +129,8 @@ public class DataJPATestServlet extends FATServlet {
         c6.addCard(new CreditCard(c6, 6000921062220002L, 222, LocalDate.of(2022, 6, 2), LocalDate.of(2026, 6, 2), Issuer.Feesa));
 
         creditCards.save(card1a, card1m, card1v);
-        creditCards.save(c2, c3, c4, c5, c6, c7); // TODO save some of these into a Customers repository?
+        creditCards.save(c2, c3, c4);
+        customers.save(c5, c6, c7);
     }
 
     /**
@@ -802,6 +808,7 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Repository methods for an entity where the id is on the embeddable.
+     * EclipseLink allows this but it is not part of the JPA spec.
      */
     @Test
     public void testIdOnEmbeddable() {
@@ -813,7 +820,11 @@ public class DataJPATestServlet extends FATServlet {
         employees.save(new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'));
         employees.save(new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
 
-        assertEquals("Ivan", employees.findById(4948).firstName);
+        Employee emp4948 = employees.findById(4948);
+        assertEquals("Ivan", emp4948.firstName);
+        assertEquals("TestIdOnEmbeddable", emp4948.lastName);
+        assertEquals((short) 4948, emp4948.badge.number);
+        assertEquals('A', emp4948.badge.accessLevel);
 
         assertEquals("Irene", employees.findByBadgeNumber(2636).firstName);
 
@@ -902,6 +913,76 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Monica@tests.openliberty.io",
                                      "martin@tests.openliberty.io"),
                              creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
+    }
+
+    /**
+     * Use a custom join query so that a OneToMany association can query by attributes of the many side of the relationship.
+     */
+    @Test
+    public void testOneToManyCustomJoinQuery() {
+
+        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                                     "Matthew@tests.openliberty.io",
+                                     "Maximilian@tests.openliberty.io",
+                                     "Megan@tests.openliberty.io"),
+                             customers.withCardIssuer(Issuer.MonsterCard));
+    }
+
+    /**
+     * Query that matches multiple entities and returns a combined collection of results across matches for the OneToMany association.
+     */
+    @Test
+    public void testOneToManyReturnsCombinedCollectionFromMany() {
+
+        List<Long> cardNumbers = customers.findCardsByEmailEndsWith("an@tests.openliberty.io")
+                        .map(card -> card.number)
+                        .collect(Collectors.toList());
+
+        // Customer 5's card numbers must come before Customer 4's card numbers due to the ordering on Customer.phone.
+        assertEquals(cardNumbers.toString(),
+                     true, cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921041110001L, 4000921042220002L)) ||
+                           cardNumbers.equals(List.of(5000921051110001L, 5000921052220002L, 4000921042220002L, 4000921041110001L)) ||
+                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921042220002L, 4000921041110001L)) ||
+                           cardNumbers.equals(List.of(5000921052220002L, 5000921051110001L, 4000921041110001L, 4000921042220002L)));
+    }
+
+    /**
+     * Query that matches a single entity and so returns one collection for a OneToMany association.
+     */
+    @Test
+    public void testOneToManyReturnsOneSetOfMany() {
+        Set<CreditCard> cards = customers.findCardsById(9210005);
+
+        assertEquals(cards.toString(), 2, cards.size());
+
+        CreditCard card1 = null;
+        CreditCard card2 = null;
+        for (CreditCard c : cards) {
+            if (c.number == 5000921051110001L)
+                card1 = c;
+            else if (c.number == 5000921052220002L)
+                card2 = c;
+            else
+                fail("Unexpected card: " + c);
+        }
+
+        assertNotNull(cards.toString(), card1);
+        assertEquals(501, card1.securityCode);
+        assertEquals(Issuer.Discrooger, card1.issuer);
+        assertEquals(LocalDate.of(2021, 5, 1), card1.issuedOn);
+        assertEquals(LocalDate.of(2025, 5, 1), card1.expiresOn);
+        assertEquals("Maximilian@tests.openliberty.io", card1.debtor.email);
+        assertEquals(5075550055L, card1.debtor.phone);
+        assertEquals(9210005, card1.debtor.customerId);
+
+        assertNotNull(cards.toString(), card2);
+        assertEquals(502, card2.securityCode);
+        assertEquals(Issuer.MonsterCard, card2.issuer);
+        assertEquals(LocalDate.of(2021, 5, 2), card2.issuedOn);
+        assertEquals(LocalDate.of(2025, 5, 2), card2.expiresOn);
+        assertEquals("Maximilian@tests.openliberty.io", card2.debtor.email);
+        assertEquals(5075550055L, card2.debtor.phone);
+        assertEquals(9210005, card2.debtor.customerId);
     }
 
     /**
