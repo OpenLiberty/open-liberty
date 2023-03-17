@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!--HTTP server plugin config file for test-app02 -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" ConfigHash="-2129345035" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/var/log/WAS/IHS/httpd-rv/http_plugin_log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/opt/WAS/IHS/ihs/plugin"/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- No virtual hosts are configured to accept requests from the webserver http port (*:80).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+<!-- No virtual hosts are configured to accept requests from the webserver https port (*:443).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="*:9102"/>
+      <VirtualHost Name="*:9502"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="test-app02_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="c65abf93-7b22-45c5-848a-917b72be6a8b" ConnectTimeout="5" ExtendedHandshake="false" LoadBalanceWeight="20" MaxConnections="-1" Name="default_node_test-app02" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="testapp.was.some.com" Port="9102" Protocol="http"/>
+         <Transport Hostname="testapp.was.some.com" Port="9502" Protocol="https">
+            <Property Name="keyring" Value="/opt/WAS/IHS/ihs/plugin/config/httpd-rv/plugin-key.kdb"/>
+            <Property Name="stashfile" Value="/opt/WAS/IHS/ihs/plugin/config/httpd-rv/plugin-key.sth"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_test-app02"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_test-app02_default_node_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/IBMJMXConnectorREST/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/wasTestTool/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/ibm/api/*"/>
+   </UriGroup>
+   <Route ServerCluster="test-app02_default_node_Cluster" UriGroup="default_host_test-app02_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>
