@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.provider.DataProvider;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -75,7 +76,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     public void dispose(R repository) {
         R r = intercepted.remove(repository);
 
-        factory.provider.disposeRepository(r == null ? repository : r);
+        factory.provider.repositoryBeanDisposed(r == null ? repository : r);
     }
 
     @Override
@@ -114,7 +115,13 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        R instance = factory.provider.createRepository(repositoryInterface, factory.entityClass);
+        R instance;
+        LibertyDataProvider.entityClass.set(factory.entityClass);
+        try {
+            instance = factory.provider.getRepository(repositoryInterface);
+        } finally {
+            LibertyDataProvider.entityClass.remove();
+        }
 
         if (intercept) {
             R r = interception.createInterceptedInstance(instance);
