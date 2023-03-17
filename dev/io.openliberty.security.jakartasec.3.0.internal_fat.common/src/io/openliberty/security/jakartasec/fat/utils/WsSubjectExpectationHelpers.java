@@ -23,15 +23,14 @@ public class WsSubjectExpectationHelpers {
     public static void getWsSubjectExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
         String updatedRequester = requester + ServletMessageConstants.WSSUBJECT;
-        // remove check for BASIC once 22940 is resolved - we should always get JAKARTA_OIDC from both the callback and test servlet.
-        // TODO this should always return JAKARTA_OIDC - fix when issue is resolved  TODO
-//        if (requester.equals(ServletMessageConstants.SERVLET) && (!RepeatTestFilter.getRepeatActionsAsString().contains("useRedirectToOriginalResource"))) {
-//            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, updatedRequester + ServletMessageConstants.GET_AUTH_TYPE
-//                                                                                                       + ServletMessageConstants.BASIC, "Did not find the correct auth type in the WSSubject."));
-//        } else {
-//            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, updatedRequester + ServletMessageConstants.GET_AUTH_TYPE
-//                                                                                                       + ServletMessageConstants.JAKARTA_OIDC, "Did not find the correct auth type in the WSSubject."));
-//        }
+        // if we're not using jakarta, we'll see the auth type set to Basic
+        if (rspValues.getUsingJakarta()) {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, updatedRequester + ServletMessageConstants.GET_AUTH_TYPE
+                                                                                                       + ServletMessageConstants.JAKARTA_OIDC, "Did not find the correct auth type in the WSSubject."));
+        } else {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, updatedRequester + ServletMessageConstants.GET_AUTH_TYPE
+                                                                                                       + ServletMessageConstants.BASIC, "Did not find the correct auth type in the WSSubject."));
+        }
 
         getWSSubjectSubjectExpectations(action, expectations, updatedRequester, rspValues);
         getWSSubjectCookieExpectations(action, expectations, updatedRequester, rspValues);

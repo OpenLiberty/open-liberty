@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,6 +42,7 @@ public class ResponseValues {
     boolean useAuthApp = false;
     String baseApp = ServletMessageConstants.BASE_SERVLET;
     boolean useNonce = true;
+    boolean usingJakarta = true;
 
     public void setRPServer(LibertyServer inRPServer) {
 
@@ -192,6 +193,14 @@ public class ResponseValues {
 
     public boolean getUseNonce() {
         return useNonce;
+    }
+
+    public void setUsingJakarta(boolean inUsingJakarta) {
+        usingJakarta = inUsingJakarta;
+    }
+
+    public boolean getUsingJakarta() {
+        return usingJakarta;
     }
 
     public void printRspValues() throws Exception {
