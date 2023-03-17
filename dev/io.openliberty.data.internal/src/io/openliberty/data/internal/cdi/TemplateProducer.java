@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,7 +66,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().delete(entityClass, id);
+            ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().delete(entityClass, id);
         }
 
         @Override
@@ -74,7 +74,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().find(entityClass, id);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().find(entityClass, id);
         }
 
         @Override
@@ -82,7 +82,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().insert(entity);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().insert(entity);
         }
 
         @Override
@@ -90,7 +90,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().insert(entity, ttl);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().insert(entity, ttl);
         }
 
         @Override
@@ -100,7 +100,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().insert(entities);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().insert(entities);
         }
 
         @Override
@@ -110,7 +110,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().insert(entities, ttl);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().insert(entities, ttl);
         }
 
         @Override
@@ -118,7 +118,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().update(entity);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().update(entity);
         }
 
         @Override
@@ -128,7 +128,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().update(entities);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().update(entities);
         }
     }
 }

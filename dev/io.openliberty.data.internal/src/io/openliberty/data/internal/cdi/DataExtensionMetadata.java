@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,6 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Entities;
 import jakarta.data.provider.DataProvider;
-import jakarta.data.provider.DatabaseType;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -71,36 +70,43 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
      *
      * @param entityClass
      * @param classLoader
-     * @param databaseType
      * @return the provider
      */
-    DataProvider getProvider(Class<?> entityClass, ClassLoader classLoader, DatabaseType type) {
-        if (type == null)
-            for (Annotation anno : entityClass.getAnnotations()) {
-                String annoClassName = anno.annotationType().getName();
-                if ("jakarta.persistence.Entity".equals(annoClassName)) {
-                    type = DatabaseType.RELATIONAL;
+    DataProvider getProvider(Class<?> entityClass, ClassLoader classLoader) {
+        Annotation[] entityClassAnnos = entityClass.getAnnotations();
+        DataProvider dataProvider = null;
+
+        for (DataProvider provider : ServiceLoader.load(DataProvider.class, classLoader)) {
+            Set<Class<? extends Annotation>> supportedEntityAnnos = provider.supportedEntityAnnotations();
+            for (Annotation anno : entityClassAnnos) {
+                if (supportedEntityAnnos.contains(anno.annotationType())) {
+                    dataProvider = provider;
                     break;
                 }
-                if ("jakarta.nosql.mapping.Entity".equals(annoClassName))
-                    break;
             }
-
-        DataProvider dataProvider = null;
-        for (DataProvider provider : ServiceLoader.load(DataProvider.class, classLoader)) {
-            if (type == null) {
-                if (dataProvider == null)
-                    dataProvider = provider;
-            } else if (provider.supportedDatabaseTypes().contains(type)) {
-                dataProvider = provider;
-                break; // exact match for database type
-            }
+            if (dataProvider != null)
+                break;
         }
 
         if (dataProvider == null) {
-            dataProvider = persistenceDataProvider == null ? noSQLDataProvider : persistenceDataProvider;
-            if (dataProvider == null)
-                throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO
+            for (Annotation anno : entityClassAnnos) {
+                String annoClassName = anno.annotationType().getName();
+                if (persistenceDataProvider != null && "jakarta.persistence.Entity".equals(annoClassName)) {
+                    dataProvider = persistenceDataProvider;
+                    break;
+                }
+                // TODO noSQLDataProvider should be removed in favor of general use of ServiceLoader once Jakarta NoSQL supplies a DataProvider
+                if (noSQLDataProvider != null && "jakarta.nosql.mapping.Entity".equals(annoClassName)) {
+                    dataProvider = noSQLDataProvider;
+                    break;
+                }
+            }
+
+            if (dataProvider == null) {
+                dataProvider = persistenceDataProvider == null ? noSQLDataProvider : persistenceDataProvider;
+                if (dataProvider == null)
+                    throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO NLS
+            }
         }
 
         return dataProvider;
