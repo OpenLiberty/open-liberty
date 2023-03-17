@@ -96,9 +96,9 @@ public class HandlerChainWithWebServiceClientTest {
     public void testHandlerChainWithWebServiceClientAddNegativesExceptionLogging() throws Exception {
 
         invokeService(-1, -2);
-        String expected = "Fault occured, but exception message cause will be printed to trace only:";
+        String expected = "Fault occured, printing Exception cause to trace.";
 
-        assertNotNull("Failed to reveal main cause of the exception", server.waitForStringInLog(expected, TIMEOUT));
+        assertNotNull("Failed to reveal main cause of the exception", server.waitForStringInTrace(expected, TIMEOUT));
     }
 
     private String invokeService(int num1, int num2) throws Exception {
