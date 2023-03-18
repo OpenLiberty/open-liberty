@@ -65,7 +65,6 @@ import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.ws.webcontainer.SessionRegistry;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
-import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorService;
 import com.ibm.ws.webcontainer.exception.WebAppHostNotFoundException;
 import com.ibm.ws.webcontainer.osgi.container.DeployedModule;
@@ -390,14 +389,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Deactivating the WebContainer bundle");
-        }
-       
-        //issue#24461
-        if (AsyncContextImpl.executorRetrieved.get() && !AsyncContextImpl.ExecutorFieldHolder.field.isShutdown()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName, "shutting down now async servlet thread pool executor");
-            }
-            AsyncContextImpl.ExecutorFieldHolder.field.shutdownNow();
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
