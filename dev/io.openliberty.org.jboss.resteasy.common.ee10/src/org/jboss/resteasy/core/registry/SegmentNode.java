@@ -23,6 +23,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -152,8 +154,10 @@ public class SegmentNode
          throw new NotFoundException(Messages.MESSAGES.couldNotFindResourceForFullPath(request.getUri().getRequestUri()));
       }
       MatchCache match = match(matches, request.getHttpMethod(), request);
-      match.match.expression.populatePathParams(request, match.match.matcher, path);
-      logger.log("MATCH_PATH_SELECTED", match.match.expression.getRegex());
+      if (match.match != null) { // [RESTEASY-3283]
+          match.match.expression.populatePathParams(request, match.match.matcher, path);
+          logger.log("MATCH_PATH_SELECTED", match.match.expression.getRegex());
+      }
       return match;
 
    }
@@ -414,7 +418,10 @@ public class SegmentNode
             if (httpMethod.equals("OPTIONS"))
             {
 
-               ResponseBuilder resBuilder =  Response.ok(allowHeaderValue.toString(),  MediaType.TEXT_PLAIN_TYPE).header(HttpHeaderNames.ALLOW, allowHeaderValue.toString());
+               final MediaType acceptType = MediaType.TEXT_PLAIN_TYPE; // // [RESTEASY-3283]
+
+               ResponseBuilder resBuilder = Response.ok(allowHeaderValue.toString(), acceptType)
+                     .header(HttpHeaderNames.ALLOW, allowHeaderValue.toString());
 
                if (allowed.contains("PATCH"))
                {
@@ -439,7 +446,17 @@ public class SegmentNode
                   }
                   resBuilder.header(HttpHeaderNames.ACCEPT_PATCH, acceptPatch.toString());
                }
-               throw new DefaultOptionsMethodException(Messages.MESSAGES.noResourceMethodFoundForOptions(), resBuilder.build());
+               // [RESTEASY-3283] start
+               if (getConfigValue("dev.resteasy.throw.options.exception")) {
+                  throw new DefaultOptionsMethodException(Messages.MESSAGES.noResourceMethodFoundForOptions(),
+                        resBuilder.build());
+               }
+               MatchCache cache = new MatchCache(); 
+               cache.chosen = acceptType;
+               cache.match = null;
+               cache.invoker = new ConstantResourceInvoker(resBuilder.build());
+               return cache;
+               // [RESTEASY-3283] end
             }
             else
             {
@@ -504,10 +521,7 @@ public class SegmentNode
       String[] mm = matchingMethods(sortList);
       if (mm != null)
       {
-         boolean isFailFast = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue(
-                 ResteasyContextParameters.RESTEASY_FAIL_FAST_ON_MULTIPLE_RESOURCES_MATCHING, boolean.class)
-                 .orElse(false);
-         if(isFailFast) {
+         if(isFailFast()) { // [RESTEASY-3283]
             throw new RuntimeException(Messages.MESSAGES
                     .multipleMethodsMatchFailFast(requestToString(request), mm));
          } else {
@@ -570,5 +584,20 @@ public class SegmentNode
       }
       return null;
    }
-}
 
+   // [RESTEASY-3283] start
+   private static boolean isFailFast() {
+       return getConfigValue(ResteasyContextParameters.RESTEASY_FAIL_FAST_ON_MULTIPLE_RESOURCES_MATCHING);
+   }
+
+   private static boolean getConfigValue(final String key) {
+       if (System.getSecurityManager() == null) {
+           return ConfigurationFactory.getInstance().getConfiguration().getOptionalValue(key, boolean.class)
+                   .orElse(false);
+       }
+       return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> ConfigurationFactory.getInstance()
+               .getConfiguration().getOptionalValue(key, boolean.class)
+               .orElse(false));
+   }
+   // [RESTEASY-3283] end
+}
