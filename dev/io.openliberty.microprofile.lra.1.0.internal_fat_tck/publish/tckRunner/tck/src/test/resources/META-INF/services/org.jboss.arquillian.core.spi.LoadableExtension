@@ -1,2 +1,2 @@
-io.openliberty.microprofile.lra.test.ArquillianLoadableExtension
+com.ibm.ws.fat.util.tck.BasicArquillianLoadableExtension
 io.openliberty.microprofile.lra.test.LRAArquillianExtension

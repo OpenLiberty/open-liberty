@@ -1,1 +1,1 @@
-io.openliberty.microprofile.telemetry.test.ArquillianLoadableExtension 
+com.ibm.ws.fat.util.tck.BasicArquillianLoadableExtension

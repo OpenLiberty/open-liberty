@@ -112,6 +112,14 @@
             <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+        </dependency>
         
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
