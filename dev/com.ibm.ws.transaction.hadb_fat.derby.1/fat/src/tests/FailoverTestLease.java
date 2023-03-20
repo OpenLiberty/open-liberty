@@ -160,7 +160,7 @@ public class FailoverTestLease extends FATServletClient {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
