@@ -959,8 +959,7 @@ public abstract class MessageParser
 	 */
 	private int readLine(byte[] source, int offset, int length, CharsBuffer dest) {
 		final int end = offset + length; // index to one-past source array
-		boolean parsingErrorInReadLine = false;
-		//readlineloop:
+		
 		for (int i = offset; i < end; i++) {
 			byte b = source[i];
 			char srcChar;
@@ -975,13 +974,15 @@ public abstract class MessageParser
 						s_logger.traceFailure(this, "readLine", "Illegal byte value ["
 							+ (int)(b & 255) + ']');
 					}
-					if (!s_acceptNonUtf8ByteSequences) {
-						setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
-						break;
-						//return 1000;
-					}
+					
 					value = (int)(b & 255); // 8-bit ascii - not standard
 					size = 1;
+					
+					if (!s_acceptNonUtf8ByteSequences) {
+						setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
+						return 1;
+					}
+					
 				}
 				else {
 					value = utf8(source, i, end-i, size);
@@ -994,8 +995,7 @@ public abstract class MessageParser
 						}
 						if (!s_acceptNonUtf8ByteSequences) {
 							setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
-							break;
-							//return 1000;
+							return 1;
 						}
 						value = (int)(b & 255); // 8-bit ascii - not standard
 						size = 1;
@@ -1079,11 +1079,7 @@ public abstract class MessageParser
 			}
 					dest.append(dstChar);
 		}
-		//if (parsingErrorInReadLine) {
-		//return 1000;	
-		//} else {
 		return 0;
-		//}
 	}
 
 	/**
