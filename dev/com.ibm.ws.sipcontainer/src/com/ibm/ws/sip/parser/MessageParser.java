@@ -1077,7 +1077,7 @@ public abstract class MessageParser
 			else {
 				dstChar = srcChar;
 			}
-					dest.append(dstChar);
+			dest.append(dstChar);
 		}
 		return 0;
 	}
