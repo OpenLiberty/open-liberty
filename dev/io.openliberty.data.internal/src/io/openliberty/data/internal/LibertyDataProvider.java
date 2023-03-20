@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,14 @@ import jakarta.data.provider.DataProvider;
  * to overlay the configuration with a target and minimum cardinality of 1.
  */
 public interface LibertyDataProvider extends DataProvider {
+    /**
+     * This thread local is populated prior to invoking getRepository and is cleared
+     * immediately afterward, so that the getRepository implementation does not need
+     * to recompute the entity class that was already found in order to choose the
+     * provider.
+     */
+    public static final ThreadLocal<Class<?>> entityClass = new ThreadLocal<Class<?>>();
+
     /**
      * Notifies the provider of the entity classes that it is expected to handle.
      *
