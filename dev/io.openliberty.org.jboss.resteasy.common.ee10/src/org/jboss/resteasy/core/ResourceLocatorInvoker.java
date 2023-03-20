@@ -186,11 +186,15 @@ public class ResourceLocatorInvoker implements ResourceInvoker
             methodStatisticsLogger.duration(timeStamp);
          }
       }
-      else
+      else if (invoker instanceof ResourceMethodInvoker) // Liberty change
       {
          ResourceMethodInvoker method = (ResourceMethodInvoker) invoker;
          return method.invoke(request, response, target);
       }
+      else // Liberty change begin
+      {
+          return (BuiltResponse) invoker.invoke(request, response, target);
+      } // Liberty change end
    }
 
    public void setMethodStatisticsLogger(MethodStatisticsLogger msLogger) {
