@@ -27,8 +27,6 @@
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
-        
-        <testng.version>6.14.3</testng.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>

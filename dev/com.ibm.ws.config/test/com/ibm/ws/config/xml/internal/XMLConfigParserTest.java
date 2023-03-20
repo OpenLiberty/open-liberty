@@ -617,7 +617,13 @@ public class XMLConfigParserTest {
         XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
         resource = parser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
         String expected = "file:" + variableRegistry.resolveString("${wlp.user.dir}/server.xml");
-        assertEquals(new URI(expected), resource.toExternalURI());
+        URI resourceURI = resource.toExternalURI();
+
+        // Windows Path can return with a starting `/` after file e.g. `file:/C:/Users...` while wlp.usr.dir, will be `file:C:/`
+        if(isWindows && resourceURI.toString().startsWith("file:/")){
+            resourceURI = new URI(resourceURI.toString().replaceFirst("/",""));
+        }
+        assertEquals(new URI(expected), resourceURI);
 
         if (isWindows) {
 
@@ -626,7 +632,11 @@ public class XMLConfigParserTest {
 
             resource = parser.resolveInclude("${myHome}/server.xml", base, wsLocation);
             expected = "file:" + variableRegistry.resolveString("${myHome}/server.xml");
-            assertEquals(new URI(expected), resource.toExternalURI());
+            URI windowsResourceURI = resource.toExternalURI();
+            if(windowsResourceURI.toString().startsWith("file:/")){
+                windowsResourceURI = new URI(windowsResourceURI.toString().replaceFirst("/",""));
+            }
+            assertEquals(new URI(expected), windowsResourceURI);
         }
     }
 

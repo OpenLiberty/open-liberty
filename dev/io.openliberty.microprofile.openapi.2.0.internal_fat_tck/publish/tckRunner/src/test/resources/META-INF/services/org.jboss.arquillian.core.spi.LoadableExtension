@@ -1,1 +1,1 @@
-io.openliberty.microprofile.openapi20.test.ArquillianLoadableExtension 
+com.ibm.ws.fat.util.tck.BasicArquillianLoadableExtension
