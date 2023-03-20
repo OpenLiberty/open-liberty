@@ -11,6 +11,12 @@
 	</wsp:Policy>
   <wsdl:types>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://lpsservice.web/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://lpsservice.web/">
+  <xs:element name="WSTXLPS004FVT" type="tns:WSTXLPS004FVT"/>
+  <xs:element name="WSTXLPS004FVTResponse" type="tns:WSTXLPS004FVTResponse"/>
+  <xs:element name="WSTXLPS005FVT" type="tns:WSTXLPS005FVT"/>
+  <xs:element name="WSTXLPS005FVTResponse" type="tns:WSTXLPS005FVTResponse"/>
+  <xs:element name="WSTXLPS011FVT" type="tns:WSTXLPS011FVT"/>
+  <xs:element name="WSTXLPS011FVTResponse" type="tns:WSTXLPS011FVTResponse"/>
   <xs:element name="WSTXLPS101FVT" type="tns:WSTXLPS101FVT"/>
   <xs:element name="WSTXLPS101FVTResponse" type="tns:WSTXLPS101FVTResponse"/>
   <xs:element name="WSTXLPS102FVT" type="tns:WSTXLPS102FVT"/>
@@ -55,6 +61,30 @@
   <xs:element name="WSTXLPS207FVTResponse" type="tns:WSTXLPS207FVTResponse"/>
   <xs:element name="echo" type="tns:echo"/>
   <xs:element name="echoResponse" type="tns:echoResponse"/>
+  <xs:complexType name="WSTXLPS004FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS004FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS005FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS005FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS011FVT">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WSTXLPS011FVTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="WSTXLPS106FVT">
     <xs:sequence/>
   </xs:complexType>
@@ -241,6 +271,30 @@
     </xs:sequence>
   </xs:complexType>
 </xs:schema>  </wsdl:types>
+  <wsdl:message name="WSTXLPS004FVT">
+    <wsdl:part element="tns:WSTXLPS004FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS005FVT">
+    <wsdl:part element="tns:WSTXLPS005FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS011FVT">
+    <wsdl:part element="tns:WSTXLPS011FVT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS004FVTResponse">
+    <wsdl:part element="tns:WSTXLPS004FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS005FVTResponse">
+    <wsdl:part element="tns:WSTXLPS005FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WSTXLPS011FVTResponse">
+    <wsdl:part element="tns:WSTXLPS011FVTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="WSTXLPS105FVTResponse">
     <wsdl:part element="tns:WSTXLPS105FVTResponse" name="parameters">
     </wsdl:part>
@@ -422,6 +476,24 @@
     </wsdl:part>
   </wsdl:message>
   <wsdl:portType name="LastParticipantSupport">
+  	<wsdl:operation name="WSTXLPS004FVT">
+      <wsdl:input message="tns:WSTXLPS004FVT" name="WSTXLPS004FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS004FVTResponse" name="WSTXLPS004FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS005FVT">
+      <wsdl:input message="tns:WSTXLPS005FVT" name="WSTXLPS005FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS005FVTResponse" name="WSTXLPS005FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS011FVT">
+      <wsdl:input message="tns:WSTXLPS011FVT" name="WSTXLPS011FVT">
+    </wsdl:input>
+    <wsdl:output message="tns:WSTXLPS011FVTResponse" name="WSTXLPS011FVTResponse">
+    </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="WSTXLPS106FVT">
       <wsdl:input message="tns:WSTXLPS106FVT" name="WSTXLPS106FVT">
     </wsdl:input>
@@ -563,6 +635,33 @@
 	<wsp:PolicyReference URI="#TransactedPolicy"
 				wsdl:required="true" />
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="WSTXLPS004FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS004FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS004FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS005FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS005FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS005FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WSTXLPS011FVT">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="WSTXLPS011FVT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSTXLPS011FVTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="WSTXLPS106FVT">
       <soap:operation soapAction="" style="document"/>
       <wsdl:input name="WSTXLPS106FVT">
