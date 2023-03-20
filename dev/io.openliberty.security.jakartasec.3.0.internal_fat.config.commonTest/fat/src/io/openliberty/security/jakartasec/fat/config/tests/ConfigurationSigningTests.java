@@ -27,6 +27,7 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.AllowedFFDC;
@@ -764,6 +765,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfWindows.class) // skip test if windows - we timeout sometimes with the default value
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_defaultJwksTimeoutValuesSpecified() throws Exception {
 
