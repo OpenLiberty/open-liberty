@@ -10,7 +10,9 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.base.utils;
+package io.openliberty.security.jakartasec.fat.utils;
+
+import java.util.Arrays;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -18,6 +20,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 
+import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 
 public class ShortTokenLifetimePrep extends CommonAnnotatedSecurityTests {
@@ -32,7 +35,7 @@ public class ShortTokenLifetimePrep extends CommonAnnotatedSecurityTests {
      * @param appName - unique name of the app to invoke
      * @throws Exception
      */
-    public void shortTokenLifetimePrep(String httpsBase, String appName) throws Exception {
+    public void shortTokenLifetimePrep(LibertyServer opServer, String httpsBase, String appName) throws Exception {
 
         try {
 
@@ -41,6 +44,10 @@ public class ShortTokenLifetimePrep extends CommonAnnotatedSecurityTests {
 
             // sleep and give apps a little more time to get ready
             actions.testLogAndSleep(30);
+
+            // if the tokens are expired by the time the op returns them, we can get an error out of userinfo
+            // since we're using this method, we know that this possibility existss - just ignore the message
+            opServer.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKS1617E_USERINFO_REQUEST_BAD_TOKEN));
 
             WebClient webClient = getAndSaveWebClient();
 

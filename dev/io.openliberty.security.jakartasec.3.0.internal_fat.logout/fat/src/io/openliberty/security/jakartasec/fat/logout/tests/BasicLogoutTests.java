@@ -44,9 +44,9 @@ import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ShortTokenLifetimePrep;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
-import oidc.client.base.utils.ShortTokenLifetimePrep;
 
 /**
  * Tests various logout flows.  Make sure that we logout when we should and do NOT logout when we should not.
@@ -114,7 +114,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         baseAppName = "BasicLogoutServlet";
 
         ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
-        s.shortTokenLifetimePrep(rpHttpsBase,
+        s.shortTokenLifetimePrep(opServer, rpHttpsBase,
                                  getShortAppName(NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime) + "/" + baseAppName);
 
     }
