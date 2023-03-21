@@ -56,7 +56,8 @@ public class JakartaRest31TckPackageTest {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification().
         andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("webProfile-10.0").withID("webProfile").fullFATOnly()).
-        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).withID("coreProfile").fullFATOnly());
+        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).withID("coreProfile").fullFATOnly()).
+        andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("microProfile-6.0").withID("microProfile").fullFATOnly());
 
     @Server("FATServer")
     public static LibertyServer server;
@@ -87,7 +88,7 @@ public class JakartaRest31TckPackageTest {
             // following property is being added to exclude those tests.
             if (RepeatTestFilter.isRepeatActionActive("webProfile")) {
                 props.put("excludedGroups","se_bootstrap,xml_binding");
-            } else if (RepeatTestFilter.isRepeatActionActive("coreProfile")) {
+            } else if (RepeatTestFilter.isRepeatActionActive("coreProfile") || RepeatTestFilter.isRepeatActionActive("microProfile")) {
                 props.put("excludedGroups","se_bootstrap,xml_binding,servlet,security");
             } else {
                 props.put("excludedGroups","se_bootstrap");
