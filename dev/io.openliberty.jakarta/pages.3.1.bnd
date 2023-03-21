@@ -36,7 +36,7 @@ Import-Package: \
   org.xml.sax.helpers; resolution:=optional
 
 -includeresource: \
-  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=3.1.1;scope=runtime

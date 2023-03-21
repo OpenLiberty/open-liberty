@@ -35,8 +35,8 @@ if(!shouldIncludePoms) {
         dependsOn jar
         dependsOn ':build.cleanPom:jar'
         doLast {
-          fileTree(project.buildDir).matching {
-          include "**/*.jar"
+          fileTree(dir: project.file('build/libs')).matching {
+          include "*.jar"
               }.each { aFile ->
                 def myArgs = [
                   aFile, new File(project.buildDir, 'tmp')]                 

@@ -25,7 +25,7 @@ Export-Package: jakarta.xml.soap.*; version="3.0"
 Import-Package: *
 
 -includeresource: \
-   @${repo;jakarta.xml.soap:jakarta.xml.soap-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+   @${repo;jakarta.xml.soap:jakarta.xml.soap-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.xml.soap;artifactId=jakarta.xml.soap-api;version=3.0.0;scope=runtime
