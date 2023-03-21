@@ -38,7 +38,7 @@ Import-Package:  jakarta.servlet.jsp.jstl.*;version="[3.0.0,4.0.0)", \
  jakarta.el; version="[5.0.0,6.0.0)"
 
 -includeresource: \
-  @${repo;jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+  @${repo;jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.servlet.jsp.jstl;artifactId=jakarta.servlet.jsp.jstl-api;version=3.0.0;scope=runtime

@@ -27,7 +27,7 @@ Export-Package: \
 	jakarta.security.auth.message.module;version="3.0.0"
 
 -includeresource: \
-   @${repo;jakarta.authentication:jakarta.authentication-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+   @${repo;jakarta.authentication:jakarta.authentication-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.authentication;artifactId=jakarta.authentication-api;version=3.0.0;scope=runtime

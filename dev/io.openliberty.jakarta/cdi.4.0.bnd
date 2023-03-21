@@ -48,9 +48,9 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-   @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT;}!/!(META-INF/maven/*|module-info.class);lib:=true,\
-   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true,\
-   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+   @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT;}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.inject;artifactId=jakarta.inject-api;version=2.0.1;scope=runtime,\
