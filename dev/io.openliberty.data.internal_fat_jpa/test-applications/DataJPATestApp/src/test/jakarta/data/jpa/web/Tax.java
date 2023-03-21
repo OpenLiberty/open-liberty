@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.jpa.web;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
