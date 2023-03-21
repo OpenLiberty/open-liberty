@@ -308,12 +308,13 @@ public class DataFrameTests extends H2FATDriverServlet {
 
     /**
      * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its stream read window
-     * This test uses a server.xml with stream intial window size set to 1000 and connection set to 65537
+     * This test uses a server.xml with stream initial window size set to 1000 and connection set to 65537
      *
      * Window update frames aren't sent until the window is less than 1/2 the max window size. The stream max window size is set
      * to 1000 and the connection is set to 32768.
      *
-     * This test has a config with the H2LimitWindowUpdateFrames=true set
+     * server.xml has stream window set to 1000, connection window set to 35567, and limit window update frames set to true
+     *
      */
     public void testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
@@ -321,10 +322,12 @@ public class DataFrameTests extends H2FATDriverServlet {
         String testName = "testSimpleWindowUpdatesReceived";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // expect window updates on streams 0 (connection) and 3
-        FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 1000, false);
-        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 502, false);
+        // expect window updates on streams 0 (connection) and 3 (stream)
+        FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 502, false);
+        // This one should be sent just after the preface is processed to add 2 to the existing connection window size
+        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
         h2Client.addExpectedFrame(streamUpdateFrame);
+        h2Client.addExpectedFrame(connectionUpdateFrame);
 
         setupDefaultUpgradedConnection(h2Client);
 
@@ -362,7 +365,8 @@ public class DataFrameTests extends H2FATDriverServlet {
      * Send a DATA frames on streams 3 and 7 with no EOS, and expect WINDOW_UPDATE frames from the server which restore the
      * stream read windows. Additionally, send DATA on stream 5 with an EOS set - so no WINDOW_UPDATE is expected.
      *
-     * This test has a config with the H2LimitWindowUpdateFrames=true set
+     * server.xml has stream window set to 1000, connection window set to 35567, and limit window update frames set to true
+     *
      */
     public void testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
@@ -375,7 +379,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameWindowUpdate stream7UpdateFrame = new FrameWindowUpdate(7, 1000, false);
         h2Client.addExpectedFrame(stream3UpdateFrame);
         h2Client.addExpectedFrame(stream7UpdateFrame);
-        // connection window size is large, so no window_udpates are expected
+        // connection window size is large, so no window_udpates are expected on stream 0
 
         setupDefaultUpgradedConnection(h2Client);
 
@@ -400,7 +404,7 @@ public class DataFrameTests extends H2FATDriverServlet {
             data[i] = 0x01;
         }
         FrameData dataFrame3 = new FrameData(3, data, 0, false, true, false);
-        // EOS set, so we do NOT expect a window update response
+        // EOS set, so we do NOT expect a window update response since the stream is closing
         FrameData dataFrame5 = new FrameData(5, data, 0, true, true, false);
         FrameData dataFrame7 = new FrameData(7, data, 0, false, true, false);
 
@@ -411,6 +415,12 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame5);
         h2Client.sendFrame(dataFrame7);
+
+        // Sleep just a bit to wait for server to send window update frames before we send eos on streams 3 and 7
+        try {
+            Thread.sleep(1000);
+        } catch (Exception x) {
+        }
 
         // now send EOS for streams 3 and 7
         FrameData eosFrame = new FrameData(3, "".getBytes(), 0, true, true, false);
