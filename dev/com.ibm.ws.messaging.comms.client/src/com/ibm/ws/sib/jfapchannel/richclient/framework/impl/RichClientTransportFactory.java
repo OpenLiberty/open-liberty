@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+
+import io.openliberty.netty.internal.NettyFramework;
 
 /**
  * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory. It is the
@@ -55,9 +57,11 @@ public class RichClientTransportFactory implements NetworkTransportFactory
 
     /** Local reference to the channel framework */
     private ChannelFramework channelFramework = null;
+    /** Local reference to the netty framework */
+    private NettyFramework nettyFramework = null;
 
     /**
-     * Constructor.
+     * Channel Framework constructor.
      * 
      * @param channelFramework
      */
@@ -66,6 +70,20 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         if (tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>", channelFramework);
         this.channelFramework = channelFramework;
+        if (tc.isEntryEnabled())
+            SibTr.exit(tc, "<init>");
+    }
+    
+    /**
+     * Netty Framework Constructor.
+     * 
+     * @param channelFramework
+     */
+    public RichClientTransportFactory(NettyFramework nettyFramework)
+    {
+        if (tc.isEntryEnabled())
+            SibTr.entry(this, tc, "<init>", nettyFramework);
+        this.nettyFramework = nettyFramework;
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }

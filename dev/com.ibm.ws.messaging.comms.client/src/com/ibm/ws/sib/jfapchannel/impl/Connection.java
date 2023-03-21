@@ -64,6 +64,7 @@ import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
+import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
@@ -294,6 +295,18 @@ public abstract class Connection implements ConnectionInterface
             eventRecorder = ConnectionEventRecorderFactory.getConnectionEventRecorder(numConnectionEvents, numConversationEvents);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
+    }
+    
+    public IOReadCompletedCallback getReadCompletedCallback () {
+ 	   return this.readCompletedCallback;
+    }
+
+    public NetworkConnection getNetworkConnection () {
+ 	   return this.vc;
+    }
+
+    public IOReadRequestContext getReadRequestContext () {
+ 	   return this.tcpReadCtx;
     }
 
     /**
