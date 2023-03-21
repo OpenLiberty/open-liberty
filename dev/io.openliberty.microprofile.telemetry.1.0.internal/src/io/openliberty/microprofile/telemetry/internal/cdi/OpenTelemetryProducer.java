@@ -116,6 +116,7 @@ public class OpenTelemetryProducer {
                 appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
             }
         }
+        
         return appName;
     }
 
