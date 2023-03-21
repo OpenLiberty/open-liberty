@@ -4,7 +4,11 @@
   "description": "OpenLiberty package refs for ui.explore ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
-    "svg4everybody": "^2.1.9",
-    "dojo": "^1.12.11"
+    "dojo": "^1.12.11",
+    "d3": "^3.5.10",
+    "gridx": "^1.3.9",
+    "idx": "^1.5.2.6",
+    "intern": "^2.2.2",
+    "svg4everybody": "^2.1.9"
   }
 }

@@ -4,6 +4,10 @@
   "description": "OpenLiberty package refs for ws.ui ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
-    "dojo": "^1.12.11"
+    "dojo": "^1.12.11",
+    "d3": "^3.5.10",
+    "gridx": "^1.3.9",
+    "idx": "^1.5.2.6",
+    "intern": "^2.2.2"
   }
 }
