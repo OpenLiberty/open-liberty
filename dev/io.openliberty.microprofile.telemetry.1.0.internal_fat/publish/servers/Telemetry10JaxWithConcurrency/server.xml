@@ -8,6 +8,7 @@
         <feature>componentTest-2.0</feature>
         <feature>restfulWS-3.1</feature>
         <feature>mpRestClient-3.0</feature>
+        <feature>concurrent-3.0</feature>
     </featureManager>
 
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
@@ -33,6 +34,10 @@
     </application>
 
     <application type="war" location="jaeger.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
+    <application type="war" location="jaxrsAsyncServer.war">
         <classloader apiTypeVisibility="+third-party"/>
     </application>
 
