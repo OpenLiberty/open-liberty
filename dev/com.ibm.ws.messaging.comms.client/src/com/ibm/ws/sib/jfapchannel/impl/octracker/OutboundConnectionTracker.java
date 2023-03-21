@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -850,7 +850,7 @@ public class OutboundConnectionTracker
 
                         try {
                             // destroy the OutboundVirtualConnection associated with the chainName
-                            cdGroup.getNetworkConnectionFactory().getOutboundVirtualConFactory().destroy();
+                            cdGroup.getNetworkConnectionFactory().destroy();
                         } catch (Exception e) {//Don't let the exception mess up closing other remaining connection
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 SibTr.debug(tc, "Error while destroying the outbound virtual connection", e);
