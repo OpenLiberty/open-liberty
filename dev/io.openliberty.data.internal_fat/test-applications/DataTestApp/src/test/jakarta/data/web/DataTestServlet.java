@@ -110,15 +110,6 @@ public class DataTestServlet extends FATServlet {
     Shipments shipments;
 
     @Inject
-    ShippingAddresses shippingAddresses;
-
-    // The only purpose of the injection here is to make the Jakarta Data provider aware
-    // of the existence of the WorkAddress entity as a subtype of the ShippingAddress entity.
-    // TODO is there a way to figure this out automatically?
-    @Inject
-    WorkAddresses shippingAddresses_unused;
-
-    @Inject
     Tariffs tariffs;
 
     @Inject
@@ -636,85 +627,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Add, search, and remove entities with Embeddable fields.
-     */
-    @Test
-    public void testEmbeddable() {
-        shippingAddresses.removeAll();
-
-        ShippingAddress a1 = new ShippingAddress();
-        a1.id = 1001L;
-        a1.city = "Rochester";
-        a1.state = "Minnesota";
-        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
-        a1.zipCode = 55901;
-        shippingAddresses.save(a1);
-
-        ShippingAddress a2 = new ShippingAddress();
-        a2.id = 1002L;
-        a2.city = "Rochester";
-        a2.state = "Minnesota";
-        a2.streetAddress = new StreetAddress(201, "4th St SE");
-        a2.zipCode = 55904;
-        shippingAddresses.save(a2);
-
-        ShippingAddress a3 = new ShippingAddress();
-        a3.id = 1003L;
-        a3.city = "Rochester";
-        a3.state = "Minnesota";
-        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
-        a3.zipCode = 55902;
-        shippingAddresses.save(a3);
-
-        ShippingAddress a4 = new ShippingAddress();
-        a4.id = 1004L;
-        a4.city = "Rochester";
-        a4.state = "Minnesota";
-        a4.streetAddress = new StreetAddress(151, "4th St SE");
-        a4.zipCode = 55904;
-        shippingAddresses.save(a4);
-
-        assertArrayEquals(new ShippingAddress[] { a4, a2 },
-                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
-                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
-
-        assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
-                                             .map(a -> a.houseNumber + " " + a.streetName)
-                                             .collect(Collectors.toList()));
-
-        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
-        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
-        //                    Query: ReportQuery(referenceClass=StreetAddress )
-        // TODO uncomment the following to reproduce the above error:
-        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
-        // assertEquals(1, found.size());
-        // ShippingAddress a = found.get(0);
-        // assertEquals(a1.id, a.id);
-        // assertEquals(a1.city, a.city);
-        // assertEquals(a1.state, a.state);
-        // assertEquals(a1.zipCode, a.zipCode);
-        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
-        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
-        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
-
-        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
-
-        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
-        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
-        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
-        a1.streetAddress.recipientInfo = new ArrayList<>();
-        shippingAddresses.save(a1);
-
-        assertEquals(4, shippingAddresses.removeAll());
-    }
-
-    /**
      * Test Empty and NotEmpty on repository methods.
      */
     @Test
@@ -1141,74 +1053,6 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
-    }
-
-    /**
-     * Use an entity that inherits from another where both are kept in the same table.
-     */
-    @Test
-    public void testInheritance() {
-        shippingAddresses.removeAll();
-
-        ShippingAddress home = new ShippingAddress();
-        home.id = 10L;
-        home.city = "Rochester";
-        home.state = "Minnesota";
-        home.streetAddress = new StreetAddress(1234, "5th St SW");
-        home.zipCode = 55902;
-
-        WorkAddress work = new WorkAddress();
-        work.id = 20L;
-        work.city = "Rochester";
-        work.floorNumber = 2;
-        work.office = "H115";
-        work.state = "Minnesota";
-        work.streetAddress = new StreetAddress(2800, "37th St NW");
-        work.zipCode = 55901;
-
-        shippingAddresses.save(home);
-        shippingAddresses.save(work);
-
-        WorkAddress a = shippingAddresses.forOffice("H115");
-        assertEquals(Long.valueOf(20), a.id);
-        assertEquals("Rochester", a.city);
-        assertEquals(2, a.floorNumber);
-        assertEquals("H115", a.office);
-        assertEquals("Minnesota", a.state);
-        assertEquals("37th St NW", a.streetAddress.streetName);
-        assertEquals(55901, a.zipCode);
-
-        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
-
-        assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
-                          Comparator.<WorkAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.floorNumber))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.office))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
-
-        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
-
-        assertArrayEquals(new ShippingAddress[] { work }, found,
-                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> ((WorkAddress) o).floorNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> ((WorkAddress) o).office))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
-
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
-
-        assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
-                          Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
-                                          .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
-
-        shippingAddresses.removeAll();
     }
 
     /**

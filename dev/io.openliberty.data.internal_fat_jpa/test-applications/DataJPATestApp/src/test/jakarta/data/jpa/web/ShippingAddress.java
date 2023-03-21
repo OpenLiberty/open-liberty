@@ -10,19 +10,31 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.jpa.web;
 
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
 
 /**
- *
+ * Entity for testing DiscriminatorColumn/Value.
  */
-@DiscriminatorValue("Work")
+@Inheritance
+@DiscriminatorColumn(name = "ADDRESS_TYPE")
+@DiscriminatorValue("Standard")
 @Entity
-public class WorkAddress extends ShippingAddress {
+public class ShippingAddress {
 
-    public int floorNumber;
+    @Id
+    public Long id;
 
-    public String office;
+    public String city;
+
+    public String state;
+
+    public StreetAddress streetAddress; // @Embeddable
+
+    public int zipCode;
 }
