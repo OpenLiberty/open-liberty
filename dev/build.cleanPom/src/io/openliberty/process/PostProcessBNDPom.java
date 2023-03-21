@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -40,6 +39,8 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  */
 public class PostProcessBNDPom {
 
+    /**  */
+    private static final String POM_PREFIX_PATH = "META-INF/maven/dev";
     private static String jarPath;
     private static String pomEntryPath;
     private static List<String> filteredGroups = Arrays.asList("org.springframework", "org.springframework.boot", "com.ibm.ws.common.encoder");
@@ -126,50 +127,44 @@ public class PostProcessBNDPom {
     private static Model readJARPom(String path) {
 
         ZipFile jar = null;
+        String jarName = null;
         try {
             jar = new ZipFile(path);
+            jarName = jar.getName();
+            jarName = jarName.substring(0, jarName.indexOf(".jar"));
+            jarName = jarName.substring(jarName.lastIndexOf("/"));
         } catch (IOException e2) {
             e2.printStackTrace();
         }
         if (jar != null) {
-            Enumeration<? extends ZipEntry> entries = jar.entries();
-
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                InputStream stream = null;
-                if (entry.getName().contains("pom.xml")) {
-                    try {
-                        pomEntryPath = entry.getName();
-                        stream = jar.getInputStream(entry);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    MavenXpp3Reader reader = new MavenXpp3Reader();
-                    Model model = null;
-                    try {
-                        if (stream != null)
-                            model = reader.read(stream);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        jar.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return model;
+            ZipEntry pomEntry = jar.getEntry(POM_PREFIX_PATH + jarName + "/pom.xml");
+            InputStream stream = null;
+            if (pomEntry != null) {
+                try {
+                    pomEntryPath = pomEntry.getName();
+                    stream = jar.getInputStream(pomEntry);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-
+                MavenXpp3Reader reader = new MavenXpp3Reader();
+                Model model = null;
+                try {
+                    if (stream != null)
+                        model = reader.read(stream);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jar.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return model;
             }
-        }
-        try {
-            jar.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
