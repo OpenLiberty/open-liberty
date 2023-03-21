@@ -34,7 +34,7 @@ Import-Package: \
  *
  
 DynamicImport-Package: \
- org.bouncycastle.jce.provider,\
+ org.bouncycastle.jce.provider;version=1.6.9,\
  org.apache.wss4j.common.crypto,\
  org.apache.wss4j.common.saml
  
