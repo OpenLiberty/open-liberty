@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-// Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.tx.embeddable"),
-               project(":com.ibm.ws.wsat.migration_fat.1"),
-  			   project(":com.ibm.ws.transaction.fat.util"),
-               project(':io.openliberty.org.apache.commons.logging')
+  requiredLibs project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.wsat.migration_fat.1")
 }
 
 task copyCommonFiles {
   doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').file('test-applications')
-      into new File('test-applications')
-    }
-
     /*
      * Copy common publish files.
      */
@@ -47,10 +35,9 @@ jar {
 
 autoFVT.dependsOn copyCommonFiles
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('publish').exists()){
     file('publish').deleteDir()
   }
