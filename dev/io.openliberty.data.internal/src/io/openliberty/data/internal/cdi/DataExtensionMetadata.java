@@ -13,8 +13,8 @@
 package io.openliberty.data.internal.cdi;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -28,8 +28,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Entities;
-import jakarta.data.provider.DataProvider;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.Repository;
+import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(configurationPid = "io.openliberty.data.internal.cdi.DataExtensionMetadata",
@@ -40,9 +41,6 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
     private static final Set<Class<?>> beanClasses = Set.of(TemplateProducer.class);
     private static final Set<Class<? extends Annotation>> beanDefiningAnnos = Set.of(Entities.class, Repository.class);
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
-
-    @Reference(name = "NoSQLDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
-    LibertyDataProvider noSQLDataProvider;
 
     @Reference(name = "PersistenceDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
     LibertyDataProvider persistenceDataProvider;
@@ -66,49 +64,44 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
     }
 
     /**
-     * Get the provider of data repositories for the specified entity class.
+     * Get the provider of data repositories for the specified entity class
+     * if the provider supports the type of entity annotations observed on
+     * the class, or if the entity class has no entity annotations and the
+     * provider supports unannotated entity classes.
      *
      * @param entityClass
-     * @param classLoader
-     * @return the provider
+     * @param repositoryType
+     * @return the provider. Null to ignore this entity class type.
      */
-    DataProvider getProvider(Class<?> entityClass, ClassLoader classLoader) {
+    LibertyDataProvider getProvider(Class<?> entityClass, AnnotatedType<?> repositoryType) {
         Annotation[] entityClassAnnos = entityClass.getAnnotations();
-        DataProvider dataProvider = null;
+        LibertyDataProvider provider = null;
 
-        for (DataProvider provider : ServiceLoader.load(DataProvider.class, classLoader)) {
-            Set<Class<? extends Annotation>> supportedEntityAnnos = provider.supportedEntityAnnotations();
-            for (Annotation anno : entityClassAnnos) {
-                if (supportedEntityAnnos.contains(anno.annotationType())) {
-                    dataProvider = provider;
-                    break;
-                }
-            }
-            if (dataProvider != null)
+        boolean hasEntityAnnos = false;
+        for (Annotation anno : entityClassAnnos) {
+            String annoClassName = anno.annotationType().getName();
+            if ("jakarta.persistence.Entity".equals(annoClassName)) {
+                hasEntityAnnos = true;
+                provider = persistenceDataProvider;
                 break;
-        }
-
-        if (dataProvider == null) {
-            for (Annotation anno : entityClassAnnos) {
-                String annoClassName = anno.annotationType().getName();
-                if (persistenceDataProvider != null && "jakarta.persistence.Entity".equals(annoClassName)) {
-                    dataProvider = persistenceDataProvider;
-                    break;
-                }
-                // TODO noSQLDataProvider should be removed in favor of general use of ServiceLoader once Jakarta NoSQL supplies a DataProvider
-                if (noSQLDataProvider != null && "jakarta.nosql.mapping.Entity".equals(annoClassName)) {
-                    dataProvider = noSQLDataProvider;
-                    break;
-                }
-            }
-
-            if (dataProvider == null) {
-                dataProvider = persistenceDataProvider == null ? noSQLDataProvider : persistenceDataProvider;
-                if (dataProvider == null)
-                    throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO NLS
+            } else if (anno.annotationType().getSimpleName().indexOf("Entity") >= 0) {
+                hasEntityAnnos = true;
             }
         }
 
-        return dataProvider;
+        if (provider == null)
+            if (hasEntityAnnos) {
+                Repository repository = repositoryType.getAnnotation(Repository.class);
+                if (!Repository.ANY_PROVIDER.equals(repository.provider()))
+                    throw new MappingException("Open Liberty's built-in Jakarta Data provider cannot provide the " +
+                                               repositoryType.getJavaClass().getName() + " repository because the repository's " +
+                                               entityClass.getName() + " entity class includes an unrecognized entity annotation. " +
+                                               " The following annotations are found on the entity class: " + Arrays.toString(entityClassAnnos) +
+                                               ". Supported entity annotations are: " + "jakarta.persistence.Entity."); // TODO NLS
+            } else {
+                provider = persistenceDataProvider;
+            }
+
+        return provider;
     }
 }

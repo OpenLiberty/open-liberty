@@ -12,10 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +27,6 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Template;
-import jakarta.persistence.Entity;
 
 /**
  * Simulates a provider for relational databases by delegating
@@ -38,8 +35,6 @@ import jakarta.persistence.Entity;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = LibertyDataProvider.class)
 public class PersistenceDataProvider implements LibertyDataProvider {
-
-    private static final Set<Class<? extends Annotation>> ENTITY_ANNO_TYPES = Set.of(Entity.class);
 
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
 
@@ -58,8 +53,7 @@ public class PersistenceDataProvider implements LibertyDataProvider {
     }
 
     @Override
-    public <R> R getRepository(Class<R> repositoryInterface) {
-        Class<?> entityClass = LibertyDataProvider.entityClass.get();
+    public <R> R getRepository(Class<R> repositoryInterface, Class<?> entityClass) {
 
         RepositoryImpl<R, ?> handler = new RepositoryImpl<>(this, repositoryInterface, entityClass);
 
@@ -74,18 +68,8 @@ public class PersistenceDataProvider implements LibertyDataProvider {
     }
 
     @Override
-    public String name() {
-        return "Open Liberty Data Provider";
-    }
-
-    @Override
     public void repositoryBeanDisposed(Object repository) {
         RepositoryImpl<?, ?> handler = (RepositoryImpl<?, ?>) Proxy.getInvocationHandler(repository);
         handler.isDisposed.set(true);
-    }
-
-    @Override
-    public Set<Class<? extends Annotation>> supportedEntityAnnotations() {
-        return ENTITY_ANNO_TYPES;
     }
 }
