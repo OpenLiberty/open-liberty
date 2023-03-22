@@ -452,27 +452,27 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testBooleanConditions() {
         assertIterableEquals(List.of(3L, 5L, 7L),
-                             primes.findByEvenFalseAndNumberLessThan(10L)
+                             primes.findByEvenFalseAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(7L, 5L, 3L),
-                             primes.findByEvenNotTrueAndNumberLessThan(10L)
+                             primes.findByEvenNotTrueAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(2L),
-                             primes.findByEvenTrueAndNumberLessThan(10L)
+                             primes.findByEvenTrueAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(2L),
-                             primes.findByEvenNotFalseAndNumberLessThan(10L)
+                             primes.findByEvenNotFalseAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -483,14 +483,14 @@ public class DataTestServlet extends FATServlet {
     public void testCompletionStageOfPage() throws ExecutionException, InterruptedException, TimeoutException {
         LinkedBlockingQueue<Long> sums = new LinkedBlockingQueue<Long>();
 
-        primes.findByNumberLessThanOrderByNumberDesc(42L, Pageable.ofSize(6)).thenCompose(page1 -> {
-            sums.add(page1.stream().mapToLong(p -> p.number).sum());
-            return primes.findByNumberLessThanOrderByNumberDesc(42L, page1.nextPageable());
+        primes.findByNumberIdLessThanOrderByIdDesc(42L, Pageable.ofSize(6)).thenCompose(page1 -> {
+            sums.add(page1.stream().mapToLong(p -> p.numberId).sum());
+            return primes.findByNumberIdLessThanOrderByIdDesc(42L, page1.nextPageable());
         }).thenCompose(page2 -> {
-            sums.add(page2.stream().mapToLong(p -> p.number).sum());
-            return primes.findByNumberLessThanOrderByNumberDesc(42L, page2.nextPageable());
+            sums.add(page2.stream().mapToLong(p -> p.numberId).sum());
+            return primes.findByNumberIdLessThanOrderByIdDesc(42L, page2.nextPageable());
         }).thenAccept(page3 -> {
-            sums.add(page3.stream().mapToLong(p -> p.number).sum());
+            sums.add(page3.stream().mapToLong(p -> p.numberId).sum());
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
 
         Long sum;
@@ -510,13 +510,13 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
 
-        assertEquals(15, primes.countByNumberLessThan(50));
+        assertEquals(15, primes.countByIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countNumberBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countNumberIdBetween(40, 50));
 
-        assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Short.valueOf((short) 14), primes.countByIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -626,29 +626,29 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testEmpty() {
         assertIterableEquals(List.of(4007L, 4013L, 4019L),
-                             primes.findByNumberInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
+                             primes.findByNumberIdInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         Stack<Long> list = new Stack<>();
         list.addAll(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L));
 
         assertIterableEquals(List.of(7L, 13L, 19L),
-                             primes.findByNumberInAndRomanNumeralSymbolsNotEmpty(list)
+                             primes.findByNumberIdInAndRomanNumeralSymbolsNotEmpty(list)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(4003L),
-                             primes.findByNumberInAndRomanNumeralEmpty(List.of(43L, 4003L))
+                             primes.findByNumberIdInAndRomanNumeralEmpty(List.of(43L, 4003L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
         assertIterableEquals(List.of(43L),
-                             primes.findByNumberInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
+                             primes.findByNumberIdInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -657,11 +657,11 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testExists() {
-        assertEquals(true, primes.existsByNumber(19));
-        assertEquals(false, primes.existsByNumber(9));
+        assertEquals(true, primes.existsByNumberId(19));
+        assertEquals(false, primes.existsByNumberId(9));
 
-        assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
-        assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+        assertEquals(Boolean.TRUE, primes.existsIdBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsIdBetween(Long.valueOf(24), Long.valueOf(28)));
     }
 
     /**
@@ -718,11 +718,11 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindFirst() throws Exception {
-        Prime prime = primes.findFirstByNameLikeOrderByNumber("%ven");
+        Prime prime = primes.findFirstByNameLikeOrderByNumberId("%ven");
         assertNotNull(prime);
-        assertEquals(7, prime.number);
+        assertEquals(7, prime.numberId);
 
-        Prime[] p = primes.findFirst5ByNumberLessThanEqual(25); // descending order by name
+        Prime[] p = primes.findFirst5ByIdLessThanEqual(25); // descending order by name
         assertNotNull(p);
         assertEquals(Arrays.toString(p), 5, p.length);
         assertEquals("two", p[0].name);
@@ -860,7 +860,7 @@ public class DataTestServlet extends FATServlet {
 
         Pageable page2request = Pageable.ofPage(2)
                         .size(5)
-                        .sortBy(Sort.asc("number"));
+                        .sortBy(Sort.asc("numberId"));
 
         assertIterableEquals(List.of("thirteen", "seventeen", "nineteen", "twenty-three", "twenty-nine"),
                              primes.all(page2request));
@@ -872,14 +872,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInKeysetPagination() {
         Pageable pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
-        KeysetAwareSlice<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        KeysetAwareSlice<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("four thousand seven", "four thousand nineteen"),
                              page2
                                              .stream()
@@ -887,14 +887,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         pagination = Pageable.ofSize(4).sortBy(Sort.ascIgnoreCase("name"));
-        page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand nineteen", "four thousand one", "four thousand seven", "Four Thousand Thirteen"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        page2 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("four thousand three"),
                              page2
                                              .stream()
@@ -908,14 +908,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInOffsetPagination() {
         Pageable pagination = Pageable.ofSize(4).sortBy(Sort.asc("sumOfBits"), Sort.ascIgnoreCase("name"));
-        Page<Prime> page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        Page<Prime> page1 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "four thousand nineteen", "four thousand seven"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        Page<Prime> page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        Page<Prime> page2 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("Four Thousand Thirteen"),
                              page2
                                              .stream()
@@ -923,14 +923,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         pagination = Pageable.ofSize(3).sortBy(Sort.descIgnoreCase("hex"));
-        page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        page1 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
         assertIterableEquals(List.of("FB3", "FAD", "Fa7"),
                              page1
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
 
-        page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        page2 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("FA3", "FA1"),
                              page2
                                              .stream()
@@ -944,7 +944,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInOrderByPatternOfMethodName() {
         assertIterableEquals(List.of("four thousand three", "Four Thousand Thirteen", "four thousand seven", "four thousand one", "four thousand nineteen"),
-                             primes.findByNumberBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
+                             primes.findByNumberIdBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
@@ -960,42 +960,42 @@ public class DataTestServlet extends FATServlet {
 
         // Not
         assertIterableEquals(List.of("two", "five", "seven"),
-                             primes.findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc("Three", 10)
+                             primes.findByNameIgnoreCaseNotAndIdLessThanOrderByIdAsc("Three", 10)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // StartsWith
         assertIterableEquals(List.of("thirteen", "thirty-one", "thirty-seven"),
-                             primes.findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseStartsWithAndIdLessThanOrderByIdAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Like
         assertIterableEquals(List.of("thirteen", "thirty-seven"),
-                             primes.findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseLikeAndIdLessThanOrderByIdAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Contains
         assertIterableEquals(List.of("twenty-three", "seventeen"),
-                             primes.findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc("ent%ee", 1000)
+                             primes.findByNameIgnoreCaseContainsAndIdLessThanOrderByIdDesc("ent%ee", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Between
         assertIterableEquals(List.of("nineteen", "seventeen", "seven"),
-                             primes.findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc("Nine", "SEVENTEEN", 50)
+                             primes.findByNameIgnoreCaseBetweenAndIdLessThanOrderByIdDesc("Nine", "SEVENTEEN", 50)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // GreaterThan, LessThanEqual
         assertIterableEquals(List.of("XLVII", "XLIII", "XIII", "XI", "VII", "V", "III"),
-                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan("2a", "xlvII", 50)
+                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndIdLessThan("2a", "xlvII", 50)
                                              .stream()
                                              .map(p -> p.romanNumeral)
                                              .collect(Collectors.toList()));
@@ -1007,13 +1007,13 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInSorts() {
         assertIterableEquals(List.of("FA1", "FA3", "FB3", "FAD", "Fa7"),
-                             primes.findByNumberBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
+                             primes.findByNumberIdBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("FA1", "FA3", "Fa7", "FAD", "FB3"),
-                             primes.findByNumberBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
+                             primes.findByNumberIdBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
@@ -1025,14 +1025,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIterablePages() {
         // KeysetAwarePage:
-        Page<Prime> page = primes.findByNumberBetween(20L, 40L, Pageable.ofSize(3));
+        Page<Prime> page = primes.findByNumberIdBetween(20L, 40L, Pageable.ofSize(3));
         List<Long> results = new ArrayList<>();
         for (Prime p : page)
-            results.add(p.number);
+            results.add(p.numberId);
         assertIterableEquals(List.of(23L, 29L, 31L), results);
         assertEquals(3, page.content().size());
 
-        page = primes.findByNumberBetween(0L, 1L, Pageable.ofSize(5));
+        page = primes.findByNumberIdBetween(0L, 1L, Pageable.ofSize(5));
         Iterator<Prime> it = page.iterator();
         assertEquals(false, it.hasNext());
         try {
@@ -1043,13 +1043,13 @@ public class DataTestServlet extends FATServlet {
         }
         assertEquals(Collections.EMPTY_LIST, page.content());
 
-        page = primes.findByNumberLessThanEqualOrderByNumberDesc(23L, Pageable.ofSize(4));
+        page = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(23L, Pageable.ofSize(4));
         results = new ArrayList<>();
         for (Prime p : page)
-            results.add(p.number);
+            results.add(p.numberId);
         assertIterableEquals(List.of(23L, 19L, 17L, 13L), results);
 
-        page = primes.findByNumberLessThanEqualOrderByNumberDesc(1L, Pageable.ofSize(6));
+        page = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(1L, Pageable.ofSize(6));
         it = page.iterator();
         assertEquals(false, it.hasNext());
         try {
@@ -1067,7 +1067,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIteratorWithKeysetPagination_OrderBy() {
         Pageable p = Pageable.ofSize(5).afterKeyset(false, 2, 3);
-        Iterator<Prime> it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 50L, "n", 50L, p);
+        Iterator<Prime> it = primes.findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan("t", 50L, "n", 50L, p);
 
         assertEquals("seventeen", it.next().name);
         assertEquals("seven", it.next().name);
@@ -1086,7 +1086,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         p = Pageable.ofSize(4).beforeKeyset(true, 1, 2);
-        it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 45L, "n", 45L, p);
+        it = primes.findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan("t", 45L, "n", 45L, p);
 
         assertEquals("forty-one", it.next().name);
         assertEquals("twenty-three", it.next().name);
@@ -1113,7 +1113,7 @@ public class DataTestServlet extends FATServlet {
         Pageable p = Pageable.ofSize(6) //
                         .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
                         .afterKeyset(1, "a prime number");
-        Iterator<Prime> it = primes.findByNumberNotGreaterThan(40L, p);
+        Iterator<Prime> it = primes.findByNumberIdNotGreaterThan(40L, p);
 
         assertEquals("two", it.next().name);
         assertEquals("five", it.next().name);
@@ -1134,7 +1134,7 @@ public class DataTestServlet extends FATServlet {
         p = Pageable.ofSize(4) //
                         .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
                         .beforeKeyset(5, "forty-seven");
-        it = primes.findByNumberNotGreaterThan(50L, p);
+        it = primes.findByNumberIdNotGreaterThan(50L, p);
 
         assertEquals("thirty-seven", it.next().name);
         assertEquals("forty-three", it.next().name);
@@ -1160,7 +1160,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testIteratorWithoutPagination() {
-        Iterator<Prime> it = primes.findByNumberNotGreaterThan(41L, Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
+        Iterator<Prime> it = primes.findByNumberIdNotGreaterThan(41L, Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
 
         assertEquals("XXXI", it.next().romanNumeral);
 
@@ -1416,26 +1416,26 @@ public class DataTestServlet extends FATServlet {
         // 17, 10001,  2, false
 
         Pageable initialPagination = Pageable.ofPage(2).size(8).afterKeyset(false, 4, 23L);
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
+        KeysetAwarePage<Prime> page2 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, initialPagination);
 
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable.Cursor cursor7 = page2.getKeysetCursor(2);
         Pageable paginationBefore7 = Pageable.ofSize(8).beforeKeysetCursor(cursor7);
 
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, paginationBefore7);
+        KeysetAwarePage<Prime> page1 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, paginationBefore7);
 
         assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
-                             page1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable.Cursor cursor13 = page2.getKeysetCursor(4);
         Pageable paginationAfter13 = Pageable.ofPage(3).afterKeysetCursor(cursor13);
 
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45, paginationAfter13);
+        KeysetAwarePage<Prime> page3 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45, paginationAfter13);
 
         assertIterableEquals(List.of(19L, 37L, 41L, 3L, 5L, 17L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         // test .equals method
         assertEquals(cursor13, cursor13);
@@ -1766,7 +1766,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testKeysetWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5));
+        KeysetAwarePage<Prime> page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
 
         assertEquals(1L, page.number());
         assertEquals(5L, page.numberOfElements());
@@ -1777,13 +1777,13 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(17L, 19L, 23L, 29L, 31L),
                              page.stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(Collections.EMPTY_LIST,
-                             primes.findByNumberBetween(15L, 45L, page.previousPageable()));
+                             primes.findByNumberIdBetween(15L, 45L, page.previousPageable()));
 
-        page = primes.findByNumberBetween(15L, 45L, page.nextPageable());
+        page = primes.findByNumberIdBetween(15L, 45L, page.nextPageable());
 
         assertEquals(2L, page.number());
         assertEquals(3L, page.numberOfElements());
@@ -1795,7 +1795,7 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(37L, 41L, 43L),
                              page.stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -1806,22 +1806,22 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testKeysetWithoutPageable() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        KeysetAwarePage<Prime> page = primes.findByNumberBetweenAndBinaryNotNull(30L, 40L, Sort.asc("number"));
-        assertEquals(31L, page.content().get(0).number);
+        KeysetAwarePage<Prime> page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, 40L, Sort.asc("id"));
+        assertEquals(31L, page.content().get(0).numberId);
 
         // Obtain Pageable for previous entries from the KeysetAwarePage
         Pageable pagination = page.previousPageable().size(5);
-        page = primes.findByNumberBetween(0L, 40L, pagination);
+        page = primes.findByNumberIdBetween(0L, 40L, pagination);
         assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
                              page.stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         pagination = page.previousPageable();
-        page = primes.findByNumberBetween(0L, 40L, pagination);
+        page = primes.findByNumberIdBetween(0L, 40L, pagination);
         assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
                              page.stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertEquals(null, page.previousPageable());
@@ -1926,15 +1926,15 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testNulls() {
         assertIterableEquals(List.of(4001L, 4003L, 4007L),
-                             primes.findByNumberInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                             primes.findByNumberIdInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(41L, 43L, 47L),
-                             primes.findByNumberInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                             primes.findByNumberIdInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -1945,7 +1945,7 @@ public class DataTestServlet extends FATServlet {
     public void testOverflow() {
         Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
         try {
-            Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
+            Streamable<Prime> found = primes.findByNumberIdLessThanEqualOrderByIdDesc(9L, range);
             fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
         } catch (DataException x) {
             if (x.getCause() instanceof IllegalArgumentException)
@@ -1955,7 +1955,7 @@ public class DataTestServlet extends FATServlet {
         }
 
         try {
-            Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
+            Stream<Prime> found = primes.findFirst2147483648ByIdGreaterThan(1L);
             fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
         } catch (DataException x) {
             boolean expected = false;
@@ -1966,7 +1966,7 @@ public class DataTestServlet extends FATServlet {
         }
 
         try {
-            KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
+            KeysetAwarePage<Prime> found = primes.findByNumberIdBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
         } catch (DataException x) {
             if (x.getCause() instanceof IllegalArgumentException)
@@ -1976,7 +1976,7 @@ public class DataTestServlet extends FATServlet {
         }
 
         try {
-            Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
+            Page<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
         } catch (DataException x) {
             if (x.getCause() instanceof IllegalArgumentException)
@@ -2072,7 +2072,7 @@ public class DataTestServlet extends FATServlet {
     public void testPrecedenceOfAndOverOr() {
         assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
                              primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -2907,12 +2907,12 @@ public class DataTestServlet extends FATServlet {
         // With entity class as return type:
 
         // Single result is fine:
-        Prime p = primes.findByNumberBetween(14L, 18L);
-        assertEquals(17L, p.number);
+        Prime p = primes.findByNumberIdBetween(14L, 18L);
+        assertEquals(17L, p.numberId);
 
         // No result must raise EmptyResultException:
         try {
-            p = primes.findByNumberBetween(24L, 28L);
+            p = primes.findByNumberIdBetween(24L, 28L);
             fail("Unexpected prime " + p);
         } catch (EmptyResultException x) {
             // expected
@@ -2920,7 +2920,7 @@ public class DataTestServlet extends FATServlet {
 
         // Multiple results must raise NonUniqueResultException:
         try {
-            p = primes.findByNumberBetween(34L, 48L);
+            p = primes.findByNumberIdBetween(34L, 48L);
             fail("Should find more primes than " + p);
         } catch (NonUniqueResultException x) {
             // expected
@@ -2955,7 +2955,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSliceWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4), Sort.desc("number"));
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, Limit.of(4), Sort.desc("id"));
 
         assertEquals(1L, slice.number());
         assertEquals(4L, slice.numberOfElements());
@@ -2967,7 +2967,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.romanNumeral)
                                              .collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, slice.nextPageable(), Sort.desc("number"));
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, slice.nextPageable(), Sort.desc("id"));
 
         assertEquals(2L, slice.number());
         assertEquals(4L, slice.numberOfElements());
@@ -2979,7 +2979,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.romanNumeral)
                                              .collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, slice.nextPageable(), Sort.desc("number"));
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, slice.nextPageable(), Sort.desc("id"));
 
         assertEquals(3L, slice.number());
         assertEquals(1L, slice.numberOfElements());
@@ -2998,38 +2998,38 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testSliceWithSortCriteriaAsSortParameters() {
-        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
-                                                                                Pageable.ofSize(5),
-                                                                                Sort.asc("sumOfBits"), Sort.desc("number"));
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                                            Pageable.ofSize(5),
+                                                                            Sort.asc("sumOfBits"), Sort.desc("id"));
         assertEquals(1L, slice.number());
         assertEquals(5, slice.numberOfElements());
         assertEquals(1L, slice.pageable().page());
         assertEquals(5, slice.pageable().size());
 
         assertIterableEquals(List.of(2L, 17L, 3L, 41L, 37L),
-                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
-                                                                   slice.nextPageable(),
-                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                               slice.nextPageable(),
+                                                               Sort.asc("sumOfBits"), Sort.desc("id"));
         assertEquals(2L, slice.number());
         assertEquals(5, slice.numberOfElements());
         assertEquals(2L, slice.pageable().page());
         assertEquals(5, slice.pageable().size());
 
         assertIterableEquals(List.of(13L, 11L, 7L, 43L, 23L),
-                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
-                                                                   slice.nextPageable(),
-                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                               slice.nextPageable(),
+                                                               Sort.asc("sumOfBits"), Sort.desc("id"));
         assertEquals(3L, slice.number());
         assertEquals(2, slice.numberOfElements());
         assertEquals(3L, slice.pageable().page());
         assertEquals(5, slice.pageable().size());
 
         assertIterableEquals(List.of(47L, 31L),
-                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, slice.nextPageable());
     }
@@ -3039,7 +3039,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testSliceWithSortCriteriaInOrderByAnnotation() {
-        Slice<Prime> slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, Pageable.ofSize(4));
+        Slice<Prime> slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, Pageable.ofSize(4));
         assertEquals(1L, slice.number());
         assertEquals(4, slice.numberOfElements());
         assertEquals(1L, slice.pageable().page());
@@ -3048,7 +3048,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("forty-seven", "thirty-one", "forty-three", "twenty-nine"),
                              slice.stream().map(p -> p.name).collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, slice.nextPageable());
         assertEquals(2L, slice.number());
         assertEquals(4, slice.numberOfElements());
         assertEquals(2L, slice.pageable().page());
@@ -3057,7 +3057,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("twenty-three", "eleven", "forty-one", "nineteen"),
                              slice.stream().map(p -> p.name).collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, slice.nextPageable());
         assertEquals(3L, slice.number());
         assertEquals(3, slice.numberOfElements());
         assertEquals(3L, slice.pageable().page());
@@ -3074,25 +3074,25 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testSliceWithSortCriteriaInPageable() {
-        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
-                                                                                Pageable.ofSize(6).sortBy(Sort.desc("number")));
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L,
+                                                                            Pageable.ofSize(6).sortBy(Sort.desc("numberId")));
         assertEquals(1L, slice.number());
         assertEquals(6, slice.numberOfElements());
         assertEquals(1L, slice.pageable().page());
         assertEquals(6, slice.pageable().size());
 
         assertIterableEquals(List.of(47L, 43L, 37L, 23L, 17L, 13L),
-                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
-                                                                   slice.nextPageable());
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L,
+                                                               slice.nextPageable());
         assertEquals(2L, slice.number());
         assertEquals(3, slice.numberOfElements());
         assertEquals(2L, slice.pageable().page());
         assertEquals(6, slice.pageable().size());
 
         assertIterableEquals(List.of(7L, 3L, 2L),
-                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, slice.nextPageable());
     }
@@ -3105,22 +3105,22 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSorts() {
 
-        Pageable pagination = Pageable.ofSize(9).sortBy(Sort.desc("number"));
-        Page<Prime> page1 = primes.findByNumberLessThan(49L, pagination);
+        Pageable pagination = Pageable.ofSize(9).sortBy(Sort.desc("numberId"));
+        Page<Prime> page1 = primes.findByNumberIdLessThan(49L, pagination);
 
         assertIterableEquals(List.of("17(2)", "5(2)", "3(2)",
                                      "41(3)", "37(3)", "19(3)", "13(3)", "11(3)", "7(3)"),
                              page1.stream()
-                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
                                              .collect(Collectors.toList()));
 
-        Page<Prime> page2 = primes.findByNumberLessThan(49L, page1.nextPageable());
+        Page<Prime> page2 = primes.findByNumberIdLessThan(49L, page1.nextPageable());
 
         assertIterableEquals(List.of("43(4)", "29(4)", "23(4)",
                                      "47(5)", "31(5)",
                                      "2(1)"),
                              page2.stream()
-                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
                                              .collect(Collectors.toList()));
     }
 
@@ -3132,7 +3132,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSortsOnCustomQueryUsingKeysetPagination() {
 
-        Pageable pagination = Pageable.ofSize(7).sortBy(Sort.asc("binary"));
+        Pageable pagination = Pageable.ofSize(7).sortBy(Sort.asc("binaryDigits"));
         KeysetAwarePage<Prime> page1 = primes.upTo(47L, pagination);
 
         assertEquals(7, page1.numberOfElements());
@@ -3143,7 +3143,7 @@ public class DataTestServlet extends FATServlet {
                                      "101011", "10111", "11101",
                                      "100101"),
                              page1.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
         KeysetAwarePage<Prime> page2 = primes.upTo(47L, page1.nextPageable());
@@ -3151,14 +3151,14 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
                                      "10001", "101"),
                              page2.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
         KeysetAwarePage<Prime> page3 = primes.upTo(47L, page2.nextPageable());
 
         assertIterableEquals(List.of("11"),
                              page3.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
         page2 = primes.upTo(47L, page3.previousPageable());
@@ -3166,7 +3166,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
                                      "10001", "101"),
                              page2.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
         page1 = primes.upTo(47L, page2.previousPageable());
@@ -3176,7 +3176,7 @@ public class DataTestServlet extends FATServlet {
                                      "101011", "10111", "11101",
                                      "100101"),
                              page1.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
     }
 
@@ -3188,57 +3188,57 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverKeysetPaginationSorts() {
 
-        Pageable pagination = Pageable.ofSize(6).sortBy(Sort.desc("binary"));
-        KeysetAwareSlice<Prime> page1 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+        Pageable pagination = Pageable.ofSize(6).sortBy(Sort.desc("binaryDigits"));
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
 
         assertIterableEquals(List.of("11", "101", "10001",
                                      "111", "1101", "1011"),
                              page1.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
-        KeysetAwareSlice<Prime> page2 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page1.nextPageable());
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page1.nextPageable());
 
         assertIterableEquals(List.of("101001", "10011", "100101",
                                      "11101", "10111", "101011"),
                              page2.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
-        KeysetAwareSlice<Prime> page3 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page2.nextPageable());
+        KeysetAwareSlice<Prime> page3 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page2.nextPageable());
 
         assertIterableEquals(List.of("11111", "101111",
                                      "10"),
                              page3.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
         pagination = Pageable.ofSize(6)
-                        .sortBy(Sort.desc("binary"))
+                        .sortBy(Sort.desc("binaryDigits"))
                         .beforeKeysetCursor(page3.getKeysetCursor(1)); // before the middle element of page 3
 
-        KeysetAwareSlice<Prime> page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+        KeysetAwareSlice<Prime> page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
 
         assertIterableEquals(List.of("10011", "100101",
                                      "11101", "10111", "101011",
                                      "11111"),
                              page.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
-        page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+        page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
 
         assertIterableEquals(List.of("101", "10001",
                                      "111", "1101", "1011", "101001"),
                              page.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
 
-        page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+        page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
 
         assertIterableEquals(List.of("11"),
                              page.stream()
-                                             .map(p -> p.binary)
+                                             .map(p -> p.binaryDigits)
                                              .collect(Collectors.toList()));
     }
 
@@ -3255,8 +3255,8 @@ public class DataTestServlet extends FATServlet {
                                      "23(4)", "29(4)", "43(4)",
                                      "31(5)", "47(5)",
                                      "2(1)"),
-                             primes.findByNumberLessThanOrderByEven(50L, Sort.asc("sumOfBits"), Sort.asc("number"))
-                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                             primes.findByNumberIdLessThanOrderByEven(50L, Sort.asc("sumOfBits"), Sort.asc("id"))
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
                                              .collect(Collectors.toList()));
     }
 
@@ -3265,8 +3265,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testStream() {
-        Stream<Prime> stream = primes.findByNumberLessThan(49L);
-        Long total = stream.parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        Stream<Prime> stream = primes.findByNumberIdLessThan(49L);
+        Long total = stream.parallel().reduce(0L, (sum, p) -> sum + p.numberId, (sum1, sum2) -> sum1 + sum2);
         assertEquals(Long.valueOf(328), total);
     }
 
@@ -3275,15 +3275,15 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testStreamable() {
-        Streamable<Prime> streamable = primes.findByNumberLessThanEqualOrderByNumberDesc(49L, Limit.of(14));
-        Long total = streamable.stream().parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        Streamable<Prime> streamable = primes.findByNumberIdLessThanEqualOrderByIdDesc(49L, Limit.of(14));
+        Long total = streamable.stream().parallel().reduce(0L, (sum, p) -> sum + p.numberId, (sum1, sum2) -> sum1 + sum2);
         assertEquals(Long.valueOf(326), total);
 
         assertIterableEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L, 19L, 17L, 13L, 11L, 7L, 5L, 3L),
-                             streamable.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         AtomicLong sumRef = new AtomicLong();
-        streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.number));
+        streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.numberId));
         assertEquals(326L, sumRef.get());
     }
 
@@ -3293,19 +3293,19 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testStreamableWithPagination() {
         Pageable p1 = Pageable.ofSize(9);
-        Streamable<Prime> streamable1 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p1);
+        Streamable<Prime> streamable1 = primes.findByNumberIdLessThanEqualOrderByIdAsc(44L, p1);
 
         assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L),
-                             streamable1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable p2 = p1.next();
-        Streamable<Prime> streamable2 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p2);
+        Streamable<Prime> streamable2 = primes.findByNumberIdLessThanEqualOrderByIdAsc(44L, p2);
 
         assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
-                             streamable2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         AtomicLong sumRef = new AtomicLong();
-        streamable2.forEach(p -> sumRef.addAndGet(p.number));
+        streamable2.forEach(p -> sumRef.addAndGet(p.numberId));
         assertEquals(181L, sumRef.get());
     }
 
@@ -3354,29 +3354,29 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCounts() {
-        Page<Prime> page1 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, Pageable.ofSize(6));
+        Page<Prime> page1 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, Pageable.ofSize(6));
 
         assertEquals(3L, page1.totalPages());
         assertEquals(14L, page1.totalElements());
 
         assertIterableEquals(List.of(43L, 41L, 37L, 31L, 29L, 23L),
-                             page1.content().stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.content().stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        Page<Prime> page2 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page1.nextPageable());
+        Page<Prime> page2 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, page1.nextPageable());
 
         assertEquals(14L, page2.totalElements());
         assertEquals(3L, page2.totalPages());
 
         assertIterableEquals(List.of(19L, 17L, 13L, 11L, 7L, 5L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        Page<Prime> page3 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page2.nextPageable());
+        Page<Prime> page3 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, page2.nextPageable());
 
         assertEquals(3L, page3.totalPages());
         assertEquals(14L, page3.totalElements());
 
         assertIterableEquals(List.of(3L, 2L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
     }
 
     /**
@@ -3474,30 +3474,30 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCountsWithKeysetPagination() {
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
+        KeysetAwarePage<Prime> page3 = primes.findByNumberIdBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
         assertEquals(14L, page3.totalElements());
         assertEquals(3L, page3.totalPages());
 
         assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetween(3L, 50L, page3.previousPageable());
+        KeysetAwarePage<Prime> page2 = primes.findByNumberIdBetween(3L, 50L, page3.previousPageable());
         assertEquals(3L, page2.totalPages());
         assertEquals(14L, page2.totalElements());
 
         assertIterableEquals(List.of(11L, 13L, 17L, 19L, 23L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetween(3L, 50L, page2.previousPageable());
+        KeysetAwarePage<Prime> page1 = primes.findByNumberIdBetween(3L, 50L, page2.previousPageable());
         assertEquals(3L, page1.totalPages());
         assertEquals(14L, page1.totalElements());
 
         assertIterableEquals(List.of(3L, 5L, 7L),
-                             page1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, page1.previousPageable());
 
-        KeysetAwarePage<Prime> page4 = primes.findByNumberBetween(3L, 50L, page3.nextPageable());
+        KeysetAwarePage<Prime> page4 = primes.findByNumberIdBetween(3L, 50L, page3.nextPageable());
         // In this case, the 14 elements are across 4 pages, not 3,
         // because the first and last pages ended up being partial.
         // But that doesn't become known until the first or last page is read.
@@ -3507,7 +3507,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(14L, page4.totalElements());
 
         assertIterableEquals(List.of(47L),
-                             page4.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page4.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, page4.nextPageable());
     }
