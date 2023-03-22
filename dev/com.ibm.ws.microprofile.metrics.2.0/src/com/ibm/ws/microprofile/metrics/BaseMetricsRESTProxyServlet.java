@@ -41,7 +41,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
 
     /** {@inheritDoc} */
     @Override
-    protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    protected synchronized void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         // Setup service - will handle
         getAndSetRESTHandlerContainer(request);
 
@@ -91,6 +91,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
 
             // Get the bundle context
             HttpSession session = request.getSession();
+
             ServletContext sc = session.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
 
