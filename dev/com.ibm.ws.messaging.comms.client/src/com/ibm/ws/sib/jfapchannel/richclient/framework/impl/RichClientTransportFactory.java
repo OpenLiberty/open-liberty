@@ -22,9 +22,12 @@ import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
+import com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;
+import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnectionFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 
 import io.openliberty.netty.internal.NettyFramework;
 
@@ -55,38 +58,20 @@ public class RichClientTransportFactory implements NetworkTransportFactory
                         "@(#) SIB/ws/code/sib.jfapchannel.client.rich.impl/src/com/ibm/ws/sib/jfapchannel/framework/impl/RichClientTransportFactory.java, SIB.comms, WASX.SIB, uu1215.01 1.1");
     }
 
-    /** Local reference to the channel framework */
-    private ChannelFramework channelFramework = null;
-    /** Local reference to the netty framework */
-    private NettyFramework nettyFramework = null;
 
     /**
      * Channel Framework constructor.
      * 
      * @param channelFramework
      */
-    public RichClientTransportFactory(ChannelFramework channelFramework)
+    public RichClientTransportFactory()
     {
         if (tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", channelFramework);
-        this.channelFramework = channelFramework;
+            SibTr.entry(this, tc, "<init>");
         if (tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }
     
-    /**
-     * Netty Framework Constructor.
-     * 
-     * @param channelFramework
-     */
-    public RichClientTransportFactory(NettyFramework nettyFramework)
-    {
-        if (tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", nettyFramework);
-        this.nettyFramework = nettyFramework;
-        if (tc.isEntryEnabled())
-            SibTr.exit(tc, "<init>");
-    }
 
     /**
      * @see com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory#getOutboundNetworkConnectionFactoryByName(java.lang.String)
@@ -102,10 +87,24 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         try
         {
             // Get the virtual connection factory from the channel framework using the chain name
-
-            VirtualConnectionFactory vcFactory = requireService(CommsClientServiceFacade.class).getChannelFramework().getOutboundVCFactory(chainName);
-
-            connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(chainName);
+        	
+        	if(chain != null) {
+        		if(chain.useNetty()) {
+        			// If Netty, create new Netty channel factory
+        			// TODO: Consult with team. Getting error difference cause channelfw fails for testSSLFeatureUpdate
+        			// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
+        			// Check what to do here appropriately
+        			// TODO verify SSL
+        			boolean usingSSL = chain.isSecureChain();
+        			if(usingSSL && chain.getSecureFacet() == null)
+        				throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
+        			connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL?chain.getSecureFacet().copyConfig():null, usingSSL?chain.getTlsProviderService():null);
+        		}else {
+        			VirtualConnectionFactory vcFactory = requireService(CommsClientServiceFacade.class).getChannelFramework().getOutboundVCFactory(chainName);
+        			connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        		}
+        	}
 
         } catch (com.ibm.wsspi.channelfw.exception.ChannelException e) {
 
@@ -145,10 +144,27 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         NetworkConnectionFactory connFactory = null;
         if (endPoint instanceof CFEndPoint)
         {
-            // Get the virtual connection factory from the EP and wrap it in our implementation of
-            // the NetworkConnectionFactory interface
-            VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
-            connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	
+        	// Get the virtual connection factory from the EP and wrap it in our implementation of
+        	// the NetworkConnectionFactory interface
+        	// TODO Check this out from a Netty endpoint perspective. Used for other types of connects. See CreateNewVirtualConnectionFactory in ConnectionDataGroup
+        	// If NOT Netty do the same as we've done
+        	// TODO: Check this if its okay for chain name
+        	String endPointName = ((CFEndPoint) endPoint).getName();
+        	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(endPointName);
+        	if(chain != null && !chain.useNetty()) {
+        		VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
+        		connFactory = new CFWNetworkConnectionFactory(vcFactory);
+        	}
+        	else {
+        		// If Netty return null until we figure this out
+        		if (tc.isDebugEnabled())
+        			SibTr.debug(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
+        		// TODO: Question It might help more if it blow up here with an explicit string rather than return null "internal logic error"
+        		// Check if we can throw an error here
+        		return null;
+        	}
+        	
         }
 
         if (tc.isEntryEnabled())

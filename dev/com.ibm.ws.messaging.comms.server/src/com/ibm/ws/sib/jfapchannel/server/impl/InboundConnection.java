@@ -65,7 +65,7 @@ public class InboundConnection extends Connection {
                              AcceptListener al,
                              int heartbeatInterval,
                              int heartbeatTimeout) throws FrameworkException {
-        super(channel, vc, heartbeatInterval, heartbeatTimeout);
+        super(channel, vc, heartbeatInterval, heartbeatTimeout, false);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",

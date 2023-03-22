@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	private EventLoopGroup workerGroup = new NioEventLoopGroup();
 	private String chainName;
 	private NettyFramework nettyBundle;
-	private Map<String, Object> sslOptions;
+	private Map<Object, Object> sslOptions;
 	private NettyTlsProvider tlsProvider;
 
 	public static final String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
@@ -77,13 +79,14 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	 * 
 	 * @param chainName
 	 */
-	public NettyNetworkConnectionFactory(NettyFramework nettyBundle, String chainName, Map<String, Object> tcpOptions, Map<String, Object> sslOptions, NettyTlsProvider tlsProvider)
+	public NettyNetworkConnectionFactory(String chainName, Map<String, Object> tcpOptions, Map<Object, Object> sslOptions, NettyTlsProvider tlsProvider)
 	{
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "<init>", chainName);
 		this.chainName = chainName;
 		this.sslOptions = sslOptions;
 		this.tlsProvider = tlsProvider;
+		nettyBundle = requireService(CommsClientServiceFacade.class).getNettyFramework();
 		Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
 		options.put(ConfigConstants.EXTERNAL_NAME, chainName);
 		try {
@@ -99,8 +102,6 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 				bootstrap.applyConfiguration(bundleBootstrap.getConfiguration());
 				bootstrap.setBaseInitializer(bundleBootstrap.getBaseInitializer());
 			}
-			// TODO: Check this for timeouts
-			//	        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, JFapChannelConstants.CONNECT_TIMEOUT_DEFAULT * 1000);
 
 		} catch (NettyException e) {
 			SibTr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
