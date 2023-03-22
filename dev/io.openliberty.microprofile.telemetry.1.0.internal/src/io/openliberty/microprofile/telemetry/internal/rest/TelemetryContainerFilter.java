@@ -88,7 +88,8 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
-        if ((!AgentDetection.isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
+        // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
+        if ((!AgentDetection.isAgentActive()) && instrumenter != null && instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
@@ -111,7 +112,10 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         }
 
         try {
-            instrumenter.end(spanContext, request, response, null);
+            // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
+            if (instrumenter != null) {
+                instrumenter.end(spanContext, request, response, null);
+            }
         } finally {
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
@@ -176,7 +180,9 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
                 UriBuilder template = UriBuilder.fromPath(contextRoot);
 
-                template.path(resourceClass);
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
 
                 if (resourceMethod.isAnnotationPresent(Path.class)) {
                     template.path(resourceMethod);

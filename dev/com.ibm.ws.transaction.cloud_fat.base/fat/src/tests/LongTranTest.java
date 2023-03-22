@@ -12,12 +12,23 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.longtran.web.LongtranServlet;
@@ -35,7 +46,7 @@ public class LongTranTest extends FATServletClient {
 
     public static final String APP_NAME = "longtran";
     public static final String SERVLET_NAME = APP_NAME + "/LongtranServlet";
-
+    private String TRAN_STATE_FILE;
     @Server("com.ibm.ws.transaction_longtran")
     @TestServlet(servlet = LongtranServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
@@ -88,6 +99,47 @@ public class LongTranTest extends FATServletClient {
         server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
 
+    /**
+     * The purpose of this test is to verify the fix for issue 24104, when the Transaction Service shuts down laggard
+     * transactions will be marked as rollbackOnly.
+     *
+     * The Cloud001 server is started a little transactional work is done through the normalTran servlet, then a thread
+     * is spawned to start a transaction, the thread sleeps, resources are enlisted. The server is meantime shutdown.
+     * We verify that the long running tran is marked rollbackOnly.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testLongRunningTranMarkedRBOnlyAtShutdown() throws Exception {
+        final String method = "testLongRunningTranMarkedRBOnlyAtShutdown";
+        StringBuilder sb = null;
+
+        // Start Server1
+        FATUtils.startServers(server);
+        try {
+            sb = runTestWithResponse(server, SERVLET_NAME, "normalTran");
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "normalTran returned: " + sb);
+
+        try {
+            sb = runTestWithResponse(server, SERVLET_NAME, "longRunningTranRBOnly");
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "longRunningTranRBOnly returned: " + sb);
+
+        // Stop server1
+        // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server);
+
+        // Server appears to have stopped ok. Check for key string to see whether the long running tran was marked rollback only
+        String stateString = readTranState();
+        assertNotNull("transaction not marked rollback only", stateString.contains("marked rollbackOnly"));
+        // Lastly, clean up XA resource file
+        server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+    }
+
     @After
     public void cleanup() throws Exception {
 
@@ -96,5 +148,42 @@ public class LongTranTest extends FATServletClient {
 
         // Remove tranlog DB
         server.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+    }
+
+    private String readTranState() {
+        FileInputStream fis = null;
+        String stateString = "";
+        try {
+            RemoteFile rf = server.getFileFromLibertyInstallRoot("/usr/shared/longtran.dat");
+            System.out.println("readTranState: Reading state from " + rf.getAbsolutePath() + " of size " + rf.length());
+            InputStream is = rf.openForReading();
+
+            int bufferSize = 1024;
+            char[] buffer = new char[bufferSize];
+            StringBuilder out = new StringBuilder();
+            Reader in = new InputStreamReader(is, StandardCharsets.UTF_8);
+            for (int numRead; (numRead = in.read(buffer, 0, buffer.length)) > 0;) {
+                out.append(buffer, 0, numRead);
+            }
+            stateString = out.toString();
+            System.out.println("readTranState: read string - " + stateString);
+        } catch (FileNotFoundException e) {
+            System.out.println("readTranState: Caught exc " + e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("readTranState: Caught exc " + e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Caught exc " + e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null)
+                    fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return stateString;
     }
 }

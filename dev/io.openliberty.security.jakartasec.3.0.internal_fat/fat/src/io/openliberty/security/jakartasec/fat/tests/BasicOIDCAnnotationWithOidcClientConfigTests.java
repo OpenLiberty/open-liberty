@@ -99,6 +99,7 @@ public class BasicOIDCAnnotationWithOidcClientConfigTests extends BasicOIDCAnnot
         String app = "rpClientProtected";
         String url = rpHttpsBase + "/SimpleServlet_rpClientProtected/" + app;
         rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP2");
+        rspValues.setUsingJakarta(false);
 
         Page response = invokeAppReturnLoginPage(webClient, url);
 
@@ -128,6 +129,7 @@ public class BasicOIDCAnnotationWithOidcClientConfigTests extends BasicOIDCAnnot
         String app = "rpClientWildcardProtected";
         String url = rpHttpsBase + "/SimpleServlet_rpClientProtected/" + app;
         rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP2");
+        rspValues.setUsingJakarta(false);
 
         //show that we get to the test app without having to log in
 

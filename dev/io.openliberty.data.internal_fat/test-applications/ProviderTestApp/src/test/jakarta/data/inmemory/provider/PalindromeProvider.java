@@ -12,10 +12,14 @@
  *******************************************************************************/
 package test.jakarta.data.inmemory.provider;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Set;
 
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.provider.DataProvider;
-import jakarta.data.provider.DatabaseType;
+import jakarta.data.repository.DataRepository;
 
 /**
  * A fake Jakarta Data provider that only produces a single repository class,
@@ -26,12 +30,33 @@ public class PalindromeProvider implements DataProvider {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> R createRepository(Class<R> repositoryInterface, Class<?> entityClass) {
+    public <R> R getRepository(Class<R> repositoryInterface) throws MappingException {
+        Class<?> entityClass = null;
+        for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
+            if (interfaceType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
+                if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName())) {
+                    Type typeParams[] = parameterizedType.getActualTypeArguments();
+                    if (typeParams.length == 2 && typeParams[0] instanceof Class) {
+                        entityClass = (Class<?>) typeParams[0];
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (entityClass == null)
+            throw new MappingException("Did not find the entity class for " + repositoryInterface);
+
+        PalindromicEntity entityAnno = entityClass.getAnnotation(PalindromicEntity.class);
+        if (entityAnno == null)
+            throw new MappingException("Did not find entity annotation on " + entityClass);
+
         return (R) new PalindromeRepository();
     }
 
     @Override
-    public void disposeRepository(Object repository) {
+    public void repositoryBeanDisposed(Object repository) {
     }
 
     @Override
@@ -40,8 +65,7 @@ public class PalindromeProvider implements DataProvider {
     }
 
     @Override
-    public Set<DatabaseType> supportedDatabaseTypes() {
-        return Set.of(DatabaseType.values());
+    public Set<Class<? extends Annotation>> supportedEntityAnnotations() {
+        return Set.of(PalindromicEntity.class);
     }
-
 }

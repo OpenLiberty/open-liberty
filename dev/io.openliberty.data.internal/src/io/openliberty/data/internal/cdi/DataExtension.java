@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -118,7 +118,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             Class<?> entityClass = getEntityClass(repositoryInterface);
             ClassLoader loader = repositoryInterface.getClassLoader();
-            DataProvider provider = svc.getProvider(entityClass, loader, null);
+            DataProvider provider = svc.getProvider(entityClass, loader);
 
             EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
@@ -135,7 +135,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         for (Entities anno : entitiesListsForTemplate) {
             for (Class<?> entityClass : anno.value()) {
                 ClassLoader loader = entityClass.getClassLoader();
-                DataProvider provider = svc.getProvider(entityClass, loader, null);
+                DataProvider provider = svc.getProvider(entityClass, loader);
 
                 EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
@@ -181,9 +181,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
      * </ul>
      *
      * @param repositoryInterface
-     * @return
+     * @return entity class for the repository.
      */
-    private Class<?> getEntityClass(Class<?> repositoryInterface) {
+    private static Class<?> getEntityClass(Class<?> repositoryInterface) {
         Class<?> entityClass = null;
 
         for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
@@ -193,6 +193,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
                     Type typeParams[] = parameterizedType.getActualTypeArguments();
                     if (typeParams.length == 2 && typeParams[0] instanceof Class) {
                         entityClass = (Class<?>) typeParams[0];
+                        break;
                     }
                 }
             }
