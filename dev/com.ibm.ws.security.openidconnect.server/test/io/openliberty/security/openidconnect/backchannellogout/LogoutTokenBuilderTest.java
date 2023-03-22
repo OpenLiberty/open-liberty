@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
@@ -68,6 +65,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private static final String CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN = "CWWKS1643E";
     private static final String CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP = "CWWKS1646E";
     private static final String CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS = "CWWKS1647E";
+    private static final String CWWKS1953E_ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS = "CWWKS1953E";
 
     private final String issuerIdentifier = "https://localhost/oidc/endpoint/OP";
     private final String client1Id = "client1";
@@ -1085,6 +1083,24 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
+    public void test_createLogoutTokenForClient_idTokenMissingSub() throws Exception {
+        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
+        idTokenClaims.unsetClaim("sub");
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        try {
+            String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
+            fail("Should have thrown an exception but didn't. Got: " + logoutToken);
+        } catch (LogoutTokenBuilderException e) {
+            verifyException(e, CWWKS1953E_ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS + ".+" + CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".+" + "sub");
+        }
+    }
+
+    @Test
     public void test_createLogoutTokenForClient_idTokenContainsSub() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         mockery.checking(new Expectations() {
@@ -1180,16 +1196,21 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_populateLogoutTokenClaims() throws Exception {
+    public void test_populateLogoutTokenClaimsFromIdToken_idTokenMissingSub() throws Exception {
+        JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
+        idTokenClaims.unsetClaim("sub");
         mockery.checking(new Expectations() {
             {
                 one(oidcServerConfig).getIssuerIdentifier();
                 will(returnValue(issuerIdentifier));
             }
         });
-        JwtClaims result = builder.populateLogoutTokenClaims(client1);
-
-        verifyLogoutTokenClaims(result, Arrays.asList(client1Id), null, null);
+        try {
+            JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
+            fail("Should have thrown an exception but didn't. Got: " + result);
+        } catch (LogoutTokenBuilderException e) {
+            verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".+" + "sub");
+        }
     }
 
     @Test
@@ -1339,6 +1360,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         JwtContext resultContext = JwtParsingUtils.parseJwtWithoutValidation(logoutTokenString);
         JsonWebStructure jsonWebStructure = resultContext.getJoseObjects().get(0);
         assertEquals("JWT alg header did not match expected value.", "HS256", jsonWebStructure.getAlgorithmHeaderValue());
+        assertEquals("JWT typ header did not match expected value.", "logout+jwt", jsonWebStructure.getHeader("typ"));
 
         verifyLogoutTokenClaims(resultContext.getJwtClaims(), expectedAudiences, expectedSubject, expectedSid);
     }
@@ -1352,10 +1374,13 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long timeFrameEnd = now + 5;
 
         // iss
+        assertNotNull("Token must have an iss claim, but did not. Claims were: " + result, result.getIssuer());
         assertEquals("Issuer did not match expected value. Claims were: " + result, issuerIdentifier, result.getIssuer());
         // aud
+        assertNotNull("Token must have an aud claim, but did not. Claims were: " + result, result.getAudience());
         assertEquals("Audience did not match expected value. Claims were: " + result, expectedAudiences, result.getAudience());
         // iat
+        assertNotNull("Token must have an iat claim, but did not. Claims were: " + result, result.getIssuedAt());
         long issuedAt = result.getIssuedAt().getValue();
         assertTrue("Issued at time (" + issuedAt + ") is not in an expected reasonable time frame (" + timeFrameStart + " to " + timeFrameEnd + "). Claims were: " + result,
                    (timeFrameStart <= issuedAt) && (issuedAt <= timeFrameEnd));
@@ -1370,17 +1395,22 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         // nonce
         assertNull("A nonce claim was found but shouldn't have been. Claims were: " + result, result.getClaimValue("nonce"));
 
+        // Token must have sub and/or sid claim
+        String resultSub = result.getSubject();
+        String resultSid = result.getStringClaimValue("sid");
+        assertFalse("Token must have a sub and/or sid claim, but it is missing both. Claims were: " + result, resultSub == null && resultSid == null);
+
         // sub
         if (expectedSubject == null) {
-            assertNull("A sub claim was found but shouldn't have been: \"" + result + "\".", result.getSubject());
+            assertNull("A sub claim was found but shouldn't have been: \"" + result + "\".", resultSub);
         } else {
-            assertEquals("Sub claim did not match expected value. Claims were: " + result, expectedSubject, result.getSubject());
+            assertEquals("Sub claim did not match expected value. Claims were: " + result, expectedSubject, resultSub);
         }
         // sid
         if (expectedSid == null) {
-            assertNull("A sid claim was found but shouldn't have been: \"" + result + "\".", result.getStringClaimValue("sid"));
+            assertNull("A sid claim was found but shouldn't have been: \"" + result + "\".", resultSid);
         } else {
-            assertEquals("SID claim did not match expected value. Claims were: " + result, expectedSid, result.getStringClaimValue("sid"));
+            assertEquals("SID claim did not match expected value. Claims were: " + result, expectedSid, resultSid);
         }
     }
 

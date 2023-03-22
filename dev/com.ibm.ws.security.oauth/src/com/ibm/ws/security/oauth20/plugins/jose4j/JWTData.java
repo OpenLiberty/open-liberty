@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.plugins.jose4j;
 
@@ -21,13 +18,8 @@ import com.ibm.ws.security.jwt.utils.JwtDataConfig;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
-/**
- *
- */
 public class JWTData {
 
-    private static final String SIGNATURE_ALG_HS256 = "HS256";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
     private static TraceComponent tc = Tr.register(JWTData.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     public static final String TYPE_ID_TOKEN = "ID Token";
@@ -41,6 +33,7 @@ public class JWTData {
 
     OidcServerConfig oidcServerConfig = null;
     String tokenType = TYPE_ID_TOKEN;
+    String typHeader = null;
 
     String signatureAlgorithm = null;
     JWTTokenException noKeyException = null;
@@ -107,6 +100,14 @@ public class JWTData {
      */
     public String getTokenType() {
         return tokenType;
+    }
+
+    public String getTypHeader() {
+        return typHeader;
+    }
+
+    public void setTypHeader(String typ) {
+        this.typHeader = typ;
     }
 
     public JWTTokenException getNoKeyException() {
