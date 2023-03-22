@@ -19,6 +19,8 @@ import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -71,6 +73,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Employees employees;
+
+    @Inject
+    OrderRepo orders;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -449,6 +454,36 @@ public class DataJPATestServlet extends FATServlet {
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
+     * Avoid specifying a primary key value and let it be generated.
+     */
+    @Test
+    public void testGeneratedKey() {
+        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testGeneratedKey-Customer1";
+        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+        o1.total = 25.99f;
+        o1 = orders.save(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testGeneratedKey-Customer2";
+        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+        o2.total = 148.98f;
+        o2 = orders.save(o2);
+
+        assertNotNull(o1.id);
+        assertNotNull(o2.id);
+        assertEquals(false, o1.id.equals(o2.id));
+
+        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
+
+        o2 = orders.findById(o2.id).get();
+
+        assertEquals(168.89f, o2.total, 0.01f);
     }
 
     /**
