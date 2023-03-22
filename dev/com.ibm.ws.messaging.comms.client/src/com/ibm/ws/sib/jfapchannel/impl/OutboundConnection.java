@@ -79,8 +79,9 @@ public class OutboundConnection extends Connection
                               int heartbeatInterval, // F175658
                               int heartbeatTimeout, // F175658
                               ConnectionData connectionData) throws FrameworkException
-    {
-        super(connLink, vc, heartbeatInterval, heartbeatTimeout); // F174772, F175658
+    {//TODO: Check about using requireService for this
+        super(connLink, vc, heartbeatInterval, heartbeatTimeout, 
+        		CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()) == null ? false : CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()).useNetty()); // F174772, F175658
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -446,6 +447,8 @@ public class OutboundConnection extends Connection
         buf.append(handshakeComplete);
         buf.append(", Handshakers Waiting: ");
         buf.append(handshakersWaiting);
+        buf.append(", Using Netty Framework: ");
+		buf.append(isUsingNetty());
         buf.append("}\nEvents follow:\n");
         buf.append(getDiagnostics(false));
 

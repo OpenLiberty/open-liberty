@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLEngine;
@@ -84,13 +85,13 @@ public class NettyNetworkConnection implements NetworkConnection{
 	 * @param chainName The chain name to which the channel belongs to
 	 * @throws FrameworkException 
 	 */
-	public NettyNetworkConnection(BootstrapExtended bootstrap, String chainName, NettyFramework nettyBundle, Map<String, Object> sslOptions, NettyTlsProvider tlsProvider, boolean isInbound) throws FrameworkException
+	public NettyNetworkConnection(BootstrapExtended bootstrap, String chainName, NettyFramework nettyBundle, Map<Object, Object> sslOptions, NettyTlsProvider tlsProvider, boolean isInbound) throws FrameworkException
 	{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>" ,new Object[] {bootstrap, chainName});
 
-		//		init(bootstrap);
 		this.chainName = chainName;
-		this.sslOptions = sslOptions;
+		// TODO: Check if this is the best way to do this
+		this.sslOptions = new HashMap<String, Object>((Map)sslOptions);;
 		this.isInbound = isInbound;
 		this.tlsProvider = tlsProvider;
 		this.nettyBundle = nettyBundle;
@@ -216,6 +217,9 @@ public class NettyNetworkConnection implements NetworkConnection{
 			if(this.sslOptions != null) {
 				if (tc.isDebugEnabled())
 					SibTr.debug(this, tc, "initChannel","Adding SSL Support");
+				// TODO: DO SSL , Throw error for now
+				listener.connectRequestFailedNotification(new NettyException("Problems creating SSL context. Not valid yet"));
+				
 				String host = target.getRemoteAddress().getAddress().getHostAddress();
 				String port = Integer.toString(target.getRemoteAddress().getPort());
 				if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {this.tlsProvider, host, port, this.sslOptions});

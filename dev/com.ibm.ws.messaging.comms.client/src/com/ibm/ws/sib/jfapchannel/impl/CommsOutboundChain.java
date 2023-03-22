@@ -54,6 +54,8 @@ import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
+
 
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
@@ -71,16 +73,19 @@ public class CommsOutboundChain implements ApplicationPrereq {
     private final String jfapChannelName;
     private final String sslChannelName;
     private OutboundSecureFacet secureFacet;
+    
+    private final NettyTlsProvider tlsProviderService;
 
     /** If useSSL is set to true in the outbound connection configuration */
     private final boolean isSecureChain;
     /** If useNettyTransport is set to true in the outbound connection configuration */
-    private boolean _useNettyTransport = false;
+    private boolean useNettyTransport = false;
     
     
     private static Map<String, CommsOutboundChain> chainList = new HashMap<String,CommsOutboundChain>();
 
 
+    // TODO: Check if this can be removed in favor of using requireService
     public static CommsOutboundChain getChainDetails(String chainName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getChainDetails");
@@ -99,6 +104,8 @@ public class CommsOutboundChain implements ApplicationPrereq {
             ChannelConfiguration tcpOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
+            @Reference(name="tlsProviderService")
+            NettyTlsProvider tlsProviderService,
             /* Require SingletonsReady so that we will wait for it to ensure its availability at least until the chain is deactivated. */ 
             @Reference(name="singletonsReady")
             SingletonsReady singletonsReady,
@@ -109,10 +116,11 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         this.tcpOptions = tcpOptions;
         this.commsClientService = commsClientService;
+        this.tlsProviderService = tlsProviderService;
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
         
-        _useNettyTransport = ProductInfo.getBetaEdition() ? 
+        useNettyTransport = ProductInfo.getBetaEdition() ? 
 				MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true):
 				false;
 
@@ -123,7 +131,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
         jfapChannelName = id + "_JfapJfap";
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(this, tc, "activate: Using " + (_useNettyTransport ? "Netty" : "Channel") + " Framework for chain ", chainName);
+            SibTr.debug(this, tc, "activate: Using " + (useNettyTransport ? "Netty" : "Channel") + " Framework for chain ", chainName);
 
         if (isSecureChain) {
             // defer creation until SSL decides to show up
@@ -154,11 +162,17 @@ public class CommsOutboundChain implements ApplicationPrereq {
         }
     }
 
-    private Map<String, Object> getTcpOptions() {
+    public Map<String, Object> getTcpOptions() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getTcpOptions");
         Map<String, Object> tcpProps = tcpOptions.getConfiguration();
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getTcpOptions", tcpProps);
         return tcpProps;
+    }
+
+    public NettyTlsProvider getTlsProviderService() {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getTlsProviderService");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getTlsProviderService", tlsProviderService);
+        return tlsProviderService;
     }
 
     private synchronized void createBasicJFAPChain() {
@@ -241,7 +255,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
                 // /com.ibm.ws.messaging_fat/fat/src/com/ibm/ws/messaging/fat/CommsWithSSL/CommsWithSSLTest.java
                 // Checks for the presence of this string in the trace log, in order to ascertain that the chain has been enabled.
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JFAP Outbound secure chain" + chainName + " successfully started ");
-
+                chainList.put(chainName, this);
             } catch (ChannelException | ChainException exception) {
                 FFDCFilter.processException(exception, "CommsOutboundChain.createSecureJFAPChain for chain " + this.chainName, jfapChannelName, this);
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JFAP Outbound secure chain " + chainName + " failed to start, exception ="+exception);
@@ -259,6 +273,8 @@ public class CommsOutboundChain implements ApplicationPrereq {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "deactivate");
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsOutboundChain: Destroying " + (isSecureChain ? "Secure" : "Non-Secure") + " chain ", chainName);
         terminateConnectionsAssociatedWithChain(DEACTIVATE, null, null);
+        // TODO: Check about having this in both deactivate and terminate connections
+        chainList.put(chainName, this);
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this,tc, "deactivate");
     }
 
@@ -363,7 +379,23 @@ public class CommsOutboundChain implements ApplicationPrereq {
 	 * @return true if Netty should be used for this endpoint
 	 */
 	public boolean useNetty() {
-	    return _useNettyTransport;
+	    return useNettyTransport;
+	}
+	
+	/**
+	 * Query if useSSL has been enabled for this endpoint
+	 * @return true if useSSL is enabled and SSL should be used for this endpoint
+	 */
+	public boolean isSecureChain() {
+	    return isSecureChain;
+	}
+	
+	/**
+	 * Get the SSL Options for this Chain
+	 * @return the OutboundSecureFacet wrapper of SSL Options for the chain
+	 */
+	public OutboundSecureFacet getSecureFacet() {
+	    return secureFacet;
 	}
 
 }

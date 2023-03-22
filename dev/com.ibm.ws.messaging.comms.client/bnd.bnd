@@ -49,7 +49,8 @@ Export-Package: \
 	com.ibm.ws.sib.jfapchannel.threadpool,\
 	com.ibm.ws.sib.jfapchannel,\
 	com.ibm.ws.sib.jfapchannel.buffer,\
-	com.ibm.ws.sib.jfapchannel.richclient.buffer.impl
+	com.ibm.ws.sib.jfapchannel.richclient.buffer.impl,\
+	com.ibm.ws.sib.jfapchannel.netty
 
 -dsannotations: com.ibm.ws.sib.jfapchannel.impl.*
 
