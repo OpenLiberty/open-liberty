@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -299,6 +299,9 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                 nameId = decryptNameID();
 
             } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "cannot decrypt name id from the logout request = ", e.getMessage());
+                }
                 //TODO Tr.error
             }
         } else {
@@ -348,6 +351,9 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         StatusCode requiredStatusCode = samlResponse.getStatus().getStatusCode();
         String statusCode = requiredStatusCode.getValue();
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "status code from the saml response = ", statusCode);
+        }
         if (!StatusCode.SUCCESS.equals(statusCode)) { //v3
             valid = false;
             String message = statusCode;
@@ -467,9 +473,15 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                                               Constants.SAML20_CONTEXT_PATH, // "/ibm/saml20/"
                                               this.context.getSsoService().getProviderId(),
                                               this.context.getSsoConfig());
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "acs URL = " + urlString);
+            }
         } else if (samlLogoutResponse != null || samlLogoutRequest != null) {
             urlString = RequestUtil.getSloUrl(this.context.getHttpServletRequest(), Constants.SAML20_CONTEXT_PATH,
                                               this.context.getSsoService().getProviderId(), this.context.getSsoConfig());
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SLO URL = " + urlString);
+            }
         }
 
         if (urlString.equals(destination)) {
@@ -497,7 +509,9 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         } else if (samlLogoutRequest != null) {
             samlIssuer = samlLogoutRequest.getIssuer();
         }
-
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Issuer from the message = " + samlIssuer);
+        }
         return MsgCtxUtil.validateIssuer(samlIssuer, context, false); // not rsSaml
     }
 

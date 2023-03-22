@@ -178,6 +178,11 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5;version=latest,\
+	com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.security.authorization;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
