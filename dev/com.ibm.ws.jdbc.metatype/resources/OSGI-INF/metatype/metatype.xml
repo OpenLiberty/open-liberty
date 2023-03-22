@@ -1358,7 +1358,7 @@
   <AD id="version"                            ibmui:group="Advanced" required="false" type="Integer" name="%version" description="%version.desc"/>
  </OCD>
  
-  <!-- Sybase properties -->
+  <!-- Postgresql properties -->
  <Designate factoryPid="com.ibm.ws.jdbc.dataSource.properties.postgresql">
   <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.postgresql"/>
  </Designate>
@@ -1397,6 +1397,11 @@
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="URL"                           ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>
+  <AD id="autosave"                      ibmui:group="Advanced" required="false" type="String"                         name="%autosave"             description="%sslMode.desc">
+   <Option value="never"        label="never"/>
+   <Option value="always"       label="always"/>
+   <Option value="conservative" label="conservative"/>
+  </AD>  
  </OCD>
 
 </metatype:MetaData>
