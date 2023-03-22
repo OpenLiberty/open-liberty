@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.LibertyDataProvider;
-import jakarta.data.provider.DataProvider;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -49,9 +48,9 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     static class Factory<P> implements ProducerFactory<P> {
         private final BeanManager beanMgr;
         private final Class<?> entityClass;
-        private final DataProvider provider;
+        private final LibertyDataProvider provider;
 
-        Factory(BeanManager beanMgr, DataProvider provider, Class<?> entityClass) {
+        Factory(BeanManager beanMgr, LibertyDataProvider provider, Class<?> entityClass) {
             this.beanMgr = beanMgr;
             this.entityClass = entityClass;
             this.provider = provider;
@@ -115,13 +114,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        R instance;
-        LibertyDataProvider.entityClass.set(factory.entityClass);
-        try {
-            instance = factory.provider.getRepository(repositoryInterface);
-        } finally {
-            LibertyDataProvider.entityClass.remove();
-        }
+        R instance = factory.provider.getRepository(repositoryInterface, factory.entityClass);
 
         if (intercept) {
             R r = interception.createInterceptedInstance(instance);

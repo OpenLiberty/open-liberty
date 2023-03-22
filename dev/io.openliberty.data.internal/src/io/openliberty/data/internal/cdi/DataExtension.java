@@ -34,7 +34,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Entities;
-import jakarta.data.provider.DataProvider;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;
@@ -66,9 +65,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         private final String databaseId;
         private final int hash;
         private final ClassLoader loader;
-        private final DataProvider provider;
+        private final LibertyDataProvider provider;
 
-        EntityGroupKey(String databaseId, ClassLoader loader, DataProvider provider) {
+        EntityGroupKey(String databaseId, ClassLoader loader, LibertyDataProvider provider) {
             this.loader = loader;
             this.databaseId = databaseId;
             this.provider = provider;
@@ -102,10 +101,14 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
         AnnotatedType<T> type = event.getAnnotatedType();
-        repositoryTypes.add(type);
+
+        Repository repository = type.getAnnotation(Repository.class);
+        String provider = repository.provider();
+        if (Repository.ANY_PROVIDER.equals(provider) || "OpenLiberty".equalsIgnoreCase(provider)) // TODO provider name
+            repositoryTypes.add(type);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "annotatedRepository", type.getAnnotation(Repository.class).toString(), type.getJavaClass().getName());
+            Tr.debug(this, tc, "annotatedRepository", repository.toString(), type.getJavaClass().getName());
     }
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
@@ -118,45 +121,47 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             Class<?> entityClass = getEntityClass(repositoryInterface);
             ClassLoader loader = repositoryInterface.getClassLoader();
-            DataProvider provider = svc.getProvider(entityClass, loader);
+            LibertyDataProvider provider = svc.getProvider(entityClass, repositoryType);
 
-            EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
-            List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
-            if (entityClasses == null)
-                entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
-
-            entityClasses.add(entityClass);
-
-            BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityClass));
-            repositoryBeans.add(bean);
-        }
-
-        for (Entities anno : entitiesListsForTemplate) {
-            for (Class<?> entityClass : anno.value()) {
-                ClassLoader loader = entityClass.getClassLoader();
-                DataProvider provider = svc.getProvider(entityClass, loader);
-
-                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
+            if (provider != null) {
+                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
                 if (entityClasses == null)
                     entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
 
                 entityClasses.add(entityClass);
+
+                BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
+                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityClass));
+                repositoryBeans.add(bean);
+            }
+        }
+
+        for (Entities anno : entitiesListsForTemplate) {
+            for (Class<?> entityClass : anno.value()) {
+                ClassLoader loader = entityClass.getClassLoader();
+                LibertyDataProvider provider = svc.getProvider(entityClass, null);
+
+                if (provider != null) {
+                    EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
+                    List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
+                    if (entityClasses == null)
+                        entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
+
+                    entityClasses.add(entityClass);
+                }
             }
         }
 
         for (Entry<EntityGroupKey, List<Class<?>>> entry : entityGroups.entrySet()) {
             EntityGroupKey entityGroupKey = entry.getKey();
             List<Class<?>> entityClasses = entry.getValue();
-            if (entityGroupKey.provider instanceof LibertyDataProvider)
-                try {
-                    LibertyDataProvider provider = (LibertyDataProvider) entityGroupKey.provider;
-                    provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
-                } catch (Exception x) {
-                    x.printStackTrace();
-                    System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
-                }
+            try {
+                entityGroupKey.provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
+            } catch (Exception x) {
+                x.printStackTrace();
+                System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
+            }
         }
         // TODO copy remaining code for this method
     }
