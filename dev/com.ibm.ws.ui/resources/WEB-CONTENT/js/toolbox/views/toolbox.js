@@ -304,6 +304,9 @@ define(["dojo/parser",
           registry.byId("bookmarkURL").reset();
         };
 
+        // allow the close button to be tabbable
+        registry.byId("addBookmarkDialogId").closeButtonNode.setAttribute("tabindex", "0");
+
         handleSkipToContentButton();
 
       });
