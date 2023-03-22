@@ -59,11 +59,15 @@ public class HttpConduitPropertiesTest {
 
     private static final int CONN_TIMEOUT = 10;
 
+    private static final Class<?> c = HttpConduitPropertiesTest.class;
+
     @Server("HttpConduitPropertiesTestServer")
     public static LibertyServer server;
 
     // WAIT TIME to be used to wait for copying ibm-ws-bnd.xml to complete before invoking Web Service
     private static int BND_FILE_COPY_WAITTIME = 1000;
+
+    private static int BND_FILE_COPY_RETRY = 5;
 
     private static String defaultSimpleEchoServiceEndpointAddr;
     private static String defaultSimpleEchoServiceEndpointAddr2;
@@ -508,10 +512,15 @@ public class HttpConduitPropertiesTest {
 
     // Waits for config change to be processed after moving the test's ibm-ws-bnd.xml file to the dropins app
     private void waitForAppRestartAfterConfigChange() throws Exception {
-
-        // Add a pause in case file hasn't yet finished copying that can be increased as needed
-        if (!server.fileExistsInLibertyServerRoot(server.getServerRoot() + "dropins/httpConduitProperties.war/WEB-INF/ibm-ws-bnd.xml"))
-            Thread.sleep(BND_FILE_COPY_WAITTIME);
+        // Try BND_FILE_COPY_RETRY times if sleep time is not enough
+        for (int i = 0; i < BND_FILE_COPY_RETRY; ++i) {
+            // Add a pause in case file hasn't yet finished copying that can be increased as needed
+            if (!server.fileExistsInLibertyServerRoot("dropins/httpConduitProperties.war/WEB-INF/ibm-ws-bnd.xml")) {
+                Thread.sleep(BND_FILE_COPY_WAITTIME);
+            } else {
+                break; //break the for loop if file is there
+            }
+        }
 
         // check logs for app restart and servlet readiness
         server.waitForStringInLog("CWWKZ0001I.*httpConduitProperties");
