@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jsf22.fat.tests;
 
@@ -66,7 +63,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
                                       isEE10 ? "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.faces40" : "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.jsf22",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.ajax.resetValue.faces40" : "com.ibm.ws.jsf22.fat.ajax.resetValue.jsf22");
 
-        jsf22TracingServer.startServer(JSF22ResetValuesAndAjaxDelayTests.class.getSimpleName() + ".log");
+        jsf22TracingServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

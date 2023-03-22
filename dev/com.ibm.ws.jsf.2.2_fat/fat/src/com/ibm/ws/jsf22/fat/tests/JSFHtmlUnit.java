@@ -56,7 +56,7 @@ public class JSFHtmlUnit {
 
     String contextRoot = "JSF22TestResources";
 
-    protected static final Class<?> c = JSF22ResourceLibraryContractHtmlUnit.class;
+    protected static final Class<?> c = JSFHtmlUnit.class;
 
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
@@ -86,7 +86,7 @@ public class JSFHtmlUnit {
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22BackwardCompatibilityTestsWar);
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22TestResourcesWar);
 
-        jsfTestServer2.startServer(JSFHtmlUnit.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
