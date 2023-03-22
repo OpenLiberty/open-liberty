@@ -39,9 +39,9 @@ table
             @include text_code();
         }
 
-        .header-example 
+        .header-example
         {
-            color: #999; 
+            color: #999;
             font-style: italic;
         }
     }
@@ -91,7 +91,7 @@ table
 {
     width: 99%; // forces other columns to shrink to their content widths
     margin-bottom: 2em;
-    input[type=text]
+    input
     {
         width: 100%;
         max-width: 340px;
@@ -99,6 +99,12 @@ table
 
     select {
         border-width: 1px;
+    }
+
+    .markdown {
+        p {
+            margin: 0;
+        }
     }
 }
 
@@ -179,6 +185,12 @@ table
 
 .response-col_description {
     width: 99%; // forces other columns to shrink to their content widths
+
+    .markdown {
+        p {
+            margin: 0;
+        }
+    }
 }
 
 .response-col_links {

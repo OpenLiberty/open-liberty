@@ -34,6 +34,11 @@ select
     {
         min-width: 180px;
     }
+    @media (max-width: 640px)
+    {
+        width: 100%;
+        min-width: 100%;
+    }
 }
 
 label
@@ -52,6 +57,8 @@ input[type=search],
 input[type=email],
 input[type=file]
 {
+    line-height: 1;
+
     @media (max-width: 768px) {
       max-width: 175px;
     }
