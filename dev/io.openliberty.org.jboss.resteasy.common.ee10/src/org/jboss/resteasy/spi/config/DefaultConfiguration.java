@@ -19,15 +19,17 @@
 
 package org.jboss.resteasy.spi.config;
 
-import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
-import org.jboss.resteasy.spi.ResteasyConfiguration;
-
 import java.math.BigDecimal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
+
+import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+import org.jboss.resteasy.spi.ResteasyConfiguration;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
+import org.jboss.resteasy.spi.config.security.ConfigPropertyPermission;
 
 /**
  * A default configuration which searches for a property in the following order:
@@ -48,7 +50,7 @@ public class DefaultConfiguration implements Configuration {
      * Creates a new configuration .
      */
     public DefaultConfiguration() {
-        this(null);
+        this(resolveConfiguration());
     }
 
     /**
@@ -57,12 +59,22 @@ public class DefaultConfiguration implements Configuration {
      * @param config the resolver
      */
     public DefaultConfiguration(final ResteasyConfiguration config) {
-        this.resolver = config == null ? DEFAULT_RESOLVER : new Resolver(config);
+        final ResteasyConfiguration delegate;
+        if (config == null) {
+            delegate = resolveConfiguration();
+        } else {
+            delegate = config;
+        }
+        this.resolver = delegate == null ? DEFAULT_RESOLVER : new Resolver(delegate);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> Optional<T> getOptionalValue(final String name, final Class<T> type) {
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new ConfigPropertyPermission(name));
+        }
         final String value = resolver.apply(name);
         if (value == null) {
             return Optional.empty();
@@ -105,7 +117,16 @@ public class DefaultConfiguration implements Configuration {
 
     @Override
     public <T> T getValue(final String name, final Class<T> type) {
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new ConfigPropertyPermission(name));
+        }
         return getOptionalValue(name, type).orElseThrow(() -> Messages.MESSAGES.propertyNotFound(name));
+    }
+
+    private static ResteasyConfiguration resolveConfiguration() {
+        final ResteasyProviderFactory factory = ResteasyProviderFactory.peekInstance();
+        return factory == null ? null : factory.getContextData(ResteasyConfiguration.class);
     }
 
     private static class Resolver implements Function<String, String> {
@@ -117,8 +138,8 @@ public class DefaultConfiguration implements Configuration {
 
         @Override
         public String apply(final String name) {
-            String value = config == null ? null : config.getInitParameter(name);
-            if (value == null) {
+            String value = config == null ? null : config.getInitParameter(name);  //Liberty change
+            if (value == null) {  //Liberty change
                 //Liberty change - adding doPriv
                 if (System.getSecurityManager() == null) {
                     value = System.getProperty(name);
