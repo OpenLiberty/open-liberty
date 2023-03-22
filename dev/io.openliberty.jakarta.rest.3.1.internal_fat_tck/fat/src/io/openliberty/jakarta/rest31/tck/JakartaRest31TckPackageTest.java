@@ -58,7 +58,6 @@ public class JakartaRest31TckPackageTest {
         andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("webProfile-10.0").withID("webProfile").fullFATOnly()).
         andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).withID("coreProfile").fullFATOnly()).
         andWith(new FeatureReplacementAction().removeFeatures(featuresToRemove).addFeature("microProfile-6.0").withID("microProfile").fullFATOnly());
-
     @Server("FATServer")
     public static LibertyServer server;
 

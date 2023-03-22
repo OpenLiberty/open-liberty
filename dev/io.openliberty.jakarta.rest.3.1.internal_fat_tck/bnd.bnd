@@ -17,7 +17,7 @@ bVersion=1.0
 src: \
 	fat/src
 
-tested.features=webprofile-10.0, microprofile-6.0
+tested.features=webprofile-10.0,, microprofile-6.0
 
 fat.project: true
 
