@@ -109,7 +109,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>$arqu${arquillian.liberty.managed.version}</version>
+            <version>${arquillian.liberty.managed.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
