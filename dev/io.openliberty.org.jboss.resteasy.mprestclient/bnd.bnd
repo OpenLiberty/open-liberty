@@ -46,6 +46,7 @@ Export-Package: \
   org.jboss.resteasy.microprofile.client.header;version=1.0;thread-context=true
 
 Import-Package: \
+  !jakarta.enterprise.concurrent,\
   jakarta.annotation,\
   jakarta.inject,\
   jakarta.ws.rs.core,\
