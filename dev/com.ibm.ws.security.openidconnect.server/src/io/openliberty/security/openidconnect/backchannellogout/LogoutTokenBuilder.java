@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
@@ -317,6 +314,7 @@ public class LogoutTokenBuilder {
 
             String sharedKey = client.getClientSecret();
             JWTData jwtData = new JWTData(sharedKey, oidcServerConfig, JWTData.TYPE_JWT_TOKEN);
+            jwtData.setTypHeader("logout+jwt");
 
             // When we add support for JWE ID tokens, this will need to be updated to create a JWE logout token as well
             return JwsSigner.getSignedJwt(logoutTokenClaims, oidcServerConfig, jwtData);
@@ -326,10 +324,15 @@ public class LogoutTokenBuilder {
         }
     }
 
-    JwtClaims populateLogoutTokenClaimsFromIdToken(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException {
+    JwtClaims populateLogoutTokenClaimsFromIdToken(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException, LogoutTokenBuilderException {
         JwtClaims logoutTokenClaims = populateLogoutTokenClaims(client);
 
-        logoutTokenClaims.setSubject(idTokenClaims.getSubject());
+        String subject = idTokenClaims.getSubject();
+        if (subject == null || subject.isEmpty()) {
+            String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_MISSING_REQUIRED_CLAIMS", "sub");
+            throw new LogoutTokenBuilderException(errorMsg);
+        }
+        logoutTokenClaims.setSubject(subject);
 
         String sid = idTokenClaims.getStringClaimValue("sid");
         if (sid != null && !sid.isEmpty()) {
