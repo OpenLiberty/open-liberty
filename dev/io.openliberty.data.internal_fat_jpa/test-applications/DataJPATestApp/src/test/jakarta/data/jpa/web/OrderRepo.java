@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.jpa.web;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Param;

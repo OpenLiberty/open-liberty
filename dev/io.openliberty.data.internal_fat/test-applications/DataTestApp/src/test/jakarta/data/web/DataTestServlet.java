@@ -85,9 +85,6 @@ public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
 
     @Inject
-    OrderRepo orders;
-
-    @Inject
     Packages packages;
 
     @Inject
@@ -209,52 +206,52 @@ public class DataTestServlet extends FATServlet {
         Person p1 = new Person();
         p1.firstName = "Aaron";
         p1.lastName = "TestAsynchronous";
-        p1.ssn = 1002003001;
+        p1.ssn_id = 1002003001;
 
         Person p2 = new Person();
         p2.firstName = "Amy";
         p2.lastName = "TestAsynchronous";
-        p2.ssn = 1002003002;
+        p2.ssn_id = 1002003002;
 
         Person p3 = new Person();
         p3.firstName = "Alice";
         p3.lastName = "TestAsynchronous";
-        p3.ssn = 1002003003;
+        p3.ssn_id = 1002003003;
 
         Person p4 = new Person();
         p4.firstName = "Alexander";
         p4.lastName = "TestAsynchronous";
-        p4.ssn = 1002003004;
+        p4.ssn_id = 1002003004;
 
         Person p5 = new Person();
         p5.firstName = "Andrew";
         p5.lastName = "TestAsynchronous";
-        p5.ssn = 1002003005;
+        p5.ssn_id = 1002003005;
 
         Person p6 = new Person();
         p6.firstName = "Brian";
         p6.lastName = "TestAsynchronous";
-        p6.ssn = 1002003006;
+        p6.ssn_id = 1002003006;
 
         Person p7 = new Person();
         p7.firstName = "Betty";
         p7.lastName = "TestAsynchronous";
-        p7.ssn = 1002003007;
+        p7.ssn_id = 1002003007;
 
         Person p8 = new Person();
         p8.firstName = "Bob";
         p8.lastName = "TestAsynchronous";
-        p8.ssn = 1002003008;
+        p8.ssn_id = 1002003008;
 
         Person p9 = new Person();
         p9.firstName = "Albert";
         p9.lastName = "TestAsynchronous";
-        p9.ssn = 1002003009;
+        p9.ssn_id = 1002003009;
 
         Person p10 = new Person();
         p10.firstName = "Ben";
         p10.lastName = "TestAsynchronous";
-        p10.ssn = 1002003010;
+        p10.ssn_id = 1002003010;
 
         // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
@@ -299,11 +296,11 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, names.poll());
 
         // Async find single item
-        CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
+        CompletableFuture<Person> future = personnel.findBySSN_Id(p4.ssn_id);
 
         Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
         assertNotNull(p);
-        assertEquals(p4.ssn, p.ssn);
+        assertEquals(p4.ssn_id, p.ssn_id);
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
@@ -358,7 +355,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, found);
 
         // Async delete with CompletableFuture<Void> return type
-        CompletableFuture<Void> cf = personnel.deleteBySsn(1002003008L);
+        CompletableFuture<Void> cf = personnel.deleteById(1002003008L);
         assertEquals(null, cf.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         found = personnel.namesThatStartWith("Bob").stream().findFirst().isPresent();
@@ -383,12 +380,12 @@ public class DataTestServlet extends FATServlet {
         Person p1 = new Person();
         p1.firstName = "Christopher";
         p1.lastName = "TestAsyncPreventsDeadlock";
-        p1.ssn = 1001001001;
+        p1.ssn_id = 1001001001;
 
         Person p2 = new Person();
         p2.firstName = "Chad";
         p2.lastName = "TestAsyncPreventsDeadlock";
-        p2.ssn = 2002002002;
+        p2.ssn_id = 2002002002;
 
         // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2);
@@ -401,7 +398,7 @@ public class DataTestServlet extends FATServlet {
         tran.begin();
         try {
             // main thread obtains lock on p1
-            assertEquals(1L, personnel.setSurname(p1.ssn, "Test-AsyncPreventsDeadlock"));
+            assertEquals(1L, personnel.setSurname(p1.ssn_id, "Test-AsyncPreventsDeadlock"));
 
             CountDownLatch locked2 = new CountDownLatch(1);
 
@@ -411,12 +408,12 @@ public class DataTestServlet extends FATServlet {
                     tran.begin();
                     try {
                         // lock on p2
-                        long updateCount2 = personnel.setSurname(p2.ssn, "TestAsync-PreventsDeadlock");
+                        long updateCount2 = personnel.setSurname(p2.ssn_id, "TestAsync-PreventsDeadlock");
 
                         locked2.countDown();
 
                         // lock on p1
-                        return updateCount2 + personnel.setSurname(p1.ssn, "TestAsync-PreventsDeadlock");
+                        return updateCount2 + personnel.setSurname(p1.ssn_id, "TestAsync-PreventsDeadlock");
                     } finally {
                         tran.rollback();
                     }
@@ -429,7 +426,7 @@ public class DataTestServlet extends FATServlet {
 
             // If this runs on a third thread as expected, it will be blocked until the second thread releases the lock.
             // If it runs inline (unexpected) deadlock will occur.
-            updated2 = personnel.setSurnameAsync(p2.ssn, "TestAsyncPrevents-Deadlock");
+            updated2 = personnel.setSurnameAsync(p2.ssn_id, "TestAsyncPrevents-Deadlock");
 
             try {
                 Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
@@ -804,17 +801,17 @@ public class DataTestServlet extends FATServlet {
         Person jane = new Person();
         jane.firstName = "Jane";
         jane.lastName = "TestFindMultiple";
-        jane.ssn = 123456789;
+        jane.ssn_id = 123456789;
 
         Person joe = new Person();
         joe.firstName = "Joe";
         joe.lastName = "TestFindMultiple";
-        joe.ssn = 987654321;
+        joe.ssn_id = 987654321;
 
         Person jude = new Person();
         jude.firstName = "Jude";
         jude.lastName = "Test-FindMultiple";
-        jude.ssn = 11235813;
+        jude.ssn_id = 11235813;
 
         tran.begin();
         try {
@@ -835,52 +832,22 @@ public class DataTestServlet extends FATServlet {
         Person p2expected;
         assertEquals("TestFindMultiple", p1.lastName);
         if (jane.firstName.equals(p1.firstName)) {
-            assertEquals(jane.ssn, p1.ssn);
+            assertEquals(jane.ssn_id, p1.ssn_id);
             p2expected = joe;
         } else {
-            assertEquals(joe.ssn, p1.ssn);
+            assertEquals(joe.ssn_id, p1.ssn_id);
             p2expected = jane;
         }
 
         Person p2 = found.get(1);
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
-        assertEquals(p2expected.ssn, p2.ssn);
+        assertEquals(p2expected.ssn_id, p2.ssn_id);
 
         found = people.find("Test-FindMultiple");
         assertNotNull(found);
         assertEquals(1, found.size());
-        assertEquals(jude.ssn, found.get(0).ssn);
-    }
-
-    /**
-     * Avoid specifying a primary key value and let it be generated.
-     */
-    @Test
-    public void testGeneratedKey() {
-        ZoneOffset MDT = ZoneOffset.ofHours(-6);
-
-        Order o1 = new Order();
-        o1.purchasedBy = "testGeneratedKey-Customer1";
-        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
-        o1.total = 25.99f;
-        o1 = orders.save(o1);
-
-        Order o2 = new Order();
-        o2.purchasedBy = "testGeneratedKey-Customer2";
-        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
-        o2.total = 148.98f;
-        o2 = orders.save(o2);
-
-        assertNotNull(o1.id);
-        assertNotNull(o2.id);
-        assertEquals(false, o1.id.equals(o2.id));
-
-        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
-
-        o2 = orders.findById(o2.id).get();
-
-        assertEquals(168.89f, o2.total, 0.01f);
+        assertEquals(jude.ssn_id, found.get(0).ssn_id);
     }
 
     /**
@@ -3363,19 +3330,23 @@ public class DataTestServlet extends FATServlet {
         assertEquals(10.99f, p.price, 0.001f);
 
         // insert by template
-        Order order1 = new Order();
-        order1.purchasedBy = "testTemplateUsesRepositoryEntities Buyer";
-        order1.purchasedOn = OffsetDateTime.now();
-        order1.total = 16.87f;
-        order1 = template.insert(order1);
-        assertNotNull(order1.id);
+        Shipment s1 = new Shipment();
+        s1.setId(1010101L);
+        s1.setDestination("2800 37th St NW, Rochester, MN 55901");
+        s1.setLocation("1315 6th St NW, Rochester, MN 55901");
+        s1.setOrderedAt(OffsetDateTime.now().minusHours(1));
+        s1.setShippedAt(OffsetDateTime.now().minusMinutes(5));
+        s1.setStatus("IN_TRANSIT");
+        s1 = template.insert(s1);
+        assertNotNull(s1.getId());
 
         // find by repository
-        Optional<Order> ofound = orders.findById(order1.id);
-        assertEquals(true, ofound.isPresent());
-        Order o = ofound.get();
-        assertEquals(order1.id, o.id);
-        assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
+        Shipment s = shipments.find(1010101L);
+        assertEquals(1010101L, s.getId());
+        assertEquals("IN_TRANSIT", s.getStatus());
+        assertEquals("1315 6th St NW, Rochester, MN 55901", s.getLocation());
+
+        shipments.removeEverything();
     }
 
     /**
@@ -3552,17 +3523,17 @@ public class DataTestServlet extends FATServlet {
         Person p1 = new Person();
         p1.firstName = "Thomas";
         p1.lastName = "TestTransactional";
-        p1.ssn = 300201001;
+        p1.ssn_id = 300201001;
 
         Person p2 = new Person();
         p2.firstName = "Timothy";
         p2.lastName = "TestTransactional";
-        p2.ssn = 300201002;
+        p2.ssn_id = 300201002;
 
         Person p3 = new Person();
         p3.firstName = "Tyler";
         p3.lastName = "TestTransactional";
-        p3.ssn = 300201003;
+        p3.ssn_id = 300201003;
 
         people.save(List.of(p1, p2, p3));
 
@@ -3570,8 +3541,8 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn, "Ty")); // update with MANDATORY
-            assertEquals("Ty", people.getFirstNameInCurrentOrNoTransaction(p3.ssn)); // read value with SUPPORTS
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
+            assertEquals("Ty", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id)); // read value with SUPPORTS
         } finally {
             tran.rollback();
         }
@@ -3581,13 +3552,13 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.SUPPORTS from no transaction");
 
-        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn));
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
 
         System.out.println("TxType.REQUIRED in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn, "Tommy"));
+            assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
         } finally {
             tran.rollback();
         }
@@ -3597,7 +3568,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.REQUIRED from no transaction");
 
-        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn, "Tom"));
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
 
         assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
                              people.findFirstNames("TestTransactional"));
@@ -3606,7 +3577,7 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn, "Ty"));
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
         } finally {
             tran.rollback();
         }
@@ -3617,7 +3588,7 @@ public class DataTestServlet extends FATServlet {
         System.out.println("TxType.MANDATORY from no transaction is an error");
 
         try {
-            boolean result = people.setFirstNameInCurrentTransaction(p3.ssn, "Ty");
+            boolean result = people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
             fail("Invoked TxType.MANDATORY operation with no transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof TransactionRequiredException))
@@ -3628,7 +3599,7 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInNewTransaction(p2.ssn, "Timmy"));
+            assertEquals(true, people.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
         } finally {
             tran.rollback();
         }
@@ -3638,7 +3609,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.REQUIRES_NEW from no transaction");
 
-        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p2.ssn, "Tim"));
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
                              people.findFirstNames("TestTransactional"));
@@ -3647,7 +3618,7 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            boolean result = people.setFirstNameWhenNoTransactionIsPresent(p3.ssn, "Ty");
+            boolean result = people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
             fail("Invoked TxType.NEVER operation with transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof InvalidTransactionException))
@@ -3661,7 +3632,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.NEVER from no transaction");
 
-        assertEquals(true, people.setFirstNameWhenNoTransactionIsPresent(p3.ssn, "Ty"));
+        assertEquals(true, people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Ty"),
                              people.findFirstNames("TestTransactional"));
@@ -3670,7 +3641,7 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameWithCurrentTransactionSuspended(p3.ssn, "Tyler"));
+            assertEquals(true, people.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
         } finally {
             tran.rollback();
         }
@@ -3680,7 +3651,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.NOT_SUPPORTED from no transaction");
 
-        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn));
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
 
         personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
