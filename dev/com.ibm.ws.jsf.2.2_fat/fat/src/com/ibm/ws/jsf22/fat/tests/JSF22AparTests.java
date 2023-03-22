@@ -138,7 +138,7 @@ public class JSF22AparTests {
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PH06008.war", "");
 
-        jsfAparServer.startServer(JSF22AparTests.class.getSimpleName() + ".log");
+        jsfAparServer.startServer(c.getSimpleName() + ".log");
 
     }
 

@@ -1,19 +1,16 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static org.junit.Assert.assertFalse;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
 import java.util.List;
@@ -44,8 +41,6 @@ import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
 /**
- *
- * /**
  * Component System Event and EL tests for story 153719.
  */
 @Mode(TestMode.FULL)
@@ -69,7 +64,7 @@ public class JSFCompELTests {
                                       isEE10 ? "com.ibm.ws.jsf22.el.beans.faces40" : "com.ibm.ws.jsf22.el.beans.jsf22",
                                       "com.ibm.ws.jsf22.el.components");
 
-        jsfTestServer2.startServer(JSFCompELTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -247,7 +242,7 @@ public class JSFCompELTests {
 
     //tests ValueExpression support in f:ajax event=#{bean.method} - https://issues.apache.org/jira/browse/MYFACES-3233
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testAjaxEvent() throws Exception {
         // Fix the response once RTC is fixed
         String[] expectedInResponse = {

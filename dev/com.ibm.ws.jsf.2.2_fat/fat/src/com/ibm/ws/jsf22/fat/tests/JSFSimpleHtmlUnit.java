@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  */
 package com.ibm.ws.jsf22.fat.tests;
 
@@ -41,7 +38,6 @@ import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
-
 /**
  * Tests to execute on the jsfTestServer1 that use HtmlUnit.
  * This particular class executes the tests found in the TestJSF2.2 application.
@@ -68,7 +64,7 @@ public class JSFSimpleHtmlUnit {
                                       isEE10 ? "com.ibm.ws.jsf22.fat.simple.cforeach.faces40" : "com.ibm.ws.jsf22.fat.simple.cforeach.jsf22",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.simple.externalContext.faces40" : "com.ibm.ws.jsf22.fat.simple.externalContext.jsf22");
 
-        jsfTestServer1.startServer(JSFSimpleHtmlUnit.class.getSimpleName() + ".log");
+        jsfTestServer1.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

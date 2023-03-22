@@ -66,7 +66,7 @@ public class JSF22AppConfigPopTests {
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, war);
 
-        jsfTestServer2.startServer(JSF22AppConfigPopTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

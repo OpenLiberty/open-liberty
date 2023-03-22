@@ -60,7 +60,7 @@ public class JSF22StatelessViewTests {
                                       "com.ibm.ws.jsf22.fat.statelessview.beans",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.statelessview.beans.faces40" : "com.ibm.ws.jsf22.fat.statelessview.beans.jsf22");
 
-        jsf22StatelessViewServer.startServer(JSF22StatelessViewTests.class.getSimpleName() + ".log");
+        jsf22StatelessViewServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

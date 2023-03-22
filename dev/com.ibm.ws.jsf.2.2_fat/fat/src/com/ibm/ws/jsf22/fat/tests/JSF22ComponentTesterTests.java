@@ -6,14 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static org.junit.Assert.assertTrue;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -68,7 +65,7 @@ public class JSF22ComponentTesterTests {
                                       isEE10 ? "com.ibm.ws.jsf22.fat.componenttester.beans.faces40" : "com.ibm.ws.jsf22.fat.componenttester.beans.jsf22",
                                       "com.ibm.ws.jsf22.fat.componenttester");
 
-        jsfTestServer2.startServer(JSF22ComponentTesterTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -229,7 +226,7 @@ public class JSF22ComponentTesterTests {
      * </h:commandLink>
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void JSF22ComponentTester_TestCommandLinkOrder() throws Exception {
         try (WebClient webClient = getWebClient()) {
 

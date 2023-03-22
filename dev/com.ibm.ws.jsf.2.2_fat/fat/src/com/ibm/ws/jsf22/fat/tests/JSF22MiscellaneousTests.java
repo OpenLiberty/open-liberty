@@ -100,7 +100,7 @@ public class JSF22MiscellaneousTests {
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_OLGH22397 + ".war");
 
-        jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
+        jsf22MiscellaneousServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
