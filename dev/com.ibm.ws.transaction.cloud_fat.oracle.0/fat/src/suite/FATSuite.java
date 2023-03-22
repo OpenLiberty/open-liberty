@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package suite;
+package com.ibm.ws.transaction.test;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -32,13 +32,11 @@ public class FATSuite extends TxTestContainerSuite {
 
 	static {
 		databaseContainerType = DatabaseContainerType.Oracle;
-		
-		beforeSuite();
 	}
 
 	@ClassRule
-	public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+	public static RepeatTests r = RepeatTests.withoutModification()
 	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
 	.andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-	.andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
+	.andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames));
 }
