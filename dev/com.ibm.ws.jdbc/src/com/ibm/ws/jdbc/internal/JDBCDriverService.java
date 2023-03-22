@@ -1044,6 +1044,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             else if(paramType.equals(char[].class)) // special case: char array
                 param = value.toCharArray();
+            
+            else if (paramType.isEnum()) // special case: Enum
+                param = Enum.valueOf((Class<Enum>)paramType, value.toUpperCase());
 		
             else // the generic case: any object with a single parameter String constructor
                 param = paramType.getConstructor(String.class).newInstance(value);
