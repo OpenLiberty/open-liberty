@@ -501,72 +501,74 @@ public class RecoveryManager implements Runnable {
             // If the tranlog is null then we're using in memory logging and
             // the work the shutdown the log is not required.
             if (_tranLog != null) {
-                //
-                // Check if any transactions still active...
-                //
-                if (!transactionsLeft) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "There is no transaction data requiring future recovery");
-
-                    if (_tranlogServiceData != null) {
+                if (!_tranLog.failed()) {
+                    //
+                    // Check if any transactions still active...
+                    //
+                    if (!transactionsLeft) {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Erasing service data from transaction log");
+                            Tr.debug(tc, "There is no transaction data requiring future recovery");
 
-                        // transactions stopped running now
-                        try {
-                            _tranLog.removeRecoverableUnit(_tranlogServiceData.identity());
-                        } catch (PeerLostLogOwnershipException ple) {
-                            // No FFDC in this case
+                        if (_tranlogServiceData != null) {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
-                            throw ple;
-                        } catch (Exception e) {
-                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "359", this);
-                            Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
-                            throw e; /* @PK31789A */
+                                Tr.debug(tc, "Erasing service data from transaction log");
+
+                            // transactions stopped running now
+                            try {
+                                _tranLog.removeRecoverableUnit(_tranlogServiceData.identity());
+                            } catch (PeerLostLogOwnershipException ple) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                                throw ple;
+                            } catch (Exception e) {
+                                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "359", this);
+                                Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
+                                throw e; /* @PK31789A */
+                            }
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "No service data to erase from transaction log");
                         }
-                    } else {
+                    } else if (_tranlogServiceData != null) // Only update epoch if there is data in the log - d671043
+                    {
+                        // Force the tranlog by rewriting the epoch in the servicedata.  This will ensure
+                        // any previous completed transactions will have their end-records forced.  Then
+                        // it is safe to remove partner log records.  Otherwise, we can get into the state
+                        // of recovering completed txns that are still in-doubt in the txn log but have
+                        // no partner log entries as we've cleaned them up.  We can add code to cope with
+                        // this but it gets very messy especially if recovery/shutdown keeps repeating
+                        // itself - we need to check for NPE at every partner log check.
+
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "No service data to erase from transaction log");
-                    }
-                } else if (_tranlogServiceData != null) // Only update epoch if there is data in the log - d671043
-                {
-                    // Force the tranlog by rewriting the epoch in the servicedata.  This will ensure
-                    // any previous completed transactions will have their end-records forced.  Then
-                    // it is safe to remove partner log records.  Otherwise, we can get into the state
-                    // of recovering completed txns that are still in-doubt in the txn log but have
-                    // no partner log entries as we've cleaned them up.  We can add code to cope with
-                    // this but it gets very messy especially if recovery/shutdown keeps repeating
-                    // itself - we need to check for NPE at every partner log check.
+                            Tr.debug(tc, "There is transaction data requiring future recovery. Updating epoch");
 
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "There is transaction data requiring future recovery. Updating epoch");
+                        if (_failureScopeController.localFailureScope() || (_tranlogServiceData != null && _tranlogEpochSection != null)) {
 
-                    if (_failureScopeController.localFailureScope() || (_tranlogServiceData != null && _tranlogEpochSection != null)) {
+                            try {
+                                _tranlogEpochSection.addData(Util.intToBytes(_ourEpoch));
+                                _tranlogServiceData.forceSections();
+                            } catch (PeerLostLogOwnershipException ple) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "PeerLostLogOwnershipException raised forcing tranlog at shutdown", ple);
 
-                        try {
-                            _tranlogEpochSection.addData(Util.intToBytes(_ourEpoch));
-                            _tranlogServiceData.forceSections();
-                        } catch (PeerLostLogOwnershipException ple) {
-                            // No FFDC in this case
+                                throw ple;
+                            } catch (Exception e) {
+                                // We were unable to force the tranlog, so just return as if we had crashed
+                                // (or did an immediate shutdown) and we will recover everything at the next restart.
+                                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "608", this);
+
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Exception raised forcing tranlog at shutdown", e);
+                                throw e; /* @PK31789C */
+                            }
+                        } else {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "PeerLostLogOwnershipException raised forcing tranlog at shutdown", ple);
-
-                            throw ple;
-                        } catch (Exception e) {
-                            // We were unable to force the tranlog, so just return as if we had crashed
-                            // (or did an immediate shutdown) and we will recover everything at the next restart.
-                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "608", this);
-
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Exception raised forcing tranlog at shutdown", e);
-                            throw e; /* @PK31789C */
+                                Tr.debug(tc, "No service data to update in transaction log");
                         }
-                    } else {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "No service data to update in transaction log");
-                    }
 
+                    }
                 }
             }
         } finally {
@@ -575,7 +577,7 @@ public class RecoveryManager implements Runnable {
             // there are transactions running as this shutdown represents the real server shutdown and
             // transactions may still attempt to write to the recovery log. If we close the log now in this
             // situation, server shutdown will be peppered with LogClosedException errors. Needs refinement.
-            if (_tranLog != null && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
+            if (_tranLog != null && !_tranLog.failed() && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
                 try {
                     // If this is a local log or an opened peer tran log then it can be closed
                     if (tc.isDebugEnabled())
@@ -613,60 +615,62 @@ public class RecoveryManager implements Runnable {
             // If the partner log is null then we're using in memory logging and
             // the work the shutdown the log is not required.
             if (_xaLog != null) {
-                if (partnersLeft && _partnerServiceData != null) // ensure there is data in the log - d671043
-                {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "There is partner data requiring future recovery. Updating server state");
-
-                    //
-                    // Write our shutdown restart record
-                    //
-                    try {
-                        updateServerState(STOPPING);
-                        _partnerServiceData.forceSections();
-                    } catch (PeerLostLogOwnershipException ple) {
-                        // No FFDC in this case
+                if (!_xaLog.failed()) {
+                    if (partnersLeft && _partnerServiceData != null) // ensure there is data in the log - d671043
+                    {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
-                    } catch (Exception e) {
-                        FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "779", this);
-                        if (tc.isEventEnabled())
-                            Tr.event(tc, "updateServerState failed at shutdown on XAResources log", e);
-                    }
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "There is no partner data requiring future recovery");
+                            Tr.debug(tc, "There is partner data requiring future recovery. Updating server state");
 
-                    // Delete the restart record as there is no data to recover
-                    // This will ensure we do not carry forward classpaths etc.
-                    // In the case of peer recovery of an empty peers log, we
-                    // will not have retrieved any service data and will also
-                    // not have created new default serviec data (unlike local
-                    // recovery) so only do this if there really was some service
-                    // data to erase.
-                    if (_partnerServiceData != null) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Erasing service data from partner log");
-
+                        //
+                        // Write our shutdown restart record
+                        //
                         try {
-                            _xaLog.removeRecoverableUnit(_partnerServiceData.identity());
+                            updateServerState(STOPPING);
+                            _partnerServiceData.forceSections();
                         } catch (PeerLostLogOwnershipException ple) {
                             // No FFDC in this case
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                         } catch (Exception e) {
-                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "793", this);
+                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "779", this);
                             if (tc.isEventEnabled())
-                                Tr.event(tc, "removeRecoverableUnit failed at shutdown on XAResources log", e);
+                                Tr.event(tc, "updateServerState failed at shutdown on XAResources log", e);
                         }
                     } else {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "No service data to erase from partner log");
+                            Tr.debug(tc, "There is no partner data requiring future recovery");
+
+                        // Delete the restart record as there is no data to recover
+                        // This will ensure we do not carry forward classpaths etc.
+                        // In the case of peer recovery of an empty peers log, we
+                        // will not have retrieved any service data and will also
+                        // not have created new default serviec data (unlike local
+                        // recovery) so only do this if there really was some service
+                        // data to erase.
+                        if (_partnerServiceData != null) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Erasing service data from partner log");
+
+                            try {
+                                _xaLog.removeRecoverableUnit(_partnerServiceData.identity());
+                            } catch (PeerLostLogOwnershipException ple) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                            } catch (Exception e) {
+                                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "793", this);
+                                if (tc.isEventEnabled())
+                                    Tr.event(tc, "removeRecoverableUnit failed at shutdown on XAResources log", e);
+                            }
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "No service data to erase from partner log");
+                        }
                     }
                 }
             }
         } finally {
-            if (_xaLog != null) {
+            if (_xaLog != null && !_xaLog.failed()) {
                 try {
                     // If this is a local log or an opened peer partner log then it can be closed
                     if (tc.isDebugEnabled())
@@ -1901,7 +1905,6 @@ public class RecoveryManager implements Runnable {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Peer recovery and shutdown in progress, fail quietly");
                     } else {
-                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
                         Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _tranLog);
                     }
 
@@ -2003,7 +2006,6 @@ public class RecoveryManager implements Runnable {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Peer recovery and shutdown in progress, fail quietly");
                     } else {
-                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1922", this);
                         Tr.error(tc, "WTRN0112_LOG_OPEN_FAILURE", _xaLog);
                     }
 

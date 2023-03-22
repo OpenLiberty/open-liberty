@@ -42,6 +42,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
+import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
@@ -270,6 +271,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // Can start recovery now
             try {
                 startRecovery();
+            } catch (RecoveryFailedException exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Local recovery failed.");
             } catch (Exception e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
             }
