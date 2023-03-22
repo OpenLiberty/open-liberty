@@ -307,6 +307,9 @@ define(["dojo/parser",
         // allow the close button to be tabbable
         registry.byId("addBookmarkDialogId").closeButtonNode.setAttribute("tabindex", "0");
 
+        // add aria-level of 1 to meet accessibility requirements
+        registry.byId("addBookmarkDialogId").titleNode.setAttribute("aria-level", "1");
+
         handleSkipToContentButton();
 
       });
