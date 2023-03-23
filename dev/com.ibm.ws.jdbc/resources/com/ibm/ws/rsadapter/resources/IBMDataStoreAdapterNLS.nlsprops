@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: The {0} data source was co
 DSRA4015.no.ucp.connection.pool.datasource.explanation=The data source was configured with the ConnectionPoolDataSource or Driver type, which is not implemented by the Oracle UCP driver.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Update the data source to use either the XADataSource or DataSource type.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: The JDBC driver does not support setting the {0} value on the {1} datasource property.
+DSRA4016.enum.property.vaue.not.valid.explanation=A datasource property was configured with a value that the JDBC driver does not support.
+DSRA4016.enum.property.vaue.not.valid.useraction=Check the JDBC driver documentation for proper values for this property.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

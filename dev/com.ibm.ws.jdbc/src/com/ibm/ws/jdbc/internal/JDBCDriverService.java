@@ -1012,6 +1012,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * 
      * @throws Exception if an error occurs.
      */
+    @SuppressWarnings("unchecked")
     private static void setProperty(Object obj, PropertyDescriptor pd, String value,
                                    boolean doTraceValue) throws Exception {
         Object param = null;
@@ -1046,7 +1047,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 param = value.toCharArray();
             
             else if (paramType.isEnum()) // special case: Enum
-                param = Enum.valueOf((Class<Enum>)paramType, value.toUpperCase());
+                try {
+                    param = Enum.valueOf((Class<Enum>)paramType, value.toUpperCase());
+                }
+                catch (Exception ex) {
+                    throw new IllegalArgumentException(AdapterUtil.getNLSMessage("DSRA4016.enum.property.vaue.not.valid", value, propName), ex);
+                }
 		
             else // the generic case: any object with a single parameter String constructor
                 param = paramType.getConstructor(String.class).newInstance(value);
