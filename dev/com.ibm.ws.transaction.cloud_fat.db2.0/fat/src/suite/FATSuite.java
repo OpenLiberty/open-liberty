@@ -32,10 +32,8 @@ public class FATSuite extends TxTestContainerSuite {
 
 	static {
 		databaseContainerType = DatabaseContainerType.DB2;
-		
-		beforeSuite();
 	}
-	
+
 	@ClassRule
 	public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
 	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))

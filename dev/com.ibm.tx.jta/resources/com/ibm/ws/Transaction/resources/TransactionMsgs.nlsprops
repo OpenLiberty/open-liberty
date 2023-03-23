@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -870,5 +870,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Unusual HA configuration detected.
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA is enabled for this cluster but the HA manager is disabled.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=If this is the desired configuration, no action is required. Otherwise, correct the HA configuration.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: The transaction service shut down but the recovery log was marked as failed.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=The recovery log failed and access to the log did not occur at server shutdown.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correct any conditions that are indicated by the messages that reported the invalidation of the log. Restart the server so that the log can be repaired.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

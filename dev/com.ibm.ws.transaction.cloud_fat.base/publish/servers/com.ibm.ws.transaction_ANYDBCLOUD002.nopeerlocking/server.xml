@@ -2,12 +2,11 @@
     <transaction
       dataSourceRef="tranlogDataSource"
       recoverOnStartup="true"
-      shutdownOnLogFailure="false"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="cloud001-1"
+      recoveryIdentity="cloud002-1"
       recoveryGroup="defaultGroup"
-      leaseLength="300"
+      leaseLength="20"
       leaseCheckInterval="25"
       enableHADBPeerLocking="false"
     />
@@ -19,14 +18,19 @@
         <feature>jndi-1.0</feature>
         <feature>cdi-2.0</feature>
         <feature>txtest-1.0</feature>
-        <feature>timedexit-1.0</feature>
     </featureManager>
+    
+    <include location="../fatTestCommon.xml" />
+
+	<httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
     <application location="transaction.war">
         <classloader commonLibraryRef="AnonymousJDBCLib"/>
     </application>
     
-    <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
     <library id="AnonymousJDBCLib">
         <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
     </library>
@@ -43,8 +47,6 @@
       <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/transactionFATCloud" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
-    <include location="../fatTestPorts.xml"/>
-    
     <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
     <javaPermission codeBase="${server.config.dir}/apps/transaction.war" className="java.util.PropertyPermission" name="user.dir" actions="read"/>
     
@@ -56,7 +58,7 @@
   
     <!-- Permission needed for Oracle driver -->
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
-    
+
     <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
     
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>

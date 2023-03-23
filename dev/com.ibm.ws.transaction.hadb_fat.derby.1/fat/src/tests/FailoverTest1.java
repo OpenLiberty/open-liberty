@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -144,7 +144,9 @@ public class FailoverTest1 extends FailoverTest {
 
     // Test we get back the actual exception that scuppered the test
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    // @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "com.ibm.ws.recoverylog.spi.InvalidStateException",
+                            "java.lang.IllegalStateException" })
     public void testGetDriverConnectionFailure() throws Exception {
         final String method = "testGetDriverConnectionFailure";
 
@@ -324,6 +326,32 @@ public class FailoverTest1 extends FailoverTest {
         FATUtils.startServers(runner, server);
 
         runInServletAndCheck(server, SERVLET_NAME, "driveTransactions");
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", })
+    public void testHADBNonRecoverableStartupFailover() throws Exception {
+        final String method = "testHADBNonRecoverableStartupFailover";
+
+        server = defaultServer;
+        serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
+
+        FATUtils.startServers(runner, server);
+
+        runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableStartupFailover");
+
+        FATUtils.stopServers(server);
+
+        Log.info(this.getClass(), method, "set timeout");
+        server.setServerStartTimeout(START_TIMEOUT);
+
+        FATUtils.startServers(runner, server);
+        StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");
+
+        assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed
+
+        // cleanup HATable
+        sb = runInServlet(server, SERVLET_NAME, "dropHATable");
     }
 
     /**
