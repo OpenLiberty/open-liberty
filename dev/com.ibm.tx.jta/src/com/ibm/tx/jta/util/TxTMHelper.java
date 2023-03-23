@@ -14,8 +14,10 @@
 package com.ibm.tx.jta.util;
 
 import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
+import javax.transaction.Status;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.transaction.SystemException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -40,6 +42,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
+import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
@@ -268,6 +271,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // Can start recovery now
             try {
                 startRecovery();
+            } catch (RecoveryFailedException exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Local recovery failed.");
             } catch (Exception e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
             }
@@ -472,6 +478,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 int timeToWait = timeout;
                 int timeSlept = 0;
                 while (LocalTIDTable.getAllTransactions().length > 0) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "There are " + LocalTIDTable.getAllTransactions().length + " incomplete transactions");
                     if (timeout < 0 || timeToWait-- > 0) {
                         try {
                             // Sleep for a second at a time
@@ -485,6 +493,44 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                             Tr.debug(tc, "Gave up waiting for transactions to finish after " + ++timeSlept + " seconds");
                         break;
                     }
+                }
+
+            }
+
+            // Issue #24104 - When Transaction Service shuts down, mark laggard transactions as rollbackOnly
+            TransactionImpl[] trans = LocalTIDTable.getAllTransactions();
+            if (LocalTIDTable.getAllTransactions().length > 0) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                    Tr.event(tc, "Found " + trans.length + " active transactions.");
+
+                for (int i = 0; i < trans.length; i++) {
+                    final TransactionImpl tx = trans[i];
+
+                    final int preStatus = tx.getStatus();
+
+                    if (preStatus != Status.STATUS_ROLLEDBACK &&
+                        preStatus != Status.STATUS_COMMITTED &&
+                        preStatus != Status.STATUS_COMMITTING &&
+                        preStatus != Status.STATUS_NO_TRANSACTION &&
+                        preStatus != Status.STATUS_MARKED_ROLLBACK) {
+                        rollbackTransaction(tx);
+
+                        final int postStatus = tx.getStatus();
+
+                        if (postStatus == Status.STATUS_ROLLEDBACK ||
+                            postStatus == Status.STATUS_NO_TRANSACTION) {
+                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", tx.getLocalTID());
+                        } else if (postStatus == Status.STATUS_MARKED_ROLLBACK) {
+                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", tx.getLocalTID());
+                        } else {
+                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", tx.getLocalTID());
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                            Tr.event(tc, "Tx already committing or rolled back. Skipping.");
+                    }
+
                 }
             }
 
@@ -776,5 +822,21 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "ableToStartRecoveryNow", recoverNow);
         return recoverNow;
+    }
+
+    private void rollbackTransaction(Transaction tran) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "rollbackTransaction", tran);
+
+        try {
+            ((TransactionImpl) tran).timeoutTransaction(false);
+        } catch (Throwable ex) {
+            FFDCFilter.processException(ex, "com.ibm.tx.jta.util.impl.TxTMHelper.rollbackTransaction", "831", this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Unexpected exception caught during transaction ROLLBACK!", ex);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "rollbackTransaction");
     }
 }

@@ -9,6 +9,7 @@
       recoveryGroup="defaultGroup"
       leaseLength="300"
       leaseCheckInterval="25"
+      enableHADBPeerLocking="false"
     />
 
     <featureManager>

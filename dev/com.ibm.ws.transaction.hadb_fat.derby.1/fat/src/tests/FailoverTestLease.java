@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -129,13 +129,21 @@ public class FailoverTestLease extends FATServletClient {
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableCloudServer;
 
+    @Server("com.ibm.ws.transaction_stalecloud")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer staleCloudServer;
+
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_retriablecloud",
+                                                        "com.ibm.ws.transaction_stalecloud"
     };
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.beforeSuite();
+
         TxShrinkHelper.buildDefaultApp(retriableCloudServer, APP_NAME, APP_PATH, "web");
+        TxShrinkHelper.buildDefaultApp(staleCloudServer, APP_NAME, APP_PATH, "web");
     }
 
     @AfterClass
@@ -223,6 +231,14 @@ public class FailoverTestLease extends FATServletClient {
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
+        // Ensure that the tables for a stale cloud server have been created
+        // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
+        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
+        FATUtils.startServers(runner, staleCloudServer);
+        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
+
         Log.info(this.getClass(), method, "set timeout");
         retriableCloudServer.setServerStartTimeout(30000);
 
@@ -263,6 +279,14 @@ public class FailoverTestLease extends FATServletClient {
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
+        // Ensure that the tables for a stale cloud server have been created
+        // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
+        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
+        FATUtils.startServers(runner, staleCloudServer);
+        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
+
         Log.info(this.getClass(), method, "set timeout");
         retriableCloudServer.setServerStartTimeout(30000);
 
@@ -302,6 +326,14 @@ public class FailoverTestLease extends FATServletClient {
         Log.info(this.getClass(), method, "Call stopserver on " + retriableCloudServer);
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+
+        // Ensure that the tables for a stale cloud server have been created
+        // And set the com.ibm.ws.recoverylog.disablehomelogdeletion property for the stale server to ensure they survive shutdown.
+        Log.info(this.getClass(), method, "call startserver for staleCloudServer");
+        FATUtils.startServers(runner, staleCloudServer);
+        Log.info(this.getClass(), method, "Call stopserver on " + staleCloudServer);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, staleCloudServer);
 
         Log.info(this.getClass(), method, "set timeout");
         retriableCloudServer.setServerStartTimeout(30000);
