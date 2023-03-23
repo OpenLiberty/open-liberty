@@ -187,6 +187,13 @@
             <version>${arquillian.liberty.managed.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache-extras.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b6</version>
+            <scope>test</scope>
+        </dependency>
 <!-- 
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
