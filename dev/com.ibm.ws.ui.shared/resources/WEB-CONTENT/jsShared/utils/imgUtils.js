@@ -62,6 +62,10 @@
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.setAttribute('viewBox', '0 0 64 64');
     svg.setAttribute('role', 'img');
+    // need to include title for all search icons in order to comply with accessibility checker
+    if (name === "search") {
+      svg.setAttribute("title", "searchIcon");
+    }
     if (ariaLabelledBy) {
       svg.setAttribute('aria-labelledby', ariaLabelledBy);
     } else if (ariaLabel) {
