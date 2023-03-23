@@ -51,6 +51,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -92,17 +93,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
     (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
-    AtomicBoolean isDisposed = new AtomicBoolean();
-    private final PersistenceDataProvider provider;
+    private final AtomicBoolean isDisposed = new AtomicBoolean();
+    private final DataExtensionProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
 
-    public RepositoryImpl(PersistenceDataProvider provider, Class<R> repositoryInterface, Class<E> defaultEntityClass) {
+    public RepositoryImpl(DataExtensionProvider provider, EntityDefiner definer, Class<R> repositoryInterface, Class<E> defaultEntityClass) {
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
 
-        CompletableFuture<EntityInfo> defaultEntityInfoFuture = provider.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
+        CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
             Class<?> returnArrayType = null;
@@ -146,7 +147,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) //
                             ? defaultEntityInfoFuture //
-                            : provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+                            : definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
             queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new QueryInfo(method, returnArrayType, returnTypeAtDepth)),
                                                              this::completeQueryInfo));
@@ -256,6 +257,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (sort.isAscending())
                 q.append(" DESC");
         }
+    }
+
+    /**
+     * Invoked when the bean for the repository is disposed.
+     */
+    public void beanDisposed() {
+        isDisposed.set(true);
     }
 
     /**

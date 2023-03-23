@@ -10,9 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.cdi;
+package io.openliberty.data.internal.persistence.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +23,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.LibertyDataProvider;
+import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.RepositoryImpl;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -48,11 +50,13 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     static class Factory<P> implements ProducerFactory<P> {
         private final BeanManager beanMgr;
         private final Class<?> entityClass;
-        private final LibertyDataProvider provider;
+        private final EntityDefiner entityDefiner;
+        private final DataExtensionProvider provider;
 
-        Factory(BeanManager beanMgr, LibertyDataProvider provider, Class<?> entityClass) {
+        Factory(BeanManager beanMgr, DataExtensionProvider provider, EntityDefiner entityDefiner, Class<?> entityClass) {
             this.beanMgr = beanMgr;
             this.entityClass = entityClass;
+            this.entityDefiner = entityDefiner;
             this.provider = provider;
         }
 
@@ -74,8 +78,11 @@ public class RepositoryProducer<R, P> implements Producer<R> {
     @Override
     public void dispose(R repository) {
         R r = intercepted.remove(repository);
+        if (r != null)
+            repository = r;
 
-        factory.provider.repositoryBeanDisposed(r == null ? repository : r);
+        RepositoryImpl<?, ?> handler = (RepositoryImpl<?, ?>) Proxy.getInvocationHandler(repository);
+        handler.beanDisposed();
     }
 
     @Override
@@ -114,7 +121,11 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        R instance = factory.provider.getRepository(repositoryInterface, factory.entityClass);
+        RepositoryImpl<R, ?> handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass);
+
+        R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
+                                                                     new Class<?>[] { repositoryInterface },
+                                                                     handler));
 
         if (intercept) {
             R r = interception.createInterceptedInstance(instance);
