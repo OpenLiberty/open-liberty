@@ -12,7 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.longtran.web;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +46,7 @@ public class LongtranServlet extends FATServlet {
 
     /**  */
     private static final String filter = "(testfilter=jon)";
+    private String TRAN_STATE_FILE;
 
     /**
      * Invoke a single transaction
@@ -111,4 +121,102 @@ public class LongtranServlet extends FATServlet {
             }
         }
     }
+
+    /**
+     * Begin and stall a transaction in a spawned thread.
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void longRunningTranRBOnly(HttpServletRequest request,
+                                      HttpServletResponse response) throws Exception {
+        // submit transactional work to the Executor
+        managedExecutorService.submit(new LongRunningRBWork());
+    }
+
+    public class LongRunningRBWork implements Runnable {
+
+        @Override
+        public void run() {
+
+            final ExtendedTransactionManager tm = TransactionManagerFactory
+                            .getTransactionManager();
+            XAResourceImpl.clear();
+
+            final Serializable xaResInfo1 = XAResourceInfoFactory
+                            .getXAResourceInfo(0);
+            final Serializable xaResInfo2 = XAResourceInfoFactory
+                            .getXAResourceInfo(1);
+            try {
+                tm.begin();
+                final XAResource xaRes1 = XAResourceFactoryImpl.instance()
+                                .getXAResource(xaResInfo1);
+                final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+                tm.enlist(xaRes1, recoveryId1);
+
+                final XAResource xaRes2 = XAResourceFactoryImpl.instance()
+                                .getXAResource(xaResInfo2);
+                final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+                tm.enlist(xaRes2, recoveryId2);
+
+                // Now pause for 15 seconds, meantime the server will be shutdown
+                int mycounter = 0;
+                boolean rb = false;
+                while (mycounter < 1500) {
+                    mycounter++;
+                    Thread.sleep(10);
+
+                    // Test to see if marked RB only
+                    if (tm.getStatus() == 1) {
+                        rb = true;
+                        break;
+                    }
+                }
+
+                if (rb) {
+                    writeTranState("longRunningTranRBOnly marked rollbackOnly");
+                } else {
+                    writeTranState("longRunningTranRBOnly active");
+                }
+                if (rb) {
+                    tm.rollback();
+                } else {
+                    // Drive commit
+                    tm.commit();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
+    public void writeTranState(String writeMe) {
+
+        TRAN_STATE_FILE = System.getenv("WLP_OUTPUT_DIR") + "/../shared/" + "longtran.dat";
+        FileOutputStream fos = null;
+		System.out.println("writeTranState: write " + writeMe + ", to " + TRAN_STATE_FILE);
+        try {
+            fos = new FileOutputStream(TRAN_STATE_FILE);
+            PrintWriter p = new PrintWriter(fos);
+            p.println(writeMe);
+			p.flush();
+        } catch (FileNotFoundException e) {
+            System.out.println("writeTranState caught exc " + e);
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("writeTranState caught exc " + e);
+            e.printStackTrace();
+        } finally {
+            try {
+
+                if (fos != null)
+                    fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+	}
 }

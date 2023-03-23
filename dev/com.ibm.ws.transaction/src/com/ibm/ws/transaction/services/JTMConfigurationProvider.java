@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,6 +57,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
     private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
     private boolean _dataSourceFactorySet;
+    private static boolean _frameworkShutting = false;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -664,32 +665,46 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public void shutDownFramework() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutDownFramework");
+            Tr.entry(tc, "shutDownFramework", _frameworkShutting);
+        if (!_frameworkShutting) {
+            try {
+                if (_cc != null) {
+                    final Bundle bundle = _cc.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
 
-        try {
-            if (_cc != null) {
-                final Bundle bundle = _cc.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+                    if (bundle != null)
+                        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                            @Override
+                            public Void run() throws BundleException {
+                                // Force quick shutdown with no quiesce period
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "force quick shutdown");
 
-                if (bundle != null)
-                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-                        @Override
-                        public Void run() throws BundleException {
-                            // Force quick shutdown with no quiesce period
-                            bundle.getBundleContext().registerService(ForcedServerStop.class, new ForcedServerStop(), null);
-                            bundle.stop();
-                            return null;
-                        }
-                    });
+                                bundle.getBundleContext().registerService(ForcedServerStop.class, new ForcedServerStop(), null);
+
+                                try {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "stop bundle");
+                                    bundle.stop();
+                                } catch (BundleException bex) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "caught bundlex - " + bex);
+                                    throw bex;
+                                }
+                                return null;
+                            }
+                        });
+                }
+                _frameworkShutting = true;
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "shutDownFramework", e);
+
+                // do not FFDC this.
+                // exceptions during bundle stop occur if framework is already stopping or stopped
+            } finally {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "shutDownFramework");
             }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "shutDownFramework", e);
-
-            // do not FFDC this.
-            // exceptions during bundle stop occur if framework is already stopping or stopped
-        } finally {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "shutDownFramework");
         }
     }
 

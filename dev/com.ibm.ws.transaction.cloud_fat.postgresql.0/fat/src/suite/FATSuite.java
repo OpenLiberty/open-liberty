@@ -49,13 +49,11 @@ public class FATSuite extends TxTestContainerSuite {
                         .withPassword(POSTGRES_PASS)
                         .withSSL()
                         .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
-
-        beforeSuite();
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+    public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames));
 }

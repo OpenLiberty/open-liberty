@@ -16,19 +16,19 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
+import servlets.Simple2PCCloudServlet;
 
 /**
  *
@@ -36,27 +36,35 @@ import componenttest.topology.impl.LibertyServer;
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
     @Server("com.ibm.ws.transaction_LKCLOUD001")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer firstServer;
 
     @Server("com.ibm.ws.transaction_LKCLOUD002")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
 
     @Server("defaultAttributesServer1")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultAttributesServer1;
 
     @Server("defaultAttributesServer2")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultAttributesServer2;
 
     @Server("longPeerStaleTimeServer1")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longPeerStaleTimeServer1;
 
     @Server("longPeerStaleTimeServer2")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longPeerStaleTimeServer2;
 
     @Server("peerLockingDisabledServer1")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer peerLockingDisabledServer1;
 
     @Server("peerLockingEnabledServer1")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer peerLockingEnabledServer1;
 
     public static String[] serverNames = new String[] {
@@ -81,18 +89,14 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         // Pretend we're Derby even though we're not using test containers here
         TxTestContainerSuite.databaseContainerType = DatabaseContainerType.Derby;
 
-        DeployOptions[] deployOptions = new DeployOptions[0];
-
-        WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
-
-        ShrinkHelper.exportAppToServer(firstServer, app, deployOptions);
-        ShrinkHelper.exportAppToServer(secondServer, app, deployOptions);
-        ShrinkHelper.exportAppToServer(defaultAttributesServer1, app, deployOptions);
-        ShrinkHelper.exportAppToServer(defaultAttributesServer2, app, deployOptions);
-        ShrinkHelper.exportAppToServer(longPeerStaleTimeServer1, app, deployOptions);
-        ShrinkHelper.exportAppToServer(longPeerStaleTimeServer2, app, deployOptions);
-        ShrinkHelper.exportAppToServer(peerLockingDisabledServer1, app, deployOptions);
-        ShrinkHelper.exportAppToServer(peerLockingEnabledServer1, app, deployOptions);
+        TxShrinkHelper.defaultApp(firstServer, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(secondServer, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(defaultAttributesServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(defaultAttributesServer2, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(longPeerStaleTimeServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(longPeerStaleTimeServer2, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, APP_PATH, "servlets.*");
 
         firstServer.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         secondServer.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
