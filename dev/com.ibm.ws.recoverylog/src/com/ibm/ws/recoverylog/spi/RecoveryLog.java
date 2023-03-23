@@ -279,4 +279,9 @@ public interface RecoveryLog {
      * would not be deleted.
      */
     public void retainLogsInPeerRecoveryEnv(boolean retainLogs);
+
+    /**
+     * True if the recovery log has been marked as failed
+     */
+    public boolean failed();
 }

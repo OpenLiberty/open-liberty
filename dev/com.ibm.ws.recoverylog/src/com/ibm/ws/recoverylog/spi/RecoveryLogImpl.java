@@ -297,4 +297,9 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
+
+    @Override
+    public boolean failed() {
+        return _recoveryLog.failed();
+    }
 }
