@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,14 +30,14 @@ public class GrpcServletServices {
      * @param String gRPC service name
      * @param String contextRoot for the app
      */
-    public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
+    public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz, String j2eeName) {
 
         grpcInUse = true;
 
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {
-            servletGrpcServices.put(service, new ServiceInformation(contextRoot, clazz));
+            servletGrpcServices.put(service, new ServiceInformation(contextRoot, clazz, j2eeName));
         }
     }
 
@@ -46,8 +46,20 @@ public class GrpcServletServices {
      *
      * @param String service
      */
-    public static synchronized void removeServletGrpcService(String service) {
-        servletGrpcServices.remove(service);
+    public static synchronized void removeServletGrpcService(String service, String j2eeName) {
+        ServiceInformation info = servletGrpcServices.get(service);
+        if (info != null) {
+            if (j2eeName == null) {
+                if (info.j2eeName != null) {
+                    return;
+                }
+                servletGrpcServices.remove(service);
+            } else if (j2eeName.equals(info.j2eeName)) {
+                servletGrpcServices.remove(service);
+            }
+
+        }
+
     }
 
     /**
@@ -69,10 +81,12 @@ public class GrpcServletServices {
     public static class ServiceInformation {
         String contextRoot;
         Class<?> clazz;
+        String j2eeName;
 
-        ServiceInformation(String root, Class<?> c) {
+        ServiceInformation(String root, Class<?> c, String name) {
             contextRoot = root;
             clazz = c;
+            j2eeName = name;
         }
 
         public String getContextRoot() {
