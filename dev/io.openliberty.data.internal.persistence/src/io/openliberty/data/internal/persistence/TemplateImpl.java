@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.Template;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -44,10 +45,12 @@ import jakarta.transaction.SystemException;
 public class TemplateImpl implements Template {
     private static final TraceComponent tc = Tr.register(TemplateImpl.class);
 
-    private final PersistenceDataProvider provider;
+    private final EntityDefiner definer;
+    private final DataExtensionProvider provider;
 
-    TemplateImpl(PersistenceDataProvider provider) {
+    public TemplateImpl(DataExtensionProvider provider, EntityDefiner definer) {
         this.provider = provider;
+        this.definer = definer;
     }
 
     @FFDCIgnore(Throwable.class)
@@ -65,7 +68,7 @@ public class TemplateImpl implements Template {
         boolean committed = false;
         int updateCount = -1;
         try {
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
@@ -136,7 +139,7 @@ public class TemplateImpl implements Template {
         Throwable failure = null;
         Optional<T> found = null;
         try {
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
@@ -199,7 +202,7 @@ public class TemplateImpl implements Template {
         boolean committed = false;
         try {
             Class<?> entityClass = entity.getClass();
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
@@ -287,7 +290,7 @@ public class TemplateImpl implements Template {
             Iterator<T> it = entities.iterator();
             T entity = it.next();
             Class<?> entityClass = entity.getClass();
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
@@ -392,7 +395,7 @@ public class TemplateImpl implements Template {
         boolean committed = false;
         try {
             Class<?> entityClass = entity.getClass();
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
@@ -467,7 +470,7 @@ public class TemplateImpl implements Template {
             Iterator<T> it = entities.iterator();
             T entity = it.next();
             Class<?> entityClass = entity.getClass();
-            CompletableFuture<EntityInfo> future = provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+            CompletableFuture<EntityInfo> future = definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
             if (future == null)
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();

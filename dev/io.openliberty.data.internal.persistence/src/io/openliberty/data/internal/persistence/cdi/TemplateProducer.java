@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.cdi;
+package io.openliberty.data.internal.persistence.cdi;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -25,21 +25,29 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.LibertyDataProvider;
+import io.openliberty.data.internal.persistence.EntityDefiner;
+import io.openliberty.data.internal.persistence.TemplateImpl;
 import jakarta.data.Template;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
-public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata> {
+public class TemplateProducer implements PrivilegedAction<DataExtensionProvider> {
 
-    private final DataExtensionMetadata svc;
+    /**
+     * TODO Template will be going away because it has not been added to Jakarta Data,
+     * but for now, we need to keep tests working, which is accomplished via this hack:
+     */
+    static EntityDefiner entityDefiner;
+
+    private final Template template;
 
     //public void dispose(Template template) {
     //    System.out.println("Producer.dispose for " + template);
     //}
 
     public TemplateProducer() {
-        svc = AccessController.doPrivileged(this);
+        DataExtensionProvider svc = AccessController.doPrivileged(this);
+        template = new TemplateImpl(svc, entityDefiner);
     }
 
     @ApplicationScoped
@@ -53,9 +61,9 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
      */
     @Override
     @Trivial
-    public DataExtensionMetadata run() {
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionMetadata.class).getBundleContext();
-        ServiceReference<DataExtensionMetadata> ref = bundleContext.getServiceReference(DataExtensionMetadata.class);
+    public DataExtensionProvider run() {
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
+        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
         return bundleContext.getService(ref);
     }
 
@@ -66,7 +74,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().delete(entityClass, id);
+            template.delete(entityClass, id);
         }
 
         @Override
@@ -74,7 +82,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().find(entityClass, id);
+            return template.find(entityClass, id);
         }
 
         @Override
@@ -82,7 +90,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().insert(entity);
+            return template.insert(entity);
         }
 
         @Override
@@ -90,7 +98,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().insert(entity, ttl);
+            return template.insert(entity, ttl);
         }
 
         @Override
@@ -99,8 +107,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (!it.hasNext())
                 return Collections.<T> emptyList();
 
-            Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().insert(entities);
+            return template.insert(entities);
         }
 
         @Override
@@ -109,8 +116,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (!it.hasNext())
                 return Collections.<T> emptyList();
 
-            Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().insert(entities, ttl);
+            return template.insert(entities, ttl);
         }
 
         @Override
@@ -118,7 +124,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null)).getTemplate().update(entity);
+            return template.update(entity);
         }
 
         @Override
@@ -127,8 +133,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (!it.hasNext())
                 return Collections.<T> emptyList();
 
-            Class<?> entityClass = it.next().getClass();
-            return ((LibertyDataProvider) svc.getProvider(entityClass, null)).getTemplate().update(entities);
+            return template.update(entities);
         }
     }
 }
