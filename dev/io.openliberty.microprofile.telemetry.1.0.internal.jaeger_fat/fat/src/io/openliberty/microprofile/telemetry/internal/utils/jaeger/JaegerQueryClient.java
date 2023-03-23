@@ -100,14 +100,17 @@ public class JaegerQueryClient implements AutoCloseable {
      */
     public List<Span> getSpansForTraceId(ByteString traceId) {
         try {
+            Log.info(c, "getSpansForTraceId", "Starting Jaeger query");
             GetTraceRequest req = GetTraceRequest.newBuilder().setTraceId(traceId).build();
             Iterator<SpansResponseChunk> result = getRawClient().getTrace(req);
             List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+            Log.info(c, "getSpansForTraceId", "Returning spans");
             return spans;
         } catch (StatusRuntimeException ex) {
             // If the traceId was not found, there are no spans for that traceId
             // return an empty list rather than throwing an exception
             if (ex.getStatus().getCode() == Code.NOT_FOUND) {
+                Log.info(c, "getSpansForTraceId", "No spans found");
                 return Collections.emptyList();
             } else {
                 throw ex;
@@ -122,10 +125,12 @@ public class JaegerQueryClient implements AutoCloseable {
      * @return the list of spans
      */
     public List<Span> getSpansForServiceName(String serviceName) {
+        Log.info(c, "getSpansForServiceName", "Starting Jaeger query");
         TraceQueryParameters params = TraceQueryParameters.newBuilder().setServiceName(serviceName).build();
         FindTracesRequest req = FindTracesRequest.newBuilder().setQuery(params).build();
         Iterator<SpansResponseChunk> result = getRawClient().findTraces(req);
         List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+        Log.info(c, "getSpansForServiceName", "Returning spans");
         return spans;
     }
 
@@ -133,9 +138,11 @@ public class JaegerQueryClient implements AutoCloseable {
      * Retrieve all service names
      */
     public List<String> getServices() {
+        Log.info(c, "getServices", "Starting Jaeger query");
         GetServicesRequest req = GetServicesRequest.getDefaultInstance();
         GetServicesResponse resp = getRawClient().getServices(req);
         List<ByteString> services = resp.getServicesList().asByteStringList();
+        Log.info(c, "getServices", "Returning service names");
         return services.stream()
                        .map(ByteString::toStringUtf8)
                        .collect(Collectors.toList());
@@ -161,7 +168,7 @@ public class JaegerQueryClient implements AutoCloseable {
 
         int retryCount = 0;
 
-        while(retryCount < 3){
+        while (retryCount < 3) {
             retryCount += 1;
             Timeout timeout = new Timeout(Duration.ofSeconds(10));
             try {
