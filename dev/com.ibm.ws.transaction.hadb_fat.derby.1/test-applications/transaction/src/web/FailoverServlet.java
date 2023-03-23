@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -92,14 +92,8 @@ public class FailoverServlet extends FATServlet {
 
     public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
-        setupTestParameters(request, response, TestType.STARTUP, -4498, 0, 1);
+        setupTestParameters(request, response, TestType.STARTUP, -4498, 999, 1);
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
-    }
-
-    public void setupForNonRecoverableStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableStartupFailover");
-        setupTestParameters(request, response, TestType.STARTUP, -3, 0, 1);
-        System.out.println("FAILOVERSERVLET: setupForNonRecoverableStartupFailover complete");
     }
 
     public void setupForDuplicationRestart(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -188,28 +182,6 @@ public class FailoverServlet extends FATServlet {
                            + ", operationtofail: " + operationToFail + ", sqlcode: " + thesqlcode);
         stmt.executeUpdate("insert into hatable values (" + testType.ordinal() + ", " + operationToFail + ", " + numberOfFailures + ", "
                            + thesqlcode + ")"); // was -4498
-
-        // UserTransaction Commit
-        con.setAutoCommit(false);
-
-        System.out.println("FAILOVERSERVLET: commit changes to database");
-        con.commit();
-
-    }
-
-    public void dropHATable(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive dropHATable");
-
-        Connection con = getConnection();
-        // Set up statement to use for table delete
-        Statement stmt = con.createStatement();
-
-        try {
-            System.out.println("FAILOVERSERVLET: drop hatable");
-            stmt.executeUpdate("drop table hatable");
-        } catch (SQLException x) {
-            // didn't exist
-        }
 
         // UserTransaction Commit
         con.setAutoCommit(false);

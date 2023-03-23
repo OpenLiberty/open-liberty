@@ -49,7 +49,6 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
 
     @BeforeClass
     public static void setUp() throws Exception {
-        TxTestContainerSuite.beforeSuite();
         setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
     }
 
