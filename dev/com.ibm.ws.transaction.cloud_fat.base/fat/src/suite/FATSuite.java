@@ -23,8 +23,8 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
 import tests.DupXidTest;
-import tests.Simple2PCCloudTest;
 import tests.LongTranTest;
+import tests.Simple2PCCloudTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -39,8 +39,8 @@ public class FATSuite extends TxTestContainerSuite {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }

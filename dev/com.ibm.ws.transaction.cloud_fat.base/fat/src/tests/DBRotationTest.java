@@ -39,13 +39,11 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
@@ -60,26 +58,21 @@ public class DBRotationTest extends FATServletClient {
     protected static final int cloud2ServerPort = 9992;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking")
     public static LibertyServer server2nopeerlocking;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseCompeteServer1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseLogFailServer1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer noShutdownServer1;
 
     public static String[] serverNames = new String[] {
@@ -104,7 +97,6 @@ public class DBRotationTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
-        TxTestContainerSuite.beforeSuite();
         final WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
         final DeployOptions[] dO = new DeployOptions[0];
 

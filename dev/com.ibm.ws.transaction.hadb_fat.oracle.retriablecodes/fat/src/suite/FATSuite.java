@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,11 +30,13 @@ public class FATSuite extends TxTestContainerSuite {
 
     static {
         databaseContainerType = DatabaseContainerType.Oracle;
+        
+        beforeSuite();
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(FailoverTestRetriableCodes.serverNames))
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(FailoverTestRetriableCodes.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(FailoverTestRetriableCodes.serverNames));
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(FailoverTestRetriableCodes.serverNames));
 }
