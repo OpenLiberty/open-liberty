@@ -1397,10 +1397,11 @@
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="URL"                           ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>
-  <AD id="autosave"                      ibmui:group="Advanced" required="false" type="String"                         name="%autosave"             description="%sslMode.desc">
+  <AD id="autosave"                      ibmui:group="Advanced" required="false" type="String"                         name="%autosave"             description="autosave.desc">
    <Option value="never"        label="never"/>
    <Option value="always"       label="always"/>
    <Option value="conservative" label="conservative"/>
+   <Option value="bogus"        label="bogus"/>
   </AD>  
  </OCD>
 
