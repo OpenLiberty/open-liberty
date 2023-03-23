@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -310,13 +310,10 @@ def gaAndBetaAndNoShipPublicFeatures() {
 }
 
 def webProfile8Features() { project.file("profiles/webProfile8/features.xml").readLines() }
-def webProfile9Features() { project.file("profiles/webProfile9/features.xml").readLines() }
 def webProfile10Features() { project.file("profiles/webProfile10/features.xml").readLines() }
 def javaee8Features() { project.file("profiles/javaee8/features.xml").readLines() }
-def jakartaee9Features() { project.file("profiles/jakartaee9/features.xml").readLines() }
 def jakartaee10Features() { project.file("profiles/jakartaee10/features.xml").readLines() }
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
-def microProfile5Features() { project.file("profiles/microProfile5/features.xml").readLines() }
 def microProfile6Features() { project.file("profiles/microProfile6/features.xml").readLines() }
 
 def getFeaturePath(feature) {
@@ -465,25 +462,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
-
-    //GA
-    task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&webProfile9Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/webProfile9/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
-                into "$packageDir/wlp/templates/clients/defaultClient"
-            }
-        }
-    }
     
     //GA
     task packageOpenLibertyWebProfile10(type: PackageLibertyWithFeatures) {
@@ -499,25 +477,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
             copy {
                 from "$packageDir/wlp/templates/clients/jakartaeeClient10/client.xml"
-                into "$packageDir/wlp/templates/clients/defaultClient"
-            }
-        }
-    }
-
-    //GA
-    task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&jakartaee9Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
                 into "$packageDir/wlp/templates/clients/defaultClient"
             }
         }
@@ -561,20 +520,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
             excludedEE7Features.each {
                 this.&restoreFeature("${it}")
-            }
-        }
-    }
-    
-    //GA
-    task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile5Features
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
             }
         }
     }
@@ -695,36 +640,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJavaee8
 
-    // GA: Includes only features listed in profiles/webProfile9/features.xml
-    task zipOpenLibertyWebProfile9(type: Zip) {
-        dependsOn packageOpenLibertyWebProfile9
-        dependsOn genChecksums
-        baseName 'openliberty-webProfile9'
-        from packageDir
-        destinationDirectory = distsDirectory
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile9.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyWebProfile9
-
-    // GA: Includes only features listed in profiles/jakartaee9/features.xml
-    task zipOpenLibertyJakartaee9(type: Zip) {
-        dependsOn packageOpenLibertyJakartaee9
-        dependsOn genChecksums
-        baseName 'openliberty-jakartaee9'
-        from packageDir
-        destinationDirectory = distsDirectory
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyJakartaee9
-
     // GA: Includes only features listed in profiles/webProfile10/features.xml
     task zipOpenLibertyWebProfile10(type: Zip) {
         dependsOn packageOpenLibertyWebProfile10
@@ -770,21 +685,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile4
 
-    // GA: Includes only features listed in profiles/microProfile5/features.xml
-    task zipOpenLibertyMicroProfile5(type: Zip) {
-        dependsOn packageOpenLibertyMicroProfile5
-        dependsOn genChecksums
-        baseName 'openliberty-microProfile5'
-        from packageDir
-        destinationDirectory = distsDirectory
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyMicroProfile5
-
     // GA: Includes only features listed in profiles/microProfile6/features.xml
     task zipOpenLibertyMicroProfile6(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile6
@@ -823,12 +723,9 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn zipOpenLibertyKernel
         dependsOn zipOpenLibertyWebProfile8
         dependsOn zipOpenLibertyJavaee8
-        dependsOn zipOpenLibertyJakartaee9
-        dependsOn zipOpenLibertyWebProfile9
         dependsOn zipOpenLibertyJakartaee10
         dependsOn zipOpenLibertyWebProfile10
         dependsOn zipOpenLibertyMicroProfile4
-        dependsOn zipOpenLibertyMicroProfile5
         dependsOn zipOpenLibertyMicroProfile6
         dependsOn zipOpenLibertyBeta
         doLast {
