@@ -5,9 +5,8 @@
   "author": "OpenLiberty",
   "dependencies": {
     "carbon-components": "^10.44.0",
-    "closure-compiler": "^v20160315",
+    "google-closure-compiler": "^20160315",
     "bootstrap": "^5.1.3",
-    "jquery": "^3.5.1",
-    "che-orion-editor": "^6.19.0"
+    "jquery": "^3.5.1"
   }
 }
