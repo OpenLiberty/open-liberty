@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.ws.javaee.dd.jsp.Taglib;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
+import com.ibm.ws.javaee.dd.webext.Attribute;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.ws.jsp.JspOptions;
 import com.ibm.ws.jsp.configuration.JspConfigPropertyGroup;
@@ -124,7 +125,19 @@ public class JspConfiguratorHelper implements ServletConfiguratorHelper, JspXmlE
 
     @Override
     public void configureWebExt(WebExt webExt) throws UnableToAdaptException {
-        // nothing at the moment
+        // OLGH24793
+        if (webExt!=null) {
+            Properties propsFromWebXml = null;
+            List<Attribute> jspAttributeInWebExt = webExt.getJspAttributes();
+
+            if (jspAttributeInWebExt!=null) {
+                propsFromWebXml = new Properties();
+                for (Attribute a:jspAttributeInWebExt) {
+                    propsFromWebXml.put(a.getName(), a.getValue());
+                }
+                getJspOptions().populateOptions(propsFromWebXml);
+            }
+        }
     }
 
     public void finish() {
