@@ -271,7 +271,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>${arquillian.liberty.managed.version}</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
 
