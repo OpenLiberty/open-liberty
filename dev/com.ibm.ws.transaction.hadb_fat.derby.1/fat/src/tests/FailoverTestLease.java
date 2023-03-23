@@ -118,7 +118,7 @@ import web.FailoverServlet;
  * written by SQLRecoverableUnitSectionImpl.addData() when a duplicate log entry is encountered.
  */
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
 public class FailoverTestLease extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
