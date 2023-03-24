@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1579,23 +1579,23 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 if (samlNameForHeader != null) {
                     if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_1)) {
                         con.setRequestProperty("saml_name", authString);
-                        con.setRequestProperty(authString, settings.getRSSettings().getHeaderName() + "=" + samlValue);
-                        Log.info(thisClass, thisMethod, "Header format 1: " + authString + "=" + settings.getRSSettings().getHeaderName() + "=" + samlValue);
+                        con.setRequestProperty(authString, samlNameForHeader + "=" + samlValue);
+                        Log.info(thisClass, thisMethod, "Header format 1: " + authString + "=" + samlNameForHeader + "=" + samlValue);
                     }
                     if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_2)) {
                         con.setRequestProperty("saml_name", authString);
-                        con.setRequestProperty(authString, settings.getRSSettings().getHeaderName() + "=\"" + samlValue + "\"");
-                        Log.info(thisClass, thisMethod, "Header format 2: " + authString + "=" + settings.getRSSettings().getHeaderName() + "=\"" + samlValue + "\"");
+                        con.setRequestProperty(authString, samlNameForHeader + "=\"" + samlValue + "\"");
+                        Log.info(thisClass, thisMethod, "Header format 2: " + authString + "=" + samlNameForHeader + "=\"" + samlValue + "\"");
                     }
                     if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_3)) {
                         con.setRequestProperty("saml_name", authString);
-                        con.setRequestProperty(authString, settings.getRSSettings().getHeaderName() + " " + samlValue);
-                        Log.info(thisClass, thisMethod, "Header format 3: " + authString + "=" + settings.getRSSettings().getHeaderName() + " " + samlValue);
+                        con.setRequestProperty(authString, samlNameForHeader + " " + samlValue);
+                        Log.info(thisClass, thisMethod, "Header format 3: " + authString + "=" + samlNameForHeader + " " + samlValue);
                     }
                     if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_4)) {
-                        con.setRequestProperty("saml_name", settings.getRSSettings().getHeaderName());
-                        con.setRequestProperty(settings.getRSSettings().getHeaderName(), samlValue);
-                        Log.info(thisClass, thisMethod, "Header format 4: " + settings.getRSSettings().getHeaderName() + "=" + samlValue);
+                        con.setRequestProperty("saml_name", samlNameForHeader);
+                        con.setRequestProperty(samlNameForHeader, samlValue);
+                        Log.info(thisClass, thisMethod, "Header format 4: " + samlNameForHeader + "=" + samlValue);
                     }
                 } else {
                     Log.info(thisClass, thisMethod, "NOT Passing SAML Assertion on call");
@@ -1768,7 +1768,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
      * server exceptions for this particular server.
      *
      * @param theServer
-     *                           - the server to register the allowed excpetion to.
+     *            - the server to register the allowed excpetion to.
      * @param expected
      * @param step
      * @param log
