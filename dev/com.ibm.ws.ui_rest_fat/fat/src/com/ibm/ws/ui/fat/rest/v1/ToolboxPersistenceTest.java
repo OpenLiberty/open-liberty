@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,7 +129,8 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
             "CWWKX1010E:.*",
             "CWWKX1031E:.*",
             "CWWKX1009E:.*",
-            "CWWKX1030E:.*"
+            "CWWKX1030E:.*",
+            "SRVE8094W: WARNING: Cannot set header. Response already committed.*" 
         );
     }
 
