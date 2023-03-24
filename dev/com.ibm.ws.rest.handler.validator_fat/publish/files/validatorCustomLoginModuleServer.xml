@@ -59,7 +59,7 @@
     <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
   </dataSource>
   
-  <transaction enableHADBPeerLocking="false">
+  <transaction>
     <DATASOURCE transactional="false">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
       <jdbcDriver libraryRef="Derby"/>

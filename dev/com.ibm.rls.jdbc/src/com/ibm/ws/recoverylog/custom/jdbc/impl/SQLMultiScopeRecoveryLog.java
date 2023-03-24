@@ -2021,6 +2021,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                  "Caught SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                     // Set the exception that will be reported
                     currentSqlEx = sqlex;
+                    if (conn == null)
+                        nonTransientException = sqlex;
                 } catch (PeerLostLogOwnershipException ple) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
@@ -2046,8 +2048,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             // Tidy up current connection before dropping into retry code.
                             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                             try {
-                                if (conn != null)
-                                    conn.rollback();
+                                conn.rollback();
                             } catch (Throwable exc) {
                                 // Trace the exception
                                 if (tc.isDebugEnabled())
@@ -2058,8 +2059,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             // Don't want to close the reserved connection
                             if (_reservedConn == null) {
                                 try {
-                                    if (conn != null)
-                                        closeConnectionAfterBatch(conn, initialIsolation);
+                                    closeConnectionAfterBatch(conn, initialIsolation);
                                 } catch (Throwable exc) {
                                     // Trace the exception
                                     if (tc.isDebugEnabled())
@@ -3709,6 +3709,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "heartbeat failed with SQL exception: " + sqlex);
                 currentSqlEx = sqlex;
+                if (conn == null)
+                    nonTransientException = sqlex;
             } catch (Exception ex) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "heartbeat failed with general Exception: " + ex);
@@ -3728,8 +3730,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Tidy up current connection before dropping into retry code
                 // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                 try {
-                    if (conn != null)
-                        conn.rollback();
+                    conn.rollback();
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
@@ -3738,8 +3739,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                 // Attempt a close. If it fails, trace the failure but allow processing to continue
                 try {
-                    if (conn != null)
-                        closeConnectionAfterBatch(conn, initialIsolation);
+                    closeConnectionAfterBatch(conn, initialIsolation);
                 } catch (Throwable exc) {
                     // Trace the exception
                     if (tc.isDebugEnabled())
@@ -3911,6 +3911,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimLocalRecoveryLogs failed with SQLException: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
+            if (conn == null)
+                nonTransientException = sqlex;
         } catch (Exception exc) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "claimLocalRecoveryLogs failed with Exception: " + exc);
@@ -3932,8 +3934,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // Tidy up current connection before dropping into retry code
             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
             try {
-                if (conn != null)
-                    conn.rollback();
+                conn.rollback();
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -3942,8 +3943,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // Attempt a close. If it fails, trace the failure but allow processing to continue
             try {
-                if (conn != null)
-                    closeConnectionAfterBatch(conn, initialIsolation);
+                closeConnectionAfterBatch(conn, initialIsolation);
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -4176,6 +4176,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with SQLException: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
+            if (conn == null)
+                nonTransientException = sqlex;
         } catch (Exception exc) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with Exception: " + exc);
@@ -4198,8 +4200,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // Tidy up current connection before dropping into retry code
             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
             try {
-                if (conn != null)
-                    conn.rollback();
+                conn.rollback();
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -4208,8 +4209,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // Attempt a close. If it fails, trace the failure but allow processing to continue
             try {
-                if (conn != null)
-                    closeConnectionAfterBatch(conn, initialIsolation);
+                closeConnectionAfterBatch(conn, initialIsolation);
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
