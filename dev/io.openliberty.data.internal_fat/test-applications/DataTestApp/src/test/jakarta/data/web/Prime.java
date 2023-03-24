@@ -14,18 +14,12 @@ package test.jakarta.data.web;
 
 import java.util.ArrayList;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 /**
- *
+ * Entity class for which data is pre-populated.
+ * This should be treated as read-only to avoid interference between tests.
  */
-@Entity
 public class Prime {
-    @Column(name = "BIN") // avoid collision with PostgreSQL reserved word
-    public String binary;
+    public String binaryDigits;
 
     public boolean even;
 
@@ -33,13 +27,10 @@ public class Prime {
 
     public String name;
 
-    @Column(name = "NUM") // avoid collision with PostgreSQL reserved word
-    @Id
-    public long number;
+    public long numberId;
 
     public String romanNumeral;
 
-    @ElementCollection
     public ArrayList<String> romanNumeralSymbols;
 
     public int sumOfBits;
@@ -48,12 +39,12 @@ public class Prime {
     }
 
     public Prime(long number, String hexadecimal, String binary, int sumOfBits, String romanNumeral, String name) {
-        this.binary = binary;
+        this.binaryDigits = binary;
         this.even = number % 2 == 0;
         this.hex = hexadecimal;
         this.name = name;
         this.romanNumeral = romanNumeral;
-        this.number = number;
+        this.numberId = number;
         this.sumOfBits = sumOfBits;
         if (romanNumeral != null) {
             this.romanNumeralSymbols = new ArrayList<>(romanNumeral.length());
@@ -64,6 +55,6 @@ public class Prime {
 
     @Override
     public String toString() {
-        return "Prime@" + hex + " #" + number;
+        return "Prime@" + hex + " #" + numberId;
     }
 }

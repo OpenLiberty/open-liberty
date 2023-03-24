@@ -10,28 +10,31 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.jpa.web;
 
-import java.time.OffsetDateTime;
-
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
 
 /**
- * An entity with a generated id value.
+ * Entity for testing DiscriminatorColumn/Value.
  */
-@Entity(name = "Orders") // overrides the default name Order, which happens to be a keyword in JPQL and the database
-public class Order {
+@Inheritance
+@DiscriminatorColumn(name = "ADDRESS_TYPE")
+@DiscriminatorValue("Standard")
+@Entity
+public class ShippingAddress {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     public Long id;
 
-    public String purchasedBy;
+    public String city;
 
-    public OffsetDateTime purchasedOn;
+    public String state;
 
-    public float total;
+    public StreetAddress streetAddress; // @Embeddable
+
+    public int zipCode;
 }

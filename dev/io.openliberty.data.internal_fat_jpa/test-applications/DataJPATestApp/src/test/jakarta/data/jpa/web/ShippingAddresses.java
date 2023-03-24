@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.jpa.web;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
- *
+ * Repository for testing Inheritance and DiscriminatorColumn/Value.
  */
 @Repository
 public interface ShippingAddresses {
