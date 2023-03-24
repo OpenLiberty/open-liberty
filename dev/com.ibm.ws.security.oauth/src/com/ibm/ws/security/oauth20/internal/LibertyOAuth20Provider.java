@@ -555,7 +555,10 @@ public class LibertyOAuth20Provider implements OAuth20Provider, ConfigurationLis
             } else {
                 internalClientSecret = (String) o;
             }
-            internalClientSecret = PasswordUtil.passwordDecode(internalClientSecret);
+            String decodedInternalClientSecret = PasswordUtil.passwordDecode(internalClientSecret);
+            if (decodedInternalClientSecret != null) {
+                internalClientSecret = decodedInternalClientSecret;
+            }
         } else {
             internalClientSecret = null;
         }
