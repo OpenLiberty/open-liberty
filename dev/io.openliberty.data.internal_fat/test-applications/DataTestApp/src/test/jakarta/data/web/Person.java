@@ -12,22 +12,14 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 /**
  * A basic entity.
  */
-@Entity
 public class Person {
 
     public String firstName;
 
-    @Column(name = "SURNAME")
     public String lastName;
 
-    @Column(name = "SSNUM")
-    @Id
-    public long ssn;
+    public long ssn_id;
 }

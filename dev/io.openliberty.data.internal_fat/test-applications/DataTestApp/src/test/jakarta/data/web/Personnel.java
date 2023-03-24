@@ -37,7 +37,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
 public interface Personnel {
     @Asynchronous
     @Filter(by = "lastName")
-    @Filter(by = "ssn", op = Compare.In)
+    @Filter(by = "ssn_id", op = Compare.In)
     @Update(attr = "lastName")
     CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
 
@@ -48,13 +48,13 @@ public interface Personnel {
     void deleteByFirstName(String firstName);
 
     @Asynchronous
-    CompletableFuture<Void> deleteBySsn(long ssn);
+    CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous
-    CompletableFuture<Person> findBySsn(long ssn);
+    CompletableFuture<Person> findBySSN_Id(long ssn);
 
     @Asynchronous
     @Query("SELECT o.firstName FROM Person o WHERE o.lastName=?1 ORDER BY o.firstName")
@@ -79,12 +79,12 @@ public interface Personnel {
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "lastName")
     long setSurname(long ssn, String newSurname);
 
     @Asynchronous
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "lastName")
     CompletableFuture<Boolean> setSurnameAsync(long ssn, String newSurname);
 }

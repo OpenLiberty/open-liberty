@@ -15,10 +15,16 @@ package test.jakarta.data.jpa.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,6 +73,15 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Employees employees;
+
+    @Inject
+    OrderRepo orders;
+
+    @Inject
+    ShippingAddresses shippingAddresses;
+
+    @Inject
+    Tariffs tariffs;
 
     @Resource
     private UserTransaction tran;
@@ -131,6 +146,85 @@ public class DataJPATestServlet extends FATServlet {
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
+    }
+
+    /**
+     * Add, search, and remove entities with Embeddable fields.
+     */
+    @Test
+    public void testEmbeddable() {
+        shippingAddresses.removeAll();
+
+        ShippingAddress a1 = new ShippingAddress();
+        a1.id = 1001L;
+        a1.city = "Rochester";
+        a1.state = "Minnesota";
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
+        a1.zipCode = 55901;
+        shippingAddresses.save(a1);
+
+        ShippingAddress a2 = new ShippingAddress();
+        a2.id = 1002L;
+        a2.city = "Rochester";
+        a2.state = "Minnesota";
+        a2.streetAddress = new StreetAddress(201, "4th St SE");
+        a2.zipCode = 55904;
+        shippingAddresses.save(a2);
+
+        ShippingAddress a3 = new ShippingAddress();
+        a3.id = 1003L;
+        a3.city = "Rochester";
+        a3.state = "Minnesota";
+        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
+        a3.zipCode = 55902;
+        shippingAddresses.save(a3);
+
+        ShippingAddress a4 = new ShippingAddress();
+        a4.id = 1004L;
+        a4.city = "Rochester";
+        a4.state = "Minnesota";
+        a4.streetAddress = new StreetAddress(151, "4th St SE");
+        a4.zipCode = 55904;
+        shippingAddresses.save(a4);
+
+        assertArrayEquals(new ShippingAddress[] { a4, a2 },
+                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
+                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+
+        assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
+                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
+                                             .map(a -> a.houseNumber + " " + a.streetName)
+                                             .collect(Collectors.toList()));
+
+        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
+        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
+        //                    Query: ReportQuery(referenceClass=StreetAddress )
+        // TODO uncomment the following to reproduce the above error:
+        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
+        // assertEquals(1, found.size());
+        // ShippingAddress a = found.get(0);
+        // assertEquals(a1.id, a.id);
+        // assertEquals(a1.city, a.city);
+        // assertEquals(a1.state, a.state);
+        // assertEquals(a1.zipCode, a.zipCode);
+        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+
+        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+
+        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
+        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
+        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
+        a1.streetAddress.recipientInfo = new ArrayList<>();
+        shippingAddresses.save(a1);
+
+        assertEquals(4, shippingAddresses.removeAll());
     }
 
     /**
@@ -360,6 +454,36 @@ public class DataJPATestServlet extends FATServlet {
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
+     * Avoid specifying a primary key value and let it be generated.
+     */
+    @Test
+    public void testGeneratedKey() {
+        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testGeneratedKey-Customer1";
+        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+        o1.total = 25.99f;
+        o1 = orders.save(o1);
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testGeneratedKey-Customer2";
+        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+        o2.total = 148.98f;
+        o2 = orders.save(o2);
+
+        assertNotNull(o1.id);
+        assertNotNull(o2.id);
+        assertEquals(false, o1.id.equals(o2.id));
+
+        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
+
+        o2 = orders.findById(o2.id).get();
+
+        assertEquals(168.89f, o2.total, 0.01f);
     }
 
     /**
@@ -848,6 +972,74 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an entity that inherits from another where both are kept in the same table.
+     */
+    @Test
+    public void testInheritance() {
+        shippingAddresses.removeAll();
+
+        ShippingAddress home = new ShippingAddress();
+        home.id = 10L;
+        home.city = "Rochester";
+        home.state = "Minnesota";
+        home.streetAddress = new StreetAddress(1234, "5th St SW");
+        home.zipCode = 55902;
+
+        WorkAddress work = new WorkAddress();
+        work.id = 20L;
+        work.city = "Rochester";
+        work.floorNumber = 2;
+        work.office = "H115";
+        work.state = "Minnesota";
+        work.streetAddress = new StreetAddress(2800, "37th St NW");
+        work.zipCode = 55901;
+
+        shippingAddresses.save(home);
+        shippingAddresses.save(work);
+
+        WorkAddress a = shippingAddresses.forOffice("H115");
+        assertEquals(Long.valueOf(20), a.id);
+        assertEquals("Rochester", a.city);
+        assertEquals(2, a.floorNumber);
+        assertEquals("H115", a.office);
+        assertEquals("Minnesota", a.state);
+        assertEquals("37th St NW", a.streetAddress.streetName);
+        assertEquals(55901, a.zipCode);
+
+        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
+
+        assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
+                          Comparator.<WorkAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.floorNumber))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.office))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
+
+        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
+
+        assertArrayEquals(new ShippingAddress[] { work }, found,
+                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> ((WorkAddress) o).floorNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> ((WorkAddress) o).office))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
+                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
+                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
+
+        assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
+                          Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
+                                          .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
+
+        shippingAddresses.removeAll();
+    }
+
+    /**
      * Many-to-one entity mapping, where ordering is done based on a composite IdClass.
      */
     @Test
@@ -913,6 +1105,186 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Monica@tests.openliberty.io",
                                      "martin@tests.openliberty.io"),
                              creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
+    }
+
+    /**
+     * Add, find, and remove entities with a mapped superclass.
+     * Also tests automatically paginated iterator and list.
+     */
+    @Test
+    public void testMappedSuperclass() {
+        tariffs.deleteByLeviedBy("USA");
+
+        Tariff t1 = new Tariff();
+        t1.leviedAgainst = "China";
+        t1.leviedBy = "USA";
+        t1.leviedOn = "Solar Panels";
+        t1.rate = 0.15f;
+        tariffs.save(t1);
+
+        Tariff t2 = new Tariff();
+        t2.leviedAgainst = "Germany";
+        t2.leviedBy = "USA";
+        t2.leviedOn = "Steel";
+        t2.rate = 0.25f;
+        tariffs.save(t2);
+
+        Tariff t3 = new Tariff();
+        t3.leviedAgainst = "India";
+        t3.leviedBy = "USA";
+        t3.leviedOn = "Aluminum";
+        t3.rate = 0.1f;
+        tariffs.save(t3);
+
+        Tariff t4 = new Tariff();
+        t4.leviedAgainst = "Japan";
+        t4.leviedBy = "USA";
+        t4.leviedOn = "Cars";
+        t4.rate = 0.025f;
+        tariffs.save(t4);
+
+        Tariff t5 = new Tariff();
+        t5.leviedAgainst = "Canada";
+        t5.leviedBy = "USA";
+        t5.leviedOn = "Lumber";
+        t5.rate = 0.1799f;
+        tariffs.save(t5);
+
+        Tariff t6 = new Tariff();
+        t6.leviedAgainst = "Bangladesh";
+        t6.leviedBy = "USA";
+        t6.leviedOn = "Textiles";
+        t6.rate = 0.158f;
+        tariffs.save(t6);
+
+        Tariff t7 = new Tariff();
+        t7.leviedAgainst = "Mexico";
+        t7.leviedBy = "USA";
+        t7.leviedOn = "Trucks";
+        t7.rate = 0.25f;
+        tariffs.save(t7);
+
+        Tariff t8 = new Tariff();
+        t8.leviedAgainst = "Canada";
+        t8.leviedBy = "USA";
+        t8.leviedOn = "Copper";
+        t8.rate = 0.0194f;
+        tariffs.save(t8);
+
+        assertIterableEquals(List.of("Copper", "Lumber"),
+                             tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
+
+        // Iterator with offset pagination:
+        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
+
+        Tariff t;
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+        Long t8key = t.key;
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+        Long t2key = t.key;
+
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).afterKeyset(t8key));
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination obtaining pages in reverse direction
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).beforeKeyset(t2key));
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+
+        // Paginated iterator with no results:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", Pageable.ofSize(3));
+        assertEquals(false, it.hasNext());
+
+        t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
+        assertEquals(t6.rate, t.rate, 0.0001f);
+
+        // List return type for Pagination only represents a single page, not all pages.
+        // page 1:
+        assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4))
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+        // page 2:
+        assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
+                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
+                                             .stream()
+                                             .map(o -> o.leviedAgainst)
+                                             .collect(Collectors.toList()));
+
+        // Random access to paginated list:
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pageable.ofPage(1));
+        assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
+        assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
+        assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
+        assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
+
+        assertEquals(8, tariffs.deleteByLeviedBy("USA"));
     }
 
     /**
