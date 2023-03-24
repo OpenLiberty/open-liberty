@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.data.repository.Compare;
@@ -28,6 +29,7 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 import jakarta.data.repository.Select.Aggregate;
 import jakarta.data.repository.Update;
+import jakarta.transaction.Transactional;
 
 /**
  *
@@ -48,6 +50,8 @@ public interface ProductRepo {
 
     @Query("SELECT o FROM Product o WHERE o.id=:productId")
     Product findItem(@Param("productId") String id);
+
+    Optional<Product> findById(String id);
 
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
@@ -72,6 +76,15 @@ public interface ProductRepo {
 
     @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
+
+    // Custom repository method that combines multiple operations into a single transaction
+    @Transactional
+    default Product remove(String id) {
+        for (Optional<Product> product; (product = findById(id)).isPresent();)
+            if (discontinueProducts(Set.of(id)) == 1)
+                return product.get();
+        return null;
+    }
 
     void save(Product p);
 
