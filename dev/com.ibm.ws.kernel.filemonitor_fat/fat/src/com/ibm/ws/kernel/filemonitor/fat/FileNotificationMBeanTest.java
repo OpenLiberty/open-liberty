@@ -52,9 +52,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.filemonitor.FileNotificationMBean;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class FileNotificationMBeanTest extends AbstractNotificationTest {
@@ -82,6 +83,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
                       server.waitForStringInLog("CWWKF0011I"));
         assertNotNull("The security service is not ready",
                       server.waitForStringInLog("CWWKS0008I"));
+        assertNotNull("JMX is not initialized", server.waitForStringInLog("CWWKX0103I"));
 
         trustEverything();
 

@@ -123,7 +123,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
      * @param expressionFactoryService
      *            an expressionFactory service to wrap the default ExpressionFactory
      */
-    @Reference(cardinality=ReferenceCardinality.OPTIONAL, policyOption=ReferencePolicyOption.GREEDY)
+    @Reference(cardinality=ReferenceCardinality.OPTIONAL, policyOption=ReferencePolicyOption.GREEDY, policy=ReferencePolicy.DYNAMIC)
     protected void setExpressionFactoryService(ServiceReference<ELFactoryWrapperForCDI> expressionFactoryService) {
         this.expressionFactoryService.setReference(expressionFactoryService);
     }
