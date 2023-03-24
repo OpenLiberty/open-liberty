@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -131,40 +132,23 @@ public class ArtifactDownloader implements AutoCloseable {
         final List<Future<?>> futures = new ArrayList<>();
         double individualSize = 0;
         info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
-        for (String coords : mavenCoords) {
-            Future<?> future;
 
-            if (downloadSignaturesOnly) {
-                // we have to download mavenCoords.length * 2 (esa.asc and pom.asc) amount of artifacts.
-                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
-                future = submitDownloadRequest(coords, "esa.asc", dLocation, repository);
-                futures.add(future);
-                future = submitDownloadRequest(coords, "pom.asc", dLocation, repository);
-                futures.add(future);
-            } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
-                //download esa and pom
-                // we have to download mavenCoords.length * 2 (esa.asc and pom.asc) amount of artifacts.
-                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
-                future = submitDownloadRequest(coords, "esa", dLocation, repository);
-                futures.add(future);
-                future = submitDownloadRequest(coords, "pom", dLocation, repository);
-                futures.add(future);
-            } else {
-                //download both esa, pom and ascs
-                // we need to download mavenCoords.length * 4 (esa,pom and ascs) amount of artifacts.
-                individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (4 * mavenCoords.size());
-                future = submitDownloadRequest(coords, "esa", dLocation, repository);
-                futures.add(future);
-                future = submitDownloadRequest(coords, "pom", dLocation, repository);
-                futures.add(future);
-                future = submitDownloadRequest(coords, "esa.asc", dLocation, repository);
-                futures.add(future);
-                future = submitDownloadRequest(coords, "pom.asc", dLocation, repository);
+        List<String> filesToDownload;
+        if (downloadSignaturesOnly) {
+            filesToDownload = Arrays.asList("esa.asc", "pom.asc");
+        } else if (verifyOption == null || verifyOption == VerifyOption.skip) {
+            filesToDownload = Arrays.asList("esa", "pom");
+        } else {
+            filesToDownload = Arrays.asList("esa", "pom", "esa.asc", "pom.asc");
+        }
+        for (String coords : mavenCoords) {
+            for (String file : filesToDownload) {
+                Future<?> future = submitDownloadRequest(coords, file, dLocation, repository);
                 futures.add(future);
             }
-
         }
 
+        individualSize = progressBar.getMethodIncrement("downloadArtifacts") / futures.size();
         while (!futures.isEmpty()) {
             Iterator<Future<?>> iter = futures.iterator();
             try {
