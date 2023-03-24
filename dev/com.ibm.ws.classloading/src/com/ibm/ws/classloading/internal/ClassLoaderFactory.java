@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -134,9 +134,8 @@ class ClassLoaderFactory extends GatewayBundleFactory {
         validate();
         inferParentLoader();
         AppClassLoader result = config.getDelegateToParentAfterCheckingLocalClasspath()
-                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers)
-                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers);
-        addSharedLibPaths(result);
+                        ? new ParentLastClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers, sharedLibPath)
+                        : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers, sharedLibPath);
         runPostCreateAction(result);
         return result;
     }
@@ -170,15 +169,6 @@ class ClassLoaderFactory extends GatewayBundleFactory {
             // DEAL WITH CHILD CLASSLOADER (if parent not already cached)
             ClassLoaderIdentity parentID = this.config.getParentId();
             setParent(ensureNotNull("Could not find parent classloader with id '" + parentID + "'.", store.retrieve(parentID)));
-        }
-    }
-
-    private void addSharedLibPaths(AppClassLoader result) {
-        //used by the bundle addon loader to add shared libs.. there has to be a better way!
-        if (this.sharedLibPath != null) {
-            for (File f : sharedLibPath) {
-                result.addLibraryFile(f);
-            }
         }
     }
 

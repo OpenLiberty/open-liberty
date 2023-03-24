@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
@@ -46,7 +45,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
 
@@ -62,15 +60,12 @@ import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
-import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
-import com.ibm.wsspi.library.Library;
 
 /**
  * This class loader needs to be public in order for Spring's ReflectiveLoadTimeWeaver
@@ -146,9 +141,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     protected final ClassLoaderConfiguration config;
-    private volatile List<Library> privateLibraries;
     private final Iterable<LibertyLoader> delegateLoaders;
-    private final List<File> nativeLibraryFiles = new ArrayList<File>();
     private final List<ClassFileTransformer> transformers = new ArrayList<ClassFileTransformer>();
     private final List<ClassFileTransformer> systemTransformers;
     private final DeclaredApiAccess apiAccess;
@@ -156,14 +149,13 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     private final ClassLoaderHook hook;
 
-    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
-        super(containers, parent, redefiner, globalConfig);
+    AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers, List<File> sharedLibPath) {
+        super(containers, parent, redefiner, globalConfig, Providers.getPrivateLibraries(config), sharedLibPath);
         this.systemTransformers = systemTransformers;
         this.config = config;
         this.apiAccess = access;
         for (Container container : config.getNativeLibraryContainers())
             addNativeLibraryContainer(container);
-        this.privateLibraries = Providers.getPrivateLibraries(config);
         this.delegateLoaders = Providers.getDelegateLoaders(config, apiAccess);
         this.generator = generator;
         hook = disableSharedClassesCache ? null : ClassLoaderHookFactory.getClassLoaderHook(this);
@@ -768,97 +760,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             enumerations.add(cl.findResources(name));
         }
         return enumerations;
-    }
-
-    @Override
-    protected void lazyInit() {
-        // process all the libraries
-        if (privateLibraries != null)
-            for (Library lib : privateLibraries)
-                copyLibraryElementsToClasspath(lib);
-        // nullify the field - it's not needed any more
-        privateLibraries = null;
-    }
-
-    /**
-     * Takes the Files and Folders from the Library
-     * and adds them to the various classloader classpaths
-     *
-     * @param library
-     */
-    private void copyLibraryElementsToClasspath(Library library) {
-        Collection<File> files = library.getFiles();
-        addToClassPath(library.getContainers());
-        if (files != null && !!!files.isEmpty()) {
-            for (File file : files) {
-
-                nativeLibraryFiles.add(file);
-            }
-        }
-
-        for (Fileset fileset : library.getFilesets()) {
-            for (File file : fileset.getFileset()) {
-
-                nativeLibraryFiles.add(file);
-            }
-        }
-    }
-
-    /**
-     * Determine if it's a windows library file name (ends with ".dll").
-     *
-     * @param basename The file name.
-     *
-     * @return true if it's a windows library name (ends with ".dll").
-     */
-    private static boolean isWindows(String basename) {
-        return (basename.endsWith(".dll") || basename.endsWith(".DLL"));
-    }
-
-    /**
-     * Check if the given file's name matches the given library basename.
-     *
-     * @param f The file to check.
-     * @param basename The basename to compare the file against.
-     *
-     * @return true if the file exists and its name matches the given basename.
-     *         false otherwise.
-     */
-    private static boolean checkLib(final File f, String basename) {
-        boolean fExists = System.getSecurityManager() == null ? f.exists() : AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-            @Override
-            public Boolean run() {
-                return f.exists();
-            }
-        });
-        return fExists &&
-                        (f.getName().equals(basename) || (isWindows(basename) && f.getName().equalsIgnoreCase(basename)));
-    }
-
-    @Override
-    protected String findLibrary(String libname) {
-        if (libname == null || libname.length() == 0) {
-            return null;
-        }
-
-        String path = super.findLibrary(libname);
-        if (path != null) {
-            return path;
-        }
-
-        Object token = ThreadIdentityManager.runAsServer();
-        try {
-            String psLibname = System.mapLibraryName(libname); // platform specific.
-            for (File f : nativeLibraryFiles) {
-                if (checkLib(f, psLibname)) {
-                    return f.getAbsolutePath();
-                }
-            }
-        } finally {
-            ThreadIdentityManager.reset(token);
-        }
-
-        return null; // not found.
     }
 
     @Override
