@@ -432,9 +432,10 @@ public class EntityDefiner implements Runnable {
             String attributeName = attributeInfo.getKey();
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
+            boolean isPrimitive = attributeType.isPrimitive();
 
             String columnType;
-            if (attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType) || attributeType.isPrimitive()) {
+            if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
                 columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
                                 "version".equalsIgnoreCase(attributeName) ? "version" : //
                                                 isCollection ? "element-collection" : //
@@ -446,8 +447,13 @@ public class EntityDefiner implements Runnable {
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
 
-            if (isEmbeddable && !"embedded".equals(columnType))
-                xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+            if (isEmbeddable) {
+                if (!"embedded".equals(columnType))
+                    xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+            } else {
+                if (isPrimitive)
+                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+            }
 
             xml.append("   </" + columnType + ">").append(EOLN);
         }
