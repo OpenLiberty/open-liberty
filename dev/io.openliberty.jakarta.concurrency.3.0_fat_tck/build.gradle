@@ -20,7 +20,9 @@ configurations {
 
 dependencies {
   testNG 'org.testng:testng:7.5.0-ibm230227',
-	     'com.beust:jcommander:1.78',
+       'org.slf4j:slf4j-api:2.0.6',
+       'org.slf4j:slf4j-jdk14:2.0.6',
+       'com.beust:jcommander:1.78',
 	     'org.apache-extras.beanshell:bsh:2.0b6'
   
   sigTest 'org.netbeans.tools:sigtest-maven-plugin:1.6'
@@ -37,6 +39,8 @@ task copyTestNG(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/testng/7.5.0-ibm230227')
   rename 'testng-.*.jar', 'testng.jar'
   rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
   rename 'bsh-.*.jar', 'bsh.jar'
 }
 
@@ -76,6 +80,8 @@ task copyTestNGWLP(type: Copy) {
   into new File(project.projectDir, 'wlp/usr/shared/resources/7.5.0-ibm230227')
   rename 'testng-.*.jar', 'testng.jar'
   rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
   rename 'bsh-.*.jar', 'bsh.jar'
 }
 
