@@ -41,32 +41,32 @@ public interface PersonRepo {
 
     void save(List<Person> people);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Select("firstName")
     @Transactional(TxType.SUPPORTS)
     String getFirstNameInCurrentOrNoTransaction(Long ssn);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "firstName")
     @Transactional(TxType.REQUIRED)
     boolean setFirstNameInCurrentOrNewTransaction(Long ssn, String newFirstName);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "firstName")
     @Transactional(TxType.MANDATORY)
     boolean setFirstNameInCurrentTransaction(Long ssn, String newFirstName);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "firstName")
     @Transactional(TxType.REQUIRES_NEW)
     boolean setFirstNameInNewTransaction(Long ssn, String newFirstName);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "firstName")
     @Transactional(TxType.NEVER)
     boolean setFirstNameWhenNoTransactionIsPresent(Long ssn, String newFirstName);
 
-    @Filter(by = "ssn")
+    @Filter(by = "ssn_id")
     @Update(attr = "firstName")
     @Transactional(TxType.NOT_SUPPORTED)
     boolean setFirstNameWithCurrentTransactionSuspended(Long ssn, String newFirstName);
