@@ -2602,6 +2602,8 @@ public class LibertyServer implements LogMonitorClient {
 
                 assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
+                assertNotNull("The JMX REST connector message was not found", waitForStringInLogUsingMark("CWWKX0103I"));
+
                 //backup the key file
 
                 try {
