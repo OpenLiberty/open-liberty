@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -6,17 +6,7 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
-/**
- * A simple managed bean that will be used to test very simple bean functionality.
- *   This bean tests some of the new functions in JSF 2.2
- *
- * @author Jim Lawwill
- *
- */
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.miscbean.faces40;
 
 import java.io.Serializable;
@@ -36,6 +26,13 @@ import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesListener;
 import javax.inject.Named;
 
+/**
+ * A simple managed bean that will be used to test very simple bean functionality.
+ * This bean tests some of the new functions in JSF 2.2
+ *
+ * @author Jim Lawwill
+ *
+ */
 @Named
 @SessionScoped
 public class MiscellaneousBean implements Serializable {
