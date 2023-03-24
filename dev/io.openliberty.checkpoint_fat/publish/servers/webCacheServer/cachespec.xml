@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<!DOCTYPE cache>
+<cache>
+	<cache-entry>
+		<name>/cachedServlet</name>
+		<class>servlet</class>
+		<cache-id>
+			<component id="test" type="parameter">
+				<required>true</required>
+			</component>
+			<timeout>10</timeout>
+		</cache-id>
+	</cache-entry>
+</cache>
