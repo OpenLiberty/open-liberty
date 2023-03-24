@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.internal;
 
@@ -43,6 +40,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
 import com.google.gson.JsonArray;
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
@@ -540,6 +538,74 @@ public class LibertyOAuth20ProviderTest {
             assertEquals("Did not get back minimum - 30", 30, providerTests.getProperty(keyName, 30, 2048));
             myProps.put(keyName, 3000L);
             assertEquals("Did not get back maximum - 2048", 2048, providerTests.getProperty(keyName, 30, 2048));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testInternalClientSecret_cleartext() {
+        String methodName = "testInternalClientSecret_cleartext";
+        LibertyOAuth20Provider providerTests = new LibertyOAuth20Provider();
+
+        String internalClientSecretCleartext = "super secret internal client secret";
+
+        final Dictionary<String, Object> clientProps = getSampleOidcBaseClientProperties();
+
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(cc).getBundleContext();
+                    allowing(configAdmin).getConfiguration(with(any(String.class)), with(any(String.class)));
+                    will(returnValue(config));
+                    oneOf(config).getProperties();
+                    will(returnValue(clientProps));
+                }
+            });
+
+            providerTests.setConfigurationAdmin(configAdmin);
+
+            Map<String, Object> defaultProperties = createDefaultProperties();
+            defaultProperties.put(LibertyOAuth20Provider.KEY_INTERNAL_CLIENT_SECRET, internalClientSecretCleartext);
+
+            providerTests.activate(cc, defaultProperties);
+
+            assertEquals("Internal client secret did not match the expected value.", internalClientSecretCleartext, providerTests.getInternalClientSecret());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testInternalClientSecret_encoded() {
+        String methodName = "testInternalClientSecret_encoded";
+        LibertyOAuth20Provider providerTests = new LibertyOAuth20Provider();
+
+        String internalClientSecretCleartext = "super secret internal client secret";
+        String internalClientSecretEncoded = PasswordUtil.passwordEncode(internalClientSecretCleartext, "XOR");
+
+        final Dictionary<String, Object> clientProps = getSampleOidcBaseClientProperties();
+
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(cc).getBundleContext();
+                    allowing(configAdmin).getConfiguration(with(any(String.class)), with(any(String.class)));
+                    will(returnValue(config));
+                    oneOf(config).getProperties();
+                    will(returnValue(clientProps));
+                }
+            });
+
+            providerTests.setConfigurationAdmin(configAdmin);
+
+            Map<String, Object> defaultProperties = createDefaultProperties();
+            defaultProperties.put(LibertyOAuth20Provider.KEY_INTERNAL_CLIENT_SECRET, internalClientSecretEncoded);
+
+            providerTests.activate(cc, defaultProperties);
+
+            assertFalse("Encoded secret [" + internalClientSecretEncoded + "] should not have matched the cleartext secret, but it did.", internalClientSecretCleartext.equals(internalClientSecretEncoded));
+            assertEquals("Internal client secret did not match the expected value.", internalClientSecretCleartext, providerTests.getInternalClientSecret());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
