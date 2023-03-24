@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -100,14 +100,17 @@ public class JaegerQueryClient implements AutoCloseable {
      */
     public List<Span> getSpansForTraceId(ByteString traceId) {
         try {
+            Log.info(c, "getSpansForTraceId", "Starting Jaeger query");
             GetTraceRequest req = GetTraceRequest.newBuilder().setTraceId(traceId).build();
             Iterator<SpansResponseChunk> result = getRawClient().getTrace(req);
             List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+            Log.info(c, "getSpansForTraceId", "Returning spans");
             return spans;
         } catch (StatusRuntimeException ex) {
             // If the traceId was not found, there are no spans for that traceId
             // return an empty list rather than throwing an exception
             if (ex.getStatus().getCode() == Code.NOT_FOUND) {
+                Log.info(c, "getSpansForTraceId", "No spans found");
                 return Collections.emptyList();
             } else {
                 throw ex;
@@ -122,10 +125,12 @@ public class JaegerQueryClient implements AutoCloseable {
      * @return the list of spans
      */
     public List<Span> getSpansForServiceName(String serviceName) {
+        Log.info(c, "getSpansForServiceName", "Starting Jaeger query");
         TraceQueryParameters params = TraceQueryParameters.newBuilder().setServiceName(serviceName).build();
         FindTracesRequest req = FindTracesRequest.newBuilder().setQuery(params).build();
         Iterator<SpansResponseChunk> result = getRawClient().findTraces(req);
         List<Span> spans = consumeChunkedResult(result, chunk -> chunk.getSpansList());
+        Log.info(c, "getSpansForServiceName", "Returning spans");
         return spans;
     }
 
@@ -133,9 +138,11 @@ public class JaegerQueryClient implements AutoCloseable {
      * Retrieve all service names
      */
     public List<String> getServices() {
+        Log.info(c, "getServices", "Starting Jaeger query");
         GetServicesRequest req = GetServicesRequest.getDefaultInstance();
         GetServicesResponse resp = getRawClient().getServices(req);
         List<ByteString> services = resp.getServicesList().asByteStringList();
+        Log.info(c, "getServices", "Returning service names");
         return services.stream()
                        .map(ByteString::toStringUtf8)
                        .collect(Collectors.toList());
@@ -158,35 +165,38 @@ public class JaegerQueryClient implements AutoCloseable {
      */
     public List<Span> waitForSpansForTraceId(String traceId, Matcher<? super List<Span>> waitCondition) {
         List<Span> result = null;
-        Timeout timeout = new Timeout(Duration.ofSeconds(10));
 
-        try {
-            while (true) {
-                result = getSpansForTraceId(convertTraceId(traceId));
+        int retryCount = 0;
 
-                if (timeout.isExpired()) {
-                    // Time is up, assert the match so we get an error if it doesn't match
-                    Log.info(c, "waitForSpansForTraceId", "Spans did not match: " + result);
-                    assertThat("Spans not found within timeout", result, waitCondition);
-                    return result;
+        while (retryCount < 3) {
+            retryCount += 1;
+            Timeout timeout = new Timeout(Duration.ofSeconds(10));
+            try {
+                while (true) {
+                    result = getSpansForTraceId(convertTraceId(traceId));
+                    if (timeout.isExpired()) {
+                        // Time is up, retry
+                        Log.info(c, "waitForSpansForTraceId", "Spans did not match: " + result);
+                        break;
+                    }
+                    if (waitCondition.matches(result)) {
+                        Log.info(c, "waitForSpansForTraceId", "Waited " + timeout.getTimePassed() + " for spans to arrive");
+
+                        // Wait additional time to allow more spans to arrive which would invalidate the match
+                        // E.g. if we're waiting for 2 spans, check that we don't end up with 3 after waiting a while longer
+                        Thread.sleep(500);
+                        assertThat("Spans did not match after waiting additional time", result, waitCondition);
+
+                        return result;
+                    }
+                    Thread.sleep(100);
                 }
-
-                if (waitCondition.matches(result)) {
-                    Log.info(c, "waitForSpansForTraceId", "Waited " + timeout.getTimePassed() + " for spans to arrive");
-
-                    // Wait additional time to allow more spans to arrive which would invalidate the match
-                    // E.g. if we're waiting for 2 spans, check that we don't end up with 3 after waiting a while longer
-                    Thread.sleep(500);
-                    assertThat("Spans did not match after waiting additional time", result, waitCondition);
-
-                    return result;
-                }
-
-                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new AssertionError("Interrupted while waiting for spans", e);
             }
-        } catch (InterruptedException e) {
-            throw new AssertionError("Iterrupted while waiting for spans", e);
         }
+        assertThat("Spans not found within timeout after 3 retries", result, waitCondition);
+        return result;
     }
 
     /** {@inheritDoc} */

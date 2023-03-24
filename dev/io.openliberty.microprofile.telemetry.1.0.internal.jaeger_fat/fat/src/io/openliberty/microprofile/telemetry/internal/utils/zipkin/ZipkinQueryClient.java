@@ -66,34 +66,37 @@ public class ZipkinQueryClient {
     public List<ZipkinSpan> waitForSpansForTraceId(String traceId, Matcher<? super List<ZipkinSpan>> waitCondition) throws Exception {
         List<ZipkinSpan> result = null;
         Timeout timeout = new Timeout(Duration.ofSeconds(10));
+        int retryCount = 0;
+        while(retryCount < 3){
+            retryCount += 1;
+            try {
+                while (true) {
+                    result = getSpansForTraceId(traceId);
 
-        try {
-            while (true) {
-                result = getSpansForTraceId(traceId);
+                    if (timeout.isExpired()) {
+                        // Time is up,retry
+                        Log.info(c, "waitForSpansForTraceId", "Spans did not match: " + result);
+                        break;
+                    }
+                    if (waitCondition.matches(result)) {
+                        Log.info(c, "waitForSpansForTraceId", "Waited " + timeout.getTimePassed() + " for spans to arrive");
 
-                if (timeout.isExpired()) {
-                    // Time is up, assert the match so we get an error if it doesn't match
-                    assertThat("Spans not found within timeout", result, waitCondition);
-                    return result;
+                        // Wait additional time to allow more spans to arrive which would invalidate the match
+                        // E.g. if we're waiting for 2 spans, check that we don't end up with 3 after waiting a while longer
+                        Thread.sleep(500);
+                        assertThat("Spans did not match after waiting additional time", result, waitCondition);
+
+                        return result;
+                    }
+
+                    Thread.sleep(100);
                 }
-
-                if (waitCondition.matches(result)) {
-                    Log.info(c, "waitForSpansForTraceId", "Waited " + timeout.getTimePassed() + " for spans to arrive");
-
-                    // Wait additional time to allow more spans to arrive which would invalidate the match
-                    // E.g. if we're waiting for 2 spans, check that we don't end up with 3 after waiting a while longer
-                    Thread.sleep(500);
-                    assertThat("Spans did not match after waiting additional time", result, waitCondition);
-
-                    return result;
-                }
-
-                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new AssertionError("Iterrupted while waiting for spans", e);
             }
-        } catch (InterruptedException e) {
-            throw new AssertionError("Iterrupted while waiting for spans", e);
         }
-
+        assertThat("Spans not found within timeout after 3 retries", result, waitCondition);
+        return result;
     }
 
     public List<ZipkinSpan> getSpansForTraceId(String traceId) throws Exception {
@@ -106,6 +109,7 @@ public class ZipkinQueryClient {
         try {
             HttpRequest req = new HttpRequest(url);
             result = req.run(JsonArray.class);
+            Log.info(c, "getSpansForTraceId", "Finished fetching traces from " + url);
         } catch (Exception e) {
             // run() will throw an exception if the endpoint returns a 404 (i.e. no traces found)
             // Assume any exception means there are no traces found on the server and return an empty list

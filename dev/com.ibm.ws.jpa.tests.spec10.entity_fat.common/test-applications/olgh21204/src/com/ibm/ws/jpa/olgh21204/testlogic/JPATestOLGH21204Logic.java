@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.olgh21204.model.SimpleEntityOLGH21204;
+import com.ibm.ws.jpa.olgh21204.model.StepExecutionEntityOLGH21204;
 import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
@@ -203,6 +204,135 @@ public class JPATestOLGH21204Logic extends AbstractTestLogic {
 
                 // Clear the audit table now that validation has occurred
                 em.createNativeQuery("DELETE FROM SimpleEntityOLGH21204_AUDIT WHERE NAME = '" + name + "' AND PRICE = " + price + "").executeUpdate();
+
+                System.out.println("Committing transaction...");
+                tj.commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                em.clear();
+            }
+
+        } catch (java.lang.AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            // Catch any Exceptions thrown by the test case for proper error logging.
+            Assert.fail("Caught an unexpected Exception during test execution." + t);
+        } finally {
+            System.out.println(testName + ": End");
+        }
+    }
+
+    public void testPersistWithSecondaryTables(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
+                                               Object managedComponentObject) {
+        final String testName = getTestName();
+
+        // Verify parameters
+        if (testExecCtx == null || testExecResources == null) {
+            Assert.fail(testName + ": Missing context and/or resources.  Cannot execute the test.");
+            return;
+        }
+
+        final JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
+        if (jpaResource == null) {
+            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
+            return;
+        }
+
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
+
+        // Test is only valid for the following databases
+        if (!(isDB2 || isDerby || isMySQL || isSQLServer)) {
+            return;
+        }
+
+        // Execute Test Case
+        try {
+            EntityManager em = jpaResource.getEm();
+            TransactionJacket tj = jpaResource.getTj();
+
+            System.out.println("Beginning new transaction...");
+            tj.beginTransaction();
+            if (tj.isApplicationManaged()) {
+                System.out.println("Joining entitymanager to JTA transaction...");
+                em.joinTransaction();
+            }
+
+            // Clear persistence context
+            System.out.println("Clearing persistence context...");
+            em.clear();
+
+            System.out.println("Creating new object instance of " + StepExecutionEntityOLGH21204.class + " (id=GENERATED)...");
+            StepExecutionEntityOLGH21204 new_entity = new StepExecutionEntityOLGH21204();
+            new_entity.setChildEntity(new_entity);
+            new_entity.setText("Text");
+
+            System.out.println("Persisting " + new_entity);
+            em.persist(new_entity);
+
+            System.out.println("Committing transaction...");
+            tj.commitTransaction();
+
+            try {
+                System.out.println("Beginning new transaction...");
+                tj.beginTransaction();
+                if (tj.isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    em.joinTransaction();
+                }
+
+                System.out.println("Merging " + StepExecutionEntityOLGH21204.class + " (id=" + new_entity.getId() + ")...");
+                new_entity = em.merge(new_entity);
+
+                System.out.println("Refreshing " + StepExecutionEntityOLGH21204.class + " (id=" + new_entity.getId() + ")...");
+                em.refresh(new_entity);
+
+                System.out.println("Committing transaction...");
+                tj.commitTransaction();
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                em.clear();
+            } finally {
+                if (tj.isTransactionActive()) {
+                    tj.rollbackTransaction();
+                }
+
+                System.out.println("Beginning new transaction...");
+                tj.beginTransaction();
+                if (tj.isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    em.joinTransaction();
+                }
+
+                long id = new_entity.getId();
+                Assert.assertNotNull(id);
+
+                // Clear persistence context
+                System.out.println("Clearing persistence context...");
+                em.clear();
+
+                System.out.println("Finding " + StepExecutionEntityOLGH21204.class + " (id=" + id + ")...");
+                StepExecutionEntityOLGH21204 find_remove_entity = em.find(StepExecutionEntityOLGH21204.class, id);
+                System.out.println("Object returned by find: " + find_remove_entity);
+                Assert.assertNotNull("Assert that the find operation did not return null", find_remove_entity);
+
+                System.out.println("Removing " + find_remove_entity);
+                em.remove(find_remove_entity);
 
                 System.out.println("Committing transaction...");
                 tj.commitTransaction();
