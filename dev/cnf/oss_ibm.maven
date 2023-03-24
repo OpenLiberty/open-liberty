@@ -72,4 +72,5 @@ org.eclipse.transformer:org.eclipse.transformer:0.3.0.20211005
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
+org.testng:testng:7.5.0-ibm230227
 org.xmlunit:xmlunit-core:2.0.0.ibm

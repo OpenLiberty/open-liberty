@@ -109,5 +109,4 @@ org.springframework:spring-expression:4.3.13.RELEASE
 org.springframework:spring-expression:5.0.4.RELEASE
 org.springframework:spring-web:4.3.13.RELEASE
 org.springframework:spring-web:5.0.4.RELEASE
-org.testng:testng:7.5.0-ibm230227
 xml-resolver:xml-resolver:1.2
