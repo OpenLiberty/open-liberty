@@ -106,6 +106,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
+            if (method.isDefault()) // skip default methods
+                continue;
+
             Class<?> returnArrayType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
@@ -1501,20 +1504,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     @Trivial
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         CompletableFuture<QueryInfo> queryInfoFuture = queries.get(method);
+        boolean isDefaultMethod = false;
 
-        if (queryInfoFuture == null) {
-            String methodName = method.getName();
-            if (args == null) {
-                if ("hashCode".equals(methodName))
-                    return System.identityHashCode(proxy);
-                else if ("toString".equals(methodName))
-                    return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
-            } else if (args.length == 1) {
-                if ("equals".equals(methodName))
-                    return proxy == args[0];
+        if (queryInfoFuture == null)
+            if (method.isDefault()) {
+                isDefaultMethod = true;
+            } else {
+                String methodName = method.getName();
+                if (args == null) {
+                    if ("hashCode".equals(methodName))
+                        return System.identityHashCode(proxy);
+                    else if ("toString".equals(methodName))
+                        return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
+                } else if (args.length == 1) {
+                    if ("equals".equals(methodName))
+                        return proxy == args[0];
+                }
+                throw new UnsupportedOperationException(method.toString());
             }
-            throw new UnsupportedOperationException(method.toString());
-        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -1524,6 +1531,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
                                                 "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
                                                 " is no longer in scope."); // TODO
+
+            if (isDefaultMethod) {
+                // TODO invoke directly once compiling against Java 17+
+                Object returnValue = InvocationHandler.class.getMethod("invokeDefault", Object.class, Method.class, Object[].class) //
+                                .invoke(null, proxy, method, args);
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+                return returnValue;
+            }
 
             QueryInfo queryInfo = queryInfoFuture.join();
 
