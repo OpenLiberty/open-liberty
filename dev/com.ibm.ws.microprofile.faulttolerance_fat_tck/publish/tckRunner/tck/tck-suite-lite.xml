@@ -16,8 +16,9 @@
                 <script language="beanshell">
                      <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
                      <!-- We exclude all of these tests, but most of them were fixed in the 2.0 TCK and we run them from the 2.0 TCK project -->
+                     <!-- All conditions need to be wrapped otherwise beanshell will throw EOF errors-->
                      <![CDATA[
-                     if(
+                        (
                          // RetryTest
                          !method.getName().startsWith("testRetryMaxDuration") &&
                          !method.getName().startsWith("testRetryMaxDurationSeconds") &&
@@ -40,11 +41,8 @@
 
                          // RetryTimeoutTest
                          // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
-                         !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")){
-
-                        return true;
-                     }
-                        return false;
+                         !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")
+                       )
                 ]]>
                 </script>
             </method-selector>
