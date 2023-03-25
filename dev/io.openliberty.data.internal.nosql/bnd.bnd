@@ -24,10 +24,6 @@ Bundle-Description: Maps Jakarta Data to Jakarta NoSQL; version=${bVersion}
 
 WS-TraceGroup: data
 
-Import-Package:\
-  io.openliberty.data.internal,\
-  *
-
 Private-Package: \
   io.openliberty.data.internal.nosql.*,\
   io.openliberty.data.internal.nosql.resources.*
