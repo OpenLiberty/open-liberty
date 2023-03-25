@@ -16,7 +16,7 @@ bVersion: 1.0
 # currently doesn't look at sub bundles for the the following two properties
 # and only looks at the parent bnd settings.  
 # Bnd logic only looks at the buildpath from the parent bnd file for all
-# sub bundles.
+# sub bundles. Also need to add -maven-dependencies: properties in the subbundles to pickup the included OSS libs.
 
 publish.wlp.jar.suffix: dev/api/stable
 
