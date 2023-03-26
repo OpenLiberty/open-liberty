@@ -52,17 +52,13 @@ public class NettyToWsBufferDecoder extends ByteToMessageDecoder {
 			SibTr.debug(this, tc, "decode", ctx.channel().remoteAddress() + " decoding message [ " + in.toString(StandardCharsets.UTF_8) + " ] from Netty ByteBuf to WSByteBuffer");
 		}
 
-		// TODO: Verify if this is the most effective way to do this
-
-		// Question: I think this method could benefit from a comment - specifically why do we need the temp buffer and why it is not inefficient to have one?
+		// TODO: Verify if this is the most effective way to do this. See https://github.com/OpenLiberty/open-liberty/issues/24816
 
 		ByteBuf temp = in.readBytes(in.readableBytes());
 
 		byte[] bytes;
 		int offset;
 		int length = temp.readableBytes();
-
-		//Question: Would we not know the answer to this statically - does the testing path ever go down both sides of this if?
 
 		if (temp.hasArray()) {
 			bytes = temp.array();

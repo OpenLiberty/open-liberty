@@ -129,7 +129,7 @@ public class RichClientFramework extends Framework
             SibTr.entry(this, tc, "getOutboundConnectionProperties",
                         outboundTransportName);
         
-        // TODO: Check if this data path is even used
+        // TODO: Check if this data path is even used https://github.com/OpenLiberty/open-liberty/issues/22692
         CommsOutboundChain chain = CommsOutboundChain.getChainDetails(outboundTransportName);
         if(chain != null && chain.useNetty())
         {
@@ -172,7 +172,7 @@ public class RichClientFramework extends Framework
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getOutboundConnectionProperties", ep);
         
-     // TODO: Check if this data path is even used
+     // TODO: Check if this data path is even used see https://github.com/OpenLiberty/open-liberty/issues/22692
 
         Map properties = null;
         if (ep instanceof CFEndPoint)

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
@@ -90,7 +87,10 @@ public class NettyJMSHeartbeatHandler extends IdleStateHandler{
 
 			if(event.state() != IdleState.READER_IDLE) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) 
-					SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. Event will be moved through pipeline.", evt);
+					SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. Event will be moved to start of pipeline.", evt);
+				// TODO: Run from the start to verify. This should probably be before the inactivity timeout in the pipeline
+				ctx.pipeline().firstContext().fireUserEventTriggered(evt);
+				return;
 			}else {
 				Attribute<Connection> attr = ctx.channel().attr(NettyJMSClientHandler.CONNECTION_KEY);
 				Connection connection = attr.get();

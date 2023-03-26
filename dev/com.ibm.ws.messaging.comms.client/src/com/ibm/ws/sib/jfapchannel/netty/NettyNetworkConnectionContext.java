@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
@@ -65,7 +62,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
 			SibTr.entry(this, tc, "<init>", new Object[] { conn });
 		this.conn = conn;
-		// TODO: Check if this is the best way to do this
+		// TODO: Check if this is the best way to do this see https://github.com/OpenLiberty/open-liberty/issues/24818
 		this.metaData = new ConversationMetaData() {
 
 			@Override
@@ -106,7 +103,7 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
 			SibTr.entry(this, tc, "close", new Object[] { networkConnection, throwable });
 
-		// TODO: Verify this statement
+		// TODO: This needs to be verified and implemented is not. https://github.com/OpenLiberty/open-liberty/issues/24814
 		// If the server is stopping, all connections will be closed/flushed by netty bundle? Verify
 		if (FrameworkState.isStopping()) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

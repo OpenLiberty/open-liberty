@@ -14,7 +14,11 @@ Subsystem-Name: Secure Socket Layer 1.0
  com.ibm.ws.channel.ssl, \
  com.ibm.websphere.security, \
  com.ibm.ws.crypto.certificateutil, \
- io.openliberty.wsoc.ssl.internal
+ io.openliberty.wsoc.ssl.internal, \
+ io.openliberty.io.netty, \
+ io.openliberty.io.netty.ssl, \
+ io.openliberty.netty.internal, \
+ io.openliberty.netty.internal.tls.impl
 -jars=com.ibm.websphere.appserver.spi.ssl; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.ssl; location:=dev/api/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.5-javadoc.zip, \
