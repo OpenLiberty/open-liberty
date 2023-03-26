@@ -77,4 +77,3 @@ instrument.disabled: true
 	io.openliberty.io.netty.ssl,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot
-	
