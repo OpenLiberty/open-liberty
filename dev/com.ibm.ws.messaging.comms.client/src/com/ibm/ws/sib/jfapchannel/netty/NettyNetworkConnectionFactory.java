@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
@@ -71,7 +68,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	public static final String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
 	public static final String JMS_SERVER_HANDLER_KEY = "jmsServerHandler";
 
-	//TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce
+	//TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce. https://github.com/OpenLiberty/open-liberty/issues/24817
 	public static final boolean USE_BUNDLE = false;
 
 	/**
@@ -118,7 +115,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	{
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "createConnection", endpoint);
-		// TODO: Verify if this is used
+		// TODO: Verify if this is used. See https://github.com/OpenLiberty/open-liberty/issues/22692
 		throw new FrameworkException("Not implemented yet for Netty. Currently only used on tWAS not Liberty.");
 
 	}
@@ -145,7 +142,6 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 
 	@Override
 	public void destroy() throws FrameworkException{
-		// TODO: See how to destroy here
 		this.bootstrap = null;
 	}
 

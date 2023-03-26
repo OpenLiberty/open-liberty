@@ -74,7 +74,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
     private final String sslChannelName;
     private OutboundSecureFacet secureFacet;
     
-    private final NettyTlsProvider tlsProviderService;
+    private NettyTlsProvider nettyTlsProvider;
 
     /** If useSSL is set to true in the outbound connection configuration */
     private final boolean isSecureChain;
@@ -104,8 +104,8 @@ public class CommsOutboundChain implements ApplicationPrereq {
             ChannelConfiguration tcpOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
-            @Reference(name="tlsProviderService")
-            NettyTlsProvider tlsProviderService,
+//            @Reference(name="tlsProviderService")
+//            NettyTlsProvider tlsProviderService,
             /* Require SingletonsReady so that we will wait for it to ensure its availability at least until the chain is deactivated. */ 
             @Reference(name="singletonsReady")
             SingletonsReady singletonsReady,
@@ -116,7 +116,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         this.tcpOptions = tcpOptions;
         this.commsClientService = commsClientService;
-        this.tlsProviderService = tlsProviderService;
+//        this.tlsProviderService = tlsProviderService;
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
         
@@ -169,10 +169,23 @@ public class CommsOutboundChain implements ApplicationPrereq {
         return tcpProps;
     }
 
-    public NettyTlsProvider getTlsProviderService() {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getTlsProviderService");
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getTlsProviderService", tlsProviderService);
-        return tlsProviderService;
+    @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
+    void bindNettyTlsProviderService(NettyTlsProvider tlsProvider) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "bindTlsProviderService", tlsProvider);
+        this.nettyTlsProvider = tlsProvider;
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
+    }
+
+    void unbindTlsProviderService(NettyTlsProvider oldService) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
+        // TODO: Figure out if there's something to be done here
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
+    }
+
+    public NettyTlsProvider getNettyTlsProvider() {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getNettyTlsProvider");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getNettyTlsProvider", nettyTlsProvider);
+        return nettyTlsProvider;
     }
 
     private synchronized void createBasicJFAPChain() {
@@ -262,6 +275,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
             }
         }else {
         	// Use Netty Framework for transport
+        	// TODO: Verify Dynamic updates with SSL on Netty
             chainList.put(chainName, this);
         }
         

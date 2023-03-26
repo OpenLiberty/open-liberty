@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
@@ -31,10 +28,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.SocketChannel;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
@@ -90,12 +86,12 @@ public class NettyNetworkConnection implements NetworkConnection{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>" ,new Object[] {bootstrap, chainName});
 
 		this.chainName = chainName;
-		// TODO: Check if this is the best way to do this
-		this.sslOptions = new HashMap<String, Object>((Map)sslOptions);;
+		// TODO: Check if this is the best way to do this for SSL options https://github.com/OpenLiberty/open-liberty/issues/24813
+		this.sslOptions = sslOptions == null ? null : new HashMap<String, Object>((Map)sslOptions);
 		this.isInbound = isInbound;
 		this.tlsProvider = tlsProvider;
 		this.nettyBundle = nettyBundle;
-		// TODO Check if we need to clone this
+		// TODO Check if we need to clone this https://github.com/OpenLiberty/open-liberty/issues/24813
 		this.bootstrap = bootstrap;
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {bootstrap, chainName});
@@ -141,7 +137,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 	 */
 	public boolean requestPermissionToClose(long timeout)
 	{
-		// TODO Figure out the netty equivalent for this. Only used in connection
+		// TODO Figure out the netty equivalent for this. Only used in connection see https://github.com/OpenLiberty/open-liberty/issues/24812
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "requestPermissionToClose", Long.valueOf(timeout));
 		//	      boolean canProcess = vc.requestPermissionToClose(timeout);
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "requestPermissionToClose", Boolean.valueOf(true));
@@ -213,51 +209,9 @@ public class NettyNetworkConnection implements NetworkConnection{
 		}
 
 		try {
-
-			if(this.sslOptions != null) {
-				if (tc.isDebugEnabled())
-					SibTr.debug(this, tc, "initChannel","Adding SSL Support");
-				// TODO: DO SSL , Throw error for now
-				listener.connectRequestFailedNotification(new NettyException("Problems creating SSL context. Not valid yet"));
-				
-				String host = target.getRemoteAddress().getAddress().getHostAddress();
-				String port = Integer.toString(target.getRemoteAddress().getPort());
-				if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {this.tlsProvider, host, port, this.sslOptions});
-				SslContext context = this.tlsProvider.getOutboundSSLContext(this.sslOptions, host, port);
-				if(context == null) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
-					listener.connectRequestFailedNotification(new NettyException("Problems creating SSL context"));
-					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "initChannel");
-					return;
-				}
-				bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-					@Override
-					public void initChannel(SocketChannel ch) throws Exception {
-						final ChannelPipeline pipeline = ch.pipeline();
-						SSLEngine sslEngine = context.newEngine(ch.alloc());
-						pipeline.addLast(NettyNetworkConnectionFactory.SSL_HANDLER_KEY, new SslHandler(sslEngine, false));
-						pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
-						pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-						pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
-						pipeline.addLast(NettyNetworkConnectionFactory.JMS_CLIENT_HANDLER_KEY, new NettyJMSClientHandler());
-					}
-				});
-
-			}else {
-				if (tc.isDebugEnabled())
-					SibTr.debug(this, tc, "initChannel","Constructing pipeline");
-				bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-					@Override
-					public void initChannel(SocketChannel ch) throws Exception {
-						final ChannelPipeline pipeline = ch.pipeline();
-						pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
-						pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-						pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
-						pipeline.addLast(NettyNetworkConnectionFactory.JMS_CLIENT_HANDLER_KEY, new NettyJMSClientHandler());
-					}
-				});
-			}
-
+			
+			bootstrap.handler(new NettyJMSClientInitializer(bootstrap.getBaseInitializer(), target, listener));
+ 			
 			NettyNetworkConnection parent = this;
 
 
@@ -265,7 +219,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 				nettyBundle.startOutbound(this.bootstrap, target.getRemoteAddress().getAddress().getHostAddress(), target.getRemoteAddress().getPort(), f -> {
 					if (f.isCancelled() || !f.isSuccess()) {
 						SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", (Exception) f.cause());
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
 						listener.connectRequestFailedNotification((Exception) f.cause());
 						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
 					}else {
@@ -284,7 +238,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 					public void operationComplete(ChannelFuture f) throws Exception {
 						if (f.isCancelled() || !f.isSuccess()) {
 							SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", (Exception) f.cause());
+							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
 							listener.connectRequestFailedNotification((Exception) f.cause());
 							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
 						}else {
@@ -331,6 +285,50 @@ public class NettyNetworkConnection implements NetworkConnection{
 
 	public boolean isInbound() {
 		return isInbound;
+	}
+	
+	/**
+	 * ChannelInitializer for JMS Client over TCP, and optionally TLS with Netty
+	 */
+	private class NettyJMSClientInitializer extends ChannelInitializerWrapper {
+		final ChannelInitializerWrapper parent;
+		final NetworkConnectionTarget target;
+		final ConnectRequestListener listener;
+
+		public NettyJMSClientInitializer(ChannelInitializerWrapper parent, NetworkConnectionTarget target, ConnectRequestListener listener) {
+			this.parent = parent;
+			this.target = target;
+			this.listener = listener;
+		}
+
+		@Override
+		protected void initChannel(Channel ch) throws Exception {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+				SibTr.debug(this, tc, "initChannel","Constructing pipeline");
+			parent.init(ch);
+			ChannelPipeline pipeline = ch.pipeline();
+			if(sslOptions != null) {
+				if (tc.isDebugEnabled())
+					SibTr.debug(ch, tc, "initChannel","Adding SSL Support");
+				String host = target.getRemoteAddress().getAddress().getHostAddress();
+				String port = Integer.toString(target.getRemoteAddress().getPort());
+				if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
+				SslContext context = tlsProvider.getOutboundSSLContext(sslOptions, host, port);
+				if(context == null) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
+					listener.connectRequestFailedNotification(new NettyException("Problems creating SSL context"));
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "initChannel");
+					ch.close();
+					return;
+				}
+				SSLEngine engine = context.newEngine(ch.alloc());
+				pipeline.addFirst(NettyNetworkConnectionFactory.SSL_HANDLER_KEY, new SslHandler(engine, false));
+			}
+			pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
+			pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
+			pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
+			pipeline.addLast(NettyNetworkConnectionFactory.JMS_CLIENT_HANDLER_KEY, new NettyJMSClientHandler());
+		}
 	}
 
 }

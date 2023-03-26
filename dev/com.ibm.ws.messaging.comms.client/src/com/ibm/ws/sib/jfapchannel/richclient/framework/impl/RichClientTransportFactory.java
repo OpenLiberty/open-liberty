@@ -94,12 +94,11 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         			// If Netty, create new Netty channel factory
         			// TODO: Consult with team. Getting error difference cause channelfw fails for testSSLFeatureUpdate
         			// in com.ibm.ws.messaging.open_comms_fat because SSL chain failed to init properly due to no SSL Options
-        			// Check what to do here appropriately
-        			// TODO verify SSL
+        			// Check what to do here appropriately see https://github.com/OpenLiberty/open-liberty/issues/24823
         			boolean usingSSL = chain.isSecureChain();
         			if(usingSSL && chain.getSecureFacet() == null)
         				throw new InvalidChainNameException("Chain configuration not found in framework, " + chainName);
-        			connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL?chain.getSecureFacet().copyConfig():null, usingSSL?chain.getTlsProviderService():null);
+        			connFactory = new NettyNetworkConnectionFactory(chainName, chain.getTcpOptions(), usingSSL?chain.getSecureFacet().copyConfig():null, usingSSL?chain.getNettyTlsProvider():null);
         		}else {
         			VirtualConnectionFactory vcFactory = requireService(CommsClientServiceFacade.class).getChannelFramework().getOutboundVCFactory(chainName);
         			connFactory = new CFWNetworkConnectionFactory(vcFactory);
@@ -148,7 +147,7 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         	// Get the virtual connection factory from the EP and wrap it in our implementation of
         	// the NetworkConnectionFactory interface
         	// TODO Check this out from a Netty endpoint perspective. Used for other types of connects. See CreateNewVirtualConnectionFactory in ConnectionDataGroup
-        	// If NOT Netty do the same as we've done
+        	// If NOT Netty do the same as we've done https://github.com/OpenLiberty/open-liberty/issues/22692
         	// TODO: Check this if its okay for chain name
         	String endPointName = ((CFEndPoint) endPoint).getName();
         	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(endPointName);
@@ -159,9 +158,9 @@ public class RichClientTransportFactory implements NetworkTransportFactory
         	else {
         		// If Netty return null until we figure this out
         		if (tc.isDebugEnabled())
-        			SibTr.debug(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
+        			SibTr.error(tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
         		// TODO: Question It might help more if it blow up here with an explicit string rather than return null "internal logic error"
-        		// Check if we can throw an error here
+        		// Check if we can throw an error here see https://github.com/OpenLiberty/open-liberty/issues/22692
         		return null;
         	}
         	
