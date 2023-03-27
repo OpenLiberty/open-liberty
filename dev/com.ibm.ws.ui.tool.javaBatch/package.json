@@ -6,7 +6,6 @@
   "dependencies": {
     "dojo": "^1.12.11",
     "d3": "^3.5.10",
-    "intern": "^2.2.2",
     "svg4everybody": "^2.1.9"
   }
 }
