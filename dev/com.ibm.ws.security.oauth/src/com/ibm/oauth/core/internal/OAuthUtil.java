@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.UUID;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Utility functions
@@ -129,6 +130,7 @@ public class OAuthUtil {
         return retVal;
     }
 
+    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
         Random result = null;
         try {
@@ -138,7 +140,7 @@ public class OAuthUtil {
                 result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
             }
         } catch (Exception e) {
-            result = new Random();
+            result = new SecureRandom();
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "getRandom() returns ["+result.getClass().getName()+"]");
