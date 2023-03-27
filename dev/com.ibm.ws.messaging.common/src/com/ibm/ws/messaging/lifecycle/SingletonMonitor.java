@@ -205,20 +205,27 @@ public class SingletonMonitor implements Introspector {
             debug(this, tc, "Pending singletons:  " + pending);
             debug(this, tc, "Realized singletons: " + realized);
         }
-        if (declaredSingletons.equals(realized)) return;
-        Set<String> missing = new TreeSet<>(declaredSingletons), blocked = pending, extra = realized;
-        blocked.removeAll(realized);
-        missing.removeAll(realized);
-        extra.removeAll(declaredSingletons);
-        Exception e = new IllegalStateException("Singleton mismatch detected:"
-                + "\n\tmissing: " + missing
-                + "\n\tblocked: " + blocked
-                + "\n\textra:   " + extra);
-        FFDCFilter.processException(e, SingletonMonitor.class.getName(), "addSingletonsReady");
+        
+        if (declaredSingletons.equals(realized)) {
+        	if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "addSingletonsReady");
+        	return;
+        }
+        
         if (singletonsReadyBindCount > singletonsReadyUnbindCount + 1) {
             // This bind call has arrived out of order with respect to a logicially preceding unbind call.
             // Clear the errors now, and not when the unbind happens.
             errors.clear();
+        } else {
+        	Set<String> missing = new TreeSet<>(declaredSingletons), blocked = pending, extra = realized;
+            blocked.removeAll(realized);
+            missing.removeAll(realized);
+            extra.removeAll(declaredSingletons);
+            Exception e = new IllegalStateException("Singleton mismatch detected:"
+                    + "\n\tmissing: " + missing
+                    + "\n\tblocked: " + blocked
+                    + "\n\textra:   " + extra);
+            errors.add("addSingletonsReady:" + e);
+           
         }
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "addSingletonsReady");
 
