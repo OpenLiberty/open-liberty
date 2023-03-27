@@ -130,7 +130,7 @@ public class ToolboxPersistenceTest extends CommonRESTTest implements APIConstan
             "CWWKX1031E:.*",
             "CWWKX1009E:.*",
             "CWWKX1030E:.*",
-            "SRVE8094W: WARNING: Cannot set header. Response already committed.*" 
+            "SRVE8094W:.*"
         );
     }
 
