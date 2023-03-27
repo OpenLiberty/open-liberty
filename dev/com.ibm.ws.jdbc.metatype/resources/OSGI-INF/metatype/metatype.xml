@@ -1401,7 +1401,6 @@
    <Option value="never"        label="never"/>
    <Option value="always"       label="always"/>
    <Option value="conservative" label="conservative"/>
-   <Option value="bogus"        label="bogus"/>
   </AD>  
  </OCD>
 
