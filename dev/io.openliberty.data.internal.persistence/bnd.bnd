@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,15 @@ Bundle-Description: Maps Jakarta Data to Jakarta Persistence; version=${bVersion
 
 WS-TraceGroup: data
 
-Import-Package: \
-  io.openliberty.data.internal,\
-  *
-
 Private-Package: \
   io.openliberty.data.internal.persistence.*,\
+  io.openliberty.data.internal.persistence.cdi.*,\
   io.openliberty.data.internal.persistence.resources.*
 
-Include-Resource:\
-  OSGI-INF=resources/OSGI-INF
+-cdiannotations:
 
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
--dsannotations: io.openliberty.data.internal.persistence.PersistenceDataProvider
+-dsannotations: \
+  io.openliberty.data.internal.persistence.cdi.DataExtensionProvider
 
 instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*.class
 
@@ -48,12 +43,15 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.threading,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
   io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.data.1.0,\
+  io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.transaction.2.0

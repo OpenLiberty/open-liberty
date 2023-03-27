@@ -10,19 +10,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.cdi;
+package io.openliberty.data.internal.persistence.cdi;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -32,9 +32,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.LibertyDataProvider;
+import io.openliberty.data.internal.persistence.EntityDefiner;
 import jakarta.data.Entities;
-import jakarta.data.provider.DataProvider;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;
@@ -47,8 +47,9 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.persistence.Entity;
 
-public class DataExtension implements Extension, PrivilegedAction<DataExtensionMetadata> {
+public class DataExtension implements Extension, PrivilegedAction<DataExtensionProvider> {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
 
     private final ArrayList<Entities> entitiesListsForTemplate = new ArrayList<>();
@@ -66,13 +67,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         private final String databaseId;
         private final int hash;
         private final ClassLoader loader;
-        private final DataProvider provider;
 
-        EntityGroupKey(String databaseId, ClassLoader loader, DataProvider provider) {
+        EntityGroupKey(String databaseId, ClassLoader loader) {
             this.loader = loader;
             this.databaseId = databaseId;
-            this.provider = provider;
-            hash = loader.hashCode() + databaseId.hashCode() + provider.hashCode();
+            hash = loader.hashCode() + databaseId.hashCode();
         }
 
         @Override
@@ -80,8 +79,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             EntityGroupKey k;
             return o instanceof EntityGroupKey
                    && databaseId.equals((k = (EntityGroupKey) o).databaseId)
-                   && loader.equals(k.loader)
-                   && provider.equals(k.provider);
+                   && loader.equals(k.loader);
         }
 
         @Override
@@ -102,63 +100,59 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
         AnnotatedType<T> type = event.getAnnotatedType();
-        repositoryTypes.add(type);
+
+        Repository repository = type.getAnnotation(Repository.class);
+        String provider = repository.provider();
+        if (Repository.ANY_PROVIDER.equals(provider) || "OpenLiberty".equalsIgnoreCase(provider)) // TODO provider name
+            repositoryTypes.add(type);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "annotatedRepository", type.getAnnotation(Repository.class).toString(), type.getJavaClass().getName());
+            Tr.debug(this, tc, "annotatedRepository", repository.toString(), type.getJavaClass().getName());
     }
 
     public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
-        DataExtensionMetadata svc = AccessController.doPrivileged(this);
+        DataExtensionProvider provider = AccessController.doPrivileged(this);
 
         // Group entities by data access provider and class loader
-        Map<EntityGroupKey, List<Class<?>>> entityGroups = new HashMap<>();
+        Map<EntityGroupKey, EntityDefiner> entityGroups = new HashMap<>();
 
         for (AnnotatedType<?> repositoryType : repositoryTypes) {
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             Class<?> entityClass = getEntityClass(repositoryInterface);
             ClassLoader loader = repositoryInterface.getClassLoader();
-            DataProvider provider = svc.getProvider(entityClass, loader);
 
-            EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
-            List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
-            if (entityClasses == null)
-                entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
+            if (supportsEntity(entityClass, repositoryType)) {
+                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader);
+                EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
+                if (entityDefiner == null)
+                    entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
 
-            entityClasses.add(entityClass);
+                entityDefiner.add(entityClass);
 
-            BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-            Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityClass));
-            repositoryBeans.add(bean);
+                BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
+                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>(beanMgr, provider, entityDefiner, entityClass));
+                repositoryBeans.add(bean);
+            }
         }
 
         for (Entities anno : entitiesListsForTemplate) {
             for (Class<?> entityClass : anno.value()) {
-                ClassLoader loader = entityClass.getClassLoader();
-                DataProvider provider = svc.getProvider(entityClass, loader);
+                if (supportsEntity(entityClass, null)) {
+                    ClassLoader loader = entityClass.getClassLoader();
+                    EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader); // TODO temporarily hard coded
+                    EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
+                    if (entityDefiner == null)
+                        entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
 
-                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
-                List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
-                if (entityClasses == null)
-                    entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
-
-                entityClasses.add(entityClass);
+                    entityDefiner.add(entityClass);
+                }
             }
         }
 
-        for (Entry<EntityGroupKey, List<Class<?>>> entry : entityGroups.entrySet()) {
-            EntityGroupKey entityGroupKey = entry.getKey();
-            List<Class<?>> entityClasses = entry.getValue();
-            if (entityGroupKey.provider instanceof LibertyDataProvider)
-                try {
-                    LibertyDataProvider provider = (LibertyDataProvider) entityGroupKey.provider;
-                    provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
-                } catch (Exception x) {
-                    x.printStackTrace();
-                    System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
-                }
+        for (EntityDefiner entityDefiner : entityGroups.values()) {
+            TemplateProducer.entityDefiner = entityDefiner; // TODO remove when Template is removed
+            provider.executor.submit(entityDefiner);
         }
-        // TODO copy remaining code for this method
     }
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
@@ -238,9 +232,43 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
      */
     @Override
     @Trivial
-    public DataExtensionMetadata run() {
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionMetadata.class).getBundleContext();
-        ServiceReference<DataExtensionMetadata> ref = bundleContext.getServiceReference(DataExtensionMetadata.class);
+    public DataExtensionProvider run() {
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
+        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
         return bundleContext.getService(ref);
+    }
+
+    /**
+     * Determine if the entity is supported by this provider based on
+     * it having the JPA Entity annotation or having no entity annotations.
+     *
+     * @param entityClass    entity class
+     * @param repositoryType repository type
+     * @return whether the entity type is supported by this provider.
+     */
+    private boolean supportsEntity(Class<?> entityClass, AnnotatedType<?> repositoryType) {
+        Annotation[] entityClassAnnos = entityClass.getAnnotations();
+
+        boolean hasEntityAnnos = false;
+        for (Annotation anno : entityClassAnnos) {
+            Class<? extends Annotation> annoClass = anno.annotationType();
+            if (annoClass.equals(Entity.class))
+                return true;
+            else if (annoClass.getSimpleName().endsWith("Entity"))
+                hasEntityAnnos = true;
+        }
+
+        boolean isSupported = !hasEntityAnnos;
+        if (hasEntityAnnos) {
+            Repository repository = repositoryType.getAnnotation(Repository.class);
+            if (!Repository.ANY_PROVIDER.equals(repository.provider()))
+                throw new MappingException("Open Liberty's built-in Jakarta Data provider cannot provide the " +
+                                           repositoryType.getJavaClass().getName() + " repository because the repository's " +
+                                           entityClass.getName() + " entity class includes an unrecognized entity annotation. " +
+                                           " The following annotations are found on the entity class: " + Arrays.toString(entityClassAnnos) +
+                                           ". Supported entity annotations are: " + Entity.class.getName() + "."); // TODO NLS
+        }
+
+        return isSupported;
     }
 }

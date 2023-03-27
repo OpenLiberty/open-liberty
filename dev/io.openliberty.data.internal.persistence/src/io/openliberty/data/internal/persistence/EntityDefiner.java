@@ -31,6 +31,8 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -60,20 +62,31 @@ import jakarta.persistence.metamodel.Type;
  * Runs asynchronously to supply orm.xml for entities that aren't already Jakarta Persistence entities
  * and to discover information about entities.
  */
-class EntityDefiner implements Runnable {
+public class EntityDefiner implements Runnable {
     private static final String EOLN = String.format("%n");
     private static final TraceComponent tc = Tr.register(EntityDefiner.class);
 
     private final String databaseId;
-    private final List<Class<?>> entities;
+    private final List<Class<?>> entities = new ArrayList<>();
+    final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
-    private final PersistenceDataProvider provider;
 
-    EntityDefiner(PersistenceDataProvider provider, String databaseId, ClassLoader loader, List<Class<?>> entities) {
-        this.provider = provider;
+    public EntityDefiner(String databaseId, ClassLoader loader) {
         this.databaseId = databaseId;
         this.loader = loader;
-        this.entities = entities;
+    }
+
+    /**
+     * Adds an entity class to be handled.
+     *
+     * @param entityClass entity class.
+     */
+    @Trivial
+    public void add(Class<?> entityClass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "add: " + entityClass.getName());
+
+        entities.add(entityClass);
     }
 
     /**
@@ -316,25 +329,25 @@ class EntityDefiner implements Runnable {
                                 idClassAttributeAccessors, //
                                 punit);
 
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
         } catch (Exception x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw new RuntimeException(x);
         } catch (Error x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
