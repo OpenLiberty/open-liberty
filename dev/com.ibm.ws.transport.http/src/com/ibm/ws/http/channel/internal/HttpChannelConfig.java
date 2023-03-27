@@ -920,7 +920,7 @@ public class HttpChannelConfig {
         Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE);
         if (null != value) {
             try {
-                if (convertLong(value) > Integer.MAX_VALUE || convertLong(value) < 65536) {
+                if (convertLong(value) > Integer.MAX_VALUE || convertLong(value) < 65535) {
                     throw new ArithmeticException();
                 }
                 this.http2ConnectionWindowSize = convertInteger(value);
