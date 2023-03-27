@@ -37,6 +37,6 @@ public class FATSuite extends TxTestContainerSuite {
 	@ClassRule
 	public static RepeatTests r = RepeatTests.withoutModification()
 	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
-	.andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
+	.andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DualServerDynamicDBRotationTest1.serverNames))
 	.andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames));
 }
