@@ -646,28 +646,81 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddable() {
-        houses.deleteById("TestEmbeddable-304-2288-60");
+        houses.deleteAll();
 
-        House h = new House();
-        h.area = 1800;
-        h.garage = new Garage();
-        h.garage.area = 200;
-        h.garage.door = new GarageDoor();
-        h.garage.door.setHeight(8);
-        h.garage.door.setWidth(10);
-        h.garage.type = Garage.Type.Attached;
-        h.kitchen = new Kitchen();
-        h.kitchen.length = 15;
-        h.kitchen.width = 12;
-        h.lotSize = 0.19f;
-        h.numBedrooms = 4;
-        h.parcelId = "TestEmbeddable-304-2288-60";
-        h.purchasePrice = 162000;
-        h.sold = Year.of(2018);
+        House h1 = new House();
+        h1.area = 1800;
+        h1.garage = new Garage();
+        h1.garage.area = 200;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(8);
+        h1.garage.door.setWidth(10);
+        h1.garage.type = Garage.Type.Attached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 15;
+        h1.kitchen.width = 12;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "TestEmbeddable-104-2288-60";
+        h1.purchasePrice = 162000;
+        h1.sold = Year.of(2018);
+        houses.save(h1);
 
-        houses.save(h);
+        House h2 = new House();
+        h2.area = 2000;
+        h2.garage = new Garage();
+        h2.garage.area = 220;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(8);
+        h2.garage.door.setWidth(12);
+        h2.garage.type = Garage.Type.Detached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 16;
+        h2.kitchen.width = 13;
+        h2.lotSize = 0.18f;
+        h2.numBedrooms = 4;
+        h2.parcelId = "TestEmbeddable-204-2992-20";
+        h2.purchasePrice = 188000;
+        h2.sold = Year.of(2020);
+        houses.save(h2);
 
-        h = houses.findById("TestEmbeddable-304-2288-60");
+        House h3 = new House();
+        h3.area = 1700;
+        h3.garage = new Garage();
+        h3.garage.area = 180;
+        h3.garage.door = new GarageDoor();
+        h3.garage.door.setHeight(8);
+        h3.garage.door.setWidth(9);
+        h3.garage.type = Garage.Type.TuckUnder;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 14;
+        h3.kitchen.width = 12;
+        h3.lotSize = 0.17f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "TestEmbeddable-304-3655-30";
+        h3.purchasePrice = 153000;
+        h3.sold = Year.of(2018);
+        houses.save(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 220;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(13);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 16;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestEmbeddable-404-4418-40";
+        h4.purchasePrice = 204000;
+        h4.sold = Year.of(2022);
+        houses.save(h4);
+
+        House h = houses.findById("TestEmbeddable-104-2288-60");
 
         assertNotNull(h.kitchen);
         assertEquals(15, h.kitchen.length);
@@ -681,7 +734,71 @@ public class DataTestServlet extends FATServlet {
         assertEquals(8, h.garage.door.getHeight());
         assertEquals(10, h.garage.door.getWidth());
 
-        assertEquals(1L, houses.deleteById("TestEmbeddable-304-2288-60"));
+        // Query and order by embeddable attributes
+
+        List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
+        assertEquals(found.toString(), 2, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        h = found.get(1);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
+        assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Update embeddable attributes
+
+        assertEquals(true, houses.updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30", null, 180, 2, 4));
+
+        h = houses.findById("TestEmbeddable-304-3655-30");
+        assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
+        assertEquals(1880, h.area);
+        // Null embeddables aren't required by JPA, but EclipseLink claims to support it as the default behavior.
+        // See https://wiki.eclipse.org/EclipseLink/UserGuide/JPA/Basic_JPA_Development/Entities/Embeddable#Nullable_embedded_values
+        // But it looks like EclipseLink has a bug here in that it only nulls out 1 of the fields of Garage, not all,
+        // JPQL: UPDATE House o SET o.garage=?2, o.area=o.area+?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms=?5 WHERE (o.parcelId=?1)
+        // SQL:  UPDATE WLPHouse SET NUMBEDROOMS = 4, AREA = (AREA + 180), GARAGEAREA = NULL, KITCHENLENGTH = (KITCHENLENGTH + 2) WHERE (PARCELID = 'TestEmbeddable-304-3655-30')
+        // This causes the following assertion to fail:
+        // assertEquals(null, h.garage);
+        // TODO re-enable the above if fixed
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+        assertEquals(0.17f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(153000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2018), h.sold);
+
+        assertEquals(2, houses.deleteAll());
     }
 
     /**
