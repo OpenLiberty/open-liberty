@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.jmock.Expectations;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -81,7 +79,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private final String idToken3Id = "idToken3";
     private final String customIdTokenId = "customIdToken";
 
-    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
     private final OAuth20Provider oauth20provider = mockery.mock(OAuth20Provider.class);
     private final OidcOAuth20ClientProvider clientProvider = mockery.mock(OidcOAuth20ClientProvider.class);
@@ -99,8 +96,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private LogoutTokenBuilder builder;
 
     private class MockLogoutTokenBuilder extends LogoutTokenBuilder {
-        public MockLogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
-            super(request, oidcServerConfig);
+        public MockLogoutTokenBuilder(OidcServerConfig oidcServerConfig) {
+            super(oidcServerConfig);
         }
 
         @Override
@@ -163,7 +160,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(idToken3Id));
             }
         });
-        builder = new MockLogoutTokenBuilder(request, oidcServerConfig);
+        builder = new MockLogoutTokenBuilder(oidcServerConfig);
     }
 
     @After
@@ -433,6 +430,23 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
             fail("Did not through the expected exception. Got: " + e);
         } catch (IdTokenDifferentIssuerException e) {
             verifyException(e, CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
+        }
+    }
+
+    @Test
+    public void test_verifyIssuer_emptyIss_noIssuerIdentifierConfigured() {
+        JwtClaims claims = getClaims(subject, "", client1Id);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(null));
+            }
+        });
+        try {
+            builder.verifyIssuer(claims);
+        } catch (Exception e) {
+            fail("Should not have thrown an exception but did: " + e);
         }
     }
 
@@ -1086,12 +1100,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_createLogoutTokenForClient_idTokenMissingSub() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         idTokenClaims.unsetClaim("sub");
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         try {
             String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
             fail("Should have thrown an exception but didn't. Got: " + logoutToken);
@@ -1103,12 +1111,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_createLogoutTokenForClient_idTokenContainsSub() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         setJwtCreationExpectations(client1, client1Secret);
 
         String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
@@ -1119,12 +1121,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_createLogoutTokenForClient_idTokenContainsSubAndSid() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         idTokenClaims.setStringClaim("sid", sid);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         setJwtCreationExpectations(client1, client1Secret);
 
         String logoutToken = builder.createLogoutTokenForClient(client1, idTokenClaims);
@@ -1134,12 +1130,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_populateLogoutTokenClaimsFromIdToken_subGoldenPath() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
 
         verifyLogoutTokenClaims(result, Arrays.asList(client1Id), subject, null);
@@ -1149,12 +1139,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_populateLogoutTokenClaimsFromIdToken_sidNotString() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         idTokenClaims.setClaim("sid", 123);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         try {
             JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
             fail("Should have thrown an exception but didn't. Got: " + result);
@@ -1167,29 +1151,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_populateLogoutTokenClaimsFromIdToken_subAndSidGoldenPath() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         idTokenClaims.setClaim("sid", sid);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
-
-        verifyLogoutTokenClaims(result, Arrays.asList(client1Id), subject, sid);
-    }
-
-    @Test
-    public void test_populateLogoutTokenClaimsFromIdToken_idTokenIssuerDifferent() throws Exception {
-        // Ensure that the server config's issuer value is used in the logout token, not the ID token's issuer.
-        // These two values should never be different since this server issued the ID token, but we can still check.
-        JwtClaims idTokenClaims = getClaims(subject, "some other issuer", client1Id);
-        idTokenClaims.setClaim("sid", sid);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
 
         verifyLogoutTokenClaims(result, Arrays.asList(client1Id), subject, sid);
@@ -1199,106 +1160,12 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_populateLogoutTokenClaimsFromIdToken_idTokenMissingSub() throws Exception {
         JwtClaims idTokenClaims = getClaims(subject, issuerIdentifier, client1Id);
         idTokenClaims.unsetClaim("sub");
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
         try {
             JwtClaims result = builder.populateLogoutTokenClaimsFromIdToken(client1, idTokenClaims);
             fail("Should have thrown an exception but didn't. Got: " + result);
         } catch (LogoutTokenBuilderException e) {
             verifyException(e, CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS + ".+" + "sub");
         }
-    }
-
-    @Test
-    public void test_getIssuer_configIncludesIssuerIdentifier() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(issuerIdentifier));
-            }
-        });
-        String result = builder.getIssuer();
-        assertEquals("Issuer value did not match expected value.", issuerIdentifier, result);
-    }
-
-    @Test
-    public void test_getIssuer_configMissingIssuerIdentifier_standardHttpPort() throws Exception {
-        final String scheme = "http";
-        final String serverName = "myserver";
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(80));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        String expectedIssuer = scheme + "://" + serverName + expectedIssuerPath;
-        String result = builder.getIssuer();
-        assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
-    }
-
-    @Test
-    public void test_getIssuer_configMissingIssuerIdentifier_standardHttpsPort() throws Exception {
-        final String scheme = "https";
-        final String serverName = "myserver";
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        String expectedIssuer = scheme + "://" + serverName + expectedIssuerPath;
-        String result = builder.getIssuer();
-        assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
-    }
-
-    @Test
-    public void test_getIssuer_configMissingIssuerIdentifier_nonStandardPort() throws Exception {
-        final String scheme = "https";
-        final String serverName = "myserver";
-        final int port = 98765;
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(port));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        String expectedIssuer = scheme + "://" + serverName + ":" + port + expectedIssuerPath;
-        String result = builder.getIssuer();
-        assertEquals("Issuer value did not match expected value.", expectedIssuer, result);
     }
 
     private void verifyCachedIdTokensMapContainsExpectedClients(Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens, OidcBaseClient... expectedClientEntries) {
