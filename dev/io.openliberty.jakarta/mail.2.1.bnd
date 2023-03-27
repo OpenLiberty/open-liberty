@@ -32,6 +32,3 @@ Import-Package: jakarta.activation;version="[2.1,3)", \
 
 -includeresource: \
   @${repo;jakarta.mail:jakarta.mail-api;2.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
-
--maven-dependencies: \
-   dep1;groupId=jakarta.mail;artifactId=jakarta.mail-api;version=2.1.1;scope=runtime

@@ -30,6 +30,3 @@ Import-Package: \
 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;3.0.1;EXACT}
-
--maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.rest.client;artifactId=microprofile-rest-client-api;version=3.0.1;scope=runtime

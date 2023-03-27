@@ -22,7 +22,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api;3.0.0;EXACT}
 
--maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.fault-tolerance;artifactId=microprofile-fault-tolerance-api;version=3.0.0;scope=runtime
-
 WS-TraceGroup: FAULTTOLERANCE
