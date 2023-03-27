@@ -32,7 +32,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -232,7 +231,6 @@ public class JSFSimpleHtmlUnit {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Skipped until MYFACES-4594 is pulled in
     @Test
     public void check_default_FACELETS_BUFFER_SIZE() throws Exception {
         try (WebClient webClient = new WebClient()) {
@@ -254,7 +252,6 @@ public class JSFSimpleHtmlUnit {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Skipped until MYFACES-4594 is pulled in
     @Test
     public void check_defaultLogging_AUTOCOMPLETE_OFF_VIEW_STATE() throws Exception {
         try (WebClient webClient = new WebClient()) {
