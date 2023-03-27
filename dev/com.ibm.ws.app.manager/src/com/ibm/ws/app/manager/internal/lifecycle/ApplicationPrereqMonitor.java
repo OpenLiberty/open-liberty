@@ -199,32 +199,27 @@ public class ApplicationPrereqMonitor implements Introspector {
             debug(this, tc, "Realized prereqs: " + realized);
         }
         if (declaredPrereqs.equals(realized)) return;
-        Set<String> missing = new TreeSet<>(declaredPrereqs), blocked = pending, extra = realized;
-        blocked.removeAll(realized);
-        missing.removeAll(realized);
-        extra.removeAll(declaredPrereqs);
-        try {
-            throw new IllegalStateException("Prereq mismatch detected:"
-                                            + "\n\tmissing: " + missing
-                                            + "\n\tblocked: " + blocked
-                                            + "\n\textra:   " + extra);
-        } catch (Exception ignored) {
-            // Auto FFDC the exception
+        if (appStartBarrierBindCount > appStartBarrierUnbindCount + 1) {
+            // This bind call has arrived out of order with respect to a logically preceding unbind call.
+            // Clear the errors now, and not when the unbind happens.
+            errors.clear();
+        } else {
+            Set<String> missing = new TreeSet<>(declaredPrereqs), blocked = pending, extra = realized;
+            blocked.removeAll(realized);
+            missing.removeAll(realized);
+            extra.removeAll(declaredPrereqs);
+            errors.add("addStartBarrier: prereq mismatch detected:"
+                    + "\n\tmissing: " + missing
+                    + "\n\tblocked: " + blocked
+                    + "\n\textra:   " + extra);
         }
-        // If the bind call arrived out of sequence, clear the errors
-        clearHistory(appStartBarrierBindCount > appStartBarrierUnbindCount + 1);
     }
 
     synchronized void removeStartBarrier(ApplicationStartBarrier ready) {
         appStartBarrierUnbindCount++;
         // StartBarrier is being removed, so either the server is shutting down or being reconfigured.
         // If the unbind arrived in sequence, clear the error history
-        clearHistory(appStartBarrierBindCount == appStartBarrierUnbindCount); 
-    }
-
-    // put this in a separate method to allow entry trace to log whether the condition is true or false
-    private void clearHistory(boolean condition) {
-        if (condition) errors.clear();
+        if (appStartBarrierBindCount == appStartBarrierUnbindCount) errors.clear(); 
     }
 
     @Override
