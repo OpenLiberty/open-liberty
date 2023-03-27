@@ -12,6 +12,23 @@
  *******************************************************************************/
 package io.openliberty.build.update;
 
+/**
+ * Update main API.
+ */
 public interface Update {
+    /**
+     * Run the update. Answer -1 in case of a failure when the
+     * fail-on-error setting is false. Otherwise, answer the count
+     * of updates which were performed.
+     *
+     * Single file type updates will answer -1, 0, or 1. Directory
+     * type updates are expected to answer -1 or the count of files
+     * which were updated.
+     *
+     * @return The count of files which were updated.
+     *
+     * @throws Exception Thrown in case of an error when fail-on-error
+     *                       is true.
+     */
     int run() throws Exception;
 }

@@ -16,6 +16,22 @@ import java.io.File;
 
 import io.openliberty.build.update.util.Logger;
 
+/**
+ * Main implementation for directory traversing updates.
+ *
+ * This implementation selects all simple files and uses
+ * the stub {@link UpdateFile} update implementation on each
+ * file. That update implementation does nothing, and always
+ * answers 0.
+ *
+ * Begin processing by logging the key parameters.
+ *
+ * Complete processing by logging counts of directories and
+ * files processed, selected, and updated.
+ *
+ * Subclasses should override {@link #getCriteria()} and
+ * {@link #createChildUpdate(File)}.
+ */
 public class UpdateDirectory extends UpdateImpl {
 
     public UpdateDirectory(File rootDir, File tmpDir) {
@@ -36,31 +52,25 @@ public class UpdateDirectory extends UpdateImpl {
 
     //
 
-    public File getRootDir() {
-        return getTargetFile();
-    }
-
-    //
-
     @Override
     public int run() throws Exception {
         String m = "run";
 
-        logMark(m, "Starting ...");
-        log(m, "  Input [ " + getTargetFile().getPath() + " ]");
-        log(m, "  Temp  [ " + getTmpDir().getPath() + " ]");
+        File useRootDir = getTargetFile();
+        File useTmpDir = getTmpDir();
+
+        logMark(m, "Root [ " + useRootDir.getPath() + " ]");
+        log(m, "Temp [ " + useTmpDir.getPath() + " ]");
 
         Stats useStats = getStats();
         useStats.reset();
 
-        updateDir(getRootDir());
+        updateDir(useRootDir);
 
-        logTime(m, "Completed:");
-        log(m, "  Criteria  [ " + getCriteria() + " ]");
-        log(m, "  All dirs  [ " + useStats.numDirs + " ]");
-        log(m, "  All Files [ " + useStats.numFiles + " ]");
-        log(m, "  Selected  [ " + useStats.numSelected + " ]");
-        log(m, "  Updated   [ " + useStats.numUpdated + " ]");
+        log(m, "Dirs  [ " + useStats.numDirs + " ]");
+        log(m, "Files [ " + useStats.numFiles + " ]");
+        log(m, "> Targets [ " + useStats.numSelected + " ] [ " + getCriteria() + " ]");
+        logTime(m, "> > Updated [ " + useStats.numUpdated + " ]");
 
         return useStats.numUpdated;
     }

@@ -16,6 +16,13 @@ import java.io.File;
 
 import io.openliberty.build.update.util.Logger;
 
+/**
+ * Main implementation for updating a single file.
+ *
+ * This implementation does nothing to the target file,
+ * and always answers 0, indicating that the target was
+ * not update.
+ */
 public class UpdateFile extends UpdateImpl {
 
     public UpdateFile(File targetFile, File tmpDir) {
@@ -56,6 +63,6 @@ public class UpdateFile extends UpdateImpl {
     public int basicRun() throws Exception {
         String m = "basicRun";
         log(m, "Stub: [ " + getTargetFile().getAbsolutePath() + " ]");
-        return 1;
+        return 0;
     }
 }

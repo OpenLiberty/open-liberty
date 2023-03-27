@@ -10,13 +10,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: Build Update POM
-Bundle-SymbolicName: build.update.pom
-Bundle-Description: Build Update POM Tasks; version=${bVersion}
+Bundle-Name: Update POM
+Bundle-SymbolicName: wlp-updatePom
+Bundle-Description: Update POM Tasks; version=${bVersion}
 
 # io.openliberty.build.update.pom.UpdatePomJars.UpdatePomJars
 # -- update all jars (*.jar) in a target directory
@@ -31,18 +30,19 @@ Bundle-Description: Build Update POM Tasks; version=${bVersion}
 #   UpdateX.<init>(File rootDir, String tmpPath, boolean failOnError)
 #   UpdateX.run() throws Exception
 
+globalize: false
+tool.project: true
 instrument.disabled: true
 publish.wlp.jar.disabled: true
 
 Export-Package: \
-    io.openliberty.build.update, \
-    io.openliberty.build.update.pom, \
-    io.openliberty.build.update.util
+  io.openliberty.build.update;version=1.0, \
+  io.openliberty.build.update.pom;version=1.0, \
+  io.openliberty.build.update.util;version=1.0
 
 -buildpath: \
   org.apache.maven:maven-model;version=3.6.3, \
-  org.codehaus.plexus:plexus-utils;version=3.2.1, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  org.codehaus.plexus:plexus-utils;version=3.2.1
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file

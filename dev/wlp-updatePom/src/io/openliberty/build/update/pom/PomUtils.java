@@ -25,6 +25,18 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 
+/**
+ * Low level POM utilities. These utilities are used to
+ * read and write POM data, and to modify the dependencies
+ * of POM data.
+ *
+ * This utility encodes the specification of development dependency
+ * group IDs which are to be removed, encodes the specification of
+ * dependency group IDs which are to be removed, and encodes the
+ * specification of dependency artifact IDs which are to be removed.
+ *
+ * TODO: Why these particular dependency group IDs and artifact IDS?
+ */
 public class PomUtils {
     // Low level POM utilities ...
 

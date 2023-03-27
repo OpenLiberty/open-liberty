@@ -21,13 +21,11 @@ import io.openliberty.build.update.UpdateRunner;
 import io.openliberty.build.update.util.Logger;
 
 /**
- * POMs processor:
+ * Update which adjusts the dependencies of the first "pom.xml" entry
+ * in archives in a target directory. Recursively update archives in
+ * the target directory and its sub-directories.
  *
- * Filter development dependencies from a POM stored in archives beneath
- * a target directory.
- *
- * Iteration is done here instead of in gradle to avoid extra java executions,
- * which are expensive.
+ * See {@link UpdatePomJar} for more information.
  */
 public class UpdatePomJars extends UpdateDirectory {
     public static UpdateFactory createUpdateFactory() {
@@ -72,6 +70,9 @@ public class UpdatePomJars extends UpdateDirectory {
 
     //
 
+    /**
+     * Select all ".jar" files.
+     */
     @Override
     public String getCriteria() {
         return "**/*.jar";
@@ -79,6 +80,8 @@ public class UpdatePomJars extends UpdateDirectory {
 
     @Override
     public boolean select(String targetPath) {
+        // 'endsWith' works fine, since the base name
+        // of the file is ignored.
         return targetPath.endsWith(".jar");
     }
 

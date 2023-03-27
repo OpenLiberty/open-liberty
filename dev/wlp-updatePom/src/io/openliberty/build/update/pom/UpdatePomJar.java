@@ -33,29 +33,22 @@ import io.openliberty.build.update.util.FileUtils;
 import io.openliberty.build.update.util.Logger;
 
 /**
- * POM processor:
+ * Update the dependencies of the first "pom.xml" entry of a single
+ * target archive.
  *
- * Filter development dependencies from a POM stored in an archive.
+ * Only select dependencies are removed, per {@link PomUtils#isDevGroup(Dependency)},
+ * {@link PomUtils#filterGroup(Dependency)} and {@link PomUtils#filterArtifact(Dependency)}.
  *
- * Usage:
+ * If no dependencies were removed, the target archive is not updated.
  *
- * <pre>
- *     io.openliberty.build.update.UpdatePomJar
- *         &lt;target&gt;
- *         %lt;tmp&gt;
- *         [ %lt;failOnError&gt; ]
- * </pre>
+ * If any dependencies were removed, rewrite the target file with
+ * newly serialized pom data which has the dependences taken out
  *
- * Processing reads the first "pom.xml" within a target archive, then
- * removes development dependencies from the loaded POM.
- *
- * If any dependencies were removed, the target archive is rewritten
- * with those dependencies removed from the POM.
- *
- * If no dependencies were removed, the target archive is left unchanged.
+ * The update to the target archive is done by writing an updated
+ * archive to a temporary location, then moving the new archive
+ * in place of the original file.
  *
  * See:
- *
  * https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#What_is_a_POM
  */
 public class UpdatePomJar extends UpdateFile {
@@ -133,7 +126,7 @@ public class UpdatePomJar extends UpdateFile {
     public int basicRun() throws Exception {
         String m = "basicRun";
 
-        logMark(m, "Reading POM");
+        logMark();
         Model pomModel = readPomFromTarget();
         if (pomModel == null) {
             logTime(m, "No POM");
@@ -147,7 +140,7 @@ public class UpdatePomJar extends UpdateFile {
             return 0;
         }
 
-        logTime(m, "Updating POM");
+        // logTime(m, "Updating POM");
         replacePom(PomUtils.writePom(updatedPomModel));
         logTime(m, "Updated POM");
 

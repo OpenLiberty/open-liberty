@@ -11,29 +11,19 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+def toolProject = parseBoolean(bnd.get('tool.project', 'false'))
 def testProject = parseBoolean(bnd.get('test.project', 'false'))
 def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
-def skipPoms = testProject || fatProject
+def skipPoms = toolProject || testProject || fatProject
 def failOnError = true
 
-// println "Project [ project ]: [ " + project + " ]"
-// println "  Test [ testProject ]: [ " + testProject + " ]"
-// println "  FAT [ fatProject ]: [ " + fatProject + " ]"
-// println "  Skip POMs [ skipPoms ]: [ " + skipPoms + " ]"
-// println "  Fail-on-error [ failOnError ]: [ " + failOnError + " ]"
-
-configurations {
-    cleanPomsClassPath
-}
-
-dependencies {
-  cleanPomsClassPath project(':build.cleanPom')
-}
-
 if ( !skipPoms ) {
-    task cleanPoms {
+    dependencies {
+        implementation project(':wlp-updatePom')
+    }
+
+    task updatePoms {
         dependsOn jar
-        dependsOn ':build.cleanPom:jar'
 
         def updateClassName = "io.openliberty.build.update.pom.UpdatePomJars"
 
@@ -41,45 +31,16 @@ if ( !skipPoms ) {
         def inputDir = project.buildDir
         def tmpDir = new File(project.buildDir, '../pomsTmp')
 
-        // println "Project  [ " + project + " ] Task [ cleanPoms ]"
-        // println "  Update [ " + updateClassName + " ]"
-        // println "  Input  [ " + inputDir + " ]"
-        // println "  Tmp    [ " + tmpDir + " ]"
-        // println "Classpath [ " + sourceSets.main.runtimeClasspath.files + "]" 
-
-        // Use of the URL class loader 'UpdatePomJars' to be run from
-        // ':build.cleanPom'.  See the commented out code, below, which should
-        // run in other projects.
-        //
-        // Even if disabled, the 'new UpdatePomJars' step doesn't compile,
-        // so using that code doesn't work even if it is disabled for the
-        // ':build.cleanPom' projects.
-
-        URL[] urls = sourceSets.main.runtimeClasspath.files.collect {
-            it.toURI().toURL()
-        }
-
         doLast {
-            def updateLoader = new URLClassLoader(urls, (ClassLoader) null)
-            Class updateClass = updateLoader.loadClass(updateClassName)
+            Class updateClass = Class.forName(updateClassName)
             def update = updateClass.newInstance(inputDir, tmpDir, failOnError)
             java.lang.reflect.Method runMethod = updateClass.getMethod("run")
             runMethod.invoke(update)
         }
     }
 
-    assemble.dependsOn cleanPoms
+    assemble.dependsOn updatePoms
 }
-
-/*
-  buildscript {
-      dependencies {
-          classpath project(':build.cleanPom')
-      }
-  }
-  def processor = new io.openliberty.build.update.UpdatePomJars(inputDir, tmpPath, failOnError)
-  processor.run()
- */
 
 def publishWlpJarDefault = testProject ? 'true' : 'false'
 

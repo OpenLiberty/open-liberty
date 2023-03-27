@@ -22,6 +22,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Basic file utilities.
+ */
 public class FileUtils {
     public static File ensure(File file) throws IOException {
         if (file.exists()) {

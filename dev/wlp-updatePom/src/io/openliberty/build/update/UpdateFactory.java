@@ -16,6 +16,12 @@ import java.io.File;
 
 import io.openliberty.build.update.util.Logger;
 
+/**
+ * Factory for updates. This factory consolidates common behavior for
+ * running updates from parameters.
+ *
+ * See {@link UpdateRunner#run(UpdateFactory, String[])}.
+ */
 public interface UpdateFactory {
     Class<? extends Update> getUpdateClass();
 
