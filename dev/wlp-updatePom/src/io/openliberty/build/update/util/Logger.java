@@ -74,7 +74,7 @@ public class Logger {
 
     private long markMs;
 
-    private long mark() {
+    public long mark() {
         long oldMarkMs = markMs;
         markMs = getTime();
         return (markMs - oldMarkMs);

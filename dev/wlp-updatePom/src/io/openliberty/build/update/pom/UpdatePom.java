@@ -31,7 +31,19 @@ import io.openliberty.build.update.util.FileUtils;
 import io.openliberty.build.update.util.Logger;
 
 /**
- * Filter development dependencies from a POM stored in an archive.
+ * Update which adjusts the dependencies of a single target POM file.
+ *
+ * Only select dependencies are removed, per {@link PomUtils#isDevGroup(Dependency)},
+ * {@link PomUtils#filterGroup(Dependency)} and {@link PomUtils#filterArtifact(Dependency)}.
+ *
+ * If no dependencies were removed, the target file is not updated.
+ *
+ * If any dependencies were removed, rewrite the target file with the
+ * dependences taken out. The write is done by writing to a temporary
+ * location, then moving the new file in place of the original file.
+ *
+ * See:
+ * https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#What_is_a_POM
  */
 public class UpdatePom extends UpdateFile {
 

@@ -16,6 +16,20 @@ import java.io.File;
 
 import io.openliberty.build.update.util.Logger;
 
+/**
+ * Common update implementation.
+ *
+ * Common update properties:
+ *
+ * <ul>
+ * <li>A target file, which may be a simple file or a directory.</li>
+ * <li>A directory for temporary files.</li>
+ * <li>An optional parent logger.</li>
+ * <li>An fail-on-error setting, which defaults to true.</li>
+ * </ul>
+ *
+ * The main {@link #run()} API must be implemented by classes.
+ */
 public abstract class UpdateImpl implements Update {
     public UpdateImpl(File targetPath, File tmpDir) {
         this(targetPath, tmpDir, null, FAIL_ON_ERROR);
@@ -57,6 +71,10 @@ public abstract class UpdateImpl implements Update {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public void logMark() {
+        logger.mark();
     }
 
     public void log(String m, String text) {
