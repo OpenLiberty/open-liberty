@@ -32,11 +32,11 @@ import org.apache.myfaces.util.lang.StringUtils;
 
 public class WebConfigParamsLogger
 {
-    private static final Logger log = Logger.getLogger(WebConfigParamsLogger.class.getName());
+    private final Logger log = Logger.getLogger(WebConfigParamsLogger.class.getName());
 
-    private static Boolean LOG_WEB_CONTEXT_PARAM = false;
+    private Boolean LOG_WEB_CONTEXT_PARAM = false;
 
-    public static void logWebContextParams(FacesContext facesContext)
+    public void logWebContextParams(FacesContext facesContext)
     {
         MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(facesContext.getExternalContext());
 
@@ -2290,7 +2290,7 @@ public class WebConfigParamsLogger
         }
     }
 
-    private static void logMessageToAppropriateLevel(String text)
+    private void logMessageToAppropriateLevel(String text)
     {
         if(LOG_WEB_CONTEXT_PARAM && log.isLoggable(Level.INFO))
         {
