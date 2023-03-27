@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
@@ -20,10 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.OSSkipRules.SkipIfISeries;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ClientTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -52,6 +56,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class OidcClientWasReqURLTests extends CommonTest {
 
     public static Class<?> thisClass = OidcClientWasReqURLTests.class;
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     private static final String opServerConfig = "op_server_orig.xml";
     private static final String localHost = "localhost";
@@ -155,6 +162,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void OidcClientWasReqURLTests_wasReqUrl_NotSet_updateCookieTo_localHostName() throws Exception {
 
@@ -230,6 +238,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_updateCookieTo_localHostName() throws Exception {
 
@@ -310,6 +319,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostName() throws Exception {
 
@@ -392,6 +402,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void OidcClientWasReqURLTests_wasReqUrl_setToOther_updateCookieTo_localHostName() throws Exception {
 
@@ -780,14 +791,14 @@ public class OidcClientWasReqURLTests extends CommonTest {
                                                                  "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
 
         switch (expectedResult) {
-            case SUCCESS:
-                expectations = vData.addSuccessStatusCodes(expectations);
+        case SUCCESS:
+            expectations = vData.addSuccessStatusCodes(expectations);
                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES,
                                                     "Did not receive " + Constants.IDToken_STR + " in the response.", null, Constants.IDToken_STR);
-                break;
-            case INVALID_COOKIE:
-                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
+            break;
+        case INVALID_COOKIE:
+            expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
                                                     "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
                                                     MessageConstants.CWOAU0073E_FRONT_END_ERROR);
@@ -795,28 +806,28 @@ public class OidcClientWasReqURLTests extends CommonTest {
                                                                      "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
                                                                      MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
 
-                break;
-            case EXCEPTION:
-                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-		// have been getting an exception with "timed out" in it, now we have a jdk that is returning "timeout"
-		// the exception checking code can't handle matches (to use ".*time.*out.*") so, we'll use 2 checks
+            break;
+        case EXCEPTION:
+            expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+            // have been getting an exception with "timed out" in it, now we have a jdk that is returning "timeout"
+            // the exception checking code can't handle matches (to use ".*time.*out.*") so, we'll use 2 checks
                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time outexception",
                                                     null, "time");
                  expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time out exception",
                                                     null, "out");
-               break;
-            case MISSING_COOKIE:
-                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
+            break;
+        case MISSING_COOKIE:
+            expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
                                                     "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
                                                     MessageConstants.CWOAU0073E_FRONT_END_ERROR);
                 expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
                                                                      "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
                                                                      MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
-                break;
-            default:
-                break;
+            break;
+        default:
+            break;
         }
 
         WebConversation wc = new WebConversation();
