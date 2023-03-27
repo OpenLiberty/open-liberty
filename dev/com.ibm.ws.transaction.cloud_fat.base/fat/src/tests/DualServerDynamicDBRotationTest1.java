@@ -31,7 +31,7 @@ import servlets.Simple2PCCloudServlet;
 @Mode
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
-@SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+@SkipIfSysProp("db2.on.iseries")
 public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")

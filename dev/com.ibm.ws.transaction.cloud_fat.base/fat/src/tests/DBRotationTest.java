@@ -48,8 +48,8 @@ import componenttest.topology.utils.FATServletClient;
 import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
+@SkipIfSysProp("db2.on.iseries")
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
-@SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
 public class DBRotationTest extends FATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 

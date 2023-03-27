@@ -12,6 +12,8 @@
  *******************************************************************************/
 package suite;
 
+import java.util.Locale;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,17 +29,21 @@ import tests.DualServerDynamicDBRotationTest2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	AlwaysPassesTest.class,
 	DualServerDynamicDBRotationTest2.class,
 })
 public class FATSuite extends TxTestContainerSuite {
+    private static final boolean isISeries = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");
 
 	static {
 		databaseContainerType = DatabaseContainerType.DB2;
+		
+		if (isISeries) System.setProperty("db2.on.iseries", "true");
 	}
 
 	@ClassRule
-	public static RepeatTests r = RepeatTests.withoutModification()
+	public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
 	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-	.andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-	.andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames));
+	.andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DualServerDynamicDBRotationTest2.serverNames))
+	.andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerDynamicDBRotationTest2.serverNames));
 }
