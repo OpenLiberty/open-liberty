@@ -1577,22 +1577,22 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             if ((settings.getRSSettings() != null) && (startPage != null)) {
                 String samlNameForHeader = settings.getRSSettings().getHeaderName();
                 if (samlNameForHeader != null) {
-                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_1)) {
+                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE)) {
                         con.setRequestProperty("saml_name", authString);
                         con.setRequestProperty(authString, samlNameForHeader + "=" + samlValue);
                         Log.info(thisClass, thisMethod, "Header format 1: " + authString + "=" + samlNameForHeader + "=" + samlValue);
                     }
-                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_2)) {
+                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE)) {
                         con.setRequestProperty("saml_name", authString);
                         con.setRequestProperty(authString, samlNameForHeader + "=\"" + samlValue + "\"");
                         Log.info(thisClass, thisMethod, "Header format 2: " + authString + "=" + samlNameForHeader + "=\"" + samlValue + "\"");
                     }
-                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_3)) {
+                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE)) {
                         con.setRequestProperty("saml_name", authString);
                         con.setRequestProperty(authString, samlNameForHeader + " " + samlValue);
                         Log.info(thisClass, thisMethod, "Header format 3: " + authString + "=" + samlNameForHeader + " " + samlValue);
                     }
-                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.SAML_HEADER_4)) {
+                    if (settings.getRSSettings().getHeaderFormat().equals(SAMLConstants.HEADER_FORMAT_NAME_EQUALS_VALUE)) {
                         con.setRequestProperty("saml_name", samlNameForHeader);
                         con.setRequestProperty(samlNameForHeader, samlValue);
                         Log.info(thisClass, thisMethod, "Header format 4: " + samlNameForHeader + "=" + samlValue);
