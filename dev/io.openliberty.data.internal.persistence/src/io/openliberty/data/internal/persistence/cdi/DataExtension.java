@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.persistence.EntityDefiner;
-import jakarta.data.Entities;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
@@ -51,8 +50,6 @@ import jakarta.persistence.Entity;
 
 public class DataExtension implements Extension, PrivilegedAction<DataExtensionProvider> {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
-
-    private final ArrayList<Entities> entitiesListsForTemplate = new ArrayList<>();
 
     private final ArrayList<Bean<?>> repositoryBeans = new ArrayList<>();
 
@@ -86,15 +83,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         public int hashCode() {
             return hash;
         }
-    }
-
-    @Trivial
-    public <T> void annotatedEntitiesForTemplate(@Observes @WithAnnotations(Entities.class) ProcessAnnotatedType<T> event) {
-        AnnotatedType<T> type = event.getAnnotatedType();
-        entitiesListsForTemplate.add(type.getAnnotation(Entities.class));
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "annotatedEntitiesForTemplate", type.getAnnotation(Entities.class).toString(), type.getJavaClass().getName());
     }
 
     @Trivial
@@ -135,22 +123,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             }
         }
 
-        for (Entities anno : entitiesListsForTemplate) {
-            for (Class<?> entityClass : anno.value()) {
-                if (supportsEntity(entityClass, null)) {
-                    ClassLoader loader = entityClass.getClassLoader();
-                    EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader); // TODO temporarily hard coded
-                    EntityDefiner entityDefiner = entityGroups.get(entityGroupKey);
-                    if (entityDefiner == null)
-                        entityGroups.put(entityGroupKey, entityDefiner = new EntityDefiner(entityGroupKey.databaseId, loader));
-
-                    entityDefiner.add(entityClass);
-                }
-            }
-        }
-
         for (EntityDefiner entityDefiner : entityGroups.values()) {
-            TemplateProducer.entityDefiner = entityDefiner; // TODO remove when Template is removed
             provider.executor.submit(entityDefiner);
         }
     }

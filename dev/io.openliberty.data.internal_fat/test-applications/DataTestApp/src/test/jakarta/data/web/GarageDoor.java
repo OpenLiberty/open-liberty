@@ -10,14 +10,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.template.web;
+package test.jakarta.data.web;
 
 /**
- * A simple embeddable without annotations.
+ * A simple embeddable without annotations that is nesetd 2 levels deep.
  */
-public class Kitchen {
+public class GarageDoor {
 
-    public int length;
+    private int height;
 
-    public int width;
+    private int width;
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }
