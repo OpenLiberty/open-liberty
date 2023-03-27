@@ -26,9 +26,15 @@ public interface Houses {
 
     long deleteById(String parcel);
 
+    long deleteByKitchenWidthGreaterThan(int widthAbove);
+
     boolean existsById(String parcel);
+
+    List<House> findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type type);
 
     House findById(String parcel);
 
     List<House> save(House... h);
+
+    boolean updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
 }
