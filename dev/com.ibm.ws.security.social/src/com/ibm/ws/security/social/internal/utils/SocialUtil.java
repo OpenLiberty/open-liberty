@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.cred.WSCredential;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
@@ -116,6 +117,7 @@ public class SocialUtil {
     }
 
     @Trivial
+    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
         Random result = null;
         try {
@@ -125,7 +127,7 @@ public class SocialUtil {
                 result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
             }
         } catch (Exception e) {
-            result = new Random();
+            result = new SecureRandom();
         }
         return result;
     }
