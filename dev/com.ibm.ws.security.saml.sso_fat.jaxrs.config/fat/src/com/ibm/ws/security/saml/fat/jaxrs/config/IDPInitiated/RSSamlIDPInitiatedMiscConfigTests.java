@@ -193,7 +193,7 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
     @Test
     public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderEqualsValue() throws Exception {
 
-        common_headerName_withSpaces(SAMLConstants.SAML_HEADER_1, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
     }
 
     /**
@@ -204,18 +204,18 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
     @Test
     public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderEqualsQuotedValue() throws Exception {
 
-        common_headerName_withSpaces(SAMLConstants.SAML_HEADER_2, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
     }
 
-     /**
+    /**
      * Pass header as Authorization=<header> <value>
      *
      * @throws Exception
      */
-   @Test
+    @Test
     public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderSpaceValue() throws Exception {
 
-        common_headerName_withSpaces(SAMLConstants.SAML_HEADER_3, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
     }
 
     /**
@@ -227,7 +227,7 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
     @Test
     public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatNoAuthHeaderEqualsValue() throws Exception {
 
-        common_headerName_withSpaces(SAMLConstants.SAML_HEADER_4, "Some value with  spaces.", SAMLConstants.BAD_REQUEST_STATUS);
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_NAME_EQUALS_VALUE, "Some value with  spaces.", SAMLConstants.BAD_REQUEST_STATUS);
     }
 
     /**************************************
