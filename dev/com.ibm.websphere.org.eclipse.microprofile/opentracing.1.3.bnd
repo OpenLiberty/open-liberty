@@ -25,7 +25,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;1.3;EXACT}
 
- -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.opentracing;artifactId=microprofile-opentracing-api;version=1.3;scope=runtime
-
 WS-TraceGroup: OPENTRACING

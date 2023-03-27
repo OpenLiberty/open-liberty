@@ -25,7 +25,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.metrics:microprofile-metrics-api;4.0.0;EXACT}
 
--maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.metrics;artifactId=microprofile-metrics-api;version=4.0.0;scope=runtime
-
 WS-TraceGroup: METRICS

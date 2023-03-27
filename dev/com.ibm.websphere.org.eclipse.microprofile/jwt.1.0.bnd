@@ -29,6 +29,3 @@ Export-Package: org.eclipse.microprofile.jwt;version=1.0,\
                 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.jwt:microprofile-jwt-auth-api;1.0;EXACT}
-
- -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.jwt;artifactId=microprofile-jwt-auth-api;version=1.0;scope=runtime

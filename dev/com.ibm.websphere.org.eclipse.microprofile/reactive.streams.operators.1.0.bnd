@@ -30,8 +30,4 @@ Include-Resource: \
   @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api;1.0.1;EXACT}, \
   @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core;1.0.1;EXACT}
 
- -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.reactive-streams-operators;artifactId=microprofile-reactive-streams-operators-api;version=1.0.1;scope=runtime, \
-   dep2;groupId=org.eclipse.microprofile.reactive-streams-operators;artifactId=microprofile-reactive-streams-operators-core;version=1.0.1;scope=runtime
-
 WS-TraceGroup: REACTIVESTREAMS
