@@ -10,27 +10,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.template.web;
-
-import java.time.Year;
+package test.jakarta.data.web;
 
 /**
- * A simple entity without annotations.
+ * A simple entity, unannotated.
  */
-public class House {
-    public int area;
+public class Vehicle {
+    public String make;
 
-    public Garage garage;
+    public String model;
 
-    public Kitchen kitchen;
+    public int numSeats;
 
-    public float lotSize;
+    public float price;
 
-    public int numBedrooms;
-
-    public String parcelId;
-
-    public float purchasePrice;
-
-    public Year sold;
+    public String vinId;
 }

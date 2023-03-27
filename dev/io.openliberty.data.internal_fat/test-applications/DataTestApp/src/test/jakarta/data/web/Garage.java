@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data;
+package test.jakarta.data.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+/**
+ * An embeddable without annotations at depth 1, with a field that is another embeddable type.
+ */
+public class Garage {
+    public static enum Type {
+        Attached, Detached, TuckUnder
+    };
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+    public int area;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AlwaysPassesTest.class,
-                DataTest.class
-})
-public class FATSuite {
+    public GarageDoor door;
+
+    public Type type;
 }
