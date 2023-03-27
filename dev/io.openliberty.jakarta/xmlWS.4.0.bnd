@@ -28,7 +28,3 @@ Import-Package: jakarta.xml.bind.*; version="[4.0,5)", \
 
 -includeresource: \
    @${repo;jakarta.xml.ws:jakarta.xml.ws-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
-
--maven-dependencies: \
-   dep1;groupId=jakarta.xml.ws;artifactId=jakarta.xml.ws-api;version=4.0.0;scope=runtime
-

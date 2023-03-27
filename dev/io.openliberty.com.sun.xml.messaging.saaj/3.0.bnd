@@ -36,9 +36,6 @@ Import-Package: \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
   @${repo;com.sun.xml.messaging.saaj:saaj-impl;3.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
 
--maven-dependencies: \
-   dep1;groupId=com.sun.xml.messaging.saaj;artifactId=saaj-impl;version=3.0.0;scope=runtime
-
 app-resources= \
   META-INF/services/jakarta.xml.soap.SOAPFactory | \
   META-INF/services/jakarta.xml.soap.SOAPConnectionFactory | \

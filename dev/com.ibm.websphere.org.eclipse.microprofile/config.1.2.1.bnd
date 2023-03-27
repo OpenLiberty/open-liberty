@@ -27,7 +27,4 @@ Export-Package: \
 Include-Resource: \
   @${repo;org.eclipse.microprofile.config:microprofile-config-api;1.2.1;EXACT}
 
--maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.config;artifactId=microprofile-config-api;version=1.2.1;scope=runtime
-
 WS-TraceGroup: APPCONFIG

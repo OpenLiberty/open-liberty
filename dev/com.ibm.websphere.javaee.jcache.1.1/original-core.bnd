@@ -24,6 +24,3 @@ Include-Resource: \
 
 -buildpath: \
 	javax.cache:cache-api;version=1.1.0
-
--maven-dependencies: \
-   dep1;groupId=javax.cache;artifactId=cache-api;version=1.1.0;scope=runtime

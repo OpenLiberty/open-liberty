@@ -24,7 +24,3 @@ Export-Package: jakarta.security.jacc;version=2.1.0
 
 -includeresource: \
    @${repo;jakarta.authorization:jakarta.authorization-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
-
--maven-dependencies: \
-   dep1;groupId=jakarta.authorization;artifactId=jakarta.authorization-api;version=2.1.0;scope=runtime
-
