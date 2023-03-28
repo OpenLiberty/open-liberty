@@ -24,6 +24,14 @@ javac.target: 11
 
 fat.minimum.java.level: 11
 fat.project: true
+fat.test.databases: true
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+# Uncomment to test against alternative databases
+# Options: Derby, Postgres, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgres
 
 -sub: *.bnd
 
@@ -40,6 +48,7 @@ fat.project: true
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+  fattest.simplicity;version=latest,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
@@ -47,4 +56,5 @@ fat.project: true
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.servlet.6.0;version=latest,\
-  io.openliberty.jakarta.transaction.2.0;version=latest
+  io.openliberty.jakarta.transaction.2.0;version=latest,\
+  io.openliberty.org.testcontainers;version=latest
