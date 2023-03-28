@@ -6,6 +6,8 @@ singleton=true
   io.openliberty.io.netty, \
   io.openliberty.io.netty.ssl
 -bundles=\
+  com.ibm.ws.wsbytebuffer, \
+  io.openliberty.endpoint, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl
 kind=noship

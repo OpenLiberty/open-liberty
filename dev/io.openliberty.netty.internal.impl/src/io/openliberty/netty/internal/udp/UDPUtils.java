@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
 
@@ -90,14 +87,16 @@ public class UDPUtils {
                 // add the new channel to the set of active channels, and set a close future to
                 // remove it
                 final Channel channel = bindFuture.channel();
-                framework.getActiveChannels().add(bindFuture.channel());
-                channel.closeFuture().addListener(innerFuture -> framework.stop(channel));
+                framework.getActiveChannels().add(channel);
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
                 channel.attr(ConfigConstants.HOST_KEY).set(newHost);
                 channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInboundChannel());
+
+                channel.closeFuture().addListener(innerFuture -> framework.stop(channel));
+
                 
                 // set up a helpful log message
                 String hostLogString = newHost;

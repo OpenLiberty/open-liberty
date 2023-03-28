@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
 
@@ -83,16 +80,16 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
     @Override
     public void applyConfiguration(Bootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
-
-        if ((getReceiveBufferSize() >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
-                && (getReceiveBufferSize() <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
+        int receiveBufferSize = getReceiveBufferSize();
+        if ((receiveBufferSize >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
+                && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "setting receive buffer to size " + getReceiveBufferSize());
+                Tr.debug(tc, "setting receive buffer to size " + receiveBufferSize);
             }
             //SO_RCVBUF - size of buffer that holds the datagrams the client hasn't read yet
-            bootstrap.option(ChannelOption.SO_RCVBUF, getReceiveBufferSize());
+            bootstrap.option(ChannelOption.SO_RCVBUF, receiveBufferSize);
             //set common RCVBUF_ALLOCATOR strategy 
-            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(getReceiveBufferSize()));
+            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(receiveBufferSize));
         }
         if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)
                 && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {
@@ -377,7 +374,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
         this.channelReceiveBufferSize = size;
         if (size < 0 || size > UDPConfigConstants.MAX_UDP_PACKET_SIZE) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Channel Receive buffer size not within Limits: " + size + " setting to default: "
+                Tr.debug(tc, "Channel Receive buffer size not within Limits: " + size + " setting to possible maximum value: "
                         + UDPConfigConstants.MAX_UDP_PACKET_SIZE);
             }
             this.channelReceiveBufferSize = UDPConfigConstants.MAX_UDP_PACKET_SIZE;

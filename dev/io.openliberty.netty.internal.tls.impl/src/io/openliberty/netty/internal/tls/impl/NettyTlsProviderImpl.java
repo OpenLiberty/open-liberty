@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- * 
  *******************************************************************************/
 package io.openliberty.netty.internal.tls.impl;
 
@@ -52,7 +51,7 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
     static final String ALIAS_KEY = "alias";
     
     /**
-     * DS deactivate
+     * DS activate
      * 
      * @param ctx
      * @param reason
@@ -65,7 +64,7 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
     }
     
     /**
-     * DS deactivate
+     * DS modified
      * 
      * @param ctx
      * @param reason
@@ -111,8 +110,8 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
                 Tr.debug(tc, "getOutboundSSLContext SSLContext:", jdkContext);
             }
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOutboundSSLContext exception caught creating SSLContext: " + e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getOutboundSSLContext exception caught creating SSLContext: " + e);
             }
             return null;
         }
@@ -122,15 +121,15 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
                     null, ClientAuth.OPTIONAL, null, false);
             return nettyContext;
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getOutboundSSLContext exception caught creating JdkSslContext: " + e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getOutboundSSLContext exception caught creating JdkSslContext: " + e);
             }
             return null;
         }
     }
 
     /**
-     * Build a {@link io.netty.handler.ssl.SslContext} for an intbound connection
+     * Build a {@link io.netty.handler.ssl.SslContext} for an inbound connection
      * 
      * @param Map<String, Object> sslOptions
      * @param String host
@@ -143,7 +142,9 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         try {
             jdkContext = getSSLContext(port, createProps(sslOptions), true, host, port, port, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundSSLContext exception caught creating SSLContext: " + e);
+            }
             return null;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -154,8 +155,8 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
                     null, ClientAuth.OPTIONAL, null, false);
             return nettyContext;
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getInboundSSLContext exception caught creating JdkSslContext: " + e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundSSLContext exception caught creating JdkSslContext: " + e);
             }
             return null;
         }
