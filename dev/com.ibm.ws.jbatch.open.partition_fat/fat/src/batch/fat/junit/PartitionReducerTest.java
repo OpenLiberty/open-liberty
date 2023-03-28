@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package batch.fat.junit;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.json.JsonObject;
@@ -23,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jbatch.test.BatchAppUtils;
 import com.ibm.ws.jbatch.test.BatchRestUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
@@ -87,6 +89,17 @@ public class PartitionReducerTest extends BatchFATHelper {
 
         assertTrue(exitStatus.contains("rollbackPartitionedStep"));
 
+        // log these for some debugging if possible
+        List<String> ffdclist = server.listFFDCFiles(server.getServerName());
+        for (int i = 0; i < ffdclist.size(); i++) {
+            log("testPartitionReducerMethodsForceFailure", "ffdc: " + ffdclist.get(i));
+        }
+
+        ffdclist = server.listFFDCSummaryFiles(server.getServerName());
+        for (int i = 0; i < ffdclist.size(); i++) {
+            log("testPartitionReducerMethodsForceFailure", "ffdc summary: " + ffdclist.get(i));
+        }
+
     }
 
     @Test
@@ -107,6 +120,10 @@ public class PartitionReducerTest extends BatchFATHelper {
         String exitStatus = stepExecution.getString("exitStatus");
         assertTrue(exitStatus.contains("beforePartitionedStepCompletion"));
 
+    }
+
+    private static void log(String method, String msg) {
+        Log.info(PartitionReducerTest.class, method, msg);
     }
 
 }
