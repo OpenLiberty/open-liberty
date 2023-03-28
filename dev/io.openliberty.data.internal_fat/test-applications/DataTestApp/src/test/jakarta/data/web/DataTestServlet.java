@@ -534,31 +534,33 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Delete multiple entries.
+     * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
     @Test
-    public void testDeleteMultiple() {
+    public void testDefaultRepositoryMethod() {
+        products.clear();
+
         Product prod1 = new Product();
         prod1.id = "TDM-SE";
-        prod1.name = "TestDeleteMultiple Standard Edition";
+        prod1.name = "TestDefaultRepositoryMethod Standard Edition";
         prod1.price = 115.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDM-AE";
-        prod2.name = "TestDeleteMultiple Advanced Edition";
+        prod2.name = "TestDefaultRepositoryMethod Advanced Edition";
         prod2.price = 197.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDM-EE";
-        prod3.name = "TestDeleteMultiple Expanded Edition";
+        prod3.name = "TestDefaultRepositoryMethod Expanded Edition";
         prod3.price = 153.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDM-NFE";
-        prod4.name = "TestDeleteMultiple Nearly Free Edition";
+        prod4.name = "TestDefaultRepositoryMethod Nearly Free Edition";
         prod4.price = 1.99f;
         products.save(prod4);
 
@@ -567,6 +569,19 @@ public class DataTestServlet extends FATServlet {
         // expect that 2 remain
         assertNotNull(products.findItem("TDM-SE"));
         assertNotNull(products.findItem("TDM-EE"));
+
+        // In the future it will only be possible to run this on Java 21+
+        // and then the following condition can be removed so that this part of the test always runs:
+        if (Runtime.version().feature() >= 17) {
+            // Use custom method:
+            Product removed = products.remove("TDM-SE");
+            assertEquals("TestDefaultRepositoryMethod Standard Edition", removed.name);
+
+            assertEquals(false, products.findById("TDM-SE").isPresent());
+            assertEquals(true, products.findById("TDM-EE").isPresent());
+        }
+
+        products.clear();
     }
 
     /**
