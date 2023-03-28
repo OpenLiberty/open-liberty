@@ -867,6 +867,9 @@ criuEnvDefaults() {
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+  # Disable CRIU's use of HW breakpoints on restore.
+  # HW breakpoints are slower in some environments.
+  export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
 }
 
 ##
