@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -36,7 +35,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 import suite.FATSuite;
 import web.FailoverServlet;
 
@@ -119,7 +117,7 @@ import web.FailoverServlet;
  */
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
-public class FailoverTestLease extends FATServletClient {
+public class FailoverTestLease extends FailoverTest {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/FailoverServlet";
@@ -135,9 +133,7 @@ public class FailoverTestLease extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.beforeSuite();
-
-        TxShrinkHelper.buildDefaultApp(retriableCloudServer, APP_NAME, APP_PATH, "web");
+        FailoverTest.commonSetUp(FailoverTestLease.class.getName());
     }
 
     @AfterClass
@@ -168,6 +164,7 @@ public class FailoverTestLease extends FATServletClient {
         FATUtils.startServers(runner, retriableCloudServer);
     }
 
+    @Override
     @After
     public void cleanup() throws Exception {
 

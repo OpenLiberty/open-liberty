@@ -100,7 +100,7 @@ public class DBRotationTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
-        TxTestContainerSuite.beforeSuite();
+
         final WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
         final DeployOptions[] dO = new DeployOptions[0];
 

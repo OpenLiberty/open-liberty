@@ -26,8 +26,10 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SimpleFS2PCCloudTest.serverNames))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                    .forServers(SimpleFS2PCCloudTest.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(SimpleFS2PCCloudTest.serverNames));
 }

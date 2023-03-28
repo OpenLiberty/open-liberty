@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,11 +41,9 @@ import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import servlets.SimpleFS2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 public class SimpleFS2PCCloudTest extends FATServletClient {
@@ -58,16 +56,19 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
     protected static final int FScloud2ServerPort = 9992;
 
     @Server("FSCLOUD001")
-    @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1;
 
     @Server("FSCLOUD002")
-    @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
     @Server("longLeaseLengthFSServer1")
-    @TestServlet(servlet = SimpleFS2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseLengthFSServer1;
+
+    public static String[] serverNames = new String[] {
+                                                        "FSCLOUD001",
+                                                        "FSCLOUD001",
+                                                        "longLeaseLengthFSServer1",
+    };
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -21,7 +21,6 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import tests.DualServerPeerLockingTest;
 import tests.DualServerPeerLockingTest1;
 
 @RunWith(Suite.class)
@@ -30,8 +29,10 @@ import tests.DualServerPeerLockingTest1;
 })
 public class FATSuite extends TxTestContainerSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest1.serverNames))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                    .forServers(DualServerPeerLockingTest1.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerPeerLockingTest1.serverNames));
 }

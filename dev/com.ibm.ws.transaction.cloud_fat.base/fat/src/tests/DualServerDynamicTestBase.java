@@ -48,6 +48,11 @@ public class DualServerDynamicTestBase extends FATServletClient {
     public static LibertyServer server1;
     public static LibertyServer server2;
 
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction_FSCLOUD001",
+                                                        "com.ibm.ws.transaction_FSCLOUD002",
+    };
+
     protected LibertyServer[] serversUsedInTest;
 
     public static String servletName;
