@@ -33,12 +33,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
-
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.async.JaxRsServerAsyncTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
@@ -56,11 +53,10 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class JaxRsIntegration extends FATServletClient {
+public class JaxRsIntegrationWithConcurrency extends FATServletClient {
 
-    public static final String SERVER_NAME = "Telemetry10Jax";
+    public static final String SERVER_NAME = "Telemetry10JaxWithConcurrency";
     public static final String APP_NAME = "JaxPropagation";
     public static final String W3C_TRACE_APP_NAME = "w3cTrace";
     public static final String W3C_TRACE_BAGGAGE_APP_NAME = "w3cTraceBaggage";
@@ -76,7 +72,7 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = B3_APP_NAME, servlet = B3PropagationTestServlet.class),
                     @TestServlet(contextRoot = B3_MULTI_APP_NAME, servlet = B3MultiPropagationTestServlet.class),
                     @TestServlet(contextRoot = JAEGER_APP_NAME, servlet = JaegerPropagationTestServlet.class),
-                    //@TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
+                    @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
                     @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
     })
@@ -150,16 +146,13 @@ public class JaxRsIntegration extends FATServletClient {
                         .addPackage(PropagationHeaderEndpoint.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(jaegerAppConfig, "META-INF/microprofile-config.properties");
-/*
- * We do not test this one without concurrency-3.0 enabled as it uses a ManagedExecutorService
- * 
+
         WebArchive asyncServerApp = ShrinkWrap.create(WebArchive.class, ASYNC_SERVER_APP_NAME + ".war")
                         .addPackage(JaxRsServerAsyncTestServlet.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
-*/
 
         WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
                         .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
@@ -175,13 +168,13 @@ public class JaxRsIntegration extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, b3App, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, b3MultiApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
-        //ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY);
         server.startServer();
     }
 
     @Test
-    public void testIntegrationWithJaxRsClient() throws Exception {
+    public void testIntegrationWithJaxRsClientWithConcurrency() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
         String traceId = readTraceId(pokeJax);
 
@@ -190,7 +183,7 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @Test
-    public void testIntegrationWithJaxRsClientAsync() throws Exception {
+    public void testIntegrationWithJaxRsClientAsyncWithConcurrency() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientasync");
         String traceId = readTraceId(pokeJax);
 
@@ -199,7 +192,7 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @Test
-    public void testIntegrationWithMpClient() throws Exception {
+    public void testIntegrationWithMpClientWithConcurrency() throws Exception {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclient");
         String traceId = readTraceId(pokeMp);
 
@@ -208,7 +201,7 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @Test
-    public void testIntegrationWithMpClientAsync() throws Exception {
+    public void testIntegrationWithMpClientAsyncWithConcurrency() throws Exception {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
         String traceId = readTraceId(pokeMp);
 
@@ -217,7 +210,7 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDownWithConcurrency() throws Exception {
         server.stopServer();
     }
 
