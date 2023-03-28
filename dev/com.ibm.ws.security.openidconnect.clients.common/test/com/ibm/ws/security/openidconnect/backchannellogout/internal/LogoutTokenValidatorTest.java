@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     final String SUBJECT = "testuser";
     final String SID = "jwtsid";
     final String EVENTS_MEMBER_KEY = "http://schemas.openid.net/event/backchannel-logout";
+    final String CLIENT_SECRET = "myClientSecret";
 
     final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
     final ConsumerUtils consumerUtils = mockery.mock(ConsumerUtils.class);
@@ -92,6 +93,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
             {
                 allowing(clientConfig).getId();
                 will(returnValue(CONFIG_ID));
+                allowing(clientConfig).getClientSecret();
+                will(returnValue(CLIENT_SECRET));
             }
         });
     }
@@ -646,7 +649,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndSid_sidNotNull() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234", clientConfig);
         sessionDataForSub.insertSession(oidcSessionInfo.getSid(), oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingIssAndSid(sessionDataForSub, ISSUER, SID);
@@ -657,7 +660,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndSid_sidNull() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingIssAndSid(sessionDataForSub, ISSUER, null);
@@ -677,7 +680,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     public void test_findSessionMatchingIssAndNonNullSid_oneSession_sidDoesNotMatch() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
         String sid = "some other sid";
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, sid, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, sid, "1234", clientConfig);
         sessionDataForSub.insertSession(sid, oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
@@ -687,9 +690,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidDoesNotMatch() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
-        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
-        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid2", "3456");
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234", clientConfig);
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345", clientConfig);
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid2", "3456", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo1);
         sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
         sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
@@ -701,7 +704,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndNonNullSid_oneSession_issDoesNotMatch() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, SID, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, SID, "1234", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
@@ -711,7 +714,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndNonNullSid_oneSession_issMatches() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "1234", clientConfig);
         sessionDataForSub.insertSession(oidcSessionInfo.getSid(), oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingIssAndNonNullSid(sessionDataForSub, ISSUER, SID);
@@ -722,9 +725,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidMatch_issDoesNotMatch() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
-        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
-        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://otherissuer", SUBJECT, SID, "3456");
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234", clientConfig);
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345", clientConfig);
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://otherissuer", SUBJECT, SID, "3456", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo1);
         sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
         sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
@@ -736,9 +739,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingIssAndNonNullSid_multipleSessions_sidMatch_issMatches() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
-        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
-        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "3456");
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234", clientConfig);
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345", clientConfig);
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, SID, "3456", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo1);
         sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
         sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
@@ -759,7 +762,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingOnlyIss_oneSession_issDoesNotMatch() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, "some other issuer", SUBJECT, null, "1234", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
@@ -769,7 +772,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingOnlyIss_oneSession_issMatches() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234");
+        OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, null, "1234", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo);
 
         OidcSessionInfo session = validator.findSessionMatchingOnlyIss(sessionDataForSub, ISSUER);
@@ -780,9 +783,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingOnlyIss_multipleSessions_noIssMatches() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234");
-        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, "sid1", "2345");
-        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456");
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234", clientConfig);
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, "sid1", "2345", clientConfig);
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo1);
         sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
         sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
@@ -794,9 +797,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_findSessionMatchingOnlyIss_multipleSessions_issMatches() throws Exception {
         OidcSessionsStore sessionDataForSub = new OidcSessionsStore();
-        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234");
-        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345");
-        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456");
+        OidcSessionInfo oidcSessionInfo1 = new OidcSessionInfo(CONFIG_ID, "https://issuer1", SUBJECT, null, "1234", clientConfig);
+        OidcSessionInfo oidcSessionInfo2 = new OidcSessionInfo(CONFIG_ID, ISSUER, SUBJECT, "sid1", "2345", clientConfig);
+        OidcSessionInfo oidcSessionInfo3 = new OidcSessionInfo(CONFIG_ID, "https://issuer2", SUBJECT, "sid2", "3456", clientConfig);
         sessionDataForSub.insertSession(null, oidcSessionInfo1);
         sessionDataForSub.insertSession(oidcSessionInfo2.getSid(), oidcSessionInfo2);
         sessionDataForSub.insertSession(oidcSessionInfo3.getSid(), oidcSessionInfo3);
@@ -952,7 +955,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         Map<String, OidcSessionsStore> subToSessionsMap = new HashMap<>();
         if (sub != null || sid != null) {
             OidcSessionsStore sessionStore = new OidcSessionsStore();
-            OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, sub, sid, "1234");
+            OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, sub, sid, "1234", clientConfig);
             sessionStore.insertSession(sid, oidcSessionInfo);
             subToSessionsMap.put(sub, sessionStore);
         }

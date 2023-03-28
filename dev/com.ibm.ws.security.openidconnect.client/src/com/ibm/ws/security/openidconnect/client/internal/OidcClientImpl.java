@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -451,15 +451,14 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             return;
         }
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req);
+        OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
         if (sessionInfo == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session info not found from client cookies.");
+                Tr.debug(tc, "Session info could not be retrieved from client cookies.");
             }
             return;
         }
-
-        OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
 
         OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig);
     }
