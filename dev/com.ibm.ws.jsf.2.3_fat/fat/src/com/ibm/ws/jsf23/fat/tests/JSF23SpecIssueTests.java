@@ -9,10 +9,9 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-
 
 import java.net.URL;
 import java.util.List;
@@ -43,7 +42,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -93,7 +91,7 @@ public class JSF23SpecIssueTests {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23SpecIssueTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @Before
@@ -354,7 +352,7 @@ public class JSF23SpecIssueTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSpecIssue790Test2() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
