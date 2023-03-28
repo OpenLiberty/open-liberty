@@ -281,7 +281,7 @@ public class OidcClientUtil {
 
         String encodedHash = null;
         if (encodedReqParams != null) {
-            encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
+            encodedHash = addSignatureToStringValue(encodedReqParams, clientCfg);
         }
         CookieBasedStorage store = new CookieBasedStorage(request, response, getReferrerURLCookieHandler());
         CookieStorageProperties cookieProps = new CookieStorageProperties();
@@ -291,7 +291,7 @@ public class OidcClientUtil {
         store.store(ClientConstants.WAS_OIDC_CODE, encodedHash, cookieProps);
     }
 
-    public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
+    public static String addSignatureToStringValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
         String uniqueSecretValue = clientCfg.getClientSecret();
