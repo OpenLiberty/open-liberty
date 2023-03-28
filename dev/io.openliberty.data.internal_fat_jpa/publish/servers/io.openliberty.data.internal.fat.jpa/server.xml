@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022,2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -24,9 +24,23 @@
 
   <application location="DataJPATestApp.war"/>
 
-  <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+  </dataSource>
+
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+
+  <!-- TODO for tests that will be hard-coded to use Derby -->
+  <databaseStore id="DerbyDatabaseStore" createTables="true" tablePrefix="DATA" dataSourceRef="DerbyDataSource">
+    <authData user="dbuser1" password="dbpwd1"/>
+  </databaseStore>
+
+  <dataSource id="DerbyDataSource">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
   </dataSource>
 
   <library id="DerbyLib">
@@ -34,5 +48,6 @@
   </library>
 
   <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>

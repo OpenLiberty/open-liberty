@@ -2581,6 +2581,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        // TODO This fails on SQL Server, with: 10030009L, 10030004L, 10030006L, 10030008L, considering 14:00-15:00 CDT a match for 9:00-10:00 CDT. Why is it off by 5 hours?
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
                              reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
                                                                                              "050-2 %",
