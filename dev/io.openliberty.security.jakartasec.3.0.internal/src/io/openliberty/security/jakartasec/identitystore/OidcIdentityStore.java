@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
@@ -250,6 +247,7 @@ public class OidcIdentityStore implements IdentityStore {
         return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
 
+    @FFDCIgnore(OidcDiscoveryException.class)
     private JsonObject getProviderMetadataAsJsonObject(OidcClientConfig oidcClientConfig) {
         try {
 

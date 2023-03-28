@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.config.tests;
 
@@ -288,7 +285,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" })
     @Test
     public void ConfigurationTests_noProviderURI_withProviderMetadata() throws Exception {
 
