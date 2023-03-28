@@ -52,7 +52,7 @@ public class DataJPATest extends FATServletClient {
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
         ShrinkHelper.exportAppToServer(server, war);
