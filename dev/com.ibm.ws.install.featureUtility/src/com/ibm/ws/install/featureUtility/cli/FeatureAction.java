@@ -12,26 +12,18 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.InstallKernelFactory;
-import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelImpl;
 import com.ibm.ws.kernel.boot.cmdline.ActionDefinition;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
-import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.internal.cmdline.FeatureToolException;
 import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
@@ -39,10 +31,10 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-	installFeature(new InstallFeatureAction(), "if", -1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom",
-			"--to", "--verify", "name..."),
+    installFeature(new InstallFeatureAction(), "if", -1, "--noCache", "--verbose", "--acceptLicense", "--featuresBom",
+	    "--to", "name..."),
     installServerFeatures(new InstallServerAction(), "isf", -1, "--noCache", "--verbose", "--acceptLicense",
-	    "--featuresBom", "--verify", "name..."),
+	    "--featuresBom", "name..."),
     viewSettings(new ViewSettingsAction(),"", 0, "--viewValidationMessages"),
     find(new FindAction(), "", -1, "[searchString]"),
     help(new FeatureHelpAction(),"", 0);
@@ -57,7 +49,25 @@ public enum FeatureAction implements ActionDefinition {
         action = a;
         positionalOptions = count;
         abbreviation = abbreviationString;
-        commandOptions = Collections.unmodifiableList(Arrays.asList(args));
+
+	// For beta FAT test
+	boolean enableVerify = System.getProperty("enable.verify") != null
+		&& System.getProperty("enable.verify").equals("true");
+	if (enableVerify) {
+	    if (abbreviationString.equals("if")) {
+		commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose",
+			    "--acceptLicense", "--featuresBom", "--to", "--verify", "name..."));
+	    } else if (abbreviationString.equals("isf")) {
+		commandOptions = Collections.unmodifiableList(Arrays.asList("--noCache", "--verbose",
+			    "--acceptLicense", "--featuresBom", "--verify", "name..."));
+	    } else {
+		commandOptions = Collections.unmodifiableList(Arrays.asList(args));
+	    }
+
+	} else {
+	    commandOptions = Collections.unmodifiableList(Arrays.asList(args));
+	}
+
     }
 
     @Override

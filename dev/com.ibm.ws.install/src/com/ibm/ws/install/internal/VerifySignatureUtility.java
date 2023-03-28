@@ -58,7 +58,7 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 public class VerifySignatureUtility {
 
     private static final Logger logger = InstallLogUtils.getInstallLogger();
-    private static final String DEFAULT_LIBERTY_KEY_ID = "0x4D210F6946102B8E";
+    private static final String DEFAULT_LIBERTY_KEY_ID = "0xBD9FD5BE9E68CA00";
     private static final String LIBERTY_KEY_PATH = "/path_to_liberty_key";
     private static final String UbuntuServerURL = "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=";
 
@@ -96,8 +96,8 @@ public class VerifySignatureUtility {
      * @throws InstallException
      */
     protected boolean validatePublicKey(PGPPublicKey publicKey, String expectedKeyID) throws InstallException {
-        //16 hex char
-        String keyID = String.format("0x%x", publicKey.getKeyID()).toUpperCase();
+        //16 hex char.. pad with 0 in the beginning so the length is always 16
+        String keyID = String.format("0x%016x", publicKey.getKeyID()).toUpperCase();
 
         //check if key id match the one we downloaded
         if (!keyID.contains(expectedKeyID.toUpperCase())) {
@@ -323,7 +323,7 @@ public class VerifySignatureUtility {
                 if (pubKey == null) {
                     logger.fine(String.format("Public key ID %x was not found.", sig.getKeyID()));
                 } else {
-                    logger.fine("Public key ID used: " + pubKey.getKeyID());
+                    logger.fine(String.format("Public key ID used: %x", pubKey.getKeyID()));
                     isVerified = verifySignature(fileName, sig, pubKey);
                 }
             }
