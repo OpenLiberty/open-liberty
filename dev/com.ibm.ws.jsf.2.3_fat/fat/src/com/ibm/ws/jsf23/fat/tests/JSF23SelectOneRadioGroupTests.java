@@ -60,7 +60,7 @@ public class JSF23SelectOneRadioGroupTests {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        server.startServer(JSF23SelectOneRadioGroupTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
