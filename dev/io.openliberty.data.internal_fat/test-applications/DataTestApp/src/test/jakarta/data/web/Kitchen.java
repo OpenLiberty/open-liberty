@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.template.web;
+package test.jakarta.data.web;
 
 /**
- * A simple entity, unannotated.
+ * A simple embeddable without annotations.
  */
-public class Vehicle {
-    public String make;
+public class Kitchen {
 
-    public String model;
+    public int length;
 
-    public int numSeats;
-
-    public float price;
-
-    public String vinId;
+    public int width;
 }

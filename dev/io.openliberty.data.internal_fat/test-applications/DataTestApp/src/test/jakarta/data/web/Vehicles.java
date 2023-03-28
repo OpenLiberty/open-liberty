@@ -10,19 +10,26 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.template.web;
+package test.jakarta.data.web;
+
+import java.util.Optional;
+
+import jakarta.data.repository.Repository;
 
 /**
- * An embeddable without annotations at depth 1, with a field that is another embeddable type.
+ * Repository for operations on the unannotated Vehicle entity.
+ * The entity type for this repository only appears as a type parameter.
+ * Do not add methods that would allow it to be discovered any other way.
  */
-public class Garage {
-    public static enum Type {
-        Attached, Detached, TuckUnder
-    };
+@Repository
+public interface Vehicles {
+    long deleteAll();
 
-    public int area;
+    boolean deleteById(String vin);
 
-    public GarageDoor door;
+    Optional<Vehicle> findById(String vin);
 
-    public Type type;
+    Iterable<Vehicle> save(Iterable<Vehicle> v);
+
+    boolean updateByIdAddPrice(String vin, float priceIncrease);
 }

@@ -21,6 +21,7 @@ import static test.jakarta.data.web.Assertions.assertIterableEquals;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
-import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -67,8 +67,11 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.TransactionRequiredException;
@@ -83,6 +86,9 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
+
+    @Inject
+    Houses houses;
 
     @Inject
     Packages packages;
@@ -107,13 +113,13 @@ public class DataTestServlet extends FATServlet {
     Shipments shipments;
 
     @Inject
-    Template template;
-
-    @Inject
     Things things;
 
     @Resource
     private UserTransaction tran;
+
+    @Inject
+    Vehicles vehicles;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -633,6 +639,166 @@ public class DataTestServlet extends FATServlet {
                                      "TestDistinctAttribute T-Shirt Size Medium",
                                      "TestDistinctAttribute T-Shirt Size Small"),
                              uniqueProductNames);
+    }
+
+    /**
+     * Unannotated entity with an attribute that is an embeddable type.
+     */
+    @Test
+    public void testEmbeddable() {
+        houses.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1800;
+        h1.garage = new Garage();
+        h1.garage.area = 200;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(8);
+        h1.garage.door.setWidth(10);
+        h1.garage.type = Garage.Type.Attached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 15;
+        h1.kitchen.width = 12;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "TestEmbeddable-104-2288-60";
+        h1.purchasePrice = 162000;
+        h1.sold = Year.of(2018);
+        houses.save(h1);
+
+        House h2 = new House();
+        h2.area = 2000;
+        h2.garage = new Garage();
+        h2.garage.area = 220;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(8);
+        h2.garage.door.setWidth(12);
+        h2.garage.type = Garage.Type.Detached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 16;
+        h2.kitchen.width = 13;
+        h2.lotSize = 0.18f;
+        h2.numBedrooms = 4;
+        h2.parcelId = "TestEmbeddable-204-2992-20";
+        h2.purchasePrice = 188000;
+        h2.sold = Year.of(2020);
+        houses.save(h2);
+
+        House h3 = new House();
+        h3.area = 1700;
+        h3.garage = new Garage();
+        h3.garage.area = 180;
+        h3.garage.door = new GarageDoor();
+        h3.garage.door.setHeight(8);
+        h3.garage.door.setWidth(9);
+        h3.garage.type = Garage.Type.TuckUnder;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 14;
+        h3.kitchen.width = 12;
+        h3.lotSize = 0.17f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "TestEmbeddable-304-3655-30";
+        h3.purchasePrice = 153000;
+        h3.sold = Year.of(2018);
+        houses.save(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 220;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(13);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 16;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestEmbeddable-404-4418-40";
+        h4.purchasePrice = 204000;
+        h4.sold = Year.of(2022);
+        houses.save(h4);
+
+        House h = houses.findById("TestEmbeddable-104-2288-60");
+
+        assertNotNull(h.kitchen);
+        assertEquals(15, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+
+        assertNotNull(h.garage);
+        assertEquals(200, h.garage.area);
+        assertEquals(Garage.Type.Attached, h.garage.type);
+
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+
+        // Query and order by embeddable attributes
+
+        List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
+        assertEquals(found.toString(), 2, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        h = found.get(1);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
+        assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Update embeddable attributes
+
+        assertEquals(true, houses.updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30", null, 180, 2, 4));
+
+        h = houses.findById("TestEmbeddable-304-3655-30");
+        assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
+        assertEquals(1880, h.area);
+        // Null embeddables aren't required by JPA, but EclipseLink claims to support it as the default behavior.
+        // See https://wiki.eclipse.org/EclipseLink/UserGuide/JPA/Basic_JPA_Development/Entities/Embeddable#Nullable_embedded_values
+        // But it looks like EclipseLink has a bug here in that it only nulls out 1 of the fields of Garage, not all,
+        // JPQL: UPDATE House o SET o.garage=?2, o.area=o.area+?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms=?5 WHERE (o.parcelId=?1)
+        // SQL:  UPDATE WLPHouse SET NUMBEDROOMS = 4, AREA = (AREA + 180), GARAGEAREA = NULL, KITCHENLENGTH = (KITCHENLENGTH + 2) WHERE (PARCELID = 'TestEmbeddable-304-3655-30')
+        // This causes the following assertion to fail:
+        // assertEquals(null, h.garage);
+        // TODO re-enable the above if fixed
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+        assertEquals(0.17f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(153000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2018), h.sold);
+
+        assertEquals(2, houses.deleteAll());
     }
 
     /**
@@ -1843,6 +2009,85 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Intermix two different types of entities in the same transaction.
+     */
+    @Test
+    public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
+                    IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
+        houses.deleteAll();
+        vehicles.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1900;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "111-222-333";
+        h1.purchasePrice = 219000.00f;
+        h1.sold = Year.of(2019);
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Nissan";
+        v1.model = "Altima";
+        v1.numSeats = 5;
+        v1.price = 24000f;
+        v1.vinId = "TME09876543210001";
+
+        House h;
+        Vehicle v;
+        tran.begin();
+        try {
+            h = houses.save(h1).get(0);
+            v = vehicles.save(List.of(v1)).iterator().next();
+        } finally {
+            tran.commit();
+        }
+
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and roll back
+        tran.begin();
+        try {
+            h1.purchasePrice = 222000f;
+            h1.sold = Year.of(2020);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 200f));
+        } finally {
+            tran.rollback();
+        }
+
+        // Ensure all updates were rolled back
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(219000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and commit
+        tran.begin();
+        try {
+            h1.purchasePrice = 241000f;
+            h1.sold = Year.of(2021);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 2000f));
+        } finally {
+            tran.commit();
+        }
+
+        // Ensure all updates were committed
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(241000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2021), h.sold);
+        assertEquals(26000f, v.price, 0.001f);
+
+        houses.deleteAll();
+        vehicles.deleteAll();
+    }
+
+    /**
      * Various return types for a repository query that performs multiple aggregate functions.
      */
     @Test
@@ -2853,6 +3098,165 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Insert, update, find, and delete entities.
+     */
+    @Test
+    public void testSaveAndUpdateMultiple() {
+        // find none
+        houses.deleteAll();
+        assertEquals(false, houses.existsById("001-203-401"));
+
+        // insert
+        House h1 = new House();
+        h1.area = 1500;
+        h1.lotSize = 0.18f;
+        h1.numBedrooms = 3;
+        h1.parcelId = "001-203-401";
+        h1.purchasePrice = 125000.00f;
+        h1.sold = Year.of(2015);
+
+        List<House> saved = houses.save(h1);
+
+        assertEquals(saved.toString(), 1, saved.size());
+        assertEquals("001-203-401", saved.get(0).parcelId);
+
+        // update
+        h1.numBedrooms = 4;
+        h1.purchasePrice = 136000.00f;
+        h1.sold = Year.of(2016);
+
+        saved = houses.save(h1);
+        assertEquals(saved.toString(), 1, saved.size());
+        House h = saved.get(0);
+
+        assertEquals(1500, h.area);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals("001-203-401", h.parcelId);
+        assertEquals(136000.00f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2016), h.sold);
+
+        // insert multiple
+        House h2 = new House();
+        h2.area = 1200;
+        h2.lotSize = 0.21f;
+        h2.numBedrooms = 2;
+        h2.parcelId = "001-203-402";
+        h2.purchasePrice = 112000.00f;
+        h2.sold = Year.of(2012);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "001-203-403";
+        h3.purchasePrice = 113000.00f;
+        h3.sold = Year.of(2013);
+
+        Iterable<House> inserted = houses.save(h2, h3);
+
+        Iterator<House> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals(h2.parcelId, i.next().parcelId);
+        assertEquals(true, i.hasNext());
+        assertEquals(h3.parcelId, i.next().parcelId);
+        assertEquals(false, i.hasNext());
+
+        // find
+        h = houses.findById(h1.parcelId);
+        assertEquals(h1.area, h.area);
+        assertEquals(h1.lotSize, h.lotSize, 0.001f);
+        assertEquals(h1.numBedrooms, h.numBedrooms);
+        assertEquals(h1.parcelId, h.parcelId);
+        assertEquals(h1.purchasePrice, h.purchasePrice, 0.001f);
+        assertEquals(h1.sold, h.sold);
+
+        // update multiple
+        h2.purchasePrice = 152000.00f;
+        h2.sold = Year.of(2022);
+
+        h1.purchasePrice = 191000.00f;
+        h1.sold = Year.of(2019);
+
+        Iterable<House> updated = houses.save(h1, h2);
+
+        Iterator<House> u = updated.iterator();
+        assertEquals(true, u.hasNext());
+        assertEquals(191000.00f, u.next().purchasePrice, 0.001f);
+        assertEquals(true, u.hasNext());
+        assertEquals(Year.of(2022), u.next().sold);
+        assertEquals(false, u.hasNext());
+
+        // delete
+        assertEquals(1L, houses.deleteById(h1.parcelId));
+
+        // find none
+        assertEquals(false, houses.existsById(h1.parcelId));
+
+        // delete nothing
+        assertEquals(0L, houses.deleteById(h1.parcelId));
+
+        assertEquals(2L, houses.deleteAll());
+    }
+
+    /**
+     * Insert, update, find, and delete an unannotated entity.
+     */
+    @Test
+    public void testSaveMultipleAndUpdate() {
+        vehicles.deleteAll();
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Honda";
+        v1.model = "Accord";
+        v1.numSeats = 5;
+        v1.price = 26000f;
+        v1.vinId = "TE201234567890001";
+
+        Vehicle v2 = new Vehicle();
+        v2.make = "Ford";
+        v2.model = "F-150";
+        v2.numSeats = 3;
+        v2.price = 32000f;
+        v2.vinId = "TE201234567890002";
+
+        Vehicle v3 = new Vehicle();
+        v3.make = "Toyota";
+        v3.model = "Camry";
+        v3.numSeats = 5;
+        v3.price = 25000f;
+        v3.vinId = "TE201234567890003";
+
+        // insert multiple
+        Iterable<Vehicle> inserted = vehicles.save(List.of(v1, v2, v3));
+        Iterator<Vehicle> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals("Honda", i.next().make);
+        assertEquals(true, i.hasNext());
+        assertEquals(3, i.next().numSeats);
+        assertEquals(true, i.hasNext());
+        assertEquals(25000f, i.next().price, 0.001f);
+        assertEquals(false, i.hasNext());
+
+        // delete
+        assertEquals(true, vehicles.deleteById(v1.vinId));
+
+        // find none
+        Optional<Vehicle> found = vehicles.findById(v1.vinId);
+        assertEquals(false, found.isPresent());
+
+        // update
+        assertEquals(true, vehicles.updateByIdAddPrice("TE201234567890003", 500.0f));
+
+        // find
+        found = vehicles.findById("TE201234567890003");
+        assertEquals(true, found.isPresent());
+        assertEquals(25500f, found.get().price, 0.001f);
+
+        vehicles.deleteAll();
+    }
+
+    /**
      * Experiment with making a repository method return a record-like type.
      */
     @Test
@@ -3322,46 +3726,6 @@ public class DataTestServlet extends FATServlet {
         AtomicLong sumRef = new AtomicLong();
         streamable2.forEach(p -> sumRef.addAndGet(p.numberId));
         assertEquals(181L, sumRef.get());
-    }
-
-    /**
-     * Entity classes that are accessed via repository methods can also be accessed via template.
-     */
-    @Test
-    public void testTemplateUsesRepositoryEntities() {
-        // insert by repository
-        Product prod1 = new Product();
-        prod1.id = "TTU-75-00-6144RE";
-        prod1.name = "testTemplateUsesRepositoryEntities Item";
-        prod1.price = 10.99f;
-        products.save(prod1);
-
-        // find by template
-        Optional<Product> found = template.find(Product.class, prod1.id);
-        assertEquals(true, found.isPresent());
-        Product p = found.get();
-        assertEquals("TTU-75-00-6144RE", p.id);
-        assertEquals("testTemplateUsesRepositoryEntities Item", p.name);
-        assertEquals(10.99f, p.price, 0.001f);
-
-        // insert by template
-        Shipment s1 = new Shipment();
-        s1.setId(1010101L);
-        s1.setDestination("2800 37th St NW, Rochester, MN 55901");
-        s1.setLocation("1315 6th St NW, Rochester, MN 55901");
-        s1.setOrderedAt(OffsetDateTime.now().minusHours(1));
-        s1.setShippedAt(OffsetDateTime.now().minusMinutes(5));
-        s1.setStatus("IN_TRANSIT");
-        s1 = template.insert(s1);
-        assertNotNull(s1.getId());
-
-        // find by repository
-        Shipment s = shipments.find(1010101L);
-        assertEquals(1010101L, s.getId());
-        assertEquals("IN_TRANSIT", s.getStatus());
-        assertEquals("1315 6th St NW, Rochester, MN 55901", s.getLocation());
-
-        shipments.removeEverything();
     }
 
     /**
@@ -3881,44 +4245,6 @@ public class DataTestServlet extends FATServlet {
 
         Product p = products.findItem(prod1.id);
         assertEquals(149.99f, p.price, 0.001f);
-        assertEquals(version + 1, p.version);
-    }
-
-    /**
-     * Use template to update based on version.
-     */
-    @Test
-    public void testVersionedUpdateViaTemplate() {
-        Product prod1 = new Product();
-        prod1.id = "G1600-T-90251";
-        prod1.name = "TestVersionedUpdateViaTemplate Product 1";
-        prod1.price = 210.00f;
-        prod1 = template.insert(prod1);
-
-        long version = prod1.version;
-
-        Product prod1a = template.find(Product.class, prod1.id).orElseThrow();
-        Product prod1b = template.find(Product.class, prod1.id).orElseThrow();
-
-        prod1a.price += 25.00f;
-        prod1b.price += 20.00f;
-
-        Product p1b = template.update(prod1b);
-
-        try {
-            Product p1a = template.update(prod1a);
-            fail("Able to update using old version " + p1a);
-        } catch (DataException x) {
-            Throwable cause = x.getCause();
-            if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
-                throw x;
-        }
-
-        assertEquals(230.00f, p1b.price, 0.001f);
-        assertEquals(version + 1, p1b.version);
-
-        Product p = products.findItem(prod1.id);
-        assertEquals(230.00f, p.price, 0.001f);
         assertEquals(version + 1, p.version);
     }
 }

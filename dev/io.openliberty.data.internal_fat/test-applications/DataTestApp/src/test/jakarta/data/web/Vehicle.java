@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,30 +10,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.template.web;
+package test.jakarta.data.web;
 
 /**
- * A simple embeddable without annotations that is nesetd 2 levels deep.
+ * A simple entity, unannotated.
  */
-public class GarageDoor {
+public class Vehicle {
+    public String make;
 
-    private int height;
+    public String model;
 
-    private int width;
+    public int numSeats;
 
-    public int getHeight() {
-        return height;
-    }
+    public float price;
 
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
+    public String vinId;
 }

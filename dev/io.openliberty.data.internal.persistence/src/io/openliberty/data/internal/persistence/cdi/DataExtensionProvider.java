@@ -35,7 +35,6 @@ import jakarta.enterprise.inject.spi.Extension;
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { CDIExtensionMetadata.class, DataExtensionProvider.class })
 public class DataExtensionProvider implements CDIExtensionMetadata {
-    private static final Set<Class<?>> beanClasses = Set.of(TemplateProducer.class);
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
     @Reference(target = "(component.name=com.ibm.ws.threading)")
@@ -46,11 +45,6 @@ public class DataExtensionProvider implements CDIExtensionMetadata {
 
     @Reference
     public EmbeddableWebSphereTransactionManager tranMgr;
-
-    @Override
-    public Set<Class<?>> getBeanClasses() {
-        return beanClasses;
-    }
 
     @Override
     @Trivial
