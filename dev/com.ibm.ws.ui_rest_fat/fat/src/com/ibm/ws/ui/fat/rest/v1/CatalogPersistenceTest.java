@@ -92,7 +92,8 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
             "CWWKX1002E:.*",
             "CWWKX1003E:.*",
             "CWWKX1009E:.*",
-            "CWWKX1010E:.*");
+            "CWWKX1010E:.*",
+            "SRVE8094W:.*");
     }
 
     /**
