@@ -25,6 +25,7 @@ Service-Component: \
       provide:='com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager';\
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       scheduledExececutor=java.util.concurrent.ScheduledExecutorService; \
+      serverStarted=com.ibm.ws.kernel.feature.ServerStarted; \
       virtualHost='com.ibm.wsspi.http.VirtualHost(enabled=true)'; \
       optional:="virtualHost"; \
       multiple:="virtualHost"; \
@@ -72,7 +73,8 @@ Service-Component: \
  com.ibm.ws.webcontainer.osgi.WebContainer,\
  com.ibm.ws.webcontainer.osgi.WebContainerListener,\
  com.ibm.ws.webcontainer.osgi.session.SessionHelper, \
- com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor
+ com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor,\
+ com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager
  
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
@@ -190,6 +192,8 @@ instrument.disabled: true
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+    	com.ibm.ws.kernel.feature.core,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
