@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -690,7 +690,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         if (rsp instanceof IExtendedResponse) {
             return ((IExtendedResponse) rsp).getStatusCode();
         }
-        return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+        return rsp.getStatus();
     }
 
     protected AuthenticationResult mapToAuthenticationResult(AuthStatus status, JaspiRequest jaspiRequest, Subject clientSubject) {
