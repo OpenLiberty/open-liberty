@@ -1,15 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.cdicommon.managed;
 
 import javax.annotation.PostConstruct;
@@ -69,15 +66,13 @@ public class CustomSystemEventListener implements SystemEventListener {
 
         if (fieldBean != null) {
             buf.append(fieldBean.getName());
-        }
-        else {
+        } else {
             buf.append("Field Bean was not injected.");
         }
         buf.append(":");
         if (cBean != null) {
             buf.append(cBean.getName());
-        }
-        else {
+        } else {
             buf.append("Constructor Bean was not injected.");
         }
 
@@ -87,8 +82,7 @@ public class CustomSystemEventListener implements SystemEventListener {
             methodBean.incrementAppCount();
             methodBean.logFirst(FacesContext.getCurrentInstance().getExternalContext(),
                                 this.getClass().getSimpleName(), "processEvent", buf.toString());
-        }
-        else {
+        } else {
             FacesContext.getCurrentInstance().getExternalContext().log("CustomSystemEventListener method injection failed: " + buf.toString());
 
         }

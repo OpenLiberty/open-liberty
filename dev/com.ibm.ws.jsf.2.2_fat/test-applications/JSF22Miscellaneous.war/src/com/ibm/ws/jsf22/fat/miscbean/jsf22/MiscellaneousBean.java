@@ -1,19 +1,16 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 /**
  * A simple managed bean that will be used to test very simple bean functionality.
  *   This bean tests some of the new functions in JSF 2.2
- * 
+ *
  * @author Jim Lawwill
  *
  */
@@ -64,7 +61,7 @@ public class MiscellaneousBean implements Serializable {
         ExternalContext externalContext = facesContext.getExternalContext();
 
         // From the JSF 2.2 spec, you'll see this line:
-        //   12.1.3 add this text to the javax.faces.STATE_SAVING_METHOD spec. When examining the value, 
+        //   12.1.3 add this text to the javax.faces.STATE_SAVING_METHOD spec. When examining the value,
         //   the runtime must ignore the case.
         //
         // So, in this test, we are sending the "isSavingStateInClient" value back to the client.
@@ -108,7 +105,7 @@ public class MiscellaneousBean implements Serializable {
         output += "getProtectedViewsUnmodifiable = " + numProtectedViews;
         output += "\n";
 
-        //  Return the state of compontentSystemEventWorked.   This tests the new APIs 
+        //  Return the state of compontentSystemEventWorked.   This tests the new APIs
         //    listed here --->  http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-997
         output += "componentSystemEventChangesWorked = " + componentSystemEventWorked;
         output += "\n";
@@ -123,14 +120,14 @@ public class MiscellaneousBean implements Serializable {
         componentSystemEventWorked = true;
 
         MyFaceListener listener1 = new MyFaceListener();
-        //  This is a FacesListener that is NOT an instanceOf ComponentSystemEventListener, 
+        //  This is a FacesListener that is NOT an instanceOf ComponentSystemEventListener,
         //    so it should return false
         if (event.isAppropriateListener(listener1) == true) {
             componentSystemEventWorked = false;
             return;
         }
 
-        //  This is a FacesListener that is an instanceOf ComponentSystemEventListener, 
+        //  This is a FacesListener that is an instanceOf ComponentSystemEventListener,
         //    so it should return true
         MyComponentSystemEventListener listener2 = new MyComponentSystemEventListener();
         if (event.isAppropriateListener(listener2) == false) {
@@ -144,24 +141,26 @@ public class MiscellaneousBean implements Serializable {
     }
 
     /*
-     * Check the ExpressionFactory objects returned from both the JSP and 
+     * Check the ExpressionFactory objects returned from both the JSP and
      * JSF impls - according to the EE7 spec, they should be the same.
      */
     @PostConstruct
     public void init() {
         ServletContext servletContext = (ServletContext) FacesContext
-                        .getCurrentInstance().getExternalContext().getContext();
+                        .getCurrentInstance()
+                        .getExternalContext()
+                        .getContext();
         ExpressionFactory el1 = JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExpressionFactory el2 = facesContext.getApplication().getExpressionFactory();
         if (el1.toString().equals(el2.toString())) {
             this.setResults(el1 + " == " + el2 + "; ExpressionFactory-instance test passed");
-        }
-        else
+        } else
             this.setResults(el1 + " != " + el2 + "; ExpressionFactory-instance test failed!");
     }
 
-    public class MyFaceListener implements FacesListener {}
+    public class MyFaceListener implements FacesListener {
+    }
 
     public class MyComponentSystemEventListener implements ComponentSystemEventListener {
 

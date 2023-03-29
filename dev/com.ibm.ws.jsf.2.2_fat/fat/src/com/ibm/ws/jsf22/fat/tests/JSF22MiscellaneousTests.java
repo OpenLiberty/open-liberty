@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- */
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -100,7 +100,7 @@ public class JSF22MiscellaneousTests {
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_OLGH22397 + ".war");
 
-        jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
+        jsf22MiscellaneousServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
