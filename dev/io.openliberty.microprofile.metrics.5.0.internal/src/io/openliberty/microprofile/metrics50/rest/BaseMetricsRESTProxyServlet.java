@@ -29,7 +29,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 @Trivial
 public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
@@ -91,9 +90,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
             }
 
             // Get the bundle context
-            HttpSession session = request.getSession();
-
-            ServletContext sc = session.getServletContext();
+            ServletContext sc = request.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
 
             ServiceReference<RESTHandlerContainer> ref = ctxt.getServiceReference(RESTHandlerContainer.class);
