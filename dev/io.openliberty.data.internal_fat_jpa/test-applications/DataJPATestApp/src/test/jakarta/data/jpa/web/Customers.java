@@ -26,6 +26,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
 /**
  * Repository for testing OneToMany relationship between Customer and CreditCard entities.
  */
+// TODO always use Derby for this repository in order to guarantee case sensitive comparisons, which are required by some tests
 @Repository
 public interface Customers extends DataRepository<Customer, Integer> {
 
