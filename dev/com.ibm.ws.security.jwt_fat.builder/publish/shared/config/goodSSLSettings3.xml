@@ -1,9 +1,6 @@
 <server>
 
 	<sslDefault outboundSSLRef="outboundSSLSettings" />
-	<keyStore
-		id="defaultKeyStore"
-		password="Liberty" />
 	<ssl
 		id="outboundSSLSettings"
 		keyStoreRef="rsa_key"
