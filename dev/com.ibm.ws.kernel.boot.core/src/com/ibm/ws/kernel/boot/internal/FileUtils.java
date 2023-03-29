@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -568,6 +568,10 @@ public class FileUtils {
      * @return true if the clean succeeded, false otherwise
      */
     public static boolean recursiveClean(final File fileToRemove) {
+        return recursiveClean(fileToRemove, null);
+    }
+
+    public static boolean recursiveClean(final File fileToRemove, List<File> skipDirs) {
         if (fileToRemove == null)
             return true;
 
@@ -615,9 +619,19 @@ public class FileUtils {
             // listFiles may return null if we lack read permissions
             if (files == null)
                 return false;
+
             for (File file : files) {
                 if (file.isDirectory()) {
-                    success |= recursiveClean(file);
+                    boolean skip = false;
+                    if (skipDirs != null && skipDirs.size() > 0) {
+                        for (File skipDir : skipDirs) {
+                            if (file.equals(skipDir))
+                                skip = true;
+                            break;
+                        }
+                    }
+                    if (!skip)
+                        success |= recursiveClean(file);
                 } else {
                     String candidate = file.getName();
                     String candidateParent = fileToRemove.getName();
