@@ -12,12 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.timers;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)

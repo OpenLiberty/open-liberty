@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,46 +12,103 @@
  *******************************************************************************/
 package componenttest.containers;
 
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.utils.ExternalTestService;
-
 /**
  * An image name substituter is configured in testcontainers.properties and will transform docker image names.
- * Here we use it to apply a private registry prefix so that in remote builds we use an internal mirror
- * of Docker Hub, instead of downloading from Docker Hub in each build which causes rate limiting issues.
+ * Here we use it to apply a private registry prefix and organization prefix so that in remote builds we use an internal
+ * Artifactory mirror of Docker Hub, instead of downloading from Docker Hub in each build which causes rate limiting issues.
  */
 public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     private static final Class<?> c = ArtifactoryImageNameSubstitutor.class;
 
-    private static final String artifactoryRegistryKey = "fat.test.artifactory.download.server";
+    /**
+     * Manual override that will allow builds or users to pull from Artifactory instead of DockerHub.
+     */
+    private static final String substitutionOverride = "fat.test.use.artifactory.substitution";
+
+    /**
+     * Artifactory keeps a cache of docker images from DockerHub within
+     * this organization specifically for the Liberty builds.
+     */
+    private static final String mirror = "wasliberty-docker-remote";
 
     @Override
-    public DockerImageName apply(DockerImageName original) {
-        // Priority 1: If we are using a synthetic image do not substitute nor cache
-        if (isSyntheticImage(original)) {
+    public DockerImageName apply(final DockerImageName original) {
+        DockerImageName result = null;
+        boolean collect = true;
+        String reason = "";
+
+        do {
+            // Priority 1: If we are using a synthetic image do not substitute nor cache
+            if (isSyntheticImage(original)) {
+                result = original;
+                collect = false;
+                reason = "Image name is known to be synthetic, cannot use Artifactory registry.";
+                break;
+            }
+
+            // Priority 2: If registry was explicit set, do not substitute
+            if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
+                result = original;
+                reason = "Image name is explicitally set with registry, cannot modify registry.";
+                break;
+            }
+
+            // Priority 3: If the image is known to only exist in an Artifactory organization
+            // No need to check for this in Open Liberty since all images need to be accessible outside of Artifactory.
+
+            // Priority 4: System property use.artifactory.substitution (NOTE: only honor this property if set to true)
+            if (Boolean.getBoolean(substitutionOverride)) {
+                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
+                reason = "System property [ fat.test.use.artifactory.substitution ] was set to true, must use Artifactory registry.";
+                break;
+            }
+
+            // Priority 5: Always use Artifactory if using remote docker host.
+            if (DockerClientFactory.instance().isUsing(ExternalDockerClientStrategy.class)) {
+                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
+                reason = "Using a remote docker host, must use Artifactory registry";
+                break;
+            }
+
+            //default - use original
+            result = original;
+            reason = "Default behavior: use default docker registry.";
+        } while (false);
+
+        // We determined we need Artifactory, but it is unavailable.
+        if (original != result && !ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
+            throw new RuntimeException("Need to swap image " + original.asCanonicalNameString() + " --> " + result.asCanonicalNameString()
+                                       + System.lineSeparator() + "Reason: " + reason
+                                       + System.lineSeparator() + "Error: The Artifactory regsitry was not added to the docker config.", //
+                            ArtifactoryRegistry.instance().getSetupException());
+        }
+
+        // Alert user that we either added the Artifactory registry or not.
+        if (original == result) {
+            Log.info(c, "apply", "Keeping original image name: " + original.asCanonicalNameString()
+                                 + System.lineSeparator() + "Reason: " + reason);
+        } else {
+            Log.info(c, "apply", "Swapping docker image name " + original.asCanonicalNameString() + " --> " + result.asCanonicalNameString()
+                                 + System.lineSeparator() + "Reason: " + reason);
+        }
+
+        // Collect image data for verification after testing
+        if (collect) {
+            return ImageVerifier.collectImage(original, result);
+        } else {
             return original;
         }
-
-        // Priority 2: If registry was explicit set, do not substitute
-        if (original.getRegistry() != null && !original.getRegistry().isEmpty()) {
-            return ImageVerifier.collectImage(original);
-        }
-
-        // Priority 3: Ask the docker strategy if we should substitute the image.
-        // This takes into account local/remote docker and properties to force the use of Artifactory.
-        if (!ExternalTestServiceDockerClientStrategy.USE_ARTIFACTORY_NAME_SUBSTITUTION) {
-            return ImageVerifier.collectImage(original);
-        }
-
-        // Need to substitute image name to use private registry
-        String privateImage = getPrivateRegistry() + '/' + original.asCanonicalNameString();
-        Log.info(c, "apply", "Swapping docker image name from " + original.asCanonicalNameString() + " --> " + privateImage);
-        return ImageVerifier.collectImage(original, DockerImageName.parse(privateImage).asCompatibleSubstituteFor(original));
     }
 
     @Override
@@ -79,25 +136,4 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         return isSynthetic || isCommittedImage;
     }
 
-    static String getPrivateRegistry() {
-        String artifactoryServer = System.getProperty(artifactoryRegistryKey);
-        if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${") || artifactoryServer.equals("null"))
-            throw new IllegalStateException("No private registry configured. System property '" + artifactoryRegistryKey + "' was: " + artifactoryServer + "  "
-                                            + "Ensure artifactory properties are set in gradle.startup.properties");
-        if (artifactoryServer.startsWith("na.") || artifactoryServer.startsWith("eu."))
-            artifactoryServer = artifactoryServer.substring(3);
-        return "wasliberty-docker-remote." + artifactoryServer;
-    }
-
-    static String getPrivateRegistryAuthToken() {
-        try {
-            String token = ExternalTestService.getProperty("docker-hub-mirror/auth-token");
-            if (token == null || token.isEmpty() || token.startsWith("${"))
-                throw new IllegalStateException("Unable to locate private registry auth token.");
-            Log.info(c, "getPrivateRegistryAuthToken", "Got auth token starting with: " + token.substring(0, 4) + "....");
-            return token;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
