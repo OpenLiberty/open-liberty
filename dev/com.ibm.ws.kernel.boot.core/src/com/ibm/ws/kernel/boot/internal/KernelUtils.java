@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,8 +20,10 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -92,11 +94,11 @@ public class KernelUtils {
      * <p>
      *
      * @param duration
-     *            The object retrieved from the configuration property map/dictionary.
+     *                     The object retrieved from the configuration property map/dictionary.
      *
      * @param units
-     *            The unit of time for the duration value. This is only used when
-     *            converting from a String value.
+     *                     The unit of time for the duration value. This is only used when
+     *                     converting from a String value.
      *
      * @return String in the specified time units if the duration is parsed successfully, otherwise null
      */
@@ -115,9 +117,9 @@ public class KernelUtils {
      * Converts a string value representing a unit of time into a Long value.
      *
      * @param strVal
-     *            A String representing a unit of time.
+     *                   A String representing a unit of time.
      * @param unit
-     *            The unit of time that the string value should be converted into
+     *                   The unit of time that the string value should be converted into
      * @return Long The value of the string in the desired time unit
      */
     @FFDCIgnore(NumberFormatException.class)
@@ -240,7 +242,11 @@ public class KernelUtils {
     }
 
     public static void cleanStart(File workareaFile) {
-        cleanDirectory(workareaFile, "workarea");
+        cleanDirectory(workareaFile, "workarea", new ArrayList<File>() {
+            {
+                add(new File(workareaFile, "rrs"));
+            }
+        });
     }
 
     /**
@@ -248,7 +254,7 @@ public class KernelUtils {
      * returning.
      *
      * @param is
-     *            InputStream to read properties from
+     *               InputStream to read properties from
      * @return Properties object; will be empty if InputStream is null or empty.
      * @throws LaunchException
      */
@@ -277,9 +283,9 @@ public class KernelUtils {
 
     /**
      * @param reader
-     *            Reader from which to read service class names
+     *                   Reader from which to read service class names
      * @param limit
-     *            Maximum number of service classes to find (0 is no limit)
+     *                   Maximum number of service classes to find (0 is no limit)
      * @return
      * @throws IOException
      */
@@ -326,18 +332,37 @@ public class KernelUtils {
      * @param stateDir
      */
     public static void cleanDirectory(File dir, String dirType) {
-        boolean cleaned = true;
+        cleanDirectory(dir, dirType, null);
+    }
 
-        if (dir.exists() && dir.isDirectory())
-            cleaned = FileUtils.recursiveClean(dir);
+    public static void cleanDirectory(File dir, String dirType, List<File> skipDirsIn) {
+        boolean cleaned = true;
+        boolean recreateDir = true;
+        ArrayList<File> skipDirList = new ArrayList<File>();
+
+        if (dir.exists() && dir.isDirectory()) {
+
+            if (skipDirsIn != null && skipDirsIn.size() > 0) {
+                for (File skipFile : skipDirsIn) {
+                    if (skipFile.exists() && skipFile.isDirectory() && dir.equals(skipFile.getParentFile())) {
+                        skipDirList.add(skipFile);
+                    }
+                }
+            }
+            if (skipDirList.size() > 0)
+                recreateDir = false;
+            cleaned = FileUtils.recursiveClean(dir, skipDirList);
+        }
 
         if (!cleaned)
             throw new IllegalStateException("The " + dirType + " could not be cleaned. " + dirType + "=" + dir);
 
-        // re-create empty directory if it doesn't exist
-        boolean created = dir.mkdirs();
-        if (!dir.exists() && !created)
-            throw new IllegalStateException("The " + dirType + "  could not be created. " + dirType + "=" + dir);
+        if (recreateDir) {
+            // re-create empty directory if it doesn't exist
+            boolean created = dir.mkdirs();
+            if (!dir.exists() && !created)
+                throw new IllegalStateException("The " + dirType + "  could not be created. " + dirType + "=" + dir);
+        }
 
     }
 }
