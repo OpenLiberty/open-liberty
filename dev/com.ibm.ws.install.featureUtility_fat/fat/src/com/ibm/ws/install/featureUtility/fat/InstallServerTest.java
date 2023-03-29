@@ -269,14 +269,14 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 	    copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/usrFeaturesServerXml/server.xml");
 
-	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyserver",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/validSignature/validKey.asc");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
+		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
 	    String[] param1s = { "installServerFeatures", "serverX",
-		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "verify=all", "--verbose" };
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=all", "--verbose" };
 
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 	    checkCommandOutput(po, 0, null, filesList);

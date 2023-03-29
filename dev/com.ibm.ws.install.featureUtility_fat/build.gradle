@@ -10,24 +10,25 @@
 *     IBM Corporation - initial API and implementation
 *******************************************************************************/
 
-
-configurations {
-	usrFeatures
-	features
-}
-
-dependencies {
-  usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
-  features 'test.featureUtility_fat:Archive:1.0@zip'
-  
-}
-
-copy {
-    from configurations.features
-    into "publish/repo/archive"
-}
-
-copy {
-    from configurations.usrFeatures
-    into "publish/repo/userFeature"
+addRequiredLibraries {
+    configurations {
+    	usrFeatures
+    	features
+    }
+    
+    dependencies {
+      usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
+      features 'test.featureUtility_fat:Archive:1.0@zip'
+      
+    }    
+    
+    copy {
+        from configurations.usrFeatures
+        into "publish/repo/userFeature"
+    }
+    
+    copy {
+        from configurations.features
+        into "publish/repo/archive"
+    }
 }

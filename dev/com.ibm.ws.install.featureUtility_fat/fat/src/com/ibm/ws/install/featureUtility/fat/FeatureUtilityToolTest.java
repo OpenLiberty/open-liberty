@@ -42,10 +42,9 @@ public abstract class FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
 
-    protected static String libertyVersion = "23.0.0.1";
+    protected static String libertyVersion = "23.0.0.2";
     // ${buildDir}/publish/repo
     protected static String mavenLocalRepo = Paths.get("publish/repo/").toAbsolutePath().toString();
-
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
@@ -68,6 +67,7 @@ public abstract class FeatureUtilityToolTest {
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
     
     protected static void setupEnv() throws Exception {
+
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
 
@@ -92,6 +92,9 @@ public abstract class FeatureUtilityToolTest {
         if(!new File(minifiedRoot).exists()){
             throw new Exception("The minified root does not exist!");
         }
+
+	// beta
+	copyFileToMinifiedRoot("lib/versions/public_key", "publish/tmp/libertyKey.asc");
 
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
@@ -337,6 +340,10 @@ public abstract class FeatureUtilityToolTest {
             os = rf.openForWriting(false);
             wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
             Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
+	    // beta
+	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
+	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
+
             wlpVersionProps.store(os, null);
             os.close();
         } finally {
@@ -357,6 +364,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
+	// beta
+	envProps.put("JVM_ARGS", "-Denable.verify=true");
 //        envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
 //        envProps.put("INSTALL_LOG_LEVEL", "FINE");
 //        if (debug)
@@ -369,6 +378,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
             // always run feature utility with minified root
+	    // beta
+	    envProps.put("JVM_ARGS", "-Denable.verify=true");
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 
@@ -501,10 +512,12 @@ public abstract class FeatureUtilityToolTest {
      * / Copy Maven central features and signatures to local repository
      */
     protected static void constructLocalMavenRepo(Path artifactPath) throws Exception {
-	Log.info(c, "constructLocalMavenRepo", "Creating local repository using " + artifactPath.toString());
+	Log.info(c, "constructLocalMavenRepo",
+		"Creating local repository using " + artifactPath.toAbsolutePath().toString());
 
 	ZipFile zipFile = new ZipFile(artifactPath.toFile());
 	TestUtils.unzipFileIntoDirectory(zipFile, Paths.get(mavenLocalRepo).toFile());
+	Log.info(c, "constructLocalMavenRepo", "Unzipped to " + Paths.get(mavenLocalRepo).toAbsolutePath().toString());
 
     }
 

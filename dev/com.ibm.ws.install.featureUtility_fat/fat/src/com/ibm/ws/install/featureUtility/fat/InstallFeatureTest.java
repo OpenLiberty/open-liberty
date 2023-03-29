@@ -874,8 +874,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		    Paths.get(mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/validKey.asc");
+		    mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
 	    String[] param1s = { "installFeature", "testesa1",
 		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };

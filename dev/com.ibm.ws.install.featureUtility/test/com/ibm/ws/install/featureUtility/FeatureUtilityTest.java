@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.install.InstallConstants.VerifyOption;
@@ -15,6 +16,12 @@ public class FeatureUtilityTest {
 
     FeatureUtility featureUtility = new FeatureUtility(null, null, null, null, null, null, null, null, null, null, null,
 	    null, false, null);
+
+    @Before
+    public void beforeTest() {
+	// enable beta
+	System.setProperty("enable.verify", "true");
+    }
 
     @Test
     public void testCheckVerifyOptionPass() throws InstallException {
