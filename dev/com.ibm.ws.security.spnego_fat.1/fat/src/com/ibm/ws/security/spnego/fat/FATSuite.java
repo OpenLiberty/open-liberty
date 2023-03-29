@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.spnego.fat.config.CommonTest;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
+import com.ibm.ws.security.spnego.fat.config.KdcHelper;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -145,22 +146,22 @@ public class FATSuite extends InitClass {
      */
     @ClassRule
     public static ExternalResource afterRule = new ExternalResource() {
+        @SuppressWarnings("restriction")
         @Override
         protected void after() {
             try {
                 if (RUN_TESTS) {
-                    CommonTest.getKdcHelper().deleteUser();
-                    CommonTest.getKdcHelper()
-                                    .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
-                                                                       SPNEGOConstants.KRB5_KEYTAB_FILE);
+                    KdcHelper kdcHelper = CommonTest.getKdcHelper();
+                    kdcHelper.deleteUser();
+                    kdcHelper.deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(), SPNEGOConstants.KRB5_KEYTAB_FILE);
 
+                    kdcHelper.deleteVbsScriptsFromKDC();
                     /*
                      * Don't delete the localhost_HTTP_krb5.keytab from the remote machine.
                      */
                     if (!"localhost".equalsIgnoreCase(InitClass.serverShortHostName)) {
-                        CommonTest.getKdcHelper()
-                                        .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
-                                                                           InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX);
+                        kdcHelper.deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
+                                                                    InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX);
                     }
                 }
             } catch (Exception e) {
