@@ -64,7 +64,6 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;

@@ -12,15 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.multiple;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.TestContainerSuite;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.impl.LibertyServer;
