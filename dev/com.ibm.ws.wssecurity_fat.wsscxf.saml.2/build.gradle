@@ -210,7 +210,8 @@ autoFVT.doLast {
 /* Copy common files to all servers */
   def servers = [
         'com.ibm.ws.wssecurity_fat.saml.2servers',
-        'com.ibm.ws.wssecurity_fat.saml.caller'
+        'com.ibm.ws.wssecurity_fat.saml.caller',
+        'com.ibm.ws.wssecurity_fat.saml.caller.ee7lite'
   ]
 
   servers.each { server ->
@@ -258,7 +259,8 @@ autoFVT.doLast {
   
 /* Copy files for specific server */
   servers = [
-        'com.ibm.ws.wssecurity_fat.saml.caller'
+        'com.ibm.ws.wssecurity_fat.saml.caller',
+        'com.ibm.ws.wssecurity_fat.saml.caller.ee7lite'
   ]
   
   servers.each { server ->
