@@ -4,6 +4,7 @@
 	<featureManager>
 		<feature>jwt-1.0</feature>
 		<feature>jsonp-1.0</feature>
+		<feature>servlet-3.1</feature> 
 	</featureManager>
 
 	<include location="${shared.config.dir}/op_fatTestPorts.xml" />

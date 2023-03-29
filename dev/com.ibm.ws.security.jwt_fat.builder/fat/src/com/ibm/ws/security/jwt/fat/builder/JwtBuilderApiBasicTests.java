@@ -23,7 +23,9 @@ import javax.json.JsonObject;
 import org.jose4j.jwt.NumericDate;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -43,6 +45,7 @@ import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderClaimRepeatActions;
@@ -93,6 +96,9 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection()).andWith(JwtBuilderClaimRepeatActions.asSingle());
 
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
+    
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
 
@@ -160,12 +166,13 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
-    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+//    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)    
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_create_id_defaultJWT() throws Exception {
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, null);
@@ -198,11 +205,13 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
+//    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_create_id_defaultJWT_consumeToken() throws Exception {
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "user2");
         expectationSettings.put("overrideSettings", testSettings);
@@ -385,7 +394,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         String builderId = "jwt1";
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-        expectationSettings.put(PayloadConstants.ISSUER, builderId);
+//        expectationSettings.put(PayloadConstants.ISSUER, builderId);
 
         JSONArray parmarray = new JSONArray();
         parmarray.add("Client02");
@@ -5548,6 +5557,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
+//  @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)    
     @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
     @Mode(TestMode.LITE)
     @Test
@@ -5555,6 +5565,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         String builderId = null;
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set

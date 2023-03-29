@@ -2,6 +2,7 @@
 
 	<jwtBuilder
 		id=""
+		issuer="testIssuer"
 		valid="1h"
 		audiences="Client02 Client03"
 		jti="true" />
