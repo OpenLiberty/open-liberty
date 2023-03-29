@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transport.netty;
 
@@ -142,7 +141,7 @@ public class GenericTCPChain extends GenericChain {
             try {
                 Map<String, Object> options = new HashMap<String, Object>();
                 options.putAll(getCurrentConfig().tcpOptions);
-                options.put(ConfigConstants.ExternalName, getName());
+                options.put(ConfigConstants.EXTERNAL_NAME, getName());
 
                 serverBootstrap = nettyBundle.createTCPBootstrap(options);
                 serverBootstrap.childHandler(new SipTCPInitializer(serverBootstrap.getBaseInitializer()));

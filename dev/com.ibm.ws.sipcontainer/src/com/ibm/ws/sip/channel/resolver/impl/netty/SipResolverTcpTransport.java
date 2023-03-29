@@ -1,12 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.sip.channel.resolver.impl.netty;
 
@@ -102,7 +101,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
             _channelInitialized = true;
             try {
                 Map<String, Object> options = new HashMap<String, Object>();
-                options.put(ConfigConstants.ExternalName, CHAINNAME);
+                options.put(ConfigConstants.EXTERNAL_NAME, CHAINNAME);
                 bootstrap = _framework.createTCPBootstrapOutbound(options);
                 _channelInitialized = true;
             } catch (NettyException e) {
