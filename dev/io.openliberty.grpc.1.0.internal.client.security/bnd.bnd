@@ -13,7 +13,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-grpcVersion=1.43.2
+grpcVersion=1.54.0
 nettyVersion=4.1.86.Final
 
 Bundle-Name: gRPC Client security
@@ -21,7 +21,7 @@ Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client.security
 Bundle-Description: Liberty gRPC Client security, version ${bVersion}
 
 Import-Package: \
-  io.grpc.netty; version="[1.43.0, 11)",\
+  io.grpc.netty; version="[1.54.0, 11)",\
   *
  
 Export-Package: \

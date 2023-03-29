@@ -41,7 +41,7 @@ plugins {
     id "eclipse-wtp"
 }
 
-def grpcVersion = '1.43.2'
+def grpcVersion = '1.54.0'
 def protocVersion = '3.19.6'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"

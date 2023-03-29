@@ -16,7 +16,7 @@
 
 bVersion=1.0
 
-grpcVersion=1.43.2
+grpcVersion=1.54.0
 nettyVersion=4.1.86.Final
 
 # Using version=! in order to not have a version attached to the import for packages that were removed

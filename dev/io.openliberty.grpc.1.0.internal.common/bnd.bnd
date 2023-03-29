@@ -15,7 +15,7 @@
 -sub: *.bnd
 
 bVersion=1.0
-grpcVersion=1.43.2
+grpcVersion=1.54.0
 
 
 

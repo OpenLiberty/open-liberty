@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-def grpcVersion='1.43.2'
+def grpcVersion='1.54.0'
 
 configurations {
   telemetryAgent

@@ -13,7 +13,11 @@
 package io.openliberty.grpc.internal.client;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +39,8 @@ import io.openliberty.grpc.internal.client.config.GrpcClientConfigHolder;
  */
 public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 
-	private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
+	private static final TraceComponent tc = Tr.register(LibertyManagedChannelProvider.class,
+			GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
 
 	@Override
 	public boolean isAvailable() {
@@ -89,7 +94,8 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 		}
 	}
 
-	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port, Map<String, String> config) {
+	private void addLibertySSLConfig(NettyChannelBuilder builder, String target, String port,
+			Map<String, String> config) {
 		String sslRef = null;
 		if (config != null && !config.isEmpty()) {
 			sslRef = config.get(GrpcClientConstants.SSL_CFG_PROP);
@@ -179,15 +185,15 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 			if (!items.isEmpty()) {
 				for (String className : items) {
 					try {
-						// use the managed object service to load the interceptor 
-						ClientInterceptor interceptor = 
-								(ClientInterceptor) GrpcManagedObjectProvider.createObjectFromClassName(className);
+						// use the managed object service to load the interceptor
+						ClientInterceptor interceptor = (ClientInterceptor) GrpcManagedObjectProvider
+								.createObjectFromClassName(className);
 						if (interceptor != null) {
 							builder.intercept(interceptor);
 						}
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-							IllegalArgumentException | InvocationTargetException | NoSuchMethodException |
-							SecurityException | ManagedObjectException e) {
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+							| SecurityException | ManagedObjectException e) {
 						Tr.warning(tc, "invalid.clientinterceptor", e.getMessage());
 					}
 				}
@@ -198,5 +204,14 @@ public class LibertyManagedChannelProvider extends ManagedChannelProvider {
 	private ClientInterceptor createMonitoringClientInterceptor() {
 		// create the interceptor only if the monitor feature is enabled
 		return GrpcClientComponent.getMonitoringClientInterceptor();
+	}
+
+	/**
+	 * This method was added to the abstract superclass in later gRPC versions
+	 *
+	 * @return a collection containing InetSocketAddress
+	 */
+	protected Collection<Class<? extends SocketAddress>> getSupportedSocketAddressTypes() {
+		return Collections.singleton(InetSocketAddress.class);
 	}
 }
