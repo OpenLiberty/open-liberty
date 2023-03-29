@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
@@ -19,6 +16,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.channel.Channel;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
  * Registers channel handlers which implement various TCP configuration options. Handlers are
@@ -38,17 +36,17 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
     @Override
     protected void initChannel(Channel channel) throws Exception {
         if (TraceComponent.isAnyTracingEnabled()) {
-        	channel.pipeline().addFirst(new TCPLoggingHandler());
+        	channel.pipeline().addFirst(NettyConstants.TCP_LOGGING_HANDLER_NAME, new TCPLoggingHandler());
 		}
         if (config.getInactivityTimeout() > 0) {
-            channel.pipeline().addLast(new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
+            channel.pipeline().addLast(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
         }
         MaxOpenConnectionsHandler maxHandler = new MaxOpenConnectionsHandler(config.getMaxOpenConnections());
         if (config.getAccessLists() != null) {
             AccessListHandler includeHandler = new AccessListHandler(config.getAccessLists());
-            channel.pipeline().addLast(includeHandler);
+            channel.pipeline().addLast(NettyConstants.ACCESSLIST_HANDLER_NAME, includeHandler);
         }
-        channel.pipeline().addLast(maxHandler);
+        channel.pipeline().addLast(NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME, maxHandler);
     }
 
 }

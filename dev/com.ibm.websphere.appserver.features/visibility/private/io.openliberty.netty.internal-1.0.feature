@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.netty-1.0
+symbolicName=io.openliberty.netty.internal-1.0
 Subsystem-Name: Netty internal implementation 1.0
 singleton=true
 -features=\
@@ -11,5 +11,5 @@ singleton=true
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

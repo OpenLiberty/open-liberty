@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
@@ -32,6 +29,12 @@ public class InactivityTimeoutHandler extends IdleStateHandler {
 
     public InactivityTimeoutHandler(long readerIdleTime, long writerIdleTime, long allIdleTime, TimeUnit unit) {
         super(readerIdleTime, writerIdleTime, allIdleTime, unit);
+    }
+
+    @Override
+    protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception{
+        // Overriden to call the userEventTriggered of this handler instead of the next to keep the timeout logic contained to one class/handler
+        userEventTriggered(ctx, evt);
     }
 
     @Override

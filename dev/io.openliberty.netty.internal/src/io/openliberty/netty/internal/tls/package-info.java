@@ -6,7 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- * 
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
 package io.openliberty.netty.internal.tls;
