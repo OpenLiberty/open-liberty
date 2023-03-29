@@ -202,26 +202,29 @@ public class FeatureUtility {
 	// beta
 	boolean enableVerify = System.getProperty("enable.verify") != null
 		&& System.getProperty("enable.verify").equals("true");
-	if (builderVerifyOption == null && envValue == null) {
-	    if (enableVerify) {
-		verifyValue = DEFAULT_VERIFY.toString();
-	    } else {
-		verifyValue = "skip";
-	    }
-	} else if (builderVerifyOption == null) {
-	    verifyValue = envValue.toLowerCase();
-	} else if (envValue == null) {
-	    verifyValue = builderVerifyOption;
+	if (!enableVerify) {
+	    verifyValue = "skip";
 	} else {
-	    // If the verifyOption is set in both command line and (env var or props) than
-	    // the values have to match.
-	    if (!((String) envMap.get("FEATURE_VERIFY")).equalsIgnoreCase(builderVerifyOption)) {
-		throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(
-			"ERROR_VERIFY_OPTION_DOES_NOT_MATCH", envMap.get("FEATURE_VERIFY"),
-			builderVerifyOption), InstallException.SIGNATURE_VERIFICATION_FAILED);
+	    if (builderVerifyOption == null && envValue == null) {
+		verifyValue = DEFAULT_VERIFY.toString();
+	    } else if (builderVerifyOption == null) {
+		verifyValue = envValue.toLowerCase();
+	    } else if (envValue == null) {
+		verifyValue = builderVerifyOption;
+	    } else {
+		// If the verifyOption is set in both command line and (env var or props) than
+		// the values have to match.
+		if (!((String) envMap.get("FEATURE_VERIFY")).equalsIgnoreCase(builderVerifyOption)) {
+		    throw new InstallException(
+			    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_VERIFY_OPTION_DOES_NOT_MATCH",
+				    envMap.get("FEATURE_VERIFY"), builderVerifyOption),
+			    InstallException.SIGNATURE_VERIFICATION_FAILED);
+		}
+		verifyValue = builderVerifyOption;
 	    }
-	    verifyValue = builderVerifyOption;
 	}
+
+
 
 	try {
 	    return VerifyOption.valueOf(verifyValue);

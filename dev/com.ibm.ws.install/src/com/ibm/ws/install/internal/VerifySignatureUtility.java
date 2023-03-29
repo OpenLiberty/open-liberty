@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -58,14 +59,32 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 public class VerifySignatureUtility {
 
     private static final Logger logger = InstallLogUtils.getInstallLogger();
-    private static final String DEFAULT_LIBERTY_KEY_ID = "0xBD9FD5BE9E68CA00";
-    private static final String LIBERTY_KEY_PATH = "/path_to_liberty_key";
+    private static final File LIBERTY_KEY = new File(Utils.getInstallDir(), "lib/versions/public_key/libertyKey.asc");
     private static final String UbuntuServerURL = "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=";
+    private String defaultKeyID = null;
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
 
     VerifySignatureUtility() {
         Security.addProvider(new BouncyCastleProvider());
+
+    }
+
+    private String getLibertyKeyID() throws InstallException {
+        if (defaultKeyID != null) {
+            return defaultKeyID;
+        }
+        File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(propertiesFile)) {
+            properties.load(input);
+            defaultKeyID = properties.getProperty("com.ibm.websphere.productPublicKeyId");
+        } catch (IOException e) {
+            // openliberty.properties file is missing or invalidly formatted
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
+        }
+
+        return defaultKeyID;
     }
 
     public boolean isKeyValid(File pubKey, String keyID) throws InstallException {
@@ -77,11 +96,11 @@ public class VerifySignatureUtility {
             isValid = validatePublicKey(publicKey, keyID);
         } catch (IOException e) {
             logger.warning(e.getMessage());
-            if (keyID.equals(DEFAULT_LIBERTY_KEY_ID)) {
+            if (keyID.equals(getLibertyKeyID())) {
                 throw new InstallException(e.getMessage());
             }
         } catch (InstallException e) {
-            if (keyID.equals(DEFAULT_LIBERTY_KEY_ID)) {
+            if (keyID.equals(getLibertyKeyID())) {
                 throw e;
             } else {
                 logger.warning(e.getMessage());
@@ -168,14 +187,13 @@ public class VerifySignatureUtility {
 
     private Map<String, String> getPublicKeyURL(Collection<Map<String, String>> keys, VerifyOption verify) throws InstallException {
         Map<String, String> pubKeyUrls = new HashMap();
-        //TODO check pubkey shipped from liberty package
         try {
-            if (isKeyValid(new File(LIBERTY_KEY_PATH), DEFAULT_LIBERTY_KEY_ID)) {
-                pubKeyUrls.put(DEFAULT_LIBERTY_KEY_ID, LIBERTY_KEY_PATH);
+            if (isKeyValid(LIBERTY_KEY, getLibertyKeyID())) {
+                pubKeyUrls.put(getLibertyKeyID(), LIBERTY_KEY.toURI().toURL().toString());
             }
-        } catch (InstallException e) {
+        } catch (InstallException | MalformedURLException e) {
             logger.warning(e.getMessage());
-            String liberty_keyID = System.getProperty("com.ibm.ws.install.libertyKeyID", DEFAULT_LIBERTY_KEY_ID);
+            String liberty_keyID = System.getProperty("com.ibm.ws.install.libertyKeyID", getLibertyKeyID());
             String PUBKEY_URL = UbuntuServerURL + liberty_keyID;
             pubKeyUrls.put(liberty_keyID, PUBKEY_URL);
         }
@@ -211,7 +229,6 @@ public class VerifySignatureUtility {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_KEYURL_NOT_PROVIDED", keyID));
         }
 
-        keyURL = keyURL.toLowerCase();
         if (!InstallUtils.isURL(keyURL)) {
             File f = new File(keyURL);
             if (!f.exists()) {
@@ -223,7 +240,7 @@ public class VerifySignatureUtility {
                 throw new InstallException(e.getMessage());
             }
         } else {
-            if (!keyURL.startsWith("https") && !keyURL.startsWith("http") && !keyURL.startsWith("file")) {
+            if (!keyURL.toLowerCase().startsWith("https") && !keyURL.toLowerCase().startsWith("http") && !keyURL.toLowerCase().startsWith("file")) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_KEYURL_UNSUPPORTED_PROTOCOL", keyURL));
             }
         }
