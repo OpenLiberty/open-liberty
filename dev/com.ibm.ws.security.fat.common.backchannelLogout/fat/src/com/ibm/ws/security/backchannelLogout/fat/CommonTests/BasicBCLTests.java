@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.backchannelLogout.fat.CommonTests;
@@ -372,6 +369,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             if (currentRepeatAction.contains(Constants.SAML)) {
                 logoutMethodTested = Constants.SAML;
                 finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+                finalAppWithPostRedirect = Constants.samlLogoutPage;
             } else {
                 if (currentRepeatAction.contains(Constants.END_SESSION)) {
                     logoutMethodTested = Constants.END_SESSION;
@@ -1621,7 +1619,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         AfterLogoutStates states = new AfterLogoutStates(Constants.usesInvalidBCLEndpoint, updatedTestSettings.getFlowType(), logoutMethodTested, sessionLogoutEndpoint, updatedTestSettings.getRsTokenType());
         states.setOPAllCookiesRemoved(); // after logout, this test expects all OP cookies to be removed
 
-        if (logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT) || (logoutMethodTested.equals(Constants.HTTP_SESSION) && sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT))) {
+        if (logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT) || (logoutMethodTested.equals(Constants.HTTP_SESSION) && sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) || logoutMethodTested.equals(Constants.SAML)) {
             states.setIsRefreshTokenValid(true); // when we're using logout from from the OP and we do NOT have a bcl coded, we won't clean up the refresh_token
         }
         validateLogoutResult(webClient, updatedTestSettings, tokens, states);
