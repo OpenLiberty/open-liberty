@@ -1,23 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.PrintWriter;
+import java.util.Hashtable;
+import java.util.Set;
 
+import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -772,6 +774,66 @@ public class OAuth20EndpointServicesTest {
 
         OAuth20EndpointServices oauth20EndpointServices = new OAuth20EndpointServices();
         assertFalse(oauth20EndpointServices.isAfterLogin(req));
+    }
+
+    @Test
+    public void testPutOpIdIntoRunAsSubject_noRunAsSubject() {
+        Subject runAsSubject = null;
+        OAuth20EndpointServices oauth20EndpointServices = new OAuth20EndpointServices() {
+            @Override
+            Subject getRunAsSubject() {
+                return runAsSubject;
+            }
+        };
+        // Should be a no-op
+        oauth20EndpointServices.putOpIdIntoRunAsSubject(provider);
+        assertNull("Subject should not have been created, but got: " + runAsSubject, runAsSubject);
+    }
+
+    @Test
+    public void testPutOpIdIntoRunAsSubject_noHashtablePrivateCreds() {
+        Subject runAsSubject = new Subject();
+        OAuth20EndpointServices oauth20EndpointServices = new OAuth20EndpointServices() {
+            @Override
+            Subject getRunAsSubject() {
+                return runAsSubject;
+            }
+        };
+        // Should be a no-op
+        oauth20EndpointServices.putOpIdIntoRunAsSubject(provider);
+
+        Set<Object> privateCredentials = runAsSubject.getPrivateCredentials();
+        assertNotNull("Private credentials shouldn't have been null.", privateCredentials);
+        assertTrue("Private credentials should have been empty but were: " + privateCredentials, privateCredentials.isEmpty());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testPutOpIdIntoRunAsSubject_noOidcServerConfigMatchingProviderId() {
+        String providerId = "myProviderId";
+        Subject runAsSubject = new Subject();
+        Hashtable<String, Object> creds = new Hashtable<>();
+        Set<Object> privateCreds = runAsSubject.getPrivateCredentials();
+        privateCreds.add(creds);
+        OAuth20EndpointServices oauth20EndpointServices = new OAuth20EndpointServices() {
+            @Override
+            Subject getRunAsSubject() {
+                return runAsSubject;
+            }
+        };
+        mock.checking(new Expectations() {
+            {
+                one(provider).getID();
+                will(returnValue(providerId));
+            }
+        });
+        // Should be a no-op
+        oauth20EndpointServices.putOpIdIntoRunAsSubject(provider);
+
+        Set<Object> privateCredentials = runAsSubject.getPrivateCredentials();
+        assertNotNull("Private credentials shouldn't have been null.", privateCredentials);
+        Hashtable hashtablePostTest = (Hashtable) privateCredentials.iterator().next();
+        assertEquals("Hashtable credentials post-test does not match the hashtable from before the test.", creds, hashtablePostTest);
     }
 
 }

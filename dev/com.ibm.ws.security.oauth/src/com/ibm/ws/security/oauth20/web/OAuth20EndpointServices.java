@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.web;
 
@@ -79,6 +76,7 @@ import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.oauth20.JwtAccessTokenMediator;
@@ -738,7 +736,7 @@ public class OAuth20EndpointServices {
         }
 
         // getBack the resource. better double check it
-        OidcBaseClient client;
+        OidcBaseClient client = null;
         try {
             client = OAuth20ProviderUtils.getOidcOAuth20Client(provider, clientId);
             OAuth20ProviderUtils.validateResource(request, options, client);
@@ -752,7 +750,7 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
-        trackAuthenticatedOAuthClients(request, response, provider, clientId);
+        trackAuthenticatedOAuthClients(request, response, provider, client);
 
         consent.handleConsent(provider, request, prompt, clientId);
         getExternalClaimsFromWSSubject(request, options);
@@ -761,12 +759,52 @@ public class OAuth20EndpointServices {
         return oauthResult;
     }
 
-    void trackAuthenticatedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String clientId) {
+    void trackAuthenticatedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, OidcBaseClient client) {
         OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
         if (provider.isTrackOAuthClients()) {
-            clientTracker.trackOAuthClient(clientId);
+            clientTracker.trackOAuthClient(client.getClientId());
         }
-        // TODO - track for back-channel logout purposes
+        trackBackchannelLogoutClients(provider, client);
+    }
+
+    void trackBackchannelLogoutClients(OAuth20Provider provider, OidcBaseClient client) {
+        String bclUri = client.getBackchannelLogoutUri();
+        if (bclUri != null && !bclUri.isEmpty()) {
+            putOpIdIntoRunAsSubject(provider);
+        }
+    }
+
+    /**
+     * Adds the ID for the OIDC OP that corresponds to the OAuth provider (if one exists) to the run-as subject's private credentials.
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    void putOpIdIntoRunAsSubject(OAuth20Provider provider) {
+        Subject runAsSubject = getRunAsSubject();
+        if (runAsSubject != null) {
+            Set<Hashtable> hashtableCreds = runAsSubject.getPrivateCredentials(Hashtable.class);
+            if (!hashtableCreds.isEmpty()) {
+                Hashtable hashtable = hashtableCreds.iterator().next();
+                OidcServerConfig oidcServerConfig = ConfigUtils.getOidcServerConfigForOAuth20Provider(provider.getID());
+                if (oidcServerConfig == null) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Failed to find an OIDC provider configuration for provider ID [" + provider.getID() + "]");
+                    }
+                    return;
+                }
+                hashtable.put(com.ibm.ws.security.sso.common.Constants.WSCREDENTIAL_OIDC_OP_USED, oidcServerConfig.getProviderId());
+            }
+        }
+    }
+
+    Subject getRunAsSubject() {
+        try {
+            return WSSubject.getRunAsSubject();
+        } catch (WSSecurityException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception while getting runAsSubject:", e.getCause());
+            }
+        }
+        return null;
     }
 
     /**

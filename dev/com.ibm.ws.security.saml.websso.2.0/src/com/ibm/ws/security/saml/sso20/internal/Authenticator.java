@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.internal;
 
@@ -202,6 +199,7 @@ public class Authenticator {
         String realm = null;
         String uniqueID = null;
         List<String> groups = null;
+        String samlProviderId = mapAssertToSubject.ssoConfig.getProviderId();
 
         switch (ssoConfig.getMapToUserRegistry()) {
             case No:
@@ -232,6 +230,7 @@ public class Authenticator {
                 break;
         }
 
+        putValue(hashtable, com.ibm.ws.security.sso.common.Constants.WSCREDENTIAL_SAML_IDP_USED, samlProviderId);
         putValue(hashtable, AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
 
         // In the case disableLtpaToken is true, this needs to be true all the time
