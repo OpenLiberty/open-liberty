@@ -23,7 +23,7 @@ import com.ibm.ws.jaxws.test.wsr.server.People;
 @WebService(serviceName = "PeopleService", portName = "BillPort", endpointInterface = "com.ibm.ws.jaxws.test.wsr.server.People",
             targetNamespace = "http://server.wsr.test.jaxws.ws.ibm.com")
 public class Bill implements People {
-    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/prototype/ep2";
+    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/interop/ep2";
 
     @Override
     public String hello() {
