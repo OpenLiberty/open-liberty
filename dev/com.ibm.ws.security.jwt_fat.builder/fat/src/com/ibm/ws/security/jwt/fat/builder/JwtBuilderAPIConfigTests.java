@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,9 @@ import java.util.Arrays;
 import javax.json.JsonObject;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -32,6 +34,7 @@ import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
@@ -57,6 +60,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
@@ -93,10 +99,12 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <LI>Should get a token built using the default values for the JWT Token
      * </OL>
      */
+    // @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void JwtBuilderAPIConfigTests_defaultConfig() throws Exception {
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
