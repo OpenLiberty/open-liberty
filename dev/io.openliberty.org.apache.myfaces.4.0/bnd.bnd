@@ -48,11 +48,11 @@ Service-Component: \
 # Not used directly, so these packages needs to be dynamically imported
 DynamicImport-Package: \
   io.openliberty.faces40.internal.cdi, \
-  io.openliberty.faces40.internal.config.annotion,\
-  io.openliberty.faces40.internal.config.resource,\
+  io.openliberty.faces40.internal.config.annotion, \
+  io.openliberty.faces40.internal.config.resource, \
   io.openliberty.faces40.internal.ee, \
-  io.openliberty.faces40.internal.spi.impl, \
-  io.openliberty.faces40.internal.extprocessor
+  io.openliberty.faces40.internal.extprocessor, \
+  io.openliberty.faces40.internal.spi.impl
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is myfaces-builder-annotations-1.0.9.jar
@@ -108,8 +108,8 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
-  !io.openliberty.faces40.internal.ee, \
   !com.google.inject, \
+  !io.openliberty.faces40.internal.ee, \
   !jakarta.ejb, \
   !jakarta.persistence, \
   !org.apache.tomcat, \
