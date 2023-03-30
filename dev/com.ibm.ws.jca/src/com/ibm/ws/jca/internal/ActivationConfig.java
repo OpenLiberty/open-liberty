@@ -83,7 +83,7 @@ public class ActivationConfig implements Serializable {
          *
          * If we change the serialversionUID, we may need to modify this method as well.
          */
-        System.out.println("");
+        System.out.println("Hello, this is a simple message.");
         if (tc.isEntryEnabled()) {
             Tr.entry(this, tc, "readObject", stream);
         }
