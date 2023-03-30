@@ -738,7 +738,7 @@ error.cannotset.securitymanager.jdk18.useraction=Start the server with the JVM a
 
 error.checkpoint.workarea.restore=CWWKE0957E: The checkpoint server workarea directory cannot be restored from the {0} directory.
 error.checkpoint.workarea.restore.explanation=An error occurred restoring the checkpoint workarea directory.
-error.checkpoint.workarea.restore.useraction=Ensure the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
+error.checkpoint.workarea.restore.useraction=Ensure that the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: The server checkpoint request failed because the websphere.java.security property was set in the bootstrap.properties file. This property enables the Java Security Manager and is not valid when a server checkpoint occurs.
 error.checkpoint.securitymanager.not.supported.explanation=Liberty does not support the Java Security Manager when a server checkpoint is requested. The Java Security Manager is deprecated, as specified by JEP 411.
@@ -750,7 +750,7 @@ error.checkpoint.delete.useraction=Ensure the user has permission to delete the 
 
 error.checkpoint.workarea.backup=CWWKE0960E: The server checkpoint request failed because the {0} directory cannot be backed up.
 error.checkpoint.workarea.backup.explanation=An error occurred backing up the checkpoint server workarea directory.
-error.checkpoint.workarea.backup.useraction=Ensure the user has sufficient permissions to back up the checkpoint workarea directory. Reissue the command with a user that has sufficient permissions.
+error.checkpoint.workarea.backup.useraction=Ensure that the user has sufficient permissions to back up the checkpoint workarea directory. Reissue the command with a user that has sufficient permissions.
 
 info.checkpoint.restore.failed=CWWKE0961I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
 info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
