@@ -40,10 +40,6 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
 
     private static final String NO_SSL_CONFIG = "noSSLConfiguration.xml";
 
-    protected static final List<String> invalidSSLHandshakeResps = new ArrayList<String>(2);
-
-    protected static final List<String> noSSLResps = new ArrayList<String>(2);
-
     protected static final String DEFAULT_SSL_WITHOUT_TRUST_STORE_SERVER_CONFIG = "noTrustStoreInDefaultSSLConfiguration.xml";
 
     protected static final String NO_VALID_TRUST_CERT_IN_CUSTOMIZE_SSL_CONFIG = "noValidTrustCertInCustomizeSSLConfiguration.xml";
@@ -53,12 +49,6 @@ public class SSLConfigurationUnmanagedTest extends AbstractJaxWsTransportSecurit
     private static final int SECURE_PORT = server.getHttpDefaultSecurePort();
 
     static {
-        invalidSSLHandshakeResps.add("SSLHandshakeException");
-        invalidSSLHandshakeResps.add("java.security.cert.CertPathBuilderException");
-
-        noSSLResps.add("NullPointerException");
-        noSSLResps.add("ConnectException");
-
         dynamicUpdate = false;
     }
 
