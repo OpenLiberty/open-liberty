@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openliberty.io.opentelemetry.internal</name>
+	<name>io.openliberty.io.opentelemetry</name>
 	<comment></comment>
 	<projects>
 	</projects>
