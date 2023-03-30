@@ -95,10 +95,13 @@ public interface ConnectionManagerMBean {
      *                 on the time provided. In use connections in the shared and unshared pools
      *                 will be aborted if the in use time for the connections exceeds the time
      *                 provided.
+     *
      * @param time The time to be used for aborting connections from connection pool based on type.
      *                 Parameter time is a Long and in milliseconds.
+     *
      * @throws MBeanException
      */
+    @Deprecated
     public String abortConnections(String type, Long time) throws MBeanException;
 
     /**
