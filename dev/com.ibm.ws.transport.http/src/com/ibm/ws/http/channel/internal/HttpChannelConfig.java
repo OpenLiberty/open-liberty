@@ -151,14 +151,14 @@ public class HttpChannelConfig {
     /** The amount of time the connection will be left open when HTTP/2 goes into an idle state */
     private long http2ConnectionCloseTimeout = 30;
     /** Stream default initial window to the spec max **/
-    private int http2SettingsInitialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
+    private final int http2SettingsInitialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     /** Connection default initial window size to the spec max **/
-    private int http2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
+    private final int http2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     private int http2ConnectionIdleTimeout = 0;
     private int http2MaxConcurrentStreams = 200;
     private int http2MaxFrameSize = 57344; //Default to 56kb
     /** Don't start sending window update frames until 1/2 the window is used **/
-    private boolean http2LimitWindowUpdateFrames = false;
+    private final boolean http2LimitWindowUpdateFrames = false;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -545,10 +545,7 @@ public class HttpChannelConfig {
         parseAttemptPurgeData(props); //PI11176
         parseThrowIOEForInboundConnections(props); //PI57542
         parseSkipCookiePathQuotes(props); //738893
-        parseH2LimitWindowUpdateFrames(props);
         parseH2ConnCloseTimeout(props);
-        parseH2SettingsInitialWindowSize(props);
-        parseH2ConnectionWindowSize(props);
         parseH2ConnectionIdleTimeout(props);
         parseH2MaxConcurrentStreams(props);
         parseH2MaxFrameSize(props);
@@ -884,70 +881,6 @@ public class HttpChannelConfig {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid H2 Connection Close Timeout of " + value);
                 }
-            }
-        }
-    }
-
-    // Stream level default initial window size for all new streams, goes out in preface settings frame
-    private void parseH2SettingsInitialWindowSize(Map<?, ?> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE);
-        if (null != value) {
-            try {
-                if (convertLong(value) > Integer.MAX_VALUE) {
-                    throw new ArithmeticException();
-                }
-                this.http2SettingsInitialWindowSize = convertInteger(value);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Settings Initial Window Size is " + getH2SettingsInitialWindowSize());
-                }
-            } catch (NumberFormatException nfe) {
-                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2SettingsInitialWindowSize", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Stream Initial Default Window Size of " + value);
-                }
-            } catch (ArithmeticException ae) {
-                FFDCFilter.processException(ae, getClass().getName() + ".parseH2SettingsInitialWindowSize", "2");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Settings Initial Window Size: cannot exceed 2^31 - 1.  Value was: " + value);
-                }
-            }
-        }
-
-    }
-
-    // Connection level window size that goes out in a window update frame just after the preface
-    private void parseH2ConnectionWindowSize(Map<?, ?> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE);
-        if (null != value) {
-            try {
-                if (convertLong(value) > Integer.MAX_VALUE || convertLong(value) < 65535) {
-                    throw new ArithmeticException();
-                }
-                this.http2ConnectionWindowSize = convertInteger(value);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Connection Window Size is " + getH2ConnectionWindowSize());
-                }
-            } catch (NumberFormatException nfe) {
-                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnectionWindowSize", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Connection Window Size of " + value);
-                }
-            } catch (ArithmeticException ae) {
-                FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnectionWindowSize", "2");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Connection Window Size: must be between 2^16 - 1 and 2^31 - 1 inclusive.  Value was: " + value);
-                }
-            }
-        }
-
-    }
-
-    private void parseH2LimitWindowUpdateFrames(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES);
-        if (null != value) {
-            this.http2LimitWindowUpdateFrames = convertBoolean(value);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Config: H2 Limit Window_Update frames " + getH2LimitWindowUpdateFrames());
             }
         }
     }
