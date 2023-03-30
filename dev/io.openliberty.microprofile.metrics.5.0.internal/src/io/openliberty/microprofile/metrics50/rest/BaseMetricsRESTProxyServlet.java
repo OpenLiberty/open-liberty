@@ -100,6 +100,8 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
                 throw new ServletException("OSGi service RESTHandlerContainer is not available.");
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
+                // generate initial session metrics
+                request.getSession();
             }
         }
     }
