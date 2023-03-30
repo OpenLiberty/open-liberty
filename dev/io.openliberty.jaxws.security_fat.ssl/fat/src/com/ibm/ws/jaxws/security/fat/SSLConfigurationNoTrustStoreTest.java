@@ -27,10 +27,7 @@ public class SSLConfigurationNoTrustStoreTest extends AbstractJaxWsTransportSecu
 
     static {
         invalidSSLHandshakeResps.add("SSLHandshakeException");
-        invalidSSLHandshakeResps.add("java.security.cert.CertPathBuilderException");
-
-        noSSLResps.add("NullPointerException");
-        noSSLResps.add("ConnectException");
+        invalidSSLHandshakeResps.add("CertPathBuilderException");
 
         dynamicUpdate = true;
     }
@@ -69,7 +66,7 @@ public class SSLConfigurationNoTrustStoreTest extends AbstractJaxWsTransportSecu
 
     // 4 No trustStore in customize SSL configuration
     @AllowedFFDC({ "sun.security.validator.ValidatorException", "java.security.cert.CertPathBuilderException",
-                   "com.ibm.security.cert.IBMCertPathBuilderException" })
+                   "com.ibm.security.cert.IBMCertPathBuilderException", "sun.security.provider.certpath.SunCertPathBuilderException" })
     @Test
     public void testNoTrustStoreInCustomizeSSLConfig() throws Exception {
         prepareForTest("serverConfigs/" + NO_VALID_TRUST_CERT_IN_CUSTOMIZE_SSL_CONFIG,

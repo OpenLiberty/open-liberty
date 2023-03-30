@@ -27,14 +27,6 @@ public class SSLRefConfigurationTest extends AbstractJaxWsTransportSecuritySSLTe
 
     private static int SECURE_PORT = server.getHttpDefaultSecurePort();
 
-    static {
-        invalidSSLHandshakeResps.add("SSLHandshakeException");
-        invalidSSLHandshakeResps.add("java.security.cert.CertPathBuilderException");
-
-        noSSLResps.add("NullPointerException");
-        noSSLResps.add("ConnectException");
-    }
-
     @BeforeClass
     public static void beforeAllTests() throws Exception {
 

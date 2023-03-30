@@ -42,7 +42,7 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
 
     static {
         invalidSSLHandshakeResps.add("SSLHandshakeException");
-        invalidSSLHandshakeResps.add("java.security.cert.CertPathBuilderException");
+        invalidSSLHandshakeResps.add("CertPathBuilderException");
 
         noSSLResps.add("NullPointerException");
         noSSLResps.add("ConnectException");
@@ -138,7 +138,7 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
 
     // 2 No valid certification in trustStore of customize SSL configuration
     @AllowedFFDC({ "sun.security.validator.ValidatorException", "java.security.cert.CertPathBuilderException",
-                   "com.ibm.security.cert.IBMCertPathBuilderException" })
+                   "com.ibm.security.cert.IBMCertPathBuilderException", "sun.security.provider.certpath.SunCertPathBuilderException" })
     @Test
     @Mode(componenttest.custom.junit.runner.Mode.TestMode.FULL)
     public void testNoValidTrustCertInCustomizeSSLConfig() throws Exception {
