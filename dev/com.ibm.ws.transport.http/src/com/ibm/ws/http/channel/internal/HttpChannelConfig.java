@@ -151,14 +151,14 @@ public class HttpChannelConfig {
     /** The amount of time the connection will be left open when HTTP/2 goes into an idle state */
     private long http2ConnectionCloseTimeout = 30;
     /** Stream default initial window to the spec max **/
-    private final int http2SettingsInitialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
+    private int http2SettingsInitialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     /** Connection default initial window size to the spec max **/
-    private final int http2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
+    private int http2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     private int http2ConnectionIdleTimeout = 0;
     private int http2MaxConcurrentStreams = 200;
     private int http2MaxFrameSize = 57344; //Default to 56kb
     /** Don't start sending window update frames until 1/2 the window is used **/
-    private final boolean http2LimitWindowUpdateFrames = false;
+    private boolean http2LimitWindowUpdateFrames = false;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -549,6 +549,9 @@ public class HttpChannelConfig {
         parseH2ConnectionIdleTimeout(props);
         parseH2MaxConcurrentStreams(props);
         parseH2MaxFrameSize(props);
+        parseH2SettingsInitialWindowSize(props);
+        parseH2ConnectionWindowSize(props);
+        parseH2LimitWindowUpdateFrames(props);
         parsePurgeRemainingResponseBody(props); //PI81572
         parseRemoteIp(props);
         parseRemoteIpProxies(props);
@@ -866,6 +869,37 @@ public class HttpChannelConfig {
                 }
             }
         }
+    }
+
+    private void parseH2SettingsInitialWindowSize(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE);
+        if (null != value) {
+            this.http2SettingsInitialWindowSize = convertInteger(value);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: HTTP/2 Settings Initial Window Size is " + getH2SettingsInitialWindowSize());
+            }
+        }
+    }
+
+    private void parseH2ConnectionWindowSize(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE);
+        if (null != value) {
+            this.http2ConnectionWindowSize = convertInteger(value);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: HTTP/2 Connection Window Size is " + getH2ConnectionWindowSize());
+            }
+        }
+    }
+
+    private void parseH2LimitWindowUpdateFrames(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES);
+        if (null != value) {
+            this.http2LimitWindowUpdateFrames = convertBoolean(value);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: HTTP/2 Limit Window Update Frames is " + getH2LimitWindowUpdateFrames());
+            }
+        }
+
     }
 
     private void parseH2ConnCloseTimeout(Map<?, ?> props) {
