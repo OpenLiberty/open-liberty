@@ -2,7 +2,7 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.timestamp.timeToLive="120"
+		ws-security.timestamp.timeToLive="60"
 		ws-security.timestamp.futureTimeToLive="60"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
                 ws-security.return.security.error="true"
