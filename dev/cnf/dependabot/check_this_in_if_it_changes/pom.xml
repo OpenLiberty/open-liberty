@@ -4537,11 +4537,6 @@
       <version>5.0.4.RELEASE</version>
     </dependency>
     <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>7.5.0-ibm230227</version>
-    </dependency>
-    <dependency>
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
       <version>1.2</version>
