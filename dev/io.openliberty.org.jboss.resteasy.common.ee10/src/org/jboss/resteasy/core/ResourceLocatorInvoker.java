@@ -223,8 +223,5 @@ public class ResourceLocatorInvoker implements ResourceInvoker
    public MethodStatisticsLogger getMethodStatisticsLogger() {
       return methodStatisticsLogger;
    }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 291d5469f6 (Upgrade to RESTEasy 6.2.3)
