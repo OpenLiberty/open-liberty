@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -194,22 +195,20 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         J2EEName jeeName = cData == null ? null : cData.getJ2EEName();
         String application = jeeName == null ? null : jeeName.getApplication();
         String module = jeeName == null ? null : jeeName.getModule();
-        String component = jeeName == null ? null : jeeName.getComponent();
         String qualifiedName = null;
-        System.out.println("*** APP  " + application);
-        System.out.println("*** MOD  " + module);
-        System.out.println("*** COMP " + component);
+        boolean javaAppOrModuleOrComp = false;
 
         // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
         if (name.startsWith("java:")) {
+            boolean javaApp = name.regionMatches(5, "app", 0, 3);
+            boolean javaModule = !javaApp && name.regionMatches(5, "module", 0, 6);
+            boolean javaComp = !javaApp && !javaModule && name.regionMatches(5, "comp", 0, 4);
+            javaAppOrModuleOrComp = javaApp || javaModule || javaComp;
             StringBuilder s = new StringBuilder(name.length() + 80);
-            if (application != null) {
+            if (application != null && javaAppOrModuleOrComp) {
                 s.append("application[").append(application).append(']').append('/');
-                if (module != null) {
+                if (module != null && (javaModule || javaComp))
                     s.append("module[").append(module).append(']').append('/');
-                    if (component != null) // TODO does this make sense to include?
-                        s.append("component[").append(component).append(']').append('/');
-                }
             }
             qualifiedName = s.append("databaseStore[").append(name).append(']').toString();
         }
@@ -246,9 +245,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     }
                 }
                 if (dbStoreId == null) {
-                    // Look for DataSourceDefinition with jndiName and application matching
+                    // Look for DataSourceDefinition with jndiName matching
                     String filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + //
-                                    FilterUtils.createPropertyFilter("application", application) + //
+                                    (javaAppOrModuleOrComp ? FilterUtils.createPropertyFilter("application", application) : "") + //
                                     FilterUtils.createPropertyFilter("jndiName", name) + ')';
                     Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
                     if (!dsRefs.isEmpty()) {
@@ -269,7 +268,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                             dbStoreConfigurations = empty;
                     }
 
-                    String dataSourcePid = (String) dsRef.getProperty("service.pid");;
+                    String dataSourcePid = (String) dsRef.getProperty("service.pid");
                     boolean nonJTA = Boolean.FALSE.equals(dsRef.getProperty("transactional"));
 
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
@@ -290,10 +289,12 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     }
                     svcProps.put("NonJTADataSourceFactory.cardinality.minimum", nonJTA ? 1 : 0);
 
-                    svcProps.put("createTables", true);
-                    svcProps.put("dropTables", false);
-                    svcProps.put("tablePrefix", "DATA");
-                    svcProps.put("keyGenerationStrategy", "AUTO");
+                    // TODO should the databaseStore properties be configurable somehow when DataSourceDefinition is used?
+                    // The following would allow them in the annotation's properties list, as "data.createTables=true", "data.tablePrefix=TEST"
+                    svcProps.put("createTables", !"FALSE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.createTables")));
+                    svcProps.put("dropTables", !"TRUE".equalsIgnoreCase((String) dsRef.getProperty("properties.0.data.dropTables")));
+                    svcProps.put("tablePrefix", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.tablePrefix"), "DATA"));
+                    svcProps.put("keyGenerationStrategy", Objects.requireNonNullElse((String) dsRef.getProperty("properties.0.data.keyGenerationStrategy"), "AUTO"));
 
                     dbStoreConfig = provider.configAdmin.createFactoryConfiguration("com.ibm.ws.persistence.databaseStore", bc.getBundle().getLocation());
                     dbStoreConfig.update(svcProps);
