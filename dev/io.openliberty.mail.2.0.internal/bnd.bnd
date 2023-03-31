@@ -7,8 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
@@ -23,33 +21,9 @@ Bundle-Description: Openliberty mail 2.0 API; This feature allows applications t
 
 WS-TraceGroup: Mail
 
-
-## Resources that were moved from the original javax.mail.jar to
-## the new feature jar, included the mailcap file which is needed
-## for the app-resources header
-
-Include-Resource: \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/mailcap, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/gfprobe-provider.xml, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.charset.map, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.address.map, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.providers  
-
-Service-Component: \
-  io.openliberty.mail_2_0_internal${replace;${bVersion};\\.;_}.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=ignore; \
-    properties:= "resources=${app-resources}"
-
 -dsannotations=io.openliberty.mail.internal.MailSessionService, \
   io.openliberty.mail.internal.injection.MailSessionDefinitionInjectionProcessorProvider, \
   io.openliberty.mail.internal.injection.MailSessionResourceFactoryBuilder
-app-resources= \
-  META-INF/javamail.default.address.map | \
-  META-INF/javamail.default.providers | \
-  META-INF/javamail.charset.map | \
-  META-INF/mailcap 
 
 Private-Package: \
 	io.openliberty.mail.internal.injection,\
