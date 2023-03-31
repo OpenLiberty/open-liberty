@@ -26,7 +26,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
 /**
  * Repository for testing OneToMany relationship between Customer and CreditCard entities.
  */
-@Repository(dataStore = "DerbyDatabaseStore")
+@Repository(dataStore = "java:module/jdbc/RepositoryDataStore")
 public interface Customers extends DataRepository<Customer, Integer> {
 
     @OrderBy("phone")
