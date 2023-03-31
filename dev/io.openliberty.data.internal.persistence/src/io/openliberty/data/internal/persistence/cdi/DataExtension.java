@@ -34,6 +34,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -254,12 +255,25 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                         dbStoreId = qualifiedName == null ? name : qualifiedName;
                         dsRef = dsRefs.iterator().next();
                     } else {
-                        // Look for resource reference
-                        // TODO
-                        System.out.println("TODO find based on resource reference");
-                        throw new RuntimeException("Unable to locate the " + name +
-                                                   " dataStore which is needed by the " + type.getJavaClass().getName() +
-                                                   " Repository in the " + application + " application.");
+                        // Create a ResourceFactory that can delegate back to a resource reference lookup
+                        ResourceFactory delegator = new DelegatingResourceFactory(name, cData);
+                        Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
+                        dbStoreId = qualifiedName == null ? name : qualifiedName;
+                        String id = dbStoreId + "/ResourceFactory";
+                        svcProps.put("id", id);
+                        svcProps.put("config.displayId", id);
+                        if (application != null)
+                            svcProps.put("application", application);
+                        ServiceRegistration<ResourceFactory> reg = bc.registerService(ResourceFactory.class, delegator, svcProps);
+                        dsRef = reg.getReference();
+
+                        Queue<ServiceRegistration<ResourceFactory>> registrations = provider.delegatorsAllApps.get(application);
+                        if (registrations == null) {
+                            Queue<ServiceRegistration<ResourceFactory>> empty = new ConcurrentLinkedQueue<>();
+                            if ((registrations = provider.delegatorsAllApps.putIfAbsent(application, empty)) == null)
+                                registrations = empty;
+                        }
+                        registrations.add(reg);
                     }
 
                     if (dbStoreConfigurations == null) {
@@ -268,22 +282,20 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                             dbStoreConfigurations = empty;
                     }
 
-                    String dataSourcePid = (String) dsRef.getProperty("service.pid");
+                    String dataSourceId = (String) dsRef.getProperty("id");
                     boolean nonJTA = Boolean.FALSE.equals(dsRef.getProperty("transactional"));
 
                     Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                     svcProps.put("id", dbStoreId);
                     svcProps.put("config.displayId", qualifiedName == null ? ("databaseStore[" + dbStoreId + ']') : qualifiedName);
 
-                    svcProps.put("dataSourceRef", dataSourcePid);
-                    svcProps.put("DataSourceFactory.target", "(service.pid=" + dataSourcePid + ')');
+                    svcProps.put("DataSourceFactory.target", "(id=" + dataSourceId + ')');
 
                     svcProps.put("AuthData.target", "(service.pid=${authDataRef})");
                     svcProps.put("AuthData.cardinality.minimum", 0);
 
                     if (nonJTA) {
-                        svcProps.put("nonTransactionalDataSourceRef", dataSourcePid);
-                        svcProps.put("NonJTADataSourceFactory.target", "(service.pid=" + dataSourcePid + ')');
+                        svcProps.put("NonJTADataSourceFactory.target", "(id=" + dataSourceId + ')');
                     } else {
                         svcProps.put("NonJTADataSourceFactory.target", "(&(service.pid=${nonTransactionalDataSourceRef})(transactional=false))");
                     }

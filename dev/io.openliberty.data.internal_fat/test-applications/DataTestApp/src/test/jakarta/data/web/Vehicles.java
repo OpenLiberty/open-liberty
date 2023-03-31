@@ -21,7 +21,7 @@ import jakarta.data.repository.Repository;
  * The entity type for this repository only appears as a type parameter.
  * Do not add methods that would allow it to be discovered any other way.
  */
-@Repository
+@Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
 public interface Vehicles {
     long deleteAll();
 

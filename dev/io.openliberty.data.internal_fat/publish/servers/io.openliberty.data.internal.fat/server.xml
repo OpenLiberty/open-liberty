@@ -24,10 +24,18 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <application location="DataTestApp.war"/>
+  <application location="DataTestApp.war">
+    <classloader commonLibraryRef="DerbyLib"/>
+  </application>
 
   <application location="ProviderTestApp.war"/>
 
+  <!-- For DataSourceDefinition java:app/jdbc/DerbyDataSource which is used by the Vehicles repository -->
+  <library id="DerbyLib">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+
+  <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
@@ -37,6 +45,7 @@
     <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
 
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
   <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>
