@@ -45,6 +45,6 @@ public class FATSuite {
      * Run EE10 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
 
 }
