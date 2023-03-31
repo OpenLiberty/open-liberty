@@ -13,7 +13,6 @@
 
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
@@ -101,7 +100,6 @@ public class ServletTest extends FATServletClient {
     @AfterClass
     public static void tearDownClass() throws Exception {
         stopServer(server, "WTRN0017W"); // Unable to begin nested tran; nested trans not supported
-        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
     }
 

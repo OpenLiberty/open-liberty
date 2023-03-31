@@ -62,9 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Check the logs for previous errors or FFDCs.
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Global transaction rolled-back due to timeout: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=The current global transaction has timed out and therefore has been rolled-back.
-GLOBAL_TRAN_ROLLBACK.useraction=Ensure the global transaction finishes within the allowed time frame or increase the timeout.
+GLOBAL_TRAN_ROLLBACK.useraction=Ensure the global transaction finishes within the allowed time frame, or increase the timeout.
 
-// BETA
 ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: The server checkpoint request failed because the server deployment contains transaction log files in directory {0}.
 ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty does not expect transaction log files to exist in the server deployment when a server checkpoint is requested.
 ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Remove the transaction log directory from the server deployment.

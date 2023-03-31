@@ -129,7 +129,7 @@ public class FATSuite {
      *
      * By default the transaction manager service logs transactions to files in directory
      * <code>${server.output.dir}/tranlog</code>. The directory may be otherwise specified
-     * using the <code><transacton/></code> config property <code>transactionLogDirectory</code>.
+     * using <code><transaction/></code> config property <code>transactionLogDirectory</code>.
      */
     static void deleteTranlogDir(LibertyServer server, String dir) throws Exception {
         if (server.fileExistsInLibertyServerRoot(dir)) {

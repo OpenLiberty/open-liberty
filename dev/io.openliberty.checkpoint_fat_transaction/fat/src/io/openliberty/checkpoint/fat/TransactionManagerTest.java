@@ -13,7 +13,6 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDb;
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertFalse;
@@ -78,8 +77,6 @@ public class TransactionManagerTest extends FATServletClient {
         switch (testMethod) {
             case testTransactionManagerStartsDuringRestore:
                 serverTranLogRecOnStart = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
-
-                deleteTranlogDir(serverTranLogRecOnStart); // Should not exist; insurance
 
                 ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, "servlets.simple.*");
 

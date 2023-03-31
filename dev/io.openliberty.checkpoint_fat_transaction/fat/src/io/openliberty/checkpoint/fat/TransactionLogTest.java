@@ -15,10 +15,9 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDb;
 import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,11 +33,9 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -76,7 +73,7 @@ public class TransactionLogTest extends FATServletClient {
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
-            case testCheckpointFailsWhenTransactionlogDirExists:
+            case testCheckpointRemovesDefaultTranlogDir:
                 serverTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
                 ShrinkHelper.defaultApp(serverTranLog, APP_NAME, "servlets.simple.*");
 
@@ -85,8 +82,8 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.startServer();
                 stopServer(serverTranLog);
 
-                // Expect checkpoint to fail
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, null));
+                serverTranLog.startServer();
                 break;
             case testTransactionDbLogBasicConnection:
                 serverTranDbLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
@@ -108,7 +105,7 @@ public class TransactionLogTest extends FATServletClient {
                 };
                 serverTranDbLog.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
                 serverTranDbLog.setServerStartTimeout(300000);
-                serverTranDbLog.startServer(); // Do checkpoint
+                serverTranDbLog.startServer();
                 break;
             default:
                 break;
@@ -118,7 +115,7 @@ public class TransactionLogTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         switch (testMethod) {
-            case testCheckpointFailsWhenTransactionlogDirExists:
+            case testCheckpointRemovesDefaultTranlogDir:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
             case testTransactionDbLogBasicConnection:
@@ -140,14 +137,9 @@ public class TransactionLogTest extends FATServletClient {
      * transaction log directory already exists.
      */
     @Test
-    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testCheckpointFailsWhenTransactionlogDirExists() throws Exception {
-        ProgramOutput output = serverTranLog.startServer(getTestMethodNameOnly(testName) + ".log");
-        int returnCode = output.getReturnCode();
-        assertEquals("The server checkpoint request should have returned failure code 72, but did not.", 72, returnCode);
-
-        assertNotNull("The transaction manager should report the transactions logs directory \\`tranlog\\` exists, but did not.",
-                      serverTranLog.waitForStringInLogUsingMark("CWLIB0004E.*tranlog"));
+    public void testCheckpointRemovesDefaultTranlogDir() throws Exception {
+        assertTrue("Checkpoint should have the deleted transaction log directory, but did not.",
+                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
     }
 
     // TODO: The tran log datasource does not reconfigure at restore. The issue will
@@ -173,7 +165,7 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     static enum TestMethod {
-        testCheckpointFailsWhenTransactionlogDirExists,
+        testCheckpointRemovesDefaultTranlogDir,
         testTransactionDbLogBasicConnection,
         unknown;
     }

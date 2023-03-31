@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.uow.UOWScope;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackManager;
-
-import io.openliberty.checkpoint.spi.CheckpointHook;
-import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class UserTransactionImpl implements UserTransaction {
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.UserTransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
@@ -61,14 +58,6 @@ public class UserTransactionImpl implements UserTransaction {
     public void begin() throws NotSupportedException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "begin");
-
-        CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-            @Override
-            // fail a checkpoint if a new transaction was requested
-            public void prepare() {
-                throw new IllegalStateException(Tr.formatMessage(tc, "WTRN0153_ERROR_CHECKPOINT_NEW_TX"));
-            }
-        });
 
         try {
             // Call registered users giving notification of BEGIN starting

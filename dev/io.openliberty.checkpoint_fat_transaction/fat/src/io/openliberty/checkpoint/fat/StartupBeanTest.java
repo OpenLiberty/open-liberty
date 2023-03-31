@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
@@ -104,7 +103,6 @@ public class StartupBeanTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         stopServer(server);
-        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
     }
 
