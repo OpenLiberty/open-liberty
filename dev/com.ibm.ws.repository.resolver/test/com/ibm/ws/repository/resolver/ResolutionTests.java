@@ -2516,7 +2516,7 @@ public class ResolutionTests {
         resolved = resolve(resolver, Arrays.asList(c10.getSymbolicName()));
         if (testType == TestType.RESOLVE_AS_SET) {
             // Resolves nothing because C-1.0 and A-1.0 are already installed
-            assertThat(resolved, contains(empty()));
+            assertThat(resolved, is(empty()));
         } else {
             // Resolves Base-2.0 and A.internal-2.0 because all tolerated dependencies of autofeatures are installed
             assertThat(resolved, contains(contains(base20, aInternal20)));
