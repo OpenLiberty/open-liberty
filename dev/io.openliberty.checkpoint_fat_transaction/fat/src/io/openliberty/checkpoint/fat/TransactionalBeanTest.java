@@ -13,7 +13,6 @@
 
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
@@ -85,7 +84,6 @@ public class TransactionalBeanTest extends FATServletClient {
     @AfterClass
     public static void tearDownClass() throws Exception {
         stopServer(server, "WTRN0017W");
-        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
     }
 

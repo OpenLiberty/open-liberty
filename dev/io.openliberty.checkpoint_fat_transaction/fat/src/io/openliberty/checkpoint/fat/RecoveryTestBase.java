@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -29,6 +30,7 @@ import io.openliberty.checkpoint.fat.util.RecoveryUtils;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class RecoveryTestBase extends FATServletClient {
 
     public static final String APP_NAME = "transactionrecovery";
@@ -52,11 +54,10 @@ public class RecoveryTestBase extends FATServletClient {
     @AfterClass
     public static void tearDownClass() throws Exception {
         RecoveryUtils.stopServers(server);
-        FATSuite.deleteTranlogDir(server);
         RecoveryUtils.deleteXARecoveryDat(server);
     }
 
-    @Mode(TestMode.LITE)
+//    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testRecovery000() throws Exception {
@@ -64,7 +65,7 @@ public class RecoveryTestBase extends FATServletClient {
         RecoveryUtils.recoveryTest(server, SERVLET_NAME, "090");
     }
 
-    @Mode(TestMode.LITE)
+//   @Mode(TestMode.LITE)
     @Test
     public void testRecovery001() throws Exception {
         RecoveryUtils.recoveryTest(server, SERVLET_NAME, "001");

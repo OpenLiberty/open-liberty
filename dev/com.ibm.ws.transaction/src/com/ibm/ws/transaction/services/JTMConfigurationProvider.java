@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.services;
 
+import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -117,6 +118,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
+
+        addTransactionLogDirCheckpointHook();
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -642,16 +645,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         // get full path string from resource
         logDir = logDirResource.asFile().getPath().replaceAll("\\\\", "/");
 
-        if (logDirResource.exists()) {
-            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-                @Override
-                // fail a checkpoint if tranlog dir already exists
-                public void prepare() {
-                    throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
-                }
-            });
-        }
-
         if (tc.isEntryEnabled())
             Tr.exit(tc, "parseTransactionLogDirectory", logDir);
         return logDir;
@@ -873,5 +866,64 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean isDataSourceFactorySet() {
         return _dataSourceFactorySet;
+    }
+
+    /**
+     * Fail checkpoint whenever the default or configured transaction log
+     * directory exists and cannot be deleted, including the case where
+     * the directory path is unexpectedly a file.
+     */
+    protected void addTransactionLogDirCheckpointHook() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            final String logDir = (String) _props.get("transactionLogDirectory");
+
+            if (logDir == null)
+                return;
+
+            // logDir is correctly formatted path string, but may contain unresolved
+            // variables or may be a file rather than directory.
+
+            CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
+                @Override
+                public void prepare() {
+                    if (!recursiveDelete(new File(logDir))) {
+                        throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Delete a file or a directory, including all directory contents.
+     *
+     * @param fileToRemove The target File.
+     * @return false iff fileToRemove exists and cannot be deleted, otherwise return true.
+     */
+    protected boolean recursiveDelete(final File fileToRemove) {
+        if (fileToRemove == null)
+            return true;
+
+        if (!fileToRemove.exists())
+            return true;
+
+        boolean success = true;
+
+        if (fileToRemove.isDirectory()) {
+            File[] files = fileToRemove.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    success |= recursiveDelete(file);
+                } else {
+                    success |= file.delete();
+                }
+            }
+            files = fileToRemove.listFiles();
+            if (files.length == 0)
+                success |= fileToRemove.delete();
+        } else {
+            success |= fileToRemove.delete();
+        }
+        return success;
     }
 }
