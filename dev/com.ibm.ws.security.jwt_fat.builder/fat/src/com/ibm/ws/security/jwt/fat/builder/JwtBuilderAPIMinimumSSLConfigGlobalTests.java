@@ -27,6 +27,7 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.OSSkipRules.SkipIfISeries;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
@@ -81,7 +82,7 @@ public class JwtBuilderAPIMinimumSSLConfigGlobalTests extends CommonSecurityFat 
 
     }
 
-    //  @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_global() throws Exception {
 

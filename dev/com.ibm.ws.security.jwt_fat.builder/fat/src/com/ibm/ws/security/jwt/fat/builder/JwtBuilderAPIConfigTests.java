@@ -35,6 +35,7 @@ import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.OSSkipRules.SkipIfISeries;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
@@ -99,7 +100,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * <LI>Should get a token built using the default values for the JWT Token
      * </OL>
      */
-    // @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void JwtBuilderAPIConfigTests_defaultConfig() throws Exception {
 
