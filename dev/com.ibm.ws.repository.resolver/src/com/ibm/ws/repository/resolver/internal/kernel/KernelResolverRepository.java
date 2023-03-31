@@ -98,14 +98,14 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
             return;
         }
 
-        // If we already have a feature with this symbolic name and version, ignore the duplicate
-        if (listContainsDuplicate(featureList, feature)) {
-            return;
-        }
-
         // If this is an installed feature, wipe out any repository features added earlier
         if (!(feature instanceof KernelResolverEsa)) {
             featureList.clear();
+        }
+
+        // If we already have a feature with this symbolic name and version, ignore the duplicate
+        if (listContainsDuplicate(featureList, feature)) {
+            return;
         }
 
         featureList.add(feature);
