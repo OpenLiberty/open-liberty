@@ -37,7 +37,6 @@ import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
 import com.ibm.ws.repository.resolver.internal.ResolutionMode;
-import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 import com.ibm.ws.repository.resources.ApplicableToProduct;
@@ -372,7 +371,6 @@ public class RepositoryResolver {
         initializeResolverRepository(installDefinition);
 
         processNames(toResolve);
-        findAutofeatureDependencies();
 
         if (resolutionMode == ResolutionMode.DETECT_CONFLICTS) {
             // Call the kernel resolver to determine the features needed
@@ -459,29 +457,6 @@ public class RepositoryResolver {
         } else {
             return new NameAndVersion(nameAndVersion, null);
         }
-    }
-
-    /**
-     * If any of the requested features are auto-features, find the set of features that satisfy their provisionCapability header and add those to the list of feature names to
-     * resolve.
-     * <p>
-     * This is necessary because the kernel resolver will ignore the provision capability header if the feature has been specifically requested, but that's not usually helpful at
-     * install time.
-     */
-    void findAutofeatureDependencies() {
-        // If the user has requested an autofeature to be resolved, we want to treat the features mentioned in its provisionCapability header as dependencies
-        ArrayList<String> autofeatureDependencies = new ArrayList<>();
-        for (String featureName : featureNamesToResolve) {
-            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
-            if (feature != null && feature.isAutoFeature()) {
-                Collection<ProvisioningFeatureDefinition> dependencies = CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolverRepository.getAllFeatures());
-                for (ProvisioningFeatureDefinition dependency : dependencies) {
-                    autofeatureDependencies.add(dependency.getSymbolicName());
-                }
-            }
-        }
-
-        featureNamesToResolve.addAll(autofeatureDependencies);
     }
 
     /**

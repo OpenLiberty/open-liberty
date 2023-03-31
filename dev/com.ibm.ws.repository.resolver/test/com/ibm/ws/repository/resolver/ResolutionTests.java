@@ -990,11 +990,15 @@ public class ResolutionTests {
         // Now see if we can resolve it!
         RepositoryResolver resolver = createResolver();
         Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, autoSymbolicName);
-        assertEquals("There should only be a single list of resources, set is:" + resolvedResources, 1, resolvedResources.size());
-        List<RepositoryResource> resolvedList = resolvedResources.iterator().next();
-        assertEquals("There should be 2 resolved resources in the auto list", 2, resolvedList.size());
-        assertEquals("Auto should be installed last", autoFeature, resolvedList.get(1));
-        assertEquals("Main feature should be installed first", testResource, resolvedList.get(0));
+
+        if (testType == TestType.RESOLVE) {
+            // For a basic resolve, we should install the features which enable the auto-feature
+            assertThat(resolvedResources, contains(contains(testResource, autoFeature)));
+        } else {
+            // For resovle as set, we resolve exactly as the kernel resolver would, returning just the auto-feature
+            // Note that this scenario is unusual as it's only possible if the autofeature is public
+            assertThat(resolvedResources, contains(contains(autoFeature)));
+        }
     }
 
     /**
