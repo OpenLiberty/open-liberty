@@ -594,7 +594,7 @@ public class RepositoryResolver {
 
         // Remove dependencies of autofeatures
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature()) {
+            if (feature.isAutoFeature() && feature instanceof KernelResolverEsa) {
                 removeCandidateWalker.walkDepthFirst(feature);
             }
         }
@@ -652,7 +652,7 @@ public class RepositoryResolver {
 
         // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName())) {
+            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
                 installLists.add(createInstallList(feature.getSymbolicName()));
             }
         }
