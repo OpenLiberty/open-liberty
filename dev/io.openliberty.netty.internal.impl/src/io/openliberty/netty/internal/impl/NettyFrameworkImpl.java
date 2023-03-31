@@ -61,6 +61,7 @@ import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
 import com.ibm.websphere.channelfw.EndPointMgr;
+import io.netty.channel.ChannelHandler;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -283,6 +284,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             Tr.debug(tc, "Event loops finished clean up!");
         }
     }
+    
+    public boolean isStopping() {
+    	return this.isActive;
+    }
 
     
 
@@ -485,7 +490,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public long getDefaultChainQuiesceTimeout() {
+    public long getChainQuiesceTimeout() {
         if (chfw != null) {
             return chfw.getFramework().getDefaultChainQuiesceTimeout();
         } else {
@@ -564,5 +569,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public EndPointMgr getEndpointManager() {
         return EndPointMgrImpl.getRef();
+    }
+    
+    public CHFWBundle getCHFW() {
+    	return this.chfw;
     }
 }

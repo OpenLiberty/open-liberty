@@ -6,10 +6,18 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.http.dispatcher.internal.netty;
 
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.http.ext;
+import io.netty.channel.CombinedChannelDuplexHandler;
+
+/**
+ *
+ */
+public class ByteBufferCodec extends CombinedChannelDuplexHandler<BufferDecoder, BufferEncoder> {
+
+    public ByteBufferCodec() {
+        super(new BufferDecoder(), new BufferEncoder());
+    }
+
+}

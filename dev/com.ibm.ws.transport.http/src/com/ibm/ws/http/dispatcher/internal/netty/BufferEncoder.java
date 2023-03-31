@@ -6,10 +6,20 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.http.dispatcher.internal.netty;
 
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.http.ext;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
+
+/**
+ *
+ */
+public class BufferEncoder BufferEncoder extends MessageToByteEncoder<WsByteBuffer> {
+
+    @Override
+    public void encode(ChannelHandler context, WsByteBuffer message, ByteBuf out) throws Exception {
+        out.writeBytes(message.getWrappedByteBuffer());
+    }
+
+}

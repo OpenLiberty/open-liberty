@@ -240,7 +240,42 @@ public class UDPUtils {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
             }
-        }
+    	}
+    	else {
+    		try {
+                framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                    @Override
+                    public ChannelFuture call() throws NettyException {
+                        UDPConfigurationImpl config = (UDPConfigurationImpl) bootstrap.getConfiguration();
+                        int bindRetryCount = config.getRetryCount();
+                        int bindRetryInterval = config.getRetryInterval();
+                        InetSocketAddress address = null;
+                        String newHost = inetHost;
+                        if (newHost.equals("*")) {
+                            newHost = NettyConstants.INADDR_ANY;
+                        }
+                        String hostLogString = newHost == NettyConstants.INADDR_ANY ? "*" : newHost;
+                        address = new InetSocketAddress(newHost, inetPort);
+                        if (address.isUnresolved()) {
+                            final String channelName = ((UDPConfigurationImpl) bootstrap.getConfiguration())
+                                    .getExternalName();
+                            Tr.error(tc, UDPMessageConstants.DNS_LOOKUP_FAILURE,
+                                    new Object[] { channelName, hostLogString, String.valueOf(inetPort) });
+                            throw new NettyException(
+                                    "local address unresolved for " + channelName + " - " + hostLogString + ":" + inetPort);
+                        }
+
+                        return bind(framework, bootstrap, newHost, inetPort, bindRetryCount, bindRetryInterval,
+                                bindListener);
+                    }
+                });
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                }
+            }
+    	}
+        
         return null;
     }
 

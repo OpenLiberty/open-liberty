@@ -223,7 +223,25 @@ public class TCPUtils {
                     Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
                 }
             }
-        }
+    		
+    	}
+    	else {
+    		try {
+                framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                    @Override
+                    public ChannelFuture call() {
+                        return open(framework, bootstrap, config, inetHost, inetPort, openListener,
+                                config.getPortOpenRetries());
+                    }
+                });
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                }
+            }
+    		
+    	}
+        
         return null;
     }
 

@@ -57,5 +57,4 @@ public class QuiesceHandler extends SimpleUserEventChannelHandler<QuiesceHandler
 			quiesceTask.call();
 		}
 	}
-
 }

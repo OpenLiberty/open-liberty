@@ -26,7 +26,6 @@ import java.util.function.Supplier;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
@@ -47,8 +46,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
+import com.ibm.ws.http.dispatcher.internal.netty.NettyChain;
+import com.ibm.ws.http.internal.HttpChainImpl.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
@@ -69,6 +70,8 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 @Component(configurationPid = "com.ibm.ws.http",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -103,6 +106,12 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     /** Required, static Channel framework reference */
     private CHFWBundle chfw = null;
+    private NettyFramework netty = null;
+
+    /** Required, dynamic reference to the Netty Service */
+    /** TODO: use interface */
+    //private NettyFramework netty = null;
+    //private static final AtomicServiceReference<NettyFrameworkImpl> nettyService = new AtomicServiceReference<NettyFrameworkImpl>("nettyBundle");
 
     /** Required, dynamic tcpOptions: unmodifiable map */
     private volatile ChannelConfiguration tcpOptions = null;
@@ -143,6 +152,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private volatile String topicString = null;
     private volatile String name = null;
     private volatile String pid = null;
+    private volatile boolean useNetty = false;
 
     private BundleContext bundleContext = null;
 
@@ -159,8 +169,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     protected volatile OnError onError = OnError.WARN;
 
-    private final HttpChain httpChain = new HttpChain(this, false);
-    private final HttpChain httpSecureChain = new HttpChain(this, true);
+    private HttpChain httpChain = new HttpChain(this, false);
+    private HttpChain httpSecureChain = new HttpChain(this, true);
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
@@ -242,6 +252,12 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         cid = config.get(ComponentConstants.COMPONENT_ID);
         name = (String) config.get("id");
         pid = (String) config.get(Constants.SERVICE_PID);
+        //TODO -> Remove this comment when merging beta
+        //useNetty = ProductInfo.getBetaEdition() ?
+        //                MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true):false;
+
+        //TODO: Temporary during development. Default to legacy, switch if Netty is enabled.
+        useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
 
         bundleContext = ctx.getBundleContext();
 
@@ -260,8 +276,21 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslOptions.activate(ctx);
         eventService.activate(ctx);
 
-        httpChain.init(name, cid, chfw);
-        httpSecureChain.init(name, cid, chfw);
+        if (useNetty) {
+
+            httpChain = new NettyChain(this, false);
+            httpSecureChain = new NettyChain(this, true);
+
+            httpChain.init(pid, config, netty);
+            httpSecureChain.init(pid, config, netty);
+        } else {
+
+            httpChain = new HttpChainImpl(this, false);
+            httpChain = new HttpChainImpl(this, true);
+
+            httpChain.init(name, cid, chfw);
+            httpSecureChain.init(name, cid, chfw);
+        }
 
         modified(config);
     }
@@ -860,9 +889,22 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     }
 
     /**
-     * DS method for setting the required dynamic executor service reference.
+     * DS method for setting the Netty Service.
      *
-     * @param bundle
+     * @param nettyFramework
+     */
+    @Reference(name = "nettyBundle")
+    protected void setNettyBundle(NettyFramework bundle) {
+        this.netty = bundle;
+
+    }
+
+    protected void unsetNettyService(NettyFramework bundle) {
+
+    }
+
+    /**
+     * DS method for setting the required dynamic executor service reference.
      */
     @Reference(name = "executorService", service = ExecutorService.class, policy = ReferencePolicy.DYNAMIC)
     protected void setExecutorService(ServiceReference<ExecutorService> executorService) {
