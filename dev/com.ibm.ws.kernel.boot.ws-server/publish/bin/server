@@ -1055,6 +1055,16 @@ javaCmd()
     if [ $rc -eq 74 ] && [ -f "${X_LOG_DIR}/checkpoint/checkpoint.log" ]; then
       issueMessage --message:error.checkpoint.failed "${X_LOG_DIR}/checkpoint/checkpoint.log"
       cat "${X_LOG_DIR}/checkpoint/checkpoint.log"
+      # check if selinux is preventing net_diag feature in criu
+      CRIU_UNPRIVILEGED_ARGS=""
+      if [ $DO_CRIU_UNPRIVILEGED = true ]; then
+        CRIU_UNPRIVILEGED_ARGS="--unprivileged"
+      fi
+      criu "$CRIU_UNPRIVILEGED_ARGS" check "--feature=net_diag_raw" > /dev/null 2>&1
+      ckrc=$?
+      if [ $ckrc -ne 0 ]; then
+         issueMessage --message:error.checkpoint.failed.selinux.netdiag "${SERVER_OUTPUT_DIR}/workarea"
+      fi
     fi
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
