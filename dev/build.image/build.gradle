@@ -490,7 +490,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
         outputTo packageDir
         doLast {
             copy {
@@ -528,7 +528,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
         outputTo packageDir
         doLast {
             copy {
