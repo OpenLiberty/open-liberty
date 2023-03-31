@@ -275,6 +275,10 @@ public class KernelResolverRepositoryTest {
         esa.setProvideFeature("com.example.featureA");
         esa.setVersion("1.0.1");
 
+        EsaResourceWritable esa2 = WritableResourceFactory.createEsa(null);
+        esa2.setProvideFeature("com.example.featureA");
+        esa2.setVersion("1.0.0");
+
         Mockery mockery = new Mockery();
         ProvisioningFeatureDefinition installedFeature = ResolverTestUtils.mockSimpleFeatureDefinition(mockery, "com.example.featureA", Version.valueOf("1.0.0"), null);
 
@@ -282,6 +286,10 @@ public class KernelResolverRepositoryTest {
 
         // With just the esa added, it should be returned
         repo.addFeature(esa);
+        assertThat(repo.getFeature("com.example.featureA"), is(resolverEsaWrapping(esa)));
+
+        // With the second esa added, the first one should still be returned (later version)
+        repo.addFeature(esa2);
         assertThat(repo.getFeature("com.example.featureA"), is(resolverEsaWrapping(esa)));
 
         // After adding the installed feature, it should be returned instead
