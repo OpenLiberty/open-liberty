@@ -1405,7 +1405,7 @@ criuRestore()
     rc=$?
     PID=`cat ${X_PID_FILE}`
     if [ $rc = 0 ]; then
-      # successful restore, not check server status
+      # successful restore, now check server status
       JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
       OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
@@ -1445,7 +1445,7 @@ restoreServer()
   BACKGROUND_RESTORE=$1
 
   if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
-    return 1
+    return 104
   fi
 
   # must check for --clean option before restoring
@@ -1453,7 +1453,7 @@ restoreServer()
     if [ -n "${option}" ]; then
       if [ -z "${option##--clean}" ]; then
         # never restore if --clean is specified
-        return 1
+        return 104
       fi
     fi
   done
@@ -1536,7 +1536,8 @@ case "$ACTION" in
     rc=$?
     if [ $rc = 0 ]; then
       exit 0
-    elif [ $rc -ne 1 ]; then
+    # 104 is the code for no image found to restore (or --clean is used)
+    elif [ $rc -ne 104 ]; then
       if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
         exit $rc
       fi
@@ -1617,7 +1618,8 @@ case "$ACTION" in
         rc=$?
         if [ $rc = 0 ]; then
           exit 0
-        elif [ $rc -ne 1 ]; then
+        # 104 is the code for no image found to restore (or --clean is used)
+        elif [ $rc -ne 104 ]; then
           if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
             exit $rc
           fi
