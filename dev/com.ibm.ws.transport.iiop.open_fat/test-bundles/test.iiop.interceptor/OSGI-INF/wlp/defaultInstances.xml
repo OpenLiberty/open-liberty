@@ -1,0 +1,4 @@
+<server>
+  <!-- Add an extra subsystem factory declaration to force the ORB to wait for ours to turn up. -->
+ <com.ibm.ws.transport.iiop.spi.SubsystemFactory type="Test"/>
+</server>
