@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package servlets;
+package servlets.simple;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package servlets;
+package servlets.simple;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
