@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -17,6 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jmock.Expectations;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -26,7 +29,20 @@ import com.ibm.ws.security.test.common.CommonTestClass;
  */
 public class OidcSessionInfoTest extends CommonTestClass {
 
+    private static final String CLIENT_SECRET = "myClientSecret";
+
     protected final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
+    protected final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
+
+    @Before
+    public void before() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getClientSecret();
+                will(returnValue(CLIENT_SECRET));
+            }
+        });
+    }
 
     @Test
     public void test_createSessionId() {
@@ -36,10 +52,10 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "testSid";
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_3ssUE3zEBGw4jK8MkAp6udTSo9PaqTVpJgoE4BwmqUs=";
 
-        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.", expectedSesssionId, sessionInfo.getSessionId());
+        assertEquals("Expected to return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
@@ -50,10 +66,10 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "";
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=_cPjhjKp9RSS1oESEIBaiK3x+GDs3Rft83urh4KaDYg8=";
 
-        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.", expectedSesssionId, sessionInfo.getSessionId());
+        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
@@ -64,8 +80,8 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "testSid";
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = ":aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = ":aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_hG1yWN/mOMMxzHGsS8KnpfXKP3e4C74BxDDJZtQQMzk=";
 
         assertEquals("Expected to replace the configId with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
@@ -78,8 +94,8 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "testSid";
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk::dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk::dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_XViM+YzwC84l+DMxTjTqgaH8oVqkWMmjfsQP6kDgZKk=";
 
         assertEquals("Expected to replace the sub with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
@@ -92,8 +108,8 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "testSid";
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=::dGVzdFNpZA==:MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=::dGVzdFNpZA==:MTIzNDU=_JTmRlEJgi/mUGSFs3Jg8j1BOcc/faLKDIxdBE5XlFV4=";
 
         assertEquals("Expected to replace the sub with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
@@ -106,8 +122,8 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = null;
         String timestamp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=_cPjhjKp9RSS1oESEIBaiK3x+GDs3Rft83urh4KaDYg8=";
 
         assertEquals("Expected to replace the sid with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
@@ -120,18 +136,18 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sid = "testSid";
         String timestamp = null;
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp);
-        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:";
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:_vb86W5kVUmHqMfboDo/jG491Zk5axpk0UqNVPqk5oR4=";
 
         assertEquals("Expected to replace the timestamp with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
     public void test_getSessionInfo() {
-        String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=";
+        String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_3ssUE3zEBGw4jK8MkAp6udTSo9PaqTVpJgoE4BwmqUs=";
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertEquals("testConfigId", sessionInfo.getConfigId());
         assertEquals("https://localhost", sessionInfo.getIss());
@@ -142,10 +158,10 @@ public class OidcSessionInfoTest extends CommonTestClass {
 
     @Test
     public void test_getSessinoInfo_sidWasEmptyOrNull() {
-        String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=";
+        String sessionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=_cPjhjKp9RSS1oESEIBaiK3x+GDs3Rft83urh4KaDYg8=";
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertEquals("testConfigId", sessionInfo.getConfigId());
         assertEquals("https://localhost", sessionInfo.getIss());
@@ -159,7 +175,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sessionId = null;
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -169,7 +185,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sessionId = "";
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -179,7 +195,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sessionId = "dGVzdENvbmZpZ0lk:dGVzdFN1Yg==";
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }
@@ -189,7 +205,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String sessionId = "invalidSessionId";
         setupRequestExpectations(sessionId);
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, clientConfig);
 
         assertNull("Expected the sessionInfo to be null, since the sessionId was invalid.", sessionInfo);
     }

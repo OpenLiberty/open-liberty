@@ -1,9 +1,11 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022,2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
    
     Contributors:
         IBM Corporation - initial API and implementation
@@ -14,8 +16,9 @@
     <feature>componenttest-2.0</feature>
     <feature>concurrent-3.0</feature> <!-- for @Asynchronous -->
     <feature>data-1.0</feature>
+    <feature>jdbc-4.3</feature>
     <feature>jndi-1.0</feature>
-    <feature>persistence-3.1</feature>
+    <!-- persistence-3.1 must NOT be added so that we cover Jakarta Data with JDBC only -->
     <feature>servlet-6.0</feature>
   </featureManager>
 
@@ -25,15 +28,15 @@
 
   <application location="ProviderTestApp.war"/>
 
-  <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
-  <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
 
-  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>

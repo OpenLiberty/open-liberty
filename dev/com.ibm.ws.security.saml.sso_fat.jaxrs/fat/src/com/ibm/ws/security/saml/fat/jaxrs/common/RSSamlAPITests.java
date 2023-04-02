@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -228,7 +230,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
         WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_5t, SAMLConstants.ASSERTION_ENCODED);
+        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.HEADER_FORMAT_PROPAGATE_TOKEN_STRING_TRUE, SAMLConstants.ASSERTION_ENCODED);
 
         List<validationData> expectations = null;
         if (flowType.equals(SAMLConstants.IDP_INITIATED)) {
@@ -264,7 +266,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
         WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_6t, SAMLConstants.ASSERTION_ENCODED);
+        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_TRUE, SAMLConstants.ASSERTION_ENCODED);
 
         List<validationData> expectations = null;
         if (flowType.equals(SAMLConstants.IDP_INITIATED)) {
@@ -298,7 +300,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
         WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_5f, SAMLConstants.ASSERTION_ENCODED);
+        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.HEADER_FORMAT_PROPAGATE_TOKEN_STRING_FALSE, SAMLConstants.ASSERTION_ENCODED);
 
         List<validationData> expectations = null;
         expectations = vData.addSuccessStatusCodes(null, endAction);
@@ -330,7 +332,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
         WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_6f, SAMLConstants.ASSERTION_ENCODED);
+        updatedTestSettings.setRSSettings("Authorization", SAMLConstants.HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_FALSE, SAMLConstants.ASSERTION_ENCODED);
 
         List<validationData> expectations = null;
         expectations = vData.addSuccessStatusCodes(null, endAction);

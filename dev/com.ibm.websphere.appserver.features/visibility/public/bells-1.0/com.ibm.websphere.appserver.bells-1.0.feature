@@ -8,3 +8,4 @@ Subsystem-Name: Basic Extensions using Liberty Libraries 1.0
 -bundles=com.ibm.ws.classloading.bells
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

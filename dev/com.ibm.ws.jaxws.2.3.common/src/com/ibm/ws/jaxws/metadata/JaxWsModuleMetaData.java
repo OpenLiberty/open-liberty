@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -53,7 +56,7 @@ public class JaxWsModuleMetaData {
     // the ModuleMetaDatas which contain the JaxWsModuleMetadata
     private final List<ModuleMetaData> enclosingModuleMetaDatas = new ArrayList<ModuleMetaData>(2);
 
-    private final Map<String, String> appNameURLMap = new HashMap<String, String>();
+    private final Map<String, Supplier<String>> appNameURLMap = new HashMap<String, Supplier<String>>();
 
     private String contextRoot;
 
@@ -174,7 +177,7 @@ public class JaxWsModuleMetaData {
         return this.enclosingModuleMetaDatas;
     }
 
-    public Map<String, String> getAppNameURLMap() {
+    public Map<String, Supplier<String>> getAppNameURLMap() {
         return this.appNameURLMap;
     }
 

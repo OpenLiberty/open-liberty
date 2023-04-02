@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -12,6 +14,7 @@ package com.ibm.ws.webservices.handler.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.net.URI;
 
@@ -26,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -58,6 +62,11 @@ public class JAXRSMessageContextAPITest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("RSMessageContextAPITest/WithBundles/server.xml");
         server.waitForStringInLog("CWWKF0012I");
+        if (JakartaEE10Action.isActive()) {
+            assertNotNull("Expected to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
+        } else {
+            assertNull("Did not expect to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
+        }
         //URI uri = UriBuilder.fromUri(TestUtils.getBaseTestUri("rsApplication", "hello")).build();
         URI uri = URI.create(TestUtils.getBaseTestUri("rsApplication", "hello"));
         ClientResponse response = client.resource(uri).get();

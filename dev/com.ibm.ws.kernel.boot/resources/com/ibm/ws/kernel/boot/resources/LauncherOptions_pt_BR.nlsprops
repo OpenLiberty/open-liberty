@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2010 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -14,8 +16,7 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Uso: java [op\u00e7\u00f5es de JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName {0} [op\u00e7\u00f5es]  
+briefUsage=Uso: java [op\u00e7\u00f5es de JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\t-jar bin/tools/ws-server.jar serverName {0} [op\u00e7\u00f5es]  
 scriptUsage=Uso: {0} {1} serverName [op\u00e7\u00f5es] [op\u00e7\u00f5es da JVM]
 
 use.actions=A\u00e7\u00f5es:
@@ -35,23 +36,15 @@ category-key.misc=Outros Termos
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # ServerName
 processName.key=\ \ \ \ serverName
-processName.desc=\tUm nome exclusivo localmente para o servidor; o nome pode ser constru\u00eddo    \n\
-\tusando-se caracteres alfanum\u00e9ricos Unicode (por exemplo, A-Za-z0-9), o  \n\
-\tsublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). Um nome de servidor    \n\
-\tn\u00e3o pode iniciar com um tra\u00e7o (-) ou um ponto (.).
+processName.desc=\tUm nome exclusivo localmente para o servidor; o nome pode ser constru\u00eddo    \n\tusando-se caracteres alfanum\u00e9ricos Unicode (por exemplo, A-Za-z0-9), o  \n\tsublinhado (_), tra\u00e7o (-), mais (+) e ponto (.). Um nome de servidor    \n\tn\u00e3o pode iniciar com um tra\u00e7o (-) ou um ponto (.).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # JavaAgent 
 javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
-javaAgent.desc=\tEsta \u00e9 uma op\u00e7\u00e3o da JVM usada para especificar um agente para instrumenta\u00e7\u00e3o.   \n \tO \
-tempo de execu\u00e7\u00e3o usa instrumenta\u00e7\u00e3o para reunir informa\u00e7\u00f5es de rastreio e outras \n\
-\tinforma\u00e7\u00f5es sobre depura\u00e7\u00e3o. O bootstrap-agent.jar deve estar no mesmo diret\u00f3rio que  \n\
-\to jar usado para ativar o tempo de execu\u00e7\u00e3o.
+javaAgent.desc=\tEsta \u00e9 uma op\u00e7\u00e3o da JVM usada para especificar um agente para instrumenta\u00e7\u00e3o.   \n \tO tempo de execu\u00e7\u00e3o usa instrumenta\u00e7\u00e3o para reunir informa\u00e7\u00f5es de rastreio e outras \n\tinforma\u00e7\u00f5es sobre depura\u00e7\u00e3o. O bootstrap-agent.jar deve estar no mesmo diret\u00f3rio que  \n\to jar usado para ativar o tempo de execu\u00e7\u00e3o.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
 action-key.create=\ \ \ \ --create
-action-desc.create=\tCriar um novo servidor se o servidor especificado n\u00e3o existir. A      \n\
-\top\u00e7\u00e3o --template pode ser usada para especificar um modelo a ser usado ao      \n\
-\tcriar um novo servidor.
+action-desc.create=\tCriar um novo servidor se o servidor especificado n\u00e3o existir. A      \n\top\u00e7\u00e3o --template pode ser usada para especificar um modelo a ser usado ao      \n\tcriar um novo servidor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.list=\ \ \ \ --list
 action-desc.list=\tListar os servidores de aplicativos do perfil liberdade que s\u00e3o definidos.
@@ -63,12 +56,10 @@ action-key.run=\ \ \ \ --run
 action-desc.run=\tExecutar o servidor nomeado no primeiro plano do console.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.debug=\ \ \ \ --debug
-action-desc.debug=\tExecutar o servidor nomeado no primeiro plano do console depois que um depurador\n\
-\tconecta \u00e0 porta de depura\u00e7\u00e3o (depura\u00e7\u00e3o: 7777).
+action-desc.debug=\tExecutar o servidor nomeado no primeiro plano do console depois que um depurador\n\tconecta \u00e0 porta de depura\u00e7\u00e3o (depura\u00e7\u00e3o: 7777).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.status=\ \ \ \ --status
-action-desc.status=\tVerificar o status do servidor \
-especificado.
+action-desc.status=\tVerificar o status do servidor especificado.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stop=\ \ \ \ --stop
 action-desc.stop=\tParar a inst\u00e2ncia em execu\u00e7\u00e3o do servidor nomeado.
@@ -77,85 +68,45 @@ action-key.version=\ \ \ \ --version
 action-desc.version=\tMostrar informa\u00e7\u00f5es da vers\u00e3o do servidor e sair.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.package=\ \ \ \ --package
-action-desc.package=\tCompacte um servidor para um archive. A op\u00e7\u00e3o --archive pode ser usada.    \n\
-\tA op\u00e7\u00e3o --include pode ser usada com valores "all", "usr", "minify", \n\
-\t"wlp", "runnable", "all,runnable" e "minify,runnable". Os valores \n\
-\t"runnable" e "all,runnable" s\u00e3o equivalentes. O valor "runnable"   \n\
-\tfunciona somente com archives do tipo "jar". A op\u00e7\u00e3o --server-root pode ser \n\
-\tusada para especificar a pasta raiz no archive do pacote.
+action-desc.package=\tCompacte um servidor para um archive. A op\u00e7\u00e3o --archive pode ser usada.    \n\tA op\u00e7\u00e3o --include pode ser usada com valores "all", "usr", "minify", \n\t"wlp", "runnable", "all,runnable" e "minify,runnable". Os valores \n\t"runnable" e "all,runnable" s\u00e3o equivalentes. O valor "runnable"   \n\tfunciona somente com archives do tipo "jar". A op\u00e7\u00e3o --server-root pode ser \n\tusada para especificar a pasta raiz no archive do pacote.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
-action-desc.dump=\tExecute dump das informa\u00e7\u00f5es de diagn\u00f3stico a partir do servidor em um archive. A op\u00e7\u00e3o\n\
-\t--archive pode ser usada.  A op\u00e7\u00e3o --include pode ser usada com os valores\n\
-\t"heap", "system" e "thread".
+action-desc.dump=\tExecute dump das informa\u00e7\u00f5es de diagn\u00f3stico a partir do servidor em um archive. A op\u00e7\u00e3o\n\t--archive pode ser usada.  A op\u00e7\u00e3o --include pode ser usada com os valores\n\t"heap", "system" e "thread".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.javadump=\ \ \ \ --javadump
-action-desc.javadump=\tFa\u00e7a dump das informa\u00e7\u00f5es de diagn\u00f3stico a partir da JVM do servidor. A op\u00e7\u00e3o --include\n\
-\tpode ser usada com os valores "heap" e "system".
+action-desc.javadump=\tFa\u00e7a dump das informa\u00e7\u00f5es de diagn\u00f3stico a partir da JVM do servidor. A op\u00e7\u00e3o --include\n\tpode ser usada com os valores "heap" e "system".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.registerWinService=\ \ \ \ --registerWinService
-action-desc.registerWinService=\tRegistrar o servidor especificado como um \
-programa do servi\u00e7o do Windows.
+action-desc.registerWinService=\tRegistrar o servidor especificado como um programa do servi\u00e7o do Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tIniciar o servidor especificado como um programa do servi\u00e7o do Windows.             \n\
-\tEle deve ser registrado antes de iniciar.
+action-desc.startWinService=\tIniciar o servidor especificado como um programa do servi\u00e7o do Windows.             \n\tEle deve ser registrado antes de iniciar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
-action-desc.stopWinService=\tParar o servidor especificado como um programa do \
-servi\u00e7o do Windows.
+action-desc.stopWinService=\tParar o servidor especificado como um programa do servi\u00e7o do Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.unregisterWinService=\ \ \ \ --unregisterWinService
-action-desc.unregisterWinService=\tCancelar o registro do servidor especificado \
-como um programa do servi\u00e7o do Windows.
+action-desc.unregisterWinService=\tCancelar o registro do servidor especificado como um programa do servi\u00e7o do Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.help=\ \ \ \ --help
 action-desc.help=\tImprimir informa\u00e7\u00f5es da ajuda.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.pause=\ \ \ \ --pause
-action-desc.pause=\tPause todos os componentes no servidor que podem ser pausados. \u00c9 poss\u00edvel   \n\
-\tpausar um assunto dos componentes especificando os componentes na \n\
-\top\u00e7\u00e3o --target.
+action-desc.pause=\tPause todos os componentes no servidor que podem ser pausados. \u00c9 poss\u00edvel   \n\tpausar um assunto dos componentes especificando os componentes na \n\top\u00e7\u00e3o --target.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
-action-desc.resume=\tContinue todos os componentes pausados no servidor. \u00c9 poss\u00edvel especificar a      \n\
-\top\u00e7\u00e3o --target para continuar componentes pausados espec\u00edficos.
+action-desc.resume=\tContinue todos os componentes pausados no servidor. \u00c9 poss\u00edvel especificar a      \n\top\u00e7\u00e3o --target para continuar componentes pausados espec\u00edficos.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tLimpar todas as informa\u00e7\u00f5es em cache relacionadas a esta inst\u00e2ncia do servidor.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="caminho para o arquivo de archive de destino"
-option-desc.dump.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o dump.       \n\
-\tO destino pode ser especificado como um caminho absoluto ou como um       \n\
-\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\
-\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\
-\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\
-\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\
-\tplataformas. O formato de archive "jar" produz um jar autoextrator \n\
-\tsimilar ao archive do instalador original.                                      
-option-desc.package.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o do pacote.    \n\
-\tO destino pode ser especificado como um caminho absoluto ou como um       \n\
-\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\
-\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\
-\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\
-\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\
-\tplataformas. O formato de archive "jar" produzir\u00e1 um jar autoextrator \n\
-\t similar ao archive do instalador original. O formato de archive "jar" \n\
-\tcombinado com "runnable" na op\u00e7\u00e3o --include produz um arquivo jar \n\
-\texecut\u00e1vel que pode executar o servidor Liberty por meio do arquivo jar usando \n\
-\tjava -jar.
+option-desc.dump.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o dump.       \n\tO destino pode ser especificado como um caminho absoluto ou como um       \n\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\tplataformas. O formato de archive "jar" produz um jar autoextrator \n\tsimilar ao archive do instalador original.                                      
+option-desc.package.archive=\tEspecifique o destino de archive a ser gerado pela a\u00e7\u00e3o do pacote.    \n\tO destino pode ser especificado como um caminho absoluto ou como um       \n\tcaminho relativo. Se essa op\u00e7\u00e3o for omitida, o archive ser\u00e1 criado\n\tno diret\u00f3rio de sa\u00edda do servidor. A extens\u00e3o do nome do arquivo de destino pode \n\tinfluenciar o formato do archive gerado. O formato de archive padr\u00e3o \n\tpara a a\u00e7\u00e3o do pacote \u00e9 "pax" em z/OS e "zip" em todas as outras\n\tplataformas. O formato de archive "jar" produzir\u00e1 um jar autoextrator \n\t similar ao archive do instalador original. O formato de archive "jar" \n\tcombinado com "runnable" na op\u00e7\u00e3o --include produz um arquivo jar \n\texecut\u00e1vel que pode executar o servidor Liberty por meio do arquivo jar usando \n\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.javadump.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: heap, system \n\
-\tthread.
-option-desc.package.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: all*, usr,   \n\
-\tminify, runnable, wlp. Se voc\u00ea especificar runnable, o pacote resultante \n\
-\tser\u00e1 um jar execut\u00e1vel que executa o servidor. A op\u00e7\u00e3o minify    \n\
-\tproduz a menor imagem poss\u00edvel para o servidor. A op\u00e7\u00e3o usr  \n\
-\tcria um pacote que cont\u00e9m o servidor e o aplicativo, mas n\u00e3o  \n\
-\to tempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o wlp produz um tempo de execu\u00e7\u00e3o que n\u00e3o cont\u00e9m \n\
-\ta configura\u00e7\u00e3o do servidor. A op\u00e7\u00e3o all padr\u00e3o produz um pacote   \n\
-\tdo servidor que cont\u00e9m tudo.
+option-desc.javadump.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: heap, system \n\tthread.
+option-desc.package.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: all*, usr,   \n\tminify, runnable, wlp. Se voc\u00ea especificar runnable, o pacote resultante \n\tser\u00e1 um jar execut\u00e1vel que executa o servidor. A op\u00e7\u00e3o minify    \n\tproduz a menor imagem poss\u00edvel para o servidor. A op\u00e7\u00e3o usr  \n\tcria um pacote que cont\u00e9m o servidor e o aplicativo, mas n\u00e3o  \n\to tempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o wlp produz um tempo de execu\u00e7\u00e3o que n\u00e3o cont\u00e9m \n\ta configura\u00e7\u00e3o do servidor. A op\u00e7\u00e3o all padr\u00e3o produz um pacote   \n\tdo servidor que cont\u00e9m tudo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nome_do_Modelo"
 option-desc.template=\tEspecifique o nome do modelo a ser usado ao criar um novo servidor. 
@@ -164,25 +115,16 @@ option-key.target=\ \ \ \ --target=value,value
 option-desc.target=\tEspecifica uma lista delimitada por v\u00edrgulas de componentes que podem ser pausados ou \n \tcontinuados.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=value,value,...
-option-desc.os=\tEspecifica os sistemas operacionais que voc\u00ea deseja que o servidor em pacote \n \tsuporte. Forne\u00e7a uma lista separada por v\u00edrgula. O valor padr\u00e3o \u00e9 qualquer um,    \n \tindicando que o servidor deve ser implement\u00e1vel em qualquer sistema operacional  \n \tsuportado pela origem.                                      \n \tPara especificar que um sistema operacional n\u00e3o deve ser suportado, prefixe-o\n \tcom um sinal de menos ("-"). Para obter uma lista de valores do sistema \
-operacional, consulte\n \to website do OSGi Alliance na seguinte URL:                  \n \thttp://www.osgi.org/Specifications/Reference#os                      \n\
-\tEssa op\u00e7\u00e3o se aplica somente \u00e0 opera\u00e7\u00e3o de pacote e pode ser usada somente  \n \tcom a op\u00e7\u00e3o --include=minify. Se voc\u00ea excluir um sistema operacional, \n \tn\u00e3o \
-ser\u00e1 poss\u00edvel inclu\u00ed-lo posteriormente, se voc\u00ea repetir a opera\u00e7\u00e3o minify         \n \tno archive.
+option-desc.os=\tEspecifica os sistemas operacionais que voc\u00ea deseja que o servidor em pacote \n \tsuporte. Forne\u00e7a uma lista separada por v\u00edrgula. O valor padr\u00e3o \u00e9 qualquer um,    \n \tindicando que o servidor deve ser implement\u00e1vel em qualquer sistema operacional  \n \tsuportado pela origem.                                      \n \tPara especificar que um sistema operacional n\u00e3o deve ser suportado, prefixe-o\n \tcom um sinal de menos ("-"). Para obter uma lista de valores do sistema operacional, consulte\n \to website do OSGi Alliance na seguinte URL:                  \n \thttp://www.osgi.org/Specifications/Reference#os                      \n\tEssa op\u00e7\u00e3o se aplica somente \u00e0 opera\u00e7\u00e3o de pacote e pode ser usada somente  \n \tcom a op\u00e7\u00e3o --include=minify. Se voc\u00ea excluir um sistema operacional, \n \tn\u00e3o ser\u00e1 poss\u00edvel inclu\u00ed-lo posteriormente, se voc\u00ea repetir a opera\u00e7\u00e3o minify\
+    \         \n \tno archive.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDesativar gera\u00e7\u00e3o de senha de keystore padr\u00e3o
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="pasta do servidor raiz no archive"
 option-desc.package.server-root=\tEspecifica o nome da pasta do servidor raiz no archive.           \n
-#------------------------------\n\
-\ at 72 chars -- leading tab-----------\n\
-\#
 option-key.force=\ \ \ \ --force
-option-desc.stop.force=\tIgnora o est\u00e1gio para colocar em modo quiesce antes de o servidor ser encerrado. A parada do servidor\n\
-\tnormal inclui um est\u00e1gio para colocar em modo quiesce antes de o servidor ser encerrado. O \n\
-\test\u00e1gio para colocar em modo quiesce, um per\u00edodo de 30 segundos, permite que os servi\u00e7os executem \n\
-\to trabalho de pr\u00e9-encerramento; por exemplo, os listeners de entrada s\u00e3o interrompidos, mas \n\
-\tas solicita\u00e7\u00f5es existentes t\u00eam permiss\u00e3o para concluir. A op\u00e7\u00e3o --force n\u00e3o ter\u00e1 nenhum \n\
-\tefeito se a parada do servidor j\u00e1 tiver sido chamada. Se voc\u00ea usar a op\u00e7\u00e3o --force, \n\
-\tpoder\u00e1 ver exce\u00e7\u00f5es inesperadas no arquivo messages.log \n\
-\tque ocorrem ap\u00f3s o comando stop do servidor ter sido recebido pelo servidor.
+option-desc.stop.force=\tIgnora o est\u00e1gio de quiesce antes do encerramento do servidor. A parada normal do servidor\n inclui um est\u00e1gio de quiesce antes do encerramento do servidor. O \n est\u00e1gio de quiesce, um per\u00edodo de 30 segundos, permite que os servi\u00e7os executem \n trabalhos de pr\u00e9-encerramento; por exemplo, os listeners de entrada s\u00e3o interrompidos, mas \n as solicita\u00e7\u00f5es existentes t\u00eam permiss\u00e3o para serem conclu\u00eddas. A op\u00e7\u00e3o --force n\u00e3o ter\u00e1 \n efeito se a parada do servidor j\u00e1 tiver sido chamada. Se a op\u00e7\u00e3o --force \n for usada, voc\u00ea poder\u00e1 ver exce\u00e7\u00f5es inesperadas no arquivo messages.log \n que ocorrer\u00e3o depois que o comando server stop tiver sido recebido pelo servidor. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\ \ \ \ --timeout
+option-desc.stop.timeout=\tConfigura o per\u00edodo m\u00e1ximo de tempo que o comando "server stop" aguarda a \n confirma\u00e7\u00e3o de parada do servidor.  Especifique um n\u00famero inteiro positivo\n seguido por uma unidade de tempo, que pode incluir minutos (m) e \n segundos (s). Por exemplo, especifique 2,5 minutos como --timeout=2m30s \n ou --timeout=150s.                                                   \n\t                                                                     \n\tO\nvalor de tempo limite padr\u00e3o \u00e9 30 segundos. Se o servidor demorar mais de 30 segundos \n de forma consistente para parar, considere aumentar o valor de tempo limite\n usando a op\u00e7\u00e3o --timeout.                                 \n

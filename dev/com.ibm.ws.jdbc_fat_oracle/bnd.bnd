@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -24,13 +26,13 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 
-fat.test.container.images: kyleaure/oracle-18.4.0-expanded:1.0.slim, kyleaure/oracle-18.4.0-expanded:1.0.full.ssl
+fat.test.container.images: gvenzl/oracle-xe:21.3.0-slim-faststart, kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.1,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
-    com.oracle.database.jdbc.debug:ojdbc8_g;version=21.1.0.0,\
-    com.oracle.database.security:oraclepki;version=21.1.0.0,\
-    com.oracle.database.jdbc:ucp;version=21.1.0.0
+    com.oracle.database.jdbc.debug:ojdbc8_g;version=21.8.0.0,\
+    com.oracle.database.security:oraclepki;version=21.8.0.0,\
+    com.oracle.database.jdbc:ucp;version=21.8.0.0

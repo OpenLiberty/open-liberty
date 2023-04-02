@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -116,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: A k\u00f6vetkez\u0151 \u00fczenetek rejt
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Az \u00fczenetek \u00fagy vannak be\u00e1ll\u00edtva, hogy ne legyenek be\u00edrva a console.log \u00e9s messages.log f\u00e1jlokba. Ezek a trace.log f\u00e1jlba ker\u00fclnek. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nem kell semmit tennie
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: A messages.log kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: A messages.log kimeneti form\u00e1tuma  '{0}' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
 MESSAGE_FORMAT_UPDATED.explanation=A messages.log kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
 MESSAGE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma '{0}' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
 CONSOLE_FORMAT_UPDATED.explanation=A konzol kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
 CONSOLE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 
@@ -156,7 +158,7 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c9rv\u00e9nytelen karakter lett me
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Csak bet\u0171k, sz\u00e1mok \u00e9s : elfogadott a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.useraction= M\u00f3dos\u00edtsa a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az \u00e9rv\u00e9nytelen karakterek elt\u00e1vol\u00edt\u00e1s\u00e1val
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: A napl\u00f3\u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1g nem megfelel\u0151en van form\u00e1zva. Ez\u00e9rt az \u00e9rt\u00e9ket az alap\u00e9rtelmezett '00:00' \u00e9rt\u00e9kre \u00e1ll\u00edtja be a rendszer, ami az \u00e9jf\u00e9l \u00e1br\u00e1zol\u00e1sa.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: A napl\u00f3 r\u00e1mozgat\u00e1s ind\u00edt\u00e1si ideje tulajdons\u00e1g helytelen\u00fcl van form\u00e1zva. Ez\u00e9rt az \u00e9rt\u00e9ket az alap\u00e9rtelmezett '00:00' \u00e9rt\u00e9kre \u00e1ll\u00edtja be a rendszer, ami az \u00e9jf\u00e9l \u00e1br\u00e1zol\u00e1sa.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Az \u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1got \u00d3\u00d3:PP form\u00e1tumban kell megadni, ahol a 00:00 \u00f3ra jelent\u00e9se \u00e9jf\u00e9l.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1tford\u00edt\u00e1s kezd\u0151 id\u0151pontja tulajdons\u00e1g \u00e9rt\u00e9ke megfelel\u0151en van form\u00e1zva a \u00d3\u00d3:PP 24 \u00f3r\u00e1s jel\u00f6l\u00e9ssel, ahol 00:00 az \u00e9jf\u00e9l.
 

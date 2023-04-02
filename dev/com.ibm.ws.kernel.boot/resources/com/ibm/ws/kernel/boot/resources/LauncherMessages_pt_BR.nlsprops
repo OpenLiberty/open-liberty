@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -124,6 +126,10 @@ error.kernelDefFile=CWWKE0023E: A defini\u00e7\u00e3o de kernel especificada ({0
 error.kernelDefFile.explanation=A defini\u00e7\u00e3o de kernel especificada n\u00e3o p\u00f4de ser localizada.
 error.kernelDefFile.useraction=Assegure que o recurso de defini\u00e7\u00e3o de kernel exista e possa ser lido pelo usu\u00e1rio atual.
 
+error.badOptionValue=CWWKE0024E: O valor ({0}) para a op\u00e7\u00e3o ({1})) n\u00e3o \u00e9 v\u00e1lido.
+error.badOptionValue.explanation=O valor especificado n\u00e3o \u00e9 apropriado para a op\u00e7\u00e3o especificada.
+error.badOptionValue.useraction=Execute o comando `server help` para obter uma descri\u00e7\u00e3o das op\u00e7\u00f5es.  Se o valor for um n\u00famero, assegure-se de que esteja no intervalo v\u00e1lido.
+
 error.specifiedLocation=CWWKE0025E: O valor de {0} deve referir-se a um diret\u00f3rio. O valor especificado referencia um recurso do arquivo existente. Valor: {1}
 error.specifiedLocation.explanation=O local fornecido se refere a um arquivo existente em vez de um diret\u00f3rio.
 error.specifiedLocation.useraction=Altere o local especificado para um diret\u00f3rio, em seguida, tente a a\u00e7\u00e3o novamente.
@@ -135,6 +141,10 @@ warning.noPlatformCache.useraction=Verifique e resolva a exce\u00e7\u00e3o e, em
 warning.singleServer=CWWKE0027W: Somente um servidor pode ser especificado na linha de comandos; nomes subsequentes ser\u00e3o ignorados (servidor={0}, ignorado={1}).
 warning.singleServer.explanation=Pode ser especificado somente um servidor na linha de comandos. O primeiro nome do servidor foi processado; os nomes restantes foram ignorados.
 warning.singleServer.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Especifique somente um servidor para evitar este aviso.
+
+error.optionNotApplicableToCommand=CWWKE0028E: A op\u00e7\u00e3o ({0}) n\u00e3o \u00e9 aplic\u00e1vel para o comando.
+error.optionNotApplicableToCommand.explanation=A op\u00e7\u00e3o especificada n\u00e3o \u00e9 permitida para o comando especificado.
+error.optionNotApplicableToCommand.useraction=Execute o comando `server <command> help` para obter informa\u00e7\u00f5es sobre as op\u00e7\u00f5es v\u00e1lidas para o comando.
   
 error.serverAlreadyRunning=CWWKE0029E: Uma inst\u00e2ncia do servidor {0} j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
 error.serverAlreadyRunning.explanation=Voc\u00ea est\u00e1 tentando iniciar um servidor que j\u00e1 est\u00e1 em execu\u00e7\u00e3o.
@@ -381,6 +391,10 @@ audit.system.exit.useraction=Se a parada do servidor foi inesperada, determine p
 audit.jvm.shutdown=CWWKE0085I: O servidor {0} est\u00e1 parando porque a JVM est\u00e1 saindo.
 audit.jvm.shutdown.explanation=O servidor interceptou uma solicita\u00e7\u00e3o para parar a JVM e tentar\u00e1 par\u00e1-la de uma maneira ordenada. A JVM pode estar saindo porque o sistema operacional enviou um sinal de t\u00e9rmino ao processo do servidor.
 audit.jvm.shutdown.useraction=Se a parada do servidor foi inesperada, determine se um sinal de t\u00e9rmino foi enviado ao processo do servidor.
+
+error.optionRequiresEquals=CWWKE0086E: A op\u00e7\u00e3o {0} deve incluir um sinal de igual (=) antes do valor especificado. 
+error.optionRequiresEquals.explanation=A op\u00e7\u00e3o especificada deve vir seguida de um sinal de igual (=) e um valor.
+error.optionRequiresEquals.useraction=A op\u00e7\u00e3o deve ser especificada no formato a seguir: --option=value.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: O in\u00edcio do servidor foi iniciado para o servidor {0}, mas n\u00e3o \u00e9 poss\u00edvel afirmar se a inicializa\u00e7\u00e3o foi conclu\u00edda, porque a porta de comando do servidor est\u00e1 desativada.
 warning.serverStartedCommandPortDisabled.explanation=A porta de comando do servidor \u00e9 requerida para comunica\u00e7\u00e3o com um servidor em execu\u00e7\u00e3o.  A porta de comando foi desativada explicitamente para este servidor, portanto, n\u00e3o \u00e9 poss\u00edvel dizer quando o servidor concluiu a inicializa\u00e7\u00e3o.
@@ -696,7 +710,7 @@ warning.earlyRelease=CWWKE0953W: Esta vers\u00e3o de {0} \u00e9 uma vers\u00e3o 
 warning.earlyRelease.explanation=Novos recursos que n\u00e3o s\u00e3o totalmente testados s\u00e3o disponibilizados em libera\u00e7\u00f5es iniciais para obter feedback antes de serem inclu\u00eddos em uma libera\u00e7\u00e3o suportada.
 warning.earlyRelease.useraction=N\u00e3o use uma vers\u00e3o de libera\u00e7\u00e3o anterior em sistemas de produ\u00e7\u00e3o, uma vez que as vers\u00f5es de libera\u00e7\u00e3o anteriores n\u00e3o s\u00e3o suportadas.
 
-error.invalidPhaseName=CWWKE0954E: A fase de ponto de verifica\u00e7\u00e3o "{0}" especificada est\u00e1 vazia ou \u00e9 desconhecida.
+error.invalidPhaseName=CWWKE0954E: A fase de ponto de verifica\u00e7\u00e3o ({0}) especificada est\u00e1 vazia ou \u00e9 desconhecida.
 error.invalidPhaseName.explanation=Uma fase desconhecida foi especificada como o valor da op\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
 error.invalidPhaseName.useraction=Revise a documenta\u00e7\u00e3o para determinar nomes de fase v\u00e1lidos. Emita novamente o comando usando uma fase de ponto de verifica\u00e7\u00e3o v\u00e1lida.
 
@@ -723,10 +737,6 @@ error.checkpoint.workarea.restore.useraction=Certifique-se de que o usu\u00e1rio
 info.checkpoint.restore.failed=CWWKE0957I: A restaura\u00e7\u00e3o do processo do servidor de ponto de verifica\u00e7\u00e3o falhou. Verifique o log {0} para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. Iniciando o servidor sem usar a imagem do ponto de verifica\u00e7\u00e3o.
 info.checkpoint.restore.failed.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o.  O servidor foi iniciado sem usar a imagem do ponto de verifica\u00e7\u00e3o.
 info.checkpoint.restore.failed.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado.
-
-error.checkpoint.failed=CWWKE0958E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou. A sa\u00edda a seguir \u00e9 do arquivo CRIU {0} que cont\u00e9m detalhes sobre o motivo da falha do ponto de verifica\u00e7\u00e3o.
-error.checkpoint.failed.explanation=Uma solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o para o servidor falhou. Nenhuma imagem de processo de ponto de verifica\u00e7\u00e3o v\u00e1lida para o servidor foi criada.
-error.checkpoint.failed.useraction=Para determinar por que o ponto de verifica\u00e7\u00e3o falhou, inspecione os arquivos de log no diret\u00f3rio do ponto de verifica\u00e7\u00e3o que est\u00e1 localizado no diret\u00f3rio de logs do servidor.
 
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

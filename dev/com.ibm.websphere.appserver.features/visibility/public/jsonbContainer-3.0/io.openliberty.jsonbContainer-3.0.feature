@@ -13,6 +13,6 @@ Subsystem-Name: Jakarta JSON Binding 3.0 Container
 -features=io.openliberty.jsonbImpl-3.0.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=com.ibm.ws.jsonb.service
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

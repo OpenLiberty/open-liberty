@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -91,6 +93,8 @@ public class SessionManagerConfig implements Cloneable {
     // Unique server information
     static String serverId = null;
     static String cloneId = null;
+    
+    private String j2eeName = null;
 
     // Tells us if security is enabled (cannot be cached on lWAS)
     //    private boolean serverSecurityEnabled = false;
@@ -102,6 +106,7 @@ public class SessionManagerConfig implements Cloneable {
 
     // The following properties are set via Custom Properties
     private static char cacheSeparator = '%';
+    private static boolean appInCacheName = false;
     
     private static char cloneSeparator = ':';
     private boolean debugSessionCrossover = false;
@@ -254,6 +259,15 @@ public class SessionManagerConfig implements Cloneable {
         cloneId = s;
     }
 
+    public final String getJ2EEName() {
+        return j2eeName;
+    }
+
+    public final void setJ2EEName(String s) {
+        j2eeName = s;
+    }    
+    
+    
     public final boolean isUseContextRootForSessionCookiePath() {
         return useContextRootForSessionCookiePath;
     }
@@ -726,6 +740,14 @@ public class SessionManagerConfig implements Cloneable {
         cacheSeparator = c;
     }    
 
+    public static final boolean isAppInCacheName() {
+        return appInCacheName;
+    }
+
+    public static final void setAppInCacheName(boolean b) {
+        appInCacheName = b;
+    }    
+    
     // cloneSeparator
     public static final char getCloneSeparator() {
         return cloneSeparator;

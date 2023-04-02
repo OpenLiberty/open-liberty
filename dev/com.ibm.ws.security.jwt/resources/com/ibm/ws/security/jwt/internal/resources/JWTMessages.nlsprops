@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -386,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ensure that the payload of the JWE 
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: The JSON Web Encryption (JWE) token cannot be decrypted because a decryption key cannot be found. The {0} server configuration attribute is set to [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=A decryption key is required to decrypt the JWE token. The decryption key must be present in the JWT consumer keystore, or the key must be specified in the MicroProfile Config properties.
 JWE_DECRYPTION_KEY_MISSING.useraction=Verify that the key alias that is specified in the message exists in the JWT consumer keystore. If the alias is not configured, the decryption key must be specified in the MicroProfile Config properties.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: The JSON Web Token (JWT) is not valid because the token age has elapsed since the issued at (iat) claim. The iat claim time is {0}. The current time minus the clock skew is {1}. The configured clock skew is {2} seconds. The configured token age is {3} seconds.
+JWT_TOKEN_AGED.explanation=Tokens that are aged are not valid.
+JWT_TOKEN_AGED.useraction=Obtain a new token that is not aged. Synchronize the clock times between the token issuer and the consumer, or increase the clock skew or token age in your JWT configuration.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: The JSON Web Encryption (JWE) token is not valid because it is missing the alg header. The configured key management key algorithm is {0}.
+JWE_MISSING_ALG_HEADER.explanation=The token is either malformed, not encrypted, or is missing encryption information.
+JWE_MISSING_ALG_HEADER.useraction=Ensure that the algorithm header of the JWE token is set to the required value.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: The JSON Web Encryption (JWE) is not valid because its Content Encryption Key (CEK) was encrypted by using the {0} algorithm. Content Encryption Keys must be encrypted by using the {1} algorithm.
+JWE_ALGORITHM_MISMATCH.explanation=The Content Encryption Keys must be encrypted by the algorithm specified in the message. Content Encryption Keys that are encrypted with any other encryption algorithm cannot be validated.
+JWE_ALGORITHM_MISMATCH.useraction=Obtain a new token with a Content Encryption Key that is encrypted by using the required algorithm that is specified in the message. Alternatively, update your JWT configuration to allow tokens with Content Encryption Keys that are encrypted by using the other encryption algorithm.

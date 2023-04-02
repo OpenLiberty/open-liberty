@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -52,6 +54,9 @@ import com.ibm.wsspi.session.IStore;
 import com.ibm.wsspi.session.IStorer;
 import com.ibm.wsspi.session.ITimer;
 import com.ibm.wsspi.session.SessionAffinityContext;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 
 public class SessionContext {
@@ -259,8 +264,20 @@ public class SessionContext {
 
         // invalidator
         _invalidator = createInvalidator();
-        int reaperInterval = getReaperInterval(sessionTimeout);
-        _invalidator.start(_store, reaperInterval);
+        final int reaperInterval = getReaperInterval(sessionTimeout);
+        if (CheckpointPhase.getPhase().restored()) {
+            // normal (non-checkpoint) case; start the invalidator now
+            _invalidator.start(_store, reaperInterval);
+        } else {
+            // for checkpoint case start invalidator after restore
+            final IStore fStore = _store;
+            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+               @Override
+               public void restore() {
+                   _invalidator.start(fStore, reaperInterval);
+               }
+            });
+        }
 
         // storer - handles manual write, eos, and time based differences
         _storer = createStorer(_smc, _store);

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -59,6 +61,9 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.tx.UOWEventListener;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 @Component(service = { TransactionManager.class, EmbeddableWebSphereTransactionManager.class, UOWCurrent.class, ServerQuiesceListener.class }, immediate = true)
 public class TransactionManagerService implements ExtendedTransactionManager, TransactionManager, EmbeddableWebSphereTransactionManager, UOWCurrent, ServerQuiesceListener {
 
@@ -104,14 +109,35 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         }
     }
 
+    public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
+
+        if (CheckpointPhase.getPhase().restored()) {
+            // normal (non-checkpoint) case; start TM now
+            doStartup0(cp, isSQLRecoveryLog);
+        } else {
+            // for checkpoint case start TM after restore
+            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                @Override
+                public void restore() {
+                    doStartup0(cp, isSQLRecoveryLog);
+                }
+            });
+        }
+
+	if (tc.isEntryEnabled())
+            Tr.exit(tc, "doStartup");
+    }
+
     /**
      * This method will start log recovery processing.
      *
      * @param cp
      */
-    public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
+    public void doStartup0(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
+            Tr.entry(tc, "doStartup0 with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
         if (isStarted.compareAndSet(false, true)) {
             // Create an AppId that will be unique for this server to be used in the generation of Xids.
@@ -167,7 +193,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             }
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "doStartup");
+            Tr.exit(tc, "doStartup0");
     }
 
     /**

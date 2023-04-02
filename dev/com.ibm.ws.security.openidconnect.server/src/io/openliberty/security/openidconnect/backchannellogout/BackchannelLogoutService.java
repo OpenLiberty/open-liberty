@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -88,7 +90,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         }
         String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
 
-        sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
+        sendBackchannelLogoutRequests(oidcServerConfig, userName, idTokenString);
         return true;
     }
 
@@ -118,8 +120,8 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
                 || requestUri.endsWith("/" + providerId + "/" + EndpointType.logout.name()));
     }
 
-    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+    void sendBackchannelLogoutRequests(OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(oidcServerConfig);
         bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:my="jakarta.faces.composite/components"
+>
+    <h:head>
+        <title>Ajax Render and Execute This Tests</title>
+    </h:head>
+    <h:body>
+        <h:form id="testRender">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testRenderStreet}" 
+            	city="#{addressBean.testRenderCity}" 
+            	state="#{addressBean.testRenderState}">
+                <f:ajax render="messages" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testRender" />
+        </h:form>
+        <h:form id="testExecuteThis">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testExecuteThisStreet}" 
+            	city="#{addressBean.testExecuteThisCity}" 
+            	state="#{addressBean.testExecuteThisState}">
+                <f:ajax execute="@this" render="messages" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testExecuteThis" />
+        </h:form>
+        <h:form id="testRenderThis">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testRenderThisStreet}" 
+            	city="#{addressBean.testRenderThisCity}" 
+            	state="#{addressBean.testRenderThisState}">
+                <f:ajax render="@this messages" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testRenderThis" />
+        </h:form>
+    </h:body>
+</html>

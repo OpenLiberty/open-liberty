@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 public class AuthUtils {
 
@@ -22,24 +26,22 @@ public class AuthUtils {
 
     @Sensitive
     public String getBearerTokenFromHeader(HttpServletRequest req) {
-        return getBearerTokenFromHeader(req, "Authorization");
+        String hdrValue = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_AUTHORIZATION);
+        return getBearerTokenFromHeader(hdrValue, "Bearer ");
     }
 
     @Sensitive
-    public String getBearerTokenFromHeader(HttpServletRequest req, String... headersToCheck) {
-        if (headersToCheck == null) {
+    public String getBearerTokenFromHeader(HttpServletRequest req, String headerName) {
+        if (headerName == null) {
             return null;
         }
-        for (String headerName : headersToCheck) {
-            String hdrValue = req.getHeader(headerName);
-            //if we are looking at custom header, then just return the value
-            if (!isAuthorizationHeader(headerName)) {
-                return hdrValue;
-            } else {
-                return getBearerTokenFromHeader(hdrValue, "Bearer ");
-            }
+
+        //if we are looking at custom header, then just return the value
+        if (!isAuthorizationHeader(headerName)) {
+            return req.getHeader(headerName);
         }
-        return null;
+
+        return getBearerTokenFromHeader(req);
     }
 
     @Sensitive

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -44,9 +46,9 @@ import com.ibm.ws.kernel.boot.logging.TextFileOutputStreamFactory;
 /**
  * The ServerDumpPackager encapsulates the logic of creating an archive file containing
  * various server dump data.
- * 
+ *
  * The usage pattern of this helper class is as follows:
- * 
+ *
  * -- create an instance of the server dump packager using your chosen constructor
  * -- call initializeDumpDirectory() to create the temporary directory that will contain dump information
  * -- if additional information is to be included in the dump (such as a server introspection), the location
@@ -96,6 +98,11 @@ public class ServerDumpPackager {
             dumpDir = new File(serverOutputDir, BootstrapConstants.SERVER_DUMP_FOLDER_PREFIX + dumpTimestamp);
             if (!FileUtils.createDir(dumpDir))
                 throw new IllegalStateException("Dump directory could not be created.");
+
+            // Ensure the dump directory is accessible by the server
+            dumpDir.setReadable(true, false);
+            dumpDir.setWritable(true, false);
+            dumpDir.setExecutable(true, false);
         }
     }
 
@@ -120,7 +127,7 @@ public class ServerDumpPackager {
 
     /**
      * Package the server dump and optionally record error data.
-     * 
+     *
      * @return
      */
     public ReturnCode packageDump(boolean javaDumpsRequested) {
@@ -137,7 +144,7 @@ public class ServerDumpPackager {
 
         captureEnvData(dumpDir, bootProps.getInstallRoot());
 
-        // we also want the dump zip contains the lib inventory, so generate one. 
+        // we also want the dump zip contains the lib inventory, so generate one.
         File libInventory = new File(dumpDir, BootstrapConstants.SERVER_LIB_INVENTORY_FILE_NAME + ".txt");
         if (!new FolderStructureGenerator().generate(bootProps.getInstallRoot(), libInventory)) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.LibInventoryGenerationException"), serverName));
@@ -207,7 +214,7 @@ public class ServerDumpPackager {
 
     /**
      * Copy relevant data (like service data, shared config, etc) to the dump dir to be zipped up.
-     * 
+     *
      * @param dumpDir
      * @param installDir
      */
@@ -347,7 +354,7 @@ public class ServerDumpPackager {
 
     /**
      * Creates an archive containing the server dumps, server configurations.
-     * 
+     *
      * @param packageFile
      * @return
      */

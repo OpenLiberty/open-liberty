@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -1051,13 +1053,21 @@ public class JspOptions {
     }
 
     public void setJdkSourceLevel(int jdkSourceLevel) {
+        if (jdkSourceLevel < 18 && JavaInfo.majorVersion() >= 20) {
+            // In Java 20 the minimum allowed compiler source level is 1.8
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "setJdkSourceLevel", "Requested jdkSourceLevel=" + jdkSourceLevel + 
+                            ", but forcing to 18 because it is the min supported by Java 20+");
+            }
+            jdkSourceLevel = 18;
+        }
         if (jdkSourceLevel < 17 && JavaInfo.majorVersion() >= 12) {
             // In Java 12 the minimum allowed compiler source level is 1.7
-            jdkSourceLevel = 17;
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
                 logger.logp(Level.INFO, CLASS_NAME, "setJdkSourceLevel", "Requested jdkSourceLevel=" + jdkSourceLevel + 
                             ", but forcing to 17 because it is the min supported by Java 12+");
             }
+            jdkSourceLevel = 17;
         }
         this.jdkSourceLevel = jdkSourceLevel;
     }

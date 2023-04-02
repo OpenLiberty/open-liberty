@@ -1,18 +1,23 @@
 type: pipeline_definition
 product: Liberty
-name: Liberty Personal Build
+name: Open Liberty Personal Build
 description: A build run against Open Liberty Pull Requests
 triggers:
 - type: github
   triggerName: "ol-pbbeta"
-  triggerRank: 20
+  triggerRank: 50
   triggerMonitored: false
-  keyword: "#ol-pbbeta"
+  keyword: "#pbbeta"
+- type: github
+  triggerName: "ol-exclamation-pbbeta"
+  triggerRank: 50
+  triggerMonitored: false
+  keyword: "!pbbeta"
 - type: github
   triggerName: "ol-fullpbbeta"
-  triggerRank: 20
+  triggerRank: 50
   triggerMonitored: false
-  keyword: "#ol-fullpbbeta"
+  keyword: "#fullpbbeta"
   propertyDefinitions:
   - name: fat.test.mode
     defaultValue: full
@@ -26,12 +31,63 @@ triggers:
     defaultValue: true
     steps:
     - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
+- type: github
+  triggerName: "ol-exclamation-fullpbbeta"
+  triggerRank: 50
+  triggerMonitored: false
+  keyword: "!fullpbbeta"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
 
 steps:
+- stepName: pr-changes
+  workType: PRChangesDetection
+  timeoutInMinutes: 30
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
 - stepName: compile
   workType: RTC
-  projectName: "Liberty Personal Build CI Orchestrator - EBC"
+  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
+  dependsOn:
+  - stepName: pr-changes
+    awaitOutputProperties: true
   timeoutInMinutes: 1440
+  properties:
+    build.stub.target: build.CachedWSCD.Combined
+    run.packaging.verification: ${pr-changes:run.packaging.verification}
+    fat.buckets.to.run: ${pr-changes:fat.buckets.to.run}
+    disable.run.runBvtTests: ${pr-changes:disable.run.runBvtTests}
+    disable.run.runUnitTests: ${pr-changes:disable.run.runUnitTests}
+    run.chkpii: ${pr-changes:run.chkpii}
+    run.findbugs: ${pr-changes:run.findbugs}
+    spawn.zos: ${pr-changes:spawn.zos}
+    create.im.repo: ${pr-changes:create.im.repo}
+    personal.im.build: ${pr-changes:personal.im.build}
+    disable.run.createDoc: ${pr-changes:disable.run.createDoc}
+    skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
+    skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
+    spawn.fullfat.buckets: ${pr-changes:spawn.fullfat.buckets}
   includeProperties:
   - file: compilePersonal.properties
   - file: compile.properties
@@ -42,7 +98,7 @@ steps:
   dependsOn:
     - stepName: compile
       awaitOutputProperties: true
-  timeoutInMinutes: 30
+  timeoutInMinutes: 120
   properties:
     artifact_execution_id: ${compile:execution_id}
     aggregationId: ${compile:execution_id}
@@ -66,16 +122,17 @@ steps:
     runner_projectName: ebcTestRunner
     runner_workType: Jenkins
     runner_threshold: 40
+    runner_minimum_total: 10
     fat.buckets.to.run: auto
     fat.test.mode: lite
     fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${compile:fat_uploads_to_expect}
-    outputServer: libertyfs.hursley.ibm.com
+    fileserver: libfsfe05.hursley.ibm.com
+    outputServer: libfsfe05.hursley.ibm.com
     outputPath: /liberty/personal/2/ciorchestrator
     command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
     aggregationId: ${compile:execution_id}
     buildType: personal
-    reportingJVM: system_java
     reportingOS: ubuntu18_x86
     retry_failing_fats: true
     repeat_if_few_fats: true  #If there are fewer than x fat buckets then we will run each fat multiple times

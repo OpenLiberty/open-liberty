@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.plugins;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -282,26 +282,11 @@ public class OAuth20TokenImpl implements OAuth20Token, Serializable {
         sb.append(" _tokenString: " + _tokenString);
         sb.append(" _clientId: " + _clientId);
         sb.append(" _username: " + _username);
-        sb.append(" _scopes: " + arrayToString(_scopes));
+        sb.append(" _scopes: " + Arrays.toString(_scopes));
         sb.append(" _redirectUri: " + _redirectUri);
         sb.append(" _stateId: " + _stateId);
         sb.append(" _grantType: " + _grantType);
         sb.append(" _extensionProperties: " + JSONUtil.getJSONStrings(_extensionProperties));
-        sb.append("}");
-        return sb.toString();
-    }
-
-    String arrayToString(String[] strs) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        if (strs != null && strs.length > 0) {
-            for (int i = 0; i < strs.length; i++) {
-                sb.append(strs[i]);
-                if (i < (strs.length - 1)) {
-                    sb.append(",");
-                }
-            }
-        }
         sb.append("}");
         return sb.toString();
     }

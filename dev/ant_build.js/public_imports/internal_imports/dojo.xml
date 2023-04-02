@@ -1,9 +1,11 @@
 <!--
     Copyright (c) 2020,2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
 
     Contributors:
         IBM Corporation - initial API and implementation
@@ -15,7 +17,7 @@
 
     <!-- Static DOJO resources -->
     <property name="dojo.home" location="${basedir}/../ant_build.js/lib/dojo" />
-    <property name="dojo.version" value="1.12.9" />
+    <property name="dojo.version" value="1.12.11" />
     <property name="dojo.src" location="${dojo.home}/dojo-${dojo.version}" />
     <property name="dojo.src.zip" value="${dojo.src}.zip" />
     <property name="dojo.closure.jar" value="${dojo.src}/util/closureCompiler/compiler.jar" />
@@ -211,13 +213,6 @@
                 <unzip src="${dojo.src.zip}" dest="${dojo.src}" />
             </else>
         </iff>
-        <!-- Copy over FIX for CVE-2021-23450 (PH43817) Temp until dojo releases the fix in a build -->
-        <delete file="${dojo.src}/dojo/_base/lang.js" />
-        <copy todir="${dojo.src}/dojo/_base/">
-            <fileset dir="${dojo.home}/PH43817">
-                <include name="lang.js" />
-            </fileset>
-        </copy>
         <iff>
             <available file="${idx.src}" type="dir" />
             <then>

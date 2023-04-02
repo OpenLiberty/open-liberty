@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -342,4 +344,14 @@ tool.classpath.create.fail.useraction=Review the error message, correct the prob
 tool.userfeature.install.location.invalid=CWWKF1036E: The {0} user feature cannot be installed to core.
 tool.userfeature.install.location.invalid.explanation= The user feature is not a core feature therefore cannot be installed to core.
 tool.userfeature.install.location.invalid.useraction= Install the user feature to usr. 
+
+FEATURES_ADDED_DELTA=CWWKF1037I: The server added the {0} features to the existing feature set.
+FEATURES_ADDED_DELTA.explanation=The server installed a set of new features in addition to previously installed features.
+FEATURES_ADDED_DELTA.useraction=No action is required.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: The client added the {0} features to the existing feature set. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=The client installed a set of new features in addition to previously installed features.
+FEATURES_ADDED_CLIENT_DELTA.useraction=No action is required. 
+
+
 

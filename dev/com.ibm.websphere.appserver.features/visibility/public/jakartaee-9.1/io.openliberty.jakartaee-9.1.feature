@@ -18,6 +18,7 @@ Subsystem-Name: Jakarta EE Platform 9.1
   io.openliberty.messagingSecurity-3.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.servlet.internal-5.0, \
   io.openliberty.concurrent-2.0, \
   io.openliberty.appAuthorization-2.0, \
   io.openliberty.xmlWS-3.0, \

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -28,9 +30,8 @@ public class OracleSSLContainer extends OracleContainer {
     private static final int TCPS_PORT = 1522;
     private static final String WALLET_PASS = "WalletPasswd123";
 
-    //TODO update this image to be built on top of gvenzl/oracle-xe-full
-    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-18.4.0-expanded:1.0.full.ssl";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe:18.4.0-slim");
+    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.ssl";
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleSSLContainer() {
         super(IMAGE_NAME);

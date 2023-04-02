@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -25,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WCCustomProperties; 
 import com.ibm.wsspi.webcontainer.WebContainer;
 import com.ibm.wsspi.webcontainer.WebContainerConstants;
@@ -217,7 +221,7 @@ public class EncodingUtils {
      */
     public static Vector getLocales(HttpServletRequest req) {
     	init();
-        String acceptLanguage = req.getHeader("Accept-Language");
+        String acceptLanguage = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_ACCEPT_LANGUAGE);
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME,"getLocales", "Accept-Language --> " + acceptLanguage);
         }

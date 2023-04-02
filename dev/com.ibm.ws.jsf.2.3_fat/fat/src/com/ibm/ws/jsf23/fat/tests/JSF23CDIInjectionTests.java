@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
@@ -16,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import com.ibm.ws.jsf23.fat.CDITestBase;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -44,29 +44,74 @@ import junit.framework.Assert;
 @RunWith(FATRunner.class)
 public class JSF23CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
+    private static final String CDI_INJECTION_TESTS_APP_NAME = "CDIInjectionTests.war";
+    private static final String ACTION_LISTENER_INJECTION_APP_NAME = "ActionListenerInjection.war";
 
     @Server("jsf23CDIInjectionServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
-        ShrinkHelper.defaultDropinApp(server, "CDIInjectionTests.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        ShrinkHelper.defaultDropinApp(server, "ActionListenerInjection.war",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories");
+        // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
+        // Include correct resources directory, since the faces-config.xml points to different
+        // CustomNavigationHandler and CustomActionListener classes.
+        if (isEE10) {
+            // Create the CDIInjectionTests.war application.
+            WebArchive appCDIInjection = ShrinkWrap.create(WebArchive.class, CDI_INJECTION_TESTS_APP_NAME);
+            appCDIInjection.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
+                                        "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.managed.faces40",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                                        "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+            ShrinkHelper.addDirectory(appCDIInjection, "test-applications/" + CDI_INJECTION_TESTS_APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(appCDIInjection, "test-applications/" + CDI_INJECTION_TESTS_APP_NAME + "/resourcesFaces40");
+            ShrinkHelper.exportDropinAppToServer(server, appCDIInjection);
+
+            // Create the ActionListenerInjection.war application.
+            WebArchive appActionListenerInjection = ShrinkWrap.create(WebArchive.class, ACTION_LISTENER_INJECTION_APP_NAME);
+            appActionListenerInjection.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed.faces40",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed.factories");;
+            ShrinkHelper.addDirectory(appActionListenerInjection, "test-applications/" + ACTION_LISTENER_INJECTION_APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(appActionListenerInjection, "test-applications/" + ACTION_LISTENER_INJECTION_APP_NAME + "/resourcesFaces40");
+            ShrinkHelper.exportDropinAppToServer(server, appActionListenerInjection);
+        } else {
+            // Create the CDIInjectionTests.war application.
+            WebArchive app = ShrinkWrap.create(WebArchive.class, CDI_INJECTION_TESTS_APP_NAME);
+            app.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
+                            "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.jsf23",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+            ShrinkHelper.addDirectory(app, "test-applications/" + CDI_INJECTION_TESTS_APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(app, "test-applications/" + CDI_INJECTION_TESTS_APP_NAME + "/resourcesJSF23");
+            ShrinkHelper.exportDropinAppToServer(server, app);
+
+            // Create the ActionListenerInjection.war application.
+            WebArchive appActionListenerInjection = ShrinkWrap.create(WebArchive.class, ACTION_LISTENER_INJECTION_APP_NAME);
+            appActionListenerInjection.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed.jsf23",
+                                                   "com.ibm.ws.jsf23.fat.cdi.common.managed.factories");;
+            ShrinkHelper.addDirectory(appActionListenerInjection, "test-applications/" + ACTION_LISTENER_INJECTION_APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(appActionListenerInjection, "test-applications/" + ACTION_LISTENER_INJECTION_APP_NAME + "/resourcesJSF23");
+            ShrinkHelper.exportDropinAppToServer(server, appActionListenerInjection);
+        }
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
@@ -91,7 +136,6 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // looking in sessionmap for session bean
     public void testActionListenerInjection_CDIInjectionTests() throws Exception {
         testActionListenerInjectionByApp("ActionListenerInjection", server);
     }
@@ -105,7 +149,6 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // looking in sessionmap for session bean
     public void testNavigationHandlerInjection_CDIInjectionTests() throws Exception {
         testNavigationHandlerInjectionByApp("CDIInjectionTests", server);
     }
@@ -175,7 +218,8 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testInjectionProvider() throws Exception {
-        String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
+        String msgToSearchFor1 = JakartaEE10Action
+                        .isActive() ? "Using InjectionProvider io.openliberty.faces40.internal.spi.impl.WASCDIAnnotationDelegateInjectionProvider" : "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
 
         // The Message that is output by MyFaces was changed in https://issues.apache.org/jira/browse/MYFACES-4334
         // for MyFaces 2.3.7 and newer versions. The original message was "MyFaces CDI support enabled".
@@ -221,7 +265,6 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      * Does some simple verifications of the 4 scopes and instances ( through hashcode) are what is expected for multiple requests.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testViewScopeInjections() throws Exception {
         String contextRoot = "CDIInjectionTests";
 

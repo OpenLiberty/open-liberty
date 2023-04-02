@@ -1,0 +1,17 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: visTest-1.2
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+  visTest.framework;version="[1.0, 1.1)",
+  visTest.runtimeExtRegular;version="[1.0, 1.1)",
+  visTest.runtimeExtSeeApp;version="[1.0, 1.1)"
+Subsystem-Type: osgi.subsystem.feature
+
+X-Comment: This is an autofeature because there's a hardcoded limitation on what features you can list in a client.xml
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.cdi-1.2)(osgi.identity=com.ibm.websphere.appserver.cdi-2.0)))"
+
+IBM-API-Package: 
+  com.ibm.ws.cdi.visibility.tests.vistest.framework,
+  com.ibm.ws.cdi.visibility.tests.vistest.qualifiers
+IBM-Feature-Version: 2
+IBM-Process-Types: client,server

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -19,14 +21,5 @@ import oidc.client.base.servlets.BaseOpenIdConfig;
 public class OpenIdConfig extends BaseOpenIdConfig {
 
     // override and/or create new get methods
-
-    //    @Override
-    //    public String getRedirectURI() {
-    //        if (config.containsKey(Constants.REDIRECT_URI)) {
-    //            return config.getProperty(Constants.REDIRECT_URI);
-    //        }
-    //        return "SimplestAnnotatedWithEL/Callback";
-    ////        return "${baseURL}/Callback";
-    //    }
 
 }

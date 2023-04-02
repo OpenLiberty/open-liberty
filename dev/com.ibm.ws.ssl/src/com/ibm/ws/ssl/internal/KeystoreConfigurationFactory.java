@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -28,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
@@ -60,12 +63,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * of a DS service: throwing the exception does not deactivate the component,
  * it just fails the update.
  */
-@Component(reference = { @Reference(name = "keystoreConfigurationFactoryCondition",
-                                    service = Condition.class, //
-                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
-           service = ManagedServiceFactory.class,
+@Component(service = ManagedServiceFactory.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { "service.vendor=IBM", "service.pid=com.ibm.ws.ssl.keystore" })
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class KeystoreConfigurationFactory implements ManagedServiceFactory, FileBasedActionable, KeyringBasedActionable {
     /** Trace service */
     private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -186,7 +187,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
+    }
 
     /**
      * The specified files have been modified and we need to clear the SSLContext caches and
@@ -200,9 +202,15 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             Tr.entry(tc, "performFileBasedAction", new Object[] { modifiedFiles });
 
         try {
-            com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap(modifiedFiles);
-            com.ibm.ws.ssl.provider.AbstractJSSEProvider.clearSSLContextCache(modifiedFiles);
-            com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedFiles);
+            // get file paths from FILE
+            for (File modifiedKeystoreFile : modifiedFiles) {
+                String keyStorePath = modifiedKeystoreFile.getCanonicalPath();
+
+                com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(keyStorePath);
+                com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(keyStorePath);
+                com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(keyStorePath);
+
+            }
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedFiles.toArray());
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

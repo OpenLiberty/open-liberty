@@ -1,17 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_JWKS_CONNECT_TIMEOUT;
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_JWKS_READ_TIMEOUT;
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_TOKEN_MIN_VALIDITY;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -214,9 +220,11 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("scopeExpression", scopeExpression, EMPTY_DEFAULT);
+            String[] defaultScope = new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE, OpenIdConstant.PROFILE_SCOPE }; /* Default value from spec. */
 
-            return new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE, OpenIdConstant.PROFILE_SCOPE }; /* Default value from spec. */
+            issueWarningMessage("scopeExpression", scopeExpression, Arrays.toString(defaultScope));
+
+            return defaultScope;
         }
     }
 
@@ -304,13 +312,13 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Integer evaluateJwksConnectTimeout(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeout(), 500,
-                                                oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("jwksConnectTimeout", oidcMechanismDefinition.jwksConnectTimeout(), DEFAULT_JWKS_CONNECT_TIMEOUT,
+                                          "jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
     }
 
     private Integer evaluateJwksReadTimeout(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeout(), 500,
-                                                oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("jwksReadTimeout", oidcMechanismDefinition.jwksReadTimeout(), DEFAULT_JWKS_READ_TIMEOUT,
+                                          "jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
     }
 
     private Boolean evaluateTokenAutoRefresh(boolean immediateOnly) {
@@ -319,8 +327,21 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Integer evaluateTokenMinValidity(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidity(), 10000,
-                                                oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("tokenMinValidity", oidcMechanismDefinition.tokenMinValidity(), DEFAULT_TOKEN_MIN_VALIDITY,
+                                          "tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
+    }
+
+    private Integer evaluateNonNegativeInteger(String attributeName, int attribute, int attributeDefault,
+                                               String attributeExpressionName, String attributeExpression, boolean immediateOnly) {
+        Integer value = ELUtils.evaluateIntegerAttribute(attributeExpressionName, attribute, attributeDefault, attributeExpression, immediateOnly);
+        if (value != null && value < 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                String attributeNameForWarning = attributeExpression.isEmpty() ? attributeName : attributeExpressionName;
+                Tr.warning(tc, "JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT", new Object[] { attributeNameForWarning, value, attributeDefault });
+            }
+            value = attributeDefault;
+        }
+        return value;
     }
 
     private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {
@@ -558,7 +579,13 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
              * Evaluate the EL expression to get the value.
              */
             Object obj = elHelper.evaluateElExpression(displayExpression);
-            if (obj instanceof String) {
+            if (obj instanceof DisplayType) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processPrompt (promptType): " + obj);
+                }
+                result = (DisplayType) obj;
+                immediate = elHelper.isImmediateExpression(displayExpression);
+            } else if (obj instanceof String) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processDisplay", "displayExpression evaluated to a String, compare to DisplayType enum options: " + obj);
                 }

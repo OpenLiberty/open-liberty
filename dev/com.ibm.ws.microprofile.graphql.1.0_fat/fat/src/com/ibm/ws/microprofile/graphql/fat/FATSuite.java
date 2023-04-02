@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,6 +23,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -47,17 +50,23 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                                              .andWith(new FeatureReplacementAction("mpConfig-1.4", "mpConfig-2.0")
                                                       .addFeature("mpMetrics-3.0").removeFeature("mpMetrics-2.3")
                                                       .addFeature("mpRestClient-2.0").removeFeature("mpRestClient-1.4")
-                                                      .withID("mp4.0"))
+                                                      .withID("mp4.0").fullFATOnly())
                                              .andWith(new JakartaEE9Action()
                                                       .removeFeatures(setOf("mpConfig-1.4", "mpConfig-2.0")).addFeature("mpConfig-3.0")
                                                       .removeFeatures(setOf("mpMetrics-3.0", "mpMetrics-2.3")).addFeature("mpMetrics-4.0")
                                                       .removeFeatures(setOf("mpRestClient-2.0", "mpRestClient-1.4")).addFeature("mpRestClient-3.0")
                                                       .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0")
-                                                      .withID(MicroProfileActions.STANDALONE9_ID));
+                                                      .withID(MicroProfileActions.STANDALONE9_ID).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                                             .andWith(new JakartaEE10Action()
+                                                      .removeFeatures(setOf("mpConfig-1.4", "mpConfig-2.0")).addFeature("mpConfig-3.0")
+                                                      .removeFeatures(setOf("mpMetrics-3.0", "mpMetrics-2.3", "mpMetrics-4.0")).addFeature("mpMetrics-5.0")
+                                                      .removeFeatures(setOf("mpRestClient-2.0", "mpRestClient-1.4")).addFeature("mpRestClient-3.0")
+                                                      .removeFeature("mpGraphQL-1.0").addFeature("mpGraphQL-2.0").alwaysAddFeature("servlet-6.0")
+                                                      .withID(MicroProfileActions.STANDALONE10_ID));
 
     private static Set<String> setOf(String... strings) {
         // basically does what Java 11's Set.of(...) does

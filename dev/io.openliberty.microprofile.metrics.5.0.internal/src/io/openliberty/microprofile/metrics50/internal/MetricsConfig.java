@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -55,6 +57,8 @@ public class MetricsConfig {
     // Cached WAB service configurations for Private MicroProfile Metrics
     private final WABConfigManager privateWabConfigMgr;
 
+    private ComponentContext componentCtx;
+
     public MetricsConfig() {
         // Initialize WAB configuration managers for public URLs
         publicWabConfigMgr = new WABConfigManager(PUBLIC_MP_METRICS_VAR_NAME, MP_METRICS_ENDPOINT_URL);
@@ -64,6 +68,9 @@ public class MetricsConfig {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
+
+        componentCtx = context;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activate MetricsConfig", properties);
         }
@@ -105,6 +112,11 @@ public class MetricsConfig {
                 publicWabConfigMgr.processEnableAuthentication(context, true);
             }
         }
+    }
+
+    public synchronized void disableMetricsEndpoint() {
+        publicWabConfigMgr.processEnableAuthentication(componentCtx, false);
+        privateWabConfigMgr.processEnableAuthentication(componentCtx, false);
     }
 
     private boolean valueChanged(Object oldValue, Object newValue) {

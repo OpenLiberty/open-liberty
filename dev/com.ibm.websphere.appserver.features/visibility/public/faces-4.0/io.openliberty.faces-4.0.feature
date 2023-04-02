@@ -35,23 +35,22 @@ IBM-API-Package: jakarta.faces; type="spec", \
  org.apache.myfaces.renderkit.html.util; type="third-party"
 IBM-ShortName: faces-4.0
 WLP-AlsoKnownAs: jsf-4.0
-Subsystem-Name: Jakarta Server Faces 4.0
+Subsystem-Name: Jakarta Faces 4.0
 -features=io.openliberty.jakarta.websocket-2.1, \
-  io.openliberty.servlet.api-6.0, \
+  com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
   io.openliberty.facesProvider-4.0.0.MyFaces, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.validation-3.0, \
-  io.openliberty.pages-3.1, \
-  io.openliberty.jakarta.cdi-4.0, \
-  io.openliberty.jakarta.faces-4.0
+  io.openliberty.jakarta.faces-4.0, \
+  io.openliberty.expressionLanguage-5.0, \
+  io.openliberty.cdi-4.0
 -bundles=io.openliberty.org.apache.myfaces.4.0, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.4.0.internal, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
  io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

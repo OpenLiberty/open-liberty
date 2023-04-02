@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -13,17 +15,16 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-import jakarta.data.Delete;
-import jakarta.data.Select;
-import jakarta.data.Update;
-import jakarta.data.Where;
-import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Compare;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Filter;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Select;
+import jakarta.data.repository.Streamable;
+import jakarta.data.repository.Update;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 /**
@@ -35,26 +36,25 @@ import jakarta.enterprise.concurrent.Asynchronous;
 @Repository
 public interface Personnel {
     @Asynchronous
-    @Update("o.lastName = ?2")
-    @Where("o.lastName = ?1 AND o.ssn IN ?3")
-    CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
+    @Filter(by = "lastName")
+    @Filter(by = "ssn_id", op = Compare.In)
+    @Update(attr = "lastName")
+    CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
 
     @Asynchronous
-    CompletableFuture<Long> findByFirstNameStartsWith(String beginningOfFirstName,
-                                                      Collector<Person, ?, Long> collector);
+    CompletableFuture<Long> countByFirstNameStartsWith(String beginningOfFirstName);
+
+    @Asynchronous
+    void deleteByFirstName(String firstName);
+
+    @Asynchronous
+    CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous
-    @Select("firstName")
-    void findByLastNameOrderByFirstNameDesc(String lastName, Consumer<String> callback);
-
-    @Asynchronous
-    CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback, Pageable pagination);
-
-    @Asynchronous
-    CompletableFuture<Person> findBySsn(long ssn);
+    CompletableFuture<Person> findBySSN_Id(long ssn);
 
     @Asynchronous
     @Query("SELECT o.firstName FROM Person o WHERE o.lastName=?1 ORDER BY o.firstName")
@@ -64,12 +64,9 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
-    @Asynchronous
+    @Filter(by = "firstName", op = Compare.StartsWith)
     @Select("firstName")
-    @Where("o.firstName LIKE CONCAT(?1, '%')")
-    CompletableFuture<Long> namesThatStartWith(String beginningOfFirstName,
-                                               Pageable pagination,
-                                               Collector<String, ?, Long> collector);
+    Streamable<String> namesThatStartWith(String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
     // of the Paginated annotation, although this would rule out easily accessing the
@@ -82,12 +79,12 @@ public interface Personnel {
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
 
-    @Update("o.lastName = ?1")
-    @Where("o.ssn = ?2")
-    long setSurname(String newSurname, long ssn);
+    @Filter(by = "ssn_id")
+    @Update(attr = "lastName")
+    long setSurname(long ssn, String newSurname);
 
     @Asynchronous
-    @Update("o.lastName = ?1")
-    @Where("o.ssn = ?2")
-    CompletableFuture<Boolean> setSurnameAsync(String newSurname, long ssn);
+    @Filter(by = "ssn_id")
+    @Update(attr = "lastName")
+    CompletableFuture<Boolean> setSurnameAsync(long ssn, String newSurname);
 }

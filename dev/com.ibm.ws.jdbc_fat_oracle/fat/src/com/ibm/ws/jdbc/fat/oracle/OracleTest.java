@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -40,12 +42,12 @@ public class OracleTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         // Set server environment variables
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
-        server.addEnvVar("DBNAME", oracle.getSid());
-        server.addEnvVar("PORT", Integer.toString(oracle.getFirstMappedPort()));
-        server.addEnvVar("HOST", oracle.getHost());
+        server.addEnvVar("ORACLE_URL", oracle.getJdbcUrl());
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASSWORD", oracle.getPassword());
+        server.addEnvVar("ORACLE_DBNAME", oracle.getSid());
+        server.addEnvVar("ORACLE_PORT", Integer.toString(oracle.getFirstMappedPort()));
+        server.addEnvVar("ORACLE_HOST", oracle.getHost());
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "web");

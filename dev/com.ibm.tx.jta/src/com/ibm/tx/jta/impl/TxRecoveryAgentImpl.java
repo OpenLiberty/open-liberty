@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -525,7 +527,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
                     // If Recovery Failed, then by default we shall bring down the Liberty Server
                     if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
-                        RecoveryFailedException rex = new RecoveryFailedException();
+                        RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
@@ -538,12 +540,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             }
                             cp.shutDownFramework();
                         }
+                        // Drive recovery failure processing
+                        _recoveryManager.recoveryFailed(rex);
 
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "initiateRecovery", rex);
 
                         // Output a message as to why we are terminating the server as in
-                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex);
+                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
                         throw rex;
                     }
 

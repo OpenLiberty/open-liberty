@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -33,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
@@ -58,13 +61,11 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 /**
  * Component for the SSL configuration bundle.
  */
-@Component(reference = { @Reference(name = "SSLComponentCondition",
-                                    service = Condition.class, //
-                                    target = "(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")") },
-           immediate = true,
+@Component(immediate = true,
            configurationPid = "com.ibm.ws.ssl.default",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = "service.vendor=IBM")
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class SSLComponent extends GenericSSLConfigService implements SSLSupportOptional {
 
     static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());

@@ -1,13 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.cdicommon.managed;
 
 import javax.annotation.PostConstruct;
@@ -69,14 +68,12 @@ public class CustomStateManager extends StateManagerWrapper {
 
             if (methBean != null) {
                 buf.append(methBean.getData());
-            }
-            else {
+            } else {
                 buf.append("Method Bean is null");
             }
             if (fieldBean != null) {
                 buf.append(fieldBean.getData());
-            }
-            else {
+            } else {
                 buf.append("Field bean is null.");
             }
 
@@ -91,7 +88,7 @@ public class CustomStateManager extends StateManagerWrapper {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.faces.application.StateManagerWrapper#getWrapped()
      */
     @Override

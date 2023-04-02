@@ -1,1 +1,1 @@
-com.ibm.ws.jsf.config.WASApplicationFactoryImpl
+io.openliberty.faces40.internal.config.WASApplicationFactoryImpl

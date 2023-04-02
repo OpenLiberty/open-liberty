@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -89,9 +91,7 @@ public class ServerStopTest {
     public void testServerStopWithTimeout_BadArg() throws Exception {
         final String METHOD_NAME = "testServerStopWithTimeout_BadArg";
         Log.entering(c, METHOD_NAME);
-        if (OS.contains("win")) {
-            return;
-        }
+
         startAndStopServer("--timeout=garbage", "CWWKE0024E", STDOUT);
 
         Log.exiting(c, METHOD_NAME);
@@ -105,6 +105,14 @@ public class ServerStopTest {
     public void testServerStartWithTimeoutArg() throws Exception {
         final String METHOD_NAME = "testServerStartWithTimeoutArg";
         Log.entering(c, METHOD_NAME);
+
+        String expectedMessage;
+
+        if (OS.contains("win")) {
+            expectedMessage = "start failed.";
+        } else {
+            expectedMessage = "CWWKE0028E";
+        }
 
         //------------------//
         //  SERVER START    //
@@ -121,8 +129,8 @@ public class ServerStopTest {
         Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
         Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
 
-        assertTrue("sever start expected to fail, but didn't. Message [ CWWKE0028E ] not found in [" + STDOUT + "]",
-                   standardOutput.contains("CWWKE0028E"));
+        assertTrue("sever start expected to fail, but didn't. Message [ " + expectedMessage + " ] not found in [" + STDOUT + "]",
+                   standardOutput.contains(expectedMessage));
         Log.info(c, METHOD_NAME, "PASSED");
 
         Log.exiting(c, METHOD_NAME);
@@ -135,7 +143,7 @@ public class ServerStopTest {
      *
      * @param option
      * @param expectedOutput
-     * @param where - where to search output. "stdout" or "messages.log"
+     * @param where          - where to search output. "stdout" or "messages.log"
      * @throws Exception
      */
     public void startAndStopServer(String option, String expectedOutput, String where) throws Exception {

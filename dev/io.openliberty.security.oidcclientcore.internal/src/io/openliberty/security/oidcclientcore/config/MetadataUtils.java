@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,7 +23,6 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -76,6 +77,19 @@ public class MetadataUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Provide the Jakarta JsonObject from the Discovery endpoint.
+     *
+     * @param oidcClientConfig
+     * @return
+     * @throws OidcClientConfigurationException
+     * @throws OidcDiscoveryException
+     */
+    public static JSONObject getProviderDiscoveryMetaData(OidcClientConfig oidcClientConfig) throws OidcClientConfigurationException, OidcDiscoveryException {
+        return oidcMetadataService.getProviderDiscoveryMetadata(oidcClientConfig);
+
     }
 
     /**
@@ -161,18 +175,10 @@ public class MetadataUtils {
                                                                   OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
     }
 
-    @FFDCIgnore(Exception.class)
     public static String[] getUserInfoSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
-        try {
-            return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
-                                                                      null,
-                                                                      OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught an exception getting " + OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED + ": " + e);
-            }
-            return getIdTokenSigningAlgorithmsSupported(oidcClientConfig);
-        }
+        return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                  null,
+                                                                  OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
     }
 
 }

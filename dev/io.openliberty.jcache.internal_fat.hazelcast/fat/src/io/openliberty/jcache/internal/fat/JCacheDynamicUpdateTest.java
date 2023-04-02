@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -76,7 +78,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * Stop the servers in the reverse order they were started.
          */
         stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E",
-                   "CWLJC0006E", "CWLJC0012W", "CWLJC0013W", "CWWKE1102W", "CWWKE1107W");
+                   "CWLJC0006E", "CWLJC0012W", "CWLJC0013W", "CWWKE1102W", "CWWKE1106W", "CWWKE1107W");
     }
 
     /**

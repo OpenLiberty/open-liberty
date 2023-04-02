@@ -1,19 +1,25 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.repository.Pageable;
@@ -23,6 +29,8 @@ import jakarta.persistence.TypedQuery;
 /**
  */
 public class PaginatedIterator<T> implements Iterator<T> {
+    private final TraceComponent tc = Tr.register(PaginatedIterator.class);
+
     private final Object[] args;
     private int index;
     private Boolean hasNext;
@@ -39,27 +47,61 @@ public class PaginatedIterator<T> implements Iterator<T> {
     }
 
     @FFDCIgnore(Exception.class)
+    @Trivial
     private void getPage() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getPage " + pagination.page());
+
+        Pageable.Cursor keysetCursor = pagination.cursor();
+        int maxPageSize = pagination.size();
+        int startAt = keysetCursor == null ? RepositoryImpl.computeOffset(pagination) : 0;
+        String jpql = keysetCursor == null ? queryInfo.jpql : //
+                        pagination.mode() == Pageable.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
+                                        queryInfo.jpqlBeforeKeyset;
+
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.type);
             queryInfo.setParameters(query, args);
 
-            // TODO Keyset pagination
-            int maxPageSize = pagination.size();
-            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
+            if (keysetCursor != null)
+                queryInfo.setKeysetParameters(query, keysetCursor);
+
+            if (startAt > 0)
+                query.setFirstResult(startAt);
+
             query.setMaxResults(maxPageSize);
-            pagination = pagination.next();
 
             page = query.getResultList();
             index = -1;
             hasNext = !page.isEmpty();
+            if (hasNext && pagination.mode() == Pageable.Mode.CURSOR_PREVIOUS)
+                Collections.reverse(page);
+            if (page.size() == maxPageSize) {
+                if (keysetCursor == null) {
+                    pagination = pagination.next();
+                } else if (pagination.mode() == Pageable.Mode.CURSOR_NEXT) {
+                    Pageable next = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
+                    pagination = next.afterKeyset(queryInfo.getKeysetValues(page.get(page.size() - 1)));
+                } else { // CURSOR_PREVIOUS
+                    // Decrement page number by 1 unless it would go below 1.
+                    Pageable prev = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
+                    pagination = prev.beforeKeyset(queryInfo.getKeysetValues(page.get(0)));
+                }
+            } else {
+                pagination = null;
+            }
         } catch (Exception x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.entry(this, tc, "getPage", x);
             throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getPage size " + page.size());
     }
 
     @Override

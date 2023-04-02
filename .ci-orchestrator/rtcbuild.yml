@@ -1,0 +1,110 @@
+type: pipeline_definition
+product: Liberty
+name: Open Liberty Personal Build RTC
+description: A build run against Open Liberty Pull Requests
+triggers:
+- type: github
+  triggerName: "ol-pb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "#pb"
+- type: github
+  triggerName: "ol-exclamation-pb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!pb"
+#- type: github
+#  triggerName: "ol-pb-build"
+#  triggerRank: 20
+#  triggerMonitored: false
+#  keyword: "#build"
+- type: github
+  triggerName: "ol-pb-exclamation-build"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!build"
+- type: github
+  triggerName: "ol-fullpb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "#fullpb"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
+  - name: fat.buckets.to.run
+    defaultValue: all
+    steps:
+    - stepName: compile
+- type: github
+  triggerName: "ol-exclamation-fullpb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!fullpb"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
+  - name: fat.buckets.to.run
+    defaultValue: all
+    steps:
+    - stepName: compile
+
+steps:
+- stepName: pr-changes
+  workType: PRChangesDetection
+  timeoutInMinutes: 30
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
+- stepName: compile
+  workType: RTC
+  projectName: "Liberty Personal Build - EBC"
+  timeoutInMinutes: 1440
+  dependsOn:
+  - stepName: pr-changes
+    awaitOutputProperties: true
+  properties:
+    run.packaging.verification: ${pr-changes:run.packaging.verification}
+    fat.buckets.to.run: ${pr-changes:fat.buckets.to.run}
+    disable.run.runBvtTests: ${pr-changes:disable.run.runBvtTests}
+    disable.run.runUnitTests: ${pr-changes:disable.run.runUnitTests}
+    run.chkpii: ${pr-changes:run.chkpii}
+    run.findbugs: ${pr-changes:run.findbugs}
+    spawn.zos: ${pr-changes:spawn.zos}
+    create.im.repo: ${pr-changes:create.im.repo}
+    personal.im.build: ${pr-changes:personal.im.build}
+    disable.run.createDoc: ${pr-changes:disable.run.createDoc}
+    skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
+    skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
+    fat.run.count: ${pr-changes:fat.run.count}
+    spawn.fullfat.buckets: ${pr-changes:spawn.fullfat.buckets}
+  includeProperties:
+  - file: compilePersonalRTC.properties

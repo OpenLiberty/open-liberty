@@ -1,12 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -17,37 +16,31 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
-Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 API
+Bundle-Description:  Jakarta Faces, MyFaces 4.0 API
 Implementation-Version: 4.0.0
 
-Export-Package: jakarta.faces.*; version=${Implementation-Version}, \
+Export-Package: \
+  jakarta.faces.*; version=${Implementation-Version}, \
   org.apache.myfaces.core.api.shared.*; version=${Implementation-Version}
 
-
 DynamicImport-Package: \
-  com.ibm.ws.jsf.spi, \
+  io.openliberty.faces40.internal.spi, \
   com.ibm.ws.managedobject, \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
-# Use this format once we have an offical release and not an RC2
-# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
-# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
-# Determine if we need the jakarta/faces entry here.
-# Determine if org.apache.myfaces.core:myfaces-api should be used instead.
-Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC2;EXACT}!/jakarta/faces, \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC2;EXACT}!/META-INF/**
+-includeresource: \
+	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  META-INF=@src/META-INF
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
-# Use this once we have a non RC2 release
-# org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9, \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC2, \
+    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    io.openliberty.jakarta.servlet.6.0;version=latest
+    io.openliberty.jakarta.servlet.6.0;version=latest, \
+    io.openliberty.jakarta.cdi.4.0;version=latest
 

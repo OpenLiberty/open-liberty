@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+		 		 
+	<openidConnectProvider
+		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuth1" />
+
+	<oauthProvider
+		id="OAuth1"
+		tokenFormat="${opTokenFormat}"
+	>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptLogin/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptConsent/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptSelectAccount/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptLoginConsent/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptEmpty/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELNoneConsentRequired/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELNoneLoginRequired/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELLogin/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELConsent/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELSelectAccount/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELLoginConsent/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELEmpty/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELDuplicates/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptLoginPromptELConsent/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>
+	
+	<openidConnectProvider
+		id="OP2"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuth2" />
+
+	<oauthProvider
+		id="OAuth2"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+	
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptNone/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PromptELNone/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>				
+			
+</server>

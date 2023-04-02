@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -231,6 +233,11 @@ public class KeyMatcher {
             for (int i = 0; i < stop; i++) {
                 temp = vlist[i];
                 if (temp.length == length) {
+                    // Short circuit if the String literal was used and matches the one that is in
+                    // the GenericKey
+                    if (start == 0 && data == this.list[i].getName()) {
+                        return this.list[i];
+                    }
                     // potential match, scan backwards because most things vary
                     // later on... Content-Length vs Content-Language for example
                     for (x = end, y = temp.length - 1; x >= start; x--, y--) {

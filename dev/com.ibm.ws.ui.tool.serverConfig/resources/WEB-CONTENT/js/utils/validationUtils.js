@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -38,43 +40,37 @@
     var retrieveSchema = function() {
         validationMetaDataObject.isEnabled = false;
         validationMetaDataObject.metaData = {};
-        // Disable validationAPI if not in BetaMode.
-        if(!window.globalIsBetaMode) {
-            var deferred = new $.Deferred();
-            deferred.resolve();
-            return deferred; 
-        } else {
-            return getValidationApiSchema()
-                .then(function(result){
-                    validationMetaDataObject.isEnabled = false;
-                    if(result && result.success) {
-                        var metaDataObject = {};
-                        var data = result.data;
-                        var isValidationEnabled = false;
-                        if(data && data.paths) {
-                            $.each(data.paths, function( key, nodeMetaData ) {
-                                var nodeName = extractNodeNameFromValidationUri(key);
-                                if(nodeName) {
-                                    if(!metaDataObject[nodeName]) {
-                                        metaDataObject[nodeName] = {};
-                                    }
-                                    metaDataObject = appendParametersToNodeMetaData(nodeName, nodeMetaData, metaDataObject);
-                                    if(metaDataObject[nodeName].isEnabled) {
-                                        isValidationEnabled = true;
-                                    }
+
+        return getValidationApiSchema()
+            .then(function(result){
+                validationMetaDataObject.isEnabled = false;
+                if(result && result.success) {
+                    var metaDataObject = {};
+                    var data = result.data;
+                    var isValidationEnabled = false;
+                    if(data && data.paths) {
+                        $.each(data.paths, function( key, nodeMetaData ) {
+                            var nodeName = extractNodeNameFromValidationUri(key);
+                            if(nodeName) {
+                                if(!metaDataObject[nodeName]) {
+                                    metaDataObject[nodeName] = {};
                                 }
-                            });
-                        }
-    
-                        if(isValidationEnabled) {
-                            validationMetaDataObject.isEnabled = true;
-                            validationMetaDataObject.metaData = metaDataObject;
-                        }
+                                metaDataObject = appendParametersToNodeMetaData(nodeName, nodeMetaData, metaDataObject);
+                                if(metaDataObject[nodeName].isEnabled) {
+                                    isValidationEnabled = true;
+                                }
+                            }
+                        });
                     }
-    
-                    return validationMetaDataObject;
-                });
-        }
+
+                    if(isValidationEnabled) {
+                        validationMetaDataObject.isEnabled = true;
+                        validationMetaDataObject.metaData = metaDataObject;
+                    }
+                }
+
+                return validationMetaDataObject;
+            });
     };
 
     

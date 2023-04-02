@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -26,11 +28,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -41,6 +45,7 @@ import componenttest.topology.utils.HttpUtils;
  * - security constraints are configured in web.xml
  * - security constraints are configured in ibm-ws-bnd.xml
  */
+@RunWith(FATRunner.class)
 public class POJOServiceSecurityTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("POJOServiceSecurityServer");
 

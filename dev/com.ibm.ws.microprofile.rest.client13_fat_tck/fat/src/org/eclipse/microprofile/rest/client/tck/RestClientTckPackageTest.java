@@ -1,14 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.microprofile.rest.client.tck;
+
+import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,6 +33,8 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class RestClientTckPackageTest {
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     @Server("FATServer")
     public static LibertyServer server;
 
@@ -47,11 +53,14 @@ public class RestClientTckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClient13Tck() throws Exception {
-        String bucketName = "com.ibm.ws.microprofile.rest.client13_fat_tck";
-        String testName = this.getClass() + ":testRestClient13Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Rest Client";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+    	// Skip running on the windows platform when not running locally.
+    	if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) { 
+    		String bucketName = "com.ibm.ws.microprofile.rest.client13_fat_tck";
+    		String testName = this.getClass() + ":testRestClient13Tck";
+    		Type type = Type.MICROPROFILE;
+    		String specName = "Rest Client";
+    		TCKRunner.runTCK(server, bucketName, testName, type, specName);
+    	}
     }
 
 }

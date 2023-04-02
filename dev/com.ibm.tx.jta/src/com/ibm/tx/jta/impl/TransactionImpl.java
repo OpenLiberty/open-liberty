@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -57,6 +59,9 @@ import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 import com.ibm.ws.uow.UOWScopeLTCAware;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * TransactionImpl implements javax.transaction.Transaction interface.
@@ -256,12 +261,28 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
+    private static class NewTransactionCheckpointHook implements CheckpointHook {
+        private static final NewTransactionCheckpointHook _instance = new NewTransactionCheckpointHook();
+
+        // Fail checkpoint if a new transaction was requested
+        @Override
+        public void prepare() {
+            throw new IllegalStateException(Tr.formatMessage(tc, "WTRN0154_ERROR_CHECKPOINT_NEW_TX"));
+        }
+    };
+
+    private static NewTransactionCheckpointHook getNewTxHook() {
+        return NewTransactionCheckpointHook._instance;
+    }
+
     /**
      * Recovery Constructor
      */
     public TransactionImpl(FailureScopeController fsc) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", fsc);
+
+        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
 
         _failureScopeController = fsc;
 
@@ -272,7 +293,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     protected TransactionImpl() {
-
+        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
     }
 
     /**
@@ -281,6 +302,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public TransactionImpl(int timeout) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", timeout);
+
+        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
 
         _failureScopeController = Configuration.getFailureScopeController();
 
@@ -304,6 +327,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { timeout, xid, jcard });
 
+        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+
         _failureScopeController = Configuration.getFailureScopeController();
 
         _subordinate = true; /* @LI3187M */
@@ -326,6 +351,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public TransactionImpl(int txType, int timeout) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { txType, timeout });
+
+        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
 
         _txType = txType;
 

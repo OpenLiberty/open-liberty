@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -18,6 +20,7 @@ import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 /**
@@ -125,6 +128,20 @@ public class MinimumBaseOpenIdConfig {
             return returnValue;
         }
 
+    }
+
+    public DisplayType getDisplayTypeValue(String key) {
+        String value = config.getProperty(key);
+        try {
+            if (value == null || value.isEmpty()) {
+                throw new Exception("Don't know what to do with a null or empty DisplayType value");
+            }
+            return DisplayType.valueOf(value);
+        } catch (Exception e) {
+            System.out.println("getDisplayTypeValue couldn't handle the value specified in the config properties - setting a default to page.");
+            System.out.println(e.getMessage());
+            return DisplayType.PAGE;
+        }
     }
 
     public int getIntValue(String key, int defaultValue) {

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -28,6 +30,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -86,6 +90,8 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         serverA.startServer();
 
+        TimeUnit.SECONDS.sleep(10);
+
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting
         // serverB, also ensures the JCache provider cluster in serverA is ready to accept a node from
@@ -95,6 +101,8 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
+
+        TimeUnit.SECONDS.sleep(10);
 
         // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests.
@@ -106,8 +114,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
+            Log.info(c, "tearDown", "Start server A shutdown");
             serverA.stopServer();
+        } catch (Exception e) {
+            Log.info(c, "tearDown", "Ignoring exception due to slow test machine during server shutdown");
         } finally {
+            Log.info(c, "tearDown", "Start server B shutdown");
             serverB.stopServer();
         }
     }

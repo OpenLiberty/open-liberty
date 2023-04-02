@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="jakarta.faces.core"
+	xmlns:h="jakarta.faces.html" 
+	xmlns:c="jakarta.tags.core">
+<h:body>
+	<c:if test="#{param.testNoMultipleNoAjax}">
+		<h:form id="form" enctype="multipart/form-data">
+			<h:inputFile id="input"
+				value="#{multipleFilesAcceptedBean.singleSelection}" />
+			<h:commandButton id="submit" value="submit"
+				action="#{multipleFilesAcceptedBean.submitSingleSelection}" />
+		</h:form>
+	</c:if>
+
+	<c:if test="#{param.testWithMultipleNoAjax}">
+		<h:form id="form" enctype="multipart/form-data">
+			<h:inputFile id="input"
+				value="#{multipleFilesAcceptedBean.multipleSelection}" multiple="true" />
+			<h:commandButton id="submit" value="submit"
+				action="#{multipleFilesAcceptedBean.submitMultipleSelection}" />
+		</h:form>
+
+	</c:if>
+
+	<c:if test="#{param.testNoMultipleWithAjax}">
+		<h:form id="form" enctype="multipart/form-data">
+			<h:inputFile id="input"
+				value="#{multipleFilesAcceptedBean.singleSelection}" />
+			<h:commandButton id="submit" value="submit"
+				action="#{multipleFilesAcceptedBean.submitSingleSelection}">
+				<f:ajax execute="@form" render="@form :messages" />
+			</h:commandButton>
+		</h:form>
+	</c:if>
+
+	<c:if test="#{param.testWithMultipleWithAjax}">
+		<h:form id="form" enctype="multipart/form-data">
+			<h:inputFile id="input"
+				value="#{multipleFilesAcceptedBean.multipleSelection}" multiple="true" />
+			<h:commandButton id="submit" value="submit"
+				action="#{multipleFilesAcceptedBean.submitMultipleSelection}">
+				<f:ajax execute="@form" render="@form :messages" />
+			</h:commandButton>
+		</h:form>
+	</c:if>
+	<h:messages id="messages" />
+</h:body>
+</html>

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2021 IBM Corporation and others.
+ * Copyright (c) 2001, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -2464,13 +2466,19 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "destroy");
 
+        if(isAborted()){
+            if(isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "destroy", "ManagedConnection is aborted -- skipping destroy");
+            return;
+        }
+        
         // Save the first exception to occur and raise it after all other destroy processing is complete.
         // Don't map exceptions and fire ConnectionError event from destroy because the
         // ManagedConnection is already being destroyed and there is no further action to take.
 
         ResourceException dsae = null;
 
-        if (inRequest || isAborted())
+        if (inRequest)
             try {
                 inRequest = false;
                 mcf.jdbcRuntime.endRequest(sqlConn);
@@ -2481,12 +2489,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
                 Tr.debug(tc, "Error during end request in destroy.", x);
             }
-
-        if(isAborted()){
-            if(isTraceOn && tc.isEntryEnabled())
-                Tr.exit(this, tc, "destroy", "ManagedConnection is aborted -- skipping destroy");
-            return;
-        }
 
         try {
             //  - We can't use the normal cleanup here because it dissociates
@@ -2721,7 +2723,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
                 Tr.debug(tc, "Error during end request in cleanup.", x);
             }
-
+        
         // According to the JCA 1.5 spec, all remaining handles must be invalidated on
         // cleanup.  This is achieved by closing the handles.  Dissociating the handles would
         // not be adequate because dissociated handles may be used again.  
@@ -3124,15 +3126,16 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         switch (stateMgr.transtate) {
 
             case WSStateManager.GLOBAL_TRANSACTION_ACTIVE: {
+                
+                if (aborted.get()) {
+                    break;
+                }
+                
                 try {
                     ((WSRdbXaResourceImpl) xares).end();
                 } catch (javax.transaction.xa.XAException xae) {
                     // No FFDC code needed; this is a normal case.
                     // Continue with the rollback if an exception is thrown on end. 
-                }
-                
-                if (aborted.get()) {
-                    break;
                 }
 
                 try {

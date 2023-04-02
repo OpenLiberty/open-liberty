@@ -6,5 +6,5 @@ visibility = private
   com.ibm.websphere.appserver.servlet-6.0
 -bundles=\
   io.openliberty.security.spnego.internal
-kind=beta
+kind=ga
 edition=core

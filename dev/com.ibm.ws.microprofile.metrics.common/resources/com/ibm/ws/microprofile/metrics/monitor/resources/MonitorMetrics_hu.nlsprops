@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -29,3 +31,7 @@ FEATURE_UNREGISTERED.useraction=Semmit sem kell tennie.
 METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Az MicroProfile Metrics kiv\u00e9tel lek\u00e9pez\u0151 a JAX-RS alkalmaz\u00e1sban egy kezeletlen hib\u00e1t tal\u00e1lt, \u00e9s \u00e9ppen kezeli.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=A JAX-RS alap\u00fa alkalmaz\u00e1sban az alkalmaz\u00e1son bel\u00fcl nem kezelt kiv\u00e9tel t\u00f6rt\u00e9nt. Az MicroProfile k\u00f3d kezeli a kiv\u00e9telt a veremnyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val, \u00e9s az 500-as Bels\u0151 kiszolg\u00e1l\u00f3hiba v\u00e1laszt adja vissza.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1s m\u00f3don val\u00f3 kezel\u00e9s\u00e9hez vegyen fel egy ExceptionMapper csatol\u00f3t, amely kezeli a kiv\u00e9telt, \u00e9s egy m\u00e1sik v\u00e1laszba k\u00e9pezi le.
+
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION=CWPMI2006W: A MicroProfile Metrics kiv\u00e9tel lek\u00e9pez\u0151 \u00e9szlelte \u00e9s kezeletlen kiv\u00e9telt kezel a RESTful webszolg\u00e1ltat\u00e1s-alkalmaz\u00e1sb\u00f3l.
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.explanation=A RESTful webszolg\u00e1ltat\u00e1s-alap\u00fa alkalmaz\u00e1s olyan kiv\u00e9telt tapasztalt, amely nincs kezelve az alkalmaz\u00e1son bel\u00fcl. Az MicroProfile k\u00f3d kezeli a kiv\u00e9telt a veremnyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val, \u00e9s az 500-as Bels\u0151 kiszolg\u00e1l\u00f3hiba v\u00e1laszt adja vissza.
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1s m\u00f3don val\u00f3 kezel\u00e9s\u00e9hez vegyen fel egy ExceptionMapper csatol\u00f3t, amely kezeli a kiv\u00e9telt, \u00e9s egy m\u00e1sik v\u00e1laszba k\u00e9pezi le.

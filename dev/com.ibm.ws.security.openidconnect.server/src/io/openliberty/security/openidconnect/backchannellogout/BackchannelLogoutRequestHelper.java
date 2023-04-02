@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
@@ -20,8 +19,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -45,11 +42,9 @@ public class BackchannelLogoutRequestHelper {
 
     private final PrivilegedAction<ExecutorService> getExecutorServiceAction = new GetExecutorServiceAction();
 
-    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
 
-    public BackchannelLogoutRequestHelper(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
-        this.request = request;
+    public BackchannelLogoutRequestHelper(OidcServerConfig oidcServerConfig) {
         this.oidcServerConfig = oidcServerConfig;
     }
 
@@ -64,7 +59,7 @@ public class BackchannelLogoutRequestHelper {
         }
         Map<OidcBaseClient, Set<String>> logoutTokens = null;
         try {
-            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(request, oidcServerConfig);
+            LogoutTokenBuilder tokenBuilder = new LogoutTokenBuilder(oidcServerConfig);
             if (idTokenString == null || idTokenString.isEmpty()) {
                 logoutTokens = tokenBuilder.buildLogoutTokensFromUserName(user);
             } else {

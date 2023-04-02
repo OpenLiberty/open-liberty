@@ -7,7 +7,7 @@ USER_NAME=kyleaure
 VERSION=1.0.full.krb5
 
 #Name of the final image
-IMAGE_NAME=oracle-18.4.0-expanded
+IMAGE_NAME=oracle-21.3.0-faststart
 
 #Docker image signiture in form username/image:version
 SIGNATURE=$USER_NAME/$IMAGE_NAME:$VERSION
@@ -21,7 +21,7 @@ docker login || (echo "Unable to login to DockerHub" && exit 1)
 docker build -t $SIGNATURE .
 
 #Push image to DockerHub
-#docker push "$SIGNATURE"
+docker push "$SIGNATURE"
 
 #Add a comment to the Dockerfile and script
 sed -i '' -e '/.*Currently tagged in DockerHub as.*/d' *Dockerfile

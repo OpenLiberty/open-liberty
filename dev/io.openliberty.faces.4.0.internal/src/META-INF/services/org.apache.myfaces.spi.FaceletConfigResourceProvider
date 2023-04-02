@@ -1,1 +1,1 @@
-com.ibm.ws.jsf.config.resource.LibertyFaceletConfigResourceProvider
+io.openliberty.faces40.internal.config.resource.LibertyFaceletConfigResourceProvider

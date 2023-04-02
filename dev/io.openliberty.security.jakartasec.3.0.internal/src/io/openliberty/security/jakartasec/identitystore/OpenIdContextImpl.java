@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -51,7 +53,7 @@ public class OpenIdContextImpl implements OpenIdContext {
     private OpenIdClaims userinfoClaims;
     private transient JsonObject userinfoClaimsAsJson = null;
     private transient JsonObject providerMetadata;
-    private String state; // TODO: Determine if storage values can be obtained without relying on state.
+    private String state;
     private boolean useSession;
     private String clientId;
 
@@ -308,7 +310,13 @@ public class OpenIdContextImpl implements OpenIdContext {
          * Read the providerMetadata JSON string back and use it to construct a Json
          * instance.
          */
-        providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+
+        boolean providerMetadataExists = input.readBoolean();
+        if (providerMetadataExists) {
+            providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+        } else {
+            providerMetadata = null;
+        }
 
     }
 
@@ -322,7 +330,15 @@ public class OpenIdContextImpl implements OpenIdContext {
          * Since the JsonObject class is not serializable, we are going to copy the
          * JSON string instead.
          */
-        output.writeObject(providerMetadata.toString());
+        if (providerMetadata == null) {
+            /*
+             * No providerMetadata to write
+             */
+            output.writeBoolean(false);
+        } else {
+            output.writeBoolean(true);
+            output.writeObject(providerMetadata.toString());
+        }
     }
 
 }

@@ -1,21 +1,22 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
-import java.util.Calendar;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -35,46 +36,57 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests to execute on the jsfTestServer2 that use HtmlUnit.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSFHtmlUnit {
+    private static final String JSF22_TEST_RESOURCES_JAR_NAME = "JSF22TestResources.jar";
+    private static final String JSF22_TEST_RESOURCES_APP_NAME = "JSF22TestResources.war";
+    private static final String JSF22_BACKWARD_COMPATIBILITY_APP_NAME = "JSF22BackwardCompatibilityTests.war";
+
     @Rule
     public TestName name = new TestName();
 
     String contextRoot = "JSF22TestResources";
 
-    protected static final Class<?> c = JSF22ResourceLibraryContractHtmlUnit.class;
+    protected static final Class<?> c = JSFHtmlUnit.class;
 
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
+
         // Create the JSF22TestResourcesJar that is used in JSF22TestResourcesWar
-        JavaArchive JSF22TestResourcesJar = ShrinkHelper.buildJavaArchive("JSF22TestResources.jar", "");
+        JavaArchive JSF22TestResourcesJar = ShrinkHelper.buildJavaArchive(JSF22_TEST_RESOURCES_JAR_NAME, "");
 
         // Create the JSF22TestResources.war application
-        WebArchive JSF22TestResourcesWar = ShrinkHelper.buildDefaultApp("JSF22TestResources.war", "com.ibm.ws.jsf22.fat.resources.*");
+        WebArchive JSF22TestResourcesWar = ShrinkHelper.buildDefaultApp(JSF22_TEST_RESOURCES_APP_NAME,
+                                                                        isEE10 ? "com.ibm.ws.jsf22.fat.resources.beans.faces40" : "com.ibm.ws.jsf22.fat.resources.beans.jsf22");
         JSF22TestResourcesWar.addAsLibraries(JSF22TestResourcesJar);
-        ShrinkHelper.addDirectory(JSF22TestResourcesWar, "test-applications" + "/JSF22TestResources.jar");
+        ShrinkHelper.addDirectory(JSF22TestResourcesWar, "test-applications/" + JSF22_TEST_RESOURCES_JAR_NAME);
 
         // Create the JSF22BackwardCompatibilityTests.war application
-        WebArchive JSF22BackwardCompatibilityTestsWar = ShrinkHelper.buildDefaultApp("JSF22BackwardCompatibilityTests.war", "com.ibm.ws.jsf22.fat.backwards.*");
+        WebArchive JSF22BackwardCompatibilityTestsWar = ShrinkWrap.create(WebArchive.class, JSF22_BACKWARD_COMPATIBILITY_APP_NAME);
+        JSF22BackwardCompatibilityTestsWar.addPackage(isEE10 ? "com.ibm.ws.jsf22.fat.backwards.beans.faces40" : "com.ibm.ws.jsf22.fat.backwards.beans.jsf22");
+        JSF22BackwardCompatibilityTestsWar.addPackage(isEE10 ? "com.ibm.ws.jsf22.fat.backwards.utilities.faces40" : "com.ibm.ws.jsf22.fat.backwards.utilities.jsf22");
+        ShrinkHelper.addDirectory(JSF22BackwardCompatibilityTestsWar, "test-applications/" + JSF22_BACKWARD_COMPATIBILITY_APP_NAME + "/resources");
+        ShrinkHelper.addDirectory(JSF22BackwardCompatibilityTestsWar,
+                                  "test-applications/" + JSF22_BACKWARD_COMPATIBILITY_APP_NAME + (isEE10 ? "/resourcesFaces40" : "/resourcesJSF22"));
 
         // Add both wars to the server
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22BackwardCompatibilityTestsWar);
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22TestResourcesWar);
 
-        jsfTestServer2.startServer(JSFHtmlUnit.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -190,10 +202,14 @@ public class JSFHtmlUnit {
     @Mode(TestMode.FULL)
     @Test
     public void testUserAgentNeedsUpdateTrueCondition() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            Calendar calendar = Calendar.getInstance();
 
-            webClient.addRequestHeader("If-Modified-Since", "Thu, 03 Jan " + (calendar.get(Calendar.YEAR) - 1) + " 00:00:00 GMT");
+        try (WebClient webClient = new WebClient()) {
+            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz").withZone(ZoneId.of("GMT"));
+            ZonedDateTime currentZonedMinusYear = ZonedDateTime.now().minusYears(1);
+            String formattedZonedDateTimeMinusYear = currentZonedMinusYear.format(formatterZoned);
+            Log.info(c, name.getMethodName(), "formattedZonedDateTimeMinusYear: " + formattedZonedDateTimeMinusYear);
+
+            webClient.addRequestHeader("If-Modified-Since", formattedZonedDateTimeMinusYear);
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testUserAgentNeedsUpdateMethod.jsf");
 
@@ -204,6 +220,7 @@ public class JSFHtmlUnit {
             assertTrue(trueConditionPage.asText().contains("If-Modified-Since"));
             assertTrue(trueConditionPage.asText().contains("User Agent Needs Update Result: true"));
         }
+
     }
 
     /**
@@ -225,11 +242,14 @@ public class JSFHtmlUnit {
     @Mode(TestMode.FULL)
     @Test
     public void testUserAgentNeedsUpdateFalseCondition() throws Exception {
+
         try (WebClient webClient = new WebClient()) {
-            Calendar calendar = Calendar.getInstance();
+            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz").withZone(ZoneId.of("GMT"));
+            ZonedDateTime currentZonedPlusYear = ZonedDateTime.now().plusYears(1);
+            String formattedZonedDatePlusYear = currentZonedPlusYear.format(formatterZoned);
+            Log.info(c, name.getMethodName(), "formattedZonedDatePlusYear: " + formattedZonedDatePlusYear);
 
-            webClient.addRequestHeader("If-Modified-Since", "Thu, 01 Jan " + (calendar.get(Calendar.YEAR) + 1) + " 00:00:00 GMT");
-
+            webClient.addRequestHeader("If-Modified-Since", formattedZonedDatePlusYear);
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testUserAgentNeedsUpdateMethod.jsf");
 
             HtmlPage falseConditionPage = (HtmlPage) webClient.getPage(url);
@@ -239,6 +259,7 @@ public class JSFHtmlUnit {
             assertTrue(falseConditionPage.asText().contains("If-Modified-Since"));
             assertTrue(falseConditionPage.asText().contains("User Agent Needs Update Result: false"));
         }
+
     }
 
     /**
@@ -276,6 +297,8 @@ public class JSFHtmlUnit {
 
             // Now submit the form by clicking the button and get back the second page.
             HtmlPage resultPage = button.click();
+
+            Log.info(c, name.getMethodName(), "Response:\n" + resultPage.asText());
 
             assertTrue(resultPage.asText().contains("Testing ExceptionFromProcessValueChange: Exception thrown is correct since it is an instance of ELException"));
             assertTrue(resultPage.asText().contains("Testing ExceptionFromProcessAction: Exception thrown is correct since it is an instance of ELException"));

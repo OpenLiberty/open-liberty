@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.ras.instrument.internal.main;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ import org.objectweb.asm.util.TraceClassVisitor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.internal.NLSConstants;
+import com.ibm.ws.ras.instrument.internal.bci.AbstractRasClassAdapter;
 import com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter;
 
 /**
@@ -259,6 +261,20 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     public static byte[] transform(byte[] bytes) throws IOException {
     	return transform(bytes, true);
     }
+
+    protected static boolean visit(
+    		ClassReader reader,
+    		ClassVisitor visitor,
+    		boolean throwComputeFrames,
+    		boolean skipIfNotPreprocessed) {
+    	
+        LibertyTracingClassAdapter tracingVisitor =
+            new LibertyTracingClassAdapter(visitor, throwComputeFrames, skipIfNotPreprocessed);
+
+        reader.accept(tracingVisitor, skipDebugData ? ClassReader.SKIP_DEBUG : 0);
+
+        return tracingVisitor.isClassModified();
+    }
     
     /**
      * Instrument the class at the current position in the specified input stream.
@@ -272,38 +288,83 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     public static byte[] transform(byte[] bytes, boolean skipIfNotPreprocessed) throws IOException {
         if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(tc, "transform");
+
+		// Occasionally, frames must be computed.  This is not known until
+		// the class is visited, as the circumstances depend on encountering
+		// variable manipulating byte-codes before invoking the superclass
+		// initializer.
+		//
+		// The (hopefully rare) occasions are communicated by throwing
+    	// 'ComputeRequiredException'.
+                
+        // First try: Use COMPUTE_MAXS and THROW_COMPUTE_FRAMES in case
+        // the flag must be reset.
         
         ClassReader reader = new ClassReader(bytes);
-        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+        ClassWriter classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
 
-        StringWriter sw = null;
-        ClassVisitor visitor = writer;
+        // Conditionally, add debugging visitors.  The check class visitor does verification
+        // of the updated class bytes.  The trace class visitor displays the class bytes.
+
+        StringWriter stringWriter;
+        ClassVisitor visitor;
         if (tc.isDumpEnabled()) {
-            sw = new StringWriter();
-            visitor = new CheckClassAdapter(visitor, false);
-            visitor = new TraceClassVisitor(visitor, new PrintWriter(sw));
+            visitor = new CheckClassAdapter(classWriter, false);
+            stringWriter = new StringWriter();            
+            visitor = new TraceClassVisitor(visitor, new PrintWriter(stringWriter));
+        } else {
+        	stringWriter = null;
+        	visitor = classWriter;
         }
 
-        LibertyTracingClassAdapter tracingClassAdapter = new LibertyTracingClassAdapter(visitor, skipIfNotPreprocessed);
+        boolean isModified = false;
+        boolean computeFrames = false;
+        
         try {
-            // Class reader must maintain all metadata information that's present in
-            // the class
-            reader.accept(tracingClassAdapter, skipDebugData ? ClassReader.SKIP_DEBUG : 0);
-        } catch (Throwable t) {
-            IOException ioe = new IOException("Unable to instrument class stream with trace: " + t.getMessage(), t);
-            throw ioe;
+        	try {
+        		// Note the combination of COMPUTE_MAX with THROW_COMPUTE_FRAMES.
+        		isModified = visit(reader, visitor,
+        				AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
+        				skipIfNotPreprocessed);
+
+        	} catch ( ComputeRequiredException e ) {
+        		computeFrames = true;
+                // Second try: Use COMPUTE_FRAMES.  Don't throw an exception:
+                // This second try should be successful.
+
+        		reader = new ClassReader(bytes);
+        		classWriter = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+        		if (tc.isDumpEnabled()) {
+        			stringWriter = new StringWriter();
+        			visitor = new CheckClassAdapter(visitor, false);
+        			visitor = new TraceClassVisitor(visitor, new PrintWriter(stringWriter));
+        		} else {
+        			visitor = classWriter;
+        		}
+
+        		// Note the combination of COMPUTE_FRAMES with !THROW_COMPUTE_FRAMES.        		
+        		isModified = visit(reader, visitor,
+        				!AbstractRasClassAdapter.THROW_COMPUTE_FRAMES,
+        				skipIfNotPreprocessed);        		
+        	}
+
+        } catch ( Throwable t ) {
+            throw new IOException("Trace instrumentation failure: " + t.getMessage(), t);
         }
 
-        // Provide a whole lot of detailed information on the resulting class
-        if (detailedTransformTrace && tc.isDumpEnabled() && tracingClassAdapter.isClassModified()) {
-            Tr.dump(tc, "Transformed class", sw);
+        if ( detailedTransformTrace && tc.isDumpEnabled() && isModified ) {
+            Tr.dump(tc, "Transformed class", stringWriter);
         }
 
-        // Try to short circuit when the class didn't change
-        byte[] result = tracingClassAdapter.isClassModified() ? writer.toByteArray() : null;
+        if ( computeFrames ) {
+        	Tr.info(tc, "COMPUTE_FRAMES detected on [ " + reader.getClassName() + " ]");
+        }
 
-        if (detailedTransformTrace && tc.isEntryEnabled())
+        byte[] result = isModified ? classWriter.toByteArray() : null;
+
+        if ( detailedTransformTrace && tc.isEntryEnabled() ) {
             Tr.exit(tc, "transform", result);
+        }
         return result;
     }
 

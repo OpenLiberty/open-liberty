@@ -21,6 +21,7 @@ Subsystem-Name: MicroProfile 1.4
   com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:="1.3", \
   com.ibm.websphere.appserver.mpFaultTolerance-1.1, \
   com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="4.0", \
+  io.openliberty.servlet.internal-3.1; ibm.tolerates:="4.0", \
   com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1", \
   com.ibm.websphere.appserver.mpHealth-1.0
 kind=ga

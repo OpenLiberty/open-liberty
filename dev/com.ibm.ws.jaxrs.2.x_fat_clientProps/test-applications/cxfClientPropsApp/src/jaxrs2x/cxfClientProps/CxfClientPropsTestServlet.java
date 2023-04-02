@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -41,12 +44,13 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
+   
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
     private static final long defaultMargin = 14000;
     private final static String proxyPort = "8888";
     private final static String proxyHost = "127.0.0.1";
     private final static String myHost = "1.1.1.1";
-    private static final long aixMargin = 61000;    
+    private static final long slowHardwareMargin = 61000;    
     
     private static final boolean isZOS() {
         String osName = System.getProperty("os.name");
@@ -55,14 +59,10 @@ public class CxfClientPropsTestServlet extends FATServlet {
         }
         return false;
     }
-    
-    private static final boolean isAIX() {
-        String osName = System.getProperty("os.name");
-        if (osName.toLowerCase().contains("AIX".toLowerCase())) {
-            return true;
-        }
-        return false;
-    }
+ 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+    private static final boolean isAIX = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("aix");
+
 
     /**
      * Not actually testing CXF client properties, but rather testing socket timeouts,
@@ -99,8 +99,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         String target = null;
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
-        if (isAIX()) {
-            MARGIN = aixMargin;
+        if (isAIX || isWindows) {
+            MARGIN = slowHardwareMargin;
         }        
         
         Client client = ClientBuilder.newBuilder()
@@ -135,8 +135,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testCXFReadTimeout";
         long CXF_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
-        if (isAIX()) {
-            MARGIN = aixMargin;
+        if (isAIX || isWindows) {
+            MARGIN = slowHardwareMargin;
         }    
         
         Client client = ClientBuilder.newBuilder()
@@ -167,8 +167,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
-        if (isAIX()) {
-            MARGIN = aixMargin;
+        if (isAIX || isWindows) {
+            MARGIN = slowHardwareMargin;
         }    
         
         Client client = ClientBuilder.newBuilder()
@@ -205,8 +205,8 @@ public class CxfClientPropsTestServlet extends FATServlet {
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
         long CXF_TIMEOUT = 20000;
-        if (isAIX()) {
-            MARGIN = aixMargin;
+        if (isAIX || isWindows) {
+            MARGIN = slowHardwareMargin;
         }    
         
         Client client = ClientBuilder.newBuilder()

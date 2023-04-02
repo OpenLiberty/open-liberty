@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -23,6 +25,7 @@ import javax.security.auth.Subject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
@@ -93,6 +96,7 @@ public class OidcUtil {
     }
 
     @Trivial
+    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
         Random result = null;
         try {
@@ -102,7 +106,10 @@ public class OidcUtil {
                 result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
             }
         } catch (Exception e) {
-            result = new Random();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "OLGH24469 - encountered exception : " + e.getMessage() + ", try without algorithm ");
+            }
+            result = new SecureRandom();
         }
         return result;
     }

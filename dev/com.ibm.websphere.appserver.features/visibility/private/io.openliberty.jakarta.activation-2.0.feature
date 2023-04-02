@@ -9,7 +9,7 @@ IBM-API-Package: \
  jakarta.activation; type="spec"
 -features=com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
-  io.openliberty.jakarta.activation.2.0;  location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.0.0"
+  io.openliberty.jakarta.activation.2.0;  location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.0.1"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

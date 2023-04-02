@@ -1,13 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.cdicommon.managed.factories;
 
 import java.util.Collection;
@@ -21,8 +20,8 @@ import javax.faces.component.visit.VisitHint;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryAppBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryDepBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryAppBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryDepBean;
 
 /**
  *
@@ -74,8 +73,7 @@ public class CustomVisitContextFactory extends VisitContextFactory {
         if (methodBean != null) {
             methodBean.incrementAppCount();
             methodBean.logFirst(FacesContext.getCurrentInstance().getExternalContext(), this.getClass().getSimpleName(), "getVisitContext", output);
-        }
-        else {
+        } else {
             FacesContext.getCurrentInstance().getExternalContext().log("CustomVisitContextFactory method injection failed.");
         }
 

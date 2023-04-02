@@ -5,6 +5,6 @@ singleton=true
   io.openliberty.jakarta.connectors-2.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=com.ibm.ws.jca.cm.jakarta
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

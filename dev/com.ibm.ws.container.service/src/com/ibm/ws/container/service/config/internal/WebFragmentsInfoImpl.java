@@ -1,9 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+/*********************************************************************
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -63,14 +65,14 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            if ("6.0".equals(servletSchemaLevel) || "5.0".equals(servletSchemaLevel) || "4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel) || "3.0".equals(servletSchemaLevel)
+            if ("6.0".equals(servletSchemaLevel) || "5.0".equals(servletSchemaLevel) || "4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel)
+                || "3.0".equals(servletSchemaLevel)
                 || "2.5".equals(servletSchemaLevel)) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.
             }
             this.absoluteOrdering = webApp.getAbsoluteOrdering(); // Null when (servletVersion == 2.5).
-
         } else {
             this.servletSchemaLevel = null;
             this.isMetadataComplete = false;
@@ -86,16 +88,15 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
 
         sortWebFragments(classesInfo, useOrderedWebFragmentItems, useExcludedWebFragmentItems); // throws UnableToAdaptException
 
-        if (useOrderedWebFragmentItems.isEmpty()) {
-            this.orderedWebFragmentItems = Collections.emptyList();
-        } else {
-            this.orderedWebFragmentItems = Collections.unmodifiableList(useOrderedWebFragmentItems);
-        }
+        this.orderedWebFragmentItems = asUnmodifiable(useOrderedWebFragmentItems);
+        this.excludedWebFragmentItems = asUnmodifiable(useExcludedWebFragmentItems);
+    }
 
-        if (useExcludedWebFragmentItems.isEmpty()) {
-            this.excludedWebFragmentItems = Collections.emptyList();
+    private static <T> List<T> asUnmodifiable(List<T> source) {
+        if (source.isEmpty()) {
+            return Collections.emptyList();
         } else {
-            this.excludedWebFragmentItems = Collections.unmodifiableList(useExcludedWebFragmentItems);
+            return Collections.unmodifiableList(source);
         }
     }
 
@@ -152,9 +153,25 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     }
 
     /**
-     * a. Validate whether there are duplicate web fragment name, and throw exception if relative sorting is used
-     * b. Generate internal used name for those web fragments, which have not been explicitly configured
-     * c. Depending on the absolute ordering configuration in web.xml, execute absolute sorting or relative sorting
+     * Sort web fragments (including the classes folder) into ordered and excluded items.
+     *
+     * <ul>
+     * <li>Throw an exception if a duplicate fragment name is used and relative sorting is used.</li>
+     * <li>Generate unique internal names for unnamed fragments.</li>
+     * <li>Sort the fragments, using either original ordering, absolute ordering, or relative ordering,
+     * according to the web module and fragment descriptors.</li>
+     *
+     * @param classesInfo              Overall information about the web module class path. Used
+     *                                     here to obtain the list of classes containers for the web module and web
+     *                                     fragments.
+     * @param orderedItems             A results collection. Must initially be empty. Will be
+     *                                     populated with the sorted fragments.
+     * @param excludedWebFragmentItems A results collection. Must initially be empty. Will be
+     *                                     populated only if absolute ordering is used. Populated with fragments which
+     *                                     are not listed in the absolute ordering. (This is possible only if the
+     *                                     absolute ordering does not contain an others element.)
+     *
+     * @return The ordered items. Excluded items are not included in the ordered items list.
      */
     private List<WebFragmentInfo> sortWebFragments(WebModuleClassesInfo classesInfo,
                                                    List<WebFragmentInfo> orderedItems,
@@ -242,16 +259,41 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         return orderedItems;
     }
 
+    /**
+     * Most basic ordering of fragments. Place the fragment items as they are
+     * already ordered in the fragment map.
+     *
+     * @return The ordered fragment items.
+     */
     private List<WebFragmentInfo> originalOrderWebFragments(Map<String, WebFragmentItemImpl> webFragmentItemMap) {
         List<WebFragmentInfo> orderedItems = new ArrayList<WebFragmentInfo>(webFragmentItemMap.size());
-        for (Map.Entry<String, WebFragmentItemImpl> mapEntry : webFragmentItemMap.entrySet()) {
-            orderedItems.add(mapEntry.getValue());
-        }
+        orderedItems.addAll(webFragmentItemMap.values());
         return orderedItems;
     }
 
+    /**
+     * An absolute ordering was specified. Sort un-excluded items according to the
+     * absolute ordering. Put excluded items in separate storage.
+     *
+     * @param webFragmentItemMap       The map of all fragment items.
+     * @param excludedWebFragmentItems Results collection. Will hold any excluded items.
+     *
+     * @return The sorted fragment items. Excluded items are not present in the sorted
+     *         items list.
+     */
     private List<WebFragmentInfo> absoluteOrderWebFragments(Map<String, WebFragmentItemImpl> webFragmentItemMap,
                                                             List<WebFragmentInfo> excludedWebFragmentItems) {
+
+        // Make a copy of the original items.  Ordering must be preserved.
+
+        // Walk through the absolute ordering, placing before and after names as they
+        // are given in the absolute ordering.  Note the position of the others element.
+
+        // If an others element is present, place the any remaining fragments
+        // in the others position, in their original order.
+        //
+        // If there is no others element, place any remaining fragments as
+        // excluded items.
 
         List<WebFragmentInfo> orderedItems = new ArrayList<WebFragmentInfo>(webFragmentItemMap.size());
 
@@ -269,6 +311,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                 orderedItems.add(webFragmentItem);
             }
         }
+
         if (this.absoluteOrdering.isSetOthers()) {
             orderedItems.addAll(othersBeginIndex, candidateWebFragmentItemMap.values());
         } else {
@@ -355,7 +398,6 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     }
 
     static class RelativeOrderMetaData {
-
         private boolean visited = false;
         private ArrayList<String> afterNameList;
         private ArrayList<String> beforeNameList;
@@ -490,80 +532,110 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         CONFLICT
     }
 
-    List<WebFragmentInfo> relativeOrderWebFragments(Map<String, WebFragmentItemImpl> webFragmentItemMap) throws UnableToAdaptException {
-        boolean isTracing = TraceComponent.isAnyTracingEnabled();
+    List<WebFragmentInfo> relativeOrderWebFragments(Map<String, WebFragmentItemImpl> webFragmentItems) throws UnableToAdaptException {
+        boolean isDebug = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
 
         Map<String, RelativeOrderMetaData> relativeOrderMap = new TreeMap<String, RelativeOrderMetaData>();
         boolean containsRelativeOrderElement = false;
         List<WebFragmentInfo> unnamedOthers = null;
-        int othersPosition = -1;
-        List<WebFragmentInfo> relativeOrderingList;
 
-        for (Map.Entry<String, WebFragmentItemImpl> warFragmentFile : webFragmentItemMap.entrySet()) {
-            WebFragmentItemImpl webFragmentInfo = warFragmentFile.getValue();
-            if (isTracing && tc.isDebugEnabled()) { // FINER
-                Tr.debug(tc, "webFragmentInfo->[{0}]", webFragmentInfo);
+        for (Map.Entry<String, WebFragmentItemImpl> fragmentEntry : webFragmentItems.entrySet()) {
+            WebFragmentItemImpl webFragmentItem = fragmentEntry.getValue();
+            if (isDebug) {
+                Tr.debug(tc, "webFragmentItem->[{0}]", webFragmentItem);
             }
-            WebFragment currentWebFragment = webFragmentInfo.getWebFragment();
-            Ordering ordering = currentWebFragment != null ? currentWebFragment.getOrdering() : null;
+
+            WebFragment webFragment = webFragmentItem.getWebFragment();
+
+            Ordering ordering = ((webFragment != null) ? webFragment.getOrdering() : null);
             if (ordering != null) {
-                if (isTracing && tc.isDebugEnabled()) { // FINER
+                if (isDebug) {
                     Tr.debug(tc, "ordering->[{0}]", ordering);
                 }
-                RelativeOrderMetaData relativeOrderMetaData = new RelativeOrderMetaData(ordering, currentWebFragment.getName(), webFragmentInfo);
 
-                String name = currentWebFragment.getName();
+                // Bug found while adding tests for issue 20421.
+                // NPE when an un-named fragment has an ordering element.
+                // The fragment will be treated as a named other from other
+                // fragments (the assigned name can appear in no orderings).
+                // The ordering constraints on the fragment, however, will
+                // apply, placing other elements relative to the fragment.
+
+                String nameCase;
+                String webFragmentName = webFragment.getName();
+                if (webFragmentName == null) {
+                    nameCase = "assigned";
+                    webFragmentName = fragmentEntry.getKey();
+                } else {
+                    nameCase = "original";
+                }
+                if (isDebug) {
+                    Tr.debug(tc, "Using {0} name->[{1}]", new Object[] { nameCase, webFragmentName });
+                }
+
+                RelativeOrderMetaData relativeOrderMetaData = new RelativeOrderMetaData(ordering, webFragmentName, webFragmentItem);
+                if (isDebug) {
+                    Tr.debug(tc, "relativeOrderMetaData[{0}]", relativeOrderMetaData);
+                }
+
                 if (relativeOrderMetaData.isDuplicateNames()) {
-                    if (isTracing && tc.isDebugEnabled()) {
-                        Tr./* error */debug(tc, "duplicate names found in relative ordering metadata of [" + name + "]");
+                    // Duplicate name exception: When traversing the web-fragments, if multiple
+                    // members with the same <name> element are encountered, the application must
+                    // log an informative error message including information to help fix the
+                    // problem, and must fail to deploy.
+
+                    // TFB: This seems wrong: The stated constraint is against all of the fragments.
+                    //      That is, it is an error for more than one fragment to have the same
+                    //      name.  The check, here, looks for duplicate names within a relative
+                    //      ordering before or after element.  Note the text "multiple members".
+                    //      Duplicate names within an ordering are within the same element.
+
+                    if (isDebug) {
+                        Tr.debug(tc, "Duplicate names in relative ordering metadata [" + webFragmentName + "]");
                     }
-                    String msg = Tr.formatMessage(tc, "duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E",
-                                                  "Duplicate names found in relative ordering metadata", name);
+                    String msg = Tr.formatMessage(tc,
+                                                  "duplicate.names.found.in.relative.ordering.metadata.CWWKM0477E",
+                                                  "Duplicate names found in relative ordering metadata", webFragmentName);
                     throw new UnableToAdaptException(msg);
                 }
 
-                //TODO: what if you have two fragments with the same name.
-                // throw an exception?
-
-                //Duplicate name exception: if, when traversing the web-fragments, multiple
-                //members with the same <name> element are encountered, the application must
-                //log an informative error message including information to help fix the
-                //problem, and must fail to deploy
-
-                if (isTracing && tc.isDebugEnabled()) { // FINER
-                    Tr.debug(tc, "current relativeOrderMetaData[{0}]", relativeOrderMetaData);
-                }
-                if (relativeOrderMap.containsKey(name)) {
-                    if (isTracing && tc.isDebugEnabled()) {
-                        Tr./* error */debug(tc, "two fragments have the name [" + name + "]");
+                if (relativeOrderMap.containsKey(webFragmentName)) {
+                    if (isDebug) {
+                        Tr.debug(tc, "Duplicate fragment names [" + webFragmentName + "]");
                     }
-                    String msg = Tr.formatMessage(tc, "two.fragments.have.the.same.name.CWWKM0479E",
-                                                  "Two fragments have the same name", name);
+                    String msg = Tr.formatMessage(tc,
+                                                  "two.fragments.have.the.same.name.CWWKM0479E",
+                                                  "Two fragments have the same name", webFragmentName);
                     throw new UnableToAdaptException(msg);
                 }
 
-                relativeOrderMap.put(name, relativeOrderMetaData);
+                relativeOrderMap.put(webFragmentName, relativeOrderMetaData);
                 containsRelativeOrderElement = true;
 
             } else {
-                if (isTracing && tc.isDebugEnabled()) { // FINER
-                    Tr.debug(tc, "no ordering for->[{0}]", webFragmentInfo);
-                }
-                if (currentWebFragment != null && currentWebFragment.getName() != null) {
-                    RelativeOrderMetaData relativeOrderMetaData = new RelativeOrderMetaData(null, currentWebFragment.getName(), webFragmentInfo);
-                    if (isTracing && tc.isDebugEnabled()) { // FINER
-                        Tr.debug(tc, "no ordering, current relativeOrderMetaData[{0}]", relativeOrderMetaData);
+                // TFB: No duplicate name check is performed when there is no relative
+                //      ordering element!
+                //
+                //      This cannot be fixed: A customer may have duplicate fragments which
+                //      have no ordering information.
+
+                String webFragmentName = ((webFragment != null) ? webFragment.getName() : null);
+                if (webFragmentName != null) {
+                    RelativeOrderMetaData relativeOrderMetaData = new RelativeOrderMetaData(null, webFragmentName, webFragmentItem);
+                    relativeOrderMap.put(webFragmentName, relativeOrderMetaData);
+
+                    if (isDebug) {
+                        Tr.debug(tc, "no ordering, relativeOrderMetaData ->[{0}]", relativeOrderMetaData);
                     }
-                    relativeOrderMap.put(currentWebFragment.getName(), relativeOrderMetaData);
 
                 } else {
                     if (unnamedOthers == null) {
                         unnamedOthers = new ArrayList<WebFragmentInfo>();
                     }
-                    if (isTracing && tc.isDebugEnabled()) { // FINER
-                        Tr.debug(tc, "no ordering, no name [{0}]", currentWebFragment);
+                    unnamedOthers.add(webFragmentItem);
+
+                    if (isDebug) {
+                        Tr.debug(tc, "no ordering, unnamed other ->[{0}]", webFragment);
                     }
-                    unnamedOthers.add(webFragmentInfo);
                 }
             }
         }
@@ -573,23 +645,26 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         RelativeOrderMetaData othersROMD = RelativeOrderMetaData.getNewRelativeOthersElement();
         relativeOrderMap.put(othersROMD.getName(), othersROMD);
 
-        relativeOrderingList = new ArrayList<WebFragmentInfo>();
+        // Build the relative ordering.
+
+        List<WebFragmentInfo> relativeOrderingList = new ArrayList<>(webFragmentItems.size());
+
         List<RelativeOrderMetaData> relOrderMetaDataList;
         if (containsRelativeOrderElement && (relOrderMetaDataList = getRelativeOrdering(relativeOrderMap)) != null) {
+            int othersPosition = -1;
             int counter = 0;
-            //TODO: update this code if getAbsoluteOrdering returns null when not specified at all
             for (RelativeOrderMetaData relOrderMetaData : relOrderMetaDataList) {
                 if (relOrderMetaData.isOthers()) {
                     othersPosition = counter;
-                    if (isTracing && tc.isDebugEnabled()) { // FINER
-                        Tr.debug(tc, "set others position to-> [ {0} ]", othersPosition);
+                    if (isDebug) {
+                        Tr.debug(tc, "set others position to->[{0}]", othersPosition);
                     }
                 } else {
-                    WebFragmentInfo orderedWarFragmentFile = relOrderMetaData.getTarget();
-                    relativeOrderingList.add(orderedWarFragmentFile);
+                    WebFragmentInfo orderedInfo = relOrderMetaData.getTarget();
+                    relativeOrderingList.add(orderedInfo);
 
-                    if (isTracing && tc.isDebugEnabled()) { // FINER
-                        Tr.debug(tc, "added [{0}] to [{1}]", orderedWarFragmentFile, relativeOrderingList);
+                    if (isDebug) {
+                        Tr.debug(tc, "added [{0}] to [{1}]", orderedInfo, relativeOrderingList);
                     }
                 }
                 relativeOrderMap.remove(relOrderMetaData.getName());
@@ -599,7 +674,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
             if (othersPosition != -1) {
                 int tempOthersPosition = othersPosition;
                 for (RelativeOrderMetaData relOrderMD : relativeOrderMap.values()) {
-                    if (isTracing && tc.isDebugEnabled()) { // FINER
+                    if (isDebug) {
                         Tr.debug(tc, "adding other [{0}] at position [{1}]",
                                  relOrderMD.getTarget(), othersPosition);
                     }
@@ -610,7 +685,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                 //unnamedOthers will contain all of the other jars in the WEB-INF/lib even if they do not contain web-fragment.xml
                 if (unnamedOthers != null) {
                     for (WebFragmentInfo unnamedOther : unnamedOthers) {
-                        if (isTracing && tc.isDebugEnabled()) { // FINER
+                        if (isDebug) {
                             Tr.debug(tc, "adding unnamed other [{0}] at position [{1}]",
                                      unnamedOther, othersPosition);
                         }
@@ -619,18 +694,17 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                     }
                 }
             }
+
         } else {
-            if (isTracing && tc.isDebugEnabled()) { // FINER
+            if (isDebug) {
                 if (!containsRelativeOrderElement) {
                     Tr.debug(tc, "no relative ordering elements in the list of fragments");
                 } else {
                     Tr.debug(tc, "nothing returned from relative order calculation. return original list");
                 }
             }
-            for (Map.Entry<String, WebFragmentItemImpl> warFragmentFile : webFragmentItemMap.entrySet()) {
-                WebFragmentItemImpl webFragmentInfo = warFragmentFile.getValue();
-                relativeOrderingList.add(webFragmentInfo);
-            }
+
+            relativeOrderingList.addAll(webFragmentItems.values());
         }
 
         return relativeOrderingList;

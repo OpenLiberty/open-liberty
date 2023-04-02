@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2010 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -14,8 +16,7 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Haszn\u00e1lat: java [JVM param\u00e9terek] -javaagent:bin/tools/ws-javaagent.jar \\\n\
-\t-jar bin/tools/ws-server.jar serverName {0} [param\u00e9terek]  
+briefUsage=Haszn\u00e1lat: java [JVM param\u00e9terek] -javaagent:bin/tools/ws-javaagent.jar \\\n\t-jar bin/tools/ws-server.jar serverName {0} [param\u00e9terek]  
 scriptUsage=Haszn\u00e1lat: {0} {1} serverName [param\u00e9terek] [JVM param\u00e9terek]
 
 use.actions=M\u0171veletek:
@@ -35,23 +36,15 @@ category-key.misc=Egyebek
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # ServerName
 processName.key=\ \ \ \ serverName
-processName.desc=\tA kiszolg\u00e1l\u00f3 helyileg egyedi neve; a n\u00e9v Unicode alfanumerikus       \n\
-\tkarakterekb\u0151l (p\u00e9ld\u00e1ul A-Za-z0-9), valamint az al\u00e1h\u00faz\u00e1sb\u00f3l (_),      \n\
-\tk\u00f6t\u0151jelb\u0151l (-), pluszjelb\u0151l (+) \u00e9s pontb\u00f3l \u00e1ll\u00edthat\u00f3 \u00f6ssze. A        \n\
-\tkiszolg\u00e1l\u00f3n\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
+processName.desc=\tA kiszolg\u00e1l\u00f3 helyileg egyedi neve; a n\u00e9v Unicode alfanumerikus       \n\tkarakterekb\u0151l (p\u00e9ld\u00e1ul A-Za-z0-9), valamint az al\u00e1h\u00faz\u00e1sb\u00f3l (_),      \n\tk\u00f6t\u0151jelb\u0151l (-), pluszjelb\u0151l (+) \u00e9s pontb\u00f3l \u00e1ll\u00edthat\u00f3 \u00f6ssze. A        \n\tkiszolg\u00e1l\u00f3n\u00e9v nem kezd\u0151dhet k\u00f6t\u0151jellel (-) vagy ponttal (.).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # JavaAgent 
 javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
-javaAgent.desc=\tEz egy JVM param\u00e9ter, amellyel megadhat\u00f3 egy \u00fcgyn\u00f6k a bytek\u00f3dd\u00e1 alak\u00edt\u00e1shoz (instrumentation).   \n\
-\tA fut\u00e1si k\u00f6rnyezet ezt a funkci\u00f3t haszn\u00e1lja a nyomk\u00f6vet\u00e9si \u00e9s egy\u00e9b hibakeres\u00e9si inform\u00e1ci\u00f3k\n\
-\t\u00f6sszegy\u0171jt\u00e9s\u00e9hez. A bootstrap-agent.jar f\u00e1jlnak ugyanabban a k\u00f6nyvt\u00e1rban kell lennie,\n\
-\tmint a fut\u00e1si k\u00f6rnyezet ind\u00edt\u00e1s\u00e1hoz haszn\u00e1lt jar f\u00e1jlnak.
+javaAgent.desc=\tEz egy JVM param\u00e9ter, amellyel megadhat\u00f3 egy \u00fcgyn\u00f6k a bytek\u00f3dd\u00e1 alak\u00edt\u00e1shoz (instrumentation).   \n\tA fut\u00e1si k\u00f6rnyezet ezt a funkci\u00f3t haszn\u00e1lja a nyomk\u00f6vet\u00e9si \u00e9s egy\u00e9b hibakeres\u00e9si inform\u00e1ci\u00f3k\n\t\u00f6sszegy\u0171jt\u00e9s\u00e9hez. A bootstrap-agent.jar f\u00e1jlnak ugyanabban a k\u00f6nyvt\u00e1rban kell lennie,\n\tmint a fut\u00e1si k\u00f6rnyezet ind\u00edt\u00e1s\u00e1hoz haszn\u00e1lt jar f\u00e1jlnak.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
 action-key.create=\ \ \ \ --create
-action-desc.create=\t\u00daj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sa, ha a megadott kiszolg\u00e1l\u00f3 nem l\u00e9tezik. A        \n\
-\t--template param\u00e9terrel adhat\u00f3 meg egy sablon haszn\u00e1lata \u00faj          \n\
-\tkiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sakor.
+action-desc.create=\t\u00daj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sa, ha a megadott kiszolg\u00e1l\u00f3 nem l\u00e9tezik. A        \n\t--template param\u00e9terrel adhat\u00f3 meg egy sablon haszn\u00e1lata \u00faj          \n\tkiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sakor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.list=\ \ \ \ --list
 action-desc.list=\tA meghat\u00e1rozott Liberty profil alkalmaz\u00e1skiszolg\u00e1l\u00f3k felsorol\u00e1sa.
@@ -63,8 +56,7 @@ action-key.run=\ \ \ \ --run
 action-desc.run=\tA megnevezett kiszolg\u00e1l\u00f3 futtat\u00e1sa a konzol el\u0151t\u00e9rben.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.debug=\ \ \ \ --debug
-action-desc.debug=\tA megnevezett kiszolg\u00e1l\u00f3 futtat\u00e1sa a konzol el\u0151t\u00e9rben, miut\u00e1n\n\
-\tegy hibakeres\u0151 csatlakozott a hibakeres\u00e9si porthoz (alap\u00e9rtelmez\u00e9s: 7777).
+action-desc.debug=\tA megnevezett kiszolg\u00e1l\u00f3 futtat\u00e1sa a konzol el\u0151t\u00e9rben, miut\u00e1n\n\tegy hibakeres\u0151 csatlakozott a hibakeres\u00e9si porthoz (alap\u00e9rtelmez\u00e9s: 7777).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.status=\ \ \ \ --status
 action-desc.status=\tEllen\u0151rzi a megnevezett kiszolg\u00e1l\u00f3 \u00e1llapot\u00e1t.
@@ -76,29 +68,19 @@ action-key.version=\ \ \ \ --version
 action-desc.version=\tA kiszolg\u00e1l\u00f3v\u00e1ltozat inform\u00e1ci\u00f3inak megjelen\u00edt\u00e9se \u00e9s kil\u00e9p\u00e9s.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.package=\ \ \ \ --package
-action-desc.package=\tKiszolg\u00e1l\u00f3 becsomagol\u00e1sa arch\u00edvumba. --archive param\u00e9ter haszn\u00e1lhat\u00f3.    \n\
-\tAz --include param\u00e9ter az"all", "usr", "minify", "wlp", "runnable",\n\
-\t"all,runnable" \u00e9s "minify,runnable" \u00e9rt\u00e9kekkel haszn\u00e1lhat\u00f3. A "runnable" \n\
-\t\u00e9s "all,runnable" kifejez\u00e9sek egyen\u00e9rt\u00e9k\u0171ek. A "runnable" \u00e9rt\u00e9k csak   \n\
-\t"jar" t\u00edpus\u00fa arch\u00edvumokkal m\u0171k\u00f6dik. A --server-root param\u00e9ter seg\u00edts\u00e9g\u00e9vel \n\
-\tadhat\u00f3 meg a csomagarch\u00edvum gy\u00f6k\u00e9rmapp\u00e1ja.
+action-desc.package=\tKiszolg\u00e1l\u00f3 becsomagol\u00e1sa arch\u00edvumba. --archive param\u00e9ter haszn\u00e1lhat\u00f3.    \n\tAz --include param\u00e9ter az"all", "usr", "minify", "wlp", "runnable",\n\t"all,runnable" \u00e9s "minify,runnable" \u00e9rt\u00e9kekkel haszn\u00e1lhat\u00f3. A "runnable" \n\t\u00e9s "all,runnable" kifejez\u00e9sek egyen\u00e9rt\u00e9k\u0171ek. A "runnable" \u00e9rt\u00e9k csak   \n\t"jar" t\u00edpus\u00fa arch\u00edvumokkal m\u0171k\u00f6dik. A --server-root param\u00e9ter seg\u00edts\u00e9g\u00e9vel \n\tadhat\u00f3 meg a csomagarch\u00edvum gy\u00f6k\u00e9rmapp\u00e1ja.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
-action-desc.dump=\tDiagnosztikai inform\u00e1ci\u00f3k ki\u00edrat\u00e1sa a kiszolg\u00e1l\u00f3r\u00f3l arch\u00edvumba. Az\n\
-\t--archive param\u00e9ter haszn\u00e1lhat\u00f3.  Az --include param\u00e9ter a \n\
-\t"heap", "system" \u00e9s "thread" \u00e9rt\u00e9kel haszn\u00e1lhat\u00f3.
+action-desc.dump=\tDiagnosztikai inform\u00e1ci\u00f3k ki\u00edrat\u00e1sa a kiszolg\u00e1l\u00f3r\u00f3l arch\u00edvumba. Az\n\t--archive param\u00e9ter haszn\u00e1lhat\u00f3.  Az --include param\u00e9ter a \n\t"heap", "system" \u00e9s "thread" \u00e9rt\u00e9kel haszn\u00e1lhat\u00f3.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.javadump=\ \ \ \ --javadump
-action-desc.javadump=\tDiagnosztikai inform\u00e1ci\u00f3k ki\u00edrat\u00e1sa a kiszolg\u00e1l\u00f3 Java virtu\u00e1lis g\u00e9pr\u0151l. Az --include\n\
-\tparam\u00e9ter a "heap" \u00e9s a "system" \u00e9rt\u00e9kkel haszn\u00e1lhat\u00f3.
+action-desc.javadump=\tDiagnosztikai inform\u00e1ci\u00f3k ki\u00edrat\u00e1sa a kiszolg\u00e1l\u00f3 Java virtu\u00e1lis g\u00e9pr\u0151l. Az --include\n\tparam\u00e9ter a "heap" \u00e9s a "system" \u00e9rt\u00e9kkel haszn\u00e1lhat\u00f3.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.registerWinService=\ \ \ \ --registerWinService
 action-desc.registerWinService=\tRegisztr\u00e1lja a Windows szolg\u00e1ltat\u00e1s programk\u00e9nt megadott kiszolg\u00e1l\u00f3t.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tInd\u00edtsa el a Windows szolg\u00e1ltat\u00e1s programk\u00e9nt megadott kiszolg\u00e1l\u00f3t. \
-            \n\
-\tA kiszolg\u00e1l\u00f3t ind\u00edt\u00e1s el\u0151tt regisztr\u00e1lni kell.
+action-desc.startWinService=\tInd\u00edtsa el a Windows szolg\u00e1ltat\u00e1s programk\u00e9nt megadott kiszolg\u00e1l\u00f3t. \n\tA kiszolg\u00e1l\u00f3t ind\u00edt\u00e1s el\u0151tt regisztr\u00e1lni kell.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
 action-desc.stopWinService=\t\u00c1ll\u00edtsa le a Windows szolg\u00e1ltat\u00e1s programk\u00e9nt megadott kiszolg\u00e1l\u00f3t.
@@ -110,88 +92,41 @@ action-key.help=\ \ \ \ --help
 action-desc.help=\tS\u00fag\u00f3 inform\u00e1ci\u00f3k nyomtat\u00e1sa.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.pause=\ \ \ \ --v\u00e1rakoz\u00e1s
-action-desc.pause=\tMinden v\u00e1rakoztathat\u00f3 \u00f6sszetev\u0151 v\u00e1rakoztat\u00e1sa a kiszolg\u00e1l\u00f3n.  \n\
-\t\u00d6sszetev\u0151k egy csoportj\u00e1t is v\u00e1rakoztathatja az \u00f6sszetev\u0151k megad\u00e1s\u00e1val a \n\
-\t--c\u00e9lbe\u00e1ll\u00edt\u00e1sban.
+action-desc.pause=\tMinden v\u00e1rakoztathat\u00f3 \u00f6sszetev\u0151 v\u00e1rakoztat\u00e1sa a kiszolg\u00e1l\u00f3n.  \n\t\u00d6sszetev\u0151k egy csoportj\u00e1t is v\u00e1rakoztathatja az \u00f6sszetev\u0151k megad\u00e1s\u00e1val a \n\t--c\u00e9lbe\u00e1ll\u00edt\u00e1sban.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --folytat\u00e1s
-action-desc.resume=\tMinden v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1sa a kiszolg\u00e1l\u00f3n. A \n\
-\t--c\u00e9lbe\u00e1ll\u00edt\u00e1s megad\u00e1s\u00e1val konkr\u00e9t v\u00e1rakoztatott \u00f6sszetev\u0151k folytat\u00e1s\u00e1t is meghat\u00e1rozhatja.
+action-desc.resume=\tMinden v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1sa a kiszolg\u00e1l\u00f3n. A \n\t--c\u00e9lbe\u00e1ll\u00edt\u00e1s megad\u00e1s\u00e1val konkr\u00e9t v\u00e1rakoztatott \u00f6sszetev\u0151k folytat\u00e1s\u00e1t is meghat\u00e1rozhatja.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tT\u00f6rli a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny \u00f6sszes gyors\u00edt\u00f3t\u00e1razott inform\u00e1ci\u00f3it.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="a c\u00e9l arch\u00edvumf\u00e1jl \u00fatvonala"
-option-desc.dump.archive=\tAdja meg a ki\u00edrat\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \
-      \n\
-\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\
-\t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\
-\ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\
-\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\
-\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\
-\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\
-\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. 
-option-desc.package.archive=\tAdja meg a csomagol\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \
-      \n\
-\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\
-\t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\
-\ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\
-\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\
-\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\
-\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\
-\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. A "jar" arch\u00edv form\u00e1tum \n\
-\ta "runnable" \u00e9rt\u00e9kkel az --include param\u00e9teren futtathat\u00f3 jar f\u00e1jlt hoz l\u00e9tre, \n\
-\tamely a jar f\u00e1jlb\u00f3l a java -jar haszn\u00e1lat\u00e1val futtathatja a Liberty \n\
-\tkiszolg\u00e1l\u00f3t.
+option-desc.dump.archive=\tAdja meg a ki\u00edrat\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \n\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. 
+option-desc.package.archive=\tAdja meg a csomagol\u00e1si m\u0171velet \u00e1ltal el\u0151\u00e1ll\u00edtott arch\u00edvum c\u00e9lt. \n\tA c\u00e9l megadhat\u00f3 abszol\u00fat \u00fatvonalk\u00e9nt vagy relat\u00edv    \n\t\u00fatvonalk\u00e9nt. Ha nem adja meg ezt a param\u00e9tert, akkor az arch\u00edvumf\u00e1jl\n\ta kiszolg\u00e1l\u00f3 kimeneti k\u00f6nyvt\u00e1r\u00e1ban j\u00f6n l\u00e9tre. A c\u00e9l f\u00e1jln\u00e9v          \n\tkiterjeszt\u00e9se befoly\u00e1solhatja az el\u0151\u00e1ll\u00edtott arch\u00edvum form\u00e1tum\u00e1t. A csomagol\u00e1s m\u0171velet\n\talap\u00e9rtelmezett arch\u00edvumform\u00e1tuma z/OS rendszeren "pax", egy\u00e9b platformokon\n\t"zip". A "jar" arch\u00edv form\u00e1tum az eredeti telep\u00edt\u0151 arch\u00edvumhoz   \n\thasonl\u00f3 \u00f6nkicsomagol\u00f3 jar f\u00e1jlt hoz l\u00e9tre. A "jar" arch\u00edv form\u00e1tum \n\ta "runnable" \u00e9rt\u00e9kkel az --include param\u00e9teren futtathat\u00f3 jar f\u00e1jlt hoz l\u00e9tre, \n\tam\
+    ely a jar f\u00e1jlb\u00f3l a java -jar haszn\u00e1lat\u00e1val futtathatja a Liberty \n\tkiszolg\u00e1l\u00f3t.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=\u00e9rt\u00e9k,\u00e9rt\u00e9k,...
-option-desc.javadump.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: heap, system \n\
-\tthread.
-option-desc.package.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: all*, usr,   \n\
-\tminify, runnable, wlp. Ha a "runnable" \u00e9rt\u00e9ket adja meg, az eredm\u00e9ny\u00fcl kapott csomag\n\
-\ta kiszolg\u00e1l\u00f3t futtat\u00f3 v\u00e9grehajthat\u00f3 jar lesz. A "minify" param\u00e9ter \n\
-\ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan\n\
-\tcsomagot hoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si \n\
-\tk\u00f6rnyezetet nem. A wlp param\u00e9ter olyan fut\u00e1si k\u00f6rnyezetet hoz l\u00e9tre, amely nem \n\
-\ttartalmazza a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t. Az alap\u00e9rtelmezett all param\u00e9ter egy mindent\n\
-\ttartalmaz\u00f3 kiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
+option-desc.javadump.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: heap, system \n\tthread.
+option-desc.package.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: all*, usr,   \n\tminify, runnable, wlp. Ha a "runnable" \u00e9rt\u00e9ket adja meg, az eredm\u00e9ny\u00fcl kapott csomag\n\ta kiszolg\u00e1l\u00f3t futtat\u00f3 v\u00e9grehajthat\u00f3 jar lesz. A "minify" param\u00e9ter \n\ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan\n\tcsomagot hoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si \n\tk\u00f6rnyezetet nem. A wlp param\u00e9ter olyan fut\u00e1si k\u00f6rnyezetet hoz l\u00e9tre, amely nem \n\ttartalmazza a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t. Az alap\u00e9rtelmezett all param\u00e9ter egy mindent\n\ttartalmaz\u00f3 kiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="sablonN\u00e9v"
 option-desc.template=\tAdja meg a sablon nev\u00e9t az \u00faj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1hoz. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.target=\ \ \ \ --c\u00e9l=\u00e9rt\u00e9k,\u00e9rt\u00e9k
-option-desc.target=\tA v\u00e1rakoztathat\u00f3 vagy folytathat\u00f3 \u00f6sszetev\u0151k vessz\u0151vel\n\
-\telv\u00e1lasztott list\u00e1j\u00e1t hat\u00e1rozza meg.
+option-desc.target=\tA v\u00e1rakoztathat\u00f3 vagy folytathat\u00f3 \u00f6sszetev\u0151k vessz\u0151vel\n\telv\u00e1lasztott list\u00e1j\u00e1t hat\u00e1rozza meg.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=\u00e9rt\u00e9k,\u00e9rt\u00e9k,...
-option-desc.os=\t Megadja az oper\u00e1ci\u00f3s rendszereket, amelyeket a csomagolt kiszolg\u00e1l\u00f3\n\
-\tt\u00e1mogat. Egy vessz\u0151vel elv\u00e1lasztott list\u00e1t adjon meg. Az             \n\
-\talap\u00e9rtelmezett \u00e9rt\u00e9k any, ami azt jelzi, hogy a kiszolg\u00e1l\u00f3 a forr\u00e1s \n\
-\t\u00e1ltal t\u00e1mogatott b\u00e1rmely oper\u00e1ci\u00f3s rendszerre telep\u00edthet\u0151.                                      \n\
-\tAnnak megad\u00e1s\u00e1hoz, hogy egy oper\u00e1ci\u00f3s rendszer nem t\u00e1mogatott, adjon \n\
-\thozz\u00e1 el\u0151tagk\u00e9nt egy m\u00ednusz jelet ("-"). Az oper\u00e1ci\u00f3s rendszer       \n\
-\t\u00e9rt\u00e9kek list\u00e1j\u00e1\u00e9rt tekintse meg az OSGi Alliance webhelyet az al\u00e1bbi \n\
-\tURL c\u00edmen:                                                           \n\
-\thttp://www.osgi.org/Specifications/Reference#os                      \n\
-\tEz a param\u00e9ter csak a package m\u0171velethez \u00e9rv\u00e9nyes, \u00e9s kiz\u00e1r\u00f3lag az   \n\
-\t--include=minify param\u00e9terrel haszn\u00e1lhat\u00f3. Ha kiz\u00e1r egy oper\u00e1ci\u00f3s    \n\
-\trendszert, akkor k\u00e9s\u0151bb nem foglalhatja azt bele, ha megism\u00e9tli a    \n\
-\tminify m\u0171veletet az arch\u00edvumon.
+option-desc.os=\t\ Megadja az oper\u00e1ci\u00f3s rendszereket, amelyeket a csomagolt kiszolg\u00e1l\u00f3\n\tt\u00e1mogat. Egy vessz\u0151vel elv\u00e1lasztott list\u00e1t adjon meg. Az             \n\talap\u00e9rtelmezett \u00e9rt\u00e9k any, ami azt jelzi, hogy a kiszolg\u00e1l\u00f3 a forr\u00e1s \n\t\u00e1ltal t\u00e1mogatott b\u00e1rmely oper\u00e1ci\u00f3s rendszerre telep\u00edthet\u0151.                                      \n\tAnnak megad\u00e1s\u00e1hoz, hogy egy oper\u00e1ci\u00f3s rendszer nem t\u00e1mogatott, adjon \n\thozz\u00e1 el\u0151tagk\u00e9nt egy m\u00ednusz jelet ("-"). Az oper\u00e1ci\u00f3s rendszer       \n\t\u00e9rt\u00e9kek list\u00e1j\u00e1\u00e9rt tekintse meg az OSGi Alliance webhelyet az al\u00e1bbi \n\tURL c\u00edmen:                                                           \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tEz a param\u00e9ter csak a package m\u0171velethez \u00e9rv\u00e9nyes, \u00e9s kiz\u00e1r\u00f3lag az  \
+    \ \n\t--include=minify param\u00e9terrel haszn\u00e1lhat\u00f3. Ha kiz\u00e1r egy oper\u00e1ci\u00f3s    \n\trendszert, akkor k\u00e9s\u0151bb nem foglalhatja azt bele, ha megism\u00e9tli a    \n\tminify m\u0171veletet az arch\u00edvumon.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tAlap\u00e9rtelmezett kulcst\u00e1rol\u00f3 jelsz\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1nak letilt\u00e1sa
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa az arch\u00edvumban"
 option-desc.package.server-root=\tA gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa nev\u00e9t hat\u00e1rozza meg az arch\u00edv f\u00e1jlban.  \n
-#------------------------------\n\
-\ at 72 chars -- leading tab-----------\n\
-\#
 option-key.force=\ \ \ \ --force
-option-desc.stop.force=\tKihagyja a t\u00e9tlens\u00e9gi szakaszt, miel\u0151tt a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl. A norm\u00e1l kiszolg\u00e1l\u00f3 \n\
-\tle\u00e1ll\u00edt\u00e1s tartalmaz egy t\u00e9tlens\u00e9gi szakaszt, miel\u0151tt a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl. A    \n\
-\t30 m\u00e1sodperces t\u00e9tlens\u00e9gi szakasz lehet\u0151v\u00e9 teszi, hogy a szolg\u00e1ltat\u00e1sok egy el\u0151le\u00e1ll\u00edt\u00e1st hajtsanak\n\
-\tv\u00e9gre; p\u00e9ld\u00e1ul a bej\u00f6v\u0151 figyel\u0151k le\u00e1ll\u00edt\u00e1sra ker\u00fclnek, de a megl\u00e9v\u0151\n\
-\tk\u00e9r\u00e9sek v\u00e9grehajt\u00e1sa m\u00e9g megengedett. A --force param\u00e9ternek nincs \n\
-\that\u00e1sa, ha a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa m\u00e1r megh\u00edv\u00e1sra ker\u00fclt. A --force \n\
-\tparam\u00e9ter haszn\u00e1lata eset\u00e9n v\u00e1ratlan kiv\u00e9telek jelenhetnek meg a messages.log f\u00e1jlban, \n\
-\tmiut\u00e1n a kiszolg\u00e1l\u00f3 megkapta a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa parancsot. 
+option-desc.stop.force=\tKihagyja a le\u00e1ll\u00edt\u00e1si szakaszt, miel\u0151tt a kiszolg\u00e1l\u00f3 le\u00e1ll. A norm\u00e1l kiszolg\u00e1l\u00f3\n le\u00e1ll\u00edt\u00e1s z\u00e1rol\u00e1si szakaszt tartalmaz a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa el\u0151tt. A \nfelf\u00fcggeszt\u00e9si szakasz, 30 m\u00e1sodperc, lehet\u0151v\u00e9 teszi a szolg\u00e1ltat\u00e1sok sz\u00e1m\u00e1ra az \nel\u0151zetes le\u00e1ll\u00edt\u00e1si munka v\u00e9grehajt\u00e1s\u00e1t; p\u00e9ld\u00e1ul a bej\u00f6v\u0151 figyel\u0151k le\u00e1ll\u00edt\u00e1sra ker\u00fclnek, de a \nmegl\u00e9v\u0151 k\u00e9r\u00e9sek befejez\u0151dhetnek. A -- force param\u00e9ternek \nnincs hat\u00e1sa, ha a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa m\u00e1r megh\u00edv\u00e1sra ker\u00fclt. Ha a -- force \n opci\u00f3t haszn\u00e1lja, a messages.log f\u00e1jlban v\u00e1ratlan kiv\u00e9telek jelennek meg, \n amelyek a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa parancs ut\u00e1n t\u00f6rt\u00e9\
+    ntek. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\ \ \ \ --timeout
+option-desc.stop.timeout=\tBe\u00e1ll\u00edtja a "server stop" parancs maxim\u00e1lis idej\u00e9t a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1nak \nmeger\u0151s\u00edt\u00e9s\u00e9hez.  Adjon meg egy pozit\u00edv eg\u00e9sz sz\u00e1mot\n, amelyet egy id\u0151egys\u00e9g k\u00f6vet, amely perceket (m) \u00e9s \nm\u00e1sodperc(ek)et tartalmazhat. P\u00e9ld\u00e1ul adja meg a 2.5 percet --timeout=2m30s \n vagy --timeout=150s \u00e9rt\u00e9kk\u00e9nt.                                                   \n\t                                                                     \n\tAz alap\u00e9rtelmezett id\u0151korl\u00e1t \u00e9rt\u00e9ke 30 m\u00e1sodperc. Ha a kiszolg\u00e1l\u00f3 30 m\u00e1sodpercn\u00e9l \nhosszabb ideig tart, fontolja meg az id\u0151korl\u00e1t \u00e9rt\u00e9k\u00e9nek n\u00f6vel\u00e9s\u00e9t a -- timeout\n param\u00e9ter haszn\u00e1lat\u00e1val.                                 \n

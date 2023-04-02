@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -48,12 +50,8 @@ public class MetricRemovalTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    /*
-     * Temporarily use repeatDefaultNoMp60Set over repeatDefault to accomodate
-     * merging mpMetrics-5.0
-     */
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefaultNoMp60Set(SERVER_NAME)
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
                     .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     // FT 1.x, 2.x & Metrics 2.0+

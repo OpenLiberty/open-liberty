@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -153,7 +155,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> serverConfigPaths = new HashSet<String>();
     private boolean calledForServers = false;
     private boolean calledForServerConfigPaths = false;
-    private boolean useCachedServers;
 
     private static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     private static final String pathToAutoFVTTestServers = "publish/servers/";
@@ -294,6 +295,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
     public FeatureReplacementAction withMinJavaLevel(int javaLevel) {
         this.minJavaLevel = javaLevel;
         return this;
+    }
+
+    public int getMinJavaLevel() {
+        return this.minJavaLevel;
     }
 
     public FeatureReplacementAction fullFATOnly() {
@@ -443,7 +448,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public void setup() throws Exception {
-        final String m = "setup";
 
         //check that there are actually some features or options to be added or removed
         assertFalse("No features or options were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0 && optionsToAdd.size() == 0);
@@ -613,7 +617,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         }
         // Make sure config updates are pushed to the liberty install's copy of the servers & clients
         for (String serverName : servers)
-            LibertyServerFactory.getLibertyServer(serverName, null, !useCachedServers);
+            LibertyServerFactory.getLibertyServer(serverName);
         for (String clientName : clients)
             LibertyClientFactory.getLibertyClient(clientName);
     }
@@ -886,11 +890,5 @@ public class FeatureReplacementAction implements RepeatTestAction {
         } else {
             return getClass().getSimpleName() + "  REMOVE " + removeFeatures + "  ADD " + addFeatures;
         }
-    }
-
-    @Override
-    public RepeatTestAction useCachedServers() {
-        useCachedServers = true;
-        return this;
     }
 }

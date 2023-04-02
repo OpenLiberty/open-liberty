@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -18,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -75,6 +80,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverA.startServer();
 
+        TimeUnit.SECONDS.sleep(10);
+
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
         // cluster and not join to the cluster created on serverA.
@@ -83,6 +90,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
+
+        TimeUnit.SECONDS.sleep(10);
     }
 
     @AfterClass
@@ -91,11 +100,17 @@ public class SessionCacheTwoServerTest extends FATServletClient {
             testFailover();
         } finally {
             try {
-                if (serverA.isStarted())
+                if (serverA.isStarted()) {
+                    Log.info(SessionCacheTwoServerTest.class, "tearDown", "Start server A shutdown");
                     serverA.stopServer();
+                }
+            } catch (Exception e) {
+                Log.info(SessionCacheTwoServerTest.class, "tearDown", "Ignoring exception due to slow test machine during server shutdown");
             } finally {
-                if (serverB.isStarted())
+                if (serverB.isStarted()) {
+                    Log.info(SessionCacheTwoServerTest.class, "tearDown", "Start server B shutdown");
                     serverB.stopServer();
+                }
             }
         }
     }

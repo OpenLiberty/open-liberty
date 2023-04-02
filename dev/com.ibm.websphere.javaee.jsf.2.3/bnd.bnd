@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -24,15 +26,15 @@ DynamicImport-Package: com.ibm.ws.jsf.spi, \
                 org.apache.myfaces.spi
   
 Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/javax/faces, \
-	@${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/javax/faces, \
+	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	org.apache.myfaces.core.api;strategy=exact;version=${Implementation-Version},\
+	org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\

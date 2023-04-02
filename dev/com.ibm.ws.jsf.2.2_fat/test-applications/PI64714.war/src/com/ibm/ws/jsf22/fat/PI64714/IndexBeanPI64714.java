@@ -1,13 +1,12 @@
-/*
- * Copyright (c)  2016  IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.PI64714;
 
 import java.util.ArrayList;
@@ -24,26 +23,24 @@ import javax.inject.Named;
 @RequestScoped
 public class IndexBeanPI64714 {
 
-	private String data1;
-	
-	public String getData1() {
-		return data1;
-	}
+    private String data1;
 
-	public void validateData1(FacesContext context, UIComponent component, Object value) {
-		if (value == null) {
-			List<FacesMessage> messageList = new ArrayList();
-			messageList.add(new FacesMessage(FacesMessage.SEVERITY_FATAL,
-				"ValidatorException#SEVERITY_FATAL", "ValidatorException#SEVERITY_FATAL"));
-			throw new ValidatorException(messageList);
-		}
-	}
+    public String getData1() {
+        return data1;
+    }
 
-	public String execute() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL,
-			"FacesContext#SEVERITY_FATAL", "FacesContext#SEVERITY_FATAL"));
-		return "index2";
-	}
+    public void validateData1(FacesContext context, UIComponent component, Object value) {
+        if (value == null) {
+            List<FacesMessage> messageList = new ArrayList();
+            messageList.add(new FacesMessage(FacesMessage.SEVERITY_FATAL, "ValidatorException#SEVERITY_FATAL", "ValidatorException#SEVERITY_FATAL"));
+            throw new ValidatorException(messageList);
+        }
+    }
+
+    public String execute() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "FacesContext#SEVERITY_FATAL", "FacesContext#SEVERITY_FATAL"));
+        return "index2";
+    }
 
 }

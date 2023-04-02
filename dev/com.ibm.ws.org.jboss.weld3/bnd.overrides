@@ -1,3 +1,13 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
@@ -16,10 +26,10 @@ DynamicImport-Package: *
 Export-Package: !org.jboss.weld.environment.se.*, \
  org.jboss.*;version="3.1.8.Final", \
  org.jboss.weldx.transaction;version="1.0.16", \
- !org.jboss.weld.bean.proxy.util\
+ !org.jboss.weld.bean.proxy.util, \
  !org.jboss.weld.proxy
 Private-Package: org.jboss.weld.environment.se.*, \
- org.jboss.weld.bean.proxy.util\
+ org.jboss.weld.bean.proxy.util, \
  org.jboss.weld.proxy
 Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";re\
  solution:=optional,javax.faces.application;resolution:=optional,javax.f\
@@ -63,12 +73,14 @@ Service-Component: \
       packages=org.jboss.weld.annotated\
         |org.jboss.weld.annotated.slim\
         |org.jboss.weld.annotated.slim.backed\
+        |org.jboss.weld.annotated.slim.unbacked\
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
         |org.jboss.weld.contexts.beanstore\
         |org.jboss.weld.contexts.conversation\
         |org.jboss.weld.contexts\
         |org.jboss.weld.ejb\
+        |org.jboss.weld.event\
         |org.jboss.weld.injection\
         |org.jboss.weld.injection.attributes\
         |org.jboss.weld.literal\

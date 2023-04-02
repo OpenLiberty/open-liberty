@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -232,12 +234,14 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
         return transportConfig = TransportConfig.builder() //
-                                                .dockerHost(config.getDockerHost()) //
-                                                .sslConfig(config.getSSLConfig()) //
-                                                .build();
+                        .dockerHost(config.getDockerHost()) //
+                        .sslConfig(config.getSSLConfig()) //
+                        .build();
     }
 
     private class AvailableDockerHostFilter implements ExternalTestServiceFilter {
+        private static final int THIRTY_SECONDS = 30000;
+
         @Override
         public boolean isMatched(ExternalTestService dockerService) {
             String m = "isMatched";
@@ -296,45 +300,29 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
         public void test() throws InvalidConfigurationException {
             final String m = "test";
-            final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
 
             config = DefaultDockerClientConfig.createDefaultConfigBuilder() //
-                                              .withRegistryUsername(null) //
-                                              .withDockerHost(System.getProperty("DOCKER_HOST")) //
-                                              .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY")) //
-                                              .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH")) //
-                                              .build();
+                            .withRegistryUsername(null) //
+                            .withDockerHost(System.getProperty("DOCKER_HOST")) //
+                            .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY")) //
+                            .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH")) //
+                            .build();
 
-            Throwable firstIssue = null;
-            for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-                try {
-                    Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
-                    String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
-                    Log.info(c, m, "  Pinging URL: " + dockerHost);
-                    SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
-                    String resp = new HttpsRequest(dockerHost + "/_ping") //
-                                                                         .sslSocketFactory(sslSf) //
-                                                                         .run(String.class);
-                    Log.info(c, m, "  Ping successful. Response: " + resp);
-                    return;
-                } catch (Throwable t) {
-                    Log.error(c, m, t, "  Ping failed.");
-                    if (firstIssue == null)
-                        firstIssue = t;
-                    if (attempt < maxAttempts) {
-                        int sleepForSec = 15;
-                        Log.info(c, m, "Waiting " + sleepForSec + " seconds before attempting again");
-                        try {
-                            Thread.sleep(sleepForSec * 1000);
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                }
+            try {
+                String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
+                Log.info(c, m, "Pinging URL: " + dockerHost);
+                SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
+                String resp = new HttpsRequest(dockerHost + "/_ping") //
+                                .timeout(THIRTY_SECONDS)
+                                .sslSocketFactory(sslSf) //
+                                .run(String.class);
+                Log.info(c, m, "Ping successful. Response: " + resp);
+                return;
+            } catch (InvalidConfigurationException e) {
+                throw e;
+            } catch (Throwable t) {
+                throw new InvalidConfigurationException("Ping failed", t);
             }
-            if (firstIssue instanceof InvalidConfigurationException)
-                throw (InvalidConfigurationException) firstIssue;
-            else
-                throw new InvalidConfigurationException("Ping failed", firstIssue);
         }
     }
 
@@ -450,7 +438,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * substitution for synthetic images, and programmatically committed images.
      * This will be determined on an image-to-image basis
      *
-     * @see ArtifactoryImageNameSubstitutor#apply(org.testcontainers.utility.DockerImageName)
+     * @see    ArtifactoryImageNameSubstitutor#apply(org.testcontainers.utility.DockerImageName)
      *
      * @return true, we are using the substitutor, false otherwise.
      */

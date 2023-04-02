@@ -1,13 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -66,7 +65,7 @@ public class JSFServerTest {
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "TestJSF2.2.war", "com.ibm.ws.fat.jsf22.basic.*");
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FaceletsResourceResolverAnnotation.war", "com.ibm.ws.jsf22.resourceresolver");
 
-        jsfTestServer1.startServer(JSFServerTest.class.getSimpleName() + ".log");
+        jsfTestServer1.startServer(c.getSimpleName() + ".log");
 
     }
 
@@ -163,7 +162,8 @@ public class JSFServerTest {
      */
     @Test
     public void testWASMyFacesAnnotationProvider() throws Exception {
-        String msgToSearchFor = "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
+        String msgToSearchFor = JakartaEE10Action
+                        .isActive() ? "io.openliberty.faces40.internal.config.annotation.WASMyFacesAnnotationProvider" : "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
 
         // Check the trace.log to see if the WASMyFacesAnnotationProvider has any entry trace.
         String isWASMyFacesAnnotationProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);

@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -33,11 +35,11 @@ Private-Package:\
  com.ibm.ws.jaxws.tools, \
  com.ibm.ws.jaxws.tools.*, \
  io.openliberty.xmlWS30.tools.ant, \
- com.sun.tools.ws.wscompile;-split-package:=merge-last;version="3.0.0"
+ com.sun.tools.ws.wscompile;-split-package:=merge-last;version="3.0.2"
 
 -includeresource:\
- @${repo;com.sun.xml.ws:jaxws-rt;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
- @${repo;com.sun.xml.ws:jaxws-tools;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
+ @${repo;com.sun.xml.ws:jaxws-rt;3.0.2;EXACT}!/!(META-INF/maven/*|module-info.class), \
+ @${repo;com.sun.xml.ws:jaxws-tools;3.0.2;EXACT}!/!(META-INF/maven/*|module-info.class), \
  @${repo;com.sun.org.apache.xml.internal:resolver;20050927;EXACT}!/!META-INF/maven/*, \
  @${repo;org.jvnet.staxex:stax-ex;1.7.7;EXACT}!/!META-INF/maven/*, \
  @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3;EXACT}!/!META-INF/maven/*, \
@@ -46,7 +48,7 @@ Private-Package:\
 instrument.disabled: true
 
 -buildpath: \
-	com.sun.xml.ws:jaxws-tools;strategy=exact;version=3.0.0, \
+	com.sun.xml.ws:jaxws-tools;strategy=exact;version=3.0.2, \
     com.ibm.ws.jaxws.tools.2.2.10;version=latest,\
     io.openliberty.com.sun.xml.messaging.saaj.2.0;version=latest,\
 	io.openliberty.jakarta.xmlBinding.3.0;version=latest,\
@@ -54,7 +56,7 @@ instrument.disabled: true
 	io.openliberty.jakarta.xmlWS.3.0;version=latest,\
 	io.openliberty.jakarta.jws.3.0;version=latest,\
 	io.openliberty.jakarta.soap.2.0;version=latest,\
-	com.sun.xml.ws:jaxws-rt;strategy=exact;version=3.0.0, \
+	com.sun.xml.ws:jaxws-rt;strategy=exact;version=3.0.2, \
 	com.sun.org.apache.xml.internal:resolver;strategy=exact;version=20050927, \
 	org.jvnet.staxex:stax-ex;strategy=exact;version=1.7.7, \
 	com.sun.xml.stream.buffer:streambuffer;strategy=exact;version=1.5.3, \

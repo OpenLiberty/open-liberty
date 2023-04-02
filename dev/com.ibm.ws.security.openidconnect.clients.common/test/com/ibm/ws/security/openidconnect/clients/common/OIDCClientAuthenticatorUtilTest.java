@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -929,22 +931,35 @@ public class OIDCClientAuthenticatorUtilTest {
         try {
             final String originalState = TEST_ORIGINAL_STATE;
             final String cookieName = OidcStorageUtils.getStateStorageKey("notA" + originalState);
+            final Cookie[] cookies = new Cookie[] { cookie1 };
+            final ReferrerURLCookieHandler referrerURLCookieHandlerTwo = mock.mock(ReferrerURLCookieHandler.class, "referrerURLCookieHandlerTwo");
             mock.checking(new Expectations() {
                 {
                     allowing(convClientConfig).getClientId();
                     will(returnValue(CLIENT01));
                     one(req).getCookies();
                     will(returnValue(cookies));
+                    one(cookie1).getName();
+                    will(returnValue(cookieName));
+                    one(cookie1).getValue();
+                    will(returnValue(originalState));
                     one(convClientConfig).getClientSecret();
                     will(returnValue("clientsecret"));
                     one(convClientConfig).getClockSkewInSeconds();
                     will(returnValue(TEST_CLOCK_SKEW_IN_SECONDS));
                     one(convClientConfig).getAuthenticationTimeLimitInSeconds();
-                    will(returnValue(420L));
-                    one(referrerURLCookieHandler).invalidateCookie(req, res, cookieName, true);
+                    will(returnValue(420L));                   
+                    one(req).getRequestURL();
+                    will(returnValue(new StringBuffer(TEST_URL)));
+                    one(referrerURLCookieHandlerTwo).createCookie(with(any(String.class)), with(any(String.class)), with(any(HttpServletRequest.class)));
+                    will(returnValue(cookie1));
+                    one(cookie1).setMaxAge(0);
+                    one(res).addCookie(cookie1);
+                    
                 }
             });
-            OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
+            
+            OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandlerTwo);
 
             ProviderAuthenticationResult result = oidcCAUtil.verifyResponseState(req, res, "notA" + originalState, convClientConfig);
             assertNotNull("Did not get an expecyted result", result);

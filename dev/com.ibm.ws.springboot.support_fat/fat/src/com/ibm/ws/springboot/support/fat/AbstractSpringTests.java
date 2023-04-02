@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -60,7 +62,7 @@ public abstract class AbstractSpringTests {
     public static final String ID_KEY_STORE = "springBootKeyStore-";
     public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
-    public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
+    public static final String SPRING_BOOT_15_APP_BASE = "io.openliberty.springboot.test.version15.app-1.0.0.jar";
     public static final String SPRING_BOOT_20_APP_WAR = "com.ibm.ws.springboot.support.version20.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_JAVA = "com.ibm.ws.springboot.support.version20.test.java.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.support.version20.test.webanno.app-0.0.1-SNAPSHOT.jar";

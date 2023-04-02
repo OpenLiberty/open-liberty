@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -15,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -26,8 +29,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.channelfw.internal.ChannelDataImpl;
 import com.ibm.ws.channelfw.internal.InboundVirtualConnectionFactoryImpl;
@@ -42,6 +43,8 @@ import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
+
+import test.common.SharedOutputManager;
 
 /**
  * The methods common to HttpBaseMessage and lower are tested by the
@@ -58,7 +61,7 @@ public class HttpResponseMessageImplTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -69,7 +72,7 @@ public class HttpResponseMessageImplTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -80,7 +83,7 @@ public class HttpResponseMessageImplTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -94,7 +97,7 @@ public class HttpResponseMessageImplTest {
     /**
      * Create a new message for use and update the chain with the input
      * configuration key/value pair.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -116,8 +119,7 @@ public class HttpResponseMessageImplTest {
      */
     @Before
     public void setUp() {
-        this.cdi = new ChannelDataImpl("HTTP", null, new HashMap<Object, Object>(), 10,
-                        ChannelFrameworkFactory.getChannelFramework());
+        this.cdi = new ChannelDataImpl("HTTP", null, new HashMap<Object, Object>(), 10, ChannelFrameworkFactory.getChannelFramework());
         this.config = new HttpChannelConfig(this.cdi);
         MockInboundSC sc = new MockInboundSC(new InboundVirtualConnectionFactoryImpl().createConnection(), this.config);
         this.response = new MockResponseMessage(sc);
@@ -136,7 +138,7 @@ public class HttpResponseMessageImplTest {
 
     /**
      * Get access to the response message.
-     * 
+     *
      * @return HttpResponseMessageImpl
      */
     private HttpResponseMessageImpl getResponse() {
@@ -194,8 +196,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setHeader("Test", "TestValue");
 
             // @ Tested API - duplicate()
-            HttpResponseMessageImpl duplicate =
-                            (HttpResponseMessageImpl) getResponse().duplicate();
+            HttpResponseMessageImpl duplicate = (HttpResponseMessageImpl) getResponse().duplicate();
             assertNotNull(duplicate);
 
             // @ Tested API - marshallHeaders()
@@ -290,9 +291,9 @@ public class HttpResponseMessageImplTest {
             getResponse().clear();
             getResponse().setHeader(HttpHeaderKeys.HDR_SET_COOKIE,
                                     "TestCookie1=TestCookieValue1;"
-                                                    + "TestCookie2=TestCookieValue2;"
-                                                    + "TestCookie3=TestCookieValue3;"
-                                                    + "TestCookie4=TestCookieValue4");
+                                                                   + "TestCookie2=TestCookieValue2;"
+                                                                   + "TestCookie3=TestCookieValue3;"
+                                                                   + "TestCookie4=TestCookieValue4");
             cookieList = getResponse().getAllCookies();
             assertNotNull(cookieList);
             assertEquals(4, cookieList.size());
@@ -652,7 +653,7 @@ public class HttpResponseMessageImplTest {
             assertTrue(getResponse().containsHeader("split-header1"));
             assertEquals("split_appendHeader_BEGIN1_?_END1:it",
                          getResponse().getHeader("split-header1").asString());
-            
+
             getResponse().clear();
             getResponse().appendHeader("split-header2", "split_\r\n \n appendHeader_BEGIN2_\u570A_END2:it");
             mData = duplicateBuffers(getResponse().marshallMessage());
@@ -663,7 +664,7 @@ public class HttpResponseMessageImplTest {
             assertTrue(getResponse().containsHeader("split-header2"));
             assertEquals("split_     appendHeader_BEGIN2_?_END2:it",
                          getResponse().getHeader("split-header2").asString());
-            
+
             // test not adding the headers
             createNewMessage(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE, "false");
             getResponse().setHeader("Set-Cookie", "jsessionid=nocache_false");
@@ -697,7 +698,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setContentLength(0);
             assertEquals(0, getResponse().getContentLength());
 
-            // Test setting long values                     
+            // Test setting long values
             getResponse().clear();
             getResponse().setContentLength(Integer.MAX_VALUE + 1L);
             assertEquals(Integer.MAX_VALUE + 1L, getResponse().getContentLength());
@@ -825,4 +826,136 @@ public class HttpResponseMessageImplTest {
         }
     }
 
+    /**
+     * This test validates that for an invalid header name we get IllegalArgumentException for
+     * set and append operations. get, remove and contains methods should just no-op meaning
+     * that they should NOT populate the HeaderStorage with a HeaderKeys object. If it would then
+     * we would no longer get IllegalArgumentExceptions because once a HeaderKeys object is created
+     * we know that it was a valid headerName.
+     */
+    @Test
+    public void testInvalidHeaderName() {
+
+        // loop twice to make sure that nothing gets added to make it not throw an exception
+        String[] invalidHeaderNames = new String[] { "(0)", "2\n3", "4\r5" };
+        String valueString = "value";
+        byte[] valueBytes = valueString.getBytes();
+        HttpResponseMessageImpl r = getResponse();
+        for (String invalidHeaderName : invalidHeaderNames) {
+            byte[] invalidHeaderNameBytes = invalidHeaderName.getBytes();
+            for (int i = 0; i < 2; ++i) {
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                assertFalse(r.containsHeader(invalidHeaderNameBytes));
+
+                assertFalse(r.containsHeader(invalidHeaderName));
+
+                assertEquals(0, r.getAllHeaderNames().size());
+
+                assertNull(r.getHeader(invalidHeaderNameBytes).getKey());
+
+                assertNull(r.getHeader(invalidHeaderName).getKey());
+
+                assertEquals(0, r.getHeaders(invalidHeaderNameBytes).size());
+
+                assertEquals(0, r.getHeaders(invalidHeaderName).size());
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderNameBytes));
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderName));
+
+                assertEquals(0, r.getNumberOfHeaders());
+
+                r.removeHeader(invalidHeaderNameBytes);
+
+                r.removeHeader(invalidHeaderNameBytes, 1);
+
+                r.removeHeader(invalidHeaderName);
+
+                r.removeHeader(invalidHeaderName, 1);
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+            }
+        }
+    }
 }

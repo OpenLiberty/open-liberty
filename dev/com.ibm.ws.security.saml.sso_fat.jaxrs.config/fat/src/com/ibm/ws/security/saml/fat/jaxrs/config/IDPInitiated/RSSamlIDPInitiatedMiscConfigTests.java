@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -153,22 +155,79 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
      *
      * @throws Exception
      */
-    @Test
-    public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces() throws Exception {
+    /**
+     * Update test as runtime was updated to honor
+     * RFC 9110 - disallow spaces
+     *
+     * @throws Exception
+     */
+    public void common_headerName_withSpaces(String format, String headerName, int status) throws Exception {
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
         RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        String headerName = "Some value with  spaces.";
         updatedProviderSettings.setHeaderName(headerName);
 
         // Update the header name in the test settings
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         RSSettings rsSettings = updatedTestSettings.getRSSettings();
         rsSettings.setHeaderName(headerName);
+        rsSettings.setHeaderFormat(format);
 
-        List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, updatedTestSettings);
+        List<validationData> expectations = null;
+        if (status == SAMLConstants.BAD_REQUEST_STATUS) {
+            expectations = vData.addSuccessStatusCodes(null, SAMLConstants.INVOKE_JAXRS_GET);
+            expectations = vData.addResponseStatusExpectation(expectations, SAMLConstants.INVOKE_JAXRS_GET, status);
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_JAXRS_GET, SAMLConstants.RESPONSE_MESSAGE, SAMLConstants.STRING_CONTAINS, "Did not get a failure because the header name contained spaces.", null, SAMLConstants.BAD_REQUEST);
+        } else {
+            commonUtils.getGoodExpectationsForJaxrsGet(flowType, updatedTestSettings);
+        }
 
         generalConfigTest(updatedRsSamlSettings, expectations, updatedTestSettings);
+    }
+
+    /**
+     * Pass header as Authorization=<header>=<value>
+     *
+     * @throws Exception
+     */
+    @Test
+    public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderEqualsValue() throws Exception {
+
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+    }
+
+    /**
+     * Pass header as Authorization=<header>="<value>"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderEqualsQuotedValue() throws Exception {
+
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+    }
+
+    /**
+     * Pass header as Authorization=<header> <value>
+     *
+     * @throws Exception
+     */
+    @Test
+    public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatHeaderSpaceValue() throws Exception {
+
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE, "Some value with  spaces.", SAMLConstants.OK_STATUS);
+    }
+
+    /**
+     * Pass header as <header>=<value>
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
+    @Test
+    public void RSSamlIDPInitiatedConfigTests_headerName_nonEmptyWithSpaces_formatNoAuthHeaderEqualsValue() throws Exception {
+
+        common_headerName_withSpaces(SAMLConstants.HEADER_FORMAT_NAME_EQUALS_VALUE, "Some value with  spaces.", SAMLConstants.BAD_REQUEST_STATUS);
     }
 
     /**************************************

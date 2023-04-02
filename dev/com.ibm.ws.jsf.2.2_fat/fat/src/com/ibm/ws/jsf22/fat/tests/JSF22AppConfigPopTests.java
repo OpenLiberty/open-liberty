@@ -1,13 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -35,6 +34,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -43,7 +43,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22AppConfigPopTests {
 
     @Rule
@@ -67,7 +66,7 @@ public class JSF22AppConfigPopTests {
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, war);
 
-        jsfTestServer2.startServer(JSF22AppConfigPopTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -133,6 +132,8 @@ public class JSF22AppConfigPopTests {
      * @throws Exception
      */
     @Test
+    // Faces ManagedBeans are not supported in Faces 4.0.
+    @SkipForRepeat(EE10_FEATURES)
     public void testAppPopConfiguredSimpleBean() throws Exception {
 
         this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
@@ -147,6 +148,8 @@ public class JSF22AppConfigPopTests {
      * @throws Exception
      */
     @Test
+    // Faces ManagedBeans/managed-property are not supported in Faces 4.0.
+    @SkipForRepeat(EE10_FEATURES)
     public void testAppPopConfiguredMPBean() throws Exception {
 
         try (WebClient webClient = new WebClient()) {
@@ -185,7 +188,6 @@ public class JSF22AppConfigPopTests {
     @Test
     public void testACPNavigationRule() throws Exception {
         try (WebClient webClient = new WebClient()) {
-
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "nav.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -196,7 +198,7 @@ public class JSF22AppConfigPopTests {
             assertTrue(page.asText().contains("This page verifies Application Configuration Populator changes take effect through a navigation rule."));
 
             // Click the commandButton to execute the methods and update the page
-            HtmlElement button = (HtmlElement) page.getElementById("BasicNavTest:navLink");
+            HtmlElement button = (HtmlElement) page.getElementById("BasicNavTest:navButton");
             page = button.click();
 
             if (!page.asText().contains("SUCCESS")) {
@@ -212,7 +214,13 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     public void testAppPopConfiguredPhaseListener() throws Exception {
-        this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
+        if (JakartaEE10Action.isActive()) {
+            // Drive a request to a Facelet to verify the PhaseListener.
+            this.verifyResponse(contextRoot, "simpleView.jsf", jsfTestServer2, "Hello from simpleView.xhtml!");
+        } else {
+            this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
+        }
+
         String msg = "JSF22:ACP beforePhase called.";
         assertTrue(jsfTestServer2.findStringsInLogs(msg).size() > 0);
     }
@@ -224,7 +232,13 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     public void testAppPopConfiguredSystemEventListener() throws Exception {
-        this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
+        if (JakartaEE10Action.isActive()) {
+            // Drive a request to a Facelet to verify the SystemEventListener.
+            this.verifyResponse(contextRoot, "simpleView.jsf", jsfTestServer2, "Hello from simpleView.xhtml!");
+        } else {
+            this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
+        }
+
         String msg = "JSF22:  AOP System event listener called.";
         assertTrue(jsfTestServer2.findStringsInLogs(msg).size() > 0);
     }

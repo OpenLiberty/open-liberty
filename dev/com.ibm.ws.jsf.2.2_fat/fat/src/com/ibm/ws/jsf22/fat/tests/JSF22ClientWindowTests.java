@@ -1,15 +1,15 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,10 +28,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -44,6 +44,7 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
 public class JSF22ClientWindowTests {
     @Rule
     public TestName name = new TestName();
@@ -64,17 +65,12 @@ public class JSF22ClientWindowTests {
         if (isEE10) {
             ShrinkHelper.defaultDropinApp(jsfTestServer2, APP_NAME_FACES40 + ".war",
                                           "com.ibm.ws.jsf22.fat.clientwindow.faces40");
-
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
         } else {
             ShrinkHelper.defaultDropinApp(jsfTestServer2, APP_NAME + ".war",
                                           "com.ibm.ws.jsf22.fat.clientwindow.jsf22");
         }
 
-        jsfTestServer2.startServer(JSF22ClientWindowTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

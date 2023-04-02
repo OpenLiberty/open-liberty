@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -186,7 +188,9 @@ public class AssertionErrorSerializer {
         JsonObjectBuilder builder = BUILDER_FACTORY.createObjectBuilder();
         builder.add(CLASS_NAME_KEY, stackTraceElement.getClassName());
         builder.add(METHOD_NAME_KEY, stackTraceElement.getMethodName());
-        builder.add(FILE_NAME_KEY, stackTraceElement.getFileName());
+        if (stackTraceElement.getFileName() != null) {
+            builder.add(FILE_NAME_KEY, stackTraceElement.getFileName());
+        }
         builder.add(LINE_NUMBER_KEY, stackTraceElement.getLineNumber());
         return builder.build();
     }
@@ -198,9 +202,9 @@ public class AssertionErrorSerializer {
      * @return A StackTraceElement instance
      */
     private static StackTraceElement deserializeStackTraceElement(JsonObject jsonObject) {
-        String declaringClass = jsonObject.getString(CLASS_NAME_KEY);
-        String methodName = jsonObject.getString(METHOD_NAME_KEY);
-        String fileName = jsonObject.getString(FILE_NAME_KEY);
+        String declaringClass = jsonObject.getString(CLASS_NAME_KEY, null);
+        String methodName = jsonObject.getString(METHOD_NAME_KEY, null);
+        String fileName = jsonObject.getString(FILE_NAME_KEY, null);
         int lineNumber = jsonObject.getInt(LINE_NUMBER_KEY);
         StackTraceElement element = new StackTraceElement(declaringClass, methodName, fileName, lineNumber);
         return element;

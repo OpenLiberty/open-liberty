@@ -1,12 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -46,11 +45,11 @@ Service-Component: \
 # Not used directly, so these packages needs to be dynamically imported
 DynamicImport-Package: \
   com.ibm.ws.jsf.cdi, \
-  com.ibm.ws.jsf.config.annotion,\
-  com.ibm.ws.jsf.config.resource,\
+  com.ibm.ws.jsf.config.annotion, \
+  com.ibm.ws.jsf.config.resource, \
   com.ibm.ws.jsf.ee, \
-  com.ibm.ws.jsf.spi.impl, \
-  com.ibm.ws.jsf.extprocessor
+  com.ibm.ws.jsf.extprocessor, \
+  com.ibm.ws.jsf.spi.impl
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -59,7 +58,7 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;2.3.9;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core:myfaces-impl;2.3.9;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -78,15 +77,15 @@ Export-Package: \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.cdi.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.search;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.visit;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.annotation;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.impl.digester.elements;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.el.convert;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
@@ -122,15 +121,15 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
-  !com.ibm.ws.jsf.ee, \
   !com.google.inject, \
+  !com.ibm.ws.jsf.ee, \
   !javax.ejb, \
   !javax.persistence, \
   !org.apache.tomcat, \
   *
 
 -buildpath: \
-  org.apache.myfaces.core.impl;strategy=exact;version=${Implementation-Version},\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
   com.ibm.ws.jsf.shared;version=latest,\
   com.ibm.websphere.javaee.jsf.2.3;version=latest,\

@@ -1,17 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.microprofile.graphql.metrics.component;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
-import org.eclipse.microprofile.metrics.annotation.RegistryType;
 
 import io.smallrye.graphql.api.Context;
 import io.smallrye.graphql.cdi.config.ConfigKey;
@@ -27,28 +32,8 @@ public class MetricsService implements EventingService {
 
     private final Map<Context, Long> startTimes = Collections.synchronizedMap(new IdentityHashMap<>());
 
-    @FFDCIgnore(Throwable.class) // note, only ignoring the first catch block - the second & third should still be logged to FFDC
     public MetricsService() {
-        Class<?> metricRegistryFactoryClass = null;
-        try {
-            metricRegistryFactoryClass = Class.forName("com.ibm.ws.microprofile.metrics.cdi23.producer.MetricRegistryFactory");
-        } catch (Throwable t) {
-            try {
-                metricRegistryFactoryClass = Class.forName("io.openliberty.microprofile.metrics.internal.cdi30.producer.MetricRegistryFactory");
-            } catch (Throwable t2) {
-                // Auto FFDC
-            }
-        }
-        if (metricRegistryFactoryClass == null) {
-            throw new RuntimeException("Unable to find MetricRegistryFactory implementation");
-        }
-        try {
-            Method getVendorRegisterMethod = metricRegistryFactoryClass.getMethod("getVendorRegistry");
-            metricRegistry =  (MetricRegistry) getVendorRegisterMethod.invoke(null);
-        } catch (Throwable t) {
-            // Auto FFDC
-            throw new RuntimeException("Unable to obtain vendor registry from MetricRegistryFactory");
-        }
+        metricRegistry = MetricsServiceComponent.getSharedMetricRegistries().getOrCreate(MetricRegistry.Type.VENDOR.getName());
     }
 
     @Override
@@ -76,7 +61,7 @@ public class MetricsService implements EventingService {
         if (startTime != null) {
             long duration = System.nanoTime() - startTime;
             metricRegistry.simpleTimer(getName(context))
-                    .update(Duration.ofNanos(duration));
+            .update(Duration.ofNanos(duration));
         }
     }
 

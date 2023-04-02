@@ -1,17 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.test.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,14 +24,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.channel.internal.HttpObjectFactory;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.channel.HttpTrailerGenerator;
 import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
+import test.common.SharedOutputManager;
 
 /**
  * Test the HTTP trailers class.
@@ -44,7 +49,7 @@ public class HttpTrailersImplTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -55,7 +60,7 @@ public class HttpTrailersImplTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -66,7 +71,7 @@ public class HttpTrailersImplTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -90,7 +95,7 @@ public class HttpTrailersImplTest {
 
     /**
      * Get access to the trailer header object itself.
-     * 
+     *
      * @return HttpTrailersImpl
      */
     private HttpTrailersImpl getTrailers() {
@@ -99,7 +104,7 @@ public class HttpTrailersImplTest {
 
     /**
      * Get access to the Content-Language generator
-     * 
+     *
      * @return HttpContentLanguageGenerator
      */
     private HttpContentLanguageGenerator getLangGen() {
@@ -247,7 +252,7 @@ public class HttpTrailersImplTest {
 
         /**
          * Create an object which will return the current date.
-         * 
+         *
          */
         public HttpContentLanguageGenerator() {
             // nothing to do
@@ -255,11 +260,11 @@ public class HttpTrailersImplTest {
 
         /**
          * Return a HDR_CONTENT_LANGUAGE Http header value
-         * 
+         *
          * @param hdr
-         *            the HTTP header to generate as a trailer.
+         *                    the HTTP header to generate as a trailer.
          * @param message
-         *            the message to append the trailer to.
+         *                    the message to append the trailer to.
          * @return the bytes comprising the value of the trailer.
          */
         @Override
@@ -269,16 +274,161 @@ public class HttpTrailersImplTest {
 
         /**
          * Return a HDR_CONTENT_LANGUAGE Http header value
-         * 
+         *
          * @param hdr
-         *            the HTTP header to generate as a trailer.
+         *                    the HTTP header to generate as a trailer.
          * @param message
-         *            the message to append the trailer to.
+         *                    the message to append the trailer to.
          * @return the bytes comprising the value of the trailer.
          */
         @Override
         public byte[] generateTrailerValue(String hdr, HttpTrailers message) {
             return ("en-US".getBytes());
+        }
+    }
+
+    /**
+     * This test validates that for an invalid header name we get IllegalArgumentException for
+     * set and append operations. get, remove and contains methods should just no-op meaning
+     * that they should NOT populate the HeaderStorage with a HeaderKeys object. If it would then
+     * we would no longer get IllegalArgumentExceptions because once a HeaderKeys object is created
+     * we know that it was a valid headerName.
+     */
+    @Test
+    public void testInvalidHeaderName() {
+
+        // loop twice to make sure that nothing gets added to make it not throw an exception
+        String[] invalidHeaderNames = new String[] { "(0)", "2\n3", "4\r5" };
+        String valueString = "value";
+        byte[] valueBytes = valueString.getBytes();
+        HttpTrailersImpl r = getTrailers();
+        for (String invalidHeaderName : invalidHeaderNames) {
+            byte[] invalidHeaderNameBytes = invalidHeaderName.getBytes();
+            for (int i = 0; i < 2; ++i) {
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                assertFalse(r.containsHeader(invalidHeaderNameBytes));
+
+                assertFalse(r.containsHeader(invalidHeaderName));
+
+                assertEquals(0, r.getAllHeaderNames().size());
+
+                assertNull(r.getHeader(invalidHeaderNameBytes).getKey());
+
+                assertNull(r.getHeader(invalidHeaderName).getKey());
+
+                assertEquals(0, r.getHeaders(invalidHeaderNameBytes).size());
+
+                assertEquals(0, r.getHeaders(invalidHeaderName).size());
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderNameBytes));
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderName));
+
+                assertEquals(0, r.getNumberOfHeaders());
+
+                r.removeHeader(invalidHeaderNameBytes);
+
+                r.removeHeader(invalidHeaderNameBytes, 1);
+
+                r.removeHeader(invalidHeaderName);
+
+                r.removeHeader(invalidHeaderName, 1);
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                // HttpTrailer specific APIs
+                assertFalse(r.containsDeferredTrailer(invalidHeaderName));
+
+                try {
+                    r.setDeferredTrailer(invalidHeaderName, null);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                r.removeDeferredTrailer(invalidHeaderName);
+            }
         }
     }
 }

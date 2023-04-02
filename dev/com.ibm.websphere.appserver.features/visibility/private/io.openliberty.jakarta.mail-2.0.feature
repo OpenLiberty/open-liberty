@@ -8,7 +8,7 @@ IBM-Process-Types: client, \
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakarta.activation-2.0
 -bundles=\
-  io.openliberty.jakarta.mail.2.0;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.mail:jakarta.mail-api:2.0.0",\
+  io.openliberty.jakarta.mail.2.0;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.mail:jakarta.mail-api:2.0.1",\
    io.openliberty.com.sun.mail.jakarta.mail.2.0
 kind=ga
 edition=core

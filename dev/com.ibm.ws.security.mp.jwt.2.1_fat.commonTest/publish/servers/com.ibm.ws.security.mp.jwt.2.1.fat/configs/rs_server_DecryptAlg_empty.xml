@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2022, 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+        
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<include location="${shared.config.dir}/rsFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+	<include location="${shared.config.dir}/microProfileApplication.xml" />
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml" />
+
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
+	<mpJwt
+		id="mpJwt_1"
+        authFilterRef="mpJwtAppAuthFilter"
+		jwksUri="${mpJwt_jwksUri}"
+		sslRef="ssl_allSigAlg"
+		keyName="rs256"
+		signatureAlgorithm="RS256"
+		keyManagementKeyAlias="rs256"
+		keyManagementKeyAlgorithm=""
+		issuer="testIssuer">
+		>
+	</mpJwt>
+
+    <authFilter id="mpJwtAppAuthFilter">
+        <requestUrl
+             id="mpJwtRequestUrl"
+             urlPattern="MicroProfileApp"
+             matchType="contains" />
+    </authFilter>
+
+</server>

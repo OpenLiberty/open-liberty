@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -358,18 +360,23 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
+        // Capture stdout/stderr streams
+        final PrintStream originalOut = System.out;
+        final PrintStream originalErr = System.err;
         // Setup file output stream and only keep if we fail
-        FileOutputStream fos = null;
+        PrintStream ps = null;
         File outputLog = new File("results/transformer_" + appPath.getFileName() + ".log");
         try {
-            fos = new FileOutputStream(outputLog);
+            FileOutputStream fos = new FileOutputStream(outputLog);
+            ps = new PrintStream(fos);
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
 
-        PrintStream ps = new PrintStream(fos);
-        System.setOut(ps);
-        System.setErr(ps);
+        if (ps != null) {
+            System.setOut(ps);
+            System.setErr(ps);
+        }
 
         try {
             Class.forName("org.eclipse.transformer.cli.JakartaTransformerCLI");
@@ -423,30 +430,28 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         try {
             // Invoke the jakarta transformer
-            String[] args = new String[(widen ? 16 : 15) + transformationRulesAppend.size() * 2];
+            String[] args = new String[(widen ? 15 : 14) + transformationRulesAppend.size() * 2];
 
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
 
-            args[2] = "-q"; // quiet output
-
             // override jakarta default properties, which are
             // packaged in the transformer jar
-            args[3] = "-tr"; // package-renames
-            args[4] = defaultTransformationRules.get("-tr");
-            args[5] = "-ts"; // file selections and omissions
-            args[6] = defaultTransformationRules.get("-ts");
-            args[7] = "-tv"; // package version updates
-            args[8] = defaultTransformationRules.get("-tv");
-            args[9] = "-tb"; // bundle identity updates
-            args[10] = defaultTransformationRules.get("-tb");
-            args[11] = "-td"; // exact java string constant updates
-            args[12] = defaultTransformationRules.get("-td");
-            args[13] = "-tf"; // text updates
-            args[14] = defaultTransformationRules.get("-tf");
+            args[2] = "-tr"; // package-renames
+            args[3] = defaultTransformationRules.get("-tr");
+            args[4] = "-ts"; // file selections and omissions
+            args[5] = defaultTransformationRules.get("-ts");
+            args[6] = "-tv"; // package version updates
+            args[7] = defaultTransformationRules.get("-tv");
+            args[8] = "-tb"; // bundle identity updates
+            args[9] = defaultTransformationRules.get("-tb");
+            args[10] = "-td"; // exact java string constant updates
+            args[11] = defaultTransformationRules.get("-td");
+            args[12] = "-tf"; // text updates
+            args[13] = defaultTransformationRules.get("-tf");
             // The widen option handles jars inside of jars.
             if (widen) {
-                args[15] = "-w";
+                args[14] = "-w";
             }
 
             // Go through the additions
@@ -457,7 +462,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                     additions[index++] = addition.getKey();
                     additions[index++] = addition.getValue();
                 }
-                System.arraycopy(additions, 0, args, widen ? 16 : 15, transformationRulesAppend.size() * 2);
+                System.arraycopy(additions, 0, args, widen ? 15 : 14, transformationRulesAppend.size() * 2);
             }
 
             Log.info(c, m, "Initializing transformer with args: " + Arrays.toString(args));
@@ -497,9 +502,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             Log.error(c, m, e);
             throw new RuntimeException(e);
         } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
+            if (ps != null) {
+                System.setOut(originalOut);
+                System.setErr(originalErr);
+                ps.close();
             }
             Log.info(c, m, "Transforming complete app: " + outputPath);
         }

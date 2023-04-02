@@ -6,8 +6,8 @@ visibility=private
 -features=\
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
-  io.openliberty.jakarta.jsonp.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.1.0", \
+  io.openliberty.jakarta.jsonp.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.1.1", \
   io.openliberty.org.eclipse.parsson.1.1
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

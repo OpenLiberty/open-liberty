@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -1079,7 +1081,7 @@ color: #999999;
 }
 
 #orionEditor .string.quoted.double {
-	color: #5596E6;
+	color: #255A97;
 }
 
 #orionEditor .meta.tag.xml {
@@ -1092,6 +1094,9 @@ color: #999999;
 
 /* DIALOGS - COMMON */
 
+.modal-dialog-config-val {
+	max-width: 650px;
+}
 .modal-content {
 	border: none;
 	border-radius: 0;
@@ -1491,19 +1496,19 @@ color: #999999;
 }
 
 .configurationEditorToggle {
-padding: 2px;
-width: 40px;
-height: 24px;
-border-radius: 12px;
-transition: background 0.3s;
+    padding: 2px;
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    transition: background 0.3s;
 }
 
 .configurationEditorToggleOn {
-background-color: #4178BE;
+    background-color: #4178BE;
 }
 
 .configurationEditorToggleOff {
-background-color: #929399;
+    background-color: #929399;
 }
 
 .configurationEditorToggle:before {
@@ -1800,13 +1805,13 @@ background-color: #929399;
 }
 
 .keyValueTableItemActionIconAdd {
-border-radius: 3px;
+    border-radius: 3px;
 }
 
 .keyValueTableItemActionIconDisabled, .keyValueTableItemActionIconDisabled:hover {
 	cursor: not-allowed;
 	pointer-events: none;
-	background-color: #8b8b8b;
+	background-color: #717171;
 }
 
 #testAuthAliasParameter .has-error {
@@ -1826,7 +1831,8 @@ border-radius: 3px;
 	cursor: not-allowed;
 }
 
-#testPasswordInputTitle {
+#testPasswordInputTitle,
+#testPasswordInputTitleNoResRef {
 	margin-top: 15px;
 }
 
@@ -1841,7 +1847,7 @@ border-radius: 3px;
 
 #dialogValidateConnectionElement .validationTypeDescription {
 	font-size: 16px;
-	padding: 2px 0 5px 0;
+	padding: 2px 0 10px 0;
 	outline-offset: -3px !important;
 	white-space: normal;
 }

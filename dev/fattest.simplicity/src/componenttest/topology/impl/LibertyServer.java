@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -12,7 +14,6 @@ package componenttest.topology.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -61,6 +62,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -124,6 +126,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final Class<?> c = LibertyServer.class;
     protected static final String CLASS_NAME = c.getName();
     protected static Logger LOG = Logger.getLogger(CLASS_NAME); // why don't we always use the Logger directly?
+    private final static String LS = System.getProperty("line.separator");
 
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
@@ -536,6 +539,23 @@ public class LibertyServer implements LogMonitorClient {
         // TODO these booleans don't seem to ever get set to true
         private final boolean validateApps = false;
         private final boolean validateTimedExit = false;
+        //Check log on serverStop for unintentional app restart after restore.
+        private boolean assertNoAppRestartOnRestore = true;
+
+        /**
+         * @return the assertNoAppRestartOnRestore
+         */
+        public boolean isAssertNoAppRestartOnRestore() {
+            return assertNoAppRestartOnRestore;
+        }
+
+        /**
+         * @param assertNoAppRestartOnRestore the assertNoAppRestartOnRestore to set
+         */
+        public void setAssertNoAppRestartOnRestore(boolean assertNoAppRestartOnRestore) {
+            this.assertNoAppRestartOnRestore = assertNoAppRestartOnRestore;
+        }
+
         private Properties checkpointEnv = null;
 
     }
@@ -1167,9 +1187,26 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, m, "Printing processes to file: " + fileName);
 
         String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
-        try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
-            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
-            stream.print(detector.listProcesses());
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
+        try {
+            String processes = detector.listProcesses();
+            if (processes != null) {
+                try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
+
+                    // Remove useless numbers and whitespace
+                    StringTokenizer st = new StringTokenizer(processes, LS);
+                    while (st.hasMoreTokens()) {
+                        String s = st.nextToken().trim();
+                        if (!s.matches("^\\d+$")) {
+                            stream.println(s.replaceAll("\\s+", " "));
+                        }
+                    }
+                } catch (Exception ex) {
+                    Log.error(c, m, ex, "Caught exception while trying to list processes");
+                }
+            } else {
+                Log.info(c, m, "Could not list processes");
+            }
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
         }
@@ -1786,6 +1823,19 @@ public class LibertyServer implements LogMonitorClient {
                 return output;
             }
         }
+        if (failedRestore()) {
+            // Did not find restore message; assume it failed;
+            // The return code is 0 indicating the server started, likely recovered
+            // set as started but then stop the server
+            setStarted();
+            try {
+                stopServer();
+            } catch (Exception e) {
+                Log.error(c, method, e);
+                // we don't want to fail if stop fails
+            }
+            fail("The server did not restore successfully");
+        }
         if (validate) {
             validateServerStarted(output, checkpointInfo.validateApps, checkpointInfo.expectRestoreFailure,
                                   checkpointInfo.validateTimedExit);
@@ -1803,25 +1853,32 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param output
      */
-    private void checkpointValidate(ProgramOutput output, boolean expectStartFailure) throws Exception {
-        if (!expectStartFailure) {
-            assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+    private void checkpointValidate(ProgramOutput output, boolean expectCheckpointFailure) throws Exception {
+        String method = "checkpointValidate";
+        Log.info(c, method, method);
+        try {
+            resetStarted();
+            if (!expectCheckpointFailure) {
+                assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+            }
+            if (isStarted) {
+                Exception fail = new Exception("Server should not be started after a checkpoint operation");
+                Log.error(c, "Server should not be started after a checkpoint operation", fail);
+                throw fail;
+            }
+            assertCheckpointDirAsExpected();
+            assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
+                          waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        } catch (AssertionError er) {
+            Log.info(c, method, "AssertionError: " + er);
+            if (isStarted) {
+                Log.info(c, method, "Stop running server after checkpointValidate AssertionError");
+                stopServer(false);
+            }
+            postStopServerArchive();
+            throw er;
         }
-        // validate server not started
-        resetStarted();
-        if (isStarted) {
-            Exception fail = new Exception("Server should not be started after a checkpoint operation");
-            Log.error(c, "Server should not be started after a checkpoint operation", fail);
-            throw fail;
-        }
-        assertCheckpointDirAsExpected();
-        //server is stopped at this point so no delay on following log searches
-        if (checkpointInfo.checkpointPhase == CheckpointPhase.FEATURES) {
-            assertNull("'CWWKZ0018I: Starting application...' message found taking FEATURES checkpoint.",
-                       waitForStringInLogUsingMark("CWWKZ0018I:", 0));
-        }
-        assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
-                      waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        Log.exiting(c, method);
     }
 
     /**
@@ -1854,14 +1911,36 @@ public class LibertyServer implements LogMonitorClient {
                    workareaCheckpoint.list(false).length > 1 /* a somewhat arbitrary min count */);
         RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
         assertTrue("checkpoint image dir has no files",
-                   workareaCheckpoint.list(false).length > 2 /* a somewhat arbitrary min count */);
+                   imgDir.list(false).length > 2 /* a somewhat arbitrary min count */);
+    }
+
+    private boolean failedRestore() throws Exception {
+        final String method = "failedRestore";
+        final String RESTORE_MESSAGE_CODE = "CWWKC0452I";
+        Log.info(c, method, "Checking for restore message: " + RESTORE_MESSAGE_CODE);
+
+        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        // App validation needs the info messages in messages.log
+        if (!messagesLog.exists()) {
+            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
+            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
+            messagesLog = getConsoleLogFile();
+        }
+
+        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, messagesLog);
+        if (found == null) {
+            Log.info(c, method, "Error: server did not restore successfully.");
+            return true;
+        }
+        Log.info(c, method, "Found restore message:" + found);
+        return false;
     }
 
     /**
      * @return
      */
     private boolean doCheckpoint() {
-        return (checkpointInfo != null) && getCheckpointSupported();
+        return (checkpointInfo != null);
     }
 
     /**
@@ -2127,7 +2206,7 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 // Trigger a serverDump: this will contain the output of server introspectors, which can
                 // help pinpoint service resolution issues or missing dependencies.
-                serverDump();
+                serverDump("thread");
 
                 // If apps failed to start, try to make sure the port opened so we correctly
                 // flag a port issue as the culprit.
@@ -2523,6 +2602,8 @@ public class LibertyServer implements LogMonitorClient {
 
                 assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
 
+                assertNotNull("The JMX REST connector message was not found", waitForStringInLogUsingMark("CWWKX0103I"));
+
                 //backup the key file
 
                 try {
@@ -2556,7 +2637,7 @@ public class LibertyServer implements LogMonitorClient {
                 TopologyException serverStartException = new TopologyException(exMessage);
                 Log.error(c, method, serverStartException, errMessage);
                 // since a startup error was not expected, trigger a dump to help with debugging
-                serverDump();
+                serverDump("thread");
                 postStopServerArchive();
                 throw serverStartException;
             }
@@ -3009,10 +3090,35 @@ public class LibertyServer implements LogMonitorClient {
             ex = new Exception(sb.toString());
         }
 
-        if (ex == null)
+        if (ex == null) {
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
-        else
+
+            //In general, apps are not expected to restart in a server restored from an APPLICATIONS checkpoint
+            // If it happens it may mean a bug in how config changes are handled by checkpoint.
+            // We intentionally only make this check if the test will not otherwise fail due to unexpected error messages
+            // already found.
+            //TODO add an exception list for handling complicated scenarios where some app restarts expected.
+            if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
+                checkpointInfo.checkpointPhase == CheckpointPhase.APPLICATIONS) {
+                List<String> appsRestarted = this.findStringsInLogs("CWWKZ0018I: Starting application");
+                if (!appsRestarted.isEmpty()) {
+                    StringBuffer sb = new StringBuffer("Unexpected application restart messages found after restore:");
+                    sb.append(getServerName());
+                    sb.append(" logs:");
+                    for (String applicationRestarted : appsRestarted) {
+                        sb.append("\n <br>");
+                        sb.append(applicationRestarted);
+                        Log.info(c, method, "Unexpected application restart in retored server found in log " +
+                                            getDefaultLogFile() + ": " + applicationRestarted);
+                    }
+                    throw new Exception(sb.toString());
+                }
+
+            }
+
+        } else {
             throw ex;
+        }
     }
 
     public void restartServer() throws Exception {
@@ -3107,6 +3213,7 @@ public class LibertyServer implements LogMonitorClient {
     public void postStopServerArchive(boolean retry, boolean skipArchives) throws Exception {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
+        printProcesses();
 
         while (true) {
             try {
@@ -3190,121 +3297,168 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    /**
-     * @param remoteFile
-     * @param logFolder
-     * @param b
-     * @param d
-     */
-    protected void recursivelyCopyDirectory(RemoteFile remoteFile, LocalFile logFolder, boolean ignoreFailures) throws Exception {
-        recursivelyCopyDirectory(remoteFile, logFolder, ignoreFailures, false, false);
+    protected void recursivelyCopyDirectory(RemoteFile remoteFile,
+                                            LocalFile logFolder,
+                                            boolean ignoreFailures) throws Exception {
 
+        recursivelyCopyDirectory(remoteFile, logFolder, ignoreFailures, false, false);
     }
 
-    /**
-     * @param  method
-     * @throws Exception
-     */
-    protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+    private boolean isSkippableArchive(String srcPath, String dstName, String dumpName) {
+        // Don't skip zips which are intended for a server dump.
+
+        if (srcPath.endsWith(".jar") ||
+            srcPath.endsWith(".war") ||
+            srcPath.endsWith(".ear") ||
+            srcPath.endsWith(".rar")) {
+            return true;
+        } else if (srcPath.endsWith(".zip")) {
+            return (!dstName.contains(dumpName));
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isLog(String localPath, String remoteName, String dumpName) {
+        // Only non-FFDC log files are moved.
+        //
+        // FFDC log files cannot be moved because they must remain for FFDC checking.
+
+        if (localPath.contains("logs")) {
+            return (!localPath.contains("ffdc"));
+
+        } else {
+            return (remoteName.contains("javacore") ||
+                    remoteName.contains("heapdump") ||
+                    remoteName.contains("Snap") ||
+                    remoteName.contains(dumpName));
+        }
+    }
+
+    protected void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
+                                            LocalFile localDstDir,
+                                            boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+
         String method = "recursivelyCopyDirectory";
-        destination.mkdirs();
 
-        Log.finest(c, method, "Remote: " + remoteDirectory + "\nDestination: " + destination + "\nignoreFailures: " + ignoreFailures + "\nskipArchives: " + skipArchives
-                              + "\nmoveFile: " + moveFile);
+        Log.finest(c, method, "Remote source directory: " + remoteSrcDir +
+                              "\n  Local destination directory: " + localDstDir +
+                              "\n  ignore failures: " + ignoreFailures +
+                              "\n  skip archives: " + skipArchives +
+                              "\n  move file: " + moveFile);
 
-        ArrayList<String> logs = new ArrayList<String>();
-        logs = listDirectoryContents(remoteDirectory);
-        for (String l : logs) {
-            if (remoteDirectory.getName().equals("workarea")) {
-                if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
-                    // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.finest(c, method, "Skipping workarea element " + l);
-                    continue;
-                }
+        String remoteSrcDirPath = remoteSrcDir.getAbsolutePath();
+        String remoteSrcDirName = remoteSrcDir.getName();
+
+        String localDstDirPath = localDstDir.getAbsolutePath();
+
+        localDstDir.mkdirs();
+
+        if (!localDstDir.exists()) {
+            String msg = "Error: Failed to create local [ " + localDstDirPath + " ] to receive remote [ " + remoteSrcDirPath + " ]";
+            Log.info(c, method, msg);
+            if (ignoreFailures) {
+                return;
+            } else {
+                throw new IOException(msg);
             }
-            if (remoteDirectory.getName().equals("checkpoint")) {
-                if (l.equals("image")) {
-                    // skip the checkpoint image; it is too big
-                    Log.finest(c, method, "Skipping checkpoint/image element " + l);
-                    continue;
-                }
-            }
+        }
 
-            if (remoteDirectory.getName().equals("messaging")) {
-                Log.finest(c, method, "Skipping message store element " + l);
+        boolean isLocal = machine.isLocal();
+
+        String dumpName = serverToUse + ".dump";
+
+        boolean isWorkarea = remoteSrcDirName.equals("workarea");
+        boolean isCheckpoint = !isWorkarea && remoteSrcDirName.equals("checkpoint");
+        boolean isMessaging = !isWorkarea && !isCheckpoint && remoteSrcDirName.equals("messaging");
+
+        for (String remoteSrcFileName : listDirectoryContents(remoteSrcDir)) {
+            String skipReason = null;
+            if (isWorkarea) {
+                if (remoteSrcFileName.equals(OSGI_DIR_NAME) || remoteSrcFileName.startsWith(".s")) {
+                    skipReason = "workarea element"; // too big / too racy
+                }
+            } else if (isCheckpoint) {
+                if (remoteSrcFileName.equals("image")) {
+                    skipReason = "checkpoint/image element"; // too big
+                }
+            } else if (isMessaging) {
+                skipReason = "message store element"; // ?
+            }
+            if (skipReason != null) {
+                Log.finest(c, method, "Skip [ " + remoteSrcFileName + " ]: " + skipReason);
                 continue;
             }
 
-            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
-            LocalFile toReceive = new LocalFile(destination, l);
-            String absPath = toCopy.getAbsolutePath();
-            Log.finest(c, method, "Getting: " + absPath);
+            RemoteFile remoteSrcFile = new RemoteFile(machine, remoteSrcDir, remoteSrcFileName);
+            LocalFile localDstFile = new LocalFile(localDstDir, remoteSrcFileName);
 
-            if (absPath.endsWith(".log"))
-                LogPolice.measureUsedTrace(toCopy.length());
+            if (remoteSrcFile.isDirectory()) {
+                recursivelyCopyDirectory(remoteSrcFile, localDstFile, ignoreFailures, skipArchives, moveFile);
 
-            if (toCopy.isDirectory()) {
-                // Recurse
-                recursivelyCopyDirectory(toCopy, toReceive, ignoreFailures, skipArchives, moveFile);
             } else {
+                String remoteSrcFilePath = remoteSrcFile.getAbsolutePath();
+
+                Log.finest(c, method, "Remote source file [ " + remoteSrcFilePath + " ]");
+
+                if (remoteSrcFilePath.endsWith(".log")) {
+                    LogPolice.measureUsedTrace(remoteSrcFile.length());
+                }
+
+                if (skipArchives && isSkippableArchive(remoteSrcFilePath, remoteSrcFileName, dumpName)) {
+                    Log.finest(c, method, "Skip [ " + remoteSrcFilePath + " ]: Archive");
+                    continue;
+                }
+
+                String localDstFilePath = localDstFile.getAbsolutePath();
+                Log.finest(c, method, "Local destination file [ " + localDstFilePath + " ]");
+
+                String opDesc = "remote [ " + remoteSrcFilePath + " ] to local [ " + localDstFilePath + " ]";
+
+                boolean isLog = moveFile && isLog(remoteSrcFilePath, remoteSrcFileName, dumpName);
+                boolean isConfigBackup = moveFile && !isLog && remoteSrcFilePath.contains("serverConfigBackups");
+
+                String opName = null;
+                IOException failure = null;
+
                 try {
-                    if (skipArchives
-                        && (absPath.endsWith(".jar")
-                            || absPath.endsWith(".war")
-                            || absPath.endsWith(".ear")
-                            || absPath.endsWith(".rar")
-                            //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
-                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, method, "Skipping: " + absPath);
-                        continue;
-                    }
-
-                    // We're only going to attempt to move log files. Because of ffdc log checking, we
-                    // can't move those. But we should move other log files..
-                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
-                                    || toCopy.getName().contains("javacore")
-                                    || toCopy.getName().contains("heapdump")
-                                    || toCopy.getName().contains("Snap")
-                                    || toCopy.getName().contains(serverToUse + ".dump");
-
-                    boolean isConfigBackup = absPath.contains("serverConfigBackups");
+                    boolean success = false;
 
                     if (moveFile && (isLog || isConfigBackup)) {
-                        boolean copied = false;
-
-                        // If we're local, try to rename the file instead..
-                        if (machine.isLocal() && toCopy.rename(toReceive)) {
-                            copied = true; // well, we moved it, but it counts.
-                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
-                        }
-
-                        if (!copied && toReceive.copyFromSource(toCopy)) {
-                            boolean done = false;
-
-                            while (!done) {
-                                // copy was successful, clean up the source log
-                                done = toCopy.delete();
-                                if (!done) {
-                                    Log.info(c, method, "Sleeping 0.5s before trying again");
-                                    Thread.sleep(500);
-                                }
+                        if (isLocal) {
+                            opName = "rename";
+                            success = remoteSrcFile.rename(localDstFile);
+                            if (!success) {
+                                Log.info(c, method, "Error: Failed rename of " + opDesc + "; falling back to copy and delete");
                             }
-                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                        }
+                        if (!success) {
+                            opName = "copy and delete";
+                            success = localDstFile.copyFromSource(remoteSrcFile) && remoteSrcFile.delete();
                         }
                     } else {
-                        toReceive.copyFromSource(toCopy);
-                        Log.finest(c, method, "COPY: " + l + " to " + toReceive.getAbsolutePath());
+                        opName = "copy";
+                        success = localDstFile.copyFromSource(remoteSrcFile);
                     }
+
+                    if (!success) {
+                        failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc);
+                    }
+
                 } catch (Exception e) {
-                    Log.info(c, method, "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
-                    Log.error(c, method, e);
-                    // Ignore on request and carry on copying the rest of the files
+                    failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc, e);
+                }
+
+                if (failure != null) {
                     if (!ignoreFailures) {
-                        throw e;
+                        throw failure;
+                    } else {
+                        Log.error(c, method, failure, "Ignoring failure during transfer of [ " + remoteSrcDirPath + " ] to [ " + localDstDirPath + " ]");
                     }
+                } else {
+                    Log.finest(c, method, "Successful [ " + opName + " ]" + " of " + opDesc);
                 }
             }
-
         }
     }
 

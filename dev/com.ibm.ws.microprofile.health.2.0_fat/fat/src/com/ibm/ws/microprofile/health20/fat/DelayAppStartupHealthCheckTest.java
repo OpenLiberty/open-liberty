@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.health20.fat;
 
@@ -29,6 +28,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -102,6 +102,13 @@ public class DelayAppStartupHealthCheckTest {
         if (server1.isStarted()) {
             server1.stopServer(EXPECTED_FAILURES);
         }
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        // Once the tests and repeated tests are completed, ensure the server
+        // is fully stopped, in order to avoid conflicts with succeeding tests.
+        server1.stopServer(EXPECTED_FAILURES);
     }
 
     @Test

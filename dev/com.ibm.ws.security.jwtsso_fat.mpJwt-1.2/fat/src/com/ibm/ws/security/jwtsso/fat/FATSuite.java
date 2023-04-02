@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -18,10 +20,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        AlwaysPassesTest.class,
         FeatureOnlyTest.class,
         ConfigAttributeTests.class,
         CookieProcessingTests.class,
@@ -29,7 +33,7 @@ import componenttest.rules.repeater.RepeatTests;
         CookieExpirationTests.class,
         BuilderTests.class,
         SigAlgTests.class,
-        //                EncryptionTests.class
+//                EncryptionTests.class
 })
 public class FATSuite {
 

@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<ui:component
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:cc="jakarta.faces.composite"
+>
+    <cc:interface>
+        <cc:attribute name="street" />
+        <cc:attribute name="city" />
+        <cc:attribute name="state" />
+        <cc:clientBehavior name="change" default="true" targets="street city" event="change" />
+    </cc:interface>
+    <cc:implementation>
+        <div id="#{cc.clientId}">
+            <h:inputText id="street" value="#{cc.attrs.street}" />
+            <h:inputText id="city"   value="#{cc.attrs.city}" />
+            <h:inputText id="state"  value="#{cc.attrs.state}">
+            	<f:ajax render="@form" />
+            </h:inputText>
+        </div>
+    </cc:implementation>
+</ui:component>

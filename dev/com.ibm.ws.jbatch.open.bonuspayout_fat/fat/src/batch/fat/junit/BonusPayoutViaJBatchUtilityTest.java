@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *   IBM Corporation - initial API and implementation
@@ -31,6 +33,7 @@ import com.ibm.ws.jbatch.test.dbservlet.DbServletClient;
 
 import batch.fat.util.BatchFATHelper;
 import batch.fat.util.StringUtils;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -108,7 +111,9 @@ public class BonusPayoutViaJBatchUtilityTest {
 
     }
 
+    //On slower platforms this test occasionally picks up the expected FFDC from testRunBonusPayoutBadJNDILookup
     @Test
+    @AllowedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
     public void testRunBonusPayoutStandaloneWARDefault() throws Exception {
 
         String appName = "BonusPayout";
@@ -131,7 +136,9 @@ public class BonusPayoutViaJBatchUtilityTest {
         assertTrue(po.getStdout().contains("CWWKY0105I:")); // job finished message
     }
 
+    //On slower platforms this test occasionally picks up the expected FFDC from testRunBonusPayoutBadJNDILookup
     @Test
+    @AllowedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
     public void testRunBonusPayoutStandaloneWARJavaCompEnvDefault() throws Exception {
         String method = "testRunBonusPayoutStandaloneWARJavaCompEnvDefault";
 
@@ -163,7 +170,9 @@ public class BonusPayoutViaJBatchUtilityTest {
 
     }
 
+    //On slower platforms this test occasionally picks up the expected FFDC from testRunBonusPayoutBadJNDILookup
     @Test
+    @AllowedFFDC({ "javax.naming.NameNotFoundException", "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
     public void testRunBonusPayoutWARInEARJavaCompEnvDefault() throws Exception {
         String method = "testRunBonusPayoutWARInEARJavaCompEnvDefault";
 

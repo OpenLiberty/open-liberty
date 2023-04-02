@@ -12,6 +12,7 @@ Subsystem-Name: MicroProfile Metrics 2.3
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3; ibm.tolerates:="1.2", \
   com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="3.1", \
+  io.openliberty.servlet.internal-4.0; ibm.tolerates:="3.1", \
   com.ibm.websphere.appserver.cdi-2.0; ibm.tolerates:="1.2", \
   com.ibm.websphere.appserver.monitor-1.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.metrics-2.3

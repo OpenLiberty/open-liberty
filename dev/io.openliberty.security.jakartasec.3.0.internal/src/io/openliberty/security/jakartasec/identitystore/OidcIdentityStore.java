@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
@@ -17,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.jboss.weld.proxy.WeldClientProxy;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 
@@ -33,6 +33,9 @@ import io.openliberty.security.jakartasec.tokens.RefreshTokenImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.userinfo.UserInfoHandler;
 import jakarta.json.JsonObject;
@@ -67,7 +70,7 @@ public class OidcIdentityStore implements IdentityStore {
             OidcTokensCredential castCredential = (OidcTokensCredential) credential;
             TokenResponse tokenResponse = castCredential.getTokenResponse();
             Client client = castCredential.getClient();
-            if (tokenResponse != null && client != null) {
+            if (tokenResponse != null && client != null && tokenResponse.getAccessTokenString() != null) {
                 try {
                     HttpServletRequest request = castCredential.getRequest();
                     JwtClaims idTokenClaims = client.validate(tokenResponse, request, castCredential.getResponse());
@@ -81,13 +84,11 @@ public class OidcIdentityStore implements IdentityStore {
                     CredentialValidationResult credentialValidationResult = createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims,
                                                                                                              userInfoClaims);
 
-                    JsonObject providerMetadata = getProviderMetadataAsJsonObject();
+                    JsonObject providerMetadata = getProviderMetadataAsJsonObject(client.getOidcClientConfig());
 
-                    OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userInfoClaims,
-                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession(),
-                                                                      client.getOidcClientConfig().getClientId());
-
-                    castCredential.setOpenIdContext(openIdContext);
+                    setOpenIdContext(castCredential.getOpenIdContext(), credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken,
+                                     userInfoClaims, providerMetadata, request.getParameter(OpenIdConstant.STATE),
+                                     oidcClientConfig.isUseSession(), client.getOidcClientConfig().getClientId());
 
                     return credentialValidationResult;
                 } catch (Exception e) {
@@ -105,8 +106,16 @@ public class OidcIdentityStore implements IdentityStore {
         return CredentialValidationResult.INVALID_RESULT;
     }
 
-    private OpenIdContext createOpenIdContext(String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken, IdentityToken identityToken,
-                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession, String clientId) {
+    private void setOpenIdContext(OpenIdContext openIdContext, String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken,
+                                  IdentityToken identityToken, OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession, String clientId) {
+
+        OpenIdContextImpl openIdContextImpl;
+        if (openIdContext instanceof WeldClientProxy) {
+            openIdContextImpl = (OpenIdContextImpl) ((WeldClientProxy) openIdContext).getMetadata().getContextualInstance();
+        } else {
+            openIdContextImpl = (OpenIdContextImpl) openIdContext;
+        }
+
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         // TODO: Move getting expires_in to TokenResponse
         long expiresIn = 0L;
@@ -114,34 +123,23 @@ public class OidcIdentityStore implements IdentityStore {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
 
-        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession, clientId);
-        openIdContext.setExpiresIn(expiresIn);
+        openIdContextImpl.setSubject(subjectIdentifier);
+        openIdContextImpl.setTokenType(tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE));
+        openIdContextImpl.setAccessToken(accessToken);
+        openIdContextImpl.setIdentityToken(identityToken);
+        openIdContextImpl.setExpiresIn(expiresIn);
+        openIdContextImpl.setClaims(userinfoClaims);
+        openIdContextImpl.setProviderMetadata(providerMetadata);
+        openIdContextImpl.setState(state);
+        openIdContextImpl.setUseSession(useSession);
+        openIdContextImpl.setClientId(clientId);
 
         String refreshTokenString = tokenResponse.getRefreshTokenString();
         if (refreshTokenString != null) {
-            openIdContext.setRefreshToken(new RefreshTokenImpl(refreshTokenString));
+            openIdContextImpl.setRefreshToken(new RefreshTokenImpl(refreshTokenString));
+        } else {
+            openIdContextImpl.setRefreshToken(null);
         }
-
-        OpenIdContextImpl existingOpenIdContext = (OpenIdContextImpl) OpenIdContextUtils.getOpenIdContextFromSubject();
-        if (existingOpenIdContext != null) {
-            return updateExistingOpenIdContext(existingOpenIdContext, openIdContext);
-        }
-        return openIdContext;
-    }
-
-    private OpenIdContext updateExistingOpenIdContext(OpenIdContextImpl existingOpenIdContext, OpenIdContextImpl newOpenIdContext) {
-        existingOpenIdContext.setSubject(newOpenIdContext.getSubject());
-        existingOpenIdContext.setTokenType(newOpenIdContext.getTokenType());
-        existingOpenIdContext.setAccessToken(newOpenIdContext.getAccessToken());
-        existingOpenIdContext.setRefreshToken(newOpenIdContext.getRefreshToken().orElse(null));
-        existingOpenIdContext.setIdentityToken(newOpenIdContext.getIdentityToken());
-        existingOpenIdContext.setExpiresIn(newOpenIdContext.getExpiresIn().orElse(0L));
-        existingOpenIdContext.setClaims(newOpenIdContext.getClaims());
-        existingOpenIdContext.setProviderMetadata(newOpenIdContext.getProviderMetadata());
-        existingOpenIdContext.setState(newOpenIdContext.getState());
-        existingOpenIdContext.setUseSession(newOpenIdContext.isUseSession());
-        existingOpenIdContext.setClientId(newOpenIdContext.getClientId());
-        return existingOpenIdContext;
     }
 
     @FFDCIgnore({ Exception.class })
@@ -249,8 +247,18 @@ public class OidcIdentityStore implements IdentityStore {
         return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
 
-    private JsonObject getProviderMetadataAsJsonObject() {
-        // TODO Auto-generated method stub
+    @FFDCIgnore(OidcDiscoveryException.class)
+    private JsonObject getProviderMetadataAsJsonObject(OidcClientConfig oidcClientConfig) {
+        try {
+
+            return OpenIdContextUtils.convertJsonObject(MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig));
+
+        } catch (OidcClientConfigurationException | OidcDiscoveryException oe) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getProviderMetadataAsJsonObject", "getProviderDiscoveryMetaData threw an exception, the providerMetadata JsonObject will be null.", oe);
+            }
+        }
+
         return null;
     }
 

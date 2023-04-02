@@ -1,0 +1,181 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0'),
+               'org.apache.httpcomponents:httpclient:4.5.4',
+               'org.apache.httpcomponents:httpcore:4.4.9',
+               'org.apache.commons:commons-lang3:3.5',
+               'net.sf.jtidy:jtidy:9.3.8',
+               'httpunit:httpunit:1.5.4'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
+autoFVT.doLast {
+
+/* Copy common files to all servers */
+
+  def servers = [
+        'com.ibm.ws.wssecurity_fat.caller',
+        'com.ibm.ws.wssecurity_fat.cbhcaller',
+        'com.ibm.ws.wssecurity_fat.ssl', 
+        'com.ibm.ws.wssecurity_fat.wsstemplates',
+        'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
+        
+  ]
+
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/serversettings')
+      include '*.xml'
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+  }
+    
+/* issue 23599 Copy CBH resource to this server only */
+
+  servers = [
+        'com.ibm.ws.wssecurity_fat.cbhcaller'
+  ]
+  
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/features')
+      include 'wsseccbh-1.0.mf'
+      into new File(autoFvtDir, 'publish/features')
+    }
+    
+    copy {
+      from project.file('publish/files/bundles')
+      include 'com.ibm.ws.wssecurity.example.cbh_1.0.0_non_compiled.jar'
+      into new File(autoFvtDir, 'publish/bundles')
+    }
+  }  
+     
+/* Copy jsse.jar required for the servers */
+  
+  servers = [
+    'com.ibm.ws.wssecurity_fat.ssl',
+    'com.ibm.ws.wssecurity_fat.wsstemplates',
+    'com.ibm.ws.wssecurity_fat.wsstemplateswithep'  
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('lib')
+      include "jsse.jar"
+      into new File(autoFvtDir, 'lib/')
+    }
+  }
+
+      
+/* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
+
+  servers = [
+        'com.ibm.ws.wssecurity_fat.caller',
+        'com.ibm.ws.wssecurity_fat.cbhcaller',
+        'com.ibm.ws.wssecurity_fat.ssl',
+        'com.ibm.ws.wssecurity_fat.wsstemplates',
+        'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "key.jks", "sslServerTrust.jks"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  }
+
+
+ /* Copy securitykeys/x509*.jks to these servers */
+  servers = [
+    'com.ibm.ws.wssecurity_fat.caller',
+    'com.ibm.ws.wssecurity_fat.cbhcaller'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "x509*.jks"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }   
+  }
+
+/* Copy securitykeys/x509Client*.properties to these servers */
+
+  servers = [
+    'com.ibm.ws.wssecurity_fat.caller',
+    'com.ibm.ws.wssecurity_fat.cbhcaller'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "x509Client*.properties"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  }
+
+
+/* Copy override/autoFVT/cxfclient-policies/BasicPlcyBA.wsdl to this server */
+  
+  servers = [
+    'com.ibm.ws.wssecurity_fat.ssl'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('override/autoFVT/cxfclient-policies')
+      include "BasicPlcyBA.wsdl"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  }
+
+
+ /* Copy securitykeys/x509*.jks to these servers */
+  servers = [
+    'com.ibm.ws.wssecurity_fat.wsstemplates',
+    'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "x509*.jks"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }   
+  }
+
+ 
+/* Copy securitykeys/x509Client*.properties to these servers */
+
+  servers = [ 
+    'com.ibm.ws.wssecurity_fat.wsstemplates',
+    'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "x509Client*.properties"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+  }
+
+}

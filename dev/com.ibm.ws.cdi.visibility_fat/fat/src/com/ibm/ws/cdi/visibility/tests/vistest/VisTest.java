@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -63,34 +65,10 @@ import com.ibm.ws.cdi.visibility.tests.vistest.ejbLib.EjbLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbLib.EjbLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTestingBean;
-import com.ibm.ws.cdi.visibility.tests.vistest.framework.TargetBean;
-import com.ibm.ws.cdi.visibility.tests.vistest.framework.TestingBean;
-import com.ibm.ws.cdi.visibility.tests.vistest.framework.VisTester;
 import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClient;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientAsAppClientLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientAsEjbLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientAsWarLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InAppClientLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InCommonLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEarLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjb;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbAppClientLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbAsAppClientLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbAsEjbLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbAsWarLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbWarLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InNonLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InPrivateLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar2;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarAppClientLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarLib;
-import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarWebinfLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.WarTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.WarTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.servlet.VisibilityTestServlet;
@@ -140,6 +118,10 @@ import componenttest.topology.utils.HttpUtils;
  * <li>AppClientAsWarLib - an application client jar also referenced on the classpath of War</li>
  * <li>AppClientAsAppClientLib - an application client jar also referenced on the classpath of AppClient</li>
  * <li>War2 - another WAR, which does not reference anything else</li>
+ * <li>CommonLib - a shared library referenced with commonLibraryRef</li>
+ * <li>PrivateLib - a shared library referenced with privateLibraryRef</li>
+ * <li>RuntimeExtRegular - a regular runtime extension which can't see application beans</li>
+ * <li>RuntimeExtSeeApp - a runtime extension configured so that it can see application beans</li>
  * </ul>
  * <p>
  * The test is conducted by going through a servlet or application client main class, providing the location from which to test visibility. This class will load a
@@ -271,33 +253,6 @@ public class VisTest extends FATServletClient {
                                               .addClass(NonLibTargetBean.class)
                                               .addAsManifestResource(NonLibTestingBean.class.getResource("beans.xml"), "beans.xml");
 
-        JavaArchive visTestFramework = ShrinkWrap.create(JavaArchive.class, "visTestFramework.jar")
-                                                 .addClass(InWarWebinfLib.class)
-                                                 .addClass(InEjb.class)
-                                                 .addClass(InEarLib.class)
-                                                 .addClass(InEjbAsEjbLib.class)
-                                                 .addClass(InWarAppClientLib.class)
-                                                 .addClass(InAppClient.class)
-                                                 .addClass(InAppClientLib.class)
-                                                 .addClass(InNonLib.class)
-                                                 .addClass(InAppClientAsAppClientLib.class)
-                                                 .addClass(InEjbAppClientLib.class)
-                                                 .addClass(InEjbAsAppClientLib.class)
-                                                 .addClass(InAppClientAsWarLib.class)
-                                                 .addClass(InEjbAsWarLib.class)
-                                                 .addClass(InEjbLib.class)
-                                                 .addClass(InWar.class)
-                                                 .addClass(InWar2.class)
-                                                 .addClass(InAppClientAsEjbLib.class)
-                                                 .addClass(InWarLib.class)
-                                                 .addClass(InEjbWarLib.class)
-                                                 .addClass(InCommonLib.class)
-                                                 .addClass(InPrivateLib.class)
-                                                 .addClass(TargetBean.class)
-                                                 .addClass(VisTester.class)
-                                                 .addClass(TestingBean.class)
-                                                 .addAsManifestResource(VisTester.class.getResource("beans.xml"), "beans.xml");
-
         JavaArchive visTestEarLib = ShrinkWrap.create(JavaArchive.class, "visTestEarLib.jar")
                                               .addClass(EarLibTargetBean.class)
                                               .addClass(EarLibTestingBean.class)
@@ -337,12 +292,19 @@ public class VisTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, visTest, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportToServer(server, "/", visTestFramework, DeployOptions.SERVER_ONLY);
 
         ShrinkHelper.exportAppToClient(client, visTest, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToClient(client, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToClient(client, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportToClient(client, "/", visTestFramework, DeployOptions.SERVER_ONLY);
+
+        server.installSystemBundle("visTest.framework");
+        server.installSystemBundle("visTest.framework-jakarta");
+        server.installSystemBundle("visTest.runtimeExtRegular");
+        server.installSystemBundle("visTest.runtimeExtRegular-jakarta");
+        server.installSystemBundle("visTest.runtimeExtSeeApp");
+        server.installSystemBundle("visTest.runtimeExtSeeApp-jakarta");
+        server.installSystemFeature("visTest-1.2");
+        server.installSystemFeature("visTest-3.0");
 
         server.startServer();
         getAppClientResults();
@@ -376,7 +338,9 @@ public class VisTest extends FATServletClient {
         InAppClientAsAppClientLib,
         InWar2,
         InCommonLib,
-        InPrivateLib
+        InPrivateLib,
+        InRuntimeExtRegular,
+        InRuntimeExtSeeApp,
     }
 
     /**
@@ -392,7 +356,9 @@ public class VisTest extends FATServletClient {
                                                                               Location.InEjbAsAppClientLib,
                                                                               Location.InAppClientAsEjbLib,
                                                                               Location.InCommonLib,
-                                                                              Location.InPrivateLib));
+                                                                              Location.InPrivateLib,
+                                                                              Location.InRuntimeExtRegular,
+                                                                              Location.InRuntimeExtSeeApp));
 
     /**
      * Set of locations that should be visible from WARs and their libraries
@@ -412,7 +378,9 @@ public class VisTest extends FATServletClient {
                                                                               Location.InAppClientAsEjbLib,
                                                                               Location.InAppClientAsWarLib,
                                                                               Location.InCommonLib,
-                                                                              Location.InPrivateLib));
+                                                                              Location.InPrivateLib,
+                                                                              Location.InRuntimeExtRegular,
+                                                                              Location.InRuntimeExtSeeApp));
 
     /**
      * Set of locations that should be visible from app clients and their libraries
@@ -425,12 +393,59 @@ public class VisTest extends FATServletClient {
                                                                                      Location.InEjbAsAppClientLib,
                                                                                      Location.InAppClientAsAppClientLib,
                                                                                      Location.InCommonLib,
-                                                                                     Location.InPrivateLib));
+                                                                                     Location.InPrivateLib,
+                                                                                     Location.InRuntimeExtRegular,
+                                                                                     Location.InRuntimeExtSeeApp));
 
     /**
      * Set of locations that should be visible from common server libraries
      */
-    Set<Location> COMMON_LIB_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InCommonLib));
+    Set<Location> COMMON_LIB_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InCommonLib,
+                                                                                     Location.InRuntimeExtRegular,
+                                                                                     Location.InRuntimeExtSeeApp));
+
+    /**
+     * Set of locations that should be visible from regular runtime extensions
+     */
+    Set<Location> RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InRuntimeExtRegular));
+
+    /**
+     * Set of locations that should be visible from runtime extensions configured to see application beans
+     */
+    Set<Location> RUNTIME_EXT_SEE_ALL_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InEjb,
+                                                                                              Location.InWar,
+                                                                                              Location.InEjbLib,
+                                                                                              Location.InWarLib,
+                                                                                              Location.InWarWebinfLib,
+                                                                                              Location.InEjbWarLib,
+                                                                                              Location.InEjbAppClientLib,
+                                                                                              Location.InWarAppClientLib,
+                                                                                              Location.InEarLib,
+                                                                                              Location.InEjbAsEjbLib,
+                                                                                              Location.InEjbAsWarLib,
+                                                                                              Location.InEjbAsAppClientLib,
+                                                                                              Location.InAppClientAsEjbLib,
+                                                                                              Location.InAppClientAsWarLib,
+                                                                                              Location.InCommonLib,
+                                                                                              Location.InPrivateLib,
+                                                                                              Location.InRuntimeExtRegular,
+                                                                                              Location.InRuntimeExtSeeApp,
+                                                                                              Location.InWar2));
+
+    /**
+     * Set of locations that should be visible from runtime extensions configured to see application beans when running as a client
+     * <p>
+     * This is a different list than on the server for two reasons:
+     * <ul>
+     * <li>EJB and Web modules are not started on the client, so they can't be visible
+     * <li>even when configured to see application beans, runtime extensions can't see application client module beans
+     * </ul>
+     */
+    Set<Location> RUNTIME_EXT_SEE_ALL_CLIENT_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InEarLib,
+                                                                                                     Location.InCommonLib,
+                                                                                                     Location.InPrivateLib,
+                                                                                                     Location.InRuntimeExtRegular,
+                                                                                                     Location.InRuntimeExtSeeApp));
 
     private static Map<Location, String> appClientResults = null;
 
@@ -562,6 +577,18 @@ public class VisTest extends FATServletClient {
     @Test
     public void testVisibilityFromPrivateLib() throws Exception {
         doTestWithServlet(Location.InPrivateLib, EJB_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testVisibilityFromRuntimeExtRegular() throws Exception {
+        doTestWithServlet(Location.InRuntimeExtRegular, RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS);
+        doTestWithAppClient(Location.InRuntimeExtRegular, RUNTIME_EXT_REGULAR_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testVisibilityFromRuntimeExtSeeAll() throws Exception {
+        doTestWithServlet(Location.InRuntimeExtSeeApp, RUNTIME_EXT_SEE_ALL_VISIBLE_LOCATIONS);
+        doTestWithAppClient(Location.InRuntimeExtSeeApp, RUNTIME_EXT_SEE_ALL_CLIENT_VISIBLE_LOCATIONS);
     }
 
     /**
@@ -701,9 +728,19 @@ public class VisTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        if (server != null) {
-            server.stopServer();
+
+        //We put this in an AutoCloseable because try-with-resource will order the exceptions correctly.
+        //That means an exception from stopServer will by the primary exception, and any errors from 
+        //uninstallSystemFeature will be recorded as suppressed exceptions.
+        AutoCloseable uninstallFeatures = () -> {
+            server.uninstallSystemFeature("visTest-1.2");
+            server.uninstallSystemFeature("visTest-3.0");
+        };
+        
+        try (AutoCloseable c = uninstallFeatures) {
+            if (server != null) {
+                server.stopServer();
+            }
         }
     }
-
 }

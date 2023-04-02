@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -43,6 +45,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -80,13 +83,17 @@ public class DelayFullTest {
     };
 
     private static void transformConfigurations() throws Exception {
-        if ( !JakartaEE9Action.isActive() ) {
+        if ( !JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
             return;
         }
 
         for ( String config : EE9_TRANSFORMED_CONFIGS ) {
             Path configPath = Paths.get("lib/LibertyFATTestFiles", config);
-            JakartaEE9Action.transformApp(configPath);
+            if (JakartaEE9Action.isActive()) {
+                JakartaEE9Action.transformApp(configPath);
+            } else if (JakartaEE10Action.isActive()) {
+                JakartaEE10Action.transformApp(configPath);
+            }
         }
     }
 
@@ -461,42 +468,38 @@ public class DelayFullTest {
     }
     
     private String getServerFeature() {
-        return ( JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
+        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
     }
 
     private String getServerMessageFragment() {
-        return ( JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
+        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
     }
 
     private void verifyRemovedFeature(LibertyServer server, String fragment) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0013I.*" + fragment + ".*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature removed message in the trace file",
-            changedMessageFromLog);
+    	//CWWKF0013I: The server removed the following features: [wasJmsServer-1.0].
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0013I.*" + fragment + ".*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWWKF0013I:.*"+fragment+"\" feature removed message in the trace file",changedMessageFromLog);
 
         verifyFeatureUpdate(server);
     }
 
     private void verifyAddedFeature(LibertyServer server, String fragment) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0012I.*" + fragment + ".*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature added message in the trace file",
-            changedMessageFromLog);
+    	// CWWKF0012I: The server installed the following features: [wasJmsServer-1.0].
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0012I.*" + fragment + ".*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWWKF0012I:.*"+fragment+"\" feature added message in the trace file",changedMessageFromLog);
 
         verifyFeatureUpdate(server);
+        
+        // Also wait for the jms server to restart
+        // CWSID0108I: JMS server has started.
+        String jmsServerStartedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0012I.*" + fragment + ".*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWSID0108I: JMS server has started.\"message in the trace file",jmsServerStartedMessageFromLog);
     }
 
     private void verifyFeatureUpdate(LibertyServer server) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0008I.*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature update completed message in the trace file",
-            changedMessageFromLog);
+    	//CWWKF0008I: Feature update completed in ?.??? seconds.
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0008I.*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the CWWKF0008I feature update completed message in the trace file", changedMessageFromLog);
     }
 
     /**
@@ -529,6 +532,7 @@ public class DelayFullTest {
 
         int appCount = clientServer.waitForMultipleStringsInLog(3, "CWWKT0016I.*DeliveryDelay.*");
         Log.info(DelayFullTest.class, "CheckApplicationStart", "No. of times App started - " + appCount);
+        if (appCount != 3)clientServer.dumpServer("testDDRemoveAddServerFeature");
         assertTrue( "Could not find the application ready message in the log file", (appCount == 3) );
 
         boolean testResult2 = runInServlet("testReceiveMessage");

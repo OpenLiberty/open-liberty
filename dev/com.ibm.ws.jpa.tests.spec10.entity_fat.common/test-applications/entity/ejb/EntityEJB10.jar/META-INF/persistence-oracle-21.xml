@@ -3,9 +3,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -26,6 +28,9 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
+
             <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
             for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
@@ -41,6 +46,9 @@
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
 
             <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
             for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->

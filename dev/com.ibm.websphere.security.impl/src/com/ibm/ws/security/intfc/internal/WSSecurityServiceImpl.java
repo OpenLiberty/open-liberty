@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -115,7 +117,7 @@ public class WSSecurityServiceImpl implements WSSecurityService {
      */
     @Override
     public boolean isRealmInboundTrusted(String inboundRealm, String localRealm) {
-        final String METHOD = "getInboundTrustedRealms";
+        final String METHOD = "isRealmInboundTrusted";
         if (inboundRealm == null)
             return false;
         boolean trusted = true;
@@ -154,7 +156,7 @@ public class WSSecurityServiceImpl implements WSSecurityService {
      * @throws WSSecurityException
      */
     private UserRegistry getActiveUserRegistry() throws WSSecurityException {
-        final String METHOD = "getUserRegistry";
+        final String METHOD = "getActiveUserRegistry";
         UserRegistry activeUserRegistry = null;
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -183,7 +185,13 @@ public class WSSecurityServiceImpl implements WSSecurityService {
                 }
             }
         } catch (RegistryException e) {
-            String msg = "getUserRegistryWrapper failed due to an internal error: " + e.getMessage();
+            String msg = METHOD + " failed due to an internal error: " + e.getMessage();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, msg, e);
+            }
+            throw new WSSecurityException(msg, e);
+        } catch (IllegalStateException e) {
+            String msg = METHOD + " failed due to an internal error: " + e.getMessage();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, msg, e);
             }

@@ -1,24 +1,31 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.CDIProvider;
+import javax.interceptor.InvocationContext;
 
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
@@ -169,5 +176,10 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
     @Override
     public CDIContainerImpl getCDIContainer() {
         return this.cdiContainer;
+    }
+
+    @Override
+    public Set<Annotation> getInterceptorBindingsFromInvocationContext(InvocationContext ic) throws IllegalArgumentException {
+        return CDIUtils.getInterceptorBindingsFromInvocationContext(ic);
     }
 }

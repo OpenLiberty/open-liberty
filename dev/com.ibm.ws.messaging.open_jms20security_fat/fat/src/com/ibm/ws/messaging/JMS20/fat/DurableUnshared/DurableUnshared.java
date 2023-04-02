@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -31,6 +33,7 @@ import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -132,7 +135,7 @@ public class DurableUnshared {
     
     private static void stopAppServers() throws Exception {
         
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             // Remove the Jakarta special case once fixed.
             // Also remove @AllowedFFDC( { "jakarta.resource.spi.InvalidPropertyException"} )
             // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].

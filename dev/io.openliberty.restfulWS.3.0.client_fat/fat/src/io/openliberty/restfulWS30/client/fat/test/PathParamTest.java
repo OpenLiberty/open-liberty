@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -62,7 +64,7 @@ public class PathParamTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+            server.stopServer("CWWKE1102W","CWWKE1106W","CWWKE1107W");  //ignore server quiesce timeouts due to slow test machines
         }
     }
 
@@ -141,7 +143,7 @@ public class PathParamTest extends AbstractTest {
 
     @Test
     public void testAllResources1() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W","CWWKE1106W","CWWKE1107W");  //ignore server quiesce timeouts due to slow test machines
         server.startServer(true);
         runGetMethod("/pathparam/resource/smallshort/" + shortVariable, 200, "ok", true);
         runGetMethod("/pathparam/resource/bigdouble/" + doubleVariable, 200, "ok", true);
@@ -151,7 +153,7 @@ public class PathParamTest extends AbstractTest {
 
     @Test
     public void testAllResources2() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W","CWWKE1106W","CWWKE1107W");  //ignore server quiesce timeouts due to slow test machines
         server.startServer(true);
         runGetMethod("/pathparam/resource/bigdouble/" + doubleVariable, 200, "ok", true);
         runGetMethod("/pathparam/resource/biglong/" + longVariable, 200, "ok", true);

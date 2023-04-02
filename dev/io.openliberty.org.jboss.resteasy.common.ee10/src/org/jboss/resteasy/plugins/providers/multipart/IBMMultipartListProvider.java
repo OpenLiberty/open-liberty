@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.resteasy.spi.InternalServerErrorException;
+import org.jboss.resteasy.spi.util.Types;
 
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
@@ -35,6 +38,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
@@ -66,18 +70,19 @@ public class IBMMultipartListProvider implements MessageBodyReader<List<Object>>
 
     @Override
     public boolean isReadable(Class<?> clazz, Type type, Annotation[] anns, MediaType mt) {
-        return isSupported(clazz, anns, mt);
+        return isSupported(clazz, type,  anns, mt);
     }
 
     @Override
     public boolean isWriteable(Class<?> clazz, Type type, Annotation[] anns, MediaType mt) {
-        return isSupported(clazz, anns, mt);
+        return isSupported(clazz, type, anns, mt);
     }
 
-    private boolean isSupported(Class<?> type, Annotation[] anns, MediaType mt) {
+    private boolean isSupported(Class<?> clazz, Type type, Annotation[] anns, MediaType mt) {
         return mediaTypeSupported(mt)
-            && (MULTIPART_CLASSES.contains(type)
-                || Collection.class.isAssignableFrom(type));
+                        && !(Types.isGenericTypeInstanceOf(EntityPart.class, type))  // Skip when spec defined EntityPart             
+                        && (MULTIPART_CLASSES.contains(clazz)
+                                        || Collection.class.isAssignableFrom(clazz));
     }
 
     private boolean mediaTypeSupported(MediaType mt) {
@@ -142,7 +147,7 @@ public class IBMMultipartListProvider implements MessageBodyReader<List<Object>>
                 attachment.getHeaders().entrySet().stream().forEach(entry -> {part.getHeaders().put(entry.getKey(), (List)entry.getValue());});
 
             } else {
-                throw new WebApplicationException("Unexpected output type");
+                throw new WebApplicationException("Unexpected entity instance: " + entity.getClass().getName());
             }
 
         }

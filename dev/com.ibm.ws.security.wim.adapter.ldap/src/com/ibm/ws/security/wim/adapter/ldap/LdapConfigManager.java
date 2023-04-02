@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -639,14 +641,14 @@ public class LdapConfigManager {
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_PERSON_ACCOUNT);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();
-                    int index = iUserFilter.indexOf(objectClassStr);
+                    int index = iUserFilter.toLowerCase().indexOf(objectClassStr);
                     while (index > -1) {
                         int endIndex = iUserFilter.indexOf(")", index);
                         String objectClass = iUserFilter.substring(index + length, endIndex);
                         objClsSet.add(objectClass);
 
                         index = endIndex + 1;
-                        index = iUserFilter.indexOf(objectClassStr, endIndex);
+                        index = iUserFilter.toLowerCase().indexOf(objectClassStr, endIndex);
                     }
                     if (objClsSet.size() > 0) {
                         ldapEntity.getObjectClasses().clear();
@@ -716,14 +718,14 @@ public class LdapConfigManager {
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_GROUP);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();
-                    int index = iGroupFilter.indexOf(objectClassStr);
+                    int index = iGroupFilter.toLowerCase().indexOf(objectClassStr);
                     while (index > -1) {
                         int endIndex = iGroupFilter.indexOf(")", index);
                         String objectClass = iGroupFilter.substring(index + length, endIndex);
                         objClsSet.add(objectClass);
 
                         index = endIndex + 1;
-                        index = iGroupFilter.indexOf(objectClassStr, endIndex);
+                        index = iGroupFilter.toLowerCase().indexOf(objectClassStr, endIndex);
                     }
                     if (objClsSet.size() > 0) {
                         ldapEntity.getObjectClasses().clear();

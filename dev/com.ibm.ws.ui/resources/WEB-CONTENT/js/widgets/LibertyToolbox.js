@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -336,7 +338,7 @@ define(["js/toolbox/toolbox",
           '<label for="secondarySearchBoxInput" class="dijitOffScreen">' + i18n.TOOLBOX_SEARCH + '</label>' +
           '<input id="secondarySearchBoxInput" tabindex="0" class="textBox searchBoxInput" data-dojo-type="js/widgets/TextBox" type="text" ' +
           'data-dojo-props="intermediateChanges:true" widgetid="secondarySearchBoxInput"></input> ' +
-          '<a id="deleteSearchInputHref" class="deleteSearchInputHref" tabindex="0"><img class="deleteSearchInputImg" id="searchBoxInputClear" title="'+i18n.TOOLBOX_CLEAR_SEARCH+'" style="right:' +
+          '<a id="deleteSearchInputHref" class="deleteSearchInputHref" role="button" tabindex="0"><img class="deleteSearchInputImg" id="searchBoxInputClear" title="'+i18n.TOOLBOX_CLEAR_SEARCH+'" style="right:' +
           searchImageRight + ';' + '"' + ' src="'+imgUtils.getIcon('delete')+'" ' +
           'alt="' + i18n.TOOLBOX_CLEAR_SEARCH + '" role="button" ' +
           '></img></a></div>');
@@ -345,7 +347,7 @@ define(["js/toolbox/toolbox",
       console.log("secondarySearchBoxHeadingDom ", secondarySearchBoxHeadingDom);
 
       var cancelSearchStr = '<div style="float:right;width:auto;">' +
-      '<a id="cancelFilterHref" tabindex="0" class="cancelFilterHref"><img class="cancelFilterImg" id="cancelFiltering" title="'+i18n.TOOLBOX_END_SEARCH+'" src="'+imgUtils.getIcon('cancel')+'" ' +
+      '<a id="cancelFilterHref" role="button" tabindex="0" class="cancelFilterHref"><img class="cancelFilterImg" id="cancelFiltering" title="'+i18n.TOOLBOX_END_SEARCH+'" src="'+imgUtils.getIcon('cancel')+'" ' +
       'alt="' + i18n.TOOLBOX_END_SEARCH + '" ' +
       '></img></a>';
       var cancelSearchDom = DomConstruct.toDom(cancelSearchStr);

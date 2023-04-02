@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+         <feature>componentTest-1.0</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <jndiEntry jndiName="database/user/name" value="sam" />
+    <jndiEntry jndiName="database/user/password" value="beckett" />
+    <jndiEntry jndiName="database/user/retryCount" value="7" />
+    <jndiEntry jndiName="database/admin/name" value="al" />
+    <jndiEntry jndiName="database/admin/password" value="admiral" />
+    <jndiEntry jndiName="database/admin/retryCount" value="3" />
+    
+    <library id="objectFactoryLib">
+        <fileset dir="${server.config.dir}/lib" includes="factory.jar"/>
+    </library>
+
+    <jndiObjectFactory id="objectFactory" libraryRef="objectFactoryLib" className="com.ibm.ws.jndi.fat.factory.ObjectFactoryImpl"/>
+    <jndiReferenceEntry id="refEntry" jndiName="ref/entry" factoryRef="objectFactory"/>
+    <jndiReferenceEntry id="refEntryProps" jndiName="ref/entryProps" factoryRef="objectFactory">
+        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pwd=security -->
+    </jndiReferenceEntry>
+    <jndiReferenceEntry id="refEntryPropsDecode" jndiName="ref/entryPropsDecode" factoryRef="objectFactory" decode="true">
+        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pwd=security -->
+    </jndiReferenceEntry>
+    <jndiReferenceEntry id="refEntryPropsDecodeError" jndiName="ref/entryPropsDecodeError" factoryRef="objectFactory" decode="true">
+        <properties key1="value1" key2="value2" pwd="{xor}abcdefg"/> <!-- pwd=security -->
+    </jndiReferenceEntry>
+    <jndiObjectFactory id="objectFactoryTyped" libraryRef="objectFactoryLib" className="com.ibm.ws.jndi.fat.factory.ObjectFactoryImpl" objectClassName="java.util.Properties"/>
+    <jndiReferenceEntry id="refEntryTyped" jndiName="ref/entryTyped" factoryRef="objectFactoryTyped"/>
+
+    <include location="../fatTestPorts.xml"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+</server>

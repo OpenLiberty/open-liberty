@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -26,6 +28,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.management.DynamicMBean;
 import javax.naming.Context;
@@ -401,7 +404,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
             JaxWsModuleMetaData jaxwsModuleMetaData = tInfo.getClientMetaData().getModuleMetaData();
             String applicationName = jaxwsModuleMetaData.getJ2EEName().getApplication();
             String contextRoot = jaxwsModuleMetaData.getContextRoot();
-            Map<String, String> appNameURLMap = jaxwsModuleMetaData.getAppNameURLMap();
+            Map<String, Supplier<String>> appNameURLMap = jaxwsModuleMetaData.getAppNameURLMap();
             Container moduleContainer = jaxwsModuleMetaData.getModuleContainer();
             NonPersistentCache overlayCache;
             try {
@@ -415,7 +418,8 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
                         {
                             String wsdlLocation = null;
                             if ((appNameURLMap != null) && (!appNameURLMap.isEmpty())) {
-                                String applicationURL = appNameURLMap.get(applicationName);
+                                Supplier<String> applicationURLSupplier = appNameURLMap.get(applicationName);
+                                String applicationURL = applicationURLSupplier != null ? applicationURLSupplier.get() : "";
                                 wsdlLocation = applicationURL + "/" + address + "?wsdl";
                             } else {
                                 wsdlLocation = getWsdlUrl() + contextRoot + "/" + address + "?wsdl";

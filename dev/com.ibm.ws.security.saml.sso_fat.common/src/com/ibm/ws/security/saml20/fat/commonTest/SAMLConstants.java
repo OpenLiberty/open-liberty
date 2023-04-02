@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -509,15 +511,16 @@ public class SAMLConstants extends Constants {
     //    public static final String[] SAML_TOKEN_FORMATS = new String[] { ASSERTION_TEXT_ONLY, ASSERTION_ENCODED, ASSERTION_COMPRESSED_ENCODED };
     public static final String[] SAML_TOKEN_FORMATS = new String[] { ASSERTION_ENCODED, ASSERTION_COMPRESSED_ENCODED };
 
-    public static final String SAML_HEADER_1 = "auth_header_saml_with_equals";
-    public static final String SAML_HEADER_2 = "auth_header_saml_with_equals_and_quotes";
-    public static final String SAML_HEADER_3 = "auth_header_saml_no_equals";
-    public static final String SAML_HEADER_4 = "header_saml_with_equals";
-    public static final String SAML_HEADER_5t = "propagate_token_string_true";
-    public static final String SAML_HEADER_5f = "propagate_token_string_false";
-    public static final String SAML_HEADER_6t = "propagate_token_boolean_true";
-    public static final String SAML_HEADER_6f = "propagate_token_boolean_false";
-    public static final String[] SAML_HEADER_FORMATS = new String[] { SAML_HEADER_1, SAML_HEADER_2, SAML_HEADER_3, SAML_HEADER_4 };
+    public static final String HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE = "auth_header_saml_with_equals";
+    public static final String HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE = "auth_header_saml_with_equals_and_quotes";
+    public static final String HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE = "auth_header_saml_no_equals";
+    public static final String HEADER_FORMAT_NAME_EQUALS_VALUE = "header_saml_with_equals";
+    public static final String HEADER_FORMAT_PROPAGATE_TOKEN_STRING_TRUE = "propagate_token_string_true";
+    public static final String HEADER_FORMAT_PROPAGATE_TOKEN_STRING_FALSE = "propagate_token_string_false";
+    public static final String HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_TRUE = "propagate_token_boolean_true";
+    public static final String HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_FALSE = "propagate_token_boolean_false";
+    public static final String[] SAML_HEADER_FORMATS = new String[] { HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE, HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE, HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE,
+                                                                      HEADER_FORMAT_NAME_EQUALS_VALUE };
 
     /* SAML IDPs */
     public static final String[] IDP_SERVER_LIST = { "localhost:8019:8029" };

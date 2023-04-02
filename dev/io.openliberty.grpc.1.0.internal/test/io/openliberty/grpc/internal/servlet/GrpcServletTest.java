@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -68,24 +70,24 @@ public class GrpcServletTest {
         // simulate async app startup
         Thread appThread1 = new Thread() {
             public void run() {
-                GrpcServletServices.addServletGrpcService(grpcService1, app1, GrpcServletServices.class);
-                GrpcServletServices.addServletGrpcService(grpcService6, app1, GrpcServletServices.class);
-                GrpcServletServices.addServletGrpcService(grpcService8, app1, GrpcServletServices.class);
-                GrpcServletServices.addServletGrpcService(grpcService3, app1, GrpcServletServices.class);
+                GrpcServletServices.addServletGrpcService(grpcService1, app1, GrpcServletServices.class, app1);
+                GrpcServletServices.addServletGrpcService(grpcService6, app1, GrpcServletServices.class, app1);
+                GrpcServletServices.addServletGrpcService(grpcService8, app1, GrpcServletServices.class, app1);
+                GrpcServletServices.addServletGrpcService(grpcService3, app1, GrpcServletServices.class, app1);
                 latch.countDown();
             }
         };
         Thread appThread2 = new Thread() {
             public void run() {
-                GrpcServletServices.addServletGrpcService(grpcService4, app2, GrpcServletServices.class);
-                GrpcServletServices.addServletGrpcService(grpcService5, app2, GrpcServletServices.class);
+                GrpcServletServices.addServletGrpcService(grpcService4, app2, GrpcServletServices.class, app2);
+                GrpcServletServices.addServletGrpcService(grpcService5, app2, GrpcServletServices.class, app2);
                 latch.countDown();
             }
         };
         Thread appThread3 = new Thread() {
             public void run() {
-                GrpcServletServices.addServletGrpcService(grpcService2, app3, GrpcServletServices.class);
-                GrpcServletServices.addServletGrpcService(grpcService7, app3, GrpcServletServices.class);
+                GrpcServletServices.addServletGrpcService(grpcService2, app3, GrpcServletServices.class, app3);
+                GrpcServletServices.addServletGrpcService(grpcService7, app3, GrpcServletServices.class, app3);
                 latch.countDown();
             }
         };
@@ -104,7 +106,7 @@ public class GrpcServletTest {
         Map<String, ServiceInformation> services = GrpcServletServices.getServletGrpcServices();
         Assert.assertEquals(8, services.size());
         try {
-            GrpcServletServices.addServletGrpcService(grpcService1, app2, GrpcServletServices.class);
+            GrpcServletServices.addServletGrpcService(grpcService1, app2, GrpcServletServices.class, "duplicateApp");
             Assert.fail("GrpcServletServices.addServletGrpcService() "
                     + "should have failed when passed a duplicate service name");
         } catch (RuntimeException re) {}
@@ -117,9 +119,9 @@ public class GrpcServletTest {
         Assert.assertEquals(app3, services.get(grpcService7).getContextRoot());
         
         // remove a few services and make sure the mappings are correct
-        GrpcServletServices.removeServletGrpcService(grpcService1);
-        GrpcServletServices.removeServletGrpcService(grpcService4);
-        GrpcServletServices.removeServletGrpcService(grpcService7);
+        GrpcServletServices.removeServletGrpcService(grpcService1, app1);
+        GrpcServletServices.removeServletGrpcService(grpcService4, app2);
+        GrpcServletServices.removeServletGrpcService(grpcService7, app3);
         Assert.assertEquals(5, services.size());
         Assert.assertNull(services.get(grpcService1));
     }
@@ -134,10 +136,12 @@ public class GrpcServletTest {
         serviceClassNames.add(serviceClassName);
         String serviceName = "helloworld.Greeter";
         String contextRoot = "sample_application";
+        String appName = "appName";
 
         // create a GrpcServletApplication
         GrpcServletApplication app = new GrpcServletApplication();
         app.addServiceClassName(serviceClassName);
+        app.setAppName(appName);
         app.addServiceName(serviceName, contextRoot, GrpcServletServices.class);
         
         // make sure that GrpcServletApplication is correct 
@@ -156,7 +160,8 @@ public class GrpcServletTest {
         
         // check that the same path can be re-added
         app = new GrpcServletApplication();
-        app.addServiceClassName(serviceClassName);
+        app.setAppName(appName);
+        app.addServiceClassName(serviceClassName);       
         app.addServiceName(serviceName, contextRoot, GrpcServletServices.class);
         Assert.assertEquals(contextRoot, GrpcServletServices.getServletGrpcServices().get(serviceName).getContextRoot());
         app.destroy();

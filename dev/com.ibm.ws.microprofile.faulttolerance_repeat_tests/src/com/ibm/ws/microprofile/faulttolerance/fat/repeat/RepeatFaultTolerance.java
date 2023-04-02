@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -55,10 +57,10 @@ public class RepeatFaultTolerance {
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will always be run in LITE mode.
      * The others will run in the mode specified.
      *
-     * @param server                   The server to repeat on
+     * @param server The server to repeat on
      * @param otherFeatureSetsTestMode The mode to repeate the other FeatureSets in
-     * @param firstFeatureSet          The first FeatureSet
-     * @param otherFeatureSets         The other FeatureSets
+     * @param firstFeatureSet The first FeatureSet
+     * @param otherFeatureSets The other FeatureSets
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
@@ -104,14 +106,6 @@ public class RepeatFaultTolerance {
      */
     public static RepeatTests repeatDefault(String server) {
         return repeat(server, TestMode.FULL, MicroProfileActions.MP60, MicroProfileActions.MP40, MicroProfileActions.MP20);
-    }
-
-    /*
-     * Temporary usage by com.ibm.ws.microprofile.faulttolerance.cdi_fat_metrics to merge mpMetrics-5.0
-     * This does not contain MicroProfileActions.MP60
-     */
-    public static RepeatTests repeatDefaultNoMp60Set(String server) {
-        return repeat(server, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP20);
     }
 
     /**

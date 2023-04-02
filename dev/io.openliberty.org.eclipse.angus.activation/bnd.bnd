@@ -1,0 +1,46 @@
+1 #*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.angus.activation
+
+angus-activation-version=2.0.0
+
+Export-Package: \
+  org.eclipse.angus.activation;thread-context=true
+
+Import-Package: \
+  *
+
+app-resources= \
+  META-INF/services/jakarta.activation.spi.MailcapRegistryProvider | \
+  META-INF/services/jakarta.activation.spi.MimeTypeRegistryProvider
+
+Service-Component: \
+  io.openliberty.org.eclipse.angus.activation_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+
+-includeresource: \
+  @${repo;org.eclipse.angus:angus-activation;${angus-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class|META-INF/native-image|org/eclipse/angus/activation/nativeimage/*)
+   
+-buildpath: \
+  org.eclipse.angus:angus-activation;version=${angus-activation-version};strategy=exact. \
+  io.openliberty.jakarta.activation.2.1;version=latest
+     

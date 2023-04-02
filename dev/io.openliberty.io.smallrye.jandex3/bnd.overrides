@@ -1,0 +1,8 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: jandex 3
+Bundle-SymbolicName: io.openliberty.io.smallrye.jandex3
+
+Include-Resource:\
+        @${repo;io.smallrye:jandex;3.0.5;EXACT}!/!META-INF/*

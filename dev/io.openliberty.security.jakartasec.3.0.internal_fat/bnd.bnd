@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -14,20 +16,27 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/ApplicationScoped.war/src,\
+    test-applications/AuthAppInjectServlet.war/src,\
+    test-applications/AuthAppNoInjectServlet.war/src,\
+    test-applications/IdentityStore.war/src,\
+    test-applications/MultipleIdentityStore.war/src,\
+    test-applications/MultipleServletsDifferentProviders.war/src,\
+    test-applications/MultipleServletsDifferentRoles.war/src,\
+    test-applications/MultipleServletsSimilarAnnotations.war/src,\
+    test-applications/RedirectToOriginalResourceTruePromptNone.war/src,\
     test-applications/RequestScoped.war/src,\
     test-applications/SessionScoped.war/src,\
     test-applications/SimplestAnnotated.war/src,\
     test-applications/SimplestAnnotatedWithEL.war/src,\
     test-applications/SimplestAnnotatedWithELAltOP.war/src,\
     test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src,\
-    test-applications/SimplestAnnotatedWithELAltRole.war/src,
-    test-applications/MultipleServletsDifferentProviders.war/src,\
-    test-applications/MultipleServletsDifferentRoles.war/src,\
-    test-applications/MultipleServletsSimilarAnnotations.war/src
-    
+    test-applications/SimplestAnnotatedWithELAltRole.war/src,\
+    test-applications/TokenTestAppServlet.war/src
+        
 -dependson: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common,\
+    com.ibm.ws.security.fat.common.jwt,\
     io.openliberty.security.jakartasec.3.0.internal_fat.common
 	
 fat.project: true
@@ -35,6 +44,12 @@ publish.wlp.jar.disabled: true
 
 tested.features: pages-3.1, transportsecurity-1.0, distributedmap-1.0, ssl-1.0, appsecurity-5.0, jndi-1.0, jsonp-2.1, federatedregistry-1.0, oauth-2.0, openidconnectserver-1.0, json-1.0, cdi-4.0, ldapregistry-3.0
 
+Import-Package: \
+    !*.internal.*, \
+    !com.ibm.ws.kernel.boot.cmdline, \
+    org.apache.commons.codec.binary,\
+    org.jose4j.*, \
+    *
 
 javac.source: 11
 javac.target: 11
@@ -44,6 +59,8 @@ javac.target: 11
 	io.openliberty.jakarta.security.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
 	io.openliberty.security.jakartasec.3.0.internal_fat.common;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	net.sourceforge.htmlunit:webdriver;version='2.6',\
@@ -53,5 +70,8 @@ javac.target: 11
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
-	io.openliberty.jakarta.servlet.5.0
-
+	io.openliberty.jakarta.servlet.5.0,\
+	com.ibm.websphere.javaee.security.1.0,\
+	jakarta.servlet-api,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	org.bitbucket.b_c.jose4j

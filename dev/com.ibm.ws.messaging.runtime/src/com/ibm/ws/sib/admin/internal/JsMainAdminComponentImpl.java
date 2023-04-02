@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -54,29 +56,20 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Applicati
     private static final TraceComponent tc = SibTr.register(JsMainAdminComponentImpl.class, JsConstants.TRGRP_AS, JsConstants.MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl";
     private final JsMainAdminService service;
-    public final ConfigurationAdmin configAdmin;
-    public final MessageStore messageStore;
     public final SIDestinationAddressFactory destinationAddressFactory;
-    public final RuntimeSecurityService runtimeSecurityService;
 
     final String jsAdminComponentId;
 
     @Activate
     public JsMainAdminComponentImpl(Map<String, Object> properties,
             @Reference JsMainAdminService service,
-            @Reference ConfigurationAdmin configAdmin,
-            @Reference MessageStore messageStore,
-            @Reference RuntimeSecurityService runtimeSecurityService,
             @Reference SingletonsReady singletonsReady) {
         final String methodName = "JsMainAdminComponentImpl";
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, methodName, new Object[] { this, service });
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, methodName, new Object[] { this, properties, service, singletonsReady });
 
         jsAdminComponentId = (String) properties.getOrDefault("id", "ERROR: No id in the properties for "+CLASS_NAME);
         this.service = service;
-        this.configAdmin = configAdmin;
-        this.messageStore = messageStore;
         this.destinationAddressFactory = SIDestinationAddressFactory.getInstance();
-        this.runtimeSecurityService = runtimeSecurityService;
         service.start(properties);
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled())

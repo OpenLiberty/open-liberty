@@ -1,15 +1,15 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
@@ -27,11 +27,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -41,8 +41,6 @@ import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
 /**
- *
- * /**
  * Component System Event and EL tests for story 153719.
  */
 @Mode(TestMode.FULL)
@@ -66,14 +64,7 @@ public class JSFCompELTests {
                                       isEE10 ? "com.ibm.ws.jsf22.el.beans.faces40" : "com.ibm.ws.jsf22.el.beans.jsf22",
                                       "com.ibm.ws.jsf22.el.components");
 
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
-
-        jsfTestServer2.startServer(JSFCompELTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -140,7 +131,7 @@ public class JSFCompELTests {
     @Test
     public void testELResolverOrderAndComponentSystemEvent() throws Exception {
         String[] expectedInResponse = {
-                                        "The order and number of ELResolvers from the CompositeELResolver are correct!",
+                                        "The order and number of ELResolvers are correct!",
                                         "Invoked JSF 2.2 new methods in ComponentSystemEvent, isAppropriateListener() and processListener()"
         };
         this.verifyResponse(contextRoot, "ComponentEventListener.xhtml", expectedInResponse);
@@ -251,6 +242,7 @@ public class JSFCompELTests {
 
     //tests ValueExpression support in f:ajax event=#{bean.method} - https://issues.apache.org/jira/browse/MYFACES-3233
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testAjaxEvent() throws Exception {
         // Fix the response once RTC is fixed
         String[] expectedInResponse = {

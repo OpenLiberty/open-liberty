@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -20,15 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 import org.junit.Before;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -40,7 +44,9 @@ import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
@@ -50,6 +56,8 @@ import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
@@ -87,18 +95,60 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
     }
 
-    public static RepeatTests createRandomTokenTypeRepeats() {
+    public static class skipIfWindows extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
 
-        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
-        return createTokenTypeRepeat(accessTokenType);
+            OperatingSystem currentOS = null;
+            try {
+                currentOS = Machine.getLocalMachine().getOperatingSystem();
+            } catch (Exception e) {
+                Log.info(thisClass, "isEnabled", "Encountered and exception trying to determine OS type - assume we'll need to run: " + e.getMessage());
+            }
+            Log.info(thisClass, "isEnabled", "OS: " + currentOS.toString());
+            if (OperatingSystem.WINDOWS != currentOS) {
+
+                Log.info(thisClass, "skipIfWindows", "Running on Windows - skip test");
+                testSkipped();
+                return true;
+            }
+            Log.info(thisClass, "skipIfWindows", "Not Running on Windows - run test");
+            return false;
+        }
     }
 
+//    public static RepeatTests createRandomTokenTypeRepeats() {
+//
+//        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
+//        return createTokenTypeRepeat(accessTokenType);
+//    }
+//
     public static RepeatTests createTokenTypeRepeat(String accessTokenType) {
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
 
         RepeatTests rTests = addRepeat(null, new SecurityTestRepeatAction(accessTokenType));
 
+        return rTests;
+
+    }
+
+    /**
+     * Repeat the tests with both opaque and jwt access tokens unless the mode specified matches the current mode, then only use the access_token type provided
+     *
+     * @param accessTokenType
+     * @return
+     */
+    public static RepeatTests createTokenTypeRepeats(TestMode mode, String accessTokenType) {
+
+        RepeatTests rTests = null;
+        if (TestModeFilter.FRAMEWORK_TEST_MODE == mode) {
+            Log.info(thisClass, "createTokenTypeRepeat", "Will be running tests using a/an " + accessTokenType + " access_token");
+            rTests = addRepeat(null, new SecurityTestRepeatAction(accessTokenType));
+        } else {
+            Log.info(thisClass, "createTokenTypeRepeat", "Will be running tests using both access_tokens and jwt tokens");
+            rTests = createTokenTypeRepeats(null);
+        }
         return rTests;
 
     }
@@ -226,7 +276,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public Page invokeApp(WebClient webClient, String url, Expectations expectations) throws Exception {
 
         Page response = null;
-        rspValues.setOriginalRequest(url);
+        if (!(rspValues.getOriginalRequest() != null && rspValues.getOriginalRequest().contains(ServletMessageConstants.UNAUTH_SESSION_REQUEST_EXCEPTION))) {
+            rspValues.setOriginalRequest(url);
+        }
 
         // the call to invokeUrlWithParametersAndHeaders mangles the headers, so make a copy
         HashMap<String, String> tempHeaders = null;
@@ -280,6 +332,38 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public Page invokeAppReturnLogoutPage(WebClient webClient, String url) throws Exception {
 
         return invokeApp(webClient, url, CommonExpectations.successfullyReachedOidcLogoutPage());
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we landed on the post logout page - we'll land on this page when we try to use expired tokens
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the logout page
+     * @throws Exception
+     */
+    public Page invokeAppReturnPostLogoutPage(WebClient webClient, String url, Map<String, String> extraParms) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedPostLogoutPage(extraParms));
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we landed on the test endSession app (with/without a logout redirect, we won't get past the test endSession)
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the logout page
+     * @throws Exception
+     */
+    public Page invokeAppReturnTestEndSessionPage(WebClient webClient, String url, boolean willRedirect) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedTestEndSessiontPage(rpHttpsBase, willRedirect));
 
     }
 
@@ -347,7 +431,10 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         // confirm protected resource was accessed
         validationUtils.validateResult(response, currentExpectations);
 //        validateTheSameContext(ServletMessageConstants.CALLBACK, response);
-        validateTheSameContext(ServletMessageConstants.SERVLET, response);
+        // when simple servlet is used, we won't have an openidContext
+        if (!rspValues.getBaseApp().equals(Constants.DEFAULT_SERVLET)) {
+            validateTheSameContext(ServletMessageConstants.SERVLET, response);
+        }
 
         return response;
     }
@@ -361,7 +448,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                      + "OpenIdContext: null", "The context was null and should not have been"));
 
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
-                                                                                                             + ServletMessageConstants.BASE_SERVLET, "Did not land on the test app."));
+                                                                                                             + rspValues.getBaseApp(), "Did not land on the test app."));
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                              + app, "Did not land on the test app."));
 
@@ -515,6 +602,22 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                                                                                                          Integer.toString(rpServer.getBvtSecurePort())).replace("rp_AppName_rp",
                                                                                                                                                                                                                                                                 appName);
 
+        }
+        if (value instanceof PromptType) {
+            newValue = ((PromptType) value).toString();
+        }
+        if (value instanceof PromptType[]) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (PromptType promptType : (PromptType[]) value) {
+                joiner.add(promptType.toString());
+            }
+            newValue = joiner.toString();
+        }
+        if (value instanceof DisplayType) {
+            newValue = ((DisplayType) value).toString();
+        }
+        if (value instanceof Integer) {
+            newValue = ((Integer) value).toString();
         }
         return newValue;
     }

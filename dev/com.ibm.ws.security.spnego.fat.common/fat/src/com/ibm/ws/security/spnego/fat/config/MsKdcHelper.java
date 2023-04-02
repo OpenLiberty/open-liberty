@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -480,6 +482,7 @@ public class MsKdcHelper extends KdcHelper {
         return output;
     }
 
+    //The teardown method is not currently being used.
     @Override
     public void teardown() {
         final String methodName = "teardown()";
@@ -515,28 +518,9 @@ public class MsKdcHelper extends KdcHelper {
                 Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
             }
         }
-        if (!InitClass.sendvbs) {
-            String file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
-            try {
-                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
-            } catch (Exception e) {
-                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
-            }
 
-            file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE);
-            try {
-                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
-            } catch (Exception e) {
-                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
-            }
+        deleteVbsScriptsFromKDC();
 
-            file = getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE);
-            try {
-                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
-            } catch (Exception e) {
-                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
-            }
-        }
         if (!InitClass.needToPushwinSetSPN) {
             String file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE);
             try {
@@ -571,6 +555,36 @@ public class MsKdcHelper extends KdcHelper {
          */
         if (!"localhost".equalsIgnoreCase(InitClass.serverShortHostName)) {
             String file = InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX;
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+    }
+
+    /**
+     * Will delete the .vbs script files from the KDC machine after the tests run.
+     */
+    @Override
+    public void deleteVbsScriptsFromKDC() {
+        final String methodName = "deleteVbsScripts";
+        if (!InitClass.sendvbs) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+
+            file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+
+            file = getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE);
             try {
                 deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
             } catch (Exception e) {

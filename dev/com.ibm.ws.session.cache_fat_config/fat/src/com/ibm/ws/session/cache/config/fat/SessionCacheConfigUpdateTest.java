@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -105,6 +107,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         savedConfig = server.getServerConfiguration().clone();
         server.startServer();
 
+        TimeUnit.SECONDS.sleep(seconds);
+
         // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
         // otherwise tests which attempt a configuration update could end up triggering a deactivate and close of the CachingProvider
         // while the servlet initialization code is still attempting to use the CachingProvider and/or the CacheManager and Caches that it creates.
@@ -115,7 +119,14 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        try {
+            Log.info(SessionCacheConfigUpdateTest.class, "tearDown", "Start server shutdown");
+            server.stopServer();
+        } catch (Exception e) {
+            Log.info(SessionCacheConfigUpdateTest.class, "tearDown", "Ignoring exception due to slow test machine. Exception = " + e.toString());
+
+            TimeUnit.SECONDS.sleep(seconds);
+        }
     }
 
     /**

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -37,6 +39,8 @@ import com.ibm.ws.webcontainer.security.WebAuthenticator;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  *
@@ -95,13 +99,13 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
     private AuthenticationResult handleBasicAuth(String inRealm, HttpServletRequest req, HttpServletResponse res) {
 
         AuthenticationResult result = null;
-        String hdrValue = req.getHeader(BASIC_AUTH_HEADER_NAME);
+        String hdrValue = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_AUTHORIZATION);
         if (hdrValue == null || !hdrValue.startsWith("Basic ")) {
             result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_CHALLENGE);
             return result;
         }
         // Parse the username & password from the header.
-        String encoding = req.getHeader("Authorization-Encoding");
+        String encoding = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_AUTHORIZATION_ENCODING);
 
         hdrValue = decodeBasicAuth(hdrValue.substring(6), encoding);
 
@@ -126,10 +130,10 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
             Subject authenticatedSubject = authenticationService.authenticate(thisAuthMech, authenticationData, null);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_SUCCESS);
         } catch (AuthenticationException e) {
-            
+
             authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage(), AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_DENIED);
 
-            if (e instanceof com.ibm.ws.security.authentication.PasswordExpiredException) {  
+            if (e instanceof com.ibm.ws.security.authentication.PasswordExpiredException) {
                 authResult.passwordExpired = true;
             } else if (e instanceof com.ibm.ws.security.authentication.UserRevokedException) {
                 authResult.userRevoked = true;

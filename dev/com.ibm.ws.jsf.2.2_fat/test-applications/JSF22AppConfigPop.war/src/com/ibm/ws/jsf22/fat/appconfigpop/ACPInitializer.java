@@ -1,13 +1,12 @@
-/*
- * Copyright (c)  2015  IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.appconfigpop;
 
 import javax.faces.application.ApplicationConfigurationPopulator;
@@ -17,9 +16,9 @@ import org.w3c.dom.Element;
 
 /**
  * This is a callback to do configuration via an empty DOM root which respresents faces.config.xml. Existing configuration options can be added, but cannot overwrite existing ones.
- * 
+ *
  * This callback tests the presence of META-INF/services/javax.faces.application.ApplicationConfigurationPopulator in the war file.
- * 
+ *
  */
 public class ACPInitializer extends ApplicationConfigurationPopulator {
 
@@ -72,7 +71,6 @@ public class ACPInitializer extends ApplicationConfigurationPopulator {
         nr.appendChild(nc);
 
         document.getChildNodes().item(0).appendChild(nr);
-
     }
 
     private Element createNode(Document doc, String element, String value) {
@@ -80,7 +78,5 @@ public class ACPInitializer extends ApplicationConfigurationPopulator {
         Element e = doc.createElementNS(ns, element);
         e.appendChild(doc.createTextNode(value));
         return e;
-
     }
-
 }

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 IBM Corporation and others.
+ * Copyright (c) 2008, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -174,19 +176,19 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getAttributes(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getBestRowIdentifier(String s, String s1, String s2, int i, boolean flag)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getCatalogs()
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getCatalogSeparator()
@@ -204,13 +206,13 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getColumnPrivileges(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getColumns(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public Connection getConnection()
@@ -222,7 +224,7 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getCrossReference(String s, String s1, String s2, String s3, String s4, String s5)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public int getDatabaseMajorVersion()
@@ -284,7 +286,7 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getExportedKeys(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getExtraNameCharacters()
@@ -302,13 +304,13 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getImportedKeys(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getIndexInfo(String s, String s1, String s2, boolean flag, boolean flag1)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public int getJDBCMajorVersion()
@@ -452,19 +454,19 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getPrimaryKeys(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getProcedureColumns(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getProcedures(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getProcedureTerm()
@@ -482,7 +484,7 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getSchemas()
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getSchemaTerm()
@@ -518,13 +520,13 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getSuperTables(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getSuperTypes(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getSystemFunctions()
@@ -536,19 +538,19 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getTablePrivileges(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getTables(String s, String s1, String s2, String as[])
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getTableTypes()
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getTimeDateFunctions()
@@ -560,13 +562,13 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getTypeInfo()
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getUDTs(String s, String s1, String s2, int ai[])
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public String getURL()
@@ -584,7 +586,7 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getVersionColumns(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public boolean insertsAreDetected(int i)
@@ -1136,7 +1138,7 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getSchemas(String s, String s1)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public boolean supportsStoredFunctionsUsingCallSyntax()
@@ -1154,25 +1156,25 @@ public final class GenericDatabaseMetaData implements DatabaseMetaData
     public ResultSet getClientInfoProperties()
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getFunctions(String s, String s1, String s2)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getFunctionColumns(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public ResultSet getPseudoColumns(String s, String s1, String s2, String s3)
                     throws SQLException
     {
-        return null;
+        return new GenericResultSet();
     }
 
     public boolean generatedKeyAlwaysReturned()

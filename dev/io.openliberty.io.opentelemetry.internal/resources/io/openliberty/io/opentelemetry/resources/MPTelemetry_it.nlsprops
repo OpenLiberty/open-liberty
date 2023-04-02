@@ -1,0 +1,34 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: \u00c8 stato richiamato il metodo GlobalOpenTelemetry.get. Questo metodo restituisce un oggetto OpenTelemetry non funzionale. Invece, utilizzare CDI per inserire un oggetto OpenTelemetry.
+CWMOT5000.cannot.get.globalopentelemetry.explanation=La classe GlobalOpenTelemetry non \u00e8 supportata, poich\u00e9 non esiste alcun oggetto OpenTelemetry globale. Invece, ogni applicazione deve utilizzare CDI per inserire l'oggetto OpenTelemetry relativo a quell'applicazione.
+CWMOT5000.cannot.get.globalopentelemetry.useraction=Utilizzare CDI per inserire l'oggetto OpenTelemetry.
+
+CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: L'impostazione dell'oggetto GlobalOpenTelemetry non \u00e8 supportata.
+CWMOT5001.cannot.set.globalopentelemetry.explanation=La classe GlobalOpenTelemetry non \u00e8 supportata, poich\u00e9 non esiste alcun oggetto OpenTelemetry globale. Invece, ogni applicazione deve utilizzare CDI per inserire l'oggetto OpenTelemetry relativo a quell'applicazione.
+CWMOT5001.cannot.set.globalopentelemetry.useraction=Non richiamare il metodo GlobalOpenTelemetry.get. Laddove il codice dell'applicazione debba ottenere un oggetto OpenTelemetry, utilizzare CDI per l'inserimento.

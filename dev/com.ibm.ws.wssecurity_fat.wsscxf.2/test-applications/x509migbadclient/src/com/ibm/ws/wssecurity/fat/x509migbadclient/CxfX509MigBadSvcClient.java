@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -96,8 +98,6 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
     String methodFull = null;
     SOAPMessage soapReq = null;
 
-    String errMsgVersion = "";
-
     private StringReader reqMsg = null;
 
     boolean unlimitCryptoKeyLength = false;
@@ -138,9 +138,8 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                            " methodFull:" + methodFull +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +
-                           " servername:" + serverName +
-                           " errorMsgVersion:" + errMsgVersion); //2/2021
-
+                           " servername:" + serverName);
+                           
         // This piece of code is a work-around for a bug defect 89493
 /*
  * if( httpProtocal.equals("https:")){
@@ -172,10 +171,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadCxfX509AsymIssuerSerialMigService")) {
                 service = new FatBAX02Service();
                 strExpect = "LIBERTYFAT X509 bax02";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
             } else if (thisMethod.equals("testCxfX509IssuerSerialMigSymNoEncryptSignatureService")) {
                 service = new FatBAX03Service();
                 strExpect = "LIBERTYFAT X509 bax03";
@@ -198,24 +194,15 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509AsymProtectTokensMigService")) {
                 service = new FatBAX08Service();
                 strExpect = "LIBERTYFAT X509 bax08";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "EncryptedParts: Soap Body is not ENCRYPTED";
-                }
+                strSubErrMsg = "EncryptedParts: Soap Body is not ENCRYPTED";
             } else if (thisMethod.equals("testCxfX509ProtectTokensMigSymService")) {
                 service = new FatBAX09Service();
                 strExpect = "LIBERTYFAT X509 bax09";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "SignedParts: Soap Body is not SIGNED";
-                }
+                strSubErrMsg = "SignedParts: Soap Body is not SIGNED";
             } else if (thisMethod.equals("testCxfX509TransportEndorsingMigService")) {
                 service = new FatBAX10Service();
                 strExpect = "LIBERTYFAT X509 bax10";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "list of references must contain at least one entry";
-                }
+                strSubErrMsg = "list of references must contain at least one entry";
             } else if (thisMethod.equals("testCxfX509TransportEndorsingSP11MigService")) {
                 service = new FatBAX11Service();
                 strExpect = "LIBERTYFAT X509 bax11";
@@ -227,10 +214,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportEndorsingEncryptedMigService")) {
                 service = new FatBAX13Service();
                 strExpect = "LIBERTYFAT X509 bax13";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "list of references must contain at least one entry";
-                }
+                strSubErrMsg = "list of references must contain at least one entry";
             } else if (thisMethod.equals("testCxfX509TransportSignedEndorsingEncryptedMigService")) {
                 service = new FatBAX14Service();
                 strExpect = "LIBERTYFAT X509 bax14";
@@ -242,10 +226,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportKVTMigService")) {
                 service = new FatBAX16Service();
                 strExpect = "LIBERTYFAT X509 bax16";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "Received Timestamp does not match the requirements";
-                }
+                strSubErrMsg = "Received Timestamp does not match the requirements";
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureMigService")) {
                 service = new FatBAX17Service();
                 strExpect = "LIBERTYFAT X509 bax17";
@@ -266,10 +247,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadWsComplexService")) {
                 service = new FatBAX21Service();
                 strExpect = "LIBERTYFAT X509 bax21";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "Not encrypted before signed";
-                }
+                strSubErrMsg = "Not encrypted before signed";
             } else if (thisMethod.equals("testBadX509KeyIdentifierUNTService")) {
                 service = new FatBAX24Service();
                 strExpect = "LIBERTYFAT X509 bax24";
@@ -301,34 +279,19 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadBasic192Service")) {
                 service = new FatBAX31Service();
                 strExpect = "LIBERTYFAT X509 bax31";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
             } else if (thisMethod.equals("testBadTripleDesService")) {
                 service = new FatBAX32Service();
                 strExpect = "LIBERTYFAT X509 bax32";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
             } else if (thisMethod.equals("testBadInclusiveC14NService")) {
                 service = new FatBAX33Service();
                 strExpect = "LIBERTYFAT X509 bax33";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
-                }
+                strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
             } else if (thisMethod.equals("testBadBasic128Service")) {
                 service = new FatBAX34Service();
                 strExpect = "LIBERTYFAT X509 bax34";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    //testMode = "negative";
-                    //the test method runs on EE8 as negative test
-                    //newErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
-                    strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
-                }
+                strSubErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
             } else if (thisMethod.equals("testBadSymmetricEndorsingUNTPolicy")) {
                 service = new FatBAX35Service();
                 strExpect = "LIBERTYFAT X509 bax35";
@@ -483,9 +446,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             methodFull = request.getParameter("methodFull");
             serviceName = new QName(SERVICE_NS, rawServiceName);
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
-            //2/2021
-            errMsgVersion = request.getParameter("errorMsgVersion");
-
+           
             if (httpSecurePortNum == null || httpSecurePortNum.length() == 0) {
                 httpProtocal = "http:";
                 thePort = httpPortNum;

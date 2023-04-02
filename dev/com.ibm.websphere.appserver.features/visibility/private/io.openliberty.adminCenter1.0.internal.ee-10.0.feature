@@ -8,6 +8,6 @@ singleton=true
   io.openliberty.jta-2.0, \
   io.openliberty.pages-3.1
 -bundles=\
-  com.ibm.ws.ui.jakarta
-kind=beta
+  com.ibm.ws.ui.servlet.filter.jakarta
+kind=ga
 edition=core

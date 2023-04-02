@@ -1,26 +1,38 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -29,67 +41,78 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-import jakarta.data.Column;
-import jakarta.data.DiscriminatorColumn;
-import jakarta.data.DiscriminatorValue;
-import jakarta.data.Embeddable;
-import jakarta.data.Entity;
-import jakarta.data.Generated;
-import jakarta.data.Id;
-import jakarta.data.Inheritance;
-import jakarta.data.MappedSuperclass;
+import jakarta.data.exceptions.MappingException;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
-import jakarta.persistence.metamodel.EmbeddableType;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.Metamodel;
+import jakarta.persistence.metamodel.PluralAttribute;
+import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.Type;
 
 /**
  * Runs asynchronously to supply orm.xml for entities that aren't already Jakarta Persistence entities
  * and to discover information about entities.
  */
-class EntityDefiner implements Runnable {
+public class EntityDefiner implements Runnable {
     private static final String EOLN = String.format("%n");
     private static final TraceComponent tc = Tr.register(EntityDefiner.class);
 
     private final String databaseId;
-    private final List<Class<?>> entities;
+    private final List<Class<?>> entities = new ArrayList<>();
+    final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
-    private final PersistenceDataProvider provider;
 
-    EntityDefiner(PersistenceDataProvider provider, String databaseId, ClassLoader loader, List<Class<?>> entities) {
-        this.provider = provider;
+    public EntityDefiner(String databaseId, ClassLoader loader) {
         this.databaseId = databaseId;
         this.loader = loader;
-        this.entities = entities;
     }
 
-    private static String getID(Class<?> entityClass) {
-        // For now, choosing "id" or any field that ends with id
-        String id = null;
-        String upperID = null;
-        for (Field field : entityClass.getFields()) {
-            if (field.getAnnotation(Id.class) != null)
-                return field.getName();
+    /**
+     * Adds an entity class to be handled.
+     *
+     * @param entityClass entity class.
+     */
+    @Trivial
+    public void add(Class<?> entityClass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "add: " + entityClass.getName());
 
-            String name = field.getName().toUpperCase();
-            if ("ID".equals(name))
-                id = field.getName();
-            else if ((id == null || id.length() != 2) && name.endsWith("ID"))
-                if (upperID == null || name.compareTo(upperID) < 0) {
-                    upperID = name;
-                    id = field.getName();
-                }
+        entities.add(entityClass);
+    }
+
+    /**
+     * Request the Id type, allowing for an EclipseLink extension that lets the
+     * Id to be located on an attribute of an Embeddable of the entity.
+     *
+     * @param entityType
+     * @return the Id type. Null if the type of Id cannot be determined.
+     */
+    @FFDCIgnore(RuntimeException.class)
+    @Trivial
+    private static Type<?> getIdType(EntityType<?> entityType) {
+        Type<?> idType;
+        try {
+            idType = entityType.getIdType();
+        } catch (RuntimeException x) {
+            // occurs with EclipseLink extension to JPA that allows @Id on an embeddable attribute
+            if ("ConversionException".equals(x.getClass().getSimpleName()))
+                idType = null;
+            else
+                throw x;
         }
 
-        if (id == null)
-            throw new IllegalArgumentException(entityClass + " lacks public field with @Id or of the form *ID");
-        return id;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, entityType.getName() + " getIdType: " + idType);
+        return idType;
     }
 
     @Override
@@ -114,54 +137,51 @@ class EntityDefiner implements Runnable {
                 Tr.debug(this, tc, databaseId + " databaseStore reference", ref);
 
             // Classes explicitly annotated with JPA @Entity:
-            ArrayList<String> entityClassNames = new ArrayList<>(entities.size());
+            Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
+
+            // List of classes to inspect for the above
+            Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
 
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
 
-            List<Class<?>> embeddableTypes = new ArrayList<>();
-
-            Map<Class<?>, String> keyAttributeNames = new HashMap<>();
+            Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
 
             for (Class<?> c : entities) {
-                String keyAttributeName = getID(c);
-                keyAttributeNames.put(c, keyAttributeName);
+                if (c.isAnnotationPresent(Entity.class)) {
+                    annotatedEntityClassQueue.add(c);
+                } else {
+                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
 
-                if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
-                    Entity entity = c.getAnnotation(Entity.class);
-                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"" + c.getName() + "\">").append(EOLN);
+                    xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
 
-                    if (c.getAnnotation(Inheritance.class) == null) {
-                        String tableName = tablePrefix + (entity == null || entity.value().length() == 0 ? c.getSimpleName() : entity.value());
-                        xml.append("  <table name=\"" + tableName + "\"/>").append(EOLN);
-                    } else {
-                        xml.append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN);
-                    }
-
-                    DiscriminatorValue discriminatorValue = c.getAnnotation(DiscriminatorValue.class);
-                    if (discriminatorValue != null)
-                        xml.append("  <discriminator-value>").append(discriminatorValue.value()).append("</discriminator-value>").append(EOLN);
-
-                    DiscriminatorColumn discriminatorColumn = c.getAnnotation(DiscriminatorColumn.class);
-                    if (discriminatorColumn != null)
-                        xml.append("  <discriminator-column name=\"").append(discriminatorColumn.value()).append("\"/>").append(EOLN);
-
-                    writeAttributes(xml, c, keyAttributeName, embeddableTypes);
+                    writeAttributes(xml, c, false, embeddableTypesQueue);
 
                     xml.append(" </entity>").append(EOLN);
 
                     entityClassInfo.add(xml.toString());
-                } else {
-                    entityClassNames.add(c.getName());
                 }
             }
 
-            for (Class<?> type : embeddableTypes) {
-                StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
-                writeAttributes(xml, type, null, null);
-                xml.append(" </embeddable>").append(EOLN);
-                entityClassInfo.add(xml.toString());
-            }
+            Set<Class<?>> embeddableTypes = new HashSet<>();
+            for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
+                if (embeddableTypes.add(type)) { // only write each type once
+                    StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
+                    writeAttributes(xml, type, true, embeddableTypesQueue);
+                    xml.append(" </embeddable>").append(EOLN);
+                    entityClassInfo.add(xml.toString());
+                }
+
+            // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
+            for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
+                if (entityClassNames.add(c.getName())) {
+                    for (Field f : c.getFields())
+                        if (f.getType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(f.getType());
+                    for (Method m : c.getMethods())
+                        if (m.getReturnType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(m.getReturnType());
+                }
 
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
                                                                  entityClassInfo.toArray(new String[entityClassInfo.size()]));
@@ -174,33 +194,118 @@ class EntityDefiner implements Runnable {
             em = punit.createEntityManager();
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
-                entityType.getName();//TODO
-                LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
-                Set<String> collectionAttributeNames = new HashSet<String>();
-                HashMap<String, Member> attributeAccessors = new HashMap<>();
+                Map<String, String> attributeNames = new HashMap<>();
+                Map<String, List<Member>> attributeAccessors = new HashMap<>();
+                SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
+                Map<String, Class<?>> collectionElementTypes = new HashMap<>();
+                Map<Class<?>, List<String>> relationAttributeNames = new HashMap<>();
+                Queue<Attribute<?, ?>> relationships = new LinkedList<>();
+                Queue<String> relationPrefixes = new LinkedList<>();
+                Queue<List<Member>> relationAccessors = new LinkedList<>();
+                Class<?> idClass = null;
+                SortedMap<String, Member> idClassAttributeAccessors = null;
+
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-
-                    if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
-                        // TODO this only covers one level of embedded attributes, which is fine for now because this isn't a real implementation
-                        EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
-                        for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
-                            String embeddableAttributeName = embAttr.getName();
-                            String fullAttributeName = attributeName + '.' + embeddableAttributeName;
-                            attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
-                            attributeAccessors.put(fullAttributeName, attr.getJavaMember());
-                            if (PersistentAttributeType.ELEMENT_COLLECTION.equals(embAttr.getPersistentAttributeType()))
-                                collectionAttributeNames.add(fullAttributeName);
-                        }
-                    } else {
-                        attributeNames.put(attributeName.toUpperCase(), attributeName);
-                        attributeAccessors.put(attributeName, attr.getJavaMember());
-                        if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
-                            collectionAttributeNames.add(attributeName);
+                    if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
+                        PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
+                        PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
+                        relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
+                        relationships.add(attr);
+                        relationPrefixes.add(attributeName);
+                        relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
+                    }
+                    attributeNames.put(attributeName.toLowerCase(), attributeName);
+                    attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
+                    attributeTypes.put(attributeName, attr.getJavaType());
+                    if (attr.isCollection()) {
+                        if (attr instanceof PluralAttribute)
+                            collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
+                    } else if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId()) {
+                        attributeNames.put("id", attributeName);
                     }
                 }
 
+                // Guard against recursive processing of OneToOne (and similar) relationships
+                // by tracking whether we have already processed each entity class involved.
+                Set<Class<?>> entityTypeClasses = new HashSet<>();
+                entityTypeClasses.add(entityType.getJavaType());
+
+                for (Attribute<?, ?> attr; (attr = relationships.poll()) != null;) {
+                    String prefix = relationPrefixes.poll();
+                    List<Member> accessors = relationAccessors.poll();
+                    ManagedType<?> relation = model.managedType(attr.getJavaType());
+                    if (relation instanceof EntityType && !entityTypeClasses.add(attr.getJavaType()))
+                        break;
+                    List<String> relAttributeList = relationAttributeNames.get(attr.getJavaType());
+                    for (Attribute<?, ?> relAttr : relation.getAttributes()) {
+                        String relationAttributeName = relAttr.getName();
+                        String fullAttributeName = prefix + '.' + relationAttributeName;
+                        List<Member> relAccessors = new LinkedList<>(accessors);
+                        relAccessors.add(relAttr.getJavaMember());
+                        relAttributeList.add(fullAttributeName);
+
+                        PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
+                        if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
+                            PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
+                            PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
+                            relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
+                            relationships.add(relAttr);
+                            relationPrefixes.add(fullAttributeName);
+                            relationAccessors.add(relAccessors);
+                        }
+
+                        // Allow the simple attribute name if it doesn't overlap
+                        relationAttributeName = relationAttributeName.toLowerCase();
+                        attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
+
+                        // Allow a qualified name such as @OrderBy("address.street.name")
+                        relationAttributeName = fullAttributeName.toLowerCase();
+                        attributeNames.put(relationAttributeName, fullAttributeName);
+
+                        // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
+                        String relationAttributeName_ = relationAttributeName.replace('.', '_');
+                        attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
+
+                        // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
+                        String relationAttributeNameUndelimited = relationAttributeName.replace(".", "");
+                        attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
+
+                        attributeAccessors.put(fullAttributeName, relAccessors);
+
+                        attributeTypes.put(fullAttributeName, relAttr.getJavaType());
+                        if (relAttr.isCollection()) {
+                            if (relAttr instanceof PluralAttribute)
+                                collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
+                        } else if (relAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) relAttr).isId()) {
+                            attributeNames.put("id", fullAttributeName);
+                        }
+                    }
+                }
+
+                if (!entityType.hasSingleIdAttribute()) {
+                    // Per JavaDoc, the above means there is an IdClass.
+                    // An EclipseLink extension that allows an Id on an embeddable of an entity
+                    // is an exception to this, which we indicate with idClassType null.
+                    Type<?> idClassType = getIdType(entityType);
+                    if (idClassType != null) {
+                        @SuppressWarnings("unchecked")
+                        Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
+                        if (idClassAttributes != null) {
+                            attributeNames.remove("id");
+                            idClass = idClassType.getJavaType();
+                            idClassAttributeAccessors = new TreeMap<>();
+                            for (SingularAttribute<?, ?> attr : idClassAttributes) {
+                                Member entityMember = attr.getJavaMember();
+                                Member idClassMember = entityMember instanceof Field //
+                                                ? idClass.getField(entityMember.getName()) //
+                                                : idClass.getMethod(entityMember.getName());
+                                idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
+                            }
+                        }
+                    }
+                }
                 // This works for version Fields, and might work for version getter/setter methods
                 // but is debatable whether we should do it.
                 //Member versionMember = null;
@@ -213,44 +318,36 @@ class EntityDefiner implements Runnable {
 
                 Class<?> entityClass = entityType.getJavaType();
 
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "attribute names for " + entityClass, attributeNames);
-
-                String keyAttributeName = keyAttributeNames.get(entityClass);
-                Attribute<?, ?> keyAttribute = entityType.getAttribute(keyAttributeNames.get(entityType.getJavaType()));
-                Member keyAccessor = keyAttribute.getJavaMember();
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "accessor for id " + keyAttribute, keyAccessor);
-
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
                                 attributeAccessors, //
                                 attributeNames, //
-                                collectionAttributeNames, //
-                                keyAttributeNames.get(entityClass), //
-                                keyAccessor, //
+                                attributeTypes, //
+                                collectionElementTypes, //
+                                relationAttributeNames, //
+                                idClass, //
+                                idClassAttributeAccessors, //
                                 punit);
 
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
         } catch (Exception x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw new RuntimeException(x);
         } catch (Error x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
@@ -260,48 +357,104 @@ class EntityDefiner implements Runnable {
         }
     }
 
-    private void writeAttributes(StringBuilder xml, Class<?> c, String keyAttributeName, List<Class<?>> embeddableTypes) {
-        xml.append("  <attributes>").append(EOLN);
+    /**
+     * Write attributes for the specified entity or embeddable to XML.
+     *
+     * @param xml                  XML for defining the entity attributes
+     * @param c                    entity class
+     * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
+     * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
+     */
+    private void writeAttributes(StringBuilder xml, Class<?> c, boolean isEmbeddable, Queue<Class<?>> embeddableTypesQueue) {
 
-        List<Field> fields = new ArrayList<Field>();
-        for (Class<?> superc = c; superc != null; superc = superc.getSuperclass()) {
-            boolean isMappedSuperclass = superc.getAnnotation(MappedSuperclass.class) != null;
-            if (isMappedSuperclass || superc == c)
-                for (Field f : superc.getFields())
-                    if (isMappedSuperclass || c.equals(f.getDeclaringClass()))
-                        fields.add(f);
+        // Identify attributes
+        SortedMap<String, Class<?>> attributes = new TreeMap<>();
+
+        // TODO cover records once compiling against Java 17
+
+        for (Field f : c.getFields())
+            attributes.putIfAbsent(f.getName(), f.getType());
+
+        try {
+            PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
+            if (propertyDescriptors != null)
+                for (PropertyDescriptor p : propertyDescriptors) {
+                    Method setter = p.getWriteMethod();
+                    if (setter != null)
+                        attributes.putIfAbsent(p.getName(), p.getPropertyType());
+                }
+        } catch (IntrospectionException x) {
+            throw new MappingException(x);
         }
 
-        for (Field field : fields) {
-            Id id = field.getAnnotation(Id.class);
-            Column column = field.getAnnotation(Column.class);
-            Generated generated = field.getAnnotation(Generated.class);
-            Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
+        String keyAttributeName = null;
+        if (!isEmbeddable) {
+            // Determine which attribute is the id.
+            // Precedence is:
+            // (1) has name of Id, or ID, or id.
+            // (2) name ends with Id.
+            // (3) name ends with ID.
+            // (4) name ends with id.
+            int precedence = 10;
+            for (String name : attributes.keySet())
+                if (name.length() > 2) {
+                    if (precedence > 2) {
+                        char i = name.charAt(name.length() - 2);
+                        if (i == 'I') {
+                            char d = name.charAt(name.length() - 1);
+                            if (d == 'd') {
+                                keyAttributeName = name;
+                                precedence = 2;
+                            } else if (d == 'D' && precedence > 3) {
+                                keyAttributeName = name;
+                                precedence = 3;
+                            }
+                        } else if (i == 'i' && precedence > 4 && name.charAt(name.length() - 1) == 'd') {
+                            keyAttributeName = name;
+                            precedence = 4;
+                        }
+                    }
+                } else if (name.equalsIgnoreCase("ID")) {
+                    keyAttributeName = name;
+                    precedence = 1;
+                    break;
+                }
 
-            String attributeName = field.getName();
-            String columnName = column == null || column.value().length() == 0 ? //
-                            id == null || id.value().length() == 0 ? null : id.value() : //
-                            column.value();
-            boolean isCollection = Collection.class.isAssignableFrom(field.getType());
+            if (keyAttributeName == null)
+                throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
+        }
+
+        // Write the attributes to XML:
+
+        xml.append("  <attributes>").append(EOLN);
+
+        for (Map.Entry<String, Class<?>> attributeInfo : attributes.entrySet()) {
+            String attributeName = attributeInfo.getKey();
+            Class<?> attributeType = attributeInfo.getValue();
+            boolean isCollection = Collection.class.isAssignableFrom(attributeType);
+            boolean isPrimitive = attributeType.isPrimitive();
 
             String columnType;
-            if (embeddable == null) {
-                columnType = id != null || keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
-                                "version".equals(attributeName) ? "version" : //
+            if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
+                columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
+                                "version".equalsIgnoreCase(attributeName) ? "version" : //
                                                 isCollection ? "element-collection" : //
                                                                 "basic";
-            } else if (embeddableTypes == null) {
-                throw new UnsupportedOperationException("TODO: Embeddedable within an Embeddable");
             } else {
                 columnType = "embedded";
-                embeddableTypes.add(field.getType());
+                embeddableTypesQueue.add(attributeType);
             }
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
-            if (columnName != null)
-                xml.append("    <column name=\"" + columnName + "\"/>").append(EOLN);
-            if (generated != null)
-                xml.append("    <generated-value strategy=\"" + generated.value().name() + "\"/>").append(EOLN);
+
+            if (isEmbeddable) {
+                if (!"embedded".equals(columnType))
+                    xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+            } else {
+                if (isPrimitive)
+                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+            }
+
             xml.append("   </" + columnType + ">").append(EOLN);
         }
 

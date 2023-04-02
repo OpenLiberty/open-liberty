@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -36,6 +38,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.cors.config.CorsConfig;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 @Component(service = { CorsHelper.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
 public class CorsHelper {
@@ -120,14 +124,15 @@ public class CorsHelper {
         boolean continueHandlingRequest = false;
 
         // 6.1.1 and 6.2.1: If the Origin header is not present terminate this set of steps. The request is outside the scope of the CORS specification.
-        if (request.getHeader(REQUEST_HEADER_ORIGIN) != null) {
+        String originHeader = ISRTServletRequest.getHeader(request, HttpHeaderKeys.HDR_ORIGIN);
+        if (originHeader != null) {
             logCorsRequestInfo(request);
 
-            CorsRequestType type = getRequestType(request);
+            CorsRequestType type = getRequestType(originHeader, request);
             if (type == CorsRequestType.PRE_FLIGHT) {
-                continueHandlingRequest = handlePreflightRequest(request, response);
+                continueHandlingRequest = handlePreflightRequest(originHeader, request, response);
             } else if (type == CorsRequestType.SIMPLE || type == CorsRequestType.ACTUAL) {
-                continueHandlingRequest = handleSimpleCrossOriginRequest(request, response);
+                continueHandlingRequest = handleSimpleCrossOriginRequest(originHeader, request, response);
             }
 
             logCorsResponseInfo(response);
@@ -140,8 +145,7 @@ public class CorsHelper {
         return continueHandlingRequest;
     }
 
-    private boolean handleSimpleCrossOriginRequest(HttpServletRequest request, HttpServletResponse response) {
-        String requestOrigin = request.getHeader(REQUEST_HEADER_ORIGIN);
+    private boolean handleSimpleCrossOriginRequest(String requestOrigin, HttpServletRequest request, HttpServletResponse response) {
 
         // 6.1.1: If the Origin header is not present terminate this set of steps. The request is outside the scope of the CORS specification.
         if (requestOrigin == null) {
@@ -185,8 +189,7 @@ public class CorsHelper {
         return false;
     }
 
-    private boolean handlePreflightRequest(HttpServletRequest request, HttpServletResponse response) {
-        String requestOrigin = request.getHeader(REQUEST_HEADER_ORIGIN);
+    private boolean handlePreflightRequest(String requestOrigin, HttpServletRequest request, HttpServletResponse response) {
 
         // 6.2.1: If the Origin header is not present terminate this set of steps. The request is outside the scope of the CORS specification.
         if (requestOrigin == null) {
@@ -300,10 +303,9 @@ public class CorsHelper {
         return true;
     }
 
-    private CorsRequestType getRequestType(HttpServletRequest request) {
+    private CorsRequestType getRequestType(String origin, HttpServletRequest request) {
         CorsRequestType type = CorsRequestType.OTHER;
 
-        String origin = request.getHeader(REQUEST_HEADER_ORIGIN);
         if (origin != null && !origin.isEmpty()) {
             String requestMethod = request.getMethod();
             if ("OPTIONS".equals(requestMethod)) {

@@ -2,10 +2,13 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2022
-# The source code for this program is not published or other-
-# wise divested of its trade secrets, irrespective of what has
-# been deposited with the U.S. Copyright Office.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 # 
 # ----------------------------------------------------------------------------
 #
@@ -782,7 +785,7 @@ mergeJVMOptions()
       saveIFS=$IFS
       IFS=$newline
 
-      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+      for option in `readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'`; do
         if [ -n "$option" ]; then
           case $option in
           \#*);;
@@ -864,6 +867,9 @@ criuEnvDefaults() {
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+  # Disable CRIU's use of HW breakpoints on restore.
+  # HW breakpoints are slower in some environments.
+  export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
 }
 
 ##
@@ -971,7 +977,7 @@ javaCmd()
   
   if [ $ACTION = "checkpoint" ]; then
     if [ -z "$CHECKPOINT_AT" ]; then
-      CHECKPOINT_AT="features"
+      CHECKPOINT_AT="deployment"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
 
@@ -983,11 +989,8 @@ javaCmd()
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
-    # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
-    # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
-    # When that becomes available we can remove the -Xsyslog:none option
-    # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false $X_WLP_IMMUTABLE_VARS"
+    # IgnoreUnrecognizedVMOptions is used so that other JVMs don't fail on these args
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
 
     checkCriuUnprivileged
@@ -1376,11 +1379,16 @@ criuRestore()
     CRIU_EXTRA_ARGS="--unprivileged $CRIU_EXTRA_ARGS"
   fi
 
+  if [ -z "${CRIU_RESTORE_PATH}" ]; then
+    # default to using the criu available on the PATH
+    CRIU_RESTORE_PATH=criu
+  fi
+
   if $BACKGROUND_RESTORE
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
       --pidfile ${X_PID_FILE} \
       --restore-detached
@@ -1409,7 +1417,7 @@ criuRestore()
     trap "exit" INT TERM
     trap "killSilent $TAIL_PID" EXIT
 
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 

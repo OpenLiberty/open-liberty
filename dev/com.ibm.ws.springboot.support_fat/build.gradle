@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -31,11 +33,11 @@
       'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
       'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
-      'org.eclipse.jetty:jetty-util:9.4.7.RC0'  
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'io.openliberty.springboot.test:io.openliberty.springboot.test.version15.app:1.0.0'  
 }
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
-autoFVT.dependsOn ':com.ibm.ws.springboot.support.version15.test.app:build'
 autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.app:build'
 autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.war.app:build'
 autoFVT.dependsOn ':com.ibm.ws.springboot.support.version20.test.java.app:build'
@@ -55,6 +57,11 @@ autoFVT.doLast {
   	into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
   }
   
+   task copySpringBootArtifacts(type: Copy) {
+    into 'lib'
+    include 'io-openliberty-springboot-test-*'
+   }
+  
   /*
    * Copy the test application jars into appropriate test servers.
    */
@@ -62,8 +69,9 @@ autoFVT.doLast {
     'com.ibm.ws.springboot.support.fat.SpringBootTests'
   ]
   servers.each { server ->
+    
     copy {
-      from new File('../com.ibm.ws.springboot.support.version15.test.app/build/libs/','com.ibm.ws.springboot.support.version15.test.app.jar')
+      from new File(autoFvtDir, 'lib/io.openliberty.springboot.test.version15.app-1.0.0.jar')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
     copy {

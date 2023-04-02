@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -60,12 +62,12 @@ public interface RecoveryLog {
      * in the client service.
      * </p>
      *
-     * @exception LogCorruptedException The recovery log has become corrupted and
-     *                cannot be opened.
-     * @exception LogAllocationException The recovery log could not be created.
-     * @exception InternalLogException An unexpected failure has occured.
+     * @exception LogCorruptedException    The recovery log has become corrupted and
+     *                                         cannot be opened.
+     * @exception LogAllocationException   The recovery log could not be created.
+     * @exception InternalLogException     An unexpected failure has occured.
      * @exception LogIncompatibleException An attempt has been made to open a recovery log
-     *                that is not compatible with this service
+     *                                         that is not compatible with this service
      */
     public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException, LogIncompatibleException;
 
@@ -124,12 +126,12 @@ public interface RecoveryLog {
      * finished.
      * </p>
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     public void recoveryComplete() throws LogClosedException, InternalLogException, LogIncompatibleException;
 
@@ -154,12 +156,12 @@ public interface RecoveryLog {
      *
      * @return The new RecoverableUnit.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must be
+     *                                         opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     public RecoverableUnit createRecoverableUnit() throws LogClosedException, InternalLogException, LogIncompatibleException;
 
@@ -194,13 +196,13 @@ public interface RecoveryLog {
      *
      * @param identity Identity of the RecoverableUnit to be removed.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException              Thrown if the recovery log is closed and must be
+     *                                                opened before this call can be issued.
      * @exception InvalidRecoverableUnitException Thrown if the RecoverableUnit does not exist.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
-     * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     * @exception InternalLogException            Thrown if an unexpected error has occured.
+     * @exception LogIncompatibleException        An attempt has been made access a recovery
+     *                                                log that is not compatible with this version
+     *                                                of the service.
      */
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException, LogIncompatibleException;
 
@@ -217,7 +219,7 @@ public interface RecoveryLog {
      *         null if no such RecoverableUnit exists.
      *
      * @exception LogClosedException hrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     public RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException;
 
@@ -250,7 +252,7 @@ public interface RecoveryLog {
      *         RecoverableUnits.
      *
      * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     public LogCursor recoverableUnits() throws LogClosedException;
 
@@ -267,12 +269,19 @@ public interface RecoveryLog {
 
     /**
      * Delete the underlying file or RDBMS resources
+     *
+     * @return
      */
-    public void delete();
+    public boolean delete();
 
     /**
      * A method to support the "original" peer recovery behaviour, where recovery logs
      * would not be deleted.
      */
     public void retainLogsInPeerRecoveryEnv(boolean retainLogs);
+
+    /**
+     * True if the recovery log has been marked as failed
+     */
+    public boolean failed();
 }

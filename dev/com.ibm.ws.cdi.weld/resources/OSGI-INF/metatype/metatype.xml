@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2015, 2022 IBM Corporation and others.
+    Copyright (c) 2015, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
    
     Contributors:
         IBM Corporation - initial API and implementation
@@ -33,30 +35,24 @@
         <Object ocdref="com.ibm.ws.cdi12.cdiContainer"/>
     </Designate>
     
-    <!-- <OCD name="%cdi" 
-         description="%cdi.desc" -->
-    <OCD name="internal"
-         description="internal use only"
+    <OCD name="%cdi" 
+         description="%cdi.desc"
          id="io.openliberty.cdi.configuration" 
          ibm:alias="cdi"
          ibmui:localization="OSGI-INF/l10n/metatype">
                               
         <!--  enableImplicitBeanArchives means that the CDI runtime will scan bean-definition annotations for the archives that do not contain beans.xml -->
         <!--  defaults to true but this is now done in code rather than configuration -->
-        <!-- <AD name="%cdi.enableImplicitBeanArchives.name"
-                 description="%cdi.enableImplicitBeanArchives.desc" -->
-        <AD name="internal"
-            description="internal use only"
+        <AD name="%cdi.enableImplicitBeanArchives.name"
+            description="%cdi.enableImplicitBeanArchives.desc"
             id="enableImplicitBeanArchives"
             required="false" type="Boolean" />
                               
         <!--  emptyBeansXmlCDI3Compatibility will cause an archive with an empty beans.xml to be considered an explicit bean archive. -->
         <!--  defaults to false but this is done in code rather than configuration -->
         <!--  only applies to cdi-4.0 and newer -->
-        <!--  <AD name="%cdi.emptyBeansXmlCDI3Compatibility.name"
-            description="%cdi.emptyBeansXmlCDI3Compatibility.desc" -->
-        <AD name="internal"
-            description="internal use only"
+        <AD name="%cdi.emptyBeansXmlCDI3Compatibility.name"
+            description="%cdi.emptyBeansXmlCDI3Compatibility.desc"
             id="emptyBeansXmlCDI3Compatibility"
             required="false" type="Boolean" />
 

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -23,7 +25,6 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
@@ -1624,114 +1625,41 @@ final class AuditCrypto {
     }
 
     static final byte[][] rsaKey(int len, boolean crt, boolean f4) {
-        return rsaKey(len, crt, f4, false);
-    }
-
-    static final byte[][] rsaKey(int len, boolean crt, boolean f4, boolean useJCE) {
         byte[][] key = new byte[crt ? 8 : 3][];
-        if (useJCE) {
-            BigInteger pub_e = BigInteger.valueOf(f4 ? 0x10001 : 3);
-            KeyPair pair = null;
-            try {
-                RSAKeyGenParameterSpec rsaKeyGenSpec = new RSAKeyGenParameterSpec(len * 8, pub_e);
-                KeyPairGenerator keyGen = null;
-                SecureRandom random = null;
-                keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, "IBMJCE");
-                random = SecureRandom.getInstance("IBMSecureRandom");
+        KeyPair pair = null;
+        KeyPairGenerator keyGen = null;
 
-                // keyGen.initialize(rsaKeyGenSpec, random);   // cyc - cause java.security.InvalidAlgorithmParameterException: Parameters not supported
-                keyGen.initialize(len * 8, random);
-                pair = keyGen.generateKeyPair();
-                RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
-                byte[] publicKey = rsaPubKey.getEncoded();
-                RSAPrivateCrtKey rsaPrivKey = (RSAPrivateCrtKey) pair.getPrivate();
-                byte[] privateKey = rsaPrivKey.getEncoded();
+        try {
+            keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
+            keyGen.initialize(len * 8, new SecureRandom());
+            pair = keyGen.generateKeyPair();
+            RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
+            RSAPrivateCrtKey rsaPrivKey = (RSAPrivateCrtKey) pair.getPrivate();
 
-                BigInteger e = rsaPubKey.getPublicExponent();
-                BigInteger n = rsaPubKey.getModulus();
-                BigInteger pe = rsaPrivKey.getPrivateExponent();
-                key[0] = n.toByteArray();
-                key[1] = crt ? null : pe.toByteArray();
-                key[2] = e.toByteArray();
-                if (crt) {
-                    BigInteger p = rsaPrivKey.getPrimeP();
-                    BigInteger q = rsaPrivKey.getPrimeQ();
-                    BigInteger ep = rsaPrivKey.getPrimeExponentP();
-                    BigInteger eq = rsaPrivKey.getPrimeExponentQ();
-                    BigInteger c = rsaPrivKey.getCrtCoefficient();
-                    key[3] = p.toByteArray();
-                    key[4] = q.toByteArray();
-                    key[5] = ep.toByteArray();
-                    key[6] = eq.toByteArray();
-                    key[7] = c.toByteArray();
-
-                }
-            } catch (java.security.NoSuchAlgorithmException e) {
-                Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
-                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "1796");
-            } catch (java.security.NoSuchProviderException e) {
-                Tr.debug(tc, "Error: Provider not found");
-                Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
-                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.ltpa.LTPACrypto", "1800");
-            }
-        } else {
-            BigInteger p, q, n, d;
-            BigInteger e = BigInteger.valueOf(f4 ? 0x10001 : 3);
-            BigInteger one = BigInteger.valueOf(1), two = BigInteger.valueOf(2);
-            byte[] b = new byte[(len /= 2) + 1];
-
-            for (p = null;;) {
-                for (q = null;;) {
-                    if (q == null) {
-                        random(b, 1, len);
-                        b[1] |= 0xC0;
-                        b[len] |= 1;
-                        q = new BigInteger(b);
-                    } else {
-                        q = q.add(two);
-                        if (q.bitLength() > len * 8) {
-                            q = null;
-                            continue;
-                        }
-                    }
-
-                    if (q.isProbablePrime(32) && e.gcd(q.subtract(one)).equals(one))
-                        break;
-                }
-
-                if (p == null)
-                    p = q;
-                else {
-                    n = p.multiply(q);
-                    if (n.bitLength() == len * 2 * 8) {
-
-                        d = e.modInverse((p.subtract(one)).multiply(q.subtract(one)));
-
-                        if (((p.modPow(e, n)).modPow(d, n)).equals(p))
-                            break;
-                    }
-                    p = null;
-                }
-            }
-
-            key[0] = n.toByteArray(); // modulus
-            key[1] = crt ? null : d.toByteArray(); //private exponient if a CRT key
-            key[2] = e.toByteArray(); //public exponient
-
+            BigInteger e = rsaPubKey.getPublicExponent();
+            BigInteger n = rsaPubKey.getModulus();
+            BigInteger pe = rsaPrivKey.getPrivateExponent();
+            key[0] = n.toByteArray();
+            key[1] = crt ? null : pe.toByteArray();
+            key[2] = e.toByteArray();
             if (crt) {
-                if (p.compareTo(q) < 0) {
-                    e = p;
-                    p = q;
-                    q = e;
-                }
-                key[3] = p.toByteArray(); //PrimeP
-                key[4] = q.toByteArray(); //PrimeQ
-                key[5] = d.remainder(p.subtract(one)).toByteArray(); //PrimeExponentP   \
-                key[6] = d.remainder(q.subtract(one)).toByteArray(); //PrimeExponentQ    - looks like JCE sets these to zero. You could calculate these if you want to.
-                key[7] = q.modInverse(p).toByteArray(); //getCrtCoefficient /
+                BigInteger p = rsaPrivKey.getPrimeP();
+                BigInteger q = rsaPrivKey.getPrimeQ();
+                BigInteger ep = rsaPrivKey.getPrimeExponentP();
+                BigInteger eq = rsaPrivKey.getPrimeExponentQ();
+                BigInteger c = rsaPrivKey.getCrtCoefficient();
+                key[3] = p.toByteArray();
+                key[4] = q.toByteArray();
+                key[5] = ep.toByteArray();
+                key[6] = eq.toByteArray();
+                key[7] = c.toByteArray();
 
             }
+        } catch (java.security.NoSuchAlgorithmException e) {
+            Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
+            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "1796");
         }
+
         return key;
     }
 
@@ -1945,30 +1873,18 @@ final class AuditCrypto {
     }
 
     static final byte[] generate3DESKey() {
-        return generate3DESKey(false);
-    }
-
-    static final byte[] generate3DESKey(boolean useJCE) {
         byte[] rndSeed = null;
-        if (useJCE) {
-            try {
-                // Here, we have a hard dependency on IBMJCE and IBMJCEFIPS provider
-                SecureRandom random = null;
-                KeyGenerator keyGen = null;
-                random = SecureRandom.getInstance("IBMSecureRandom");
-                keyGen = KeyGenerator.getInstance(ENCRYPT_ALGORITHM);
-                keyGen.init(random);
-                SecretKey key = keyGen.generateKey();
-                rndSeed = key.getEncoded();
-            } catch (java.security.NoSuchAlgorithmException e) {
-                Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
-                com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "2157");
-            }
-        } else {
-            int len = 24; //3DES
-            rndSeed = new byte[len];
-            random(rndSeed, 0, len);
+        try {
+            KeyGenerator keyGen = null;
+            keyGen = KeyGenerator.getInstance(ENCRYPT_ALGORITHM);
+            keyGen.init(new SecureRandom());
+            SecretKey key = keyGen.generateKey();
+            rndSeed = key.getEncoded();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
+            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "2157");
         }
+
         return rndSeed;
     }
 

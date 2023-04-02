@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -181,7 +183,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     }
 
     /**
-     * Get all BDAs relating only to this application. i.e. not Shared Libs or internal Runtime Extensions
+     * Get all BDAs which belong to this application. i.e. not internal Runtime Extensions
      *
      * @return all application BDAs
      */
@@ -298,9 +300,13 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
      * Create the ordered list for the bdas - extension bdas first and then followed by the application bdas
      *
      */
+    @Trivial
     public void initializeOrderedBeanDeploymentArchives() {
         orderedBDAs.addAll(extensionBDAs.values());
         orderedBDAs.addAll(applicationBDAs);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "initializeOrderedBeanDeploymentArchives", orderedBDAs);
+        }
     }
 
     /** {@inheritDoc} */
@@ -592,8 +598,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         deploymentDBAs.put(bda.getId(), bda);
         extensionClassLoaders.add(bda.getClassLoader());
         ArchiveType type = bda.getType();
-        if (type != ArchiveType.SHARED_LIB &&
-            type != ArchiveType.RUNTIME_EXTENSION) {
+        if (type != ArchiveType.RUNTIME_EXTENSION) {
             applicationBDAs.add(bda);
         }
     }
@@ -648,7 +653,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         //first we need to initialize the injection service and collect the reference contexts and the injection classes
         for (WebSphereBeanDeploymentArchive bda : getApplicationBDAs()) {
             // Don't initialize child libraries, instead aggregate for the whole module
-            if (bda.getType() != ArchiveType.MANIFEST_CLASSPATH && bda.getType() != ArchiveType.WEB_INF_LIB) {
+            // No reference context for shared libs either
+            if (bda.getType() != ArchiveType.MANIFEST_CLASSPATH && bda.getType() != ArchiveType.WEB_INF_LIB && bda.getType() != ArchiveType.SHARED_LIB) {
                 ReferenceContext referenceContext = bda.initializeInjectionServices();
                 cdiReferenceContexts.add(referenceContext);
             }
@@ -723,44 +729,80 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         for (WebSphereBeanDeploymentArchive bda : getWebSphereBeanDeploymentArchives()) {
             BeansXml beansXml = bda.getBeansXml();
             if (beansXml == null) { //check that there is a beans.xml file
-                continue;
+                continue; //if there isn't then just move on to the next archive
             }
 
-            URL parsedURL = beansXml.getUrl();
-            //if the URL is null then this may mean it was an empty beans.xml file
-            //note that this may be an undocumented "feature" of the Weld SPI
-            if (parsedURL == null) {
-                continue;
-            }
-            //check if the file is really empty ... just whitespace like a single space would cause Weld to complain anyway
-            InputStream is = null;
-            try {
-                is = parsedURL.openStream();
-                if (is.available() == 0) {
-                    //file is empty
-                    continue;
+            //we're only looking for non-empty beans.xml file that do not have a version set
+            if (!isEmpty(beansXml)) {
+                //if the beans.xml was not an empty file then check if the version was set or not
+                boolean unversionedBeansXml = beansXml.getVersion() == null;
+                if (unversionedBeansXml) {
+                    URL unversionedBeansXmlURL = bda.getBeansXmlResourceURL();
+                    unversionedBeansXmlURLs.add(unversionedBeansXmlURL);
                 }
-            } catch (IOException e1) {
-                //could not read the file, assume it is empty
-                continue;
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        //FFDC and ignore
-                    }
-                }
-            }
-
-            //if the beans.xml was not an empty file then check if the version was set or not
-            boolean unversionedBeansXml = beansXml.getVersion() == null;
-            if (unversionedBeansXml) {
-                URL unversionedBeansXmlURL = bda.getBeansXmlResourceURL();
-                unversionedBeansXmlURLs.add(unversionedBeansXmlURL);
             }
         }
         return unversionedBeansXmlURLs;
     }
 
+    /**
+     * Does the given BeansXml object represent an empty file?
+     *
+     * Returns true if the given BeansXml
+     * - is the EMPTY_BEANS_XML instance
+     * OR
+     * - has a null URL
+     * OR
+     * - contains zero bytes
+     *
+     * Will return false if the file has any content, even if that content is not valid for a beans.xml file.
+     * Validity of the content is checked by Weld.
+     *
+     * @param beansXml the BeansXml instance to check
+     * @return true is it represents an empty file
+     */
+    public static boolean isEmpty(BeansXml beansXml) {
+        boolean empty = false;
+
+        //check if it was an empty beans.xml file
+        //note that this is not a well documented "feature" of the Weld SPI but it is the most direct check
+        if (beansXml == BeansXml.EMPTY_BEANS_XML) {
+            empty = true;
+        }
+
+        if (!empty) {
+            URL parsedURL = beansXml.getUrl();
+            //if the URL is null then this may mean it was an empty beans.xml file
+            //note that this may be an undocumented "feature" of the Weld SPI but if the URL is null we can't look in the original file anyway
+            if (parsedURL == null) {
+                empty = true;
+            }
+
+            if (!empty) {
+                //this is the most expensive check
+                //check if the file is really empty (zero bytes) ... just whitespace like a single space would cause Weld to complain anyway
+                InputStream is = null;
+                try {
+                    is = parsedURL.openStream();
+                    if (is.available() == 0) {
+                        //file is empty
+                        empty = true;
+                    }
+                } catch (IOException e) {
+                    //could not read the file, assume it is empty
+                    empty = true;
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e1) {
+                            //FFDC and ignore
+                        }
+                    }
+                }
+            }
+        }
+
+        return empty;
+    }
 }

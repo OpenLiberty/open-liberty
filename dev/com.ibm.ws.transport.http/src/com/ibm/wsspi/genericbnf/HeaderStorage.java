@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -13,6 +15,7 @@ package com.ibm.wsspi.genericbnf;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This interface is for the storage of headers that are in the Augmented BNF
@@ -110,6 +113,15 @@ public interface HeaderStorage {
      * @return List<String>
      */
     List<String> getAllHeaderNames();
+
+    /**
+     * Query a set of all the unique header names found in this particular
+     * message.
+     * This set is never null but may be empty.
+     *
+     * @return Set<String>
+     */
+    Set<String> getAllHeaderNamesSet();
 
     /**
      * Create a new instance of this header with the given byte[] value.
@@ -447,6 +459,20 @@ public interface HeaderStorage {
      *             if input is invalid
      */
     void setHeader(HeaderKeys header, String value);
+
+    /**
+     * Set the header to the given string value if the header is not alredy set.
+     * <p>
+     * Any String encoding or decoding on the value will be performed with the
+     * ISO-8859-1 charset.
+     *
+     * @param header
+     * @param value
+     * @return HeaderField
+     * @throws IllegalArgumentException
+     *             if input is invalid
+     */
+    HeaderField setHeaderIfAbsent(HeaderKeys header, String value);
 
     /**
      * Set the header to the given byte[] value, erasing any existing values.

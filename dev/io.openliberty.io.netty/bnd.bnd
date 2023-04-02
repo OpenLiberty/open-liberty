@@ -1,9 +1,11 @@
 #*******************************************************************************
 # Copyright (c) 2021, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -11,7 +13,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.77.Final
+nettyVersion=4.1.86.Final
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
@@ -58,5 +60,6 @@ instrument.disabled: true
   io.netty:netty-handler;version=${nettyVersion},\
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion}
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.netty:netty-transport-native-unix-common;version=${nettyVersion}
   

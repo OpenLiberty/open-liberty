@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2003,2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -492,11 +494,20 @@ public abstract class SIPConnectionAdapter
 	 */
 	public boolean shouldDropConnection() {
 		if (m_maxParseErrorsAllowed == NEVER_CLOSE_CONNECTION_ON_A_PARSE_ERROR) {
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug(this, " shouldDropConnection ", "maxParseErrorsAllowed is set to -1, shouldDropConnection will return false" );
+			}
 			return false;
 			
 		} else if (m_maxParseErrorsAllowed > NEVER_CLOSE_CONNECTION_ON_A_PARSE_ERROR) {
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug(this, " shouldDropConnection ", "maxParseErrorsAllowed is set to " + m_maxParseErrorsAllowed);
+			}
 	    	synchronized (m_parseErrorsSynchronizer) {
 	    		if (m_numberOfParseErrors > m_maxParseErrorsAllowed) {
+	    			if (c_logger.isTraceDebugEnabled()) {
+	    				c_logger.traceDebug(this, " shouldDropConnection ", "number of parse errors is higher than maxParseErrorsAllowed, shouldDropConnection will return true" );
+	    			}
 	    			return true;
 	    		}
 	    	}
@@ -510,7 +521,14 @@ public abstract class SIPConnectionAdapter
 	public boolean isAParseErrorAllowed() {
 		if (m_maxParseErrorsAllowed == -1 || 
 				m_maxParseErrorsAllowed > 0) {
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug(this, " isAParseErrorAllowed ", "parsing errors are allowed" );
+			}
 			return true;
+		}
+		
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug(this, " isAParseErrorAllowed ", "parsing errors are not allowed" );
 		}
 		return false;
 	}

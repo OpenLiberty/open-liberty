@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -43,7 +45,7 @@ public class SQLServerTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04") //
+    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04") //
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
                     .acceptLicense();
 
@@ -51,11 +53,11 @@ public class SQLServerTest extends FATServletClient {
     public static void setUp() throws Exception {
         FATSuite.setupDatabase(sqlserver, false);
 
-        server.addEnvVar("DBNAME", FATSuite.DB_NAME);
-        server.addEnvVar("HOST", sqlserver.getHost());
-        server.addEnvVar("PORT", Integer.toString(sqlserver.getFirstMappedPort()));
-        server.addEnvVar("USER", sqlserver.getUsername());
-        server.addEnvVar("PASSWORD", sqlserver.getPassword());
+        server.addEnvVar("SQL_DBNAME", FATSuite.DB_NAME);
+        server.addEnvVar("SQL_HOST", sqlserver.getHost());
+        server.addEnvVar("SQL_PORT", Integer.toString(sqlserver.getFirstMappedPort()));
+        server.addEnvVar("SQL_USER", sqlserver.getUsername());
+        server.addEnvVar("SQL_PASSWORD", sqlserver.getPassword());
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, APP_NAME, "web");

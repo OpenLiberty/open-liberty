@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -31,7 +33,6 @@ import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WebClient;
-import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 import com.ibm.ws.wsat.webservice.client.CoordinatorPortType;
 import com.ibm.ws.wsat.webservice.client.CoordinatorService;
 import com.ibm.ws.wsat.webservice.client.ParticipantPortType;
@@ -49,13 +50,13 @@ import com.ibm.ws.wsat.webservice.client.wscoor.RegisterType;
  */
 public class WebClientImpl extends WebClient {
 
-    private static final String CLASS_NAME = WebClientImpl.class.getName();
     private static final TraceComponent TC = Tr.register(WebClientImpl.class);
 
     private static final HandlerImpl handlerService = HandlerImpl.getInstance();
-    private static TranManagerImpl tranService = TranManagerImpl.getInstance();
 
     private static final AddressingFeature wsAddrFeat = new AddressingFeature(true);
+
+    private static volatile ClassLoader tccl;
 
     private final WSATEndpoint toEpr;
     private final WSATEndpoint fromEpr;
@@ -215,15 +216,13 @@ public class WebClientImpl extends WebClient {
                 @Override
                 public T run() throws Exception {
                     ClassLoader saveLoader = Thread.currentThread().getContextClassLoader();
-                    ClassLoader localLoader = tranService.getThreadClassLoader(WebClientImpl.class);
                     try {
-                        Thread.currentThread().setContextClassLoader(localLoader);
+                        Thread.currentThread().setContextClassLoader(tccl);
                         handlerService.setWsatCall(true);
                         return action.call();
                     } finally {
                         handlerService.setWsatCall(false);
                         Thread.currentThread().setContextClassLoader(saveLoader);
-                        tranService.destroyThreadClassLoader(localLoader);
                     }
                 }
             });
@@ -244,8 +243,6 @@ public class WebClientImpl extends WebClient {
             AddressingProperties wsAddr = new AddressingProperties();
             wsAddr.setReplyTo(fromEpr.getEndpointReference());
 
-            //wsAddr.setFrom(fromEpr.getEndpointReference());
-            //wsAddr.setReplyTo(fromEpr.getEndpointReference());
             ((BindingProvider) port).getRequestContext().put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, wsAddr);
         }
         if (toEpr.isSecure()) {
@@ -254,5 +251,19 @@ public class WebClientImpl extends WebClient {
         }
 
         return port;
+    }
+
+    /**
+     * @return the tccl
+     */
+    public static ClassLoader getTccl() {
+        return tccl;
+    }
+
+    /**
+     * @param tccl the tccl to set
+     */
+    public static void setTccl(ClassLoader tccl) {
+        WebClientImpl.tccl = tccl;
     }
 }

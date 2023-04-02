@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,7 +13,9 @@
 package com.ibm.ws.http.dispatcher.internal.channel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
@@ -129,9 +133,17 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     @Override
     public List<String> getHeaders(String name) {
         List<HeaderField> hdrs = this.message.getHeaders(name);
-        List<String> values = new ArrayList<String>(hdrs.size());
-        for (HeaderField header : hdrs) {
-            values.add(header.asString());
+        int size = hdrs.size();
+        List<String> values;
+        if (size == 0) {
+            values = Collections.emptyList();
+        } else if (size == 1) {
+            values = Collections.singletonList(hdrs.get(0).asString());
+        } else {
+            values = new ArrayList<String>(hdrs.size());
+            for (HeaderField header : hdrs) {
+                values.add(header.asString());
+            }
         }
         return values;
     }
@@ -142,6 +154,14 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     @Override
     public List<String> getHeaderNames() {
         return this.message.getAllHeaderNames();
+    }
+
+    /*
+     * @see com.ibm.websphere.http.HttpRequestExt#getHeaderNamesSet()
+     */
+    @Override
+    public Set<String> getHeaderNamesSet() {
+        return this.message.getAllHeaderNamesSet();
     }
 
     /*

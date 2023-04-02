@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -38,6 +40,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATDatabaseServlet;
 
 @SuppressWarnings("serial")
@@ -114,6 +117,7 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
     // where no information is provided about the vendor data source class name such that it must
     // be inferred from the detected java.sql.Driver impl class.
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testInferDataSourceFromDriverPackage() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/miniDataSource");
         assertEquals(330, ds.getLoginTimeout());

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -18,6 +20,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 
+import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 import com.ibm.wsspi.webservices.wsat.WSATService;
 
 /**
@@ -30,17 +33,18 @@ public class WSATServiceImpl implements WSATService {
 
     @Activate
     protected void activate(ComponentContext cc) {
-
+        WebClientImpl.setTccl(TranManagerImpl.getInstance().getThreadClassLoader(WebClientImpl.class));
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-
+        TranManagerImpl.getInstance().destroyThreadClassLoader(WebClientImpl.getTccl());
+        WebClientImpl.setTccl(null);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.webservices.wsat.WSATService#enableWSAT(java.lang.Object)
      */
     @SuppressWarnings("rawtypes")

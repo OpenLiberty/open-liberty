@@ -1,13 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.cdicommon.managed;
 
 import javax.annotation.PostConstruct;
@@ -18,12 +17,12 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.inject.Inject;
 
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.ActionListenerBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestActionListener;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.ActionListenerBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
+import com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestActionListener;
 
 /**
  *
@@ -73,8 +72,7 @@ public class CustomActionListener implements ActionListener {
     @Override
     @TestActionListener
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException {
-        ActionListenerBean testBean = (ActionListenerBean) FacesContext.getCurrentInstance().
-                        getExternalContext().getSessionMap().get("actionListenerBean");
+        ActionListenerBean testBean = (ActionListenerBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("actionListenerBean");
 
         if (testBean != null) {
 

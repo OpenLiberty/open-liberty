@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -116,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: I seguenti messaggi sono nascosti nei fi
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=I messaggi configurati per essere nascosti non vengono scritti nei file console.log e messages.log. Vengono scritti nel file trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Non \u00e8 richiesta alcuna azione
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Il formato di output di messages.log \u00e8 stato aggiornato a ''{0}''.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Il formato di output di messages.log \u00e8 stato aggiornato a '{0}'.
 MESSAGE_FORMAT_UPDATED.explanation=Il formato di output per messages.log \u00e8 stato aggiornato.
 MESSAGE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a ''{0}''.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a '{0}'.
 CONSOLE_FORMAT_UPDATED.explanation=Il formato di output per la console \u00e8 stato aggiornato.
 CONSOLE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 
@@ -156,12 +158,12 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c8 stato fornito un carattere non 
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Nella propriet\u00e0 di associazione del nome campo di registrazione JSON sono accettati solo le lettere, i numeri e :
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Modificare il valore della propriet\u00e0 di associazione del nome campo di registrazione JSON rimuovendo i caratteri non validi.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: La propriet\u00e0 del tempo di inizio del rollover del log \u00e8 formattata in modo non corretto. Di conseguenza, il valore \u00e8 impostato su un default di '00.00', che rappresenta la mezzanotte.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: La propriet\u00e0 dell'ora di inizio del rollover di log non \u00e8 formattata correttamente. Di conseguenza, il valore \u00e8 impostato su un default di '00.00', che rappresenta la mezzanotte.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=La propriet\u00e0 del tempo di inizio del rollover deve essere formattata HH:MM, con le 00.00 che rappresenta la mezzanotte.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Assicurarsi che il valore di propriet\u00e0 del tempo di inizio del rollover sia correttamente formattato in notazione HH:MM 24 ore, dove 00.00 rappresenta la mezzanotte.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: L'intervallo di rollover log non pu\u00f2 essere lungo meno di 1 minuto. Se viene specificato un valore inferiore a 1 minuto, l'intervallo di rollover di log \u00e8 impostato su un valore predefinito di 1 giorno.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=L'intervallo di rollover log non pu\u00f2 essere lungo meno di 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=L'intervallo di rollover del log non pu\u00f2 essere lungo meno di 1 minuto.
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Specificare un intervallo di rollover di log uguale o superiore a 1 minuto.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Manca il nome intestazione per uno o pi\u00f9 campi accessLogging logFormat: {0}.

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -89,6 +91,23 @@ public class ProxyDataSource implements DataSource {
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
         ds.setLogWriter(out);
+    }
+
+    // The otherwise unused portNumber property simulates an odd behavior of the Microsoft JDBC driver
+    // where String typed accessor and setter are provided along with a second accessor that accepts
+    // a primitive value, where the Liberty configuration defines the property as the primitive type.
+    // A user observed this with String/boolean, but it also reproduces with String/int.
+    public void setPortNumber(String portNumber) throws Exception {
+        if (!"-1".equals(portNumber))
+            throw new IllegalArgumentException("portNumber: " + portNumber);
+    }
+
+    public void setPortNumber(int portNumber) throws Exception {
+        setPortNumber(Integer.valueOf(portNumber).toString());
+    }
+
+    public String getPortNumber() throws Exception {
+        return null;
     }
 
     @Override

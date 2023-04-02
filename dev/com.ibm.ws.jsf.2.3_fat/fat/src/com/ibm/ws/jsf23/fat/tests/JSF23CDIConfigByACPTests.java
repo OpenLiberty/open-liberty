@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -22,7 +24,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -44,25 +45,37 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war,
-        JavaArchive cdiConfigByACPJar = ShrinkWrap.create(JavaArchive.class, "CDIConfigByACP.jar");
-        if (JakartaEE10Action.isActive()) {
-            // Include @Named beans.
+        // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war.
+        JavaArchive cdiConfigByACPJar = isEE10 ? ShrinkWrap.create(JavaArchive.class, "CDIConfigByACPFaces40.jar") : ShrinkWrap
+                        .create(JavaArchive.class, "CDIConfigByACPJSF23.jar");
+        if (isEE10) {
+            // Include @Named beans and other Faces 4.0 specific packages.
             cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.faces40");
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop.faces40");
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.faces40");
         } else {
-            // Include @ManagedBean beans.
+            // Include @ManagedBean beans and other JSF 2.3 specific packages.
             cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23");
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop.jsf23");
+            cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.jsf23");
         }
+
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.factory");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.beans.injected");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories");
         cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
-        cdiConfigByACPJar.addPackage("com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop");
-        ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACP.jar" + "/resources");
 
-        // Create the CDIConfigByACP.war application
+        // The feature being tested determines which ApplicationConfigurationPopulator service to use.
+        if (isEE10) {
+            ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACPFaces40.jar" + "/resources");
+        } else {
+            ShrinkHelper.addDirectory(cdiConfigByACPJar, "test-applications/" + "CDIConfigByACPJSF23.jar" + "/resources");
+        }
+
+        // Create the CDIConfigByACP.war application.
         WebArchive cdiConfigByACPWar = ShrinkWrap.create(WebArchive.class, "CDIConfigByACP.war");
         cdiConfigByACPWar.addAsLibrary(cdiConfigByACPJar);
         cdiConfigByACPWar.addPackage("com.ibm.ws.jsf23.fat.cdi.appconfigpop");
@@ -91,7 +104,6 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testNavigationHandlerInjection_CDIConfigByACP() throws Exception {
         testNavigationHandlerInjectionByApp("CDIConfigByACP", server);
     }

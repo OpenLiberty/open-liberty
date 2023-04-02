@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -40,6 +42,15 @@ public class TestOLGH21204_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     public void jpa_spec10_query_olgh21204_testRefreshWithTriggers_EJB_SFEx_CMTS_Web() throws Exception {
         final String testName = "jpa10_query_olgh21204_testRefreshWithTriggers_EJB_SFEx_CMTS_Web";
         final String testMethod = "testRefreshWithTriggers";
+        final String testResource = "test-jpa-resource-cmex";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    // testPersistWithSecondaryTables
+    @Test
+    public void jpa_spec10_query_olgh21204_testPersistWithSecondaryTables_EJB_SFEx_CMTS_Web() throws Exception {
+        final String testName = "jpa10_query_olgh21204_testPersistWithSecondaryTables_EJB_SFEx_CMTS_Web";
+        final String testMethod = "testPersistWithSecondaryTables";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
     }

@@ -1,9 +1,11 @@
 #*******************************************************************************
 # Copyright (c) 2016, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -14,52 +16,9 @@
 
 bVersion=1.0
 
-
 WS-TraceGroup: UI
 
-Web-ContextPath: /adminCenter
-OL-VirtualHost: ${admin.virtual.host}
-
-IBM-Authorization-Roles: com.ibm.ws.management
-
 instrument.disabled: true
-
-
-Export-Package: \
-  com.ibm.ws.ui.persistence,\
-  com.ibm.ws.ui.servlet.filter
-
-Private-Package: \
-  com.ibm.ws.ui.internal.*
-
-# Need a special import to properly construct import for commons.io
-Import-Package: \
-  com.ibm.websphere.jsonsupport.*, \
-  !*.internal.*, \
-  *
-
-DynamicImport-Package: \
- com.ibm.ws.security.openidconnect.server.plugins
-
-Include-Resource: \
-  ${if;${driver;gradle};=lib/dojo-release}, \
-  ${if;${driver;gradle};fonts=lib/fonts}, \
-  ${if;${driver;gradle};imagesShared=build/dojo/imagesShared}, \
-  WEB-INF=resources/WEB-INF, \
-  images=resources/WEB-CONTENT/images, \
-  login.jsp=resources/WEB-CONTENT/login.jsp, \
-  feature=resources/WEB-CONTENT/feature, \
-  404=resources/WEB-CONTENT/404, \
-  login/images=resources/WEB-CONTENT/login/images, \
-  toolbox.jsp=resources/WEB-CONTENT/toolbox.jsp, \
-  html=resources/WEB-CONTENT/html
-
--dsannotations: \
-  com.ibm.ws.ui.internal.persistence.FilePersistenceProvider, \
-  com.ibm.ws.ui.internal.rest.AdminCenterRouter, \
-  com.ibm.ws.ui.internal.v1.pojo.POJOLoaderService, \
-  com.ibm.ws.ui.internal.v1.pojo.PlainTextLoaderService, \
-  com.ibm.ws.ui.internal.v1.utils.FeatureToolService
 
 -buildpath: \
   com.ibm.websphere.appserver.api.kernel.service;version=latest,\

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -28,6 +30,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
@@ -35,6 +38,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleConnection;
@@ -50,17 +54,11 @@ public class OracleTestServlet extends FATServlet {
     @Resource
     private DataSource ds;
 
-    @Resource(lookup = "jdbc/casting-ds")
-    private DataSource ds_casting;
-
     @Resource(lookup = "jdbc/driver-ds")
     private DataSource driver_ds;
 
     @Resource(lookup = "jdbc/generic-driver-ds")
     private DataSource generic_driver_ds;
-
-    @Resource(lookup = "jdbc/inferred-ds")
-    private DataSource inferred_ds;
 
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
     private DataSource unsharable_ds_xa_loosely_coupled;
@@ -74,6 +72,10 @@ public class OracleTestServlet extends FATServlet {
     // Verify that connections are/are not castable to OracleConnection based on whether enableConnectionCasting=true/false.
     @Test
     public void testConnectionCasting() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
         OracleConnection ocon = (OracleConnection) ds_casting.getConnection();
         try {
             assertTrue(ocon.isUsable());
@@ -110,6 +112,7 @@ public class OracleTestServlet extends FATServlet {
     // and use getCursor to obtain a result set.  The parent statement of the result set should be the WAS statement wrapper.
     @Test
     public void testCursor() throws Exception {
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
@@ -140,6 +143,7 @@ public class OracleTestServlet extends FATServlet {
     // the use of transactional onConnect commands, as well as the use of Liberty variables in the onConnect SQL.
     @Test
     public void testOnConnectSQL() throws Exception {
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
         Connection con = ds_casting.getConnection();
         try {
             con.setAutoCommit(false);
@@ -215,6 +219,7 @@ public class OracleTestServlet extends FATServlet {
     // be the WAS statement wrapper.
     @Test
     public void testReturnResultSet() throws Exception {
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
@@ -252,6 +257,8 @@ public class OracleTestServlet extends FATServlet {
             atLeastJava9 = false;
         }
         if (atLeastJava9) {
+            //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+            DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
             Connection con = ds.getConnection();
             try {
                 DatabaseMetaData metadata = con.getMetaData();
@@ -268,6 +275,8 @@ public class OracleTestServlet extends FATServlet {
             }
         }
 
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
         OracleCommonDataSource ocds = ds_casting.unwrap(OracleCommonDataSource.class);
         assertEquals("TestRole", ocds.getRoleName());
 
@@ -315,7 +324,13 @@ public class OracleTestServlet extends FATServlet {
     //Test that the proper implementation classes are used for the various datasources configured in this test bucket
     //since the JDBC Driver used is named so as not to be recognized by the built-in logic
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testInferOracleDataSource() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource inferred_ds = InitialContext.doLookup("jdbc/inferred-ds");
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.oracle configured
         assertTrue("default datasource should wrap OracleXADataSource",
                    ds.isWrapperFor(OracleXADataSource.class));

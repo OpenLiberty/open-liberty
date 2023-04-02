@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -42,6 +44,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 
 import componenttest.common.apiservices.Bootstrap;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -840,8 +843,8 @@ public class CommonTest {
      *            The client to transform the applications on.
      */
     public static void transformApps(LibertyClient client) {
-        if (JakartaEE9Action.isActive()) {
-            String[] apps = null;
+        String[] apps = null;
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
 
             switch (client.getClientName()) {
 
@@ -891,10 +894,16 @@ public class CommonTest {
                     apps = new String[] {};
                     break;
             }
+        }
 
+        if (apps != null) {
             for (String app : apps) {
                 Path someArchive = Paths.get(client.getClientRoot() + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
+                if (JakartaEE9Action.isActive()) {
+                    JakartaEE9Action.transformApp(someArchive);
+                } else if (JakartaEE10Action.isActive()) {
+                    JakartaEE10Action.transformApp(someArchive);
+                }
             }
         }
     }
@@ -905,8 +914,8 @@ public class CommonTest {
      * @param server The server to transform the applications on.
      */
     public static void transformApps(LibertyServer server) {
-        if (JakartaEE9Action.isActive()) {
-            String[] apps = null;
+        String[] apps = null;
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
 
             switch (server.getServerName()) {
 
@@ -926,10 +935,16 @@ public class CommonTest {
                     apps = new String[] {};
                     break;
             }
+        }
 
+        if (apps != null) {
             for (String app : apps) {
                 Path someArchive = Paths.get(server.getServerRoot() + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
+                if (JakartaEE9Action.isActive()) {
+                    JakartaEE9Action.transformApp(someArchive);
+                } else if (JakartaEE10Action.isActive()) {
+                    JakartaEE10Action.transformApp(someArchive);
+                }
             }
         }
     }

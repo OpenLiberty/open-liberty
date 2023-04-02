@@ -1,24 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jndi.internal;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import org.apache.aries.jndi.urls.URLObjectFactoryFinder;
-import org.osgi.service.component.annotations.Component;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.spi.ObjectFactory;
 import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -29,7 +24,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.spi.ObjectFactory;
+
+import org.apache.aries.jndi.urls.URLObjectFactoryFinder;
+import org.osgi.service.component.annotations.Component;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 @Component(configurationPolicy = IGNORE, property = "service.vendor=IBM")
 public class WASURLObjectFactoryFinder implements URLObjectFactoryFinder {
@@ -72,18 +76,14 @@ public class WASURLObjectFactoryFinder implements URLObjectFactoryFinder {
             try {
                 return Privileged.getConstructor(tccl, className).newInstance();
             } catch (ClassNotFoundException e) {
-                // Can occur quite often, so minimize the noise.
-                // Trace every occurrence, but only report FFDC for the final occurrence
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Could not find class " + className, e);
-                }
-                cnfe = e;
+		if (null == cnfe) cnfe = new ClassNotFoundException("Could not find factory for schema '" + urlSchema + "'");
+		cnfe.addSuppressed(e);
             } catch (Exception e) {
                 // auto FFDC - should be rare
             }
         }
 
-        if (cnfe != null) throw cnfe;
+        if (null != cnfe) throw cnfe;
         return null;
     }
 

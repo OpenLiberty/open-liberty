@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -62,7 +64,7 @@ public class AcsHandler implements SsoHandler {
                               UnsolicitedHandler unsolicitedHandler) throws SamlException {
         SsoSamlService ssoService = (SsoSamlService) parameters.get(Constants.KEY_SAML_SERVICE);
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "handleRequest(ACS):" +
+            Tr.debug(tc, "SAML WEBSSO - handleRequest(ACS):" +
                          " providerId:" + ssoService.getProviderId() +
                          " request:" + request +
                          " response:" + response +
@@ -82,10 +84,9 @@ public class AcsHandler implements SsoHandler {
             // This needs to check the inResponseTo. Since it built AuthnRequest
             solicitedHandler.handleRequest(externalRrelayState);
         } else {
-            // Otherwise, it's idp_init (SP unsolicited)
-            // This does not check inResponseTo since it did not build the AuthnRequest
-            //   but redirect the request to the LoginPageURL of the configuration
-
+            // Otherwise, it's idp_init (or SP unsolicited)
+            // no need to check inResponseTo since we did not build/send the AuthnRequest
+            // just redirected the request to the LoginPageURL specified in the configuration
             // Do create session-cookie before we commit the response
             if (ssoService.getConfig() != null) {
                 boolean createSession = ssoService.getConfig().createSession();

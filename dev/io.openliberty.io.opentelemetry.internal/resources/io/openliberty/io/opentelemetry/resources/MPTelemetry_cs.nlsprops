@@ -1,0 +1,34 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: Byla vol\u00e1na metoda GlobalOpenTelemetry.get. Tato metoda vrac\u00ed nefunk\u010dn\u00ed objekt OpenTelemetry. M\u00edsto toho pou\u017eijte CDI k vlo\u017een\u00ed objektu OpenTelemetry.
+CWMOT5000.cannot.get.globalopentelemetry.explanation=T\u0159\u00edda GlobalOpenTelemetry nen\u00ed podporov\u00e1na, proto\u017ee neexistuje \u017e\u00e1dn\u00fd glob\u00e1ln\u00ed objekt OpenTelemetry. M\u00edsto toho mus\u00ed ka\u017ed\u00e1 aplikace pou\u017e\u00edvat CDI pro vlo\u017een\u00ed objektu OpenTelemetry pro tuto aplikaci.
+CWMOT5000.cannot.get.globalopentelemetry.useraction=Pou\u017eijte CDI pro vlo\u017een\u00ed objektu OpenTelemetry.
+
+CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Nastaven\u00ed objektu GlobalOpenTelemetry nen\u00ed podporov\u00e1no.
+CWMOT5001.cannot.set.globalopentelemetry.explanation=T\u0159\u00edda GlobalOpenTelemetry nen\u00ed podporov\u00e1na, proto\u017ee neexistuje \u017e\u00e1dn\u00fd glob\u00e1ln\u00ed objekt OpenTelemetry. M\u00edsto toho mus\u00ed ka\u017ed\u00e1 aplikace pou\u017e\u00edvat CDI pro vlo\u017een\u00ed objektu OpenTelemetry pro tuto aplikaci.
+CWMOT5001.cannot.set.globalopentelemetry.useraction=Nevolejte metodu GlobalOpenTelemetry.get. Pot\u0159ebuje-li k\u00f3d aplikace z\u00edskat objekt OpenTelemetry, pou\u017eijte CDI a vlo\u017ete jej.

@@ -3,7 +3,7 @@
 		id="default"
 		ws-security.timestamp.timeToLive="60"
 		ws-security.timestamp.futureTimeToLive="60"
-		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
+		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
 	>
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"

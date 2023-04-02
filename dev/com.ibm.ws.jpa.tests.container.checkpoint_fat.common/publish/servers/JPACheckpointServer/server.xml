@@ -1,0 +1,48 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="JPA Container Checkpoint Test Server">
+    <include location="../fatTestPorts.xml"/>
+    <include location="${shared.config.dir}/${env.repeat_phase}"/>
+
+    <dataSource id="jdbc/JPA_AMJTA_JTA_DS" jndiName="jdbc/JPA_AMJTA_JTA_DS">
+        <jdbcDriver libraryRef="derbylib"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <dataSource id="jdbc/JPA_AMRL_NJTA_DS" jndiName="jdbc/JPA_AMRL_NJTA_DS" transactional="false">
+        <jdbcDriver libraryRef="derbylib"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <dataSource id="jdbc/JPA_CMTS_JTA_DS" jndiName="jdbc/JPA_CMTS_JTA_DS" transactional="false">
+        <jdbcDriver libraryRef="derbylib"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <library id="derbylib">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+
+    <applicationManager startTimeout="90s"/>
+
+    <!-- File read write permissions -->
+    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+    <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
+    <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
+
+    <!-- --> <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled:LibertyServer=all:LibertyFileManager=all"
+              traceFileName="trace.log"
+              maxFileSize="2000"
+              maxFiles="10"
+              traceFormat="BASIC" />
+</server>

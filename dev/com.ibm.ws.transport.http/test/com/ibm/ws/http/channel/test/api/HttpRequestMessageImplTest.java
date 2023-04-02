@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -27,8 +29,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.channelfw.internal.ChannelDataImpl;
 import com.ibm.ws.channelfw.internal.InboundVirtualConnectionFactoryImpl;
@@ -54,6 +54,8 @@ import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import test.common.SharedOutputManager;
+
 /**
  * Class to test all of the methods from HttpRequestMessage down to BNFHeaders.
  */
@@ -65,7 +67,7 @@ public class HttpRequestMessageImplTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -76,7 +78,7 @@ public class HttpRequestMessageImplTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -87,7 +89,7 @@ public class HttpRequestMessageImplTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -106,12 +108,8 @@ public class HttpRequestMessageImplTest {
      */
     @Before
     public void setUp() {
-        HttpChannelConfig cfg = new HttpChannelConfig(
-                        new ChannelDataImpl("HTTP", null,
-                                        new HashMap<Object, Object>(), 10,
-                                        ChannelFrameworkFactory.getChannelFramework()));
-        MockOutboundSC sc = new MockOutboundSC(
-                        new InboundVirtualConnectionFactoryImpl().createConnection(), cfg);
+        HttpChannelConfig cfg = new HttpChannelConfig(new ChannelDataImpl("HTTP", null, new HashMap<Object, Object>(), 10, ChannelFrameworkFactory.getChannelFramework()));
+        MockOutboundSC sc = new MockOutboundSC(new InboundVirtualConnectionFactoryImpl().createConnection(), cfg);
         this.request = new MockRequestMessage(sc);
     }
 
@@ -128,7 +126,7 @@ public class HttpRequestMessageImplTest {
 
     /**
      * Get access to the request message.
-     * 
+     *
      * @return HttpRequestMessageImpl
      */
     private HttpRequestMessageImpl getRequest() {
@@ -170,6 +168,20 @@ public class HttpRequestMessageImplTest {
             getRequest().setHeader("TestSetHeader", "TestValue1".getBytes());
             val = getRequest().getHeader("TestSetHeader").asString();
             assertEquals(val, "TestValue1");
+
+            // Set some bad chars in the header name and expect an IllegalArgumentException
+            try {
+                getRequest().setHeader("myBadParen(", "error");
+                fail();
+            } catch (IllegalArgumentException e) {
+                // parsing the bad char in the header name works
+            }
+            try {
+                getRequest().setHeader("myBadGreaterThan>", "error");
+                fail();
+            } catch (IllegalArgumentException e) {
+                // parsing the bad char in the header name works
+            }
 
             // @ Tested API - appendHeader(HeaderKeys, byte[])
             // @ Tested API - getHeaderAsByteArray(HeaderKeys)
@@ -315,9 +327,9 @@ public class HttpRequestMessageImplTest {
             getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_COOKIE,
                                    "TestCookie1=TestCookieValue1;"
-                                                   + "TestCookie2=TestCookieValue2;"
-                                                   + "TestCookie3=TestCookieValue3;"
-                                                   + "TestCookie4=TestCookieValue4");
+                                                              + "TestCookie2=TestCookieValue2;"
+                                                              + "TestCookie3=TestCookieValue3;"
+                                                              + "TestCookie4=TestCookieValue4");
             cookieList = getRequest().getAllCookies();
             assertNotNull(cookieList);
             assertEquals(4, cookieList.size());
@@ -535,8 +547,8 @@ public class HttpRequestMessageImplTest {
             ConnectionValues[] connValues = getRequest().getConnection();
             assertTrue(connValues[0].equals(ConnectionValues.CLOSE));
             ConnectionValues[] connList = new ConnectionValues[] {
-                                                                  ConnectionValues.TE,
-                                                                  ConnectionValues.KEEPALIVE };
+                                                                   ConnectionValues.TE,
+                                                                   ConnectionValues.KEEPALIVE };
             getRequest().setConnection(connList);
             connValues = getRequest().getConnection();
             assertEquals(connList.length, connValues.length);
@@ -557,8 +569,8 @@ public class HttpRequestMessageImplTest {
             assertEquals(ceList.length, 1);
             assertTrue(ceList[0].equals(ContentEncodingValues.GZIP));
             ceList = new ContentEncodingValues[] {
-                                                  ContentEncodingValues.COMPRESS,
-                                                  ContentEncodingValues.XGZIP };
+                                                   ContentEncodingValues.COMPRESS,
+                                                   ContentEncodingValues.XGZIP };
             getRequest().setContentEncoding(ceList);
             ContentEncodingValues[] ceValues = getRequest().getContentEncoding();
             assertEquals(ceList.length, ceValues.length);
@@ -589,7 +601,7 @@ public class HttpRequestMessageImplTest {
             getRequest().setContentLength(100);
             assertEquals(100, getRequest().getContentLength());
 
-            // Test setting long values           
+            // Test setting long values
             getRequest().clear();
             getRequest().setContentLength(Integer.MAX_VALUE + 1L);
             assertEquals(Integer.MAX_VALUE + 1L, getRequest().getContentLength());
@@ -836,8 +848,8 @@ public class HttpRequestMessageImplTest {
             TransferEncodingValues[] teValues = getRequest().getTransferEncoding();
             assertEquals(teValues[0], TransferEncodingValues.CHUNKED);
             TransferEncodingValues[] teList = new TransferEncodingValues[] {
-                                                                            TransferEncodingValues.COMPRESS,
-                                                                            TransferEncodingValues.DEFLATE };
+                                                                             TransferEncodingValues.COMPRESS,
+                                                                             TransferEncodingValues.DEFLATE };
             getRequest().setTransferEncoding(teList);
             teValues = getRequest().getTransferEncoding();
             assertEquals(teList.length, teValues.length);
@@ -857,15 +869,13 @@ public class HttpRequestMessageImplTest {
             getRequest().setHeader(HttpHeaderKeys.HDR_TRAILER, "Connection");
             getRequest().getTrailers().setHeader("Connection", "Close");
 
-            HttpRequestMessageImpl duplicate =
-                            (HttpRequestMessageImpl) getRequest().duplicate();
+            HttpRequestMessageImpl duplicate = (HttpRequestMessageImpl) getRequest().duplicate();
             assertNotNull(duplicate);
             WsByteBuffer[] hdrData = duplicateBuffers(duplicate.marshallHeaders(null));
             assertEquals(1, hdrData.length);
             byte[] data = new byte[hdrData[0].limit()];
             hdrData[0].get(data);
-            byte[] compareData =
-                            "Test: TestValue\r\nTrailer: Connection\r\n\r\n".getBytes();
+            byte[] compareData = "Test: TestValue\r\nTrailer: Connection\r\n\r\n".getBytes();
             assertEquals(data.length, compareData.length);
             for (int i = 0; i < data.length; i++) {
                 assertEquals(data[i], compareData[i]);
@@ -1026,8 +1036,8 @@ public class HttpRequestMessageImplTest {
             getRequest().removeHeader(HttpHeaderKeys.HDR_CONNECTION);
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, test);
             ords = new int[] {
-                              ConnectionValues.CLOSE.getOrdinal(),
-                              ConnectionValues.TE.getOrdinal() };
+                               ConnectionValues.CLOSE.getOrdinal(),
+                               ConnectionValues.TE.getOrdinal() };
             rc = verifyConnection(ords, names, getRequest().getConnection());
             assertTrue(rc);
 
@@ -1089,10 +1099,10 @@ public class HttpRequestMessageImplTest {
             getRequest().removeHeader(HttpHeaderKeys.HDR_CONNECTION);
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, test);
             ords = new int[] {
-                              ConnectionValues.CLOSE.getOrdinal(),
-                              ConnectionValues.find("What").getOrdinal(),
-                              ConnectionValues.TE.getOrdinal(),
-                              ConnectionValues.find("Where").getOrdinal() };
+                               ConnectionValues.CLOSE.getOrdinal(),
+                               ConnectionValues.find("What").getOrdinal(),
+                               ConnectionValues.TE.getOrdinal(),
+                               ConnectionValues.find("Where").getOrdinal() };
             names = new String[] { null, "What", null, "Where" };
             rc = verifyConnection(ords, names, getRequest().getConnection());
             assertTrue(rc);
@@ -1102,8 +1112,8 @@ public class HttpRequestMessageImplTest {
             getRequest().removeHeader(HttpHeaderKeys.HDR_CONNECTION);
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, test);
             ords = new int[] {
-                              ConnectionValues.find("Close   TE").getOrdinal(),
-                              ConnectionValues.KEEPALIVE.getOrdinal() };
+                               ConnectionValues.find("Close   TE").getOrdinal(),
+                               ConnectionValues.KEEPALIVE.getOrdinal() };
             names = new String[] { "Close   TE", null };
             rc = verifyConnection(ords, names, getRequest().getConnection());
             assertTrue(rc);
@@ -1124,9 +1134,9 @@ public class HttpRequestMessageImplTest {
             getRequest().removeHeader(HttpHeaderKeys.HDR_CONNECTION);
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, test);
             ords = new int[] {
-                              ConnectionValues.TE.getOrdinal(),
-                              ConnectionValues.KEEPALIVE.getOrdinal(),
-                              ConnectionValues.find("Clos").getOrdinal() };
+                               ConnectionValues.TE.getOrdinal(),
+                               ConnectionValues.KEEPALIVE.getOrdinal(),
+                               ConnectionValues.find("Clos").getOrdinal() };
             names = new String[] { null, null, "Clos" };
             rc = verifyConnection(ords, names, getRequest().getConnection());
             assertTrue(rc);
@@ -1141,9 +1151,9 @@ public class HttpRequestMessageImplTest {
             getRequest().appendHeader(HttpHeaderKeys.HDR_CONNECTION, "TE");
             getRequest().appendHeader(HttpHeaderKeys.HDR_CONNECTION, "What");
             ords = new int[] {
-                              ConnectionValues.CLOSE.getOrdinal(),
-                              ConnectionValues.TE.getOrdinal(),
-                              ConnectionValues.find("What").getOrdinal() };
+                               ConnectionValues.CLOSE.getOrdinal(),
+                               ConnectionValues.TE.getOrdinal(),
+                               ConnectionValues.find("What").getOrdinal() };
             names = new String[] { "Close", "TE", "What" };
             rc = verifyConnection(ords, names, getRequest().getConnection());
             assertTrue(rc);
@@ -1162,9 +1172,9 @@ public class HttpRequestMessageImplTest {
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRANSFER_ENCODING, "chunked");
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRANSFER_ENCODING, "What");
             ords = new int[] {
-                              TransferEncodingValues.IDENTITY.getOrdinal(),
-                              TransferEncodingValues.CHUNKED.getOrdinal(),
-                              TransferEncodingValues.find("What").getOrdinal() };
+                               TransferEncodingValues.IDENTITY.getOrdinal(),
+                               TransferEncodingValues.CHUNKED.getOrdinal(),
+                               TransferEncodingValues.find("What").getOrdinal() };
             names = new String[] { "identity", "chunked", "What" };
             rc = verifyConnection(ords, names, getRequest().getTransferEncoding());
             assertTrue(rc);
@@ -1181,9 +1191,9 @@ public class HttpRequestMessageImplTest {
             getRequest().appendHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING, "identity");
             getRequest().appendHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING, "something");
             ords = new int[] {
-                              ContentEncodingValues.GZIP.getOrdinal(),
-                              ContentEncodingValues.IDENTITY.getOrdinal(),
-                              ContentEncodingValues.find("something").getOrdinal() };
+                               ContentEncodingValues.GZIP.getOrdinal(),
+                               ContentEncodingValues.IDENTITY.getOrdinal(),
+                               ContentEncodingValues.find("something").getOrdinal() };
             names = new String[] { "gzip", "identify", "something" };
             rc = verifyConnection(ords, names, getRequest().getContentEncoding());
             assertTrue(rc);
@@ -1234,8 +1244,8 @@ public class HttpRequestMessageImplTest {
             assertTrue(getRequest().isChunkedEncodingSet());
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRANSFER_ENCODING, "gzip");
             TransferEncodingValues[] tev = new TransferEncodingValues[] {
-                                                                         TransferEncodingValues.CHUNKED,
-                                                                         TransferEncodingValues.GZIP
+                                                                          TransferEncodingValues.CHUNKED,
+                                                                          TransferEncodingValues.GZIP
             };
             TransferEncodingValues[] msgTEV = getRequest().getTransferEncoding();
             assertEquals(tev.length, msgTEV.length);
@@ -1587,8 +1597,141 @@ public class HttpRequestMessageImplTest {
     }
 
     /**
+     * This test validates that for an invalid header name we get IllegalArgumentException for
+     * set and append operations. get, remove and contains methods should just no-op meaning
+     * that they should NOT populate the HeaderStorage with a HeaderKeys object. If it would then
+     * we would no longer get IllegalArgumentExceptions because once a HeaderKeys object is created
+     * we know that it was a valid headerName.
+     */
+    @Test
+    public void testInvalidHeaderName() {
+
+        // loop twice to make sure that nothing gets added to make it not throw an exception
+        String[] invalidHeaderNames = new String[] { "(0)", "2\n3", "4\r5" };
+        String valueString = "value";
+        byte[] valueBytes = valueString.getBytes();
+        HttpRequestMessageImpl r = getRequest();
+        for (String invalidHeaderName : invalidHeaderNames) {
+            byte[] invalidHeaderNameBytes = invalidHeaderName.getBytes();
+            for (int i = 0; i < 2; ++i) {
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                assertFalse(r.containsHeader(invalidHeaderNameBytes));
+
+                assertFalse(r.containsHeader(invalidHeaderName));
+
+                assertEquals(0, r.getAllHeaderNames().size());
+
+                assertNull(r.getHeader(invalidHeaderNameBytes).getKey());
+
+                assertNull(r.getHeader(invalidHeaderName).getKey());
+
+                assertEquals(0, r.getHeaders(invalidHeaderNameBytes).size());
+
+                assertEquals(0, r.getHeaders(invalidHeaderName).size());
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderNameBytes));
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderName));
+
+                assertEquals(0, r.getNumberOfHeaders());
+
+                r.removeHeader(invalidHeaderNameBytes);
+
+                r.removeHeader(invalidHeaderNameBytes, 1);
+
+                r.removeHeader(invalidHeaderName);
+
+                r.removeHeader(invalidHeaderName, 1);
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+            }
+        }
+    }
+
+    /**
      * Utility method for verifying the connection information
-     * 
+     *
      * @param ords
      * @param names
      * @param list

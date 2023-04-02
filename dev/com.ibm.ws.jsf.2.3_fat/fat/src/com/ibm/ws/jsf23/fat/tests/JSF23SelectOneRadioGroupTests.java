@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -79,7 +79,7 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -702,7 +702,6 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_uiRepeat() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

@@ -229,27 +229,27 @@
     <dependency>
       <groupId>com.oracle.database.jdbc.debug</groupId>
       <artifactId>ojdbc8_g</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ucp</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>oraclepki</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_cert</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_core</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sebastian-daschner</groupId>
@@ -269,7 +269,7 @@
     <dependency>
       <groupId>com.sun.activation</groupId>
       <artifactId>jakarta.activation</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.faces</groupId>
@@ -294,7 +294,7 @@
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>jakarta.mail</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
@@ -334,7 +334,7 @@
     <dependency>
       <groupId>com.sun.xml.messaging.saaj</groupId>
       <artifactId>saaj-impl</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.messaging.saaj</groupId>
@@ -349,7 +349,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
@@ -359,7 +359,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.unboundid</groupId>
@@ -384,7 +384,12 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -524,52 +529,57 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-unix-common</artifactId>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
@@ -618,6 +628,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
+      <version>1.19.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp-common</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -629,6 +644,11 @@
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-zipkin</artifactId>
+      <version>1.19.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-extension-trace-propagators</artifactId>
       <version>1.19.0</version>
     </dependency>
     <dependency>
@@ -778,6 +798,11 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
+      <artifactId>jandex</artifactId>
+      <version>3.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-api</artifactId>
       <version>1.0.26</version>
     </dependency>
@@ -819,7 +844,17 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
-      <version>5.0.0-M5</version>
+      <version>5.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-jaxrs</artifactId>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -839,12 +874,12 @@
     <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
-      <version>2.1.0</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>
@@ -889,7 +924,7 @@
     <dependency>
       <groupId>jakarta.ejb</groupId>
       <artifactId>jakarta.ejb-api</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
@@ -904,7 +939,7 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -924,7 +959,7 @@
     <dependency>
       <groupId>jakarta.interceptor</groupId>
       <artifactId>jakarta.interceptor-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.interceptor</groupId>
@@ -954,12 +989,12 @@
     <dependency>
       <groupId>jakarta.json</groupId>
       <artifactId>jakarta.json-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.json</groupId>
       <artifactId>jakarta.json-api</artifactId>
-      <version>2.1.0</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.jws</groupId>
@@ -969,12 +1004,12 @@
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
-      <version>2.1.0</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.nosql.communication</groupId>
@@ -1069,7 +1104,7 @@
     <dependency>
       <groupId>jakarta.servlet.jsp</groupId>
       <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
@@ -1089,12 +1124,12 @@
     <dependency>
       <groupId>jakarta.transaction</groupId>
       <artifactId>jakarta.transaction-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
@@ -1134,7 +1169,7 @@
     <dependency>
       <groupId>jakarta.xml.soap</groupId>
       <artifactId>jakarta.xml.soap-api</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.soap</groupId>
@@ -1144,7 +1179,7 @@
     <dependency>
       <groupId>jakarta.xml.ws</groupId>
       <artifactId>jakarta.xml.ws-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.xml.ws</groupId>
@@ -1688,6 +1723,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr</artifactId>
+      <version>2.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.service.obr</artifactId>
       <version>1.0.2</version>
     </dependency>
@@ -1769,17 +1809,17 @@
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-core</artifactId>
-      <version>0.8.6</version>
+      <version>0.8.9</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-dom</artifactId>
-      <version>0.8.6</version>
+      <version>0.8.9</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-storage</artifactId>
-      <version>0.8.6</version>
+      <version>0.8.9</version>
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
@@ -1864,7 +1904,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>4.0.0-RC2</version>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -1884,7 +1924,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>4.0.0-RC2</version>
+      <version>4.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.neethi</groupId>
@@ -1939,7 +1979,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -1949,7 +1989,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2079,12 +2119,12 @@
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-activation</artifactId>
-      <version>1.0.0-M1</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-mail</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
@@ -2344,7 +2384,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
-      <version>4.0.1</version>
+      <version>4.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.graphql</groupId>
@@ -2409,7 +2449,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
-      <version>2.1-RC6</version>
+      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.lra</groupId>
@@ -2475,6 +2515,11 @@
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
       <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -2869,7 +2914,7 @@
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -2879,7 +2924,7 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -3619,27 +3664,27 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-tree</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -4032,11 +4077,6 @@
       <version>2.6</version>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.8.0</version>
-    </dependency>
-    <dependency>
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-core</artifactId>
       <version>0.34.0</version>
@@ -4138,18 +4178,8 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-core</artifactId>
-      <version>3.1.0-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
       <version>2.1.15</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>3.1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -4330,11 +4360,6 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.shell</artifactId>
       <version>1.1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr</artifactId>
-      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

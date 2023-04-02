@@ -1,1 +1,1 @@
-com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider
+io.openliberty.faces40.internal.spi.impl.WASCDIAnnotationDelegateInjectionProvider

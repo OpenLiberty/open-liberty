@@ -1,15 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +23,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf23.fat.CDITestBase;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,19 +39,42 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
 
+    private static final String APP_NAME = "CDIFacesInMetaInf.war";
+
     @Server("jsf23CDIFacesInMetaInfServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
+
         // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
-        ShrinkHelper.defaultDropinApp(server, "CDIFacesInMetaInf.war",
-                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+        // Include correct resources directory, since the faces-config.xml points to different CustomNavigationHandler classes.
+        if (isEE10) {
+            WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME);
+            app.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.faces40",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+            ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resourcesFaces40");
+            ShrinkHelper.exportDropinAppToServer(server, app);
+        } else {
+            WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME);
+            app.addPackages(false, "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
+                            "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.jsf23",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories",
+                            "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
+            ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resources");
+            ShrinkHelper.addDirectory(app, "test-applications/" + APP_NAME + "/resourcesJSF23");
+            ShrinkHelper.exportDropinAppToServer(server, app);
+        }
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(JSF23CDIFacesInMetaInfTests.class.getSimpleName() + ".log");
@@ -72,7 +98,6 @@ public class JSF23CDIFacesInMetaInfTests extends CDITestBase {
      *
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testNavigationHandlerInjection_CDIFacesInMetaInf() throws Exception {
         testNavigationHandlerInjectionByApp("CDIFacesInMetaInf", server);
     }

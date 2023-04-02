@@ -1,13 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertTrue;
@@ -26,7 +25,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
@@ -65,21 +63,16 @@ public class JSF22LocalizationTesterTests {
                                                  "com/ibm/ws/jsf22/fat/localprops/messages.properties");
         JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/messages_zh_CN.properties"),
                                                  "com/ibm/ws/jsf22/fat/localprops/messages_zh_CN.properties");
-        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/resources_zh_CN.properties"),
-                                                 "com/ibm/ws/jsf22/fat/localprops/resources_zh_CN.properties");
-        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/resources.properties"),
-                                                 "com/ibm/ws/jsf22/fat/localprops/resources.properties");
+        JSF22LocalizationTesterWar
+                        .addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources_zh_CN.properties"),
+                                       "com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources_zh_CN.properties");
+        JSF22LocalizationTesterWar
+                        .addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources.properties"),
+                                       "com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources.properties");
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22LocalizationTesterWar);
 
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
-
-        jsfTestServer2.startServer(JSF22LocalizationTesterTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
 
     }
 
@@ -107,6 +100,8 @@ public class JSF22LocalizationTesterTests {
                 Assert.fail("JSF22LocalizationTester_TestLocalAndGlobalResources.xhtml did not render properly.");
             }
 
+            assertTrue(page.asXml().contains("country_flag.jpg.xhtml?ln=images&amp;loc=en"));
+
             assertTrue(page.asText().contains("Testing"));
         }
     }
@@ -130,6 +125,8 @@ public class JSF22LocalizationTesterTests {
             if (page == null) {
                 Assert.fail("JSF22LocalizationTester_TestCalculateLocale, default.xhtml did not render properly.");
             }
+
+            assertTrue(page.asXml().contains("country_flag.jpg.xhtml?ln=images&amp;loc=en"));
 
             assertTrue(page.asText().contains("Happy learning JSF 2.2"));
         }

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -69,7 +71,6 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
         String state = getAndVerifyStateValue();
         checkRequestAgainstRedirectUri(state);
         checkForErrorParameter();
-        clearStoredState(state);
     }
 
     /**
@@ -110,6 +111,12 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
      */
     void checkRequestAgainstRedirectUri(String state) throws AuthenticationResponseException {
         String requestUrl = request.getRequestURL().toString();
+
+        String configuredRedirectUri = oidcClientConfig.getRedirectURI();
+        if (requestUrl.equals(configuredRedirectUri)) {
+            return;
+        }
+
         if (oidcClientConfig.isRedirectToOriginalResource()) {
             String originalReqUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
             if (originalReqUrl == null) {
@@ -119,12 +126,10 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
             if (!originalReqUrlWithoutQueryParams.equals(requestUrl)) {
                 throwExceptionForRedirectUriDoesNotMatch(requestUrl, originalReqUrlWithoutQueryParams);
             }
-        } else {
-            String configuredRedirectUri = oidcClientConfig.getRedirectURI();
-            if (!configuredRedirectUri.equals(requestUrl)) {
-                throwExceptionForRedirectUriDoesNotMatch(requestUrl, configuredRedirectUri);
-            }
+            return;
         }
+
+        throwExceptionForRedirectUriDoesNotMatch(requestUrl, configuredRedirectUri);
     }
 
     void throwExceptionForRedirectUriDoesNotMatch(String requestUrl, String expectedUrl) throws AuthenticationResponseException {
@@ -141,11 +146,6 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
             String nlsMessage = Tr.formatMessage(tc, "CALLBACK_URL_INCLUDES_ERROR_PARAMETER", errorParameter);
             throw new AuthenticationResponseException(ValidationResult.INVALID_RESULT, oidcClientConfig.getClientId(), nlsMessage);
         }
-    }
-
-    void clearStoredState(String state) {
-        String storageKey = OidcStorageUtils.getStateStorageKey(state);
-        storage.remove(storageKey);
     }
 
 }

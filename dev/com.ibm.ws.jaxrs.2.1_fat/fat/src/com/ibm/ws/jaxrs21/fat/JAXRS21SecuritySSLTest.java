@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -69,6 +71,14 @@ public class JAXRS21SecuritySSLTest {
         // wait for LTPA key to be available to avoid CWWKS4000E
         assertNotNull("CWWKS4105I.* not received on server",
                       server.waitForStringInLog("CWWKS4105I.*"));
+
+        // Wait for /jaxrs21security endpoints to be initialized
+        assertNotNull("/jaxrs21security com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication was not initialized (SRVE0242I not found)",
+                      server.waitForStringInLog("SRVE0242I.*/jaxrs21security.*com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication"));
+        assertNotNull("/jaxrs21security com.ibm.ws.jaxrs21.fat.security.annotations.SecurityAnnotationsApplication was not initialized (SRVE0242I not found)",
+                      server.waitForStringInLog("SRVE0242I.*/jaxrs21security.*com.ibm.ws.jaxrs21.fat.security.annotations.SecurityAnnotationsApplication"));
+        assertNotNull("/jaxrs21security SecurityContextApp was not initialized (SRVE0242I not found)",
+                      server.waitForStringInLog("SRVE0242I.*/jaxrs21security.*SecurityContextApp"));
     }
 
     @AfterClass

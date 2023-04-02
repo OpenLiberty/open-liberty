@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -14,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -35,6 +38,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
@@ -60,6 +64,8 @@ public class EjbLinkTest extends FATServletClient {
         }
     };
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     private static Class<?> c = EjbLinkTest.class;
 
     private static LibertyClient client = LibertyClientFactory.getLibertyClient("com.ibm.ws.ejbcontainer.remote.client.fat.clientInjection");
@@ -68,7 +74,7 @@ public class EjbLinkTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection").fullFATOnly()).andWith(new JakartaEE10Action().forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -124,6 +130,12 @@ public class EjbLinkTest extends FATServletClient {
         // CWNEN1001E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
         // CWNEN0030E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
         client.addIgnoreErrors("CWWKC0105W", "CWNEN1001E", "CWNEN0030E");
+
+        // CWWKZ0022W: Application ______ has not started in 30 seconds.
+        if (isWindows) {
+            client.addIgnoreErrors("CWWKZ0022W");
+        }
+
         client.startClient();
     }
 

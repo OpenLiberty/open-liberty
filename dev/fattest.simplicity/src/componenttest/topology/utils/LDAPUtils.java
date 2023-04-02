@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -525,36 +527,36 @@ public class LDAPUtils {
         final String METHOD_NAME = "logLDAPServerInfo";
         Log.info(c, METHOD_NAME, "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER + '\n' +
 
-        "Active Directory WAS SVT LDAP Servers\n" +
-        "\tLDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME + '\n' +
-        "\tLDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n' +
-        "\tLDAP_SERVER_2_SSL_PORT=" + LDAP_SERVER_2_SSL_PORT + '\n' +
-        "\tLDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME + '\n' +
-        "\tLDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n' +
-        "\tLDAP_SERVER_6_SSL_PORT=" + LDAP_SERVER_6_SSL_PORT + "\n\n" +
+                                 "Active Directory WAS SVT LDAP Servers\n" +
+                                 "\tLDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME + '\n' +
+                                 "\tLDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n' +
+                                 "\tLDAP_SERVER_2_SSL_PORT=" + LDAP_SERVER_2_SSL_PORT + '\n' +
+                                 "\tLDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME + '\n' +
+                                 "\tLDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n' +
+                                 "\tLDAP_SERVER_6_SSL_PORT=" + LDAP_SERVER_6_SSL_PORT + "\n\n" +
 
-        "IBM Continuous Delivery LDAP Servers\n" +
-        "\tLDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME + '\n' +
-        "\tLDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n' +
-        "\tLDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME + '\n' +
-        "\tLDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + "\n\n" +
+                                 "IBM Continuous Delivery LDAP Servers\n" +
+                                 "\tLDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME + '\n' +
+                                 "\tLDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n' +
+                                 "\tLDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME + '\n' +
+                                 "\tLDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + "\n\n" +
 
-        "IBM WAS Security FVT LDAP Servers\n" +
-        "\tLDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME + '\n' +
-        "\tLDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT + '\n' +
-        "\tLDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n' +
-        "\tLDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME + '\n' +
-        "\tLDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT + '\n' +
-        "\tLDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n' +
-        "\tLDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME + '\n' +
-        "\tLDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT + '\n' +
-        "\tLDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + "\n\n" +
+                                 "IBM WAS Security FVT LDAP Servers\n" +
+                                 "\tLDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME + '\n' +
+                                 "\tLDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT + '\n' +
+                                 "\tLDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n' +
+                                 "\tLDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME + '\n' +
+                                 "\tLDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT + '\n' +
+                                 "\tLDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n' +
+                                 "\tLDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME + '\n' +
+                                 "\tLDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT + '\n' +
+                                 "\tLDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + "\n\n" +
 
-        "IBM WAS Security LDAP Servers\n" +
-        "\tLDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME + '\n' +
-        "\tLDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n' +
-        "\tLDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME + '\n' +
-        "\tLDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT);
+                                 "IBM WAS Security LDAP Servers\n" +
+                                 "\tLDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME + '\n' +
+                                 "\tLDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n' +
+                                 "\tLDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME + '\n' +
+                                 "\tLDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT);
 
     }
 
@@ -826,7 +828,7 @@ public class LDAPUtils {
     }
 
     public static boolean isLdapServerAvailable(String hostname, String port, boolean useSsl, String bindDn, String bindPwd) throws Exception {
-        String method = "isLdapServerAvaialble";
+        String method = "isLdapServerAvailable";
         Log.entering(c, method);
 
         Hashtable<String, String> env = new Hashtable<String, String>();

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -53,6 +55,8 @@ public class MpJwtMessageConstants extends JwtMessageConstants {
     public static final String CWWKS6045E_JTI_REUSED = "CWWKS6045E";
     public static final String CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED = "CWWKS6055W";
     public static final String CWWKS6056E_CAN_NOT_EXTRACT_JWS = "CWWKS6056E";
+    public static final String CWWKS6067E_ELAPSED_TOKEN_AGE = "CWWKS6067E";
+    public static final String CWWKS6069E_MISMATCH_ENCRYP_ALG = "CWWKS6069E";
 
     public static final String CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH = "CWWKW1001W";
 

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -153,6 +155,9 @@ public class CacheHashMap extends BackedHashMap {
             // the / and : characters (JCache spec does not allow these in cache names)
             // and also the % character (which is necessary because of percent encoding)
             String a = _iStore.getId();
+            if (_smc.isAppInCacheName()) {
+                a = a.concat(".").concat(_smc.getJ2EEName());
+            }
             if (Character.compare(_smc.getCacheSeparator(), '%') == 0) {
                 a = PERCENT.matcher(a).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
                 a = SLASH.matcher(a).replaceAll("%2F");
@@ -454,6 +459,7 @@ public class CacheHashMap extends BackedHashMap {
 
                             FFDCFilter.processException(x, getClass().getName(), "91", sess,
                                                         new Object[] { hideValues ? "byte[" + b.length + "]" : TypeConversion.limitedBytesToString(b) });
+                            Tr.error(tc, "sessionAttributeCache attributeKey = ", attributeKey);
                             throw x;
                         }
                         if (value != null) {
@@ -503,6 +509,7 @@ public class CacheHashMap extends BackedHashMap {
 
             // we are not synchronized here - were not in old code either
             Hashtable tht = null;
+            synchronized (session) {
             if (_smc.writeAllProperties()) {
                 Map<?, ?> ht = session.getSwappableData();
                 propsToWrite = (Set<String>) ht.keySet();
@@ -583,7 +590,8 @@ public class CacheHashMap extends BackedHashMap {
                     }
                 }
             }
-
+            }
+            
             // see if any properties were REMOVED.
             // if so, process them
 
@@ -902,8 +910,10 @@ public class CacheHashMap extends BackedHashMap {
             }
         } catch (Exception ex) {
             FFDCFilter.processException(ex, "com.ibm.ws.session.store.cache.CacheHashMap.overQualLastAccessTimeUpdate", "859", this, new Object[] { sess });
-            Tr.error(tc, "ERROR_CACHE_ACCESS", ex);
-            throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
+            Tr.error(tc, "ERROR_CACHE_ACCESS", id);
+            Tr.error(tc, "INTERNAL_SERVER_ERROR", ex);
+            updateCount = 0;
+            // throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
         }
 
         return updateCount;

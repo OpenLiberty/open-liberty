@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,7 +23,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.config.AggregatedConfiguration;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * DS for custom CDI properties. The active instance can either be retrieved through DS or through a static getter method.
@@ -46,11 +47,10 @@ public class CDI12ContainerConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Activating " + this);
         }
-        //TOOD the ProductInfo.getBetaEdition() check should be removed before GA
-        if (TraceComponent.isAnyTracingEnabled() && tc.isInfoEnabled() && ProductInfo.getBetaEdition()) {
-            //CWOWB1015I: The cdi12 configuration element is superseded by the cdi configuration element.
-            Tr.info(tc, "cdi12.element.type.superceded.CWOWB1015I");
-        }
+
+        //CWOWB1015I: The cdi12 configuration element is superseded by the cdi configuration element.
+        Tr.info(tc, "cdi12.element.type.superceded.CWOWB1015I");
+
         this.updateConfiguration(properties);
     }
 

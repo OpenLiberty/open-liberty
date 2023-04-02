@@ -22,12 +22,8 @@
     
     <library id="visTestCommonLib">
        <fileset includes="visTestCommonLib.jar"/>
-       <fileset includes="visTestFramework.jar"/>
     </library>
     
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>
     
-    <!--Java2 security-->
-    <javaPermission codebase="${server.config.dir}/visTestFramework.jar" className="java.security.AllPermission"  name="*" actions="*" />
-
 </server>

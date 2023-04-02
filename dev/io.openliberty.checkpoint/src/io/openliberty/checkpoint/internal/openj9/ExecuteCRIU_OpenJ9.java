@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -15,7 +17,9 @@ import java.io.File;
 import org.eclipse.openj9.criu.CRIUSupport;
 import org.eclipse.openj9.criu.JVMCRIUException;
 import org.eclipse.openj9.criu.JVMCheckpointException;
+import org.eclipse.openj9.criu.JVMRestoreException;
 import org.eclipse.openj9.criu.SystemCheckpointException;
+import org.eclipse.openj9.criu.SystemRestoreException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -32,14 +36,11 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     }
 
     @Override
-    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, JVMCRIUException.class, RuntimeException.class, NoSuchMethodError.class })
+    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, JVMRestoreException.class, SystemRestoreException.class, JVMCRIUException.class })
     public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
-        try {
-            criuSupport.registerPreCheckpointHook(prepare);
-        } catch (NoSuchMethodError e) {
-            criuSupport.registerPreSnapshotHook(prepare);
-        }
+
+        criuSupport.registerPreCheckpointHook(prepare);
         criuSupport.registerPostRestoreHook(restore);
         criuSupport.setShellJob(true);
         criuSupport.setFileLocks(true);
@@ -48,30 +49,19 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
         criuSupport.setTCPEstablished(true);
         criuSupport.registerRestoreEnvFile(envProps.toPath());
         setCheckpointLogLevel(criuSupport);
-        if (unprivileged) {
-            try {
-                criuSupport.setUnprivileged(true);
-            } catch (NoSuchMethodError e) {
-                // TODO this is a temporary message that will never happen on a released version of Open J9.  Not adding message to nlsprops
-                throw new CheckpointFailedException(Type.UNKNOWN_CHECKPOINT, "JVM does not support CRIU unprivileged mode", e);
-            }
-        }
+        criuSupport.setUnprivileged(unprivileged);
+
         try {
             criuSupport.checkpointJVM();
         } catch (JVMCheckpointException e) {
             throw new CheckpointFailedException(Type.JVM_CHECKPOINT_FAILED, e.getMessage(), e);
         } catch (SystemCheckpointException e) {
             throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, e.getMessage(), e);
+        } catch (JVMRestoreException e) {
+            throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e);
+        } catch (SystemRestoreException e) {
+            throw new CheckpointFailedException(Type.SYSTEM_RESTORE_FAILED, e.getMessage(), e);
         } catch (JVMCRIUException e) {
-            throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
-        } catch (RuntimeException e) {
-            String exceptionName = e.getClass().getSimpleName();
-            if ("JVMRestoreException".equals(exceptionName) || "RestoreException".equals(exceptionName)) {
-                throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e);
-            }
-            if ("SystemRestoreException".equals(exceptionName)) {
-                throw new CheckpointFailedException(Type.SYSTEM_RESTORE_FAILED, e.getMessage(), e);
-            }
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         }
     }

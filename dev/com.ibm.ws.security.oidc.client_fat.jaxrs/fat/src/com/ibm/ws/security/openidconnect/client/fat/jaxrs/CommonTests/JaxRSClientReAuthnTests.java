@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs.CommonTests;
 
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -40,6 +43,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     public static HashMap<String, Integer> defRespStatusMap = null;
     protected static CommonCookieTools cookieTools = new CommonCookieTools();
     public static RSCommonTestTools rsTools = new RSCommonTestTools();
+    protected static boolean needsOPWakeup = true;
 
     private final static Boolean DOES_NOT_USE_CUSHION = false;
     private final static Boolean USES_CUSHION = true;
@@ -47,6 +51,42 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     private final static Boolean USES_REAUTHN = true;
     private final static Boolean ID_TOKEN_SHORT_LIFETIME = true;
     private final static Boolean ID_TOKEN_LONG_LIFETIME = false;
+
+    /**
+     * The OP is slow to return tokens on the first call - maybe an SSL issue, so, we'll
+     * make a request before the first test to get that process going - we won't care if it
+     * works or not.
+     * Not calling this from the @BeforeClass since its a static method, ...
+     * We'll just do this once (before the first test case)
+     *
+     */
+    @Override
+    @Before
+    public void setTestName() throws Exception {
+        super.setTestName();
+
+        // if this is the first test, try to have the OP issue tokens before the test since it take so long the very first time this is done.
+        if (needsOPWakeup) {
+            try {
+                Log.info(thisClass, "Before test method", "Prime the OP Pump");
+                WebConversation wc = new WebConversation();
+
+                TestSettings updatedTestSettings = testSettings.copyTestSettings();
+                updatedTestSettings.setScope("openid profile");
+                updatedTestSettings.setTestURL(testRPServer.getHttpsString() + "/simplejaxrsclient/Protected_SimpleJaxRSClient/accessTokenShortLifetime_reAuthnTrue_noCushion");
+                updateMap(updatedTestSettings, Constants.TARGET_APP, genericTestServer.getHttpString() + "/helloworld/rest/helloworld_accessTokenShortLifetime");
+
+                // Access app on RP to get credentials (need to log in to do this)
+                genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, null);
+                helpers.setMarkToEndOfAllServersLogs();
+                Log.info(thisClass, "Before test method", "End Prime the OP Pump");
+            } catch (Exception e) {
+                Log.info(thisClass, "Before test method - priming the pump failure - we'll continue with the tests anyway.", e.getMessage());
+            }
+        }
+        needsOPWakeup = false;
+
+    }
 
     private TestSettings updateMap(TestSettings settings, String theKey, String theValue) throws Exception {
         //Map<String, String> map = new HashMap <String,String> ();
@@ -66,7 +106,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
      * Add additional checks for output from the other new API's
      *
      */
-    private List<validationData> setEndToEndExpectations(String testCase, String finalAction, TestSettings settings) throws Exception {
+    private List<validationData> setEndToEndExpectations(String finalAction, TestSettings settings) throws Exception {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
 
@@ -128,7 +168,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         return expectations;
     }
 
-    private void runTest(String testCase, Boolean usesReAuthn, Boolean cushionSet, Boolean idTokenHasShortLifetime, String rp_app, String rs_app) throws Exception {
+    private void runTest(Boolean usesReAuthn, Boolean cushionSet, Boolean idTokenHasShortLifetime, String rp_app, String rs_app) throws Exception {
 
         // remove the OP's cookie before 2nd/3rd invocations of the client servlet- even if the RP goes to the OP, it'll be hidden
         // from us because the OP will use it's cookie to authorize, ... (removeCookieFromConversation calls below)
@@ -140,8 +180,8 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         updatedTestSettings.setTestURL(testRPServer.getHttpsString() + "/simplejaxrsclient/Protected_SimpleJaxRSClient/" + rp_app);
         updateMap(updatedTestSettings, Constants.TARGET_APP, genericTestServer.getHttpString() + "/helloworld/rest/" + rs_app);
 
-        List<validationData> expectationsWithLogin = setEndToEndExpectations(_testName, Constants.LOGIN_USER, updatedTestSettings);
-        List<validationData> expectationsNoLogin = setEndToEndExpectations(_testName, Constants.GET_LOGIN_PAGE, updatedTestSettings);
+        List<validationData> expectationsWithLogin = setEndToEndExpectations(Constants.LOGIN_USER, updatedTestSettings);
+        List<validationData> expectationsNoLogin = setEndToEndExpectations(Constants.GET_LOGIN_PAGE, updatedTestSettings);
         List<validationData> expectationsAccessDenied = setAccessDeniedExpectations(Constants.GET_LOGIN_PAGE);
 
         // 1 - access app on RP to get credentials (need to log in to do this)
@@ -170,27 +210,27 @@ public class JaxRSClientReAuthnTests extends CommonTest {
             if (usesReAuthn) {
                 if (cushionSet) {
                     // 2a1a
-                    Log.info(thisClass, "Step2", testCase + " Need Login");
+                    Log.info(thisClass, "Step2", _testName + " Need Login");
                     genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectationsWithLogin);
                 } else {
                     // 2a1b
-                    Log.info(thisClass, "Step2", testCase + " No Login");
+                    Log.info(thisClass, "Step2", _testName + " No Login");
                     genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsNoLogin);
                 }
             } else {
                 if (cushionSet && idTokenHasShortLifetime) {
                     // 2a2a
-                    Log.info(thisClass, "Step2", testCase + " Need Login");
+                    Log.info(thisClass, "Step2", _testName + " Need Login");
                     genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectationsWithLogin);
                 } else {
                     // 2a2b
-                    Log.info(thisClass, "Step2", testCase + " No Login");
+                    Log.info(thisClass, "Step2", _testName + " No Login");
                     genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsNoLogin);
                 }
             }
         } else {
             // 2b
-            Log.info(thisClass, "Step2", testCase + " No Login");
+            Log.info(thisClass, "Step2", _testName + " No Login");
             genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsNoLogin);
         }
         // 3 - try to access the app after sleeping (giving time for short lived tokens to expire) - testing that we still need to log in
@@ -204,14 +244,14 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         cookieTools.removeCookieFromConverstation(wc, Constants.OP_COOKIE);
         if (rp_app.contains("Short")) {
             if (usesReAuthn || idTokenHasShortLifetime) {
-                Log.info(thisClass, "Step3", testCase + " Need Login");
+                Log.info(thisClass, "Step3", _testName + " Need Login");
                 genericRP(_testName, wc, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectationsWithLogin);
             } else {
-                Log.info(thisClass, "Step3", testCase + " 401");
+                Log.info(thisClass, "Step3", _testName + " 401");
                 genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsAccessDenied);
             }
         } else {
-            Log.info(thisClass, "Step3", testCase + " No Login");
+            Log.info(thisClass, "Step3", _testName + " No Login");
             genericRP(_testName, wc, updatedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, expectationsNoLogin);
         }
     }
@@ -245,7 +285,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_accessTokenShortLifetime_reAuthnTrue_noCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnTrue_noCushion", "helloworld_accessTokenShortLifetime");
+        runTest(USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnTrue_noCushion", "helloworld_accessTokenShortLifetime");
 
     }
 
@@ -264,7 +304,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_idTokenShortLifetime_reAuthnTrue_noCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnTrue_noCushion", "helloworld_idTokenShortLifetime");
+        runTest(USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnTrue_noCushion", "helloworld_idTokenShortLifetime");
 
     }
 
@@ -283,7 +323,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothShortLifetime_reAuthnTrue_noCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnTrue_noCushion", "helloworld_bothShortLifetime");
+        runTest(USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnTrue_noCushion", "helloworld_bothShortLifetime");
 
     }
 
@@ -302,8 +342,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_accessTokenShortLifetime_reAuthnFalse_noCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnFalse_noCushion",
-                "helloworld_accessTokenShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnFalse_noCushion", "helloworld_accessTokenShortLifetime");
 
     }
 
@@ -322,7 +361,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_idTokenShortLifetime_reAuthnFalse_noCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnFalse_noCushion", "helloworld_idTokenShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnFalse_noCushion", "helloworld_idTokenShortLifetime");
 
     }
 
@@ -341,7 +380,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothShortLifetime_reAuthnFalse_noCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnFalse_noCushion", "helloworld_bothShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnFalse_noCushion", "helloworld_bothShortLifetime");
 
     }
 
@@ -360,7 +399,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_accessTokenShortLifetime_reAuthnTrue_withCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, USES_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnTrue_withCushion", "helloworld_accessTokenShortLifetime");
+        runTest(USES_REAUTHN, USES_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnTrue_withCushion", "helloworld_accessTokenShortLifetime");
 
     }
 
@@ -379,7 +418,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_idTokenShortLifetime_reAuthnTrue_withCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnTrue_withCushion", "helloworld_idTokenShortLifetime");
+        runTest(USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnTrue_withCushion", "helloworld_idTokenShortLifetime");
 
     }
 
@@ -398,7 +437,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothShortLifetime_reAuthnTrue_withCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnTrue_withCushion", "helloworld_bothShortLifetime");
+        runTest(USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnTrue_withCushion", "helloworld_bothShortLifetime");
 
     }
 
@@ -417,7 +456,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_accessTokenShortLifetime_reAuthnFalse_withCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnFalse_withCushion", "helloworld_accessTokenShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_LONG_LIFETIME, "accessTokenShortLifetime_reAuthnFalse_withCushion", "helloworld_accessTokenShortLifetime");
 
     }
 
@@ -436,7 +475,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_idTokenShortLifetime_reAuthnFalse_withCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnFalse_withCushion", "helloworld_idTokenShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "idTokenShortLifetime_reAuthnFalse_withCushion", "helloworld_idTokenShortLifetime");
 
     }
 
@@ -455,7 +494,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothShortLifetime_reAuthnFalse_withCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnFalse_withCushion", "helloworld_bothShortLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothShortLifetime_reAuthnFalse_withCushion", "helloworld_bothShortLifetime");
 
     }
 
@@ -474,7 +513,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothLongLifetime_reAuthnTrue_noCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnTrue_noCushion", "helloworld_bothLongLifetime");
+        runTest(USES_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnTrue_noCushion", "helloworld_bothLongLifetime");
 
     }
 
@@ -493,7 +532,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothLongLifetime_reAuthnFalse_noCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "bothLongLifetime_reAuthnFalse_noCushion", "helloworld_bothLongLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, DOES_NOT_USE_CUSHION, ID_TOKEN_LONG_LIFETIME, "bothLongLifetime_reAuthnFalse_noCushion", "helloworld_bothLongLifetime");
 
     }
 
@@ -512,7 +551,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothLongLifetime_reAuthnTrue_withCushion() throws Exception {
 
-        runTest(_testName, USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnTrue_withCushion", "helloworld_bothLongLifetime");
+        runTest(USES_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnTrue_withCushion", "helloworld_bothLongLifetime");
 
     }
 
@@ -531,7 +570,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     @Test
     public void JaxRSClientReAuthnTests_bothLongLifetime_reAuthnFalse_withCushion() throws Exception {
 
-        runTest(_testName, DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnFalse_withCushion", "helloworld_bothLongLifetime");
+        runTest(DOES_NOT_USE_REAUTHN, USES_CUSHION, ID_TOKEN_SHORT_LIFETIME, "bothLongLifetime_reAuthnFalse_withCushion", "helloworld_bothLongLifetime");
 
     }
 
@@ -557,11 +596,11 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setTestURL(testRPServer.getHttpsString() + "/simplejaxrsclient/Protected_SimpleJaxRSClient/"
-                                       + "disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion");
+                + "disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion");
         updateMap(updatedTestSettings, Constants.TARGET_APP, genericTestServer.getHttpString() + "/helloworld/rest/" + "helloworld_bothShortLifetime");
 
-        List<validationData> expectationsWithLogin = setEndToEndExpectations(_testName, Constants.LOGIN_USER, updatedTestSettings);
-        List<validationData> expectationsNoLogin = setEndToEndExpectations(_testName, Constants.GET_LOGIN_PAGE, updatedTestSettings);
+        List<validationData> expectationsWithLogin = setEndToEndExpectations(Constants.LOGIN_USER, updatedTestSettings);
+        List<validationData> expectationsNoLogin = setEndToEndExpectations(Constants.GET_LOGIN_PAGE, updatedTestSettings);
         List<validationData> expectationsAccessDenied = setAccessDeniedExpectations(Constants.GET_LOGIN_PAGE);
 
         // access app on RP to get credentials (need to log in to do this)

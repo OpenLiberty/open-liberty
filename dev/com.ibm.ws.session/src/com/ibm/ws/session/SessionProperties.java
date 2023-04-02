@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -35,6 +37,7 @@ final public class SessionProperties {
         FullyQualifiedPropertiesMap.put("CloneSeparatorChange", "cloneSeparatorChange");
         FullyQualifiedPropertiesMap.put("CloneSeparator", "cloneSeparator");
         FullyQualifiedPropertiesMap.put("CacheSeparator", "cacheSeparator");
+        FullyQualifiedPropertiesMap.put("AppInCacheName", "appInCacheName");
         FullyQualifiedPropertiesMap.put("NoAffinitySwitchBack", "noAffinitySwitchBack");
         FullyQualifiedPropertiesMap.put("UseOracleBLOB", "useOracleBlob");
         FullyQualifiedPropertiesMap.put("SessionTableSkipIndexCreation", "skipIndexCreation");
@@ -277,6 +280,15 @@ final public class SessionProperties {
             } else {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.WARNING, methodClassName, methodName, invalidPropFoundMessage,
                                                      new Object[] { strProp });
+            }
+        }        
+        
+        final String propAppInCacheName = "AppInCacheName";
+        strProp = getStringProperty(propAppInCacheName, xtpProperties);
+        if (strProp != null) {
+            booleanProp = Boolean.valueOf(strProp);
+            if (shouldSetAndDoLogging(propAppInCacheName, true, baseServerLevelConfig, xtpProperties, booleanProp, Boolean.valueOf(SessionManagerConfig.isAppInCacheName()), false)) {
+                SessionManagerConfig.setAppInCacheName(booleanProp.booleanValue());
             }
         }        
         

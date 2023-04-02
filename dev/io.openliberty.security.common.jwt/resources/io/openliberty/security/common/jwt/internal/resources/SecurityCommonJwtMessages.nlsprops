@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: The {0} signature algorithm in the JWT header does not match the {1} expected signature algorithm.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=The token must be signed with the algorithm that is specified in the message.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Ensure the token is signed with the expected algorithm, or update the configuration for the component that receives the token to use the algorithm that is specified in the message.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: The {0} signature algorithm in the JWT header is not one of the allowed signature algorithms: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: The {0} signature algorithm in the JWT header is not one of the allowed signature algorithms: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=The token must be signed with one of the algorithms that is specified in the message.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Ensure the token is signed with one of the allowed algorithms, or update the configuration for the component that receives the token to allow the algorithm that is specified in the message.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: The {0} signature algorithm in the JWT header requires a signing key, but a signing key is not specified.
+SIGNING_KEY_NOT_SPECIFIED.explanation=The server failed to retrieve the key that is needed to verify the JWT signature. The key might be loaded from a JSON Web Key (JWK) URL, a keystore, or a shared key that is specified in the server configuration.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Ensure that the configuration for the component that receives the token specifies a JWK URL, an appropriate keystore, or a shared key.

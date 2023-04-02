@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat;
+
+import java.util.Locale;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -43,6 +44,7 @@ import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
 import com.ibm.ws.jsf23.fat.tests.JSFFeatureConflictTests;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -106,13 +108,23 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat;
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     static {
         // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+            // Repeating the full FAT for multiple features may exceed the 3 hour limit on Fyre Windows.
+            // Skip the EE9 repeat on the windows platform when not running locally.
+            if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
+                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+            } else {
+                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+            }
+
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES());

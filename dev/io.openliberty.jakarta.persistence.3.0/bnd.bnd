@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -28,17 +30,15 @@ Import-Package: \
 
 Export-Package: jakarta.persistence.*; jpa=3.0; -split-package:=first
 
-Private-Package: io.openliberty.jakarta.persistence.internal, \
-   org.apache.geronimo.osgi.locator, \
-   org.apache.geronimo.specs.jpa
-
-#Include-Resource: \
-#   @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0}!/about.html
+Private-Package: io.openliberty.jakarta.persistence.internal
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
+-includeresource: \
+  @${repo;jakarta.persistence:jakarta.persistence-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+
 -buildpath: \
-        jakarta.persistence:jakarta.persistence-api;version="[3.0.0,3.1.0)",\
-        io.openliberty.jakartapersistenceactivator
+  jakarta.persistence:jakarta.persistence-api;version=3.0.0;strategy=exact,\
+  io.openliberty.jakartapersistenceactivator;version=latest

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -173,6 +175,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -279,6 +286,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -494,6 +506,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -600,6 +617,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -850,6 +872,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -991,6 +1018,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -1241,6 +1273,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -1347,6 +1384,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -1562,6 +1604,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -1668,6 +1715,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -1918,6 +1970,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -2059,6 +2116,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -2309,6 +2371,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -2415,6 +2482,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -2630,6 +2702,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -2736,6 +2813,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -2986,6 +3068,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -3127,6 +3214,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -3377,6 +3469,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -3483,6 +3580,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -3698,6 +3800,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -3804,6 +3911,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -4054,6 +4166,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -4195,6 +4312,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -4489,6 +4611,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -4639,6 +4766,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -4942,6 +5074,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -5092,6 +5229,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -5401,6 +5543,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -5557,6 +5704,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -5878,7 +6030,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6057,7 +6209,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6398,7 +6550,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6577,7 +6729,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6924,7 +7076,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -7109,7 +7261,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -7400,6 +7552,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -7506,6 +7663,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -7721,6 +7883,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -7827,6 +7994,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {
@@ -8077,6 +8249,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
+
         // Execute Test Case
         try {
             SQLCallListener.clearCalls();
@@ -8218,6 +8395,11 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
         boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/24603 is delivered
+        if (isDB2Z) {
+            return;
+        }
 
         // Execute Test Case
         try {

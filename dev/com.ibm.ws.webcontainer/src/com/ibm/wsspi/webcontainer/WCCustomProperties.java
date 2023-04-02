@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer;
 
@@ -326,6 +325,9 @@ public class WCCustomProperties {
 
     //21.0.0.6
     public static boolean EXCLUDE_ALL_HANDLED_TYPES_CLASSES;
+    
+    //23.0.0.1
+    public static boolean SKIP_ENCODED_CHAR_VERIFICATION;
 
     static {
         setCustomPropertyVariables(); //initializes all the variables
@@ -421,6 +423,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("sethtmlcontenttypeonerror", "com.ibm.ws.webcontainer.sethtmlcontenttypeonerror"); //PH34054
         WCCustomProperties.FullyQualifiedPropertiesMap.put("excludeallhandledtypesclasses", "com.ibm.ws.webcontainer.excludeallhandledtypesclasses");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("skipencodedcharverification", "com.ibm.ws.webcontainer.skipencodedcharverification");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -807,6 +810,9 @@ public class WCCustomProperties {
         //21.0.0.4
         SET_HTML_CONTENT_TYPE_ON_ERROR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.sethtmlcontenttypeonerror", "true")).booleanValue();
 
+        //23.0.0.1 - Servlet 6.0
+        SKIP_ENCODED_CHAR_VERIFICATION = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.skipencodedcharverification"))).booleanValue();
+        
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {

@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
@@ -22,7 +21,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
@@ -32,7 +30,6 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -46,7 +43,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class JSF23UIRepeatConditionTests {
 
-    protected static final Class<?> c = JSF23UIRepeatConditionTests.class;
+    private static final Class<?> c = JSF23UIRepeatConditionTests.class;
 
     @Rule
     public TestName name = new TestName();
@@ -77,11 +74,9 @@ public class JSF23UIRepeatConditionTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testUIRepeatCondition() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
         try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
             // The initial value expected
             String expected = "0123456789";
@@ -101,7 +96,7 @@ public class JSF23UIRepeatConditionTests {
 
             String output = page.getElementById("panel1").getTextContent().replaceAll("\\s", "");
 
-            // Test the inital output for the default values of begin = 0, end = 9 and step = 1
+            // Test the initial output for the default values of begin = 0, end = 9 and step = 1
             assertTrue("The output should have been: " + expected + " but was: " + output, output.equals(expected));
 
             // Set step = 2 and ensure we get the proper output
@@ -122,6 +117,10 @@ public class JSF23UIRepeatConditionTests {
 
             // Set step = 1, begin = 4 and end = 6 and ensure we get the proper output
             expected = "456";
+            beginInput = (HtmlTextInput) page.getElementById("beginInput");
+            endInput = (HtmlTextInput) page.getElementById("endInput");
+            stepInput = (HtmlTextInput) page.getElementById("stepInput");
+
             stepInput.setValueAttribute("1");
             beginInput.setValueAttribute("4");
             endInput.setValueAttribute("6");
@@ -148,7 +147,6 @@ public class JSF23UIRepeatConditionTests {
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "javax.servlet.ServletException" })
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testUIRepeatConditionErrorEndTooLarge() throws Exception {
         String contextRoot = "UIRepeatConditionCheck";
         String errorText = "end cannot be greater than collection size";

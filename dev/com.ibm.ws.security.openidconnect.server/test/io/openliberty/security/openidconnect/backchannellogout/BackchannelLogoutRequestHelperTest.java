@@ -1,16 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -26,7 +23,6 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.openidconnect.*=all:com.ibm.ws.security.openidconnect*=all");
 
-    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
 
     private BackchannelLogoutRequestHelper helper;
@@ -39,7 +35,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
-        helper = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+        helper = new BackchannelLogoutRequestHelper(oidcServerConfig);
     }
 
     @After

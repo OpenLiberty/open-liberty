@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -16,27 +18,19 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-Name: Jakarta Data Liberty Integration
+Bundle-Name: Jakarta Data Bean Defining Annotations
 Bundle-SymbolicName: io.openliberty.data.internal
-Bundle-Description: Provides CDI extensions for Jakarta Data; version=${bVersion}
+Bundle-Description: Declares bean defining annotations for Jakarta Data; version=${bVersion}
 
 WS-TraceGroup: data
-
-Export-Package: \
-  io.openliberty.data.internal
 
 Private-Package: \
   io.openliberty.data.internal.cdi.*,\
   io.openliberty.data.internal.resources.*
 
-Include-Resource:\
-  OSGI-INF=resources/OSGI-INF
-
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
 -cdiannotations:
 
--dsannotations: io.openliberty.data.internal.cdi.DataExtensionMetadata
+-dsannotations: io.openliberty.data.internal.cdi.BeanDefiningAnnotationMetadata
 
 instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 
@@ -48,9 +42,6 @@ instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
-  com.ibm.ws.threading,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.data.1.0,\
-  io.openliberty.jakarta.interceptor.2.1,\
-  io.openliberty.jakarta.transaction.2.0
+  io.openliberty.jakarta.data.1.0

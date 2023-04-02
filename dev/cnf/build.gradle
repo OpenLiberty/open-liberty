@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -22,7 +24,7 @@ dependencies {
     binaries "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
     binaries "org.osgi:org.osgi.core:6.0.0"
     binaries "org.apache.aries:org.apache.aries.util:1.1.3"
-    binaries "commons-io:commons-io:2.8.0"
+    binaries "commons-io:commons-io:2.11.0"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
     binaries "org.eclipse.jdt:ecj:3.22.0"
@@ -148,10 +150,10 @@ task updatePluginClasses(type: Copy) {
 
 
 task cleanPublishedOutputs(type: Delete) {
-	doLast {
-		println rootProject.file(rootProject.ext.get('published.outputs'))
-		rootProject.delete rootProject.file(rootProject.ext.get('published.outputs'))
-	}
+    doLast {
+        println rootProject.file(rootProject.ext.get('published.outputs'))
+        rootProject.delete rootProject.file(rootProject.ext.get('published.outputs'))
+    }
 }
 
 task cleanRepos(type: Delete) {
@@ -166,7 +168,7 @@ task cleanRepos(type: Delete) {
 
 task initialize {
     dependsOn cleanRepos
-	dependsOn cleanPublishedOutputs
+    dependsOn cleanPublishedOutputs
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
     doLast {
@@ -176,7 +178,7 @@ task initialize {
 
 clean {
     dependsOn cleanRepos
-	dependsOn cleanPublishedOutputs
+    dependsOn cleanPublishedOutputs
 }
 
 classes {
@@ -191,11 +193,7 @@ parent.subprojects {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.apache.tools.ant.DirectoryScanner
 import groovy.util.XmlSlurper
-
-DirectoryScanner.removeDefaultExclude("**/.gitignore")
-DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
@@ -238,8 +236,8 @@ task createGradleBootstrap {
                     } catch (GradleException e) {
                         throw e
                     }
-                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
-                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
+                    depsList.add('    compile(\'' + org + ':' + bsn + ':' + version + '\') { transitive = false }')
+                    depsList.add('    compile(\'' + org + ':' + bsn + ':' + version + '@pom\') { transitive = false }')
                 }
             }
         }
@@ -351,10 +349,10 @@ task createGeneratedReplacementProjects {
                     }
                     String artifact = bsn + '.jar'
                     classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
-                    suffix = '\n	'
+                    suffix = '\n    '
                 }
                 if (relativePath.equals('com.ibm.ws.logging')) {
-                    classpathEntries = classpathEntries + '\n	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
+                    classpathEntries = classpathEntries + '\n    <classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
                 }
                 excludeList.add('dev/' + relativePath + '/')
                 File targetDir = new File(buildDir, 'replacements/' + relativePath)
@@ -538,12 +536,13 @@ task printProjectDependencies() {
     }
 }
 
-task checkForUpdates() {
-  doLast {
-    def xmlParser = new XmlSlurper()
-    int totalArtifacts = 0
-    int possibleUpdates = 0
-    file('oss_dependencies.maven').eachLine { line ->
+void checkForUpdates(boolean microOnly) {
+  def list = ['oss_dependencies.maven', 'oss_source_dependencies.maven']
+  def xmlParser = new XmlSlurper()
+  int totalArtifacts = 0
+  int possibleUpdates = 0
+  for (String fileName : list) { 
+    file(fileName).eachLine { line ->
       line = line.trim()
       if (line.startsWith('#'))
         return;
@@ -551,24 +550,37 @@ task checkForUpdates() {
       def (g,a,v) = line.split(':').collect { it.trim() }
       g = g.replace('.','/')
       //println '### g=' + g + '   a=' + a + '  v=' + v
-      //println '  checking http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
-      def response = new URL('http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
+      //println '  checking https://repo.maven.apache.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
+      def response = new URL('https://repo.maven.apache.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
       def mavenMetadata = xmlParser.parseText(response)
       VersionString currentVersion = new VersionString(v)
       VersionString possibleUpdate = currentVersion;
       // Look for a MINOR or MICRO version update (within current MAJOR version)
       mavenMetadata.versioning.versions.version.each { rawVersion ->
-         VersionString version = new VersionString(rawVersion.text())
-         if (currentVersion.major == version.major && version.isNewerThan(possibleUpdate)) {
-           possibleUpdate = version;
-         }
+        VersionString version = new VersionString(rawVersion.text())
+        if (currentVersion.major == version.major && (!microOnly || currentVersion.minor == version.minor) && version.isNewerThan(possibleUpdate)) {
+          possibleUpdate = version;
+        }
       }
       if (!possibleUpdate.raw.equals(currentVersion.raw)) {
         println(sprintf("%-60s --> %s", line, possibleUpdate.raw))
         possibleUpdates++;
       }
     }
-    println 'Found ' + possibleUpdates + ' possible MINOR/MICRO version updates out of ' + totalArtifacts + ' total artifacts.'
+  }
+  String types = microOnly ? 'MICRO' : 'MINOR/MICRO'
+  println 'Found ' + possibleUpdates + ' possible ' + types + ' version updates out of ' + totalArtifacts + ' total artifacts.'
+}
+
+task checkForUpdates() {
+  doLast {
+    checkForUpdates(false)
+  }
+}
+
+task checkForMicroUpdates() {
+  doLast {
+    checkForUpdates(true)
   }
 }
 

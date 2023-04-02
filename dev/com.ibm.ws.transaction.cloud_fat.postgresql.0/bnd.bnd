@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -23,22 +25,23 @@ fat.test.container.images: jonhawkes/postgresql-ssl:1.0
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 tested.features:\
   cdi-2.0, cdi-3.0, cdi-4.0,\
+  el-3.0,\
   jdbc-4.2,\
-  servlet-4.0, servlet-5.0, servlet-6.0
+  jsp-2.3,\
+  servlet-3.1, servlet-4.0, servlet-5.0, servlet-6.0
 
 -buildpath: \
+	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.tx.jta;version=latest,\
-	com.ibm.ws.tx.embeddable;version=latest,\
-	io.openliberty.org.apache.commons.logging;version=latest,\
-	fattest.simplicity;version=latest,\
-	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.transaction.cloud_fat.base;version=latest,\
 	com.ibm.ws.transaction.fat.util;version=latest,\
-	com.ibm.ws.transaction.cloud_fat.base;version=latest
-	
+	com.ibm.ws.transaction.test.util;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	fattest.simplicity;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.testcontainers;version=latest

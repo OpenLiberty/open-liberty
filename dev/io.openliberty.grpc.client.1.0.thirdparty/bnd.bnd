@@ -1,9 +1,11 @@
 #*******************************************************************************
 # Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -15,7 +17,7 @@
 bVersion=1.0
 
 grpcVersion=1.43.2
-nettyVersion=4.1.77.Final
+nettyVersion=4.1.86.Final
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

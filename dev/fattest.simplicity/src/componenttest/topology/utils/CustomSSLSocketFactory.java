@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -14,12 +16,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -34,17 +39,29 @@ public class CustomSSLSocketFactory extends SSLSocketFactory {
 
     public CustomSSLSocketFactory() {
         // Create trust manager that performs no checking of certificates
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
             @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
 
             @Override
-            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
 
             @Override
-            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {}
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {}
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {}
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {}
         } };
 
         try {

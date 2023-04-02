@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -43,5 +45,9 @@ public class JakartaSec30Constants extends JavaEESecConstants {
     public static final String JWT_ID_IDENTIFIER = "jti";
 
     public static final String DELIMITER = ".";
+
+    public static final int DEFAULT_TOKEN_MIN_VALIDITY = 10 * 1000;
+    public static final int DEFAULT_JWKS_CONNECT_TIMEOUT = 500;
+    public static final int DEFAULT_JWKS_READ_TIMEOUT = 500;
 
 }

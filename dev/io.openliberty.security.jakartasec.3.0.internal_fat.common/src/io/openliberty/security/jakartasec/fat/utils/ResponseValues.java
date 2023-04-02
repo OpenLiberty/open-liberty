@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -18,6 +20,7 @@ import java.util.Map;
 
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -36,6 +39,10 @@ public class ResponseValues {
     List<Cookie> cookies = null;
     String originalRequest = null;
     boolean useSession = true;
+    boolean useAuthApp = false;
+    String baseApp = ServletMessageConstants.BASE_SERVLET;
+    boolean useNonce = true;
+    boolean usingJakarta = true;
 
     public void setRPServer(LibertyServer inRPServer) {
 
@@ -164,4 +171,73 @@ public class ResponseValues {
         return useSession;
     }
 
+    public void setBaseApp(String inBaseApp) {
+        baseApp = inBaseApp;
+    }
+
+    public String getBaseApp() {
+        return baseApp;
+    }
+
+    public void setUseAuthApp(boolean inUseAuthApp) {
+        useAuthApp = inUseAuthApp;
+    }
+
+    public boolean getUseAuthApp() {
+        return useAuthApp;
+    }
+
+    public void setUseNonce(boolean inUseNonce) {
+        useNonce = inUseNonce;
+    }
+
+    public boolean getUseNonce() {
+        return useNonce;
+    }
+
+    public void setUsingJakarta(boolean inUsingJakarta) {
+        usingJakarta = inUsingJakarta;
+    }
+
+    public boolean getUsingJakarta() {
+        return usingJakarta;
+    }
+
+    public void printRspValues() throws Exception {
+
+        Log.info(thisClass, "printRspValues", "subject: " + subject);
+        Log.info(thisClass, "printRspValues", "clientId: " + clientId);
+        Log.info(thisClass, "printRspValues", "realm: " + realm);
+        Log.info(thisClass, "printRspValues", "issuer: " + issuer);
+        Log.info(thisClass, "printRspValues", "tokenType: " + tokenType);
+
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                Log.info(thisClass, "printRspValues", "headers: key: " + entry.getKey() + " value: " + entry.getValue());
+            }
+        } else {
+            Log.info(thisClass, "printRspValues", "headers: null");
+        }
+        if (parms != null) {
+            for (NameValuePair p : parms) {
+                Log.info(thisClass, "printRspValues", "parms: Name: " + p.getName() + " value: " + p.getValue());
+            }
+        } else {
+            Log.info(thisClass, "printRspValues", "parms: null");
+        }
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                Log.info(thisClass, "printRspValues", "cookies: Name: " + c.getName() + " value: " + c.getValue());
+            }
+        } else {
+            Log.info(thisClass, "printRspValues", "cookies: null");
+        }
+
+        Log.info(thisClass, "printRspValues", "originalRequest: " + originalRequest);
+        Log.info(thisClass, "printRspValues", "useSession: " + Boolean.toString(useSession));
+        Log.info(thisClass, "printRspValues", "useAuthApp: " + Boolean.toString(useAuthApp));
+        Log.info(thisClass, "printRspValues", "baseApp: " + baseApp);
+        Log.info(thisClass, "printRspValues", "useNonce: " + Boolean.toString(useNonce));
+
+    }
 }

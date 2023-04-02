@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.filter;
 
@@ -17,16 +16,17 @@ import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,7 +53,6 @@ import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebApp.ANNOT_TYPE;
 import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
@@ -95,28 +94,94 @@ import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
  */
 @SuppressWarnings("unchecked")
 public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.WebAppFilterManager {
-    protected Hashtable _filterWrappers = new Hashtable();
+    protected final Map<String, FilterInstanceWrapper> _filterWrappers = new ConcurrentHashMap<>();
 
-    private Map chainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(20, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 200;
+    private final ChainCache chainCache = new ChainCache(200);
+    private final ChainCache forwardChainCache = new ChainCache(100);
+    private final ChainCache includeChainCache = new ChainCache(100);
+    private final ChainCache errorChainCache = new ChainCache(100);
+    private static final int chainCacheMRUThreshold = 10;
+
+    /**
+     *  We start with a lightweight, quick filter chain cache implementation, which should suffice for 
+     *  typical cloud native apps. If the number of a particular type of filter chains exceeds a threshold, 
+     *  we move that filter chain cache to an MRU implementation, which is slower but avoids the possibility 
+     *  of a memory leak. 
+     */
+    private static class ChainCache {
+        private volatile Map<String, FilterChainContents> chainCacheMap = new ConcurrentHashMap<>();
+        private volatile boolean isMRU = false;
+        private final int mruMaxSize;
+
+        ChainCache(int maxSize) {
+            mruMaxSize = maxSize;
         }
-    });
-    private Map forwardChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(10, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
+
+        public void put(String key, FilterChainContents fcc) {
+            FilterChainContents oldValue = chainCacheMap.put(key, fcc);
+            if(oldValue == null && !isMRU && chainCacheMap.size() > chainCacheMRUThreshold) {
+                synchronized(this){
+                    if(!isMRU && chainCacheMap.size() > chainCacheMRUThreshold) {
+                        chainCacheMap = getMRUChainCache();
+                        isMRU = true;
+                    }
+                }
+            }
         }
-    });
-    private Map includeChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(5, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
+
+        public FilterChainContents get(String key) {
+            return chainCacheMap.get(key);
         }
-    });
-    private Map errorChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(2, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
+
+        private Map<String, FilterChainContents> getMRUChainCache() {
+            Map<String, FilterChainContents> newMap = new MRUChainCache(mruMaxSize);
+
+            for(Map.Entry<String, FilterChainContents> entry : chainCacheMap.entrySet()) {
+                newMap.put(entry.getKey(), entry.getValue());
+            }
+
+            return newMap;
         }
-    });
+    }
+
+    private static class MRUChainCache extends LinkedHashMap<String, FilterChainContents> {
+        /**  */
+        private static final long serialVersionUID = 1L;
+
+        private final int maxSize;
+
+        // Use a read write lock to avoid using a synchronized collection on the LinkedHashMap to allow gets to execute in parallel.
+        private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
+        @Override
+        public boolean removeEldestEntry(Map.Entry<String, FilterChainContents> eldest) {
+            return size() > maxSize;
+        }
+
+        MRUChainCache(int maxSize) {
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        public FilterChainContents get(Object key) {
+            rwLock.readLock().lock();
+            try {
+                return super.get(key);
+            } finally {
+                rwLock.readLock().unlock();
+            }
+        }
+
+        @Override
+        public FilterChainContents put(String key, FilterChainContents fcc) {
+            rwLock.writeLock().lock();
+            try {
+                return super.put(key, fcc);
+            } finally {
+                rwLock.writeLock().unlock();
+            }
+        }
+    }
 
     public boolean _filtersDefined = false;
 
@@ -154,7 +219,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
     private WebComponentMetaData defaultComponentMetaData;
     
     public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
-
+    
     public WebAppFilterManager(WebAppConfiguration webGroupConfig, WebApp webApp) {
         this.webAppConfig = webGroupConfig;
         this.webApp = webApp;
@@ -283,11 +348,11 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
             // see if the filter is already loaded
 
-            filterInstW = (FilterInstanceWrapper) (_filterWrappers.get(filterName));
+            filterInstW = _filterWrappers.get(filterName);
             if (filterInstW == null) { //PM01682 Start
                 synchronized(webAppConfig.getFilterInfo(filterName)){
                     // may be more are waiting for lock, check and see if the filter is already loaded
-                    filterInstW = (FilterInstanceWrapper) (_filterWrappers.get(filterName));
+                    filterInstW = _filterWrappers.get(filterName);
                     if (filterInstW == null) {
                         // filter not loaded yet...create an instance wrapper
                         filterInstW = loadFilter(filterName);
@@ -422,17 +487,14 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
      */
     public void shutdown() {
         // call destroy on each filter instance wrapper
-        Enumeration filterWrappers = _filterWrappers.elements();
-
         ClassLoader origClassLoader = ThreadContextHelper.getContextClassLoader();
         try {
             final ClassLoader warClassLoader = webApp.getClassLoader();
             if (warClassLoader != origClassLoader) {
                 ThreadContextHelper.setClassLoader(warClassLoader);
             }
-            while (filterWrappers.hasMoreElements()) {
+            for (FilterInstanceWrapper fw : _filterWrappers.values()) {
                 try {
-                    FilterInstanceWrapper fw = (FilterInstanceWrapper) filterWrappers.nextElement();
 
                     Throwable t = this.webApp.invokeAnnotTypeOnObjectAndHierarchy(fw.getFilterInstance(), ANNOT_TYPE.PRE_DESTROY);
                     if (t != null) {
@@ -637,10 +699,10 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                                                          this);
             throw e;
         } //596191 :: PK97815 Start
-        catch (InjectionException ie) {						
+        catch (InjectionException ie) {                                         
             com.ibm.ws.ffdc.FFDCFilter.processException(ie, "com.ibm.ws.webcontainer.filter.WebAppFilterManager.loadFilter", "381", this);
             throw new ServletException(MessageFormat.format(nls.getString("Filter.found.but.injection.failure","The [{0}] filter was found but a resource injection failure has occurred:\n"),
-                                                            new Object[] { filterName }), ie);   			
+                                                            new Object[] { filterName }), ie);                          
         }//596191 :: PK97815 End
         catch (Throwable th) {
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.filter.WebAppFilterManager.loadFilter", "385",
@@ -709,22 +771,22 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             // see if the chain has been previously constructed (look for a
             // filter contents object)
             if (dispatcherType == DispatcherType.REQUEST) {
-                fcc = (FilterChainContents) chainCache.get(strippedUri);
+                fcc = chainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter request mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.FORWARD) {
-                fcc = (FilterChainContents) forwardChainCache.get(strippedUri);
+                fcc = forwardChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter forward mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.INCLUDE) {
-                fcc = (FilterChainContents) includeChainCache.get(strippedUri);
+                fcc = includeChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter include mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.ERROR) {
-                fcc = (FilterChainContents) errorChainCache.get(strippedUri);
+                fcc = errorChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter error mode, get cache entry fcc->" + fcc);
                 }
@@ -732,22 +794,22 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
         } else {
             if (dispatcherType == DispatcherType.REQUEST) {
-                fcc = (FilterChainContents) chainCache.get(reqServletName);
+                fcc = chainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter request mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.FORWARD) {
-                fcc = (FilterChainContents) forwardChainCache.get(reqServletName);
+                fcc = forwardChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter forward mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.INCLUDE) {
-                fcc = (FilterChainContents) includeChainCache.get(reqServletName);
+                fcc = includeChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter include mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.ERROR) {
-                fcc = (FilterChainContents) errorChainCache.get(reqServletName);
+                fcc = errorChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter error mode, get cache entry fcc->" + fcc);
                 }
@@ -860,23 +922,25 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             // add the new chain contents to the chain list, indexed by the uri
             // or name
             if (strippedUri != null) {
-                if (dispatcherType == DispatcherType.REQUEST)
+                if (dispatcherType == DispatcherType.REQUEST) {
                     chainCache.put(strippedUri, fcc);
-                else if (dispatcherType == DispatcherType.FORWARD)
+                } else if (dispatcherType == DispatcherType.FORWARD) {
                     forwardChainCache.put(strippedUri, fcc);
-                else if (dispatcherType == DispatcherType.INCLUDE)
+                } else if (dispatcherType == DispatcherType.INCLUDE) {
                     includeChainCache.put(strippedUri, fcc);
-                else if (dispatcherType == DispatcherType.ERROR)
+                } else if (dispatcherType == DispatcherType.ERROR) {
                     errorChainCache.put(strippedUri, fcc);
+                }
             } else {
-                if (dispatcherType == DispatcherType.REQUEST)
+                if (dispatcherType == DispatcherType.REQUEST) {
                     chainCache.put(reqServletName, fcc);
-                else if (dispatcherType == DispatcherType.FORWARD)
+                } else if (dispatcherType == DispatcherType.FORWARD) {
                     forwardChainCache.put(reqServletName, fcc);
-                else if (dispatcherType == DispatcherType.INCLUDE)
+                } else if (dispatcherType == DispatcherType.INCLUDE) {
                     includeChainCache.put(reqServletName, fcc);
-                else if (dispatcherType == DispatcherType.ERROR)
+                } else if (dispatcherType == DispatcherType.ERROR) {
                     errorChainCache.put(reqServletName, fcc);
+                }
             }
 
             // 144464 part 4
@@ -1035,6 +1099,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         boolean isInclude = dispatchContext.isInclude();
         boolean isForward = dispatchContext.isForward();
         boolean isRequest = dispatchContext.getDispatcherType()==DispatcherType.REQUEST;
+        
 
         HttpServletRequest httpServletReq = (HttpServletRequest) ServletUtil.unwrapRequest(request,HttpServletRequest.class);
         HttpServletResponse httpServletRes = (HttpServletResponse) ServletUtil.unwrapResponse(response,HttpServletResponse.class);
@@ -1047,10 +1112,14 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         //PI08268
 
         boolean h2InUse = false;
+        
+        //Servlet 6.0
+        boolean alreadyVerifiedEncodedChar = false;
+        String reqURI = httpServletReq.getRequestURI();
+        boolean isSkipVerifyEncodedCharInURI = dispatchContext.getWebApp().getConfiguration().isSkipVerifyEncodedCharInURI();
 
         try {
             if (requestProcessor != null) {
-
                 if (requestProcessor instanceof ExtensionProcessor) {
                     IServletWrapper servletWrapper = ((ExtensionProcessor) requestProcessor).getServletWrapper(request, response);
                     if (servletWrapper != null) {
@@ -1075,10 +1144,44 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
                     // let the servlet warrper know that the request is about to start.
                     if (servletWrapper instanceof ServletWrapper) {
+
+                        //Servlet 6.0 - It is a servlet; verify that no invalid encoded character in URI
+                        //              only check if direct request
+                        //This can be checked earlier in WebApp before invokeFilters; but do the check here 
+                        //so alreadyVerifiedEncodedChar flag can skip in case the app has definedFilter
+                        if (isRequest && WebContainer.isServlet60orAbove) {
+                            try {
+                                if (!isSkipVerifyEncodedCharInURI) {
+                                    verifyEncodedCharacter(reqURI);
+                                }
+
+                                alreadyVerifiedEncodedChar = true;        //either way, skip subsequent check in filterDefined
+                            }
+                            catch (IOException ioe) {
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "servletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                throw ioe;
+                            }
+                        }
+
                         ((ServletWrapper)servletWrapper).startRequest(request);
                     }
                     //PI08268 - start - disable JSP and Static default methods (i.e TRACE, PUT, DELETE...)
                     else {
+                        //Servlet 6.0 - JSPExtensionServletWrapper is GenericServletWrapper
+                        if (isRequest && WebContainer.isServlet60orAbove && (servletWrapper instanceof GenericServletWrapper)){
+                            try {
+                                if (!isSkipVerifyEncodedCharInURI) {
+                                    verifyEncodedCharacter(reqURI);
+                                }
+
+                                alreadyVerifiedEncodedChar = true;        //to skip check in filterDefined later on
+                            }
+                            catch (IOException ioe) {
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "genericServletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                throw ioe;
+                            }
+                        }
+                            
                         String httpMethod = httpServletReq.getMethod().toUpperCase();
                         if (!(httpMethod.equals("GET") || httpMethod.equals("POST"))){ //quick check since most request is GET/POST
                             if (servletWrapper instanceof FileServletWrapper){  // subsequent static request takes this path
@@ -1135,6 +1238,21 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at isFiltersDefined");
 
             if (context.isFiltersDefined()) {
+                //Servlet 6.0 - Filter path - if not alreadyVerifiedEncodedChar (i.e neither ServletWrapper or JSPExtension found),
+                //              verify that no invalid encoded character in direct request URI
+                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
+                    try {
+                        if (!isSkipVerifyEncodedCharInURI) {
+                            verifyEncodedCharacter(reqURI);
+                        }
+
+                        alreadyVerifiedEncodedChar = true;      // skip checking in the DefaultExtension
+                    }
+                    catch (IOException ioe) {
+                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "filtersDefined. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                        throw ioe;
+                    }
+                }
 
                 if (isTraceOn && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling doFilter");
@@ -1226,6 +1344,24 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
 
                             try {
+                                //Servlet 6.0 - no filter, servlet/jsp found. DefaultExtensionProcessor is most likely it.
+                                //              Last check encodedCharacter for direct request.
+                                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
+                                    if (requestProcessor instanceof DefaultExtensionProcessor){
+                                        try {
+                                            if (!isSkipVerifyEncodedCharInURI) {
+                                                verifyEncodedCharacter(reqURI);
+                                            }
+
+                                            alreadyVerifiedEncodedChar = true;  //nothing after this, but just incase
+                                        }
+                                        catch (IOException ioe) {
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                            throw ioe;
+                                        }
+                                    }
+                                }
+
                                 requestProcessor.handleRequest(request, response);
                             }  catch (Exception x) {
                                 if (h2InUse) {
@@ -1344,19 +1480,19 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
 //            boolean invokedAsyncErrorHandling = false;
 //            if (re instanceof AsyncIllegalStateException){
-//            	WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
-//    	         if (reqState!=null&&reqState.isAsyncMode())
-//    	         {
-//    	        	 if (isTraceOn && logger.isLoggable(Level.FINE)) {
-//    	                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "invokeAsyncErrorHandling");
-//    	             }
-//    	        	 invokedAsyncErrorHandling = true;
-//    	        	 ListenerHelper.invokeAsyncErrorHandling(reqState.getAsyncContext(), reqState, re, AsyncListenerEnum.ERROR, ExecuteNextRunnable.FALSE);
-//    	         } 
-////    	         else {
-////    	        	 //do nothing because startAsync was never called successfully so we can let standard
-////    	        	 //error dispatching occur (e.g. async is not supported)
-////    	         }
+//              WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+//               if (reqState!=null&&reqState.isAsyncMode())
+//               {
+//                       if (isTraceOn && logger.isLoggable(Level.FINE)) {
+//                          logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "invokeAsyncErrorHandling");
+//                   }
+//                       invokedAsyncErrorHandling = true;
+//                       ListenerHelper.invokeAsyncErrorHandling(reqState.getAsyncContext(), reqState, re, AsyncListenerEnum.ERROR, ExecuteNextRunnable.FALSE);
+//               } 
+////                     else {
+////                             //do nothing because startAsync was never called successfully so we can let standard
+////                             //error dispatching occur (e.g. async is not supported)
+////                     }
 //            }
 //            if (!invokedAsyncErrorHandling){
             ServletErrorReport errorReport = WebAppErrorReport.constructErrorReport(re, dispatchContext.getCurrentServletReference());
@@ -1506,4 +1642,52 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         return false;
     }
     //issue#9386
+    
+    /**
+     * Since Servlet 6.0:
+     *  Process original URI. It rejects any path has encoded character of:
+     *  %23 (#)
+     *  %2e (.)
+     *  %2f (/)
+     *  %5c (\)
+     *  
+     *  This verification is deferred until WC can determine the request is indeed for a servlet/JSP/filter
+     */
+    private void verifyEncodedCharacter(String uri) throws IOException {
+        final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
+        final String METHOD_NAME ="verifyEncodedCharacter";
+
+        if (isTraceOn && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
+
+        String path = uri.toLowerCase();
+        String message = null;
+
+        try {
+            if (path.contains("#") || path.contains("%23")) {
+                message = nls.getString("uri.has.fragment.character", "URI has a fragment [#] character; encoded [%23] or not");
+            }
+            else if (path.contains("%2e")){
+                message = nls.getString("uri.has.dot.character", "URI has encoded dot [%2E] character");
+            }
+            else if (path.contains("%2f")) {
+                message = nls.getString("uri.has.forwarslash.character", "URI has encoded forward slash [%2F] character");
+            }
+            else if (path.contains("\\") || path.contains("%5c")){
+                message = nls.getString("uri.has.backslash.character", "URI has backslash character; encoded [%5C] or not");
+            }
+
+            if (message != null) {
+                if (isTraceOn && logger.isLoggable(Level.FINE))
+                    logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request : " + message);
+
+                throw new IOException(nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ((uri.length() > 128) ? (uri.substring(0, 127)) : uri) }, 
+                                "Bad request URI") + " . " + message);
+            }
+        }
+        finally {
+            if (isTraceOn && logger.isLoggable(Level.FINE))
+                logger.exiting(CLASS_NAME, METHOD_NAME);
+        }
+    }
 }

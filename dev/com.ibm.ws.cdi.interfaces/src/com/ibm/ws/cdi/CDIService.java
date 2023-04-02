@@ -1,16 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 import javax.enterprise.inject.spi.BeanManager;
+import javax.interceptor.InvocationContext;
 
 /**
  * Provides access to CDI classes
@@ -65,5 +71,13 @@ public interface CDIService {
      * @return true if obj is an instance of a weld proxy subclass.
      */
     public boolean isWeldProxy(Object obj);
+
+    /**
+     * Returns all interceptor bindings which apply to the current invocation or lifecycle event.
+     *
+     * @return a set of interceptor bindings which apply to the current invocation or lifecycle event. This will include all interceptor bindings that apply, not just those that were used to bind the current interceptor.
+     * @throws IllegalArgumentException if InvocationContext is not an instance of org.jboss.weld.interceptor.proxy.AbstractInvocationContext;
+     */
+    public Set<Annotation> getInterceptorBindingsFromInvocationContext(InvocationContext ic) throws IllegalArgumentException;
 
 }

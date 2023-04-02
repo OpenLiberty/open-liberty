@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -46,7 +48,7 @@ import jdbc.krb5.oracle.web.OracleKerberosTestServlet;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@MaximumJavaLevel(javaLevel = 15) // TODO The current Oracle JDBC driver (ojdbc8_g.jar v21.1.0.0) only supports Java 8-15, modify/remove this line once it supports 16+
+@MaximumJavaLevel(javaLevel = 15) // TODO The current Oracle JDBC driver (ojdbc8_g.jar v21.8.0.0) only supports Java 8-15, modify/remove this line once it supports 16+
 public class OracleKerberosTest extends FATServletClient {
 
     private static final Class<?> c = OracleKerberosTest.class;

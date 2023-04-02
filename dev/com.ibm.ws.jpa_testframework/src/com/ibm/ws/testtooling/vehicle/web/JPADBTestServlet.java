@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -105,7 +107,7 @@ public abstract class JPADBTestServlet extends JPATestServlet {
         DatabaseVendor vendor = DatabaseVendor.resolveDBProduct(dbProductName, dbProductVersion);
         scriptName = scriptName.replace("${dbvendor}", vendor.toString());
 
-        System.out.println("*****");
+        System.out.println("*** start execution: " + scriptName + " ***");
 
         final StringBuilder sb = new StringBuilder();
 
@@ -123,7 +125,7 @@ public abstract class JPADBTestServlet extends JPATestServlet {
 //        System.out.println("DBMeta DDL Exec Result: ");
 //        System.out.println(sb);
 
-        System.out.println("*****");
+        System.out.println("*** end execution ***");
     }
 
     /**

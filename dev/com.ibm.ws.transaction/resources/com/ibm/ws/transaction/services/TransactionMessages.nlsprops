@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -52,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: The UserTransaction service reference is null.
 USERTRAN_IS_NULL.explanation=A request was made to obtain the UserTransaction service, but no UserTransaction service has been wired to this bundle.
 USERTRAN_IS_NULL.useraction=If access to the UserTransaction is required, use the OSGi console to investigate why no UserTransaction service has been wired to this bundle. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Unexpected transaction error occurred:  {0}
 UNEXPECTED_TRAN_ERROR.explanation=A request was made to fetch the Transaction object but an unexpected error occurred. 
@@ -61,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Check the logs for previous errors or FFDCs.
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Global transaction rolled-back due to timeout: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=The current global transaction has timed out and therefore has been rolled-back.
-GLOBAL_TRAN_ROLLBACK.useraction=Ensure the global transaction finishes within the allowed time frame or increase the timeout.
+GLOBAL_TRAN_ROLLBACK.useraction=Ensure the global transaction finishes within the allowed time frame, or increase the timeout.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: The server checkpoint request failed because the server deployment contains transaction log files in directory {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty does not expect transaction log files to exist in the server deployment when a server checkpoint is requested.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Remove the transaction log directory from the server deployment.

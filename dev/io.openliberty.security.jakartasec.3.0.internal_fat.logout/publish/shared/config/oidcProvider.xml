@@ -1,9 +1,11 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
 
     Contributors:
         IBM Corporation - initial API and implementation
@@ -72,7 +74,7 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="20s"
+		idTokenLifetime="30s"
 		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
@@ -136,7 +138,7 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		id="OAuth2"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="20s"
+		accessTokenLifetime="30s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -189,14 +191,14 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="20s"
+		idTokenLifetime="30s"
 		oauthProviderRef="OAuth3" />
 
 	<oauthProvider
 		id="OAuth3"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="20s"
+		accessTokenLifetime="30s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -246,27 +248,40 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyP
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet/Callback,
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderFalsePromptConsentLogoutServlet/Callback,
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderFalsePromptSelectAccountLogoutServlet/Callback,
-https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderFalsePromptEmptyLogoutServlet/Callback"
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderFalsePromptEmptyLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/EmptyRedirectNotifyProviderTrueTestEndSessionLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectExtraParmsNotifyProviderTrueLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/BadEndSessionNotifyProviderTrueLogoutServlet/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
+				postLogoutRedirectUris="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm1=testParm1_value&amp;testParm2=testParm2_value&amp;testParm3=testParm3_value,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm1=testParm1_value&amp;testParm3=testParm3_value&amp;testParm2=testParm2_value,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm2=testParm2_value&amp;testParm1=testParm1_value&amp;testParm3=testParm3_value,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm2=testParm2_value&amp;testParm3=testParm3_value&amp;testParm1=testParm1_value,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm3=testParm3_value&amp;testParm1=testParm1_value&amp;testParm2=testParm2_value,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout?testParm3=testParm3_value&amp;testParm2=testParm2_value&amp;testParm1=testParm1_value"
 			>
 			</client>
 		</localStore>
 	</oauthProvider>		
-<!--
+
 	<openidConnectProvider
 		id="OP4"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="20s"
+		idTokenLifetime="30s"
 		oauthProviderRef="OAuth4" />
 
 	<oauthProvider
 		id="OAuth4"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="20s"
+		trackOAuthClients="true"
+		accessTokenLifetime="30s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -274,12 +289,12 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyP
 			<client
 				name="client_1"
 				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ShortNoNotifyProviderLogoutServlet/Callback"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
+				postLogoutRedirectUris="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout"
 			>
 			</client>
 		</localStore>
-	</oauthProvider>		
-			-->
+	</oauthProvider>	
 </server>

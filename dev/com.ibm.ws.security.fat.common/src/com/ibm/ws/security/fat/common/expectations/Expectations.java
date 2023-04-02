@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -17,6 +19,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.Constants;
 
 public class Expectations {
     private static final Class<?> thisClass = Expectations.class;
@@ -95,6 +98,26 @@ public class Expectations {
 
     public void addSuccessCodeForCurrentAction() {
         addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+    }
+    
+    public void addFoundStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+    }
+    
+    public void addUnauthorizedStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+    }
+    
+    public void addForbiddenStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.FORBIDDEN_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FORBIDDEN, "Did not receive the Forbidden message."));
+    }
+    
+    public void addNotFoundStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.NOT_FOUND_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.NOT_FOUND_MSG, "Did not receive the Not Found message."));
     }
 
 }

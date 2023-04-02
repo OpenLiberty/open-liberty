@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -41,9 +43,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtilBasic";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -52,9 +53,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtil1x1";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -63,9 +63,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtil1xm";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -74,9 +73,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtilBasic";
         final String testResource = "test-jpa-resource-amrl";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -85,9 +83,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtil1x1";
         final String testResource = "test-jpa-resource-amrl";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -96,9 +93,8 @@ public class UtilEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testUtil1xm";
         final String testResource = "test-jpa-resource-amrl";
 
-        executeDDL("JPA20_UTIL_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_UTIL_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
 }

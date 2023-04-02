@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -17,9 +19,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingServlets_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_Timeout_usingApps_Tests;
@@ -33,7 +33,7 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests;
 
-import componenttest.rules.repeater.EmptyAction;
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -51,7 +51,7 @@ import componenttest.rules.repeater.RepeatTests;
         //   com.ibm.ws.security.saml.sso_fat.logout.httpServletRequest
         //   com.ibm.ws.security.saml.sso_fat.logout.ibm_security_logout
         //   com.ibm.ws.security.saml.sso_fat.logout.IDP_initiated
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
         // 2 server tests
         IDPInitiatedLogin_2ServerLogout_usingServlets_Tests.class,
         IDPInitiatedLogin_2ServerLogout_usingApps_Tests.class,
@@ -71,10 +71,17 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
 
+    /*
+     * On Windows, always run the default/empty/EE7/EE8 tests.
+     * On other Platforms:
+     * - if Java 8, run default/empty/EE7/EE8 tests.
+     * - All other Java versions
+     * -- If LITE mode, run EE9
+     * -- If FULL mode, run EE10
+     *
+     */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().fullFATOnly());
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
 
     @BeforeClass
     public static void setup() throws Exception {

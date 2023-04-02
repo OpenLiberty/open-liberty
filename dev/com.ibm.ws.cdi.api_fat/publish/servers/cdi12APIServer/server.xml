@@ -9,6 +9,14 @@
         <feature>componentTest-1.0</feature>
         <feature>concurrent-1.0</feature>
     </featureManager>
+    
+    <library id="cdiCurrentSharedLib">
+        <file name="${server.config.dir}/cdiCurrentSharedLib.jar"/>
+    </library>
+    
+    <webApplication location="cdiCurrentTest.war">
+        <classloader commonLibraryRef="cdiCurrentSharedLib"/>
+    </webApplication>
 
    <!-- Usually, we recommend customers not to change this, however we have a test that checks behaviour on a new thread with a history of timing out -->
    <executor coreThreads="20"/>

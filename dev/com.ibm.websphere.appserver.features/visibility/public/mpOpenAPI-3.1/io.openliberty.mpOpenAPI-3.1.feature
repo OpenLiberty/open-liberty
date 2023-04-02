@@ -38,7 +38,8 @@ IBM-API-Package: \
   io.openliberty.webBundle.internal-1.0,\
   io.openliberty.restfulWS-3.1, \
   io.openliberty.mpCompatible-6.0, \
-  io.openliberty.org.eclipse.microprofile.openapi-3.1
+  io.openliberty.org.eclipse.microprofile.openapi-3.1,\
+  io.openliberty.jandex.internal-3.0
 -bundles=\
     io.openliberty.io.smallrye.openapi3.core, \
     io.openliberty.io.smallrye.openapi3.jaxrs, \
@@ -48,7 +49,7 @@ IBM-API-Package: \
     io.openliberty.microprofile.openapi.internal.common,\
     io.openliberty.com.fasterxml.jackson, \
     com.ibm.ws.org.jboss.logging
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

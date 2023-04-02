@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -31,11 +33,14 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.ShortTokenLifetimePrep;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -47,6 +52,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
@@ -54,7 +60,11 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
     @Server("jakartasec-3.0_fat.refresh.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.refresh.rp")
+    @Server("jakartasec-3.0_fat.refresh.rp.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.refresh.rp.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -68,8 +78,9 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     protected static final boolean TokenWasRefreshedSecondTime = true;
     protected static final boolean TokenWasNotRefreshedSecondTime = false;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeat(Constants.JWT_TOKEN_FORMAT);
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     static Map<String, String> appMap = new HashMap<String, String>();
 
@@ -77,7 +88,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -98,6 +109,11 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
         baseAppName = "BasicRefreshServlet";
+
+        ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
+        s.shortTokenLifetimePrep(opServer, rpHttpsBase,
+                                 getShortAppName(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry) + "/" + baseAppName);
+
     }
 
     /**
@@ -108,6 +124,8 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     public static void deployMyApps() throws Exception {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
+        swh.defaultDropinApp(rpServer, "PostLogoutServlet.war", "oidc.client.postLogout.*", "oidc.client.base.utils");
+
         // deploy the apps that are created at test time from common source
         // Notes about the providers:
         // OP0 - no id or access token lifetime specified
@@ -279,7 +297,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         }
         if (redirectUri != null) {
             if (redirectUri.equals(goodRedirectUri)) {
-                testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGood_Logout(opHttpsBase, provider));
+                testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGood_Logout(rpHttpsBase, null));
             } else {
                 if (redirectUri.equals(badRedirectUri)) {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
@@ -306,8 +324,8 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      * @return - returns the short app name of the app that has the parm values specified in the openIdConfig.properties file
      * @throws Exception
      */
-    public String getShortAppName(boolean tokenAutoRefresh, boolean providerAllowsRefresh, boolean notifyProvider, boolean idTokenExpiry,
-                                  boolean accessTokenExpiry) throws Exception {
+    public static String getShortAppName(boolean tokenAutoRefresh, boolean providerAllowsRefresh, boolean notifyProvider, boolean idTokenExpiry,
+                                         boolean accessTokenExpiry) throws Exception {
 
         String appName = buildAppName(tokenAutoRefresh, providerAllowsRefresh, notifyProvider, idTokenExpiry, accessTokenExpiry);
         return appMap.get(appName);
@@ -397,7 +415,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         String appName = getShortAppName(tokenAutoRefresh, providerAllowsRefresh, notifyProvider, idTokenExpiry, accessTokenExpiry);
         String provider = determineProvider(providerAllowsRefresh, idTokenExpiry, accessTokenExpiry);
 
-        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh);
+        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh, DoNotPromptLogin);
 
     }
 
@@ -462,6 +480,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -568,6 +587,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -622,6 +642,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -680,6 +701,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -734,6 +756,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -839,10 +862,11 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_GoodRedirectUri_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_ExpiryFalse_TokensExpiredTrue() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue", "OP3", null);
 
     }
 

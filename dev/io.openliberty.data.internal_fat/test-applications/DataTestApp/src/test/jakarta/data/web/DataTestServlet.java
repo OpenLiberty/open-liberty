@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -16,8 +18,10 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +30,10 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -50,39 +52,43 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
-import jakarta.data.Entities;
-import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
-import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionRequiredException;
+import jakarta.transaction.TransactionalException;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-@Entities(WorkAddress.class) // TODO make inheritance work without this
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
 
     @Inject
-    OrderRepo orders;
+    Houses houses;
 
     @Inject
     Packages packages;
@@ -107,16 +113,13 @@ public class DataTestServlet extends FATServlet {
     Shipments shipments;
 
     @Inject
-    ShippingAddresses shippingAddresses;
-
-    @Inject
-    Tariffs tariffs;
-
-    @Inject
-    Template template;
+    Things things;
 
     @Resource
     private UserTransaction tran;
+
+    @Inject
+    Vehicles vehicles;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -209,52 +212,52 @@ public class DataTestServlet extends FATServlet {
         Person p1 = new Person();
         p1.firstName = "Aaron";
         p1.lastName = "TestAsynchronous";
-        p1.ssn = 1002003001;
+        p1.ssn_id = 1002003001;
 
         Person p2 = new Person();
         p2.firstName = "Amy";
         p2.lastName = "TestAsynchronous";
-        p2.ssn = 1002003002;
+        p2.ssn_id = 1002003002;
 
         Person p3 = new Person();
         p3.firstName = "Alice";
         p3.lastName = "TestAsynchronous";
-        p3.ssn = 1002003003;
+        p3.ssn_id = 1002003003;
 
         Person p4 = new Person();
         p4.firstName = "Alexander";
         p4.lastName = "TestAsynchronous";
-        p4.ssn = 1002003004;
+        p4.ssn_id = 1002003004;
 
         Person p5 = new Person();
         p5.firstName = "Andrew";
         p5.lastName = "TestAsynchronous";
-        p5.ssn = 1002003005;
+        p5.ssn_id = 1002003005;
 
         Person p6 = new Person();
         p6.firstName = "Brian";
         p6.lastName = "TestAsynchronous";
-        p6.ssn = 1002003006;
+        p6.ssn_id = 1002003006;
 
         Person p7 = new Person();
         p7.firstName = "Betty";
         p7.lastName = "TestAsynchronous";
-        p7.ssn = 1002003007;
+        p7.ssn_id = 1002003007;
 
         Person p8 = new Person();
         p8.firstName = "Bob";
         p8.lastName = "TestAsynchronous";
-        p8.ssn = 1002003008;
+        p8.ssn_id = 1002003008;
 
         Person p9 = new Person();
         p9.firstName = "Albert";
         p9.lastName = "TestAsynchronous";
-        p9.ssn = 1002003009;
+        p9.ssn_id = 1002003009;
 
         Person p10 = new Person();
         p10.firstName = "Ben";
         p10.lastName = "TestAsynchronous";
-        p10.ssn = 1002003010;
+        p10.ssn_id = 1002003010;
 
         // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
@@ -266,13 +269,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // Async update
-        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
+        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
-                                                                                 1002003003L, 1002003002L, 1002003001L))
+                                                                                 1002003003L, 1002003002L, 1002003001L),
+                                                                         "TestAAsynchronous") // use only alphanumeric characters to ensure consistent sorting across databases
                         .thenCompose(updateCount -> {
                             assertEquals(Integer.valueOf(6), updateCount);
 
-                            return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
+                            return personnel.findByLastNameOrderByFirstName("TestAAsynchronous");
                         });
 
         assertIterableEquals(List.of("Aaron", "Albert", "Alice", "Amy", "Andrew", "Bob"),
@@ -282,79 +286,51 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
-        // Async find with Consumer
-        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
-        personnel.findByLastNameOrderByFirstNameDesc("TestAsynchronous", name -> names.add(name));
-
-        assertEquals("Brian", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-
         // Async find as CompletableFuture<Stream<String>>
         CompletableFuture<Stream<String>> futureStream = personnel.firstNames("TestAsynchronous");
         assertIterableEquals(List.of("Alexander", "Ben", "Betty", "Brian"),
                              futureStream.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).collect(Collectors.toList()));
 
         // Async find as CompletionStage<String[]>
-        names.clear();
+        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
         personnel.lastNames().thenAccept(lastNames -> {
             for (String lastName : lastNames)
                 names.add(lastName);
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        assertEquals("Test-Asynchronous", names.poll());
+        assertEquals("TestAAsynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
 
-        // Paginated async find with Consumer and CompletableFuture to track completion
-        Queue<Long> ids = new LinkedList<Long>();
-        CompletableFuture<Void> allFound = personnel.findByOrderBySsnDesc(p -> ids.add(p.ssn), Pageable.ofSize(4));
-
-        assertEquals(null, allFound.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals(Long.valueOf(p10.ssn), ids.poll());
-        assertEquals(Long.valueOf(p9.ssn), ids.poll());
-        assertEquals(Long.valueOf(p8.ssn), ids.poll());
-        assertEquals(Long.valueOf(p7.ssn), ids.poll());
-        assertEquals(Long.valueOf(p6.ssn), ids.poll());
-        assertEquals(Long.valueOf(p5.ssn), ids.poll());
-        assertEquals(Long.valueOf(p4.ssn), ids.poll());
-        assertEquals(Long.valueOf(p3.ssn), ids.poll());
-        assertEquals(Long.valueOf(p2.ssn), ids.poll());
-        assertEquals(Long.valueOf(p1.ssn), ids.poll());
-
         // Async find single item
-        CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
+        CompletableFuture<Person> future = personnel.findBySSN_Id(p4.ssn_id);
 
         Person p = future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
         assertNotNull(p);
-        assertEquals(p4.ssn, p.ssn);
+        assertEquals(p4.ssn_id, p.ssn_id);
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
-        // Async find with Collector, without pagination
+        // Async count
 
-        // Have a collector reduce the results to a count of names.
-        // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> nameCount = personnel.findByFirstNameStartsWith("A", Collectors.counting());
+        CompletableFuture<Long> nameCount = personnel.countByFirstNameStartsWith("A");
 
         assertEquals(Long.valueOf(6), nameCount.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
-        // Async find with Collector, with pagination
+        // Find with Streamable and various Collectors
+
+        Streamable<String> aNames = personnel.namesThatStartWith("A");
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> countOfANames = personnel.namesThatStartWith("A", Pageable.ofSize(3), Collectors.counting());
 
-        assertEquals(Long.valueOf(6), countOfANames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(6), aNames.stream().collect(Collectors.counting()));
 
         // Have a collector reduce the results to the length of the longest name found.
         Collector<String, ?, Long> maxLengthFinder = Collectors.collectingAndThen(
                                                                                   Collectors.maxBy(Comparator.<String, Integer> comparing(n -> n.length())),
                                                                                   n -> n.isPresent() ? n.get().length() : -1L);
 
-        CompletableFuture<Long> maxLengthOfAnyAName = personnel.namesThatStartWith("A", Pageable.ofSize(3), maxLengthFinder);
-
-        assertEquals(Long.valueOf(9), maxLengthOfAnyAName.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(9), aNames.stream().collect(maxLengthFinder));
 
         // Have a collector reduce the results to an average name length,
         final int COUNT = 0, SUM = 1;
@@ -369,14 +345,30 @@ public class DataTestServlet extends FATServlet {
                                                                  },
                                                                  len -> len[COUNT] == 0 ? 0 : (len[SUM] / len[COUNT]));
 
-        CompletableFuture<Long> avgLengthOfBNames = personnel.namesThatStartWith("B", Pageable.ofSize(3), lengthAverager);
+        Streamable<String> bNames = personnel.namesThatStartWith("B");
 
-        assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(4), bNames.stream().collect(lengthAverager));
 
-        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync(1002003008L, "TestAsynchronously").get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Async delete with void return type
+        personnel.deleteByFirstName("Andrew");
+
+        long timeout_ns = Duration.ofMinutes(TIMEOUT_MINUTES).toNanos();
+        boolean found = true;
+        for (long start = System.nanoTime(); System.nanoTime() - start < timeout_ns && found; Thread.sleep(200))
+            found = personnel.namesThatStartWith("And").stream().findFirst().isPresent();
+        assertEquals(false, found);
+
+        // Async delete with CompletableFuture<Void> return type
+        CompletableFuture<Void> cf = personnel.deleteById(1002003008L);
+        assertEquals(null, cf.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        found = personnel.namesThatStartWith("Bob").stream().findFirst().isPresent();
+        assertEquals(false, found);
 
         deleted = personnel.removeAll();
-        assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(8), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -394,12 +386,12 @@ public class DataTestServlet extends FATServlet {
         Person p1 = new Person();
         p1.firstName = "Christopher";
         p1.lastName = "TestAsyncPreventsDeadlock";
-        p1.ssn = 1001001001;
+        p1.ssn_id = 1001001001;
 
         Person p2 = new Person();
         p2.firstName = "Chad";
         p2.lastName = "TestAsyncPreventsDeadlock";
-        p2.ssn = 2002002002;
+        p2.ssn_id = 2002002002;
 
         // Async multiple insert
         CompletableFuture<List<Person>> added = personnel.save(p1, p2);
@@ -412,7 +404,7 @@ public class DataTestServlet extends FATServlet {
         tran.begin();
         try {
             // main thread obtains lock on p1
-            assertEquals(1L, personnel.setSurname("Test-AsyncPreventsDeadlock", p1.ssn));
+            assertEquals(1L, personnel.setSurname(p1.ssn_id, "Test-AsyncPreventsDeadlock"));
 
             CountDownLatch locked2 = new CountDownLatch(1);
 
@@ -422,12 +414,12 @@ public class DataTestServlet extends FATServlet {
                     tran.begin();
                     try {
                         // lock on p2
-                        long updateCount2 = personnel.setSurname("TestAsync-PreventsDeadlock", p2.ssn);
+                        long updateCount2 = personnel.setSurname(p2.ssn_id, "TestAsync-PreventsDeadlock");
 
                         locked2.countDown();
 
                         // lock on p1
-                        return updateCount2 + personnel.setSurname("TestAsync-PreventsDeadlock", p1.ssn);
+                        return updateCount2 + personnel.setSurname(p1.ssn_id, "TestAsync-PreventsDeadlock");
                     } finally {
                         tran.rollback();
                     }
@@ -440,7 +432,7 @@ public class DataTestServlet extends FATServlet {
 
             // If this runs on a third thread as expected, it will be blocked until the second thread releases the lock.
             // If it runs inline (unexpected) deadlock will occur.
-            updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
+            updated2 = personnel.setSurnameAsync(p2.ssn_id, "TestAsyncPrevents-Deadlock");
 
             try {
                 Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
@@ -466,27 +458,27 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testBooleanConditions() {
         assertIterableEquals(List.of(3L, 5L, 7L),
-                             primes.findByEvenFalseAndNumberLessThan(10L)
+                             primes.findByEvenFalseAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(7L, 5L, 3L),
-                             primes.findByEvenNotTrueAndNumberLessThan(10L)
+                             primes.findByEvenNotTrueAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(2L),
-                             primes.findByEvenTrueAndNumberLessThan(10L)
+                             primes.findByEvenTrueAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(2L),
-                             primes.findByEvenNotFalseAndNumberLessThan(10L)
+                             primes.findByEvenNotFalseAndIdLessThan(10L)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -497,14 +489,14 @@ public class DataTestServlet extends FATServlet {
     public void testCompletionStageOfPage() throws ExecutionException, InterruptedException, TimeoutException {
         LinkedBlockingQueue<Long> sums = new LinkedBlockingQueue<Long>();
 
-        primes.findByNumberLessThanOrderByNumberDesc(42L, Pageable.ofSize(6)).thenCompose(page1 -> {
-            sums.add(page1.stream().mapToLong(p -> p.number).sum());
-            return primes.findByNumberLessThanOrderByNumberDesc(42L, page1.nextPageable());
+        primes.findByNumberIdLessThanOrderByIdDesc(42L, Pageable.ofSize(6)).thenCompose(page1 -> {
+            sums.add(page1.stream().mapToLong(p -> p.numberId).sum());
+            return primes.findByNumberIdLessThanOrderByIdDesc(42L, page1.nextPageable());
         }).thenCompose(page2 -> {
-            sums.add(page2.stream().mapToLong(p -> p.number).sum());
-            return primes.findByNumberLessThanOrderByNumberDesc(42L, page2.nextPageable());
+            sums.add(page2.stream().mapToLong(p -> p.numberId).sum());
+            return primes.findByNumberIdLessThanOrderByIdDesc(42L, page2.nextPageable());
         }).thenAccept(page3 -> {
-            sums.add(page3.stream().mapToLong(p -> p.number).sum());
+            sums.add(page3.stream().mapToLong(p -> p.numberId).sum());
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
 
         Long sum;
@@ -519,46 +511,62 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Count the number of matching elements in the database.
+     * Count the number of matching entries in the database using query by method name.
      */
     @Test
     public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
 
-        assertEquals(15, primes.countByNumberLessThan(50));
+        assertEquals(15, primes.countByIdLessThan(50));
 
-        assertEquals(Integer.valueOf(0), primes.countNumberBetween(32, 36));
+        assertEquals(Integer.valueOf(0), primes.countNumberIdBetween(32, 36));
 
-        assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
+        assertEquals(Integer.valueOf(3), primes.countNumberIdBetween(40, 50));
 
-        assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Short.valueOf((short) 14), primes.countByIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
-     * Delete multiple entries.
+     * Count the number of matching entries in the database using annotatively defined queries.
      */
     @Test
-    public void testDeleteMultiple() {
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyLessThan20StartingAfter(5));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(19));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(21));
+    }
+
+    /**
+     * Delete multiple entries and use a default method to atomically remove and return a removed entity.
+     */
+    @Test
+    public void testDefaultRepositoryMethod() {
+        products.clear();
+
         Product prod1 = new Product();
         prod1.id = "TDM-SE";
-        prod1.name = "TestDeleteMultiple Standard Edition";
+        prod1.name = "TestDefaultRepositoryMethod Standard Edition";
         prod1.price = 115.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
         prod2.id = "TDM-AE";
-        prod2.name = "TestDeleteMultiple Advanced Edition";
+        prod2.name = "TestDefaultRepositoryMethod Advanced Edition";
         prod2.price = 197.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
         prod3.id = "TDM-EE";
-        prod3.name = "TestDeleteMultiple Expanded Edition";
+        prod3.name = "TestDefaultRepositoryMethod Expanded Edition";
         prod3.price = 153.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
         prod4.id = "TDM-NFE";
-        prod4.name = "TestDeleteMultiple Nearly Free Edition";
+        prod4.name = "TestDefaultRepositoryMethod Nearly Free Edition";
         prod4.price = 1.99f;
         products.save(prod4);
 
@@ -567,6 +575,19 @@ public class DataTestServlet extends FATServlet {
         // expect that 2 remain
         assertNotNull(products.findItem("TDM-SE"));
         assertNotNull(products.findItem("TDM-EE"));
+
+        // In the future it will only be possible to run this on Java 21+
+        // and then the following condition can be removed so that this part of the test always runs:
+        if (Runtime.version().feature() >= 17) {
+            // Use custom method:
+            Product removed = products.remove("TDM-SE");
+            assertEquals("TestDefaultRepositoryMethod Standard Edition", removed.name);
+
+            assertEquals(false, products.findById("TDM-SE").isPresent());
+            assertEquals(true, products.findById("TDM-EE").isPresent());
+        }
+
+        products.clear();
     }
 
     /**
@@ -621,82 +642,163 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Add, search, and remove entities with Embeddable fields.
+     * Unannotated entity with an attribute that is an embeddable type.
      */
     @Test
     public void testEmbeddable() {
-        shippingAddresses.removeAll();
+        houses.deleteAll();
 
-        ShippingAddress a1 = new ShippingAddress();
-        a1.id = 1001L;
-        a1.city = "Rochester";
-        a1.state = "Minnesota";
-        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
-        a1.zipCode = 55901;
-        shippingAddresses.save(a1);
+        House h1 = new House();
+        h1.area = 1800;
+        h1.garage = new Garage();
+        h1.garage.area = 200;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(8);
+        h1.garage.door.setWidth(10);
+        h1.garage.type = Garage.Type.Attached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 15;
+        h1.kitchen.width = 12;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "TestEmbeddable-104-2288-60";
+        h1.purchasePrice = 162000;
+        h1.sold = Year.of(2018);
+        houses.save(h1);
 
-        ShippingAddress a2 = new ShippingAddress();
-        a2.id = 1002L;
-        a2.city = "Rochester";
-        a2.state = "Minnesota";
-        a2.streetAddress = new StreetAddress(201, "4th St SE");
-        a2.zipCode = 55904;
-        shippingAddresses.save(a2);
+        House h2 = new House();
+        h2.area = 2000;
+        h2.garage = new Garage();
+        h2.garage.area = 220;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(8);
+        h2.garage.door.setWidth(12);
+        h2.garage.type = Garage.Type.Detached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 16;
+        h2.kitchen.width = 13;
+        h2.lotSize = 0.18f;
+        h2.numBedrooms = 4;
+        h2.parcelId = "TestEmbeddable-204-2992-20";
+        h2.purchasePrice = 188000;
+        h2.sold = Year.of(2020);
+        houses.save(h2);
 
-        ShippingAddress a3 = new ShippingAddress();
-        a3.id = 1003L;
-        a3.city = "Rochester";
-        a3.state = "Minnesota";
-        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
-        a3.zipCode = 55902;
-        shippingAddresses.save(a3);
+        House h3 = new House();
+        h3.area = 1700;
+        h3.garage = new Garage();
+        h3.garage.area = 180;
+        h3.garage.door = new GarageDoor();
+        h3.garage.door.setHeight(8);
+        h3.garage.door.setWidth(9);
+        h3.garage.type = Garage.Type.TuckUnder;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 14;
+        h3.kitchen.width = 12;
+        h3.lotSize = 0.17f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "TestEmbeddable-304-3655-30";
+        h3.purchasePrice = 153000;
+        h3.sold = Year.of(2018);
+        houses.save(h3);
 
-        ShippingAddress a4 = new ShippingAddress();
-        a4.id = 1004L;
-        a4.city = "Rochester";
-        a4.state = "Minnesota";
-        a4.streetAddress = new StreetAddress(151, "4th St SE");
-        a4.zipCode = 55904;
-        shippingAddresses.save(a4);
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 220;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(13);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 16;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestEmbeddable-404-4418-40";
+        h4.purchasePrice = 204000;
+        h4.sold = Year.of(2022);
+        houses.save(h4);
 
-        assertArrayEquals(new ShippingAddress[] { a4, a2 },
-                          shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
-                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
+        House h = houses.findById("TestEmbeddable-104-2288-60");
 
-        assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
-                                             .map(a -> a.houseNumber + " " + a.streetName)
-                                             .collect(Collectors.toList()));
+        assertNotNull(h.kitchen);
+        assertEquals(15, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
 
-        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
-        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
-        //                    Query: ReportQuery(referenceClass=StreetAddress )
-        // TODO uncomment the following to reproduce the above error:
-        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
-        // assertEquals(1, found.size());
-        // ShippingAddress a = found.get(0);
-        // assertEquals(a1.id, a.id);
-        // assertEquals(a1.city, a.city);
-        // assertEquals(a1.state, a.state);
-        // assertEquals(a1.zipCode, a.zipCode);
-        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
-        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
-        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+        assertNotNull(h.garage);
+        assertEquals(200, h.garage.area);
+        assertEquals(Garage.Type.Attached, h.garage.type);
 
-        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
 
-        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
-        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
-        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
-        a1.streetAddress.recipientInfo = new ArrayList<>();
-        shippingAddresses.save(a1);
+        // Query and order by embeddable attributes
 
-        assertEquals(4, shippingAddresses.removeAll());
+        List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
+        assertEquals(found.toString(), 2, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        h = found.get(1);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
+        assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Update embeddable attributes
+
+        assertEquals(true, houses.updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30", null, 180, 2, 4));
+
+        h = houses.findById("TestEmbeddable-304-3655-30");
+        assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
+        assertEquals(1880, h.area);
+        // Null embeddables aren't required by JPA, but EclipseLink claims to support it as the default behavior.
+        // See https://wiki.eclipse.org/EclipseLink/UserGuide/JPA/Basic_JPA_Development/Entities/Embeddable#Nullable_embedded_values
+        // But it looks like EclipseLink has a bug here in that it only nulls out 1 of the fields of Garage, not all,
+        // JPQL: UPDATE House o SET o.garage=?2, o.area=o.area+?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms=?5 WHERE (o.parcelId=?1)
+        // SQL:  UPDATE WLPHouse SET NUMBEDROOMS = 4, AREA = (AREA + 180), GARAGEAREA = NULL, KITCHENLENGTH = (KITCHENLENGTH + 2) WHERE (PARCELID = 'TestEmbeddable-304-3655-30')
+        // This causes the following assertion to fail:
+        // assertEquals(null, h.garage);
+        // TODO re-enable the above if fixed
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+        assertEquals(0.17f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(153000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2018), h.sold);
+
+        assertEquals(2, houses.deleteAll());
     }
 
     /**
@@ -705,42 +807,64 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testEmpty() {
         assertIterableEquals(List.of(4007L, 4013L, 4019L),
-                             primes.findByNumberInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
+                             primes.findByNumberIdInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         Stack<Long> list = new Stack<>();
         list.addAll(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L));
 
         assertIterableEquals(List.of(7L, 13L, 19L),
-                             primes.findByNumberInAndRomanNumeralSymbolsNotEmpty(list)
+                             primes.findByNumberIdInAndRomanNumeralSymbolsNotEmpty(list)
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(4003L),
-                             primes.findByNumberInAndRomanNumeralEmpty(List.of(43L, 4003L))
+                             primes.findByNumberIdInAndRomanNumeralEmpty(List.of(43L, 4003L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
         assertIterableEquals(List.of(43L),
-                             primes.findByNumberInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
+                             primes.findByNumberIdInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
     /**
-     * Identify whether elements exist in the database.
+     * Identify whether elements exist in the database using query by method name.
      */
     @Test
     public void testExists() {
-        assertEquals(true, primes.existsByNumber(19));
-        assertEquals(false, primes.existsByNumber(9));
+        assertEquals(true, primes.existsByNumberId(19));
+        assertEquals(false, primes.existsByNumberId(9));
 
-        assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
-        assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+        assertEquals(Boolean.TRUE, primes.existsIdBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsIdBetween(Long.valueOf(24), Long.valueOf(28)));
+    }
+
+    /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Define a query with Filter annotations.
+     */
+    @Test
+    public void testFilterAnnotation() {
+        assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                             primes.inRangeHavingVNumeralAndSubstringOfName(5L, 45L, "ve"));
+
+        assertIterableEquals(List.of(),
+                             primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
     }
 
     /**
@@ -775,11 +899,11 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindFirst() throws Exception {
-        Prime prime = primes.findFirstByNameLikeOrderByNumber("%ven");
+        Prime prime = primes.findFirstByNameLikeOrderByNumberId("%ven");
         assertNotNull(prime);
-        assertEquals(7, prime.number);
+        assertEquals(7, prime.numberId);
 
-        Prime[] p = primes.findFirst5ByNumberLessThanEqual(25); // descending order by name
+        Prime[] p = primes.findFirst5ByIdLessThanEqual(25); // descending order by name
         assertNotNull(p);
         assertEquals(Arrays.toString(p), 5, p.length);
         assertEquals("two", p[0].name);
@@ -858,17 +982,17 @@ public class DataTestServlet extends FATServlet {
         Person jane = new Person();
         jane.firstName = "Jane";
         jane.lastName = "TestFindMultiple";
-        jane.ssn = 123456789;
+        jane.ssn_id = 123456789;
 
         Person joe = new Person();
         joe.firstName = "Joe";
         joe.lastName = "TestFindMultiple";
-        joe.ssn = 987654321;
+        joe.ssn_id = 987654321;
 
         Person jude = new Person();
         jude.firstName = "Jude";
         jude.lastName = "Test-FindMultiple";
-        jude.ssn = 11235813;
+        jude.ssn_id = 11235813;
 
         tran.begin();
         try {
@@ -889,52 +1013,38 @@ public class DataTestServlet extends FATServlet {
         Person p2expected;
         assertEquals("TestFindMultiple", p1.lastName);
         if (jane.firstName.equals(p1.firstName)) {
-            assertEquals(jane.ssn, p1.ssn);
+            assertEquals(jane.ssn_id, p1.ssn_id);
             p2expected = joe;
         } else {
-            assertEquals(joe.ssn, p1.ssn);
+            assertEquals(joe.ssn_id, p1.ssn_id);
             p2expected = jane;
         }
 
         Person p2 = found.get(1);
         assertEquals(p2expected.lastName, p2.lastName);
         assertEquals(p2expected.firstName, p2.firstName);
-        assertEquals(p2expected.ssn, p2.ssn);
+        assertEquals(p2expected.ssn_id, p2.ssn_id);
 
         found = people.find("Test-FindMultiple");
         assertNotNull(found);
         assertEquals(1, found.size());
-        assertEquals(jude.ssn, found.get(0).ssn);
+        assertEquals(jude.ssn_id, found.get(0).ssn_id);
     }
 
     /**
-     * Avoid specifying a primary key value and let it be generated.
+     * Verify that ORDER BY can be generated, taking into account the entity variable name of a custom query.
+     * The custom query in this case has no WHERE clause.
+     * Other tests cover similar scenarios in which a WHERE clause is present.
      */
     @Test
-    public void testGeneratedKey() {
-        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+    public void testGeneratedOrderAppendedToCustomQuery() {
 
-        Order o1 = new Order();
-        o1.purchasedBy = "testGeneratedKey-Customer1";
-        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
-        o1.total = 25.99f;
-        o1 = orders.save(o1);
+        Pageable page2request = Pageable.ofPage(2)
+                        .size(5)
+                        .sortBy(Sort.asc("numberId"));
 
-        Order o2 = new Order();
-        o2.purchasedBy = "testGeneratedKey-Customer2";
-        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
-        o2.total = 148.98f;
-        o2 = orders.save(o2);
-
-        assertNotNull(o1.id);
-        assertNotNull(o2.id);
-        assertEquals(false, o1.id.equals(o2.id));
-
-        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
-
-        o2 = orders.findById(o2.id).get();
-
-        assertEquals(168.89f, o2.total, 0.01f);
+        assertIterableEquals(List.of("thirteen", "seventeen", "nineteen", "twenty-three", "twenty-nine"),
+                             primes.all(page2request));
     }
 
     /**
@@ -943,14 +1053,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInKeysetPagination() {
         Pageable pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("four thousand seven", "four thousand nineteen"),
                              page2
                                              .stream()
@@ -958,14 +1068,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         pagination = Pageable.ofSize(4).sortBy(Sort.ascIgnoreCase("name"));
-        page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand nineteen", "four thousand one", "four thousand seven", "Four Thousand Thirteen"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        page2 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("four thousand three"),
                              page2
                                              .stream()
@@ -979,14 +1089,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInOffsetPagination() {
         Pageable pagination = Pageable.ofSize(4).sortBy(Sort.asc("sumOfBits"), Sort.ascIgnoreCase("name"));
-        Page<Prime> page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        Page<Prime> page1 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "four thousand nineteen", "four thousand seven"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        Page<Prime> page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        Page<Prime> page2 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("Four Thousand Thirteen"),
                              page2
                                              .stream()
@@ -994,14 +1104,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         pagination = Pageable.ofSize(3).sortBy(Sort.descIgnoreCase("hex"));
-        page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        page1 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
         assertIterableEquals(List.of("FB3", "FAD", "Fa7"),
                              page1
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
 
-        page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        page2 = primes.findByNumberIdBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("FA3", "FA1"),
                              page2
                                              .stream()
@@ -1015,7 +1125,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInOrderByPatternOfMethodName() {
         assertIterableEquals(List.of("four thousand three", "Four Thousand Thirteen", "four thousand seven", "four thousand one", "four thousand nineteen"),
-                             primes.findByNumberBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
+                             primes.findByNumberIdBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
@@ -1031,42 +1141,42 @@ public class DataTestServlet extends FATServlet {
 
         // Not
         assertIterableEquals(List.of("two", "five", "seven"),
-                             primes.findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc("Three", 10)
+                             primes.findByNameIgnoreCaseNotAndIdLessThanOrderByIdAsc("Three", 10)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // StartsWith
         assertIterableEquals(List.of("thirteen", "thirty-one", "thirty-seven"),
-                             primes.findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseStartsWithAndIdLessThanOrderByIdAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Like
         assertIterableEquals(List.of("thirteen", "thirty-seven"),
-                             primes.findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseLikeAndIdLessThanOrderByIdAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Contains
         assertIterableEquals(List.of("twenty-three", "seventeen"),
-                             primes.findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc("ent%ee", 1000)
+                             primes.findByNameIgnoreCaseContainsAndIdLessThanOrderByIdDesc("ent%ee", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Between
         assertIterableEquals(List.of("nineteen", "seventeen", "seven"),
-                             primes.findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc("Nine", "SEVENTEEN", 50)
+                             primes.findByNameIgnoreCaseBetweenAndIdLessThanOrderByIdDesc("Nine", "SEVENTEEN", 50)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // GreaterThan, LessThanEqual
         assertIterableEquals(List.of("XLVII", "XLIII", "XIII", "XI", "VII", "V", "III"),
-                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan("2a", "xlvII", 50)
+                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndIdLessThan("2a", "xlvII", 50)
                                              .stream()
                                              .map(p -> p.romanNumeral)
                                              .collect(Collectors.toList()));
@@ -1078,84 +1188,16 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInSorts() {
         assertIterableEquals(List.of("FA1", "FA3", "FB3", "FAD", "Fa7"),
-                             primes.findByNumberBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
+                             primes.findByNumberIdBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("FA1", "FA3", "Fa7", "FAD", "FB3"),
-                             primes.findByNumberBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
+                             primes.findByNumberIdBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
                                              .stream()
                                              .map(p -> p.hex)
                                              .collect(Collectors.toList()));
-    }
-
-    /**
-     * Use an entity that inherits from another where both are kept in the same table.
-     */
-    @Test
-    public void testInheritance() {
-        shippingAddresses.removeAll();
-
-        ShippingAddress home = new ShippingAddress();
-        home.id = 10L;
-        home.city = "Rochester";
-        home.state = "Minnesota";
-        home.streetAddress = new StreetAddress(1234, "5th St SW");
-        home.zipCode = 55902;
-
-        WorkAddress work = new WorkAddress();
-        work.id = 20L;
-        work.city = "Rochester";
-        work.floorNumber = 2;
-        work.office = "H115";
-        work.state = "Minnesota";
-        work.streetAddress = new StreetAddress(2800, "37th St NW");
-        work.zipCode = 55901;
-
-        shippingAddresses.save(home);
-        shippingAddresses.save(work);
-
-        WorkAddress a = shippingAddresses.forOffice("H115");
-        assertEquals(Long.valueOf(20), a.id);
-        assertEquals("Rochester", a.city);
-        assertEquals(2, a.floorNumber);
-        assertEquals("H115", a.office);
-        assertEquals("Minnesota", a.state);
-        assertEquals("37th St NW", a.streetAddress.streetName);
-        assertEquals(55901, a.zipCode);
-
-        WorkAddress[] secondFloorOfficesOn37th = shippingAddresses.findByStreetNameAndFloorNumber("37th St NW", 2);
-
-        assertArrayEquals(new WorkAddress[] { work }, secondFloorOfficesOn37th,
-                          Comparator.<WorkAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.floorNumber))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.office))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<WorkAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<WorkAddress, Integer> comparing(o -> o.zipCode)));
-
-        ShippingAddress[] found = shippingAddresses.findByStreetNameOrderByHouseNumber("37th St NW");
-
-        assertArrayEquals(new ShippingAddress[] { work }, found,
-                          Comparator.<ShippingAddress, Long> comparing(o -> o.id)
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.city))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> ((WorkAddress) o).floorNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> ((WorkAddress) o).office))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.state))
-                                          .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
-                                          .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
-
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
-
-        assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
-                          Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
-                                          .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
-
-        shippingAddresses.removeAll();
     }
 
     /**
@@ -1164,14 +1206,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIterablePages() {
         // KeysetAwarePage:
-        Page<Prime> page = primes.findByNumberBetween(20L, 40L, Pageable.ofSize(3));
+        Page<Prime> page = primes.findByNumberIdBetween(20L, 40L, Pageable.ofSize(3));
         List<Long> results = new ArrayList<>();
         for (Prime p : page)
-            results.add(p.number);
+            results.add(p.numberId);
         assertIterableEquals(List.of(23L, 29L, 31L), results);
         assertEquals(3, page.content().size());
 
-        page = primes.findByNumberBetween(0L, 1L, Pageable.ofSize(5));
+        page = primes.findByNumberIdBetween(0L, 1L, Pageable.ofSize(5));
         Iterator<Prime> it = page.iterator();
         assertEquals(false, it.hasNext());
         try {
@@ -1182,13 +1224,13 @@ public class DataTestServlet extends FATServlet {
         }
         assertEquals(Collections.EMPTY_LIST, page.content());
 
-        page = primes.findByNumberLessThanEqualOrderByNumberDesc(23L, Pageable.ofSize(4));
+        page = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(23L, Pageable.ofSize(4));
         results = new ArrayList<>();
         for (Prime p : page)
-            results.add(p.number);
+            results.add(p.numberId);
         assertIterableEquals(List.of(23L, 19L, 17L, 13L), results);
 
-        page = primes.findByNumberLessThanEqualOrderByNumberDesc(1L, Pageable.ofSize(6));
+        page = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(1L, Pageable.ofSize(6));
         it = page.iterator();
         assertEquals(false, it.hasNext());
         try {
@@ -1197,6 +1239,129 @@ public class DataTestServlet extends FATServlet {
         } catch (NoSuchElementException x) {
             // expected
         }
+    }
+
+    /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria statically via the OrderBy annotation.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_OrderBy() {
+        Pageable p = Pageable.ofSize(5).afterKeyset(false, 2, 3);
+        Iterator<Prime> it = primes.findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan("t", 50L, "n", 50L, p);
+
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("forty-seven", it.next().name);
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4).beforeKeyset(true, 1, 2);
+        it = primes.findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan("t", 45L, "n", 45L, p);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+
+        assertEquals("three", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria dynamically via Sort.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_Sorts() {
+        Pageable p = Pageable.ofSize(6) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .afterKeyset(1, "a prime number");
+        Iterator<Prime> it = primes.findByNumberIdNotGreaterThan(40L, p);
+
+        assertEquals("two", it.next().name);
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .beforeKeyset(5, "forty-seven");
+        it = primes.findByNumberIdNotGreaterThan(50L, p);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
+     * Iterator with Sort only and no pagination.
+     */
+    @Test
+    public void testIteratorWithoutPagination() {
+        Iterator<Prime> it = primes.findByNumberIdNotGreaterThan(41L, Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
+
+        assertEquals("XXXI", it.next().romanNumeral);
+
+        assertEquals("XXIX", it.next().romanNumeral);
+        assertEquals("XXIII", it.next().romanNumeral);
+
+        assertEquals("XXXVII", it.next().romanNumeral);
+        assertEquals("XLI", it.next().romanNumeral);
+        assertEquals("XIX", it.next().romanNumeral);
+        assertEquals("XIII", it.next().romanNumeral);
+        assertEquals("XI", it.next().romanNumeral);
+        assertEquals("VII", it.next().romanNumeral);
+
+        assertEquals("XVII", it.next().romanNumeral);
+        assertEquals("V", it.next().romanNumeral);
+        assertEquals("III", it.next().romanNumeral);
+
+        assertEquals("II", it.next().romanNumeral);
+
+        assertEquals(false, it.hasNext());
     }
 
     /**
@@ -1223,7 +1388,7 @@ public class DataTestServlet extends FATServlet {
                                  new Package(150, 48.0f, 45.0f, 50.0f, "package#150"), // page 5
                                  new Package(151, 48.0f, 45.0f, 41.0f, "package#151")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 1
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.ofSize(3));
@@ -1377,7 +1542,7 @@ public class DataTestServlet extends FATServlet {
         packages.saveAll(List.of(new Package(440, 40.0f, 44.0f, 40.0f, "package#440"), // page1
                                  new Package(441, 41.0f, 41.0f, 41.0f, "package#441"))); // will be deleted
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 1
         page = packages.findByHeightGreaterThan(4.0f, Pageable.ofSize(1));
@@ -1432,26 +1597,26 @@ public class DataTestServlet extends FATServlet {
         // 17, 10001,  2, false
 
         Pageable initialPagination = Pageable.ofPage(2).size(8).afterKeyset(false, 4, 23L);
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
+        KeysetAwarePage<Prime> page2 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, initialPagination);
 
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable.Cursor cursor7 = page2.getKeysetCursor(2);
         Pageable paginationBefore7 = Pageable.ofSize(8).beforeKeysetCursor(cursor7);
 
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, paginationBefore7);
+        KeysetAwarePage<Prime> page1 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, paginationBefore7);
 
         assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
-                             page1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable.Cursor cursor13 = page2.getKeysetCursor(4);
         Pageable paginationAfter13 = Pageable.ofPage(3).afterKeysetCursor(cursor13);
 
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45, paginationAfter13);
+        KeysetAwarePage<Prime> page3 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45, paginationAfter13);
 
         assertIterableEquals(List.of(19L, 37L, 41L, 3L, 5L, 17L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         // test .equals method
         assertEquals(cursor13, cursor13);
@@ -1486,7 +1651,7 @@ public class DataTestServlet extends FATServlet {
                                  new Package(236, 36.0f, 50.0f, 93.0f, "package#236"), // page 3
                                  new Package(240, 40.0f, 21.0f, 42.0f, "package#240")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 3
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).page(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
@@ -1672,7 +1837,7 @@ public class DataTestServlet extends FATServlet {
                                  // will add 315, 66.0f, 31.0f, 37.0f, "package#315"
                                  new Package(310, 55.0f, 10.0f, 31.0f, "package#310")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 3
         page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).size(3).beforeKeyset(10.0f, 31.0f, 310));
@@ -1777,134 +1942,149 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Add, find, and remove entities with a mapped superclass.
-     * Also tests automatically paginated iterator and list.
+     * A repository might define a method that returns a keyset-aware page with a Limit parameter.
      */
     @Test
-    public void testMappedSuperclass() {
-        tariffs.deleteByLeviedBy("USA");
+    public void testKeysetWithLimit() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        KeysetAwarePage<Prime> page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
 
-        Tariff t1 = new Tariff();
-        t1.leviedAgainst = "China";
-        t1.leviedBy = "USA";
-        t1.leviedOn = "Solar Panels";
-        t1.rate = 0.15f;
-        tariffs.save(t1);
+        assertEquals(1L, page.number());
+        assertEquals(5L, page.numberOfElements());
+        assertEquals(5L, page.pageable().size());
+        assertEquals(1L, page.pageable().page());
+        assertEquals(2L, page.totalPages());
+        assertEquals(8L, page.totalElements());
 
-        Tariff t2 = new Tariff();
-        t2.leviedAgainst = "Germany";
-        t2.leviedBy = "USA";
-        t2.leviedOn = "Steel";
-        t2.rate = 0.25f;
-        tariffs.save(t2);
-
-        Tariff t3 = new Tariff();
-        t3.leviedAgainst = "India";
-        t3.leviedBy = "USA";
-        t3.leviedOn = "Aluminum";
-        t3.rate = 0.1f;
-        tariffs.save(t3);
-
-        Tariff t4 = new Tariff();
-        t4.leviedAgainst = "Japan";
-        t4.leviedBy = "USA";
-        t4.leviedOn = "Cars";
-        t4.rate = 0.025f;
-        tariffs.save(t4);
-
-        Tariff t5 = new Tariff();
-        t5.leviedAgainst = "Canada";
-        t5.leviedBy = "USA";
-        t5.leviedOn = "Lumber";
-        t5.rate = 0.1799f;
-        tariffs.save(t5);
-
-        Tariff t6 = new Tariff();
-        t6.leviedAgainst = "Bangladesh";
-        t6.leviedBy = "USA";
-        t6.leviedOn = "Textiles";
-        t6.rate = 0.158f;
-        tariffs.save(t6);
-
-        Tariff t7 = new Tariff();
-        t7.leviedAgainst = "Mexico";
-        t7.leviedBy = "USA";
-        t7.leviedOn = "Trucks";
-        t7.rate = 0.25f;
-        tariffs.save(t7);
-
-        Tariff t8 = new Tariff();
-        t8.leviedAgainst = "Canada";
-        t8.leviedBy = "USA";
-        t8.leviedOn = "Copper";
-        t8.rate = 0.0194f;
-        tariffs.save(t8);
-
-        assertIterableEquals(List.of("Copper", "Lumber"),
-                             tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
-
-        // Iterator with paging:
-        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
-
-        Tariff t;
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t8.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t6.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t5.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(true, it.hasNext());
-        assertEquals(true, it.hasNext());
-        assertNotNull(t = it.next());
-        assertEquals(t4.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t3.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t2.leviedAgainst, t.leviedAgainst);
-
-        assertNotNull(t = it.next());
-        assertEquals(t1.leviedAgainst, t.leviedAgainst);
-
-        assertEquals(false, it.hasNext());
-        assertEquals(false, it.hasNext());
-
-        // Paginated iterator with no results:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", Pageable.ofSize(3));
-        assertEquals(false, it.hasNext());
-
-        t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
-        assertEquals(t6.rate, t.rate, 0.0001f);
-
-        // List return type for Pagination only represents a single page, not all pages.
-        // page 1:
-        assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4))
-                                             .stream()
-                                             .map(o -> o.leviedAgainst)
-                                             .collect(Collectors.toList()));
-        // page 2:
-        assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
-                                             .stream()
-                                             .map(o -> o.leviedAgainst)
+        assertIterableEquals(List.of(17L, 19L, 23L, 29L, 31L),
+                             page.stream()
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
-        // Random access to paginated list:
-        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pageable.ofPage(1));
-        assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
-        assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
-        assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
-        assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             primes.findByNumberIdBetween(15L, 45L, page.previousPageable()));
 
-        assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+        page = primes.findByNumberIdBetween(15L, 45L, page.nextPageable());
+
+        assertEquals(2L, page.number());
+        assertEquals(3L, page.numberOfElements());
+        assertEquals(5L, page.pageable().size());
+        assertEquals(2L, page.pageable().page());
+        assertEquals(2L, page.totalPages());
+        assertEquals(8L, page.totalElements());
+        assertEquals(null, page.nextPageable());
+
+        assertIterableEquals(List.of(37L, 41L, 43L),
+                             page.stream()
+                                             .map(p -> p.numberId)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * A repository might define a method that returns a keyset-aware page without specifying a Pageable,
+     * specifying the sort criteria separately.
+     */
+    @Test
+    public void testKeysetWithoutPageable() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        KeysetAwarePage<Prime> page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, 40L, Sort.asc("id"));
+        assertEquals(31L, page.content().get(0).numberId);
+
+        // Obtain Pageable for previous entries from the KeysetAwarePage
+        Pageable pagination = page.previousPageable().size(5);
+        page = primes.findByNumberIdBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
+                             page.stream()
+                                             .map(p -> p.numberId)
+                                             .collect(Collectors.toList()));
+
+        pagination = page.previousPageable();
+        page = primes.findByNumberIdBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
+                             page.stream()
+                                             .map(p -> p.numberId)
+                                             .collect(Collectors.toList()));
+
+        assertEquals(null, page.previousPageable());
+    }
+
+    /**
+     * Intermix two different types of entities in the same transaction.
+     */
+    @Test
+    public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
+                    IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
+        houses.deleteAll();
+        vehicles.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1900;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "111-222-333";
+        h1.purchasePrice = 219000.00f;
+        h1.sold = Year.of(2019);
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Nissan";
+        v1.model = "Altima";
+        v1.numSeats = 5;
+        v1.price = 24000f;
+        v1.vinId = "TME09876543210001";
+
+        House h;
+        Vehicle v;
+        tran.begin();
+        try {
+            h = houses.save(h1).get(0);
+            v = vehicles.save(List.of(v1)).iterator().next();
+        } finally {
+            tran.commit();
+        }
+
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and roll back
+        tran.begin();
+        try {
+            h1.purchasePrice = 222000f;
+            h1.sold = Year.of(2020);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 200f));
+        } finally {
+            tran.rollback();
+        }
+
+        // Ensure all updates were rolled back
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(219000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and commit
+        tran.begin();
+        try {
+            h1.purchasePrice = 241000f;
+            h1.sold = Year.of(2021);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 2000f));
+        } finally {
+            tran.commit();
+        }
+
+        // Ensure all updates were committed
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(241000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2021), h.sold);
+        assertEquals(26000f, v.price, 0.001f);
+
+        houses.deleteAll();
+        vehicles.deleteAll();
     }
 
     /**
@@ -1979,20 +2159,42 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test NotBetween in a filter.
+     */
+    @Test
+    public void testNotBetweenFromFilter() {
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                             primes.notWithinButBelow(10, 40, 50));
+    }
+
+    /**
+     * PageableRepository.findAll(Pageable) must raise NullPointerException.
+     */
+    @Test
+    public void testNullPagination() {
+        try {
+            Page<Package> page = packages.findAll(null);
+            fail("PageableRepository.findAll(Pageable) must raise NullPointerException. Instead: " + page);
+        } catch (NullPointerException x) {
+            // expected
+        }
+    }
+
+    /**
      * Test Null and NotNull on repository methods.
      */
     @Test
     public void testNulls() {
         assertIterableEquals(List.of(4001L, 4003L, 4007L),
-                             primes.findByNumberInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                             primes.findByNumberIdInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(41L, 43L, 47L),
-                             primes.findByNumberInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                             primes.findByNumberIdInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
                                              .stream()
-                                             .map(p -> p.number)
+                                             .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
     }
 
@@ -2003,16 +2205,19 @@ public class DataTestServlet extends FATServlet {
     public void testOverflow() {
         Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
         try {
-            Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
+            Streamable<Prime> found = primes.findByNumberIdLessThanEqualOrderByIdDesc(9L, range);
             fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
 
         try {
-            Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
+            Stream<Prime> found = primes.findFirst2147483648ByIdGreaterThan(1L);
             fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (MappingException x) {
+        } catch (DataException x) {
             boolean expected = false;
             for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
                 expected = cause instanceof UnsupportedOperationException;
@@ -2021,17 +2226,23 @@ public class DataTestServlet extends FATServlet {
         }
 
         try {
-            KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
+            KeysetAwarePage<Prime> found = primes.findByNumberIdBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
 
         try {
-            Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
+            Page<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
     }
 
@@ -2041,46 +2252,46 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testPartialQueryAnnotations() {
         Shipment s1 = new Shipment();
-        s1.destination = "200 1st Ave SW, Rochester, MN 55902";
-        s1.location = "44.027354, -92.468482";
-        s1.id = 1;
-        s1.orderedAt = OffsetDateTime.now().minusMinutes(45);
-        s1.status = "IN_TRANSIT";
+        s1.setDestination("200 1st Ave SW, Rochester, MN 55902");
+        s1.setLocation("44.027354, -92.468482");
+        s1.setId(1);
+        s1.setOrderedAt(OffsetDateTime.now().minusMinutes(45));
+        s1.setStatus("IN_TRANSIT");
         shipments.save(s1);
 
         Shipment s2 = new Shipment();
-        s2.destination = "201 4th St SE, Rochester, MN 55904";
-        s2.location = "2800 37th St NW, Rochester, MN 55901";
-        s2.id = 2;
-        s2.orderedAt = OffsetDateTime.now().minusMinutes(20);
-        s2.status = "READY_FOR_PICKUP";
+        s2.setDestination("201 4th St SE, Rochester, MN 55904");
+        s2.setLocation("2800 37th St NW, Rochester, MN 55901");
+        s2.setId(2);
+        s2.setOrderedAt(OffsetDateTime.now().minusMinutes(20));
+        s2.setStatus("READY_FOR_PICKUP");
         shipments.save(s2);
 
         Shipment s3 = new Shipment();
-        s3.destination = "151 4th St SE, Rochester, MN 55904";
-        s3.location = "44.057840, -92.496301";
-        s3.id = 3;
-        s3.orderedAt = OffsetDateTime.now().minusMinutes(13);
-        s3.status = "IN_TRANSIT";
+        s3.setDestination("151 4th St SE, Rochester, MN 55904");
+        s3.setLocation("44.057840, -92.496301");
+        s3.setId(3);
+        s3.setOrderedAt(OffsetDateTime.now().minusMinutes(13));
+        s3.setStatus("IN_TRANSIT");
         shipments.save(s3);
 
         Shipment s4 = new Shipment();
-        s4.destination = "151 4th St SE, Rochester, MN 55904";
-        s4.location = "2800 37th St NW, Rochester, MN 55901 ";
-        s4.id = 4;
-        s4.orderedAt = OffsetDateTime.now().minusMinutes(4);
-        s4.status = "READY_FOR_PICKUP";
+        s4.setDestination("151 4th St SE, Rochester, MN 55904");
+        s4.setLocation("2800 37th St NW, Rochester, MN 55901 ");
+        s4.setId(4);
+        s4.setOrderedAt(OffsetDateTime.now().minusMinutes(4));
+        s4.setStatus("READY_FOR_PICKUP");
         shipments.save(s4);
 
         Shipment s5 = new Shipment();
-        s5.destination = "201 4th St SE, Rochester, MN 55904";
-        s5.location = " 2800 37th St NW, Rochester, MN 55901";
-        s5.id = 5;
-        s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
-        s5.status = "PREPARING";
+        s5.setDestination("201 4th St SE, Rochester, MN 55904");
+        s5.setLocation("2800 37th St NW, Rochester, MN 55901");
+        s5.setId(5);
+        s5.setOrderedAt(OffsetDateTime.now().minusSeconds(50));
+        s5.setStatus("PREPARING");
         shipments.save(s5);
 
-        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
+        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040", OffsetDateTime.now()));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
 
         // @OrderBy "destination"
@@ -2088,33 +2299,41 @@ public class DataTestServlet extends FATServlet {
                                      "200 1st Ave SW, Rochester, MN 55902",
                                      "201 4th St SE, Rochester, MN 55904"),
                              shipments.find("IN_TRANSIT")
-                                             .map(o -> o.destination)
+                                             .map(o -> o.getDestination())
                                              .collect(Collectors.toList()));
 
         // @OrderBy "status", then "orderedAt" descending
         assertIterableEquals(List.of(3L, 2L, 1L, 5L, 4L),
-                             Stream.of(shipments.getAll()).map(o -> o.id).collect(Collectors.toList()));
+                             Stream.of(shipments.getAll()).map(o -> o.getId()).collect(Collectors.toList()));
 
         Shipment s = shipments.find(3);
-        String previousLocation = s.location;
+        String previousLocation = s.getLocation();
 
         assertEquals(true, shipments.updateLocation(3, previousLocation, "44.029468, -92.483191"));
         assertEquals(false, shipments.updateLocation(3, previousLocation, "44.029406, -92.489553"));
 
         s = shipments.find(3);
-        assertEquals("44.029468, -92.483191", s.location);
+        assertEquals("44.029468, -92.483191", s.getLocation());
 
-        assertEquals(true, shipments.cancel(4));
-        assertEquals(true, shipments.cancel(5));
-        assertEquals(false, shipments.cancel(10));
-
-        shipments.trim();
-        s = shipments.find(4);
-        assertEquals("2800 37th St NW, Rochester, MN 55901", s.location);
+        assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
+        assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
 
         assertEquals(2, shipments.removeCanceled());
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                             primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                             .map(p -> p.numberId)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -2136,6 +2355,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10020001;
         r1.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(60);
 
         assertEquals(false, reservations.existsById(r1.meetingID));
 
@@ -2158,6 +2378,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10020002;
         r2.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepository-host2@example.org";
@@ -2166,6 +2387,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10020003;
         r3.start = OffsetDateTime.of(2022, 5, 24, 8, 30, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 5, 24, 10, 00, 0, 0, CDT);
+        r3.setLengthInMinutes(90);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepository-host1@example.org";
@@ -2174,6 +2396,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10020004;
         r4.start = OffsetDateTime.of(2022, 5, 24, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 5, 24, 10, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
@@ -2216,6 +2439,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, found.containsKey(r4.meetingID));
         assertEquals(r2.location, found.get(r2.meetingID).location);
         assertEquals(r4.location, found.get(r4.meetingID).location);
+        assertEquals(60, found.get(r2.meetingID).getLengthInMinutes());
+        assertEquals(60, found.get(r4.meetingID).getLengthInMinutes());
 
         reservations.deleteById(r2.meetingID);
 
@@ -2240,6 +2465,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(r3.meetingID, r3found.meetingID);
         assertEquals(r3.start.toInstant(), r3found.start.toInstant());
         assertEquals(r3.stop.toInstant(), r3found.stop.toInstant());
+        assertEquals(90, r3found.getLengthInMinutes());
     }
 
     /**
@@ -2264,6 +2490,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10030001;
         r1.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(60);
 
         Reservation r2 = new Reservation();
         r2.host = "testRepositoryCustom-host2@example.org";
@@ -2272,6 +2499,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10030002;
         r2.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepositoryCustom-host3@example.org";
@@ -2280,6 +2508,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10030003;
         r3.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepositoryCustom-host4@example.org";
@@ -2288,6 +2517,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10030004;
         r4.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         Reservation r5 = new Reservation();
         r5.host = "testRepositoryCustom-host2@example.org";
@@ -2296,6 +2526,7 @@ public class DataTestServlet extends FATServlet {
         r5.meetingID = 10030005;
         r5.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
         r5.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+        r5.setLengthInMinutes(60);
 
         Reservation r6 = new Reservation();
         r6.host = "testRepositoryCustom-host3@example.org";
@@ -2304,6 +2535,7 @@ public class DataTestServlet extends FATServlet {
         r6.meetingID = 10030006;
         r6.start = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
         r6.stop = OffsetDateTime.of(2022, 5, 25, 12, 0, 0, 0, CDT);
+        r6.setLengthInMinutes(60);
 
         Reservation r7 = new Reservation();
         r7.host = "testRepositoryCustom-host2@example.org";
@@ -2312,6 +2544,7 @@ public class DataTestServlet extends FATServlet {
         r7.meetingID = 10030007;
         r7.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
         r7.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+        r7.setLengthInMinutes(120);
 
         Reservation r8 = new Reservation();
         r8.host = "testRepositoryCustom-host4@example.org";
@@ -2320,6 +2553,7 @@ public class DataTestServlet extends FATServlet {
         r8.meetingID = 10030008;
         r8.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
         r8.stop = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
+        r8.setLengthInMinutes(60);
 
         Reservation r9 = new Reservation();
         r9.host = "testRepositoryCustom-host3@example.org";
@@ -2328,6 +2562,7 @@ public class DataTestServlet extends FATServlet {
         r9.meetingID = 10030009;
         r9.start = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
         r9.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+        r9.setLengthInMinutes(60);
 
         reservations.saveAll(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
 
@@ -2346,6 +2581,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        // TODO This fails on SQL Server, with: 10030009L, 10030004L, 10030006L, 10030008L, considering 14:00-15:00 CDT a match for 9:00-10:00 CDT. Why is it off by 5 hours?
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
                              reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
                                                                                              "050-2 %",
@@ -2541,16 +2777,16 @@ public class DataTestServlet extends FATServlet {
         Reservation found = set.iterator().next();
         assertEquals(10030005L, found.meetingID);
 
-        // EndsWith, Upper
+        // EndsWith, IgnoreCase
         assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
-                             reservations.findByUpperHostEndsWith("HOST2@EXAMPLE.ORG")
+                             reservations.findByHostIgnoreCaseEndsWith("HOST2@EXAMPLE.ORG")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(Collections.EMPTY_LIST,
-                             reservations.findByUpperHostEndsWith("host2@example.org") // should not match with lower case
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByHostIgnoreCaseEndsWith("Host2@Example.org") // should match regardless of case
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
@@ -2559,14 +2795,6 @@ public class DataTestServlet extends FATServlet {
         // StartsWith
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
                              reservations.findByLocationStartsWith("050-2 B")
-                                             .stream()
-                                             .map(r -> r.meetingID)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
-
-        // Lower
-        assertIterableEquals(List.of(10030001L, 10030004L, 10030006L, 10030008L),
-                             reservations.findByLowerLocationIn(List.of("050-2 g105", "030-2 e314", "050-2 h115", "050-3 H103")) // H103 has upper case and should not match
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
@@ -2602,6 +2830,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 1012001;
         r1.start = OffsetDateTime.of(2022, 8, 25, 8, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 8, 25, 9, 30, 0, 0, CDT);
+        r1.setLengthInMinutes(90);
 
         Reservation r2 = new Reservation();
         r2.host = "testRepositoryUpdateMethods-host1@example.org";
@@ -2610,6 +2839,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 1012002;
         r2.start = OffsetDateTime.of(2022, 8, 25, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepositoryUpdateMethods-host1@example.org";
@@ -2618,6 +2848,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 1012003;
         r3.start = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 8, 25, 11, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepositoryUpdateMethods-host4@example.org";
@@ -2626,6 +2857,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 1012004;
         r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
+        r4.setLengthInMinutes(90);
 
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
@@ -2735,10 +2967,51 @@ public class DataTestServlet extends FATServlet {
         assertEquals(13.8f, p.width, 0.01f);
         assertEquals(19.5f, p.height, 0.01f);
 
+        // divide width and append to description via query by method name
+        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.2f, p.height, 0.01f);
+        assertEquals("Tissue box halved", p.description);
+
+        // divide height and append to description via annotatively defined method with positional parameters
+        assertEquals(1, packages.reduceBy(990003, 1.02f, " and slightly shortened"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened", p.description);
+
+        // subtract from height and append to description via annotatively defined method with fixed values
+        assertEquals(true, packages.shorten(990003));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(9.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm", p.description);
+
+        // subtract from height and append to description via annotatively defined method with named parameters
+        packages.shortenBy(2, " and shortened 2 cm", 990003);
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(7.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm and shortened 2 cm", p.description);
+
         packages.delete(p3);
 
-        assertIterableEquals(List.of(990001, 990002, 990004, 990005, 990006),
-                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+        Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));
+        assertIterableEquals(List.of(990006, 990005, 990004),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
+
+        page = packages.findAll(page.nextPageable());
+        assertIterableEquals(List.of(990002, 990001),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
 
         packages.deleteAll(List.of(p1, p6));
 
@@ -2748,6 +3021,240 @@ public class DataTestServlet extends FATServlet {
         packages.deleteAll();
 
         assertEquals(0, packages.count());
+    }
+
+    /**
+     * Experiment with reserved keywords in entity property names.
+     */
+    @Test
+    public void testReservedKeywordsInEntityPropertyNames() {
+        // clear out old data before test
+        things.deleteAll();
+
+        things.save(new Thing(1, "apple", true, false, "Honeycrisp", "a type of apple", 1, "Keepsake x MN 1627", "September", 20, 210550L));
+        things.save(new Thing(2, "apple", true, false, "Haralson", "a type of apple", 1, "Malinda x Wealthy", "September/October", 5, 143005L));
+        things.save(new Thing(3, "apple", true, false, "Fireside", "a type of apple", 1, "McIntosh x Longfield", "October", 3, 321004L));
+        things.save(new Thing(4, "apple", true, false, "Honeygold", "a type of apple", 1, "Golden Delicious x Haralson", "September", 10, 100201L));
+        things.save(new Thing(5, "A101", false, false, "IBM", "050-2 A101 conference room", 2, "2nd floor conference room", "capacity 20", 16, 163L));
+        things.save(new Thing(6, "android", false, true, null, "a robot that looks like a person", 3, "not alive", "not alive", 4, 40661L));
+
+        Thing thing = things.findById(2);
+        assertEquals("Haralson", thing.brand);
+
+        // "like" is allowed at end of entity property name because the capitalization differs.
+        assertIterableEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
+                             things.findByAlike(true)
+                                             .map(o -> o.brand)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // "Like" is used as a reserved keyword here.
+        assertIterableEquals(List.of("A101"),
+                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
+                                             .map(o -> o.a)
+                                             .collect(Collectors.toList()));
+
+        // "Or" in middle of entity property name is possible to to use of @Query.
+        assertIterableEquals(List.of("Honeycrisp"),
+                             things.forPurchaseOrder(20)
+                                             .map(o -> o.brand)
+                                             .collect(Collectors.toList()));
+
+        // "Or" is allowed at the beginning of an entity property name because "find...By" immediately precedes it.
+        assertIterableEquals(List.of("Honeygold"),
+                             things.findByOrderNumber(100201L)
+                                             .map(o -> o.brand)
+                                             .collect(Collectors.toList()));
+
+        // "And" is allowed at the beginning of an entity property name because "find...By" immediately precedes it.
+        assertIterableEquals(List.of("android"),
+                             things.findByAndroid(true)
+                                             .map(o -> o.a)
+                                             .collect(Collectors.toList()));
+
+        // "and" is allowed at end of entity property name "brand" because the capitalization differs.
+        // "Not" is allowed at the beginning of an entity property name "Notes" because the reserved word "Not" never appears prior to the property name.
+        // "And" is allowed at the beginning of an entity property name because "And" or "Or" immediately precedes it.
+        assertIterableEquals(List.of(2L, 3L, 5L, 6L),
+                             things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
+                                             .map(o -> o.thingId)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // "or" is allowed at end of entity property name "floor" because the capitalization differs.
+        // "In" is allowed at the beginning of an entity property name "Info" because the reserved word "In" never appears prior to the property name.
+        // "Or" is allowed at the beginning of an entity property name because "And" or "Or" immediately precedes it.
+        assertIterableEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
+                             things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
+                                             .map(o -> o.info)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // TODO is "Desc" allowed in an entity property name in the OrderBy clause?
+        assertIterableEquals(List.of("A101", "android", "apple"),
+                             things.findByIdGreaterThan(3L)
+                                             .map(o -> o.a)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Insert, update, find, and delete entities.
+     */
+    @Test
+    public void testSaveAndUpdateMultiple() {
+        // find none
+        houses.deleteAll();
+        assertEquals(false, houses.existsById("001-203-401"));
+
+        // insert
+        House h1 = new House();
+        h1.area = 1500;
+        h1.lotSize = 0.18f;
+        h1.numBedrooms = 3;
+        h1.parcelId = "001-203-401";
+        h1.purchasePrice = 125000.00f;
+        h1.sold = Year.of(2015);
+
+        List<House> saved = houses.save(h1);
+
+        assertEquals(saved.toString(), 1, saved.size());
+        assertEquals("001-203-401", saved.get(0).parcelId);
+
+        // update
+        h1.numBedrooms = 4;
+        h1.purchasePrice = 136000.00f;
+        h1.sold = Year.of(2016);
+
+        saved = houses.save(h1);
+        assertEquals(saved.toString(), 1, saved.size());
+        House h = saved.get(0);
+
+        assertEquals(1500, h.area);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals("001-203-401", h.parcelId);
+        assertEquals(136000.00f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2016), h.sold);
+
+        // insert multiple
+        House h2 = new House();
+        h2.area = 1200;
+        h2.lotSize = 0.21f;
+        h2.numBedrooms = 2;
+        h2.parcelId = "001-203-402";
+        h2.purchasePrice = 112000.00f;
+        h2.sold = Year.of(2012);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "001-203-403";
+        h3.purchasePrice = 113000.00f;
+        h3.sold = Year.of(2013);
+
+        Iterable<House> inserted = houses.save(h2, h3);
+
+        Iterator<House> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals(h2.parcelId, i.next().parcelId);
+        assertEquals(true, i.hasNext());
+        assertEquals(h3.parcelId, i.next().parcelId);
+        assertEquals(false, i.hasNext());
+
+        // find
+        h = houses.findById(h1.parcelId);
+        assertEquals(h1.area, h.area);
+        assertEquals(h1.lotSize, h.lotSize, 0.001f);
+        assertEquals(h1.numBedrooms, h.numBedrooms);
+        assertEquals(h1.parcelId, h.parcelId);
+        assertEquals(h1.purchasePrice, h.purchasePrice, 0.001f);
+        assertEquals(h1.sold, h.sold);
+
+        // update multiple
+        h2.purchasePrice = 152000.00f;
+        h2.sold = Year.of(2022);
+
+        h1.purchasePrice = 191000.00f;
+        h1.sold = Year.of(2019);
+
+        Iterable<House> updated = houses.save(h1, h2);
+
+        Iterator<House> u = updated.iterator();
+        assertEquals(true, u.hasNext());
+        assertEquals(191000.00f, u.next().purchasePrice, 0.001f);
+        assertEquals(true, u.hasNext());
+        assertEquals(Year.of(2022), u.next().sold);
+        assertEquals(false, u.hasNext());
+
+        // delete
+        assertEquals(1L, houses.deleteById(h1.parcelId));
+
+        // find none
+        assertEquals(false, houses.existsById(h1.parcelId));
+
+        // delete nothing
+        assertEquals(0L, houses.deleteById(h1.parcelId));
+
+        assertEquals(2L, houses.deleteAll());
+    }
+
+    /**
+     * Insert, update, find, and delete an unannotated entity.
+     */
+    @Test
+    public void testSaveMultipleAndUpdate() {
+        vehicles.deleteAll();
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Honda";
+        v1.model = "Accord";
+        v1.numSeats = 5;
+        v1.price = 26000f;
+        v1.vinId = "TE201234567890001";
+
+        Vehicle v2 = new Vehicle();
+        v2.make = "Ford";
+        v2.model = "F-150";
+        v2.numSeats = 3;
+        v2.price = 32000f;
+        v2.vinId = "TE201234567890002";
+
+        Vehicle v3 = new Vehicle();
+        v3.make = "Toyota";
+        v3.model = "Camry";
+        v3.numSeats = 5;
+        v3.price = 25000f;
+        v3.vinId = "TE201234567890003";
+
+        // insert multiple
+        Iterable<Vehicle> inserted = vehicles.save(List.of(v1, v2, v3));
+        Iterator<Vehicle> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals("Honda", i.next().make);
+        assertEquals(true, i.hasNext());
+        assertEquals(3, i.next().numSeats);
+        assertEquals(true, i.hasNext());
+        assertEquals(25000f, i.next().price, 0.001f);
+        assertEquals(false, i.hasNext());
+
+        // delete
+        assertEquals(true, vehicles.deleteById(v1.vinId));
+
+        // find none
+        Optional<Vehicle> found = vehicles.findById(v1.vinId);
+        assertEquals(false, found.isPresent());
+
+        // update
+        assertEquals(true, vehicles.updateByIdAddPrice("TE201234567890003", 500.0f));
+
+        // find
+        found = vehicles.findById("TE201234567890003");
+        assertEquals(true, found.isPresent());
+        assertEquals(25500f, found.get().price, 0.001f);
+
+        vehicles.deleteAll();
     }
 
     /**
@@ -2770,6 +3277,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10040001;
         r1.start = OffsetDateTime.of(2022, 6, 3, 13, 30, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(90);
 
         Reservation r2 = new Reservation();
         r2.host = "testSelectAsRecord-host2@example.org";
@@ -2778,6 +3286,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10040002;
         r2.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testSelectAsRecord-host3@example.org";
@@ -2786,6 +3295,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10040003;
         r3.start = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 6, 3, 16, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testSelectAsRecord-host3@example.org";
@@ -2794,6 +3304,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10040004;
         r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         reservations.saveAll(Set.of(r1, r2, r3, r4));
 
@@ -2816,12 +3327,12 @@ public class DataTestServlet extends FATServlet {
         // With entity class as return type:
 
         // Single result is fine:
-        Prime p = primes.findByNumberBetween(14L, 18L);
-        assertEquals(17L, p.number);
+        Prime p = primes.findByNumberIdBetween(14L, 18L);
+        assertEquals(17L, p.numberId);
 
         // No result must raise EmptyResultException:
         try {
-            p = primes.findByNumberBetween(24L, 28L);
+            p = primes.findByNumberIdBetween(24L, 28L);
             fail("Unexpected prime " + p);
         } catch (EmptyResultException x) {
             // expected
@@ -2829,7 +3340,7 @@ public class DataTestServlet extends FATServlet {
 
         // Multiple results must raise NonUniqueResultException:
         try {
-            p = primes.findByNumberBetween(34L, 48L);
+            p = primes.findByNumberIdBetween(34L, 48L);
             fail("Should find more primes than " + p);
         } catch (NonUniqueResultException x) {
             // expected
@@ -2859,12 +3370,323 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * A repository might define a method that returns a Slice with a Limit parameter.
+     */
+    @Test
+    public void testSliceWithLimit() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, Limit.of(4), Sort.desc("id"));
+
+        assertEquals(1L, slice.number());
+        assertEquals(4L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(1L, slice.pageable().page());
+
+        assertIterableEquals(List.of("XLVII", "XLIII", "XXXVII", "XXIII"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, slice.nextPageable(), Sort.desc("id"));
+
+        assertEquals(2L, slice.number());
+        assertEquals(4L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(2L, slice.pageable().page());
+
+        assertIterableEquals(List.of("XVII", "XIII", "VII", "III"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L, slice.nextPageable(), Sort.desc("id"));
+
+        assertEquals(3L, slice.number());
+        assertEquals(1L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(null, slice.nextPageable());
+
+        assertIterableEquals(List.of("II"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided as Sort parameters
+     */
+    @Test
+    public void testSliceWithSortCriteriaAsSortParameters() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                                            Pageable.ofSize(5),
+                                                                            Sort.asc("sumOfBits"), Sort.desc("id"));
+        assertEquals(1L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(2L, 17L, 3L, 41L, 37L),
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                               slice.nextPageable(),
+                                                               Sort.asc("sumOfBits"), Sort.desc("id"));
+        assertEquals(2L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(13L, 11L, 7L, 43L, 23L),
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 50L,
+                                                               slice.nextPageable(),
+                                                               Sort.asc("sumOfBits"), Sort.desc("id"));
+        assertEquals(3L, slice.number());
+        assertEquals(2, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 31L),
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided by the OrderBy annotation.
+     */
+    @Test
+    public void testSliceWithSortCriteriaInOrderByAnnotation() {
+        Slice<Prime> slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, Pageable.ofSize(4));
+        assertEquals(1L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("forty-seven", "thirty-one", "forty-three", "twenty-nine"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("twenty-three", "eleven", "forty-one", "nineteen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndIdLessThan("X", 50L, slice.nextPageable());
+        assertEquals(3L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("thirteen", "thirty-seven", "seventeen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided in the Pageable
+     */
+    @Test
+    public void testSliceWithSortCriteriaInPageable() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L,
+                                                                            Pageable.ofSize(6).sortBy(Sort.desc("numberId")));
+        assertEquals(1L, slice.number());
+        assertEquals(6, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 43L, 37L, 23L, 17L, 13L),
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndIdLessThan("II", 50L,
+                                                               slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(7L, 3L, 2L),
+                             slice.stream().map(p -> p.numberId).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy annotation and
+     * dynamically via Sorts from pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(9).sortBy(Sort.desc("numberId"));
+        Page<Prime> page1 = primes.findByNumberIdLessThan(49L, pagination);
+
+        assertIterableEquals(List.of("17(2)", "5(2)", "3(2)",
+                                     "41(3)", "37(3)", "19(3)", "13(3)", "11(3)", "7(3)"),
+                             page1.stream()
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberIdLessThan(49L, page1.nextPageable());
+
+        assertIterableEquals(List.of("43(4)", "29(4)", "23(4)",
+                                     "47(5)", "31(5)",
+                                     "2(1)"),
+                             page2.stream()
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the Query annotation and
+     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSortsOnCustomQueryUsingKeysetPagination() {
+
+        Pageable pagination = Pageable.ofSize(7).sortBy(Sort.asc("binaryDigits"));
+        KeysetAwarePage<Prime> page1 = primes.upTo(47L, pagination);
+
+        assertEquals(7, page1.numberOfElements());
+        assertEquals(15L, page1.totalElements());
+
+        assertIterableEquals(List.of("10",
+                                     "101111", "11111",
+                                     "101011", "10111", "11101",
+                                     "100101"),
+                             page1.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.upTo(47L, page1.nextPageable());
+
+        assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
+                                     "10001", "101"),
+                             page2.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page3 = primes.upTo(47L, page2.nextPageable());
+
+        assertIterableEquals(List.of("11"),
+                             page3.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.upTo(47L, page3.previousPageable());
+
+        assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
+                                     "10001", "101"),
+                             page2.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        page1 = primes.upTo(47L, page2.previousPageable());
+
+        assertIterableEquals(List.of("10",
+                                     "101111", "11111",
+                                     "101011", "10111", "11101",
+                                     "100101"),
+                             page1.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy keyword and
+     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverKeysetPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(6).sortBy(Sort.desc("binaryDigits"));
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+
+        assertIterableEquals(List.of("11", "101", "10001",
+                                     "111", "1101", "1011"),
+                             page1.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page1.nextPageable());
+
+        assertIterableEquals(List.of("101001", "10011", "100101",
+                                     "11101", "10111", "101011"),
+                             page2.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwareSlice<Prime> page3 = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page2.nextPageable());
+
+        assertIterableEquals(List.of("11111", "101111",
+                                     "10"),
+                             page3.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(6)
+                        .sortBy(Sort.desc("binaryDigits"))
+                        .beforeKeysetCursor(page3.getKeysetCursor(1)); // before the middle element of page 3
+
+        KeysetAwareSlice<Prime> page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+
+        assertIterableEquals(List.of("10011", "100101",
+                                     "11101", "10111", "101011",
+                                     "11111"),
+                             page.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+
+        assertIterableEquals(List.of("101", "10001",
+                                     "111", "1101", "1011", "101001"),
+                             page.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+
+        page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+
+        assertIterableEquals(List.of("11"),
+                             page.stream()
+                                             .map(p -> p.binaryDigits)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy keyword and
+     * dynamically via Sorts, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverSorts() {
+
+        assertIterableEquals(List.of("3(2)", "5(2)", "17(2)",
+                                     "7(3)", "11(3)", "13(3)", "19(3)", "37(3)", "41(3)",
+                                     "23(4)", "29(4)", "43(4)",
+                                     "31(5)", "47(5)",
+                                     "2(1)"),
+                             primes.findByNumberIdLessThanOrderByEven(50L, Sort.asc("sumOfBits"), Sort.asc("id"))
+                                             .map(p -> p.numberId + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Repository method that returns a stream and uses it as a parallel stream.
      */
     @Test
     public void testStream() {
-        Stream<Prime> stream = primes.findByNumberLessThan(49L);
-        Long total = stream.parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        Stream<Prime> stream = primes.findByNumberIdLessThan(49L);
+        Long total = stream.parallel().reduce(0L, (sum, p) -> sum + p.numberId, (sum1, sum2) -> sum1 + sum2);
         assertEquals(Long.valueOf(328), total);
     }
 
@@ -2873,15 +3695,15 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testStreamable() {
-        Streamable<Prime> streamable = primes.findByNumberLessThanEqualOrderByNumberDesc(49L, Limit.of(14));
-        Long total = streamable.stream().parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        Streamable<Prime> streamable = primes.findByNumberIdLessThanEqualOrderByIdDesc(49L, Limit.of(14));
+        Long total = streamable.stream().parallel().reduce(0L, (sum, p) -> sum + p.numberId, (sum1, sum2) -> sum1 + sum2);
         assertEquals(Long.valueOf(326), total);
 
         assertIterableEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L, 19L, 17L, 13L, 11L, 7L, 5L, 3L),
-                             streamable.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         AtomicLong sumRef = new AtomicLong();
-        streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.number));
+        streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.numberId));
         assertEquals(326L, sumRef.get());
     }
 
@@ -2891,56 +3713,20 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testStreamableWithPagination() {
         Pageable p1 = Pageable.ofSize(9);
-        Streamable<Prime> streamable1 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p1);
+        Streamable<Prime> streamable1 = primes.findByNumberIdLessThanEqualOrderByIdAsc(44L, p1);
 
         assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L),
-                             streamable1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         Pageable p2 = p1.next();
-        Streamable<Prime> streamable2 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p2);
+        Streamable<Prime> streamable2 = primes.findByNumberIdLessThanEqualOrderByIdAsc(44L, p2);
 
         assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
-                             streamable2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             streamable2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         AtomicLong sumRef = new AtomicLong();
-        streamable2.forEach(p -> sumRef.addAndGet(p.number));
+        streamable2.forEach(p -> sumRef.addAndGet(p.numberId));
         assertEquals(181L, sumRef.get());
-    }
-
-    /**
-     * Entity classes that are accessed via repository methods can also be accessed via template.
-     */
-    @Test
-    public void testTemplateUsesRepositoryEntities() {
-        // insert by repository
-        Product prod1 = new Product();
-        prod1.id = "TTU-75-00-6144RE";
-        prod1.name = "testTemplateUsesRepositoryEntities Item";
-        prod1.price = 10.99f;
-        products.save(prod1);
-
-        // find by template
-        Optional<Product> found = template.find(Product.class, prod1.id);
-        assertEquals(true, found.isPresent());
-        Product p = found.get();
-        assertEquals("TTU-75-00-6144RE", p.id);
-        assertEquals("testTemplateUsesRepositoryEntities Item", p.name);
-        assertEquals(10.99f, p.price, 0.001f);
-
-        // insert by template
-        Order order1 = new Order();
-        order1.purchasedBy = "testTemplateUsesRepositoryEntities Buyer";
-        order1.purchasedOn = OffsetDateTime.now();
-        order1.total = 16.87f;
-        order1 = template.insert(order1);
-        assertNotNull(order1.id);
-
-        // find by repository
-        Optional<Order> ofound = orders.findById(order1.id);
-        assertEquals(true, ofound.isPresent());
-        Order o = ofound.get();
-        assertEquals(order1.id, o.id);
-        assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
     }
 
     /**
@@ -2948,29 +3734,29 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCounts() {
-        Page<Prime> page1 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, Pageable.ofSize(6));
+        Page<Prime> page1 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, Pageable.ofSize(6));
 
         assertEquals(3L, page1.totalPages());
         assertEquals(14L, page1.totalElements());
 
         assertIterableEquals(List.of(43L, 41L, 37L, 31L, 29L, 23L),
-                             page1.content().stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.content().stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        Page<Prime> page2 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page1.nextPageable());
+        Page<Prime> page2 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, page1.nextPageable());
 
         assertEquals(14L, page2.totalElements());
         assertEquals(3L, page2.totalPages());
 
         assertIterableEquals(List.of(19L, 17L, 13L, 11L, 7L, 5L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        Page<Prime> page3 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page2.nextPageable());
+        Page<Prime> page3 = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(43L, page2.nextPageable());
 
         assertEquals(3L, page3.totalPages());
         assertEquals(14L, page3.totalElements());
 
         assertIterableEquals(List.of(3L, 2L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
     }
 
     /**
@@ -3068,30 +3854,30 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCountsWithKeysetPagination() {
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
+        KeysetAwarePage<Prime> page3 = primes.findByNumberIdBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
         assertEquals(14L, page3.totalElements());
         assertEquals(3L, page3.totalPages());
 
         assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
-                             page3.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page3.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetween(3L, 50L, page3.previousPageable());
+        KeysetAwarePage<Prime> page2 = primes.findByNumberIdBetween(3L, 50L, page3.previousPageable());
         assertEquals(3L, page2.totalPages());
         assertEquals(14L, page2.totalElements());
 
         assertIterableEquals(List.of(11L, 13L, 17L, 19L, 23L),
-                             page2.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetween(3L, 50L, page2.previousPageable());
+        KeysetAwarePage<Prime> page1 = primes.findByNumberIdBetween(3L, 50L, page2.previousPageable());
         assertEquals(3L, page1.totalPages());
         assertEquals(14L, page1.totalElements());
 
         assertIterableEquals(List.of(3L, 5L, 7L),
-                             page1.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, page1.previousPageable());
 
-        KeysetAwarePage<Prime> page4 = primes.findByNumberBetween(3L, 50L, page3.nextPageable());
+        KeysetAwarePage<Prime> page4 = primes.findByNumberIdBetween(3L, 50L, page3.nextPageable());
         // In this case, the 14 elements are across 4 pages, not 3,
         // because the first and last pages ended up being partial.
         // But that doesn't become known until the first or last page is read.
@@ -3101,9 +3887,253 @@ public class DataTestServlet extends FATServlet {
         assertEquals(14L, page4.totalElements());
 
         assertIterableEquals(List.of(47L),
-                             page4.stream().map(p -> p.number).collect(Collectors.toList()));
+                             page4.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
         assertEquals(null, page4.nextPageable());
+    }
+
+    /**
+     * Use a repository interface that uses the Transactional annotation to manage transactions.
+     */
+    @Test
+    public void testTransactional() throws ExecutionException, IllegalStateException, InterruptedException, //
+                    NotSupportedException, SecurityException, SystemException, TimeoutException {
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        Person p1 = new Person();
+        p1.firstName = "Thomas";
+        p1.lastName = "TestTransactional";
+        p1.ssn_id = 300201001;
+
+        Person p2 = new Person();
+        p2.firstName = "Timothy";
+        p2.lastName = "TestTransactional";
+        p2.ssn_id = 300201002;
+
+        Person p3 = new Person();
+        p3.firstName = "Tyler";
+        p3.lastName = "TestTransactional";
+        p3.ssn_id = 300201003;
+
+        people.save(List.of(p1, p2, p3));
+
+        System.out.println("TxType.SUPPORTS in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
+            assertEquals("Ty", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id)); // read value with SUPPORTS
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.SUPPORTS from no transaction");
+
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+
+        System.out.println("TxType.REQUIRED in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.REQUIRED from no transaction");
+
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
+
+        assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.MANDATORY in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.MANDATORY from no transaction is an error");
+
+        try {
+            boolean result = people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
+            fail("Invoked TxType.MANDATORY operation with no transaction on thread. Result: " + result);
+        } catch (TransactionalException x) {
+            if (!(x.getCause() instanceof TransactionRequiredException))
+                throw x;
+        }
+
+        System.out.println("TxType.REQUIRES_NEW in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Timmy", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.REQUIRES_NEW from no transaction");
+
+        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NEVER in transaction");
+
+        tran.begin();
+        try {
+            boolean result = people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
+            fail("Invoked TxType.NEVER operation with transaction on thread. Result: " + result);
+        } catch (TransactionalException x) {
+            if (!(x.getCause() instanceof InvalidTransactionException))
+                throw x;
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NEVER from no transaction");
+
+        assertEquals(true, people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
+
+        assertIterableEquals(List.of("Tim", "Tom", "Ty"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NOT_SUPPORTED in transaction");
+
+        tran.begin();
+        try {
+            assertEquals(true, people.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
+        } finally {
+            tran.rollback();
+        }
+
+        assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
+                             people.findFirstNames("TestTransactional"));
+
+        System.out.println("TxType.NOT_SUPPORTED from no transaction");
+
+        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Update multiple entries.
+     */
+    @Test
+    public void testUpdateAnnotation() {
+        products.clear();
+
+        Product prod1 = new Product();
+        prod1.id = "UPD-ANNO-1";
+        prod1.name = "Fairly Priced TestUpdateAnnotation Item";
+        prod1.price = 5.00f;
+        products.save(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "UPD-ANNO-2";
+        prod2.name = "Highly Priced TestUpdateAnnotation Item";
+        prod2.price = 100.00f;
+        products.save(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "UPD-ANNO-3";
+        prod3.name = "Middle Priced TestUpdateAnnotation Item";
+        prod3.price = 40.00f;
+        products.save(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "UPD-ANNO-4";
+        prod4.name = "Inexpensive TestUpdateAnnotation Item";
+        prod4.price = 2.00f;
+        products.save(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "UPD-ANNO-5";
+        prod5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
+        prod5.price = 500.00f;
+        products.save(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "UPD-ANNO-6";
+        prod6.name = "Lowest Priced TestUpdateAnnotation Item";
+        prod6.price = 1.00f;
+        products.save(prod6);
+
+        assertEquals(true, products.isNotEmpty());
+        assertEquals(6, products.total());
+
+        assertEquals(5, products.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // prod4 does not match
+
+        Product[] found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     5, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f);
+        assertEquals(5.35f, found[1].price, 0.001f);
+        assertEquals(42.80f, found[2].price, 0.001f);
+        assertEquals(107.00f, found[3].price, 0.001f);
+        assertEquals(535.00f, found[4].price, 0.001f);
+
+        Product item = products.findItem("UPD-ANNO-4");
+        assertEquals(2.00f, item.price, 0.001f);
+
+        products.undoPriceIncrease(Set.of("UPD-ANNO-5", "UPD-ANNO-2", "UPD-ANNO-1"), 1.07f);
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(1);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     6, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
+        assertEquals(2.00f, found[1].price, 0.001f); // never updated
+        assertEquals(5.00f, found[2].price, 0.001f); // reverted
+        assertEquals(42.80f, found[3].price, 0.001f); // update remains in place
+        assertEquals(100.00f, found[4].price, 0.001f); // reverted
+        assertEquals(500.00f, found[5].price, 0.001f); // reverted
+
+        assertEquals(2, found[0].version); // update remains in place
+        assertEquals(1, found[1].version); // never updated
+        assertEquals(1, found[2].version); // reverted
+        assertEquals(2, found[3].version); // update remains in place
+        assertEquals(1, found[4].version); // reverted
+        assertEquals(1, found[5].version); // reverted
+
+        assertEquals(6, products.inflateAllPrices(1.05f));
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(1.12f, found[0].price, 0.01f);
+        assertEquals(2.10f, found[1].price, 0.01f);
+        assertEquals(5.25f, found[2].price, 0.01f);
+        assertEquals(44.94f, found[3].price, 0.01f);
+        assertEquals(105.00f, found[4].price, 0.01f);
+        assertEquals(525.00f, found[5].price, 0.01f);
+
+        products.clear();
+
+        assertEquals(0, products.total());
+        assertEquals(false, products.isNotEmpty());
     }
 
     /**
@@ -3216,44 +4246,6 @@ public class DataTestServlet extends FATServlet {
 
         Product p = products.findItem(prod1.id);
         assertEquals(149.99f, p.price, 0.001f);
-        assertEquals(version + 1, p.version);
-    }
-
-    /**
-     * Use template to update based on version.
-     */
-    @Test
-    public void testVersionedUpdateViaTemplate() {
-        Product prod1 = new Product();
-        prod1.id = "G1600-T-90251";
-        prod1.name = "TestVersionedUpdateViaTemplate Product 1";
-        prod1.price = 210.00f;
-        prod1 = template.insert(prod1);
-
-        long version = prod1.version;
-
-        Product prod1a = template.find(Product.class, prod1.id).orElseThrow();
-        Product prod1b = template.find(Product.class, prod1.id).orElseThrow();
-
-        prod1a.price += 25.00f;
-        prod1b.price += 20.00f;
-
-        Product p1b = template.update(prod1b);
-
-        try {
-            Product p1a = template.update(prod1a);
-            fail("Able to update using old version " + p1a);
-        } catch (DataException x) {
-            Throwable cause = x.getCause();
-            if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
-                throw x;
-        }
-
-        assertEquals(230.00f, p1b.price, 0.001f);
-        assertEquals(version + 1, p1b.version);
-
-        Product p = products.findItem(prod1.id);
-        assertEquals(230.00f, p.price, 0.001f);
         assertEquals(version + 1, p.version);
     }
 }

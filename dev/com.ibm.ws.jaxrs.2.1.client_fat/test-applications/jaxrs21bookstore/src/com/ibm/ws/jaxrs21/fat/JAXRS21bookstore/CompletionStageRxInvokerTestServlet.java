@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -24,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -47,6 +50,9 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = 2880606295862546001L;
     private static final long TIMEOUT = 5000;
+    // The FUTURE_TIMEOUT was added so that CompletableFuture.get() operations will not sit until the hard
+    // FAT timeout of 3 hours.
+    private static final long FUTURE_TIMEOUT = 10000;
     private static final long SLEEP = 20000;
     private static final long clientBuilderTimeout = 15000;
 
@@ -593,9 +599,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -628,9 +637,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -664,9 +676,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -715,9 +730,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -761,9 +779,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -808,9 +829,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -850,9 +874,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -885,9 +912,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -921,9 +951,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -973,9 +1006,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -1019,9 +1055,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();
@@ -1065,9 +1104,12 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
-            Response response = completableFuture.get();
+            Response response = completableFuture.get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
+        } catch (TimeoutException e) {
+            ret.append("TimeoutException");
+            e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
             e.printStackTrace();

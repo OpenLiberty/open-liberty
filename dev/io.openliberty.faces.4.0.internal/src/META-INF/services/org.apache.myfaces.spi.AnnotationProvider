@@ -1,1 +1,1 @@
-com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider
+io.openliberty.faces40.internal.config.annotation.WASMyFacesAnnotationProvider

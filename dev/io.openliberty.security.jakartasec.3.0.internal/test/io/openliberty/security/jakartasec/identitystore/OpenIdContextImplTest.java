@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -14,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -31,7 +34,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.json.java.JSONObject;
+
 import io.openliberty.security.jakartasec.tokens.OpenIdClaimsImpl;
+import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -66,6 +72,8 @@ public class OpenIdContextImplTest {
     private OpenIdContext openIdContext;
     private HttpServletRequest request;
     private HttpServletResponse response;
+
+    private final String sampleStringValue = "some string value";
 
     SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
     @Rule
@@ -297,8 +305,8 @@ public class OpenIdContextImplTest {
             }
         });
 
-        Optional<String> originalRequestStringOptional = openIdContext.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);      
-        
+        Optional<String> originalRequestStringOptional = openIdContext.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
+
         assertEquals("The original request must be found in the OpenIdContext.", originalRequestUrl, originalRequestStringOptional.get());
     }
 
@@ -311,9 +319,50 @@ public class OpenIdContextImplTest {
 
             Optional<String> someMissingStoredValue = openIdContext.getStoredValue(request, response, OpenIdConstant.SUBJECT_IDENTIFIER);
             assertFalse(someMissingStoredValue.isPresent());
-           
-        } catch(Exception ex) {
+
+        } catch (Exception ex) {
             fail("Unexpected exception was thrown: " + ex);
         }
+    }
+
+    /**
+     * Testing this helper class to convert a JSONObject to a Jakarta JsonObject. See also:
+     * MetadataUtilsTest.test_getProviderMetadata_providerMetadataHasValue and
+     * OidcIdentityStore.getProviderMetadataAsJsonObject
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_convertJsonObject() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ISSUER, sampleStringValue);
+
+        JsonObject result = OpenIdContextUtils.convertJsonObject(discoveryData);
+
+        assertNotNull("Should have returned providerMetadata JsonObject", result);
+        assertTrue("Expected " + OidcDiscoveryConstants.METADATA_KEY_ISSUER + " key in JsonObject", result.containsKey(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+        assertEquals(sampleStringValue, result.getString(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataNull() throws Exception {
+        JSONObject discoveryData = null;
+
+        JsonObject result = OpenIdContextUtils.convertJsonObject(discoveryData);
+
+        assertNull("Should not have returned providerMetadata JsonObject", result);
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataIsEmpty() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+
+        JsonObject result = OpenIdContextUtils.convertJsonObject(discoveryData);
+
+        assertNotNull("Should have returned providerMetadata JsonObject", result);
+        assertTrue("Expected empty JSONObject", result.isEmpty());
+
     }
 }

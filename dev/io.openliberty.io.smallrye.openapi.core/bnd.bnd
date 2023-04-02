@@ -1,12 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 
@@ -22,6 +21,7 @@ src: src
 
 Import-Package: \
     io.smallrye.openapi.jaxrs,\
+    org.eclipse.microprofile.config;version="[2.0,4.0)",\
     *
 
 Export-Package: \
@@ -33,4 +33,8 @@ Export-Package: \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
-    com.ibm.websphere.org.osgi.service.component;version=latest
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.ws.org.jboss.jandex;version=latest,\
+    com.ibm.ws.org.jboss.logging;version=latest,\
+    io.openliberty.com.fasterxml.jackson;version=latest,\
+    io.openliberty.org.eclipse.microprofile.config.2.0;version=latest

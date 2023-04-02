@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.net.URL;
 
@@ -43,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
  * in JSF 2.3 specification under the Section 10.4.1.7 “<f:websocket>”.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class JSF23WebSocketTests {
 
     protected static final Class<?> c = JSF23WebSocketTests.class;
@@ -145,7 +146,6 @@ public class JSF23WebSocketTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testOpenAndCloseWebsocket() throws Exception {
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -179,9 +179,9 @@ public class JSF23WebSocketTests {
 
             // Now click the open button and get the resulted page.
             HtmlPage openPage = openButton.click();
-            webClient.waitForBackgroundJavaScript(10000);
 
-            assertContains(openPage.asText(), "Called onopen listener");
+            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
+            assertTrue(JSFUtils.waitForPageResponse(openPage, "Called onopen listener"));
 
             String result1 = server.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
@@ -190,9 +190,9 @@ public class JSF23WebSocketTests {
 
             // Now click the close button and get the resulted page.
             HtmlPage closePage = closeButton.click();
-            webClient.waitForBackgroundJavaScript(10000);
 
-            assertContains(closePage.asText(), "Called onclose listener");
+            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
+            assertTrue(JSFUtils.waitForPageResponse(closePage, "Called onclose listener"));
 
             String result2 = server.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 

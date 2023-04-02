@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -30,10 +32,10 @@ import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import io.openliberty.microprofile.metrics50.internal.Constants;
+import io.openliberty.microprofile.metrics50.helper.Constants;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 
 public class MonitorMetrics {
@@ -60,6 +62,18 @@ public class MonitorMetrics {
 
     public void createMetrics(SharedMetricRegistries sharedMetricRegistry, String[][] data) {
         MetricRegistry metricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.VENDOR_SCOPE);
+        
+        /*
+         * metricRegistry is null due to failed initialization of the MP Metrics runtime.
+         * Fail silently.
+         */
+        if (metricRegistry == null) {
+            if (tc.isDebugEnabled() || tc.isAnyTracingEnabled()) {
+                Tr.debug(tc, "MetricRegistry obtained from SharedMetricRegistries was null. No metrics will be registered.");
+            }
+            return;
+        }
+        
         Set<MetricID> metricIDSet = null;
 
         for (String[] metricData : data) {

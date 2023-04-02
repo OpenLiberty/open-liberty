@@ -1,13 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import java.net.URL;
@@ -24,7 +23,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -62,14 +60,7 @@ public class JSF22BeanValidationTests {
         ShrinkHelper.defaultDropinApp(jsf22beanvalServer, "BeanValidationTests.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.beanvalidation.faces40" : "com.ibm.ws.jsf22.fat.beanvalidation.jsf22");
 
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsf22beanvalServer.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsf22beanvalServer.updateServerConfiguration(config);
-        }
-
-        jsf22beanvalServer.startServer(JSF22BeanValidationTests.class.getSimpleName() + ".log");
+        jsf22beanvalServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

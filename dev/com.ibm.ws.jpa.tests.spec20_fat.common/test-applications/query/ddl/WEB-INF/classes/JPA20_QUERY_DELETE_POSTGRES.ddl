@@ -1,1 +1,0 @@
-DELETE FROM JPA20QueryUnwrapEntity;

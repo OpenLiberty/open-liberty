@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -99,6 +101,12 @@ public class PackageRunnableTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        final String METHOD_NAME = "setUpBeforeClass";
+
+        // Save this off for the tearDown method to manually copy logs from /NonDefaultUser
+        // folder to /autoFVT/output/servers/ folder.
+        outputAutoFVTDirectory = new File("output/servers", serverName);
+        Log.info(c, METHOD_NAME, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
     }
 
     @AfterClass
@@ -208,7 +216,7 @@ public class PackageRunnableTest {
 
         String extLoc = executeTheJar(extractDirectory3, false, true, true);
 
-        assertTrue("The extract location does not match the WLP_JAR_EXTRACT_DIR. ExtractDir = " + extractDirectory3.getAbsolutePath() + " vs " + extractLocation,
+        assertTrue("The extract location does not match the WLP_JAR_EXTRACT_DIR. ExtractDir = " + extractDirectory3.getAbsolutePath() + " vs " + extLoc,
                    extLoc.startsWith(extractDirectory3.getAbsolutePath()));
 
         assertTrue("root folder at " + extractDirectory3.getAbsolutePath() + " does not exist, but should.", extractDirectory3.exists());
@@ -248,6 +256,9 @@ public class PackageRunnableTest {
         // wait 30s to give the shutdown script time to run in the shutdown hook
         Thread.sleep(30000);
 
+        Log.info(c, method, "The value of extractLocation is: " + extractLocation);
+        Log.info(c, method, "extractLocation is a directory: " + extractLocation.isDirectory());
+
         checkDirStructure(extractLocation, false);
     }
 
@@ -263,6 +274,8 @@ public class PackageRunnableTest {
         String method = "checkDirStructure";
         StringBuffer sb = new StringBuffer();
         File[] files = extractDir.listFiles();
+        assertTrue("extractDir:" + extractDir + " is not a directory.", (files != null));
+
         for (int i = 0; i < files.length; i++) {
             sb.append(files[i] + "\n");
         }
@@ -284,11 +297,13 @@ public class PackageRunnableTest {
         assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
 
         if (shouldFolderExist) {
-            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(), templateDir.exists());
+            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(),
+                       templateDir.exists());
         } else {
             Log.info(c, method, "Contents at " + templateDir.getAbsolutePath() + " are : " + sb.toString());
             assumeTrue(!templateDir.exists());
         }
+
     }
 
     /**
@@ -311,7 +326,15 @@ public class PackageRunnableTest {
 
             assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
-            String[] cmd = { "java", "-jar", runnableJar.getAbsolutePath() };
+            String[] cmd;
+
+            if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+                // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+                cmd = new String[] { "java", "-XX:+EnableHCR", "-jar", runnableJar.getAbsolutePath() };
+            } else {
+                cmd = new String[] { "java", "-jar", runnableJar.getAbsolutePath() };
+            }
+
             Log.info(c, method, "Running command: " + Arrays.toString(cmd));
             ProcessBuilder processBuilder = new ProcessBuilder(cmd);
             processBuilder.redirectErrorStream(true);
@@ -378,6 +401,9 @@ public class PackageRunnableTest {
                 assertTrue("Runnable jar did not contain a META-INF/MANIFEST.MF file", manifestFound);
 
                 // If we have an invalid package, save off the jar for troubleshooting.
+                outputAutoFVTDirectory = new File("output/servers/", serverName);
+                Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
+
                 outputAutoFVTDirectory.mkdirs();
                 Log.info(c, method, "Copying directory from " +
                                     runnableJar.getAbsolutePath() + " to " +
@@ -419,10 +445,11 @@ public class PackageRunnableTest {
         } finally {
 
             if (proc.isAlive()) {
-                // Attempt to dump the server if its still alive
-                Log.info(c, method, "Dumping server as it has not stopped by request.");
-                server.dumpServer(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
-
+                if (server.isStarted()) {
+                    // Attempt to dump the server if its still alive
+                    Log.info(c, method, "Dumping server as it has not stopped by request.");
+                    server.dumpServer(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
+                }
                 Log.info(c, method, "Destroying the process as it was not stopped via the previous attempts.");
                 proc.destroy();
             }
@@ -471,7 +498,15 @@ public class PackageRunnableTest {
             }
         }
 
-        String[] cmd = { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        String[] cmd;
+
+        if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+            // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+            cmd = new String[] { "java", "-XX:+EnableHCR", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        } else {
+            cmd = new String[] { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        }
+
         Log.info(c, "executeAndExecuteMain", "Running command: " + Arrays.toString(cmd));
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         processBuilder.redirectErrorStream(true);
@@ -515,7 +550,7 @@ public class PackageRunnableTest {
             Log.info(c, "extractAndExecuteMain", "WLP installation directory was removed.");
         }
 
-        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty threads exit.");
         Thread.sleep(30000); // wait 30 second
     }
 

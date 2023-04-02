@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -51,12 +53,19 @@ public class JPATestOLGH9339Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
-        //Derby does not support NULL values in COALESCE?
+        // Derby does not support the value 'NULL' in COALESCE
         //  Exception: java.sql.SQLSyntaxErrorException: Syntax error: Encountered "NULL"
-        if (isDerby) {
+        // DB2 does not support the value 'NULL' in COALESCE
+        //  com.ibm.db2.jcc.am.SqlSyntaxErrorException: NULL IS NOT VALID IN THE CONTEXT WHERE IT IS USED. SQLCODE=-206, SQLSTATE=42703, DRIVER=4.20.30
+
+        // Setting `eclipselink.jdbc.allow-partial-bind-parameters` resolves this issue, as it enables EclipseLink to know how to handle binding, but this test does not use that property
+        if (isDerby || isDB2ZOS) {
+            System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
 

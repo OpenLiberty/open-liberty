@@ -1,12 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -17,7 +16,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.org.apache.myfaces.4.0
-Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 Implementation
+Bundle-Description:  Jakarta Faces, MyFaces 4.0 Implementation
 
 Implementation-Version: 4.0.0
 
@@ -27,10 +26,8 @@ instrument.ffdc: false
 instrument.classesExcludes: \
   org/**/*.class
 
-# Use this format once we have an offical release and not an RC2
-# @${repo;org.apache.myfaces.core.impl;${Implementation-Version};EXACT}!/jakarta/faces, \
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;4.0.0.RC2;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -50,12 +47,12 @@ Service-Component: \
 
 # Not used directly, so these packages needs to be dynamically imported
 DynamicImport-Package: \
-  com.ibm.ws.jsf.cdi, \
-  com.ibm.ws.jsf.config.annotion,\
-  com.ibm.ws.jsf.config.resource,\
-  com.ibm.ws.jsf.ee, \
-  com.ibm.ws.jsf.spi.impl, \
-  com.ibm.ws.jsf.extprocessor
+  io.openliberty.faces40.internal.cdi, \
+  io.openliberty.faces40.internal.config.annotion, \
+  io.openliberty.faces40.internal.config.resource, \
+  io.openliberty.faces40.internal.ee, \
+  io.openliberty.faces40.internal.extprocessor, \
+  io.openliberty.faces40.internal.spi.impl
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is myfaces-builder-annotations-1.0.9.jar
@@ -67,33 +64,28 @@ Export-Package: \
   !org.apache.myfaces.renderkit.html, \
   !org.apache.myfaces.renderkit.html.base, \
   !org.apache.myfaces.renderkit.html.util, \
-  com.ibm.ws.faces.taglibconfig, \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.search;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.visit;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.annotation;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.config.impl.digester.elements;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.el.convert;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.config.impl.element;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.flash;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.push.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.context.flash;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.taglib;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.taglib.core;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.shared.util;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.spi.impl;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.taglib.core;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.taglib.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.util.lang;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.compiler;thread-context=true;version=${Implementation-Version}, \
@@ -116,17 +108,15 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
-  !com.ibm.ws.jsf.ee, \
   !com.google.inject, \
+  !io.openliberty.faces40.internal.ee, \
   !jakarta.ejb, \
   !jakarta.persistence, \
   !org.apache.tomcat, \
   *
 
-# Use this once we have a non RC2 release
-# org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC2,\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.4.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
@@ -146,4 +136,5 @@ Import-Package: \
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9
+  org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+  io.openliberty.jakarta.annotation.2.1;version=latest

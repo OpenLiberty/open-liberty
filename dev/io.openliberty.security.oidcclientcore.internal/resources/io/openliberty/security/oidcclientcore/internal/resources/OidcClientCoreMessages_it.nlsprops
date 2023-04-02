@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -86,9 +85,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Il client OpenID Connect {0} ha riscontrato il s
 TOKEN_REQUEST_ERROR.explanation=\u00c8 possibile che il client OpenID Connect non disponga di tutte le informazioni, che la richiesta all'endpoint del token abbia avuto esito negativo o che si sia verificato un altro errore durante l'elaborazione della risposta dell'endpoint del token.
 TOKEN_REQUEST_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che il provider OpenID Connect abbia restituito un codice nella risposta di autenticazione.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: Al token manca la richiesta [{0}].
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=La richiesta specificata nel messaggio deve essere presente nel token, ma non \u00e8 presente.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=Controllare il formato e il contenuto del token restituito dal provider OpenID Connect.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Il client OpenID Connect ha rilevato il seguente messaggio di errore quando ha inviato una richiesta all''URL di informazioni utente [{0}] del provider OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=La risposta delle informazioni utente dal provider OpenID Connect potrebbe non essere corretta o potrebbe non contenere informazioni oppure il provider OpenID Connect ha rilevato un errore durante la gestione della richiesta.
@@ -111,3 +110,32 @@ JWK_CONNECTION_TIMED_OUT.useraction=Aggiornare la propriet\u00e0 jwksConnectTime
 JWK_READ_TIMED_OUT=CWWKS2422E: Il client OpenID Connect non \u00e8 riuscito a leggere i dati dall''URI JWK[{0}] del provider OpenID Connect entro {1} millisecondi. Valutare l''aggiornamento della propriet\u00e0 jwksReadTimeout nella configurazione del client OpenID Connect.
 JWK_READ_TIMED_OUT.explanation=Il client OpenID Connect non pu\u00f2 leggere i dati JWK dall'URI JWK entro il periodo di tempo configurato.
 JWK_READ_TIMED_OUT.useraction=Aggiornare la propriet\u00e0 jwksReadTimeout nella configurazione del client OpenID Connect. Verificare che il provider OpenID Connect sia raggiungibile.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: \u00c8 specificato il seguente tipo di risposta non valido: ''{0}''. I tipi di risposta validi sono [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Il tipo di risposta specificato non \u00e8 valido. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specificare uno dei tipi di risposta validi.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Il valore [{0}] per la richiesta [{1}] nel token non corrisponde al valore previsto [{2}].
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=Il valore della richiesta non \u00e8 corretto o non \u00e8 conforme. La configurazione per il client OpenID Connect potrebbe non essere corretta oppure il token \u00e8 stato creato con valori non corretti.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Accertarsi che l'attributo nella configurazione del client OpenID Connect correlato alla richiesta specificata nel messaggio sia configurato correttamente.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Il token del client {0} OpenID Connect non \u00e8 valido. Il valore jwtClaims nell''oggetto JwtContext \u00e8 null o vuoto.
+TOKEN_MISSING_CLAIMS.explanation=Mancano informazioni dal token e non \u00e8 possibile completare la convalida del token.
+TOKEN_MISSING_CLAIMS.useraction=Esaminare eventuali errori precedenti nel log, per i dettagli. Controllare il formato e il contenuto del token restituito dal provider OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Il token ha un''attestazione [{0}] vuota.
+TOKEN_EMPTY_CLAIM.explanation=L'attestazione specificata nel messaggio deve avere un valore valido.
+TOKEN_EMPTY_CLAIM.useraction=Il provider OpenID Connect restituisce un token ID con un'attestazione vuota. Se un'attestazione \u00e8 presente, deve contenere un valore valido. Controllare il formato e il contenuto del token restituito dal provider OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Il token non \u00e8 valido, perch\u00e9 \u00e8 scaduto. L''ora di scadenza del token \u00e8 [{0}]. La data/ora corrente meno la differenza oraria \u00e8 pari a [{1}]. La differenza di orario configurata \u00e8 {2} secondi.
+TOKEN_EXP_IN_PAST.explanation=I token scaduti non sono validi.
+TOKEN_EXP_IN_PAST.useraction=Ottenere un nuovo token che non sia scaduto. Sincronizzare le ore dell'orologio tra emittente del token e client OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Il token \u00e8 considerato non valido, perch\u00e9 il valore [{0}] per l''attestazione [{1}] \u00e8 nel futuro. La somma dell''ora corrente e della differenza di orario \u00e8 [{2}] e la differenza di orario configurata \u00e8 {3} secondi.
+TOKEN_CLAIM_IN_FUTURE.explanation=Il valore specificato nel messaggio per l'attestazione deve essere un'ora nel passato.
+TOKEN_CLAIM_IN_FUTURE.useraction=Utilizzare il token dopo la scadenza dell'orario specificato nel messaggio oppure ottenere un nuovo token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Nella risposta del token fornita dal provider OpenID Connect manca almeno un parametro obbligatorio: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Il provider OpenID Connect non ha restituito un parametro obbligatorio o non \u00e8 riuscito a elaborare la richiesta del token.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verificare che l'endpoint del token configurato sia corretto e in grado di rispondere alle richieste del token OAuth.
+

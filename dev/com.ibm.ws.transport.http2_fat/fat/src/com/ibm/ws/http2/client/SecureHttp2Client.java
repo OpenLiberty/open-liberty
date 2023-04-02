@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -112,7 +114,7 @@ public class SecureHttp2Client {
             executeRequest(endpoint, requester, target, requestUri, responseMessages, latch);
         }
 
-        latch.await(29, TimeUnit.SECONDS);
+        latch.await(36, TimeUnit.SECONDS);
 
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "requests complete, shutting down client");
         requester.close(CloseMode.GRACEFUL);
@@ -270,8 +272,8 @@ public class SecureHttp2Client {
                           new BasicRequestProducer("GET", target, requestUri),
                           new BasicResponseConsumer(new StringAsyncEntityConsumer()),
                           // the first request to a server can take more than the default timeout;
-                          // we'll allow 28 seconds for the request to complete
-                          Timeout.ofSeconds(28),
+                          // we'll allow 35 seconds for the request to complete
+                          Timeout.ofSeconds(35),
                           new FutureCallback<Message<HttpResponse, String>>() {
 
                               @Override

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -15,9 +17,11 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -300,7 +304,18 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      */
     static StatsData aggregateStats(Collection<StatsData> dataSet) {
         StatsData combined = new StatsData();
-        for (StatsData stats : dataSet) {
+
+        ArrayList<StatsData> sortedDataSet = new ArrayList<StatsData>(dataSet);
+
+        Collections.sort(sortedDataSet, new Comparator<StatsData>() {
+
+            @Override
+            public int compare(StatsData o1, StatsData o2) {
+                return Double.compare(o1.mean, o2.mean);
+            }
+        });
+
+        for (StatsData stats : sortedDataSet) {
             if (stats.count == 0) {
                 continue;
             }

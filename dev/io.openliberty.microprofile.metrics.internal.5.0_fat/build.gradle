@@ -1,0 +1,93 @@
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+	
+configurations {
+	  prometheusRegistry
+	  micrometerCore
+	  hdrHistogram
+	  simpleClientCommon
+	  simpleClientTracerCommon
+	  simpleClientTracerOtelAgent
+	  simpleClientTracerOtel
+	  simpleClient
+}
+	
+dependencies {
+  prometheusRegistry 'io.micrometer:micrometer-registry-prometheus:1.9.3'
+  micrometerCore 'io.micrometer:micrometer-core:1.9.3'
+  hdrHistogram 'org.hdrhistogram:HdrHistogram:2.1.12'
+  simpleClientCommon 'io.prometheus:simpleclient_common:0.15.0'
+  simpleClientTracerCommon 'io.prometheus:simpleclient_tracer_common:0.15.0'
+  simpleClientTracerOtelAgent 'io.prometheus:simpleclient_tracer_otel_agent:0.15.0'
+  simpleClientTracerOtel 'io.prometheus:simpleclient_tracer_otel:0.15.0'
+  simpleClient 'io.prometheus:simpleclient:0.15.0'
+}
+
+task copyPrometheus(type: Copy) {
+  shouldRunAfter jar
+  from configurations.prometheusRegistry
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+
+task copyHdrHistogramUseless(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hdrHistogram
+  into new File(autoFvtDir, 'publish/shared/resources/uselessLib/')
+}
+
+task copyMicrometerCore(type: Copy) {
+  shouldRunAfter jar
+  from configurations.micrometerCore
+  into new File(autoFvtDir, 'publish/shared/resources/micrometercore/')
+}
+
+task copySimpleClientCommon(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClientCommon
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+task copySimpleClientTracerCommon(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClientTracerCommon
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+task copySimpleClientTracerOtelAgent(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClientTracerOtelAgent
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+task copySimpleClientTracerOtel(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClientTracerOtel
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+task copySimpleClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+ addRequiredLibraries {
+  dependsOn copyMicrometerCore
+  dependsOn copyPrometheus
+  dependsOn copyHdrHistogramUseless
+  dependsOn copySimpleClientCommon
+  dependsOn copySimpleClientTracerCommon
+  dependsOn copySimpleClientTracerOtelAgent
+  dependsOn copySimpleClientTracerOtel
+  dependsOn copySimpleClient
+}

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -23,17 +25,15 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Result;
-import jakarta.data.Select;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Select;
 import jakarta.data.repository.Sort;
 
 /**
@@ -84,14 +84,8 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
 
     // Use a stream of record as the return type
-    @Result(ReservedTimeSlot.class)
     @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
-
-    // Possibly better way of doing the above?
-    // @Result(ReservedTimeSlot.class)
-    // @Select({ "start", "stop" })
-    // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
     Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
 
@@ -103,11 +97,9 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
-    LinkedBlockingQueue<Reservation> findByLowerLocationIn(List<String> locations);
-
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
-    CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
+    CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 

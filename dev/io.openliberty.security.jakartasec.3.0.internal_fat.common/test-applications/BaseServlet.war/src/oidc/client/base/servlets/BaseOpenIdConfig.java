@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -13,6 +15,7 @@ package oidc.client.base.servlets;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 /**
@@ -127,6 +130,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String[] getExtraParametersExpression() {
+
+        String[] value = {};
+        if (config.containsKey(Constants.EXTRA_PARAMETERS_EXPRESSION)) {
+            value = getStringArrayValue(Constants.EXTRA_PARAMETERS_EXPRESSION, ",");
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;
@@ -151,6 +163,27 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         }
 
         return value;
+    }
+
+    public DisplayType getDisplayExpression() {
+
+        DisplayType value = DisplayType.PAGE;
+        if (config.containsKey(Constants.DISPLAY_EXPRESSION)) {
+            value = getDisplayTypeValue(Constants.DISPLAY_EXPRESSION);
+        }
+
+        return value;
+
+    }
+
+    public int getTokenMinValidityExpression() {
+
+        int value = Constants.DEFAULT_TOKEN_MIN_VALIDITY;
+        if (config.containsKey(Constants.TOKEN_MIN_VALIDITY_EXPRESSION)) {
+            value = getIntValue(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, value);
+        }
+        return value;
+
     }
 
     public String getCallerNameClaim() {
@@ -216,14 +249,67 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
-    public String getUserinfoEndpoint() {
+    public String getTokenEndpoint() {
 
         String value = "";
-        if (config.containsKey(Constants.USERINFOENDPOINT)) {
-            value = getStringValue(Constants.USERINFOENDPOINT);
+        if (config.containsKey(Constants.TOKEN_ENDPOINT)) {
+            value = getStringValue(Constants.TOKEN_ENDPOINT);
         }
 
         return value;
+    }
+
+    public String getUserinfoEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.USERINFO_ENDPOINT)) {
+            value = getStringValue(Constants.USERINFO_ENDPOINT);
+        }
+
+        return value;
+    }
+
+    public String getEndSessionEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.ENDSESSION_ENDPOINT)) {
+            value = getStringValue(Constants.ENDSESSION_ENDPOINT);
+        }
+
+        return value;
+    }
+
+    public String getJwksURI() {
+
+        String value = "";
+        if (config.containsKey(Constants.JWKSURI)) {
+            value = getStringValue(Constants.JWKSURI);
+        }
+
+        return value;
+
+    }
+
+    public String getIssuer() {
+
+        String value = "";
+        if (config.containsKey(Constants.ISSUER)) {
+            value = getStringValue(Constants.ISSUER);
+        }
+
+        return value;
+
+    }
+
+    public String getSubjectTypeSupported() {
+
+        String value = "";
+        if (config.containsKey(Constants.SUBJECTTYPESUPPORTED)) {
+            value = getStringValue(Constants.SUBJECTTYPESUPPORTED);
+        }
+
+        return value;
+
     }
 
     public String getIdTokenSigningAlgorithmsSupported() {
@@ -231,6 +317,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         String value = "RS256"; // spec default is RS256, OIDC default is HS256
         if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
             value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
+    }
+
+    public String getResponseTypeSupported() {
+
+        String value = "";
+        if (config.containsKey(Constants.RESPONSETYPESUPPORTED)) {
+            value = getStringValue(Constants.RESPONSETYPESUPPORTED);
         }
 
         return value;

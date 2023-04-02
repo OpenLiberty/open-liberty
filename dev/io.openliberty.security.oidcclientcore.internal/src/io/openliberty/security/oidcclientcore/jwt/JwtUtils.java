@@ -1,17 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.jwt;
 
 import java.net.SocketTimeoutException;
 import java.security.Key;
+import java.util.Arrays;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -37,32 +37,62 @@ public class JwtUtils {
 
     public static final TraceComponent tc = Tr.register(JwtUtils.class);
 
-    public static JwsSignatureVerifier createJwsSignatureVerifier(JwtContext jwtContext, OidcClientConfig clientConfig, String... signatureAlgorithmsSupported) throws Exception {
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+    /**
+     * Verifies the "alg" header in the JWT matches one of the allowed algorithms and sets the appropriate key to use to validate
+     * the signature of the token.
+     */
+    public static io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifyJwsAlgHeaderAndCreateJwsSignatureVerifierBuilder(JwtContext jwtContext,
+                                                                                                                                             OidcClientConfig clientConfig,
+                                                                                                                                             String[] signingAlgsAllowed) throws Exception {
+        JwsSignatureVerifier.verifyJwsAlgHeaderOnly(jwtContext, Arrays.asList(signingAlgsAllowed));
 
-        Key jwtVerificationKey = getJwsVerificationKey(jws, clientConfig);
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+        Key jwtVerificationKey = JwtUtils.getJwsVerificationKey(jws, clientConfig);
 
         io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithmsSupported(signatureAlgorithmsSupported).build();
-        return signatureVerifier;
+        verifierBuilder.signatureAlgorithmsSupported(signingAlgsAllowed);
+        verifierBuilder.key(jwtVerificationKey);
+        return verifierBuilder;
     }
 
     @FFDCIgnore({ ConnectTimeoutException.class, SocketTimeoutException.class })
     public static Key getJwsVerificationKey(JsonWebStructure jws, OidcClientConfig clientConfig) throws Exception {
-        RemoteJwkData jwkData = initializeRemoteJwkData(clientConfig);
-
         JwsVerificationKeyHelper.Builder keyHelperBuilder = new JwsVerificationKeyHelper.Builder();
-        JwsVerificationKeyHelper keyHelper = keyHelperBuilder.configId(clientConfig.getClientId()).sharedSecret(clientConfig.getClientSecret()).remoteJwkData(jwkData).jwkSet(Client.getJwkSet()).build();
+        keyHelperBuilder.configId(clientConfig.getClientId());
 
-        Key jwtVerificationKey = null;
+        setKeyData(jws, clientConfig, keyHelperBuilder);
+
+        JwsVerificationKeyHelper keyHelper = keyHelperBuilder.build();
+
         try {
-            jwtVerificationKey = keyHelper.getVerificationKey(jws);
+            return keyHelper.getVerificationKey(jws);
         } catch (ConnectTimeoutException e) {
-            throw new VerificationKeyException(clientConfig.getClientId(), Tr.formatMessage(tc, "JWK_CONNECTION_TIMED_OUT", jwkData.getJwksUri(), jwkData.getJwksConnectTimeout()));
+            throw new VerificationKeyException(clientConfig.getClientId(), Tr.formatMessage(tc, "JWK_CONNECTION_TIMED_OUT", keyHelper.getRemoteJwkData().getJwksUri(),
+                                                                                            keyHelper.getRemoteJwkData().getJwksConnectTimeout()));
         } catch (SocketTimeoutException e) {
-            throw new VerificationKeyException(clientConfig.getClientId(), Tr.formatMessage(tc, "JWK_READ_TIMED_OUT", jwkData.getJwksUri(), jwkData.getJwksReadTimeout()));
+            throw new VerificationKeyException(clientConfig.getClientId(), Tr.formatMessage(tc, "JWK_READ_TIMED_OUT", keyHelper.getRemoteJwkData().getJwksUri(),
+                                                                                            keyHelper.getRemoteJwkData().getJwksReadTimeout()));
         }
-        return jwtVerificationKey;
+    }
+
+    static void setKeyData(JsonWebStructure jws, OidcClientConfig clientConfig,
+                           JwsVerificationKeyHelper.Builder keyHelperBuilder) throws OidcDiscoveryException, OidcClientConfigurationException {
+        String algFromHeader = jws.getAlgorithmHeaderValue();
+        if (algFromHeader == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "JWT is missing the \"alg\" header");
+            }
+            return;
+        }
+        if (algFromHeader.equalsIgnoreCase("none")) {
+            return;
+        }
+        if (algFromHeader.startsWith("HS")) {
+            keyHelperBuilder.sharedSecret(clientConfig.getClientSecret());
+        } else {
+            RemoteJwkData jwkData = initializeRemoteJwkData(clientConfig);
+            keyHelperBuilder.remoteJwkData(jwkData).jwkSet(Client.getJwkSet());
+        }
     }
 
     private static RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {

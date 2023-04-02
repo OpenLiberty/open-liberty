@@ -6,7 +6,7 @@ singleton=true
 visibility=private
 -features=com.ibm.websphere.appserver.bells-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=io.openliberty.jakarta.jsonp.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.0.0"
+-bundles=io.openliberty.jakarta.jsonp.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.0.2"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

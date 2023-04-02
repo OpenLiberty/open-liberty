@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -542,6 +544,7 @@ public abstract class MessageParser
 	{
 		line.reset();
 		while (readLine(source, line)) {
+			
 			if (line.getCharCount() == 0) {
 				return true; // found empty line that ends the headers section
 			}
@@ -935,6 +938,7 @@ public abstract class MessageParser
 			// fast-forward source buffer to the end of the line
 			source.rewind(offset + read);
 		}
+		
 		return complete;
 	}
 	
@@ -955,6 +959,7 @@ public abstract class MessageParser
 	 */
 	private int readLine(byte[] source, int offset, int length, CharsBuffer dest) {
 		final int end = offset + length; // index to one-past source array
+		
 		for (int i = offset; i < end; i++) {
 			byte b = source[i];
 			char srcChar;
@@ -966,14 +971,18 @@ public abstract class MessageParser
 				if (size == -1) {
 					// neither utf-8 or 7-bit-ascii
 					if (s_logger.isTraceFailureEnabled()) {
-						s_logger.traceFailure(this, "readLine", "Illgal byte value ["
+						s_logger.traceFailure(this, "readLine", "Illegal byte value ["
 							+ (int)(b & 255) + ']');
 					}
-					if (!s_acceptNonUtf8ByteSequences) {
-						setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
-					}
+					
 					value = (int)(b & 255); // 8-bit ascii - not standard
 					size = 1;
+					
+					if (!s_acceptNonUtf8ByteSequences) {
+						setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
+						return 1;
+					}
+					
 				}
 				else {
 					value = utf8(source, i, end-i, size);
@@ -981,11 +990,12 @@ public abstract class MessageParser
 						// utf-8 lead byte with no utf-8 trail byte.
 						if (s_logger.isTraceFailureEnabled()) {
 							s_logger.traceFailure(this, "readLine",
-								"Illgal byte value, expected utf-8 trail byte following utf-8 lead byte ["
+								"Illegal byte value, expected utf-8 trail byte following utf-8 lead byte ["
 									+ (int)(b & 255) + ']');
 						}
 						if (!s_acceptNonUtf8ByteSequences) {
 							setError(Response.BAD_REQUEST, "Bad Message. Illegal Character.");
+							return 1;
 						}
 						value = (int)(b & 255); // 8-bit ascii - not standard
 						size = 1;

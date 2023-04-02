@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -17,9 +19,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.Cookie;
@@ -30,10 +34,9 @@ import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.ThreadPool;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
-import com.ibm.ws.webcontainer.util.IteratorEnumerator;
+import com.ibm.ws.webcontainer.util.ListEnumeration;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpInboundConnection;
@@ -43,7 +46,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
-import com.ibm.wsspi.http.HttpInboundConnection; 
 
 import io.openliberty.http.ext.HttpRequestExt;
 
@@ -279,7 +281,7 @@ public class IRequestImpl implements IRequestExtended
     return this.request.getHeader(headerName);
   }
 
-  private String getHeader(HttpHeaderKeys key)
+  public String getHeader(HttpHeaderKeys key)
   {
     return ((HttpRequestExt)this.request).getHeader(key);
   }
@@ -292,18 +294,16 @@ public class IRequestImpl implements IRequestExtended
       return null;
   }
 
-  @SuppressWarnings("unchecked")
-  public Enumeration getHeaderNames()
+  public Enumeration<String> getHeaderNames()
   {
-    List<String> names = this.request.getHeaderNames();
-    return new IteratorEnumerator(names.iterator());
+    Set<String> names = ((HttpRequestExt)this.request).getHeaderNamesSet();
+    return Collections.enumeration(names);
   }
 
-  @SuppressWarnings("unchecked")
-  public Enumeration getHeaders(String headerName)
+  public Enumeration<String> getHeaders(String headerName)
   {
     List<String> values = this.request.getHeaders(headerName);
-    return new IteratorEnumerator(values.iterator());
+    return values.size() == 0 ? Collections.emptyEnumeration() : new ListEnumeration<String>(values);
   }
 
   public InputStream getInputStream() throws IOException
@@ -883,10 +883,10 @@ public class IRequestImpl implements IRequestExtended
                       Tr.debug(tc, " isTrusted --> true ssl --> " + isSSL);
                   return isSSL;
               }
-              String FORWARDED_PROTO_header =  getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
-              if (FORWARDED_PROTO_header != null && !useForwarded) {
+              if (!useForwarded) {
+                  String FORWARDED_PROTO_header = getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                   // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
-                  if ((FORWARDED_PROTO_header.equalsIgnoreCase("https"))||(FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
+                  if (FORWARDED_PROTO_header != null && (FORWARDED_PROTO_header.equalsIgnoreCase("https") || FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
                       isSSL = true;
                       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                           Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> "+FORWARDED_PROTO_header+" ssl --> " + isSSL);

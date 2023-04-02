@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -20,13 +22,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.framework.VersionRange;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -34,6 +37,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
@@ -68,15 +72,22 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
             + "$Responder";
     private static final String APPLICATION_NAME_RESOLVER_CLASSNAME = "io.smallrye.metrics.setup.ApplicationNameResolver";
 
+    private static final String FQ_PROMETHEUSCONFIG_PATH = "io.micrometer.prometheus.PrometheusConfig";
+
     private ClassLoadingService classLoadingService;
     private volatile Library sharedLib = null;
     private static boolean isSuccesfulActivation = true;
-    private static AtomicBoolean isActivated = new AtomicBoolean();
+    private MetricsConfig metricsConfig;
 
     /**
      * Used by SharedMetricRegistries to figure out if it should provide any
-     * MetricRegistries. Since we cannot stop activation, this is a flag to use to
-     * "stop" it from emitting dramatic runtime errors.
+     * MetricRegistries. Also used to prevent this Service-Component from providing
+     * the extension class during the call-back mechanism as part of the
+     * {@link CDIExtensionMetadataSince} service. Throwing an exception during
+     * activation will prompt OSGI to re-activate over and over. Depending on the
+     * failure that occurs during activation, this is a flag used to "stop" any
+     * further initialization of the MP Metrics feature as well as prevent any
+     * "dramatic" console outputs.
      *
      * @return boolean did SmallryeMetricsCDIMetadata activate properly
      */
@@ -84,20 +95,21 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         return isSuccesfulActivation;
     }
 
+    @Modified
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
+        /*
+         * Configuration update to the Metrics configuration should not affect any
+         * change in this service-component/class
+         */
+        Tr.info(tc, "configurationChange.info.CWMMC0007I");
+    }
+
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) throws Exception {
-
-        if (isActivated.get())
-            return;
-
         File smallRyeMetricsJarFile;
         try {
             smallRyeMetricsJarFile = resolveSmallRyeMetricsJar();
         } catch (FileNotFoundException e) {
-            // TODO: specific ERROR/WARNING?
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, e.getMessage());
-            }
             isSuccesfulActivation = false;
             return;
         }
@@ -106,10 +118,6 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         classPath.add(smallRyeMetricsJarFile);
 
         boolean isSharedLibAvailable = (sharedLib != null);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && isSharedLibAvailable) {
-            Tr.debug(tc, "Library " + sharedLib.id()
-                    + "provided for the mpMetrics feature. The mpMetrics feature will not use the default embedded Micrometer Core and Micrometer Prometheus Registry.");
-        }
 
         /*
          * No Library Reference detected. Will use default embedded Micrometer
@@ -120,10 +128,6 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
                 File micrometerJarFile = resolveMicrometerJar();
                 classPath.add(micrometerJarFile);
             } catch (FileNotFoundException e) {
-                // TODO: specific ERROR/WARNING?
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, e.getMessage());
-                }
                 isSuccesfulActivation = false;
                 return;
             }
@@ -134,47 +138,40 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
             Util.BUNDLE_ADD_ON_CLASSLOADER = bundleAddOnCL;
             loadSmallRyeClasses(bundleAddOnCL);
         } catch (IllegalStateException e) {// for createBundleAddOnClassLoader()
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Could not create bundle add on class loader.");
-            }
-            // TODO: Make an actual message.
-            Tr.error(tc, "UNABLE TO INITIALIZE MICROPROFILE METRICS 5.0 FEATURE DUE TO: " + e);
+            /*
+             * Probable cause: Bundle add-on class-loader was null
+             */
+            Tr.error(tc, "nullBundleAddOnClassLoader.error.CWMMC0011E");
             isSuccesfulActivation = false;
         } catch (ClassNotFoundException e) { // for loadSmallRyeClasses()
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "SmallRye Metric classes could not be loaded.");
-            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && isSharedLibAvailable) {
-                Tr.debug(tc, "SmallRye Metric classes could not be loaded from provided Library Reference.");
-            }
-
-            // TODO: Make actual message
-            Tr.error(tc, "UNABLE TO INITIALIZE MICROPROFILE METRICS 5.0 FEATURE DUE TO: " + e);
+            /*
+             * Probable cause: classes that need to be loaded from embedded SmallRye Metrics
+             * JAR are missing
+             */
+            Tr.error(tc, "missingSmallRyeClasses.error.CWMMC0012E");
             isSuccesfulActivation = false;
         } catch (NoClassDefFoundError e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                /*
-                 * Probably unable to to load Prometheus registry classes (error with shared
-                 * library).
-                 */
-                Tr.debug(tc, "Unable to load necessary classes for SmallRye Metrics");
-            }
-
-            // TODO: Make actual message
-            Tr.error(tc, "UNABLE TO INITIALIZE MICROPROFILE METRICS 5.0 FEATURE DUE TO: " + e);
-            isSuccesfulActivation = false;
             /*
-             * Trying to throw an exception to stop activation does not work. OSGI will keep
-             * trying to restart service. This will result in multiple console outputs.
-             * throw new Exception("Unable to initialize MicroProfile Metrics 5.0 feature");
+             * Probable cause: Missing dependent class(es) during runtime initialization.
+             * For example: Micrometer target registry is included in libraryRef, but some
+             * or none of the dependencies are provided.
+             *
+             * Note: This will not catch all missing classes. This only affects the
+             * initialization of the SmallRye(/Micrometer) metrics runtime during startup.
+             * It can be the case that when CDI beans are being scanned and different type
+             * of metrics are being registered then a NoClassDefFoundError will occur.
              */
+
+            Tr.error(tc, "missingDependencyClasses.error.CWMMC0013E");
+            isSuccesfulActivation = false;
         }
-        isActivated.set(true);
     }
 
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
         /*
-         * Might as well not register a CDI extension.
+         * If activation did not complete properly, we should prevent CDI extension
+         * registration.
          */
         if (!isSuccesfulActivation) {
             return null;
@@ -193,10 +190,20 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         classLoadingService = null;
     }
 
+    @Reference(name = "metricsConfig", service = MetricsConfig.class)
+    protected void setMetricConfig(MetricsConfig ref) throws Exception {
+        metricsConfig = ref;
+    }
+
+    protected void unsetMetricConfig() {
+        metricsConfig = null;
+    }
+
     @Reference(name = "sharedLib", service = Library.class, cardinality = ReferenceCardinality.OPTIONAL,
             policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
     protected void setSharedLib(Library ref) throws Exception {
         sharedLib = ref;
+        Tr.audit(tc, "libraryRefConfigured.info.CWMMC0014I", sharedLib.id());
     }
 
     protected void unsetSharedLib(Library ref) {
@@ -219,6 +226,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
         File f = cblb.selectBundle("lib/", jarName, vr);
         if (f == null) {
+            Tr.error(tc, "fileNotFound.error.CWMMC0010E", jarName);
             throw new FileNotFoundException("Could not load the " + jarName + " jar");
         }
         return f;
@@ -245,14 +253,21 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
             clConfig.addSharedLibraries(sharedLib.id());
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("Class path : %s \nClassLoader: %s \nClassLoaderConfiguration: %s", classPath,
+                    classCL, clConfig));
+        }
+
         retClassLoader = classLoadingService.createBundleAddOnClassLoader(classPath, classCL, clConfig);
         if (retClassLoader == null) {
-            throw new IllegalStateException("MpMetrics was unable to create the requisite BundleAddOnClassLoader");
+            throw new IllegalStateException("The bundle add-on class loader was not created.");
         }
         return retClassLoader;
     }
 
     private void loadSmallRyeClasses(ClassLoader classLoader) throws ClassNotFoundException, NoClassDefFoundError {
+
+        checkPrometheusRegistryAvailable(classLoader);
 
         /*
          * Loading SmallRye Metric CDI related classes
@@ -287,5 +302,32 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
                 classLoader);
         Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE = ApplicationNameResolverFuncInterface;
 
+    }
+
+    @FFDCIgnore(ClassNotFoundException.class)
+    private void checkPrometheusRegistryAvailable(ClassLoader classLoader) {
+        /*
+         * Check if Prometheus Meter Registry is disabled or if it is not available on
+         * class path. The "mp.metrics.prometheus.enabled" if not defined, is resolved
+         * to true on the SmallRye Metrics implementation.
+         */
+        if (!Boolean.parseBoolean(ConfigProvider.getConfig()
+                .getOptionalValue("mp.metrics.prometheus.enabled", String.class).orElse("true"))) {
+            Tr.info(tc, "disabled.info.CWMMC0009I");
+            metricsConfig.disableMetricsEndpoint();
+            return;
+        }
+        try {
+            Class.forName(FQ_PROMETHEUSCONFIG_PATH, false, classLoader);
+        } catch (ClassNotFoundException e) {
+            Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
+            metricsConfig.disableMetricsEndpoint();
+        } catch (Exception e) {
+            Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
+            metricsConfig.disableMetricsEndpoint();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unexpected exception encountered " + e);
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -48,6 +50,8 @@ import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.session.IStore;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 //PK78174 BEGIN
 //import com.ibm.wsspi.runtime.service.WsServiceRegistry;
@@ -240,8 +244,14 @@ public class DatabaseHashMap extends BackedHashMap {
             tableName = smc.getTableNameValue();
         }
         suspendedTransactions = new Hashtable();
-        getDataSource();
-        initDBSettings();
+        if (CheckpointPhase.getPhase().restored()) {
+            // Only do this if we are restored (not during checkpoint).
+            // This is the "normal" case.
+            // In the checkpoint case we will lazily get it on the restore side.
+            getDataSource();
+            initDBSettings();
+        }
+
     }
 
     /*
@@ -2862,6 +2872,12 @@ public class DatabaseHashMap extends BackedHashMap {
     protected void performInvalidation() {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[PERFORM_INVALIDATION]);
+        }
+
+        synchronized (this) {
+            if (!initialized) {
+                return;
+            }
         }
 
         long now = System.currentTimeMillis();

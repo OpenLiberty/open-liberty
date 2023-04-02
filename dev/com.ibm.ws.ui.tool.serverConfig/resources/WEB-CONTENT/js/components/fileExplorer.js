@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -39,14 +41,15 @@ var fileExplorer = (function() {
             var overridesDeferred = null;
 
             // If defaults folder exists, retrieve file list
-            if(configDropinsDefaultsExists) {
+            // Reader role does not have access to JMXRestConnector FileService mbean to access the list of files
+            if(window.globalIsAdmin && configDropinsDefaultsExists) {
                 defaultsDeferred = fileUtils.retrieveFileList(constants.CONFIG_DROPINS_DEFAULTS_DIRECTORY, false, ".xml");
             } else {
                 defaultsDeferred = new $.Deferred().resolve(null);
             }
 
             // If overrides folder exists, retrieve file list
-            if(configDropinsOverridesExists) {
+            if(window.globalIsAdmin && configDropinsOverridesExists) {
                 overridesDeferred = fileUtils.retrieveFileList(constants.CONFIG_DROPINS_OVERRIDES_DIRECTORY, false, ".xml");
             } else {
                 overridesDeferred = new $.Deferred().resolve(null);

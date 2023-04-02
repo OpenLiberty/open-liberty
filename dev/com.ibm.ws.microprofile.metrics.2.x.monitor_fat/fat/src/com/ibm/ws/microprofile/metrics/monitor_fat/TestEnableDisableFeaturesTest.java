@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -191,11 +193,49 @@ public class TestEnableDisableFeaturesTest {
     	Log.info(c, testName, "------- Enable " + metricFeature + " and monitor-1.0: threadpool metrics should be available ------");
     	serverEDF2.startServer();
     	waitForSecurityPrerequisites(serverEDF2, 60000);
+    	
+    	String logMsg;
+    	/*
+    	 * monitor-1.0 is a dependency of mpMetrics-2.3, need to check
+    	 * for CWPMI2003I as part of startup.
+    	 */
+    	if (metricFeature.equalsIgnoreCase("mpMetrics-2.3")) {
+    		/*
+    		 * Local executions may take longer than the default 12 seconds set for local executions.
+    		 * Will use the default 120 seconds (for build machines) explicitly.
+    		 */
+    		logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2003I",120000);
+            Log.info(c, testName, logMsg);
+        	Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
+    	}
+    	
+    	serverEDF2.setMarkToEndOfLog();
+    	
     	serverEDF2.setServerConfigurationFile("server_monitor2.xml");
-    	// CWMPI2003I is for mpMetrics-2.0 and monitor-1.0; CWMPI2001I is for mpMetrics-1.x and monitor-1.0
-        String logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2003I");
+    	
+    	/*
+    	 * monitor-1.0 needs to be explicitly enabled with mpMetrics-2.0
+    	 * for monitor metrics. Need to check CWPMI2003I.
+    	 */
+    	if (metricFeature.equalsIgnoreCase("mpMetrics-2.0")) {
+    		/*
+    		 * Local executions may take longer than the default 12 seconds set for local executions.
+    		 * Will use the default 120 seconds (for build machines) explicitly.
+    		 */
+    		logMsg = serverEDF2.waitForStringInLogUsingMark("CWPMI2003I",120000);
+            Log.info(c, testName, logMsg);
+        	Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
+    	}
+    	
+    	/*
+    	 * Wait for feature update complete.
+    	 * It can be (due to timing) that the feature is still "updating"
+    	 * and the server is shutdown leading to a CWWKE1102W and CWWKE1105W
+    	 */
+    	logMsg = serverEDF2.waitForStringInLogUsingMark("CWWKF0008I");
         Log.info(c, testName, logMsg);
-    	Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
+    	Assert.assertNotNull("No CWWKF0008I was found.", logMsg);
+    	
     	serverEDF2.setMarkToEndOfLog(serverEDF2.getMostRecentTraceFile());
        	Log.info(c, testName, "------- threadpool metrics should be available ------");
     	getHttpsServlet("/metrics/vendor", serverEDF2);

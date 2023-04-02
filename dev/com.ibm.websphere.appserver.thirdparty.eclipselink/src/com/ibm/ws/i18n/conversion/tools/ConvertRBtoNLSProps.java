@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -194,9 +196,11 @@ public class ConvertRBtoNLSProps {
         println(out, "###############################################################################");
         println(out, "# Copyright (c) 2014 IBM Corporation and others.");
         println(out, "# All rights reserved. This program and the accompanying materials");
-        println(out, "# are made available under the terms of the Eclipse Public License v1.0");
+        println(out, "# are made available under the terms of the Eclipse Public License 2.0");
         println(out, "# which accompanies this distribution, and is available at");
-        println(out, "# http://www.eclipse.org/legal/epl-v10.html");
+        println(out, "# http://www.eclipse.org/legal/epl-2.0/");
+        println(out, "# ");
+        println(out, "# SPDX-License-Identifier: EPL-2.0");
         println(out, "#");
         println(out, "# Contributors:");
         println(out, "#     IBM Corporation - initial API and implementation");

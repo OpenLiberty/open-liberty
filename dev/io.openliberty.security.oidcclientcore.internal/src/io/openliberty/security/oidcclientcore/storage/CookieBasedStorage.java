@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -61,6 +63,12 @@ public class CookieBasedStorage implements Storage {
     @Sensitive
     public String get(String name) {
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No cookies were sent by the client.");
+            }
+            return null;
+        }
         for (Cookie c : cookies) {
             if (c.getName().equals(name)) {
                 return c.getValue();
@@ -78,7 +86,13 @@ public class CookieBasedStorage implements Storage {
             }
             return;
         }
-        referrerURLCookieHandler.invalidateCookie(request, response, name, true);
+        Cookie c = referrerURLCookieHandler.createCookie(name, "", request);
+        String domainName = webSsoUtils.getSsoDomain(request);
+        if (domainName != null && !domainName.isEmpty()) {
+            c.setDomain(domainName);
+        }
+        c.setMaxAge(0);
+        response.addCookie(c);
     }
 
     private void setAdditionalCookieProperties(Cookie cookie, CookieStorageProperties cookieProps) {
