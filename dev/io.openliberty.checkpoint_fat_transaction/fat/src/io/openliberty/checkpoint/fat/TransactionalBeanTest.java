@@ -13,6 +13,7 @@
 
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.AfterClass;
@@ -35,8 +36,8 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
- * Verify the server (CDI) maintains transaction boundaries @Transactional managed beans
- * within servers restored after checkpoint.
+ * Verify the server (CDI) maintains transaction boundaries for @Transactional managed
+ * beans within servers restored after checkpoint at=applications.
  *
  * The jakarta.transaction.Transactional annotation provides the application the ability
  * to declaratively control transaction boundaries on CDI managed beans, as well as classes
@@ -82,18 +83,8 @@ public class TransactionalBeanTest extends FATServletClient {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        stopServer();
+        stopServer(server, "WTRN0017W");
         ShrinkHelper.cleanAllExportedArchives();
-    }
-
-    static void stopServer() {
-        if (server.isStarted()) {
-            try {
-                server.stopServer("WTRN0017W");
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

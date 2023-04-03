@@ -9,9 +9,9 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -88,13 +88,13 @@ public class JSF23CDIGeneralTests {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @Before
     public void startServer() throws Exception {
         if (server != null && !server.isStarted()) {
-            server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+            server.startServer(c.getSimpleName() + ".log");
         }
     }
 
@@ -254,7 +254,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
@@ -477,7 +477,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesConverterBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -518,7 +518,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesValidatorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

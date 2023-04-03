@@ -123,7 +123,8 @@ instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.tx.jta.extensions;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
-	com.ibm.wsspi.org.osgi.service.component.annotations
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.boot.common;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
