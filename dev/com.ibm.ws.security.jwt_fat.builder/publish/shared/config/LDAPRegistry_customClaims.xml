@@ -63,9 +63,6 @@
 	>
 	</idsLdapFilterProperties>
 
-	<keyStore
-		id="defaultKeyStore"
-		password="keyspass" />
 
 	<authorization-roles id="com.ibm.ws.security.oidc10">
 		<security-role name="authenticated">

@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: IIOP Test Bundle
+Bundle-SymbolicName: test.iiop; singleton:=true
+Bundle-Description: This bundle provides some classes to use in testing IIOP; version=${bVersion}
+
+# Force the package import versions for all ORB API packages
+Import-Package: javax.rmi*;version="[2.4,3)", \
+                org.omg.*;version="[2.4,3)", \
+                *
+
+Export-Package: test.iiop.common*
+
+# specify any non-exported packages that need to be bundled
+Private-Package: test.iiop.server
+
+-dsannotations-inherit: true
+-dsannotations: test.iiop.server.FeatureCanary, test.iiop.server.*Impl

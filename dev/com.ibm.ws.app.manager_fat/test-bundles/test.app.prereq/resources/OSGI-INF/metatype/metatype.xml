@@ -14,15 +14,13 @@
 
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
-
-    <!-- Widget -->
-    
     <OCD name="widget" id="widget" ibm:alias="widget" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
         <AD id="id" type="String" required="true" />
+        <AD id="application.prereq.id" name="internal" description="internal use only" required="false" type="String" default="${id}" />
     </OCD>
-    
+
     <Designate factoryPid="test.app.prereq.Widget" >
         <Object ocdref="widget" />
     </Designate>
-        
+
 </metatype:MetaData>

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -33,6 +34,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -42,13 +46,20 @@ import mpapp1.MPConfigServlet;
 @SkipIfCheckpointNotSupported
 public class MPConfigTest extends FATServletClient {
 
+    private static final String SERVER_NAME = "checkpointMPConfig";
+
     public static final String APP_NAME = "mpapp1";
 
-    @Server("checkpointMPConfig")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = MPConfigServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     public TestMethod testMethod;
+
+    @ClassRule
+    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
+                                                                      MicroProfileActions.MP41, // first test in LITE mode
+                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60); // rest are FULL mode
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {

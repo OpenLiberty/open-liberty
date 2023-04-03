@@ -44,7 +44,10 @@ import componenttest.topology.impl.LibertyServer;
                 ServletStartupTest.class,
                 StartupBeanTest.class,
                 TransactionalBeanTest.class,
-                TransactionScopedBeanTest.class
+                TransactionScopedBeanTest.class,
+                TransactionLogTest.class,
+                TransactionManagerTest.class,
+                RecoveryTest.class
 })
 
 public class FATSuite {
@@ -104,6 +107,49 @@ public class FATSuite {
         File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
         try (OutputStream out = new FileOutputStream(serverEnvFile)) {
             serverEnvProperties.store(out, "");
+        }
+    }
+
+    static void stopServer(LibertyServer server, String... ignoredFailuresRegExps) {
+        if (server.isStarted()) {
+            try {
+                server.stopServer(ignoredFailuresRegExps);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static void deleteTranlogDir(LibertyServer server) throws Exception {
+        deleteTranlogDir(server, "/tranlog");
+    }
+
+    /**
+     * Delete the transaction log directory
+     *
+     * By default the transaction manager service logs transactions to files in directory
+     * <code>${server.output.dir}/tranlog</code>. The directory may be otherwise specified
+     * using <code><transaction/></code> config property <code>transactionLogDirectory</code>.
+     */
+    static void deleteTranlogDir(LibertyServer server, String dir) throws Exception {
+        if (server.fileExistsInLibertyServerRoot(dir)) {
+            server.deleteDirectoryFromLibertyServerRoot(dir);
+        }
+    }
+
+    static void deleteTranlogDb(LibertyServer server) throws Exception {
+        deleteTranlogDb(server, "/usr/shared/resources/data");
+    }
+
+    /**
+     * Delete the database that stores transaction logs
+     *
+     * Requires <code><transacton/></code> config property <code>dataSourceRef</code> is
+     * set to a non-transactional datasource where the transaction logs will be stored.
+     */
+    static void deleteTranlogDb(LibertyServer server, String dir) throws Exception {
+        if (server.fileExistsInLibertyInstallRoot(dir)) {
+            server.deleteDirectoryFromLibertyInstallRoot(dir);
         }
     }
 }

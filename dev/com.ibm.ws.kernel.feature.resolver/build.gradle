@@ -1,7 +1,7 @@
 /**
- * Compile at Java 6 in order for this to run in WebSphere Migration Tools and Transformation Advisor.
- * Since com.ibm.ws.kernel.feature.core compiles at Java 7,
- * copy specific sources we need to compile at Java 6.
+ * Compile at Java 7 in order for this to run in WebSphere Migration Tools and Transformation Advisor.
+ * Since com.ibm.ws.kernel.feature.core compiles at Java 8,
+ * copy specific sources we need to compile at Java 7.
  */
 task prebuild(type: Sync) {
     into "build/src"

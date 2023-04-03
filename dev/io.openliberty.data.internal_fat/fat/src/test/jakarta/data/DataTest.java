@@ -19,7 +19,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -28,6 +30,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.inmemory.web.ProviderTestServlet;
@@ -37,6 +42,9 @@ import test.jakarta.data.web.DataTestServlet;
 @MinimumJavaLevel(javaLevel = 11) // TODO 17
 public class DataTest extends FATServletClient {
 
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
     @Server("io.openliberty.data.internal.fat")
     @TestServlets({ @TestServlet(servlet = DataTestServlet.class, contextRoot = "DataTestApp"),
                     @TestServlet(servlet = ProviderTestServlet.class, contextRoot = "ProviderTestApp") })
@@ -44,6 +52,14 @@ public class DataTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Get driver type
+        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
+        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("DB_USER", testContainer.getUsername());
+        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+
+        // Set up server DataSource properties
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
         ShrinkHelper.exportAppToServer(server, war);

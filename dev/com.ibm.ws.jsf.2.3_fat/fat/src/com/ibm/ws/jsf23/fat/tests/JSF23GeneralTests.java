@@ -98,7 +98,7 @@ public class JSF23GeneralTests {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        server.startServer(JSF23GeneralTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

@@ -41,7 +41,7 @@ IBM-API-Package: \
   io.openliberty.io.zipkin.zipkin2,\
   com.ibm.ws.cdi.interfaces.jakarta, \
   io.openliberty.microprofile.telemetry.1.0.internal,\
-  io.openliberty.io.opentelemetry.internal
+  io.openliberty.io.opentelemetry
 -jars=io.openliberty.mpTelemetry.1.0.thirdparty; location:="dev/api/third-party/,lib/"
 kind=ga
 edition=core

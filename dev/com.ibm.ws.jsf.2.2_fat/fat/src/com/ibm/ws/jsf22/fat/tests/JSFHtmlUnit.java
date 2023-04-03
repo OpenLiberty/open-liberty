@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- */
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertTrue;
@@ -56,7 +56,7 @@ public class JSFHtmlUnit {
 
     String contextRoot = "JSF22TestResources";
 
-    protected static final Class<?> c = JSF22ResourceLibraryContractHtmlUnit.class;
+    protected static final Class<?> c = JSFHtmlUnit.class;
 
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
@@ -86,7 +86,7 @@ public class JSFHtmlUnit {
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22BackwardCompatibilityTestsWar);
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22TestResourcesWar);
 
-        jsfTestServer2.startServer(JSFHtmlUnit.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

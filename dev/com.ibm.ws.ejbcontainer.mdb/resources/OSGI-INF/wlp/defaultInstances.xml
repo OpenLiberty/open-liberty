@@ -12,5 +12,4 @@
  -->
 <server>
 	<com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl />
-	<com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="MDBRuntime"/>
 </server>

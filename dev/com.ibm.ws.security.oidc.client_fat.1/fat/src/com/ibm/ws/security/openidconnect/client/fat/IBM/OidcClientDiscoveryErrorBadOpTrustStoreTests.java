@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,6 +79,8 @@ public class OidcClientDiscoveryErrorBadOpTrustStoreTests extends CommonTest {
         testRPServer.addIgnoredServerException("CWWKS1741W"); // Ignore from sigAlgMismatch2 - message is not always logged
         testRPServer.addIgnoredServerException("CWWKS1524E"); // Ignore message indicating unsuccessful response from endpoint
         testRPServer.addIgnoredServerException("CWWKS1525E"); // Ignore message indicating discovery failed
+        testRPServer.addIgnoredServerException("CWWKO0801E"); // Ignore message indicating connection failure
+        testRPServer.addIgnoredServerException("CWPKI0022E"); // Ignore message indicating Handshake failure
 
         // try to wait for discovery to have populated the RP config
         // Don't stop if this fails (there is a chance it could be ready by the time the tests actually run

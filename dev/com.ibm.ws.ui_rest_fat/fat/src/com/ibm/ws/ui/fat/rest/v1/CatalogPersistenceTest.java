@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,8 @@ public class CatalogPersistenceTest extends CommonRESTTest implements APIConstan
             "CWWKX1002E:.*",
             "CWWKX1003E:.*",
             "CWWKX1009E:.*",
-            "CWWKX1010E:.*");
+            "CWWKX1010E:.*",
+            "SRVE8094W:.*");
     }
 
     /**

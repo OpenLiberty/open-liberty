@@ -26,7 +26,10 @@
         <!-- Config processing sets the number of application prereq services to expect equal to the number declared (see AD above) -->
         <AD id="ApplicationPrereq.cardinality.minimum" name="internal" description="internal use only" 
             type="String" ibm:final="true"
-            default="${count(applicationPrereqDeclarations)}"/>
+            default="${count(applicationPrereqDeclarations)}" />
+        <AD id="ApplicationPrereq.target" name="internal" description="internal use only"
+            type="String" ibm:final="true"
+            default="${servicePidOrFilter(applicationPrereqDeclarations)}" />
     </OCD>
     <!-- Use a factoryPid to ensure consuming services do not see intermediate configuration state. -->
     <Designate factoryPid="com.ibm.ws.app.prereqs"> <Object ocdref="com.ibm.ws.app.prereqs"/> </Designate>

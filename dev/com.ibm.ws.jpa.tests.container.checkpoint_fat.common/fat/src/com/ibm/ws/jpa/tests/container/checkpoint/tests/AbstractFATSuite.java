@@ -13,21 +13,14 @@
 
 package com.ibm.ws.jpa.tests.container.checkpoint.tests;
 
-import org.junit.ClassRule;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.containers.TestContainerSuite;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 
 public class AbstractFATSuite extends TestContainerSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
-
-    @ClassRule
-    public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     public static String repeatPhase = "";
 

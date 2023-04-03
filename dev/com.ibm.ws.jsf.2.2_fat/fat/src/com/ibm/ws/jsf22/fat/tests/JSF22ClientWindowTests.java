@@ -1,20 +1,17 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.net.URL;
 
@@ -47,7 +44,7 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+@SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
 public class JSF22ClientWindowTests {
     @Rule
     public TestName name = new TestName();
@@ -73,7 +70,7 @@ public class JSF22ClientWindowTests {
                                           "com.ibm.ws.jsf22.fat.clientwindow.jsf22");
         }
 
-        jsfTestServer2.startServer(JSF22ClientWindowTests.class.getSimpleName() + ".log");
+        jsfTestServer2.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

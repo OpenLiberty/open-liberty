@@ -52,6 +52,7 @@ addRequiredLibraries {
 dependencies {
   derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
   requiredLibs project(':com.ibm.ws.transaction.test.util'),
+               project(':com.ibm.ws.transaction.fat.util'),
                project(':com.ibm.ws.tx.embeddable'),
                project(':io.openliberty.org.apache.commons.logging')
 }

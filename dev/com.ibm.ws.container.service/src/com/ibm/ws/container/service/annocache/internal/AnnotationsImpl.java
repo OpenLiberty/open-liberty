@@ -51,7 +51,6 @@ import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 import com.ibm.ws.container.service.annocache.Annotations;
 import com.ibm.ws.container.service.annocache.SpecificAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Common annotations code.
@@ -838,7 +837,7 @@ public abstract class AnnotationsImpl implements Annotations {
         // module (module name and classloader set), then check for the presence of the Java EE common
         // annotations when the Jakarta EE features are enabled. If found, then log one informational
         // message per annotation type for the module.
-        if (checkWrongPackage && ProductInfo.getBetaEdition()) {
+        if (checkWrongPackage) {
             checkForWrongPackageCommonAnnotations(annotationTargets, AnnotationTargets_Targets.POLICY_SEED);
         }
 
