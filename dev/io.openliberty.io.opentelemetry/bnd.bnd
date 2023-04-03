@@ -14,8 +14,8 @@ openTelemetryVersion=1.19.0
 
 src: src, resources
 
-Bundle-Name: io.openliberty.io.opentelemetry.internal
-Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
+Bundle-Name: io.openliberty.io.opentelemetry
+Bundle-SymbolicName: io.openliberty.io.opentelemetry; singleton:=true
 Bundle-Description: MicroProfile Telemetry Internal packages
 
 javac.source: 11
@@ -50,7 +50,7 @@ app-resources= \
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider
 
 Service-Component: \
-    io.openliberty.io.opentelemetry.internal.ResourceProvider; \
+    io.openliberty.io.opentelemetry.ResourceProvider; \
         implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
         provide:=com.ibm.wsspi.classloading.ResourceProvider; \
         configuration-policy:=optional; \
