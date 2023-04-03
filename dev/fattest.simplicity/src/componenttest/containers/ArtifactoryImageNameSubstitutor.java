@@ -41,6 +41,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     @Override
     public DockerImageName apply(final DockerImageName original) {
         DockerImageName result = null;
+        boolean needsArtifactory = false;
         boolean collect = true;
         String reason = "";
 
@@ -68,6 +69,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                 result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);
+                needsArtifactory = true;
                 reason = "System property [ fat.test.use.artifactory.substitution ] was set to true, must use Artifactory registry.";
                 break;
             }
@@ -77,6 +79,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
                 result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);
+                needsArtifactory = true;
                 reason = "Using a remote docker host, must use Artifactory registry";
                 break;
             }
@@ -87,7 +90,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
         } while (false);
 
         // We determined we need Artifactory, but it is unavailable.
-        if (original != result && !ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
+        if (needsArtifactory && !ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
             throw new RuntimeException("Need to swap image " + original.asCanonicalNameString() + " --> " + result.asCanonicalNameString()
                                        + System.lineSeparator() + "Reason: " + reason
                                        + System.lineSeparator() + "Error: The Artifactory regsitry was not added to the docker config.", //
