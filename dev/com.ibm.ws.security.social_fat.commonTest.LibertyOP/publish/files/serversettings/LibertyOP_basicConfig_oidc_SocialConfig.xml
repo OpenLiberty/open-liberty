@@ -1,15 +1,12 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
 <server>
@@ -17,7 +14,6 @@
 	<oidcLogin
 		id="oidcLogin1"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -25,13 +21,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter1"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badClientId"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client09"
 		clientSecret="secret"
@@ -39,13 +35,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badClientId"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankClientId"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId=" "
 		clientSecret="secret"
@@ -53,13 +49,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankClientId"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyClientId"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId=""
 		clientSecret="secret"
@@ -67,13 +63,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyClientId"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badClientSecret"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="badSecret"
@@ -81,13 +77,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badClientSecret"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankClientSecret"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret=" "
@@ -95,13 +91,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankClientSecret"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyClientSecret"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret=""
@@ -109,13 +105,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyClientSecret"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_XOR_Secret"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -123,13 +119,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_xorSecret"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_bad_XOR_Secret"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}PT47DDo8LTor"
@@ -137,6 +133,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_bad_xorSecret"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -144,7 +141,6 @@
 		id="oidcLogin_enabledTrue"
 		enabled="true"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -152,6 +148,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_enabledTrue"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -159,7 +156,6 @@
 		id="oidcLogin_enabledFalse"
 		enabled="false"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -167,13 +163,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_enabledFalse"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badAuthFilterRef"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -181,13 +177,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badAuthFilterRef"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_goodTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -196,13 +192,13 @@
 		authFilterRef="authFilter_goodTrust"
 		sslRef="DefaultSSLSettings"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -211,13 +207,13 @@
 		authFilterRef="authFilter_badTrust"
 		sslRef="BadTrustSSLSettings"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -225,6 +221,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankTrust"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		sslRef=" "
 	>
 	</oidcLogin>
@@ -232,7 +229,6 @@
 	<oidcLogin
 		id="oidcLogin_emptyTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -241,13 +237,13 @@
 		authFilterRef="authFilter_emptyTrust"
 		sslRef=""
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badAuthEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -255,13 +251,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badAuthEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_reallyBadAuthEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -269,13 +265,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_reallyBadAuthEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankAuthEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -283,13 +279,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankAuthEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyAuthEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -297,13 +293,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyAuthEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_httpAuthEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -311,13 +307,13 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_httpAuthEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_badTokenEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -325,13 +321,13 @@
 		tokenEndpoint="https://somehost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badTokenEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankTokenEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -339,13 +335,13 @@
 		tokenEndpoint=" "
 		authFilterRef="authFilter_blankTokenEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyTokenEndpoint"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -353,13 +349,13 @@
 		tokenEndpoint=""
 		authFilterRef="authFilter_emptyTokenEndpoint"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_tEAM_clientSecretBasic"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -368,13 +364,13 @@
 		tokenEndpointAuthMethod="client_secret_basic"
 		authFilterRef="authFilter_tEAM_clientSecretBasic"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_tEAM_clientSecretPost"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -383,13 +379,13 @@
 		tokenEndpointAuthMethod="client_secret_post"
 		authFilterRef="authFilter_tEAM_clientSecretPost"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_tEAM_clientSecretBad"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -398,13 +394,13 @@
 		tokenEndpointAuthMethod="client_secret_bad"
 		authFilterRef="authFilter_tEAM_clientSecretBad"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_realmName"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -413,13 +409,13 @@
 		realmName="myLibertyOPRealm"
 		authFilterRef="authFilter_realmName"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankRealmName"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -428,13 +424,13 @@
 		realmName=" "
 		authFilterRef="authFilter_blankRealmName"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyRealmName"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -443,13 +439,13 @@
 		realmName=""
 		authFilterRef="authFilter_emptyRealmName"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_mapToUserRegistryFalse"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -458,13 +454,13 @@
 		mapToUserRegistry="false"
 		authFilterRef="authFilter_mapToUserRegistryFalse"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_mapToUserRegistryTrue"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -473,13 +469,13 @@
 		mapToUserRegistry="true"
 		authFilterRef="authFilter_mapToUserRegistryTrue"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_goodjwt_builder"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -487,6 +483,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_good_jwt_builder"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 		<jwt builder="goodJwtBuilder" />
 	</oidcLogin>
@@ -494,7 +491,6 @@
 	<oidcLogin
 		id="oidcLogin_blankjwt_builder"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -502,6 +498,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blank_jwt_builder"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 		<jwt builder=" " />
 	</oidcLogin>
@@ -509,7 +506,6 @@
 	<oidcLogin
 		id="oidcLogin_emptyjwt_builder"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -517,6 +513,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_empty_jwt_builder"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 		<jwt builder="" />
 	</oidcLogin>
@@ -524,7 +521,6 @@
 	<oidcLogin
 		id="oidcLogin_jwt_builder_HS256"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -532,6 +528,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_jwt_builder_HS256"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 		<jwt builder="goodJwtBuilder_HS256" />
 	</oidcLogin>
@@ -539,7 +536,6 @@
 	<oidcLogin
 		id="oidcLogin_goodJwksUri"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -548,13 +544,13 @@
 		authFilterRef="authFilter_goodJwksUri"
 		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/jwk"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badJwksUri"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -563,13 +559,13 @@
 		authFilterRef="authFilter_badJwksUri"
 		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/jwt"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankJwksUri"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -578,13 +574,13 @@
 		authFilterRef="authFilter_blankJwksUri"
 		jwksUri=" "
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyJwksUri"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -593,13 +589,13 @@
 		authFilterRef="authFilter_emptyJwksUri"
 		jwksUri=""
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_jwksUri_jwkDisabledInOP"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -608,13 +604,13 @@
 		authFilterRef="authFilter_jwksUri_jwkDisabledInOP"
 		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/jwk"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badIssuer"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -623,13 +619,13 @@
 		authFilterRef="authFilter_badIssuer"
 		issuer="https://somebadName.com"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_blankIssuer"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -638,13 +634,13 @@
 		authFilterRef="authFilter_blankIssuer"
 		issuer=" "
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_emptyIssuer"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -653,13 +649,13 @@
 		authFilterRef="authFilter_emptyIssuer"
 		issuer=""
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_isClientSideRedirectSupported_true"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -674,7 +670,6 @@
 	<oidcLogin
 		id="oidcLogin_isClientSideRedirectSupported_false"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -697,6 +692,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badScope"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -711,6 +707,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankScope"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -725,6 +722,7 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyScope"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -739,19 +737,20 @@
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/token"
 		authFilterRef="authFilter_badScope_limitedOPScope"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_goodUserNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodUserNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userNameAttribute="sub"
 	>
 	</oidcLogin>
@@ -759,13 +758,13 @@
 	<oidcLogin
 		id="oidcLogin_badUserNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badUserNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userNameAttribute="someBadName"
 	>
 	</oidcLogin>
@@ -773,13 +772,13 @@
 	<oidcLogin
 		id="oidcLogin_blankUserNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankUserNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userNameAttribute=" "
 	>
 	</oidcLogin>
@@ -787,13 +786,13 @@
 	<oidcLogin
 		id="oidcLogin_emptyUserNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyUserNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userNameAttribute=""
 	>
 	</oidcLogin>
@@ -801,13 +800,13 @@
 	<oidcLogin
 		id="oidcLogin_goodGroupNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodGroupNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		groupNameAttribute="sub"
 	>
 	</oidcLogin>
@@ -815,13 +814,13 @@
 	<oidcLogin
 		id="oidcLogin_badGroupNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badGroupNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		groupNameAttribute="someBadName"
 	>
 	</oidcLogin>
@@ -829,13 +828,13 @@
 	<oidcLogin
 		id="oidcLogin_blankGroupNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankGroupNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		groupNameAttribute=" "
 	>
 	</oidcLogin>
@@ -843,13 +842,13 @@
 	<oidcLogin
 		id="oidcLogin_emptyGroupNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyGroupNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		groupNameAttribute=""
 	>
 	</oidcLogin>
@@ -857,13 +856,13 @@
 	<oidcLogin
 		id="oidcLogin_goodRealmNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodRealmNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		realmNameAttribute="sub"
 	>
 	</oidcLogin>
@@ -871,13 +870,13 @@
 	<oidcLogin
 		id="oidcLogin_badRealmNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badRealmNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		realmNameAttribute="someBadName"
 	>
 	</oidcLogin>
@@ -885,13 +884,13 @@
 	<oidcLogin
 		id="oidcLogin_blankRealmNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankRealmNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		realmNameAttribute=" "
 	>
 	</oidcLogin>
@@ -899,13 +898,13 @@
 	<oidcLogin
 		id="oidcLogin_emptyRealmNameAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyRealmNameAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		realmNameAttribute=""
 	>
 	</oidcLogin>
@@ -913,13 +912,13 @@
 	<oidcLogin
 		id="oidcLogin_goodUserUniqueIdAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodUserUniqueIdAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userUniqueIdAttribute="sub"
 	>
 	</oidcLogin>
@@ -927,13 +926,13 @@
 	<oidcLogin
 		id="oidcLogin_badUserUniqueIdAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badUserUniqueIdAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userUniqueIdAttribute="someBadName"
 	>
 	</oidcLogin>
@@ -941,13 +940,13 @@
 	<oidcLogin
 		id="oidcLogin_blankUserUniqueIdAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankUserUniqueIdAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userUniqueIdAttribute=" "
 	>
 	</oidcLogin>
@@ -955,13 +954,13 @@
 	<oidcLogin
 		id="oidcLogin_emptyUserUniqueIdAttribute"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyUserUniqueIdAttribute"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		userUniqueIdAttribute=""
 	>
 	</oidcLogin>
@@ -969,13 +968,13 @@
 	<oidcLogin
 		id="oidcLogin_goodRedirectToRPHostAndPort"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_goodRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oidcLogin>
@@ -983,13 +982,13 @@
 	<oidcLogin
 		id="oidcLogin_badRedirectToRPHostAndPort"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_badRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		redirectToRPHostAndPort="https://myBogusMachine.austin.ibm.com:${bvt.prop.security_2_HTTP_default.secure}"
 	>
 	</oidcLogin>
@@ -997,13 +996,13 @@
 	<oidcLogin
 		id="oidcLogin_blankRedirectToRPHostAndPort"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_blankRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		redirectToRPHostAndPort=" "
 	>
 	</oidcLogin>
@@ -1011,13 +1010,13 @@
 	<oidcLogin
 		id="oidcLogin_emptyRedirectToRPHostAndPort"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		clientId="client01"
 		clientSecret="secret"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		authFilterRef="authFilter_emptyRedirectToRPHostAndPort"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		redirectToRPHostAndPort=""
 	>
 	</oidcLogin>
@@ -1025,7 +1024,6 @@
 	<oidcLogin
 		id="oidcLogin_hostNameVerificationEnabledTrue"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -1034,14 +1032,14 @@
 		jwksUri="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/jwk"
 		authFilterRef="authFilter_hostNameVerificationEnabledTrue"
 		hostNameVerificationEnabled="true"
+		isClientSideRedirectSupported="false"
 		goo="someString"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_codeResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1050,15 +1048,15 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="code"
 		authFilterRef="authFilter_codeResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_idTokenTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1067,15 +1065,15 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="id_token token"
 		authFilterRef="authFilter_idTokenTokenResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_idTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1084,6 +1082,7 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="id_token"
 		authFilterRef="authFilter_idTokenResponseType"
 	>
@@ -1092,7 +1091,6 @@
 	<oidcLogin
 		id="oidcLogin_responseModeFormPost_codeResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1101,16 +1099,16 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="code"
 		responseMode="form_post"
 		authFilterRef="authFilter_responseModeFormPost_codeResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_responseModeFormPost_idTokenTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1119,16 +1117,16 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="id_token token"
 		responseMode="form_post"
 		authFilterRef="authFilter_responseModeFormPost_idTokenTokenResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_responseModeFormPost_idTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1137,6 +1135,7 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseMode="form_post"
 		responseType="id_token"
 		authFilterRef="authFilter_responseModeFormPost_idTokenResponseType"
@@ -1146,7 +1145,6 @@
 	<oidcLogin
 		id="oidcLogin_opMissingAuthCodeGrantType_codeResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1155,15 +1153,15 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="code"
 		authFilterRef="authFilter_opMissingAuthCodeGrantType_codeResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_opMissingImplicitGrantType_idTokenTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1172,15 +1170,15 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="id_token token"
 		authFilterRef="authFilter_opMissingImplicitGrantType_idTokenTokenResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_opMissingImplicitGrantType_idTokenResponseType"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
@@ -1189,15 +1187,15 @@
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/userinfo"
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 		responseType="id_token"
 		authFilterRef="authFilter_opMissingImplicitGrantType_idTokenResponseType"
 	>
 	</oidcLogin>
-	
+
 	<oidcLogin
 		id="oidcLogin_forwardLoginParameter"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -1206,6 +1204,7 @@
 		authFilterRef="authFilter_forwardLoginParameter"
 		forwardLoginParameter="login_hint,ui_locales"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 		<authzParameter name="mq_authz1" value="mqa1234" />
 	</oidcLogin>

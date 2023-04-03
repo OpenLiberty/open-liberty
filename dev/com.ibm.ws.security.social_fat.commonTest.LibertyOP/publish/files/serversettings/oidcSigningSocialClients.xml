@@ -1,14 +1,11 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 
 <server>
@@ -22,11 +19,10 @@
 
 	<oidcLogin
 		id="hs256"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterHS256"
@@ -35,6 +31,7 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -47,11 +44,10 @@
 
 	<oidcLogin
 		id="hs384"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterHS384"
@@ -60,6 +56,7 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
@@ -72,11 +69,10 @@
 
 	<oidcLogin
 		id="hs512"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterHS512"
@@ -85,10 +81,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
-	
-	
+
 	<authFilter id="authFilterRS256">
 		<requestUrl
 			id="requestUrlRS256"
@@ -98,12 +94,11 @@
 
 	<oidcLogin
 		id="rs256"
-		scope="openid profile email"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterRS256"
@@ -112,9 +107,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-	
+	</oidcLogin>
+
 	<authFilter id="authFilterRS384">
 		<requestUrl
 			id="requestUrlRS384"
@@ -124,11 +120,10 @@
 
 	<oidcLogin
 		id="rs384"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterRS384"
@@ -138,9 +133,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-	
+	</oidcLogin>
+
 	<authFilter id="authFilterRS512">
 		<requestUrl
 			id="requestUrlRS512"
@@ -150,11 +146,10 @@
 
 	<oidcLogin
 		id="rs512"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterRS512"
@@ -164,9 +159,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-	
+	</oidcLogin>
+
 	<authFilter id="authFilterES256">
 		<requestUrl
 			id="requestUrlES256"
@@ -176,11 +172,10 @@
 
 	<oidcLogin
 		id="es256"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterES256"
@@ -190,9 +185,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-	
+	</oidcLogin>
+
 	<authFilter id="authFilterES384">
 		<requestUrl
 			id="requestUrlES384"
@@ -202,11 +198,10 @@
 
 	<oidcLogin
 		id="es384"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterES384"
@@ -216,9 +211,10 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-	
+	</oidcLogin>
+
 	<authFilter id="authFilterES512">
 		<requestUrl
 			id="requestUrlES512"
@@ -228,11 +224,10 @@
 
 	<oidcLogin
 		id="es512"
-		scope="openid profile email"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigning/authorize"
-		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"   
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterES512"
@@ -242,8 +237,9 @@
 		hostNameVerificationEnabled="false"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		nonceEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
-	</oidcLogin>	
-						
+	</oidcLogin>
+
 </server>
 

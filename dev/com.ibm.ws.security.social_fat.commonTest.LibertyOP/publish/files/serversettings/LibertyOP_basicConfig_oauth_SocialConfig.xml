@@ -1,15 +1,12 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
 <server>
@@ -21,6 +18,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -36,6 +34,7 @@
 		userNameAttribute="sub"
 		clientId="client09"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -51,6 +50,7 @@
 		userNameAttribute="sub"
 		clientId=" "
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -66,6 +66,7 @@
 		userNameAttribute="sub"
 		clientId=""
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -81,6 +82,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="badSecret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -96,6 +98,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret=" "
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -111,6 +114,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret=""
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -126,6 +130,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -141,6 +146,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}PT47DDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -157,6 +163,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -173,6 +180,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -188,6 +196,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -203,6 +212,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -219,6 +229,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -235,6 +246,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -251,6 +263,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -267,6 +280,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorizeIt"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -282,6 +296,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="someString"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -297,6 +312,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint=" "
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -312,6 +328,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint=""
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -327,6 +344,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://somehost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -342,6 +360,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint=" "
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -357,6 +376,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint=""
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -372,6 +392,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -388,6 +409,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -404,6 +426,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -420,6 +443,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -435,6 +459,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/myinfo"
@@ -449,6 +474,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi=" "
@@ -463,6 +489,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi=""
@@ -477,6 +504,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -492,6 +520,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -507,6 +536,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -522,6 +552,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -530,7 +561,7 @@
 		authFilterRef="authFilter_good_userApiToken"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_badUserApiToken"
 		signatureAlgorithm="RS256"
@@ -538,6 +569,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -546,7 +578,7 @@
 		authFilterRef="authFilter_bad_userApiToken"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_blankUserApiToken"
 		signatureAlgorithm="RS256"
@@ -554,6 +586,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -562,7 +595,7 @@
 		authFilterRef="authFilter_blank_userApiToken"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_emptyUserApiToken"
 		signatureAlgorithm="RS256"
@@ -570,6 +603,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -578,7 +612,7 @@
 		authFilterRef="authFilter_empty_userApiToken"
 	>
 	</oauth2Login>
-				
+
 	<oauth2Login
 		id="oidcLogin_realmName"
 		signatureAlgorithm="RS256"
@@ -586,6 +620,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -602,6 +637,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -618,6 +654,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -634,6 +671,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -650,6 +688,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -666,6 +705,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -682,6 +722,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -698,6 +739,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -714,6 +756,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -730,6 +773,7 @@
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/${oAuthOidcRSValidationEndpoint}"
@@ -746,6 +790,7 @@
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_JWT_JWK/${oAuthOidcRSValidationEndpoint}"
@@ -794,6 +839,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -809,6 +855,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -824,6 +871,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -839,6 +887,7 @@
 		userNameAttribute="sub"
 		clientId="client02"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_limitedScope/${oAuthOidcRSValidationEndpoint}"
@@ -853,6 +902,7 @@
 		scope="profile email"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -868,6 +918,7 @@
 		scope="profile email"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -883,6 +934,7 @@
 		scope="profile email"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -898,6 +950,7 @@
 		scope="profile email"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -914,6 +967,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -930,6 +984,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -946,6 +1001,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -962,6 +1018,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -978,6 +1035,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -994,6 +1052,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1010,6 +1069,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1026,6 +1086,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1042,6 +1103,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1058,6 +1120,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1074,6 +1137,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1090,6 +1154,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1106,6 +1171,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1122,6 +1188,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1138,6 +1205,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1154,6 +1222,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1170,6 +1239,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1178,7 +1248,7 @@
 		authFilterRef="authFilter_codeResponseType"
 	>
 	</oauth2Login>
-		
+
 	<oauth2Login
 		id="oidcLogin_tokenResponseType"
 		signatureAlgorithm="RS256"
@@ -1186,6 +1256,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1202,6 +1273,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1211,7 +1283,7 @@
 		authFilterRef="authFilter_responseModeFormPost_codeResponseType"
 	>
 	</oauth2Login>
-		
+
 	<oauth2Login
 		id="oidcLogin_responseModeFormPost_tokenResponseType"
 		signatureAlgorithm="RS256"
@@ -1219,6 +1291,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1236,6 +1309,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingAuthCodeGrantType/${oAuthOidcRSValidationEndpoint}"
@@ -1244,14 +1318,15 @@
 		authFilterRef="authFilter_opMissingAuthCodeGrantType_codeResponseType"
 	>
 	</oauth2Login>
-	
- 	<oauth2Login
+
+	<oauth2Login
 		id="oidcLogin_opMissingImplicitGrantType_tokenResponseType"
 		signatureAlgorithm="RS256"
 		scope="profile email"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_missingImplicitGrantType/${oAuthOidcRSValidationEndpoint}"
@@ -1260,12 +1335,13 @@
 		authFilterRef="authFilter_opMissingImplicitGrantType_tokenResponseType"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenRequiredTrue"
 		signatureAlgorithm="RS256"
 		scope="profile email"
 		userNameAttribute="sub"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1273,7 +1349,7 @@
 		accessTokenRequired="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenRequiredTrue_withIntrospectRequiredAttrs"
 		signatureAlgorithm="RS256"
@@ -1281,6 +1357,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1288,7 +1365,7 @@
 		accessTokenRequired="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenRequiredFalse"
 		signatureAlgorithm="RS256"
@@ -1296,6 +1373,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1304,13 +1382,13 @@
 		accessTokenRequired="false"
 	>
 	</oauth2Login>
-	
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted"
 		signatureAlgorithm="RS256"
 		scope="profile email"
 		userNameAttribute="sub"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1318,7 +1396,7 @@
 		accessTokenSupported="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted_withIntrospectRequiredAttrs"
 		signatureAlgorithm="RS256"
@@ -1326,6 +1404,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1333,7 +1412,7 @@
 		accessTokenSupported="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenSupportedTrue_optionalParmsIncluded"
 		signatureAlgorithm="RS256"
@@ -1341,6 +1420,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1349,7 +1429,7 @@
 		accessTokenSupported="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenSupportedFalse"
 		signatureAlgorithm="RS256"
@@ -1357,6 +1437,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
@@ -1365,7 +1446,7 @@
 		accessTokenSupported="false"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenRequiredTrue_accessTokenSupportedTrue"
 		signatureAlgorithm="RS256"
@@ -1373,6 +1454,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1381,7 +1463,7 @@
 		accessTokenSupported="true"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenHeaderNameBearer"
 		signatureAlgorithm="RS256"
@@ -1389,15 +1471,16 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
 		authFilterRef="authFilter_accessTokenHeaderNameBearer"
 		accessTokenRequired="true"
- 		accessTokenHeaderName="Authorization"
+		accessTokenHeaderName="Authorization"
 	>
 	</oauth2Login>
-	
+
 	<oauth2Login
 		id="oidcLogin_accessTokenHeaderNameXForwardedAccessToken"
 		signatureAlgorithm="RS256"
@@ -1405,6 +1488,7 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
@@ -1421,13 +1505,14 @@
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
+		isClientSideRedirectSupported="false"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}"
 		userApiType="${userApiType}"
 		authFilterRef="authFilter_accessTokenHeaderNameUserDefined"
 		accessTokenRequired="true"
- 		accessTokenHeaderName="UserDefinedHeader"
+		accessTokenHeaderName="UserDefinedHeader"
 	>
-	</oauth2Login>	
-	
+	</oauth2Login>
+
 </server>

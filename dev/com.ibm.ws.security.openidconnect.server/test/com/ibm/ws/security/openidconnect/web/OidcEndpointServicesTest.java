@@ -1065,8 +1065,6 @@ public class OidcEndpointServicesTest {
         assertEquals("Returned key should have matched the expected client, but didn't.", clientSecret, key);
     }
 
-    // TODO
-
     @Test
     public void test_getSharedKey_missingAud() throws Exception {
         context.checking(new Expectations() {

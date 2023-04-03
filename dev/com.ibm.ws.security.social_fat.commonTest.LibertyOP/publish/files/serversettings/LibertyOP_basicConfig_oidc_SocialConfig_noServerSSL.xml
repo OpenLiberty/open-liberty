@@ -1,15 +1,12 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
 <server>
@@ -17,7 +14,6 @@
 	<oidcLogin
 		id="oidcLogin_goodTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -26,13 +22,13 @@
 		authFilterRef="authFilter_goodTrust"
 		sslRef="SpecificSSLSettings"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_goodJwksUri_goodTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client06"
 		clientSecret="secret"
@@ -42,13 +38,13 @@
 		authFilterRef="authFilter_goodJwksUri_goodTrust"
 		sslRef="SpecificSSLSettings"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
 	<oidcLogin
 		id="oidcLogin_badTrust"
 		signatureAlgorithm="RS256"
-		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
 		clientSecret="secret"
@@ -57,6 +53,7 @@
 		authFilterRef="authFilter_badTrust"
 		sslRef="DefaultSSLSettings"
 		hostNameVerificationEnabled="false"
+		isClientSideRedirectSupported="false"
 	>
 	</oidcLogin>
 
