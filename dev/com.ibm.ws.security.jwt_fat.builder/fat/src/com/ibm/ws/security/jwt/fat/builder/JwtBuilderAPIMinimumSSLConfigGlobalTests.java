@@ -86,7 +86,7 @@ public class JwtBuilderAPIMinimumSSLConfigGlobalTests extends CommonSecurityFat 
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_global() throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);

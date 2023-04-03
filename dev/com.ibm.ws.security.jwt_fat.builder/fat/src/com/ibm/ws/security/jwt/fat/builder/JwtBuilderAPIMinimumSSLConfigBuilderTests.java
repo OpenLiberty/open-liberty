@@ -77,11 +77,11 @@ public class JwtBuilderAPIMinimumSSLConfigBuilderTests extends CommonSecurityFat
 
     }
 
-	// almost a minimum config - added the issuer to the config to work around an issue with test hostname resolution
+    // almost a minimum config - added the issuer to the config to work around an issue with test hostname resolution
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_builder() throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 

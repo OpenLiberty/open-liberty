@@ -1048,7 +1048,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     public Page buildJwtForEndpointValidationTests(String builderId, String alg) throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "testuser");
         expectationSettings.put("overrideSettings", testSettings);
@@ -1066,7 +1066,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     public Page buildEncryptedJwtForEndpointValidationTests(String builderId, String keyMgmtKeyAlg, String contentEncryptAlg) throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, keyMgmtKeyAlg, contentEncryptAlg);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, contentEncryptAlg);
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "testuser");
         expectationSettings.put("overrideSettings", testSettings);
