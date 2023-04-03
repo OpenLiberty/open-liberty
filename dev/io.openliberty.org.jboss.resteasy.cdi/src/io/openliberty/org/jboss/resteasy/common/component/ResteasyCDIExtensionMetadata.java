@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 20212 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,12 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Extension;
-import javax.annotation.ManagedBean;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
-import javax.ws.rs.ext.Provider;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.annotation.ManagedBean;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -36,14 +36,14 @@ import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
     configurationPolicy = ConfigurationPolicy.IGNORE,
     immediate = true)
 public class ResteasyCDIExtensionMetadata implements CDIExtensionMetadata {
-    
+
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
         Set<Class<? extends Extension>> extensions = new HashSet<Class<? extends Extension>>();
         extensions.add(LibertyResteasyCdiExtension.class);
         return extensions;
     }
-    
+
     @Override
     public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
         Set<Class<? extends Annotation>> BDAs = new HashSet<Class<? extends Annotation>>();
@@ -53,14 +53,14 @@ public class ResteasyCDIExtensionMetadata implements CDIExtensionMetadata {
         BDAs.add(ApplicationPath.class);
         return BDAs;
     }
-    
+
     @Override
     public Set<Class<?>> getBeanClasses() {
         Set<Class<?>> BDAs = new HashSet<Class<?>>();
         BDAs.add(Application.class);
         return BDAs;
     }
-    
+
     @Reference
     protected void setCdiService(CDIService cdiService) {
         LibertyCdiInjectorFactory.cdiService = cdiService;

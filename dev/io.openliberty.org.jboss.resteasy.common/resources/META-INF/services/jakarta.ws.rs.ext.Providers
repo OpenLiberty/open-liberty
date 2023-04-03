@@ -26,5 +26,5 @@ org.jboss.resteasy.plugins.providers.MultiValuedParamConverterProvider
 org.jboss.resteasy.plugins.providers.multipart.IBMMultipartProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventProvider
 org.jboss.resteasy.plugins.providers.sse.SseEventSinkInterceptor
-io.openliberty.restfulWS.providers.JsonPProvider
 io.openliberty.restfulWS.providers.ClientConfigFilter
+io.openliberty.restfulWS.providers.JsonPProvider

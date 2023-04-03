@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.Constraint;
-import javax.validation.ConstraintDeclarationException;
-import javax.validation.ConstraintDefinitionException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.GroupDefinitionException;
-import javax.validation.MessageInterpolator;
-import javax.validation.ValidationException;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableType;
-import javax.validation.executable.ValidateOnExecution;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintDeclarationException;
+import jakarta.validation.ConstraintDefinitionException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.GroupDefinitionException;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.executable.ExecutableType;
+import jakarta.validation.executable.ValidateOnExecution;
 
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.api.validation.ConstraintType;
@@ -78,7 +78,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
       this.validatorFactory = validatorFactory;
       this.isExecutableValidationEnabled = isExecutableValidationEnabled;
       this.defaultValidatedExecutableTypes = defaultValidatedExecutableTypes.toArray(new ExecutableType[]{});
-      
+
       try
       {
          cdiActive = ResteasyCdiExtension.isCDIActive();
@@ -195,13 +195,13 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
          violationsContainer.setException(e);
          throw toValidationException(e, violationsContainer);
       }
-      violationsContainer.addViolations(cvs);      
+      violationsContainer.addViolations(cvs);
       if ((violationsContainer.isFieldsValidated()
             || !GetRestful.isRootResource(object.getClass())
             || GetRestful.isSubResourceClass(object.getClass())
             || hasApplicationScope(object))  //Liberty change
          && violationsContainer.size() > 0)
-      {   
+      {
           ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
           log.warn(ViolationException.getLocalizedMessage());  //Liberty change
           throw ViolationException;
@@ -214,19 +214,19 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
       Validator validator = getValidator(request);
       SimpleViolationsContainer violationsContainer = getViolationsContainer(request, object);
       Set<ConstraintViolation<Object>> cvs = null;
-      
+
       //Liberty change start
       Object myReturnValue = returnValue;
-      if (returnValue instanceof org.jboss.resteasy.specimpl.BuiltResponse) 
+      if (returnValue instanceof org.jboss.resteasy.specimpl.BuiltResponse)
       {
           org.jboss.resteasy.specimpl.BuiltResponse builtResponse = (org.jboss.resteasy.specimpl.BuiltResponse) returnValue;
-          myReturnValue =  builtResponse.getEntity();          
+          myReturnValue =  builtResponse.getEntity();
       }
       //Liberty change end
-      
+
       try
       {
-         cvs = validator.forExecutables().validateReturnValue(object, method, myReturnValue, groups);  //Liberty change         
+         cvs = validator.forExecutables().validateReturnValue(object, method, myReturnValue, groups);  //Liberty change
       }
       catch (Exception e)
       {
@@ -603,7 +603,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
          {
              ResteasyViolationExceptionImpl ViolationException = new ResteasyViolationExceptionImpl(violationsContainer, request.getHttpHeaders().getAcceptableMediaTypes());  //Liberty change
              log.warn(ViolationException.getLocalizedMessage());  //Liberty change
-             throw ViolationException;  //Liberty change            
+             throw ViolationException;  //Liberty change
          }
       }
 
@@ -811,7 +811,7 @@ public class GeneralValidatorImpl implements GeneralValidatorCDI
 
    private static boolean hasEJBScope(Class<?> clazz)
    {
-      return classHasAnnotations(clazz, new String[] {"javax.ejb.Stateless", "javax.ejb.Stateful", "javax.ejb.Singleton"});
+      return classHasAnnotations(clazz, new String[] {"jakarta.ejb.Stateless", "jakarta.ejb.Stateful", "jakarta.ejb.Singleton"});
    }
 
    private static boolean classHasAnnotations(Class<?> clazz, String[] names)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
  *******************************************************************************/
 package io.openliberty.restfulWS.client.security;
 
-import javax.servlet.http.Cookie;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ClientRequestContext;
+import jakarta.servlet.http.Cookie;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ClientRequestContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -29,7 +29,7 @@ public class LtpaHandler {
             Tr.debug(tc, "configClientLtpaHandler - About to get a LTPA authentication token");
         }
 
-        // retrieve a ltpa cookie from the Subject in current thread 
+        // retrieve a ltpa cookie from the Subject in current thread
         try {
             // this interceptor must depend on the appSecurity feature to use WebSecurityHelper.getSSOCookieFromSSOToken()
             Cookie ssoCookie = WebSecurityHelper.getSSOCookieFromSSOToken();

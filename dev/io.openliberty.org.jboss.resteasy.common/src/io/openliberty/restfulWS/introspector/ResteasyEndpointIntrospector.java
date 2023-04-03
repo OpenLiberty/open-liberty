@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ package io.openliberty.restfulWS.introspector;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.servlet.ServletConfig;
+import jakarta.servlet.ServletConfig;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;

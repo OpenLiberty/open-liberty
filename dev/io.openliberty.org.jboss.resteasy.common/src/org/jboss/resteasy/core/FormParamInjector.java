@@ -28,10 +28,10 @@ import org.jboss.resteasy.util.Encode;
 
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyReader;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -62,11 +62,11 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
-      // Liberty change start 
+      // Liberty change start
       MultivaluedMap<String, String> decodedFormParams = request.getDecodedFormParameters();
       MediaType mediaType = request.getHttpHeaders().getMediaType();
       if (String.class.equals(type) && mediaType != null && mediaType.getType().equalsIgnoreCase("multipart")) {
-          MultivaluedMap<String, String> formParams = request.getFormParameters(); 
+          MultivaluedMap<String, String> formParams = request.getFormParameters();
           if (formParams == null || formParams.size() < 1) {
               try {
                   Type genericType = (new ArrayList<IAttachment>() {}).getClass().getGenericSuperclass();

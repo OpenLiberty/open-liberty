@@ -15,34 +15,34 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.NotAllowedException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.NotSupportedException;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.RedirectionException;
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.ServiceUnavailableException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.ClientResponseFilter;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.InvocationCallback;
-import javax.ws.rs.client.ResponseProcessingException;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
-import javax.ws.rs.ext.Providers;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.NotAllowedException;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotSupportedException;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.RedirectionException;
+import jakarta.ws.rs.ServerErrorException;
+import jakarta.ws.rs.ServiceUnavailableException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.ClientResponseFilter;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.InvocationCallback;
+import jakarta.ws.rs.client.ResponseProcessingException;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.GenericEntity;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Variant;
+import jakarta.ws.rs.ext.Providers;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
 import org.jboss.resteasy.client.exception.WebApplicationExceptionWrapper;
 import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
@@ -172,7 +172,7 @@ public class ClientInvocation implements Invocation
                }
             }
             return rtn;
-              
+
          }
          catch (WebApplicationException wae)
          {

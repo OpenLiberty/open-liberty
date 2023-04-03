@@ -20,17 +20,20 @@ import java.util.concurrent.CompletionStage;
  */
 public class FormInjector implements ValueInjector
 {
+//   private Class type; // Liberty Change
    private ConstructorInjector constructorInjector;
    private PropertyInjector propertyInjector;
 
+//   @SuppressWarnings(value = "unchecked") // Liberty Change
    public FormInjector(final Class<?> type, final ResteasyProviderFactory factory)
    {
-      Constructor<?> constructor;
+//      this.type = type; // Liberty Change
+      Constructor<?> constructor; // Liberty Change
 
       try
       {
          constructor = type.getDeclaredConstructor();
-         //Liberty change - doPriv
+         //Liberty change - doPriv - requires above changes for proper constructor scope
          AccessController.doPrivileged((PrivilegedAction<Boolean>)() -> {
              constructor.setAccessible(true);
              return true;

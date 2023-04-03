@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,16 +17,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import javax.decorator.Decorator;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.WithAnnotations;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.Provider;
+import jakarta.decorator.Decorator;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.cdi.i18n.LogMessages;
@@ -34,8 +34,8 @@ import org.jboss.resteasy.cdi.i18n.Messages;
 
 public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements Extension {
 
-    private static final String JAVAX_EJB_STATELESS = "javax.ejb.Stateless";
-    private static final String JAVAX_EJB_SINGLETON = "javax.ejb.Singleton";
+    private static final String JAKARTA_EJB_STATELESS = "jakarta.ejb.Stateless";
+    private static final String JAKARTA_EJB_SINGLETON = "jakarta.ejb.Singleton";
 
 
     private boolean isSessionBean(AnnotatedType<?> annotatedType)
@@ -43,7 +43,7 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
        for (Annotation annotation : annotatedType.getAnnotations())
        {
           Class<?> annotationType = annotation.annotationType();
-          if (annotationType.getName().equals(JAVAX_EJB_STATELESS) || annotationType.getName().equals(JAVAX_EJB_SINGLETON))
+          if (annotationType.getName().equals(JAKARTA_EJB_STATELESS) || annotationType.getName().equals(JAKARTA_EJB_SINGLETON))
           {
              LogMessages.LOGGER.debug(Messages.MESSAGES.beanIsSLSBOrSingleton(annotatedType.getJavaClass()));
              return true; // Do not modify scopes of SLSBs and Singletons

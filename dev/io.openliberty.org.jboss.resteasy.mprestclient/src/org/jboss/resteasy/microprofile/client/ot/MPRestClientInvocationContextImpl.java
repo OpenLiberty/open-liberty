@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.InvocationContext;
 
 // effectively copied with author's permission from:
 // https://github.com/apache/cxf/blob/master/rt/rs/microprofile-client/src/main/java/org/apache/cxf/microprofile/client/cdi/MPRestClientInvocationContextImpl.java
@@ -51,8 +51,8 @@ class MPRestClientInvocationContextImpl implements InvocationContext {
      * @param args
      * @param interceptorInvokers
      */
-    MPRestClientInvocationContextImpl(Object target, Method method, Object[] args, 
-                                      List<InterceptorInvoker> interceptorInvokers, 
+    MPRestClientInvocationContextImpl(Object target, Method method, Object[] args,
+                                      List<InterceptorInvoker> interceptorInvokers,
                                       Callable<Object> callable) {
         this.target = target;
         this.method = method;

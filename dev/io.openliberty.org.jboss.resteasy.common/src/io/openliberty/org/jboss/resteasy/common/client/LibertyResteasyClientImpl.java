@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,16 +17,16 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl;
+import org.jboss.resteasy.concurrent.ContextualScheduledExecutorService;
 
 public class LibertyResteasyClientImpl extends ResteasyClientImpl {
     private final LibertyResteasyClientBuilderImpl builder;
@@ -37,7 +37,7 @@ public class LibertyResteasyClientImpl extends ResteasyClientImpl {
     protected LibertyResteasyClientImpl(final Supplier<ClientHttpEngine> httpEngine,
                                         final ExecutorService asyncInvocationExecutor,
                                         final boolean cleanupExecutor,
-                                        final ScheduledExecutorService scheduledExecutorService,
+                                        final ContextualScheduledExecutorService scheduledExecutorService,
                                         final ClientConfiguration configuration,
                                         final List<Runnable> closeActions,
                                         final LibertyResteasyClientBuilderImpl builder) {
@@ -97,12 +97,12 @@ public class LibertyResteasyClientImpl extends ResteasyClientImpl {
             }
             if (cleanupExecutor) {
                 if (System.getSecurityManager() == null) {
-                    asyncInvocationExecutor.shutdown();
+                    asyncInvocationExecutor().shutdown();
                 } else {
                     AccessController.doPrivileged(new PrivilegedAction<Void>() {
                         @Override
                         public Void run() {
-                            asyncInvocationExecutor.shutdown();
+                            asyncInvocationExecutor().shutdown();
                             return null;
                         }
                     });

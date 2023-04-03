@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,18 +10,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Bundle-Name: io.openliberty.org.jboss.resteasy.validator.provider
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.validator.provider
 
-resteasy-version=4.7.2.Final
+resteasy-version=6.0.0.Final
 
 src: src
 
 app-resources= \
-  META-INF/services/javax.ws.rs.ext.Providers
-  
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
 -cdiannotations:
 
 Service-Component: \
@@ -29,34 +30,32 @@ Service-Component: \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=optional; \
-    properties:="resources=${app-resources}"    
+    properties:="resources=${app-resources}"
 
 Export-Package: \
   org.jboss.resteasy.plugins.validation;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.plugins.validation.i18n;version=${resteasy-version}
 
-# Using version=! in order to not have a version attached to the import for packages that were removed
-# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
-# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+# Ignoring the verison of jakarta.enterprise.context to not cause problems with EE10
+# The manifext is automatically bounding this bundle's import to 3.X, where EE10 uses 4.x.
 Import-Package: \
   org.jboss.resteasy.api.validation, \
+  jakarta.enterprise.context;version=!,\
   jakarta.persistence,\
   *
+
+instrument.ffdc: false
 
 Include-Resource:\
 @${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
 org/jboss/resteasy=${bin}/org/jboss/resteasy
 
 -buildpath: \
-	org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version=${resteasy-version},\
-	com.ibm.websphere.javaee.validation.2.0;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0,\
-	com.ibm.websphere.javaee.jaxrs.2.1,\
-	com.ibm.ws.logging.core,\
-	com.ibm.ws.org.jboss.logging,\
-	io.openliberty.org.jboss.resteasy.common,\
-	io.openliberty.org.jboss.resteasy.server,\
-	com.ibm.ws.com.fasterxml.classmate;version=latest
-
-instrument.ffdc: false
+  org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version='${resteasy-version}',\
+  com.ibm.ws.org.jboss.logging,\
+  io.openliberty.org.jboss.resteasy.common,\
+  io.openliberty.org.jboss.resteasy.server,\
+  com.ibm.ws.com.fasterxml.classmate;version=latest,\
+  io.openliberty.jakarta.cdi.3.0,\
+  io.openliberty.jakarta.validation.3.0;version=latest,\
+  io.openliberty.jakarta.restfulWS.3.0

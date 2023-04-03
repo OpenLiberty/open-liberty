@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2020, 2021 IBM Corporation and others. All rights reserved. 
-    This program and the accompanying materials are made available under the 
-    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-    and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
+<!-- Copyright (c) 2020, 2021 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Public License 2.0 which accompanies this distribution,
+    and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors:
     IBM Corporation - initial API and implementation -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -98,18 +98,18 @@
             <artifactId>arquillian-testng-container</artifactId>
             <version>${arquillian.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>io.openliberty</groupId>
             <artifactId>org.jboss.resteasy.common</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>  
+            <systemPath>${io.openliberty.org.jboss.resteasy.common_}</systemPath>
          </dependency>
 
         <dependency>
@@ -133,31 +133,31 @@
             <artifactId>logging</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <systemPath>${com.ibm.ws.logging_}</systemPath> 
+             <systemPath>${com.ibm.ws.logging_}</systemPath>
          </dependency>
-         
+
          <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>org.jboss.logging</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath> 
+             <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath>
          </dependency>
-         
+
          <dependency>
             <groupId>com.ibm.websphere</groupId>
             <artifactId>org.reactivestreams.reactive-streams</artifactId>
             <version>1</version>
             <scope>system</scope>
-             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath> 
+             <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath>
          </dependency>
-         
+
          <dependency>
               <groupId>jakarta.activation</groupId>
               <artifactId>jakarta.activation-api</artifactId>
               <version>2.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>org.eclipse.yasson.2.0</artifactId>
@@ -176,8 +176,8 @@
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
             <version>2.0.0</version>
-         </dependency>  
-         
+         </dependency>
+
 
          <dependency>
              <groupId>jakarta.annotation</groupId>
@@ -252,8 +252,8 @@
                 <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
                     <argLine>-Dfile.encoding=${project.build.sourceEncoding}
-                        -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). 
-                        Attach is needed becuase because arquillian uses com.sun.tools.attach to 
+                        -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes().
+                        Attach is needed becuase because arquillian uses com.sun.tools.attach to
                         find VMs -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>

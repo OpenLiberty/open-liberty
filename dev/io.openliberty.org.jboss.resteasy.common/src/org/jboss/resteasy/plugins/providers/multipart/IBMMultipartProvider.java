@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,16 +24,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Providers;
 
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
@@ -103,7 +103,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
             return new IMultipartBodyImpl((MultipartInputImpl)multiInput);
         }
         if (Collection.class.isAssignableFrom(clazz)) {
-            if (genericType instanceof ParameterizedType 
+            if (genericType instanceof ParameterizedType
                             && ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(IAttachment.class.getName())) {
                 List<IAttachment> attachments = new ArrayList<>();
                 for (InputPart inputPart : multiInput.getParts()) {
@@ -140,7 +140,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
         MultipartOutput outputObj = new MultipartOutput();
         for (IAttachment attachment : attachments) {
             Object content = attachment.getDataHandler().getContent();
-            OutputPart part = outputObj.addPart(content, content.getClass(), null, attachment.getContentType(), 
+            OutputPart part = outputObj.addPart(content, content.getClass(), null, attachment.getContentType(),
                                                 ((IAttachmentImpl)attachment).getFileName());
             attachment.getHeaders().entrySet().stream().forEach(entry -> {part.getHeaders().put(entry.getKey(), (List)entry.getValue());});
            // part.getHeaders().putAll((Map<? extends String, ? extends List<Object>>) attachment.getHeaders());
@@ -148,7 +148,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
         writer.init();
         writer.writeTo(outputObj, clazz, genericType, anns, mt, headers, outputStream);
     }
-    
+
     class LibertyMultipartWriter extends MultipartWriter {
 
         void init() {

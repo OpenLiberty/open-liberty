@@ -1,3 +1,4 @@
+//https://github.com/resteasy/resteasy/blob/1ba8cedf5ed7e30e1106ede5b622535b75fa3dd0/resteasy-core/src/main/java/org/jboss/resteasy/core/ServerResponseWriter.java
 package org.jboss.resteasy.core;
 
 import org.jboss.resteasy.core.interception.jaxrs.AbstractWriterInterceptorContext;
@@ -19,15 +20,15 @@ import org.jboss.resteasy.util.CommitHeaderOutputStream.CommitCallback;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.resteasy.util.MediaTypeHelper;
 
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.WriterInterceptor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -50,8 +51,8 @@ import java.util.function.Consumer;
  */
 public class ServerResponseWriter
 {
- // Liberty change begin
-    // caches for static MediaTypes from the API - saves the cost of building a new instance for every response 
+    // Liberty Change Start
+    // caches for static MediaTypes from the API - saves the cost of building a new instance for every response
     private static final Map<String, MediaType> mediaTypeCache;
     private static final Map<MediaType, MediaType> mediaTypeCharsetCache;
     static {
@@ -59,7 +60,7 @@ public class ServerResponseWriter
         mtCache.put(MediaType.APPLICATION_ATOM_XML, MediaType.APPLICATION_ATOM_XML_TYPE);
         mtCache.put(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
         mtCache.put(MediaType.APPLICATION_JSON_PATCH_JSON, MediaType.APPLICATION_JSON_PATCH_JSON_TYPE);
-        mtCache.put(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON_TYPE); 
+        mtCache.put(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON_TYPE);
         mtCache.put(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_OCTET_STREAM_TYPE);
         mtCache.put(MediaType.APPLICATION_SVG_XML, MediaType.APPLICATION_SVG_XML_TYPE);
         mtCache.put(MediaType.APPLICATION_XHTML_XML, MediaType.APPLICATION_XHTML_XML_TYPE);
@@ -79,8 +80,8 @@ public class ServerResponseWriter
         mtCharsetCache.put(MediaType.TEXT_XML_TYPE, MediaType.TEXT_XML_TYPE.withCharset(StandardCharsets.UTF_8.toString()));
         mediaTypeCharsetCache = Collections.unmodifiableMap(mtCharsetCache);
         }
- // Liberty change end
-    
+    // Liberty Change End
+
    @FunctionalInterface
    public interface RunnableWithIOException {
       void run(Consumer<Throwable> onComplete) throws IOException;
@@ -247,12 +248,14 @@ public class ServerResponseWriter
             {
                if (MediaTypeHelper.isTextLike(mt))
                {
-                  MediaType cached = mediaTypeCharsetCache.get(mt);             // Liberty change 
-                  if(cached == null) {                                          // Liberty change 
-                     mt = mt.withCharset(StandardCharsets.UTF_8.toString());    
-                  } else {                                                      // Liberty change 
-                     mt = cached;                                               // Liberty change 
-                  }                                                             // Liberty change 
+                   // Liberty Change Start
+                   MediaType cached = mediaTypeCharsetCache.get(mt);
+                   if(cached == null) {
+                      mt = mt.withCharset(StandardCharsets.UTF_8.toString());
+                   } else {
+                      mt = cached;
+                   }
+                   // Liberty Change End
                }
             }
          }
@@ -308,7 +311,6 @@ public class ServerResponseWriter
       jaxrsResponse.getHeaders().putSingle(HttpHeaders.CONTENT_TYPE, chosen);
    }
 
-  
    @SuppressWarnings("rawtypes")
    protected static MediaType getDefaultContentType(HttpRequest request, BuiltResponse jaxrsResponse, ResteasyProviderFactory providerFactory, ResourceMethodInvoker method)
    {
@@ -316,19 +318,19 @@ public class ServerResponseWriter
       // chosen and method can be null.
 
       MediaType chosen = (MediaType)request.getAttribute(SegmentNode.RESTEASY_CHOSEN_ACCEPT);
-      
-      // Liberty change begin
+
+      // Liberty Change Start
       Map<String, String> params = null;
       boolean resteasyServerHasProducesTrue = false;
       if(chosen != null) {
           params = chosen.getParameters();
           resteasyServerHasProducesTrue = Boolean.valueOf(params.get(SegmentNode.RESTEASY_SERVER_HAS_PRODUCES));
       }
-      boolean hasProduces = resteasyServerHasProducesTrue || 
-                            (method != null && ((method.getProduces() != null && method.getProduces().length > 0) ||                  
-                                                method.getMethod().getDeclaringClass().getAnnotation(Produces.class) != null));         
-      // Liberty change end
-      
+      boolean hasProduces = resteasyServerHasProducesTrue ||
+                            (method != null && ((method.getProduces() != null && method.getProduces().length > 0) ||
+                                                method.getMethod().getDeclaringClass().getAnnotation(Produces.class) != null));
+      // Liberty Change End
+
       if (hasProduces)
       {
          //we have @Produces on the resource (method or class), so we're not going to scan for @Produces on MBws
@@ -356,7 +358,7 @@ public class ServerResponseWriter
             //JAX-RS 2.0 Section 3.8.3
             if (produces == null)
             {
-              produces = new MediaType[]{MediaType.WILDCARD_TYPE};
+               produces = new MediaType[]{MediaType.WILDCARD_TYPE};
             }
             //JAX-RS 2.0 Section 3.8.4
             List<MediaType> accepts = request.getHttpHeaders().getAcceptableMediaTypes();
@@ -378,7 +380,7 @@ public class ServerResponseWriter
                }
             }
             chosen = chooseFromM(chosen, M, hasStarStar, hasApplicationStar);
-            params = null;     // Liberty change
+            params = null; // Liberty Change
          }
       }
       else
@@ -454,16 +456,16 @@ public class ServerResponseWriter
             }
          }
          chosen = chooseFromM(chosen, M, hasStarStar, hasApplicationStar);
-         params = null;     // Liberty change
+         params = null; // Liberty Change
       }
-      
-      // Liberty change begins
+
+      // Liberty Change Start
       if(params == null) {
           params = chosen.getParameters();
           resteasyServerHasProducesTrue = false;
       }
       int paramsSize = params.size();
-      // If there are no parameters, just return the existing chosen 
+      // If there are no parameters, just return the existing chosen
       if (paramsSize > 0) {
           boolean containsProduces = false;
           boolean containsQ = false;
@@ -482,9 +484,9 @@ public class ServerResponseWriter
                   }
               }
           }
-          // If there no parameters to remove, just return the existing chosen 
+          // If there no parameters to remove, just return the existing chosen
           if (foundParams > 0) {
-              // If removing all parameters, check to see if chosen matches a static MediaType 
+              // If removing all parameters, check to see if chosen matches a static MediaType
               // This avoids unnecessarily creating a new HashMap and MediaType
               if (foundParams == paramsSize) {
                   String key = chosen.getType() + "/" + chosen.getSubtype();
@@ -520,8 +522,8 @@ public class ServerResponseWriter
               }
           }
       }
-      // Liberty change ends
-     
+      // Liberty Change End
+
       return chosen;
    }
 
@@ -603,7 +605,7 @@ public class ServerResponseWriter
                }
                else
                {
-                  response.getOutputHeaders().add(javax.ws.rs.core.HttpHeaders.SET_COOKIE, next);
+                  response.getOutputHeaders().add(jakarta.ws.rs.core.HttpHeaders.SET_COOKIE, next);
                   it.remove();
                }
             }

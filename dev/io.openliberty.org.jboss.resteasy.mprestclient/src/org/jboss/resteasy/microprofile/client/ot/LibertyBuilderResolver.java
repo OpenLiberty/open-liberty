@@ -15,18 +15,10 @@ package org.jboss.resteasy.microprofile.client.ot;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.spi.RestClientBuilderResolver;
 
-/**
- *
- */
-public  class LibertyBuilderResolver extends RestClientBuilderResolver {
+public class LibertyBuilderResolver extends RestClientBuilderResolver {
 
     @Override
     public RestClientBuilder newBuilder() {
         return new LibertyRestClientBuilderImpl();
     }
-
-   
-
-   
-
 }

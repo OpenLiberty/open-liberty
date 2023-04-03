@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -31,7 +31,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
     private static final TraceComponent tc = Tr.register(LibertyClientWebTarget.class);
 
     private final LibertyResteasyClientBuilderImpl builder;
-    
+
     public LibertyClientWebTarget(final ResteasyClient client, final String uri, final ClientConfiguration configuration, LibertyResteasyClientBuilderImpl builder) throws IllegalArgumentException, NullPointerException
     {
        super(client, uri, configuration);
@@ -62,7 +62,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
     protected ClientInvocationBuilder createClientInvocationBuilder(ResteasyClient client, URI uri, ClientConfiguration configuration) {
         return new LibertyClientInvocationBuilder(client, uri, configuration);
     }
-    
+
     private void applyConfiguredProperties() {
         //apply config properties that were supplied in server.xml.
         try {
@@ -77,7 +77,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
         }
 
         JAXRSClientConstants.mapProperties(configuration);
-        
+
         // for timeouts and proxy settings, update ClientBuilder
         Long timeout = toLong(configuration, JAXRSClientConstants.CONNECTION_TIMEOUT);
         if (timeout != null) {
@@ -103,7 +103,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
         Object o = configuration.getProperty(key);
         if (o == null) return null;
         if (o instanceof Long) return (Long)o;
-        
+
         try {
             if (o instanceof String) {
                 return Long.parseLong((String)o);
@@ -119,7 +119,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
         Object o = configuration.getProperty(key);
         if (o == null) return null;
         if (o instanceof Integer) return (Integer)o;
-        
+
         try {
             if (o instanceof String) {
                 return Integer.parseInt((String)o);
@@ -136,7 +136,7 @@ public class LibertyClientWebTarget extends ClientWebTarget {
         if (o == null) return null;
         if (o instanceof Boolean) return (Boolean)o;
         if (o instanceof String) return Boolean.parseBoolean((String)o);
-        
+
         try {
             // try direct cast - log a warning if this fails
             return (Boolean) o;

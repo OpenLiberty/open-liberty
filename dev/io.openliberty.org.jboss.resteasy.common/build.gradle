@@ -14,19 +14,19 @@
 configurations {
   resteasy
 }
-  
+
 dependencies {
-  resteasy 'org.jboss.resteasy:resteasy-client:4.7.0.Final',
-           'org.jboss.resteasy:resteasy-client-api:4.7.0.Final',
-           'org.jboss.resteasy:resteasy-core:4.7.0.Final',
-           'org.jboss.resteasy:resteasy-core-spi:4.7.0.Final'
+  resteasy 'org.jboss.resteasy:resteasy-client:6.0.0.Final',
+           'org.jboss.resteasy:resteasy-client-api:6.0.0.Final',
+           'org.jboss.resteasy:resteasy-core:6.0.0.Final',
+           'org.jboss.resteasy:resteasy-core-spi:6.0.0.Final'
 }
 
 task extractInjectedClasses(type: Copy) {
   from zipTree(configurations.resteasy[0])
   include '**/*.class'
   into compileJava.destinationDir
-  
+
   from zipTree(configurations.resteasy[1])
   include '**/*.class'
   into compileJava.destinationDir
@@ -41,4 +41,3 @@ task extractInjectedClasses(type: Copy) {
 }
 
 compileJava.dependsOn extractInjectedClasses
-

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
 
@@ -28,12 +28,12 @@ import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
  * The {@code AttachmentBuilder} class is used to create instances of {@link IAttachment} for sending
  * multipart/form-data payloads in a client request or server response. Instances of the
  * {@code AttachmentBuilder} are not intended to be re-used. Before calling the {@link #build()} method,
- * you must set the {@code inputStream} property using either the {@link #inputStream(InputStream)} method 
+ * you must set the {@code inputStream} property using either the {@link #inputStream(InputStream)} method
  * or the {@link #inputStream(String, InputStream)} method.
  * <p>
  * When building a {@code IAttachment} instance, the {@code contentType} property is optional. If left unset,
  * the default value will be {@code "text/plain"} unless the {@code fileName} property has been set. If the
- * {@code fileName} property is set, then the default value for {@code contentType} will be 
+ * {@code fileName} property is set, then the default value for {@code contentType} will be
  * {@code "application/octet-stream"}. This behavior is described in
  * <a href="https://tools.ietf.org/html/rfc7578">RFC 7578</a>.
  * </p><o>
@@ -94,7 +94,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * Sets the {@code Content-ID} header in this attachment part. 
+     * Sets the {@code Content-ID} header in this attachment part.
      * @param contentId the ID for this particular attachment
      * @return this builder
      */
@@ -149,7 +149,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * Sets the file name of this attachment part. If no {@code contentType} is 
+     * Sets the file name of this attachment part. If no {@code contentType} is
      * specified, the default content type will change to {@code "application/octet-stream"}
      * after calling this method. The {@code fileName} parameter value will be added to
      * the {@code Content-Disposition} header. See
@@ -166,7 +166,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * Sets the content of this attachment part as an {@code InputStream}. 
+     * Sets the content of this attachment part as an {@code InputStream}.
      * @param inputStream content body of this attachment part
      * @return this builder
      * @throws IllegalArgumentException if {@code inputStream} is {@code null}
@@ -178,7 +178,7 @@ public class AttachmentBuilder {
     }
 
     /**
-     * Sets the content of this attachment part as an {@code InputStream}. 
+     * Sets the content of this attachment part as an {@code InputStream}.
      * Analogous to calling {@code builder.fileName(fileName).inputStream(inputStream)}
      * @param fileName the file name of this attachment part
      * @param inputStream content body of this attachment part

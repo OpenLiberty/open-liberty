@@ -113,10 +113,7 @@ build.bnd.plugins: \
   io.openliberty.jaspic.spi;project=com.ibm.websphere.appserver.spi.jaspic;source=none, \
   io.openliberty.jwt;project=com.ibm.websphere.appserver.api.jwt;source=none, \
   io.openliberty.oauth;project=com.ibm.websphere.appserver.api.oauth;source=none, \
-  io.openliberty.org.jboss.resteasy.cdi;source=none, \
-  io.openliberty.org.jboss.resteasy.jaxb.provider;source=none, \
   io.openliberty.org.jboss.resteasy.mprestclient;source=none, \
-  io.openliberty.org.jboss.resteasy.validator.provider;source=none, \
   io.openliberty.security.acme.internal;project=com.ibm.ws.security.acme;source=none, \
   io.openliberty.security.authentication.internal.builtin;project=com.ibm.ws.security.authentication.builtin;source=none, \
   io.openliberty.security.authentication.internal.filter;project=com.ibm.ws.security.authentication.filter;source=none, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,24 +14,23 @@ package io.openliberty.restfulWS.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HEAD;
+import jakarta.ws.rs.OPTIONS;
+import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 
 import org.jboss.resteasy.core.ResourceMethodRegistry;
 import org.osgi.framework.Bundle;
@@ -76,7 +75,7 @@ public class RestfulWSUtils {
             }
             StringBuffer sb = new StringBuffer();
             sb.append("Endpoints for Application: ").append(appname).append(" - ").append(servletName).append("\n");
-            
+
             if (resources != null) {
                 for (String clazz : resources) {
 
@@ -248,7 +247,7 @@ public class RestfulWSUtils {
             if (annotation.annotationType().equals(PUT.class)) {
                 httpMethod = "PUT";
             }
-                
+
         }
         return httpMethod;
     }

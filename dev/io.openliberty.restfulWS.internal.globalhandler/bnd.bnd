@@ -39,14 +39,14 @@ Export-Package: io.openliberty.restfulWS.internal.globalhandler;thread-context=t
 
 Import-Package: \
   jakarta.servlet.*;version="[5.0,7.0)", \
-  * 
+  *
 
 Include-Resource:\
   io/openliberty=${bin}/io/openliberty, \
   META-INF=resources/META-INF
 
 -buildpath: \
-  io.openliberty.org.jboss.resteasy.common.jakarta;version=latest,\
+  io.openliberty.org.jboss.resteasy.common;version=latest,\
   io.openliberty.jakarta.restfulWS.3.0, \
   io.openliberty.jakarta.servlet.5.0, \
   com.ibm.websphere.org.osgi.core;version=latest, \
