@@ -50,13 +50,7 @@ public class BuilderHelpers {
     protected static final int TokenHeader = 0;
     protected static final int TokenPayload = 1;
 
-    public static JSONObject setDefaultClaims(LibertyServer server) throws Exception {
-        JSONObject settings = new JSONObject();
-        settings.put(PayloadConstants.ISSUER, "testIssuer");
-        return setDefaultClaims(settings);
-    }
-
-    public static JSONObject setDefaultClaims(String builderId) throws Exception {
+    public static JSONObject setDefaultClaims() throws Exception {
         JSONObject settings = new JSONObject();
         settings.put(PayloadConstants.ISSUER, "testIssuer");
         return setDefaultClaims(settings);
@@ -75,13 +69,13 @@ public class BuilderHelpers {
 
     }
 
-    public static JSONObject setDefaultClaimsWithEncryption(String builderId, String KeyMgmtKeyAlg, String contentEncryptAlg) throws Exception {
+    public static JSONObject setDefaultClaimsWithEncryption(String keyMgmtKeyAlg, String contentEncryptAlg) throws Exception {
         JSONObject settings = new JSONObject();
         settings.put(PayloadConstants.ISSUER, "testIssuer");
         setDefaultClaims(settings);
         settings.put(HeaderConstants.KEY_ID, "");
         settings.remove(HeaderConstants.ALGORITHM);
-        settings.put(HeaderConstants.ALGORITHM, KeyMgmtKeyAlg);
+        settings.put(HeaderConstants.ALGORITHM, keyMgmtKeyAlg);
         settings.put(HeaderConstants.ENCRYPTION, contentEncryptAlg);
         settings.put(HeaderConstants.TYPE, JWTBuilderConstants.JWE_TYPE);
         settings.put(HeaderConstants.CONTENT_TYPE, JWTBuilderConstants.JWE_CONTENT_TYPE);
