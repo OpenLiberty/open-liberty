@@ -17,7 +17,6 @@ bVersion=1.0
 Bundle-Name: TestAppPrereq
 Bundle-SymbolicName: test.app.prereq
 Bundle-Description: Test bundle for app prereq, version=${bVersion}
-Bundle-Activator: test.app.prereq.Activator
 
 Private-Package: test.app.prereq
 

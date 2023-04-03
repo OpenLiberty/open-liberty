@@ -3,12 +3,16 @@
 
   <featureManager>
     <feature>servlet-4.0</feature>
-    <feature>test.app.prereq</feature>
   </featureManager>
-    
+
   <webContainer deferServletLoad="true"/>
 
   <application location="snoop.war" />
-  
-</server>
 
+  <widget id="fee" />
+  <widget id="fi" />
+  <widget id="fo" />
+  <widget id="fum" />
+
+  <test.app.prereq.WidgetEnabler />
+</server>

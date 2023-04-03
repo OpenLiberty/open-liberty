@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -74,20 +73,11 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     @Test
     public void testAppWaitsForDeclaredPrereq() throws Exception {
-        startServer(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        startServer(ServerXml.PREREQ_CONFIG_BUT_NO_INSTANCES);
         assertSnoopNotStarted();
-
-        /*
-         * For now. we can't predict what order the prereq updates occur so we can't predict
-         * whether we will transit through an invalid combination of prereqs, causing an FFDC to be thrown.
-         */
-        //TODO fix this.
-        if (true != false)
-            return;
-
-        changeServerConfig(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
+        changeServerConfig(ServerXml.PREREQ_CONFIG_WITH_INSTANCES);
         assertSnoopStarted();
-        changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
+        changeServerConfig(ServerXml.PREREQ_CONFIG_BUT_NO_INSTANCES);
         assertSnoopStopped();
         changeServerConfig(ServerXml.NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
         assertSnoopStarted();
@@ -95,33 +85,29 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     @Test
     public void testAppStartsImmediatelyWhenDeclaredPrereqIsSatisfied() throws Exception {
-        startServer(ServerXml.PREREQ_CONFIG_AND_PREREQ_FEATURE);
+        startServer(ServerXml.PREREQ_CONFIG_WITH_INSTANCES);
         assertSnoopStarted();
         changeServerConfig(ServerXml.PREREQ_CONFIG_AND_NO_PREREQ_FEATURE);
         assertSnoopStopped();
     }
 
-    @ExpectedFFDC("java.lang.IllegalStateException")
-    @Test
-    public void testUnconfiguredPrereqCausesIllegalStateException() throws Exception {
-        startServer(ServerXml.NO_PREREQ_CONFIG_AND_PREREQ_FEATURE);
-        // Expect: [ERROR   ] CWWKE0701E: bundle com.ibm.ws.app.manager: ... setApplicationPrereq method has thrown an exception java.lang.IllegalStateException ...
-        server.stopServer("CWWKE0701E:.* java.lang.IllegalStateException");
-    }
-
     enum ServerXml {
-        NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE,
-        NO_PREREQ_CONFIG_AND_PREREQ_FEATURE,
-        PREREQ_CONFIG_AND_NO_PREREQ_FEATURE,
-        PREREQ_CONFIG_AND_PREREQ_FEATURE
-    }
+        NO_PREREQ_CONFIG_AND_NO_PREREQ_FEATURE(true),
+        NO_PREREQ_CONFIG_AND_PREREQ_FEATURE(true),
+        PREREQ_CONFIG_AND_NO_PREREQ_FEATURE(true),
+        PREREQ_CONFIG_BUT_NO_INSTANCES(false),
+        PREREQ_CONFIG_WITH_INSTANCES(true);
 
-    private static void setServerConfig(ServerXml config) throws Exception {
-        server.setServerConfigurationFile("/appPrereq/" + config.name().toLowerCase() + ".xml");
+        ServerXml(boolean appStartExpected) {
+            this.appStartExpected = appStartExpected;
+        }
+
+        final boolean appStartExpected;
+        final String path = "/appPrereq/" + this + ".xml";
     }
 
     private void startServer(ServerXml config) throws Exception {
-        setServerConfig(config);
+        server.setServerConfigurationFile(config.path);
         server.startServer(testName.getMethodName() + ".log");
         // Wait for the timed exit feature to be enabled
         // (a useful observation point we discovered)
@@ -130,7 +116,7 @@ public class AppPrereqTest extends AbstractAppManagerTest {
 
     private static void changeServerConfig(ServerXml config) throws Exception {
         server.setMarkToEndOfLog();
-        setServerConfig(config);
+        server.setServerConfigurationFile(config.path);
         // Wait for CWWKG0017I: The server configuration was successfully updated...
         assertNotNull(server.waitForStringInLogUsingMark("CWWKG0017I:"));
     }
