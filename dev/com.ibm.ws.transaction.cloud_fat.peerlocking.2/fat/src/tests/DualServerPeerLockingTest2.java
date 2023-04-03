@@ -68,6 +68,8 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             testFailureString = "First server did not crash";
         }
 
+        firstServer.postStopServerArchive(); // explicitly collect logs
+
         if (!testFailed) {
             // restart 1st server
             //
@@ -86,6 +88,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 sb = runTestWithResponse(firstServer, servletName, "checkRec" + id);
             } catch (Exception e) {
                 Log.error(this.getClass(), "dynamicTest", e);
+                firstServer.postStopServerArchive(); // explicitly collect logs
                 throw e;
             }
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
