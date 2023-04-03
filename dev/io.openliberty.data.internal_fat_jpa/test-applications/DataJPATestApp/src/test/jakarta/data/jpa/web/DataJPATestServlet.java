@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -49,6 +50,17 @@ import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
+@DataSourceDefinition(name = "java:module/jdbc/RepositoryDataStore",
+                      className = "${repository.datasource.class.name}",
+                      databaseName = "${repository.database.name}",
+                      user = "${repository.database.user}",
+                      password = "${repository.database.password}",
+                      properties = {
+                                     "createDatabase=create",
+                                     "data.createTables=${repository.database.tables.create}",
+                                     "data.dropTables=${repository.database.tables.drop}",
+                                     "data.tablePrefix=${repository.database.tables.prefix}"
+                      })
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataJPATestServlet extends FATServlet {

@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -82,6 +83,11 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "memory:testdb",
+                      properties = "createDatabase=create")
+@Resource(name = "java:module/jdbc/env/DerbyDataSourceRef", lookup = "java:app/jdbc/DerbyDataSource")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
