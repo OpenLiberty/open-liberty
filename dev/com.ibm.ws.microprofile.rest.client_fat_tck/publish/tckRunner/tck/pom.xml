@@ -96,6 +96,14 @@
             <systemPath>${com.ibm.ws.jaxrs.2.0.common_}</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.glassfish.json.1.0_}</systemPath>
+        </dependency>
+
         <!-- <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs20.client</artifactId>
