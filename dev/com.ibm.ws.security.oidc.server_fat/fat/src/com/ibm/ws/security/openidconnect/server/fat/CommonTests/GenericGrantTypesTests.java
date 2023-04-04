@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ package com.ibm.ws.security.openidconnect.server.fat.CommonTests;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.AuthorizationHelpers;
@@ -29,6 +30,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Test class for grantType. Tests grantType handling within the OP.
@@ -36,10 +38,11 @@ import componenttest.annotation.ExpectedFFDC;
  * They run with both oauth and oidc. The extending class will set the test
  * setting appropriatly for the flow/provider being tested.
  * The extending class specifies the action/flow.
- * 
+ *
  * @author chrisc
- * 
+ *
  */
+@RunWith(FATRunner.class)
 public class GenericGrantTypesTests extends CommonTest {
 
     private static final Class<?> thisClass = GenericGrantTypesTests.class;
@@ -54,7 +57,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Updates the test setting with values needed for an implicit flow (called
      * by the extending classes)
-     * 
+     *
      * @return - returns updated test settings
      * @throws Exception
      */
@@ -79,7 +82,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * @param provider
      *            TODO
-     * 
+     *
      */
     protected static TestSettings grantTypeSettings(String client, String provider) throws Exception {
 
@@ -103,7 +106,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Invoke the token endpoint directly intead of using client.jsp
      * First, we need to build up the list of parm needed for the endpoint - those come from our settings
-     * 
+     *
      * @param testCase
      *            - the testcase name for logging purposes
      * @param wc
@@ -137,7 +140,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Invoke the token endpoint directly intead of using client.jsp
      * First, we need to build up the list of parm needed for the endpoint - those come from our settings
-     * 
+     *
      * @param testCase
      *            - the testcase name for logging purposes
      * @param wc
@@ -177,7 +180,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Invoke the token endpoint directly intead of using client.jsp
      * First, we need to build up the list of parm needed for the endpoint - those come from our settings
-     * 
+     *
      * @param testCase
      *            - the testcase name for logging purposes
      * @param wc
@@ -217,7 +220,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Build the list of expectations for a mismatch test. We should
      * get a 400 status code as well as an unsupported_grant_type error
-     * 
+     *
      * @param reqGrantType
      *            - the grant_type that the test is requesting - it should show up in the error message
      * @param endpoint
@@ -237,7 +240,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Build the list of expectations for a mismatch test. We should
      * get a 400 status code as well as an unsupported_grant_type error
-     * 
+     *
      * @param reqGrantType
      *            - the grant_type that the test is requesting - it should show up in the error message
      * @param endpoint
@@ -252,7 +255,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Build the list of expectations for a mismatch test. We should
      * get a 400 status code as well as an unsupported_grant_type error
-     * 
+     *
      * @param reqGrantType
      *            - the grant_type that the test is requesting - it should show up in the error message
      * @param endpoint
@@ -272,7 +275,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Build the list of expectations for a "resource owner bad creds" test.
      * We should get a 400 status code as well as an unsupported_grant_type error
-     * 
+     *
      * @param reqGrantType
      *            - the grant_type that the test is requesting - it should show up in the error message
      * @param endpoint
@@ -292,7 +295,7 @@ public class GenericGrantTypesTests extends CommonTest {
     /**
      * Build the list of expectations for a match test. We should
      * get a 200 status code and a valid access token, and possibly an id_token
-     * 
+     *
      * @param endpoint
      *            - the endpoint that we're invoking
      * @param endpointType
@@ -317,11 +320,11 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that does not have any grantTypes defined.
      * All grantTypes are therefore supported - request contains authorization_code.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_NoGrantTypesInConfig() throws Exception {
@@ -346,11 +349,11 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has authorization_code set in its grantTypes
      * Request contains authorization_code.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_authCode_match() throws Exception {
@@ -371,12 +374,12 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has something other than authorization_code set in its grantTypes
      * Request contains authorization_code.
      * Request should fail as the grant_type in the request does not match
      * what is configured in the client
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidGrantTypeException")
     @Test
@@ -398,11 +401,11 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has implicit set in its grantTypes
      * Request contains implicit.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_implicit_match() throws Exception {
@@ -421,12 +424,12 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has something other than implicit set in its grantTypes
      * Request contains implicit.
      * Request should fail as the grant_type in the request does not match
      * what is configured in the client
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidGrantTypeException")
     @Test
@@ -446,14 +449,14 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has implicit set in its grantTypes
      * This test uses a provider that has urn:ietf:params:oauth:grant-type:jwt-bearer
      * set in its grantType
      * Request contains implicit.
      * Request should fail as there are no common grantType set between the provider
      * and the client, therefore there is nothing to validate the client request against
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.OAuthConfigurationException")
     @Test
@@ -469,17 +472,17 @@ public class GenericGrantTypesTests extends CommonTest {
         List<validationData> expectations = buildGrantTypesServerMismatchExpectations(Constants.IMPLICIT_GRANT_TYPE, Constants.INVOKE_AUTH_ENDPOINT);
 
         testOPServer.addIgnoredServerExceptions("CWWKS1606E");
-        
+
         invokeAuthorizationEndpoint_implicit(_testName, wc, updatedTestSettings, expectations);
     }
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes
      * Request contains password.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_password_match() throws Exception {
@@ -497,13 +500,13 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes and default OAuth mediator configured
      * in the oauthProvider. This test is added for testing the apar fix delivered by defect 160516.
      * This scenario needs two things: 1) grant_type of "password" and 2) default mediator configured in oauthProvider.
      * Request contains password.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_password_with_mediator() throws Exception {
@@ -524,7 +527,7 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes and default OAuth mediator configured
      * in the oauthProvider. This test is added for testing the apar fix delivered by defect 160516.
      * This scenario needs two things: 1) grant_type of "password" and 2) default mediator configured in oauthProvider.
@@ -532,7 +535,7 @@ public class GenericGrantTypesTests extends CommonTest {
      * The call to token endpoint is expected to fail.
      * Request contains invalid userid and password.
      * Request should fail.
-     * 
+     *
      */
 
     @Test
@@ -550,21 +553,21 @@ public class GenericGrantTypesTests extends CommonTest {
         List<validationData> expectations = buildResourceOwnerBadCredsExpectations(Constants.INVOKE_TOKEN_ENDPOINT);
 
         testOPServer.addIgnoredServerExceptions("CWIML4537E", "CWOAU0069E");
-        
+
         invokeTokenEndpoint_password(_testName, wc, updatedTestSettings, expectations);
 
     }
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes and the new oauthProvider attribute
      * "skipResourceOwnerValidation" is not defined. The test verifies that the default value of "false" for
      * skipResourceOwner validation attribute is working correctly. In this scenario, the token endpoint
      * is invoked with bad resource owner credentials and since resource owner validation is not supposed
      * to be skipped by default, the test expects to receive the appropriate exception.
      * This test is added for testing the apar fix delivered by defect 159780.
-     * 
+     *
      */
     @AllowedFFDC(value = { "com.ibm.websphere.security.PasswordCheckFailedException", "com.ibm.oauth.core.api.error.OidcServerException" })
     @Test
@@ -573,27 +576,27 @@ public class GenericGrantTypesTests extends CommonTest {
         // Create the conversation object which will maintain state for us
         WebConversation wc = new WebConversation();
 
-        // update settings to use the oauthProvider which does not have skipResourceOwnervalidtion attribute defined.   		
+        // update settings to use the oauthProvider which does not have skipResourceOwnervalidtion attribute defined.
         TestSettings updatedTestSettings = resourceOwnerSettings("client05", "bad_user", "bad_userpwd", grantType);
 
         List<validationData> expectations = buildResourceOwnerBadCredsExpectations(Constants.INVOKE_TOKEN_ENDPOINT);
 
         testOPServer.addIgnoredServerExceptions("CWIML4537E", "CWOAU0069E");
-        
+
         invokeTokenEndpoint_password(_testName, wc, updatedTestSettings, expectations);
 
     }
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes and the new oauthProvider attribute
      * "skipResourceOwnerValidation" is set to "true". The test verifies that the resource owner validation
      * is not done in this case. In this scenario, the token endpoint is invoked with bad resource
      * owner credentials and since resource owner validation is supposed to be skipped, the test expects
      * to receive the access token without any exceptions.
      * This test is added for testing the apar fix delivered by defect 159780.
-     * 
+     *
      */
 
     @Test
@@ -615,12 +618,12 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has something other than password set in its grantTypes
      * Request contains password.
      * Request should fail as the grant_type in the request does not match
      * what is configured in the client
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidGrantTypeException")
     @Test
@@ -639,14 +642,14 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has password set in its grantTypes
      * This test uses a provider that has urn:ietf:params:oauth:grant-type:jwt-bearer
      * set in its grantType
      * Request contains password.
      * Request should fail as there are no common grantType set between the provider
      * and the client, therefore there is nothing to validate the client request against
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.OAuthConfigurationException")
     @Test
@@ -661,17 +664,17 @@ public class GenericGrantTypesTests extends CommonTest {
         List<validationData> expectations = buildGrantTypesServerMismatchExpectations(Constants.PASSWORD_GRANT_TYPE, Constants.INVOKE_TOKEN_ENDPOINT);
 
         testOPServer.addIgnoredServerExceptions("CWWKS1606E");
-        
+
         invokeTokenEndpoint_password(_testName, wc, updatedTestSettings, expectations);
     }
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has refresh_token set in its grantTypes
      * Request contains refresh_token.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_refreshToken_match() throws Exception {
@@ -695,12 +698,12 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has something other than refresh_token set in its grantTypes
      * Request contains refresh_token.
      * Request should fail as the grant_type in the request does not match
      * what is configured in the client
-     * 
+     *
      */
     @Test
     public void testGrantType_refreshToken_misMatch() throws Exception {
@@ -727,11 +730,11 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has client_credential set in its grantTypes
      * Request contains client_credential.
      * Request should succeed
-     * 
+     *
      */
     @Test
     public void testGrantType_clientCred_match() throws Exception {
@@ -749,12 +752,12 @@ public class GenericGrantTypesTests extends CommonTest {
 
     /**
      * TestDescription:
-     * 
+     *
      * This test uses a client that has something other than client_credential set in its grantTypes
      * Request contains client_credential.
      * Request should fail as the grant_type in the request does not match
      * what is configured in the client
-     * 
+     *
      */
     @ExpectedFFDC("com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidGrantTypeException")
     @Test
