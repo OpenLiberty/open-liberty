@@ -2682,6 +2682,11 @@
       <version>4.0.1</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.18.300</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.transformer</groupId>
       <artifactId>org.eclipse.transformer.bnd.analyzer</artifactId>
       <version>0.5.0</version>
@@ -4450,11 +4455,6 @@
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.equinox.region</artifactId>
       <version>1.5.100</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.17.200</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.classfilewriter</groupId>
