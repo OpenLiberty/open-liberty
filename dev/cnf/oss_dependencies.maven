@@ -532,6 +532,7 @@ org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.11
 org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.3
 org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.0
 org.eclipse.persistence:org.eclipse.persistence.json:4.0.0
+org.eclipse.platform:org.eclipse.osgi:3.18.300
 org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
