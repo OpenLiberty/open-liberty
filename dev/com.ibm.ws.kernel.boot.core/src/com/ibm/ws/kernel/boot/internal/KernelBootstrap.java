@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,6 +53,8 @@ import com.ibm.ws.kernel.provisioning.NameBasedLocalBundleRepository;
 import com.ibm.ws.kernel.provisioning.ServiceFingerprint;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * Bootstrap the runtime: Resolve the few jar files required to construct the nested
  * classloader requierd for launching the framework, use reflection to find
@@ -79,7 +81,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *            options used to launch the kernel.
+     *                      options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
@@ -516,6 +518,10 @@ public class KernelBootstrap {
                 System.out.println(jsonConsoleHeader);
             } else {
                 System.out.println(consoleLogHeader);
+            }
+            if (!CheckpointPhase.getPhase().restored()) {
+                // store for later to log on restore; only if printVersion is requested
+                bootProps.put(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER, consoleLogHeader);
             }
         }
 

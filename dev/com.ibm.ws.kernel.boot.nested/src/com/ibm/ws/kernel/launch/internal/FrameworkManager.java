@@ -581,7 +581,7 @@ public class FrameworkManager {
      * Create and start a new instance of an OSGi framework using the provided
      * properties as framework properties.
      */
-    protected Framework initFramework(BootstrapConfig config, final LogProvider logProvider) throws BundleException {
+    protected Framework initFramework(final BootstrapConfig config, final LogProvider logProvider) throws BundleException {
         // Set the default startlevel of the framework. We want the framework to
         // start at our bootstrap level (i.e. Framework bundle itself will start, and
         // it will pre-load and re-start any previously known bundles in the
@@ -646,6 +646,12 @@ public class FrameworkManager {
                             }
                             Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
                             TrConfigurator.update(configMap);
+                            String consoleLogHeader = config.remove(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER);
+                            if (consoleLogHeader != null) {
+                                // log the initial console log header;
+                                // This is done with normal logging instead of System.out so that it shows up properly in messages.log
+                                Tr.audit(tc, consoleLogHeader);
+                            }
                         }
 
                     }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
