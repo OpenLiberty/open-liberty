@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.tx.jta.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -271,8 +273,24 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         }
     };
 
-    private static NewTransactionCheckpointHook getNewTxHook() {
+    private static NewTransactionCheckpointHook getNewTxCheckpointHook() {
         return NewTransactionCheckpointHook._instance;
+    }
+
+    private static void addNewTxCheckpointHook() {
+        if (CheckpointPhase.getPhase().restored()) {
+            // Normal startup; do nothing
+        } else {
+            // Log the stack trace of the thread that created the transaction
+            final StringWriter writer = new StringWriter();
+            final PrintWriter printWriter = new PrintWriter(writer);
+            printWriter.println();
+            for (StackTraceElement element : Thread.currentThread().getStackTrace())
+                printWriter.println("\t" + element);
+            Tr.warning(tc, "WTRN0155_CHECKPOINT_NEW_TX_STACK", writer.getBuffer());
+
+            CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxCheckpointHook());
+        }
     }
 
     /**
@@ -282,7 +300,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", fsc);
 
-        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+        addNewTxCheckpointHook();
 
         _failureScopeController = fsc;
 
@@ -293,7 +311,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     protected TransactionImpl() {
-        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+        addNewTxCheckpointHook();
     }
 
     /**
@@ -303,7 +321,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", timeout);
 
-        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+        addNewTxCheckpointHook();
 
         _failureScopeController = Configuration.getFailureScopeController();
 
@@ -327,7 +345,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { timeout, xid, jcard });
 
-        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+        addNewTxCheckpointHook();
 
         _failureScopeController = Configuration.getFailureScopeController();
 
@@ -352,7 +370,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { txType, timeout });
 
-        CheckpointPhase.getPhase().addMultiThreadedHook(getNewTxHook());
+        addNewTxCheckpointHook();
 
         _txType = txType;
 
