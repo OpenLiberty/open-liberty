@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.data.repository.Compare;
 import jakarta.data.repository.Count;
@@ -32,15 +33,15 @@ import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 
 /**
- *
+ * Repository interface for the unannotated Product entity, which has a UUID as the Id.
  */
 @Repository
-public interface ProductRepo {
+public interface Products {
     @Delete
     void clear();
 
-    @Query("DELETE FROM Product o WHERE o.id IN ?1")
-    int discontinueProducts(Set<String> ids);
+    @Query("DELETE FROM Product o WHERE o.pk IN ?1")
+    int discontinueProducts(Set<UUID> ids);
 
     @Select(value = "name", distinct = true)
     @OrderBy("name")
@@ -48,10 +49,10 @@ public interface ProductRepo {
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
-    @Query("SELECT o FROM Product o WHERE o.id=:productId")
-    Product findItem(@Param("productId") String id);
+    @Query("SELECT o FROM Product o WHERE o.pk=:productId")
+    Product findItem(@Param("productId") UUID id);
 
-    Optional<Product> findById(String id);
+    Optional<Product> findById(UUID id);
 
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
@@ -79,7 +80,7 @@ public interface ProductRepo {
 
     // Custom repository method that combines multiple operations into a single transaction
     @Transactional
-    default Product remove(String id) {
+    default Product remove(UUID id) {
         for (Optional<Product> product; (product = findById(id)).isPresent();)
             if (discontinueProducts(Set.of(id)) == 1)
                 return product.get();
@@ -88,10 +89,10 @@ public interface ProductRepo {
 
     void save(Product p);
 
-    @Filter(by = "id")
+    @Filter(by = "pk")
     @Filter(by = "version")
     @Update(attr = "price")
-    boolean setPrice(String id, long currentVersion, float newPrice);
+    boolean setPrice(UUID id, long currentVersion, float newPrice);
 
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
@@ -102,8 +103,8 @@ public interface ProductRepo {
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 
-    @Filter(by = "id", op = Compare.In)
+    @Filter(by = "pk", op = Compare.In)
     @Update(attr = "price", op = Operation.Divide)
     @Update(attr = "version", op = Operation.Subtract, value = "1")
-    long undoPriceIncrease(Iterable<String> productIds, float divisor);
+    long undoPriceIncrease(Iterable<UUID> productIds, float divisor);
 }
