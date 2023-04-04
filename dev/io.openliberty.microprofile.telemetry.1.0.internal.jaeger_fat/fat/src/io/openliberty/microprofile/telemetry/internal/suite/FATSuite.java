@@ -19,24 +19,28 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
+import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
 import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureTest;
+import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerOltpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
+import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, // Must keep this test to run something in the Java 6 builds.
-                TracingNotEnabledTest.class,
-                JaegerOltpTest.class,
-                JaegerLegacyTest.class,
-                ZipkinTest.class,
-                AgentTest.class,
+                AlwaysPassesTest.class,//Must keep this test to run something in the Java 6 builds.
                 AgentConfigTest.class,
+                AgentTest.class,
                 CrossFeatureTest.class,
+                JaegerLegacyTest.class,
+                JaegerOltpTest.class,
+                JaegerOtelCollectorTest.class,
+                TracingNotEnabledTest.class,
+                ZipkinOtelCollectorTest.class,
+                ZipkinTest.class,
 })
 
 @MinimumJavaLevel(javaLevel = 11)
