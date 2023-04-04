@@ -118,9 +118,12 @@ public class ServletStartupTest extends FATServletClient {
         // Request a server checkpoint
         ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
         int returnCode = output.getReturnCode();
-        assertEquals("The server checkpoint request should have returned failure code 72, but did not.", 72, returnCode);
+        assertEquals("The server checkpoint request should return failure code 72, but did not.", 72, returnCode);
 
-        assertNotNull("The transaction manager should report it is unable to begin a transaction during a checkpoint request, but did not.",
+        assertNotNull("The transaction manager should log the stack trace of thread that begins a transaction during checkpoint, but did not.",
+                      server.waitForStringInLogUsingMark("WTRN0155"));
+
+        assertNotNull("The transaction manager should log it is unable to begin a transaction during checkpoint, but did not.",
                       server.waitForStringInLogUsingMark("WTRN0154"));
     }
 
