@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,8 @@ public final class BootstrapConstants {
      */
     public static final String BOOTPROP_KERNEL_INFO = "websphere.kernel.info",
                     BOOTPROP_PRODUCT_INFO = "websphere.product.info";
+
+    public static final String BOOTPROP_CONSOLE_LOG_HEADER = "liberty.console.log.header";
     /**
      * Internally set property containing the output file name provided
      * on command line
