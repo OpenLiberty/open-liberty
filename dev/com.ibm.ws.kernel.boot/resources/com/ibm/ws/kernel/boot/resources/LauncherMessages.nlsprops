@@ -760,6 +760,10 @@ error.checkpoint.failed=CWWKE0962E: The server checkpoint request failed. The fo
 error.checkpoint.failed.explanation=A checkpoint request for the server failed. No valid checkpoint process image for the server was created.
 error.checkpoint.failed.useraction=To determine why the checkpoint failed, inspect the log files in the checkpoint directory that is located in the server logs directory.
 
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: The server checkpoint request failed because netlink system calls were unsuccessful. If SELinux is enabled in enforcing mode, netlink system calls might be blocked by the SELinux "virt_sandbox_use_netlink" policy setting. Either disable SELinux or enable the netlink system calls with the "setsebool virt_sandbox_use_netlink 1" command.
+error.checkpoint.failed.selinux.netdiag.explanation=A checkpoint request for the server failed because netlink system calls were unsuccessful.
+error.checkpoint.failed.selinux.netdiag.useraction=If SELinux is enabled in enforcing mode, netlink system calls might be blocked by the SELinux "virt_sandbox_use_netlink" policy setting. Either disable SELinux or enable the netlink system calls with the "setsebool virt_sandbox_use_netlink 1" command.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
