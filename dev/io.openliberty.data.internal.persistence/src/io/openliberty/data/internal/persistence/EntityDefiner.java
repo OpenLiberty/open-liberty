@@ -31,6 +31,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -394,9 +395,12 @@ public class EntityDefiner implements Runnable {
             // (1) has name of Id, or ID, or id.
             // (2) name ends with Id.
             // (3) name ends with ID.
-            // (4) name ends with id.
+            // (4) type is UUID.
+            // (5) name ends with id.
             int precedence = 10;
-            for (String name : attributes.keySet())
+            for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
+                String name = attribute.getKey();
+                Class<?> type = attribute.getValue(); // TODO compare type against the repository key type if defined
                 if (name.length() > 2) {
                     if (precedence > 2) {
                         char i = name.charAt(name.length() - 2);
@@ -409,16 +413,20 @@ public class EntityDefiner implements Runnable {
                                 keyAttributeName = name;
                                 precedence = 3;
                             }
-                        } else if (i == 'i' && precedence > 4 && name.charAt(name.length() - 1) == 'd') {
+                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
                             keyAttributeName = name;
-                            precedence = 4;
+                            precedence = 5;
                         }
                     }
                 } else if (name.equalsIgnoreCase("ID")) {
                     keyAttributeName = name;
                     precedence = 1;
                     break;
+                } else if (precedence > 4 && UUID.class.equals(type)) {
+                    keyAttributeName = name;
+                    precedence = 4;
                 }
+            }
 
             if (keyAttributeName == null)
                 throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS

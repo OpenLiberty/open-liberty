@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -110,7 +111,7 @@ public class DataTestServlet extends FATServlet {
     Primes primes;
 
     @Inject
-    ProductRepo products;
+    Products products;
 
     @Inject
     Reservations reservations;
@@ -161,29 +162,29 @@ public class DataTestServlet extends FATServlet {
         // Remove data from previous test:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
         if (allProducts.length > 0)
-            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.pk).collect(Collectors.toSet()));
 
         // Add data for this test to use:
         Product prod1 = new Product();
-        prod1.id = "AF-006E905-LE";
+        prod1.pk = UUID.nameUUIDFromBytes("AF-006E905-LE".getBytes());
         prod1.name = "TestAggregateFunctions Lite Edition";
         prod1.price = 104.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "AF-006E005-RK";
+        prod2.pk = UUID.nameUUIDFromBytes("AF-006E005-RK".getBytes());
         prod2.name = "TestAggregateFunctions Repair Kit";
         prod2.price = 104.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "AF-006E905-CE";
+        prod3.pk = UUID.nameUUIDFromBytes("AF-006E905-CE".getBytes());
         prod3.name = "TestAggregateFunctions Classic Edition";
         prod3.price = 306.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "AF-006E205-CE";
+        prod4.pk = UUID.nameUUIDFromBytes("AF-006E205-CE".getBytes());
         prod4.name = "TestAggregateFunctions Classic Edition";
         prod4.description = "discontinued";
         prod4.price = 286.99f;
@@ -553,44 +554,44 @@ public class DataTestServlet extends FATServlet {
         products.clear();
 
         Product prod1 = new Product();
-        prod1.id = "TDM-SE";
+        prod1.pk = UUID.nameUUIDFromBytes("TDM-SE".getBytes());
         prod1.name = "TestDefaultRepositoryMethod Standard Edition";
         prod1.price = 115.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "TDM-AE";
+        prod2.pk = UUID.nameUUIDFromBytes("TDM-AE".getBytes());
         prod2.name = "TestDefaultRepositoryMethod Advanced Edition";
         prod2.price = 197.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "TDM-EE";
+        prod3.pk = UUID.nameUUIDFromBytes("TDM-EE".getBytes());
         prod3.name = "TestDefaultRepositoryMethod Expanded Edition";
         prod3.price = 153.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "TDM-NFE";
+        prod4.pk = UUID.nameUUIDFromBytes("TDM-NFE".getBytes());
         prod4.name = "TestDefaultRepositoryMethod Nearly Free Edition";
         prod4.price = 1.99f;
         products.save(prod4);
 
-        assertEquals(2, products.discontinueProducts(Set.of("TDM-AE", "TDM-NFE", "TDM-NOT-FOUND")));
+        assertEquals(2, products.discontinueProducts(Set.of(prod2.pk, prod4.pk, UUID.nameUUIDFromBytes("TDM-NOT-FOUND".getBytes()))));
 
         // expect that 2 remain
-        assertNotNull(products.findItem("TDM-SE"));
-        assertNotNull(products.findItem("TDM-EE"));
+        assertNotNull(products.findItem(prod1.pk));
+        assertNotNull(products.findItem(prod3.pk));
 
         // In the future it will only be possible to run this on Java 21+
         // and then the following condition can be removed so that this part of the test always runs:
         if (Runtime.version().feature() >= 17) {
             // Use custom method:
-            Product removed = products.remove("TDM-SE");
+            Product removed = products.remove(prod1.pk);
             assertEquals("TestDefaultRepositoryMethod Standard Edition", removed.name);
 
-            assertEquals(false, products.findById("TDM-SE").isPresent());
-            assertEquals(true, products.findById("TDM-EE").isPresent());
+            assertEquals(false, products.findById(prod1.pk).isPresent());
+            assertEquals(true, products.findById(prod3.pk).isPresent());
         }
 
         products.clear();
@@ -602,37 +603,37 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testDistinctAttribute() {
         Product prod1 = new Product();
-        prod1.id = "TDA-T-L1";
+        prod1.pk = UUID.nameUUIDFromBytes("TDA-T-L1".getBytes());
         prod1.name = "TestDistinctAttribute T-Shirt Size Large";
         prod1.price = 7.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "TDA-T-M1";
+        prod2.pk = UUID.nameUUIDFromBytes("TDA-T-M1".getBytes());
         prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod2.price = 7.89f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "TDA-T-S1";
+        prod3.pk = UUID.nameUUIDFromBytes("TDA-T-S1".getBytes());
         prod3.name = "TestDistinctAttribute T-Shirt Size Small";
         prod3.price = 7.79f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "TDA-T-M2";
+        prod4.pk = UUID.nameUUIDFromBytes("TDA-T-M2".getBytes());
         prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod4.price = 7.49f;
         products.save(prod4);
 
         Product prod5 = new Product();
-        prod5.id = "TDA-T-XS1";
+        prod5.pk = UUID.nameUUIDFromBytes("TDA-T-XS1".getBytes());
         prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
         prod5.price = 7.59f;
         products.save(prod5);
 
         Product prod6 = new Product();
-        prod6.id = "TDA-T-L2";
+        prod6.pk = UUID.nameUUIDFromBytes("TDA-T-L2".getBytes());
         prod6.name = "TestDistinctAttribute T-Shirt Size Large";
         prod6.price = 7.49f;
         products.save(prod6);
@@ -878,23 +879,25 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindCreateFind() {
+        UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
+
         try {
-            Product prod = products.findItem("OL306-233F");
+            Product prod = products.findItem(id);
             fail("Should not find " + prod);
         } catch (EmptyResultException x) {
             // expected
         }
 
         Product prod = new Product();
-        prod.id = "OL306-233F";
+        prod.pk = id;
         prod.name = "Something";
         prod.price = 3.99f;
         prod.description = "An item for sale.";
 
         products.save(prod);
 
-        Product p = products.findItem("OL306-233F");
-        assertEquals(prod.id, p.id);
+        Product p = products.findItem(id);
+        assertEquals(prod.pk, p.pk);
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
@@ -927,34 +930,34 @@ public class DataTestServlet extends FATServlet {
         // Remove data from previous tests:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
         if (allProducts.length > 0)
-            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.pk).collect(Collectors.toSet()));
 
         Product p1 = new Product();
-        p1.id = "TFL-1";
+        p1.pk = UUID.nameUUIDFromBytes("TFL-1".getBytes());
         p1.name = "TestFindLike_1";
         p1.price = 1.00f;
         products.save(p1);
 
         Product p2 = new Product();
-        p2.id = "TFL-2";
+        p2.pk = UUID.nameUUIDFromBytes("TFL-2".getBytes());
         p2.name = "2% TestFindLike";
         p2.price = 2.00f;
         products.save(p2);
 
         Product p10 = new Product();
-        p10.id = "TFL-10";
+        p10.pk = UUID.nameUUIDFromBytes("TFL-10".getBytes());
         p10.name = "TestFindLike 1";
         p10.price = 10.00f;
         products.save(p10);
 
         Product p100 = new Product();
-        p100.id = "TFL-100";
+        p100.pk = UUID.nameUUIDFromBytes("TFL-100".getBytes());
         p100.name = "TestFindLike  1";
         p100.price = 100.00f;
         products.save(p100);
 
         Product p200 = new Product();
-        p200.id = "TFL-200";
+        p200.pk = UUID.nameUUIDFromBytes("TFL-200".getBytes());
         p200.name = "200 TestFindLike";
         p200.price = 200.00f;
         products.save(p200);
@@ -4050,37 +4053,37 @@ public class DataTestServlet extends FATServlet {
         products.clear();
 
         Product prod1 = new Product();
-        prod1.id = "UPD-ANNO-1";
+        prod1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-1".getBytes());
         prod1.name = "Fairly Priced TestUpdateAnnotation Item";
         prod1.price = 5.00f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "UPD-ANNO-2";
+        prod2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-2".getBytes());
         prod2.name = "Highly Priced TestUpdateAnnotation Item";
         prod2.price = 100.00f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "UPD-ANNO-3";
+        prod3.pk = UUID.nameUUIDFromBytes("UPD-ANNO-3".getBytes());
         prod3.name = "Middle Priced TestUpdateAnnotation Item";
         prod3.price = 40.00f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "UPD-ANNO-4";
+        prod4.pk = UUID.nameUUIDFromBytes("UPD-ANNO-4".getBytes());
         prod4.name = "Inexpensive TestUpdateAnnotation Item";
         prod4.price = 2.00f;
         products.save(prod4);
 
         Product prod5 = new Product();
-        prod5.id = "UPD-ANNO-5";
+        prod5.pk = UUID.nameUUIDFromBytes("UPD-ANNO-5".getBytes());
         prod5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
         prod5.price = 500.00f;
         products.save(prod5);
 
         Product prod6 = new Product();
-        prod6.id = "UPD-ANNO-6";
+        prod6.pk = UUID.nameUUIDFromBytes("UPD-ANNO-6".getBytes());
         prod6.name = "Lowest Priced TestUpdateAnnotation Item";
         prod6.price = 1.00f;
         products.save(prod6);
@@ -4092,7 +4095,7 @@ public class DataTestServlet extends FATServlet {
 
         Product[] found = products.findByVersionGreaterThanEqualOrderByPrice(2);
 
-        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
                      5, found.length);
 
         assertEquals(1.07f, found[0].price, 0.001f);
@@ -4101,14 +4104,14 @@ public class DataTestServlet extends FATServlet {
         assertEquals(107.00f, found[3].price, 0.001f);
         assertEquals(535.00f, found[4].price, 0.001f);
 
-        Product item = products.findItem("UPD-ANNO-4");
+        Product item = products.findItem(prod4.pk);
         assertEquals(2.00f, item.price, 0.001f);
 
-        products.undoPriceIncrease(Set.of("UPD-ANNO-5", "UPD-ANNO-2", "UPD-ANNO-1"), 1.07f);
+        products.undoPriceIncrease(Set.of(prod5.pk, prod2.pk, prod1.pk), 1.07f);
 
         found = products.findByVersionGreaterThanEqualOrderByPrice(1);
 
-        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
                      6, found.length);
 
         assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
@@ -4150,25 +4153,25 @@ public class DataTestServlet extends FATServlet {
         assertEquals(0, products.putOnSale("TestUpdateMultiple-match", .10f));
 
         Product prod1 = new Product();
-        prod1.id = "800-2024-S";
+        prod1.pk = UUID.nameUUIDFromBytes("800-2024-S".getBytes());
         prod1.name = "Small size TestUpdateMultiple-matched item";
         prod1.price = 10.00f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "800-3024-M";
+        prod2.pk = UUID.nameUUIDFromBytes("800-3024-M".getBytes());
         prod2.name = "Medium size TestUpdateMultiple-matched item";
         prod2.price = 15.00f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "C6000-814BH0003Y";
+        prod3.pk = UUID.nameUUIDFromBytes("C6000-814BH0003Y".getBytes());
         prod3.name = "Medium size TestUpdateMultiple non-matching item";
         prod3.price = 18.00f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "800-4024-L";
+        prod4.pk = UUID.nameUUIDFromBytes("800-4024-L".getBytes());
         prod4.name = "Large size TestUpdateMultiple-matched item";
         prod4.price = 20.00f;
         products.save(prod4);
@@ -4178,19 +4181,19 @@ public class DataTestServlet extends FATServlet {
         // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
 
-        Product p1 = products.findItem(prod1.id);
+        Product p1 = products.findItem(prod1.pk);
         assertEquals(8.00f, p1.price, 0.001f);
         assertEquals(p[0].version + 1, p1.version); // updated
 
-        Product p2 = products.findItem(prod2.id);
+        Product p2 = products.findItem(prod2.pk);
         assertEquals(12.00f, p2.price, 0.001f);
         assertEquals(p[1].version + 1, p2.version); // updated
 
-        Product p3 = products.findItem(prod3.id);
+        Product p3 = products.findItem(prod3.pk);
         assertEquals(18.00f, p3.price, 0.001f);
         assertEquals(p[2].version, p3.version); // not updated, version remains the same
 
-        Product p4 = products.findItem(prod4.id);
+        Product p4 = products.findItem(prod4.pk);
         assertEquals(16.00f, p4.price, 0.001f);
         assertEquals(p[3].version + 1, p4.version); // updated
     }
@@ -4201,19 +4204,19 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
-        prod1.id = "Q6008-U8-21001";
+        prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
         products.save(prod1);
 
-        Product p = products.findItem(prod1.id);
+        Product p = products.findItem(prod1.pk);
         long initialVersion = p.version;
 
-        assertEquals(true, products.setPrice(prod1.id, initialVersion, 84.99f));
-        assertEquals(false, products.setPrice(prod1.id, initialVersion, 83.99f));
-        assertEquals(true, products.setPrice(prod1.id, initialVersion + 1, 88.99f));
+        assertEquals(true, products.setPrice(prod1.pk, initialVersion, 84.99f));
+        assertEquals(false, products.setPrice(prod1.pk, initialVersion, 83.99f));
+        assertEquals(true, products.setPrice(prod1.pk, initialVersion + 1, 88.99f));
 
-        p = products.findItem(prod1.id);
+        p = products.findItem(prod1.pk);
         assertEquals(88.99f, p.price, 0.001f);
         assertEquals(initialVersion + 2, p.version);
     }
@@ -4224,13 +4227,13 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();
-        prod1.id = "3400R-6120-1";
+        prod1.pk = UUID.nameUUIDFromBytes("3400R-6120-1".getBytes());
         prod1.name = "TestVersionedUpdateViaRepository Product 1";
         prod1.price = 139.99f;
         products.save(prod1);
 
-        Product prod1a = products.findItem(prod1.id);
-        Product prod1b = products.findItem(prod1.id);
+        Product prod1a = products.findItem(prod1.pk);
+        Product prod1b = products.findItem(prod1.pk);
 
         long version;
         assertEquals(version = prod1a.version, prod1b.version);
@@ -4250,7 +4253,7 @@ public class DataTestServlet extends FATServlet {
                 throw x;
         }
 
-        Product p = products.findItem(prod1.id);
+        Product p = products.findItem(prod1.pk);
         assertEquals(149.99f, p.price, 0.001f);
         assertEquals(version + 1, p.version);
     }
