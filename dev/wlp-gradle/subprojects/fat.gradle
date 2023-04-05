@@ -427,8 +427,6 @@ task runfat(type: Exec) {
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
   environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
-  environment "artifactory.download.user", gradle.userProps.getProperty("artifactory.download.user")
-  environment "artifactory.download.token", gradle.userProps.getProperty("artifactory.download.token")
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM
   environment "fat.test.localrun", "true"
