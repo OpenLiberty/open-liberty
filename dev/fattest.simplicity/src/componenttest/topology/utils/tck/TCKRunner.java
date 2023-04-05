@@ -14,13 +14,10 @@ package componenttest.topology.utils.tck;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -31,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,24 +94,15 @@ public class TCKRunner {
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
 
-    private static final String FAT_TEST_PREFIX = "fat.test.";
-    private static final String ARTIFACTORY_SERVER_KEY = "artifactory.download.server";
-    private static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
-    private static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
-    private static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
-    private static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
-
     private final String bucketName;
     private final String testName;
     private final LibertyServer server;
     private final String suiteFileName;
     private final Map<String, String> additionalMvnProps;
     private final boolean isTestNG;
+    private final String relativeTckRunner;
     private final Type type;
     private final String specName;
-    private final File mavenUserHome;
-    private final File settingsFile;
-    private final File tckRunnerDir;
 
     /**
      * runs "mvn clean test" in the tck folder
@@ -204,17 +191,16 @@ public class TCKRunner {
     /**
      * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
      *
-     * @param  server          the liberty server which should be used to run the TCK
-     * @param  bucketName      the name of the test project
-     * @param  testName        the name of the method that's being used to launch the TCK
-     * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName        the formal name for the specification being tested
-     * @param  suiteFileName   the name of the suite xml file
-     * @param  additionalProps java properties to set when running the mvn command
-     * @throws IOException
+     * @param server          the liberty server which should be used to run the TCK
+     * @param bucketName      the name of the test project
+     * @param testName        the name of the method that's being used to launch the TCK
+     * @param type            the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param specName        the formal name for the specification being tested
+     * @param suiteFileName   the name of the suite xml file
+     * @param additionalProps java properties to set when running the mvn command
      */
     private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                      String relativeTckRunner, Map<String, String> additionalMvnProps) throws IOException {
+                      String relativeTckRunner, Map<String, String> additionalMvnProps) {
         this.server = server;
         this.suiteFileName = suiteFileName;
         this.bucketName = bucketName;
@@ -223,22 +209,8 @@ public class TCKRunner {
         this.specName = specName;
         this.additionalMvnProps = additionalMvnProps;
         this.isTestNG = suiteFileName != null;
-        File relativeTckRunnerDir = new File(relativeTckRunner);
-        if (relativeTckRunnerDir.exists() && relativeTckRunnerDir.isDirectory()) {
-            this.tckRunnerDir = relativeTckRunnerDir.getAbsoluteFile();
-        } else {
-            this.tckRunnerDir = new File(RELATIVE_TCK_RUNNER).getAbsoluteFile();
-        }
-        this.mavenUserHome = getM2Dir();
+        this.relativeTckRunner = relativeTckRunner;
 
-        //create and populate the dev/.m2 folder if it does not already exist
-        if (!this.mavenUserHome.exists()) {
-            createDirectory(this.mavenUserHome);
-            exportMvnSettings(this.mavenUserHome);
-            exportMvnWrapper(this.mavenUserHome);
-        }
-        this.settingsFile = new File(this.mavenUserHome, "settings.xml");
-        Log.info(c, "TCKRunner", "Using maven settings file: " + this.settingsFile);
     }
 
     /**
@@ -246,7 +218,6 @@ public class TCKRunner {
      */
     private void runTCK() throws Exception {
         Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
-
         String[] testOutput = runCleanTestCmd();
         List<String> failingTestsList = postProcessTestResults(testOutput);
         assertTestsPassed(this.bucketName, this.testName, failingTestsList);
@@ -258,166 +229,12 @@ public class TCKRunner {
     }
 
     /**
-     * Export the maven wrapper scripts, jars and config to the TCK working directory
-     * Updates the maven wrapper config to use the correct artifactory host
-     *
-     * @throws IOException
-     */
-    private static void exportMvnWrapper(File exportDir) throws IOException {
-        File mvnwFile = exportResource("mvnw", exportDir);
-        mvnwFile.setExecutable(true, false);
-
-        File mvnwCmdFile = exportResource("mvnw.cmd", exportDir);
-        mvnwCmdFile.setExecutable(true, false);
-
-        File targetFolder = createDirectory(exportDir, ".mvn");
-        targetFolder = createDirectory(targetFolder, "wrapper");
-
-        exportResource("maven-wrapper.jar", targetFolder);
-
-        File wrapperPropertiesFile = exportResource("maven-wrapper.properties", targetFolder);
-        updatePropertiesFile(wrapperPropertiesFile);
-    }
-
-    /**
-     * Export the maven settings.xml file to the Maven User Home dir (.m2 folder).
-     *
-     * @throws IOException
-     */
-    private static File exportMvnSettings(File exportDir) throws IOException {
-        File settingsFile = exportResource("settings.xml", exportDir);
-        return settingsFile;
-    }
-
-    /**
-     * Update the mvnw wrapper properties file to use the artifactory server defined in the
-     * environment. Specifically, this looks for the "distributionUrl" and "wrapperUrl" properties
-     * and replaces "${artifactory.download.server}" with the value of the "artifactory.download.server"
-     * environment variable.
-     *
-     * @param  wrapperPropertiesFile
-     * @return
-     * @throws IOException
-     */
-    private static File updatePropertiesFile(File wrapperPropertiesFile) throws IOException {
-        //get the artifactory server
-        String artifactoryServer = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
-        if (artifactoryServer != null) {
-            //load the properties file
-            Properties props = new Properties();
-            FileInputStream fis = new FileInputStream(wrapperPropertiesFile);
-            try {
-                props.load(fis);
-            } finally {
-                fis.close();
-            }
-            //get the existing value of the distributionUrl property
-            String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
-            //substitute the server string
-            distributionURL = distributionURL.replace("${" + ARTIFACTORY_SERVER_KEY + "}", artifactoryServer);
-            //set it back into the properties
-            props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
-            Log.info(c, "updatePropertiesFile", MVN_DISTRIBUTION_URL_KEY + "=" + distributionURL);
-
-            //get the existing value of the wrapperUrl property
-            String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
-            //substitute the server string
-            wrapperURL = wrapperURL.replace("${" + ARTIFACTORY_SERVER_KEY + "}", artifactoryServer);
-            //set it back into the properties
-            props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
-            Log.info(c, "updatePropertiesFile", MVN_WRAPPER_URL_KEY + "=" + wrapperURL);
-
-            //write the properties back out into the original file
-            FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile);
-            try {
-                props.store(fos, "MVN Wrapper Properties");
-            } finally {
-                fos.close();
-            }
-        }
-        return wrapperPropertiesFile;
-    }
-
-    private static File createDirectory(File parent, String dirName) throws IOException {
-        File targetFolder = new File(parent, dirName);
-        targetFolder = createDirectory(targetFolder);
-        return targetFolder;
-    }
-
-    private static File createDirectory(File targetFolder) throws IOException {
-        if (targetFolder.exists()) {
-            if (!targetFolder.isDirectory()) {
-                throw new IOException("Target path exists but is not a directory: " + targetFolder);
-            }
-        } else {
-            targetFolder = Files.createDirectory(targetFolder.toPath()).toFile();
-        }
-        return targetFolder;
-    }
-
-    /**
-     * Export a file from the fattest.simplicity jar to the local filesystem. If the local file
-     * already exists then this method does nothing, it does not overwrite.
-     *
-     * @param  sourceName   The name of the jar resource, relative to TCKRunner.class
-     * @param  targetFolder The target local folder to export to
-     * @return              the File of the exported file (or the existing one)
-     * @throws IOException
-     */
-    private static File exportResource(String sourceName, File targetFolder) throws IOException {
-        InputStream stream = null;
-        OutputStream resStreamOut = null;
-        File targetFile = null;
-        if (targetFolder.exists() && targetFolder.isDirectory()) {
-            targetFile = new File(targetFolder, sourceName);
-            if (targetFile.exists()) {
-                Log.info(c, "exportResource", "Target File already exists: " + targetFile);
-            } else {
-                try {
-                    stream = TCKRunner.class.getResourceAsStream(sourceName);
-                    if (stream == null) {
-                        throw new IOException("Cannot get resource \"" + sourceName + "\" from Jar file.");
-                    }
-
-                    int readBytes;
-                    byte[] buffer = new byte[4096];
-                    resStreamOut = new FileOutputStream(targetFile);
-                    while ((readBytes = stream.read(buffer)) > 0) {
-                        resStreamOut.write(buffer, 0, readBytes);
-                    }
-                    resStreamOut.flush();
-                } catch (IOException e) {
-                    Log.info(c, "exportResource", "Failed to export: " + sourceName + ". Exception: " + e.getMessage());
-                    throw e;
-                } finally {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                    if (resStreamOut != null) {
-                        resStreamOut.close();
-                    }
-                }
-
-                if (targetFile.exists()) {
-                    Log.info(c, "exportResource", sourceName + " exported to: " + targetFile);
-                } else {
-                    Log.info(c, "exportResource", "Failed to export " + sourceName + " to: " + targetFile);
-                }
-            }
-        } else {
-            Log.info(c, "exportResource", "Target folder does not exist or is not a directory: " + targetFolder);
-        }
-
-        return targetFile;
-    }
-
-    /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
     private String[] runCleanTestCmd() throws Exception {
 
         String[] testcmd = getMvnCommandArray(MVN_CLEAN, MVN_TEST);
-        String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir(), getMavenUserHome());
+        String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir());
         TCKUtilities.writeStringsToFile(mvnOutput, getMvnTestOutputFile());
         return mvnOutput;
     }
@@ -427,7 +244,7 @@ public class TCKRunner {
      */
     private String[] runDependencyCmd() throws Exception {
         String[] dependencyCmd = getMvnCommandArray(MVN_DEPENDENCY);
-        String[] mvnOutput = runCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome());
+        String[] mvnOutput = runCmd(dependencyCmd, getTCKRunnerDir());
         TCKUtilities.writeStringsToFile(mvnOutput, getMvnDependencyOutputFile());
         return mvnOutput;
     }
@@ -504,14 +321,10 @@ public class TCKRunner {
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
     private String[] getMvnCommandArray(String... commands) throws Exception {
-        String mvn = getMvn(getMavenUserHome());
+        String mvn = getMvn();
 
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add(mvn);
-
-        stringArrayList.add("-s");
-        stringArrayList.add(getSettingsFile().toString());
-
         for (String command : commands) {
             stringArrayList.add(command);
         }
@@ -672,40 +485,14 @@ public class TCKRunner {
      * @return The TCK runner dir
      */
     private File getTCKRunnerDir() {
-        return this.tckRunnerDir;
-    }
+        File tckRunner = new File(this.relativeTckRunner);
 
-    private File getMavenUserHome() {
-        return this.mavenUserHome;
-    }
-
-    private File getSettingsFile() {
-        return this.settingsFile;
-    }
-
-    private static File getM2Dir() throws IOException {
-        String userDir = System.getProperty("user.dir");
-        if (userDir == null) {
-            throw new IOException("Could not determine user.dir");
-        }
-        File devFolder = new File(userDir);
-        if (!devFolder.exists() || !devFolder.isDirectory()) {
-            throw new IOException("user.dir does not exist or is not a directory: " + userDir);
+        if (!tckRunner.exists()) {
+            tckRunner = new File(RELATIVE_TCK_RUNNER);
         }
 
-        //walk back from the user.dir until we reach the dev folder
-        while (!devFolder.getName().equals("dev")) {
-            devFolder = devFolder.getParentFile();
-            if (devFolder == null) {
-                throw new IOException("Could not determine dev folder from user.dir: " + userDir);
-            }
-        }
+        return tckRunner;
 
-        File m2Dir = new File(devFolder, ".m2");
-        if (m2Dir.exists() && !m2Dir.isDirectory()) {
-            throw new IOException(m2Dir + " exists but is not a directory.");
-        }
-        return m2Dir;
     }
 
     /**
@@ -962,14 +749,12 @@ public class TCKRunner {
      *
      * @return the mvn command
      */
-    private static String getMvn(File mvnHomeDir) {
-        String mvn = "mvnw";
+    private static String getMvn() {
+        String mvn = "mvn";
         if (System.getProperty("os.name").contains("Windows")) {
             mvn = mvn + ".cmd";
         }
-        File mvnFile = new File(mvnHomeDir, mvn);
-        String mvnPath = mvnFile.getAbsolutePath();
-        return mvnPath;
+        return mvn;
     }
 
     /**
@@ -1104,7 +889,7 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static Process startProcess(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
+    private static Process startProcess(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(cmd);
 
         // Enables timestamps in the mvnOutput logs
@@ -1112,39 +897,10 @@ public class TCKRunner {
         mvnEnv.put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
                                  " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
 
-        String artifactoryServer = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
-        if (artifactoryServer == null) {
-            Log.info(c, "startProcess", "Artifactory Download Server not found");
-        } else {
-            Log.info(c, "startProcess", "ARTIFACTORY_SERVER=" + artifactoryServer);
-            mvnEnv.put("ARTIFACTORY_SERVER", artifactoryServer);
-        }
-
-        String artifactoryUser = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
-        if (artifactoryUser == null) {
-            Log.info(c, "startProcess", "Artifactory Download User not found");
-        } else {
-            Log.info(c, "startProcess", "MVNW_USERNAME=" + artifactoryUser);
-            mvnEnv.put("MVNW_USERNAME", artifactoryUser);
-        }
-
-        String artifactoryToken = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
-        if (artifactoryToken == null) {
-            Log.info(c, "startProcess", "Artifactory Download Token not found");
-        } else {
-            Log.info(c, "startProcess", "MVNW_PASSWORD=XXXXXXX");
-            mvnEnv.put("MVNW_PASSWORD", artifactoryToken);
-        }
-
-        String mvnUserHome = mavenUserHome.toString();
-        Log.info(c, "startProcess", "MAVEN_USER_HOME=" + mvnUserHome);
-        mvnEnv.put("MAVEN_USER_HOME", mvnUserHome);
-        mvnEnv.put("MVNW_VERBOSE", "true");
-
         pb.directory(workingDirectory);
         pb.redirectErrorStream(true);
 
-        Log.info(c, "startProcess", "Running command " + Arrays.asList(cmd));
+        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
 
         Process process = pb.start();
         return process;
@@ -1200,7 +956,7 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static String[] runCmd(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
+    private static String[] runCmd(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
 
         //calculate the timeout
         int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
@@ -1215,7 +971,7 @@ public class TCKRunner {
         //TODO might need an async timeout thread?
 
         //start the process
-        Process process = startProcess(cmd, workingDirectory, mavenUserHome);
+        Process process = startProcess(cmd, workingDirectory);
         //read the output
         ArrayList<String> output = new ArrayList<>();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
