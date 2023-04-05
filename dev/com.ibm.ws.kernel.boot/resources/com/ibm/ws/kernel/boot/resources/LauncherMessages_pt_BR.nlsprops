@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Certifique-se de que o usu\u00e1rio
 info.checkpoint.restore.failed=CWWKE0957I: A restaura\u00e7\u00e3o do processo do servidor de ponto de verifica\u00e7\u00e3o falhou. Verifique o log {0} para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. Iniciando o servidor sem usar a imagem do ponto de verifica\u00e7\u00e3o.
 info.checkpoint.restore.failed.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o.  O servidor foi iniciado sem usar a imagem do ponto de verifica\u00e7\u00e3o.
 info.checkpoint.restore.failed.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque a propriedade websphere.java.security foi configurada no arquivo bootstrap.properties. Esta propriedade ativa o Java Security Manager e n\u00e3o \u00e9 v\u00e1lida ao ocorrer um ponto de verifica\u00e7\u00e3o do servidor.
+error.checkpoint.securitymanager.not.supported.explanation=O Liberty n\u00e3o oferece suporte ao Java Security Manager quando um ponto de verifica\u00e7\u00e3o do servidor for solicitado. O Java Security Manager foi descontinuado, conforme especificado pelo JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Remova a propriedade websphere.java.security do arquivo bootstrap.properties.
 
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

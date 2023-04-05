@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Se ha producido un error in
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de problemas en la p\u00e1gina web de soporte de WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: La anotaci\u00f3n {0} se omite en las clases del m\u00f3dulo {1} de la aplicaci\u00f3n {2}. Las aplicaciones Jakarta EE deben utilizar la anotaci\u00f3n {3}. Las clases afectadas son: {4}
+wrong.annotation.package.CWWKM0483I.explanation=La aplicaci\u00f3n contiene una anotaci\u00f3n Java EE con el nombre de paquete 'javax', pero el servidor de aplicaciones tiene las caracter\u00edsticas Jakarta EE habilitadas. El servidor de aplicaciones no ha procesado la anotaci\u00f3n del nombre de paquete 'javax'.
+wrong.annotation.package.CWWKM0483I.useraction=Modifique la aplicaci\u00f3n para utilizar la versi\u00f3n del nombre de paquete 'jakarta' de la anotaci\u00f3n o modifique la configuraci\u00f3n del servidor de aplicaciones para habilitar las caracter\u00edsticas Java EE.

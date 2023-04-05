@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Bels\u0151 hiba t\u00f6rt\u
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support.
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: A(z) {0} annot\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad a(z) {2} alkalmaz\u00e1s {1} modulj\u00e1ban tal\u00e1lhat\u00f3 oszt\u00e1lyokn\u00e1l. A Jakarta EE alkalmaz\u00e1soknak a(z) {3} annot\u00e1ci\u00f3t kell haszn\u00e1lniuk. Az \u00e9rintett oszt\u00e1lyok: {4}
+wrong.annotation.package.CWWKM0483I.explanation=Az alkalmaz\u00e1s tartalmaz egy Java EE annot\u00e1ci\u00f3t a 'javax' csomagn\u00e9vvel, de az alkalmaz\u00e1skiszolg\u00e1l\u00f3n a Jakarta EE szolg\u00e1ltat\u00e1sok vannak enged\u00e9lyezve. Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 nem dolgozta fel a 'javax' csomagn\u00e9v annot\u00e1ci\u00f3t.
+wrong.annotation.package.CWWKM0483I.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy az annot\u00e1ci\u00f3 'jakarta' csomagn\u00e9v v\u00e1ltozat\u00e1t haszn\u00e1lja, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1skiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t a Java EE szolg\u00e1ltat\u00e1sok enged\u00e9lyez\u00e9s\u00e9hez.

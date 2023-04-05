@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Aseg\u00farese de que el usuario ti
 info.checkpoint.restore.failed=CWWKE0957I: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Se inicia el servidor sin utilizar la imagen de punto de comprobaci\u00f3n.
 info.checkpoint.restore.failed.explanation=Se ha producido un error al restaurar un proceso de servidor de punto de comprobaci\u00f3n.  El servidor se ha iniciado sin utilizar la imagen de punto de comprobaci\u00f3n.
 info.checkpoint.restore.failed.useraction=Consulte los registros para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque la propiedad websphere.java.security se ha establecido en el archivo bootstrap.properties. Esta propiedad habilita Java Security Manager y no es v\u00e1lida cuando existe un punto de comprobaci\u00f3n del servidor.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty no es compatible con Java Security Manager cuando se solicita un punto de comprobaci\u00f3n del servidor. Java Security Manager est\u00e1 en desuso, tal como especifica en JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Elimine la propiedad websphere.java.security del archivo bootstrap.properties.
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

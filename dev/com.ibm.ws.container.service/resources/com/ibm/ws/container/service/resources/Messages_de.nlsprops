@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Es ist ein interner Fehler 
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: Die Annotation {0} wird f\u00fcr Klassen im {1}-Modul der Anwendung {2} ignoriert. Jakarta EE-Anwendungen m\u00fcssen die Annotation {3} verwenden. Betroffene Klassen: {4}
+wrong.annotation.package.CWWKM0483I.explanation=Die Anwendung enth\u00e4lt eine Annotation Java EE mit dem Paketnamen "javax", aber im Anwendungsserver sind Jakarta EE-Features aktiviert. Der Anwendungsserver hat die Paketnamenannotation "javax" nicht verarbeitet.
+wrong.annotation.package.CWWKM0483I.useraction=\u00c4ndern Sie die Anwendung so, dass der Paketname "jakarta" der Annotation verwendet wird, oder \u00e4ndern Sie die Anwendungsserverkonfiguration, um Java EE-Features zu aktivieren.

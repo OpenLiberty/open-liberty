@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -869,5 +869,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Byla zji\u0161t\u011bna neobvykl\u00e1 kon
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA je povoleno pro tento klastr, ale spr\u00e1vce HA je zak\u00e1z\u00e1n.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Pokud se jedn\u00e1 o po\u017eadovanou konfigurac\u00ed, nen\u00ed zapot\u0159eb\u00ed \u017e\u00e1dn\u00e1 akce. Jinak konfiguraci HA opravte.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Slu\u017eba transakc\u00ed byla ukon\u010dena, ale protokol pro zotaven\u00ed byl ozna\u010den jako nezda\u0159en\u00fd.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Protokol pro zotaven\u00ed se nezda\u0159il a p\u0159i vypnut\u00ed serveru nedo\u0161lo k p\u0159\u00edstupu k protokolu.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Opravte v\u0161echny podm\u00ednky ozna\u010den\u00e9 zpr\u00e1vami, kter\u00e9 nahl\u00e1sily zru\u0161en\u00ed platnosti protokolu. Restartujte server, aby bylo mo\u017en\u00e9 opravit protokol.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
