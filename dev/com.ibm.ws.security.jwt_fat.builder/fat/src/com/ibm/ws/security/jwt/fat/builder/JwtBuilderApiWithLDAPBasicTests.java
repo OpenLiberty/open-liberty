@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPBasicTests_runFetch_subjectSet_existingClaims() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -183,7 +183,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPBasicTests_runFetch_subjectSet_nonExistingClaim() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -218,7 +218,7 @@ public class JwtBuilderApiWithLDAPBasicTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPBasicTests_runFetch_subjectNotSet_existingClaims() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set

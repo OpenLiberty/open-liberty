@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class JwtBuilderAPIWithLDAPConfigTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPConfigTests_emptyClaims() throws Exception {
 
         String builderId = "emptyClaims";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // have to set subject
         JSONObject testSettings = new JSONObject();
@@ -107,7 +107,7 @@ public class JwtBuilderAPIWithLDAPConfigTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPConfigTests_specificClaims_allSet() throws Exception {
 
         String builderId = "specificClaims_allSet";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put("uid", USER);
         expectationSettings.put("sn", USER);
         expectationSettings.put("cn", USER);
@@ -137,7 +137,7 @@ public class JwtBuilderAPIWithLDAPConfigTests extends JwtBuilderCommonLDAPFat {
     public void JwtBuilderAPIWithLDAPConfigTests_specificClaims_someNotSet() throws Exception {
 
         String builderId = "specificClaims_someNotSet";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put("uid", USER);
         expectationSettings.put("sn", USER);
         expectationSettings.put("cn", USER);
