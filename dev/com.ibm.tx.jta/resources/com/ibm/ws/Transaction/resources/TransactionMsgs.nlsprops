@@ -858,7 +858,7 @@ WTRN0149_REC_XA_TRAN.useraction=No user action is required.
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Response from rolling back recovered xid {0} from {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not correspond to a logged transaction.  The transaction service hass attempted to rollback the xid as part of recovery processing.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not correspond to a logged transaction.  The transaction service has attempted to rollback the xid as part of recovery processing.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine the error code to determine if the rollback failed.
 
 # 0 - resource manager name
