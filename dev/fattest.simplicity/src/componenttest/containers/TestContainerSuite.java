@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class TestContainerSuite {
      * Example: foo/bar:1.0 it will get changed to [ARTIFACTORY_REGISTRY]/wasliberty-docker-remote/foo/bar:1.0
      */
     static {
-        Log.info(TestContainerSuite.class, "before", "Setting up testcontainers");
+        Log.info(TestContainerSuite.class, "<init>", "Setting up testcontainers");
         setupTestcontainers();
     }
 
