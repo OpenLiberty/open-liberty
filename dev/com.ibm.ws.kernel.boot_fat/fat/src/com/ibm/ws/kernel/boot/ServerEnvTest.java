@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,10 +18,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -43,15 +46,28 @@ public class ServerEnvTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.serverstart.fat";
     private static final String OS = System.getProperty("os.name").toLowerCase();
+    private static Locale saveLocale;
 
     private static LibertyServer server;
 
     @Rule
     public TestName testName = new TestName();
 
+    @BeforeClass
+    public static void beforeClass() {
+        saveLocale = Locale.getDefault();
+    }
+
     @Before
     public void before() {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+
+        Locale.setDefault(saveLocale);
+
     }
 
     @After
@@ -252,6 +268,78 @@ public class ServerEnvTest {
         }
 
         return;
+    }
+
+    /**
+     * Set a variable in server.env using a pre-set environment
+     * variable as the value. In this case we set the LOG_FILE
+     * variable which provides a new name for "console.log".
+     * Then check whether the log file with the new name exists
+     * after starting the server.
+     *
+     * @param expansionEnabled if true, the new log file should exist, otherwise it should not
+     * @throws Exception
+     */
+    @Test
+    public void testAlternateLocaleServerEnv() throws Exception {
+        final String METHOD_NAME = "testAlternateLocaleServerEnv";
+        Log.entering(c, METHOD_NAME);
+        //Set Locale to turkish
+        Locale.setDefault(new Locale("tr"));
+
+        // Create server.env
+        // Sets the LOG_FILE variable to an environment variable reference.
+        // This should cause the name of the "console.log" to be something different.
+        String fileContents;
+        String logFileName = "default.log";
+
+        fileContents = "LOG_FILE=" + logFileName;
+
+        Log.info(c, METHOD_NAME, "Creating /etc/server.env with contents:\n" + fileContents);
+        File wlpEtcDir = new File(server.getInstallRoot(), "etc");
+        String serverEnvCreate = createServerEnvFile(fileContents, wlpEtcDir);
+        Log.info(c, METHOD_NAME, "server.env location = " + serverEnvCreate);
+        assertTrue("The server.env file was not created.", serverEnvCreate.contains("server.env"));
+
+        // Execute the server start command and display stdout and stderr
+        String executionDir = server.getInstallRoot() + File.separator + "bin";
+        String command = "." + File.separator + "server";
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+        ProgramOutput po = server.getMachine().execute(command, parms, executionDir);
+        Log.info(c, METHOD_NAME, "server start stdout = " + po.getStdout());
+        Log.info(c, METHOD_NAME, "server start stderr = " + po.getStderr());
+
+        // Check for server ready
+        String serverReady = server.waitForStringInLog("CWWKF0011I");
+        if (serverReady == null) {
+            Log.info(c, METHOD_NAME, "Timed out waiting for server ready message, CWWKF0011I");
+        }
+
+        // Because we didn't start the server using the LibertyServer APIs, we need
+        // to have it detect its started state so it will stop and save logs properly
+        server.resetStarted();
+        assertTrue("the server should have been started", server.isStarted());
+
+        logDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
+
+        // Finally, verify that the log file with the new name exists when expansion is enabled
+        String logFullPathName = server.getLogsRoot() + logFileName;
+        File logFile = new File(logFullPathName);
+
+        assertTrue("the log file with the new name [ " + logFullPathName + " ] does not exist", logFile.exists());
+
+        // Test is complete, but create "console.log" file.
+        // Verification of server stop depends on the default name.
+        // Otherwise, we get FileNotFoundException in the test logs.
+        String defaultLogFullPathName = server.getLogsRoot() + "console.log";
+        Log.info(c, METHOD_NAME, "Creating default console log: " + defaultLogFullPathName);
+        createFile(defaultLogFullPathName);
+
+        // Cleanup - If the server.env file is not deleted, it can cause other test cases to fail.
+        deleteServerEnvFile(wlpEtcDir);
+        Log.exiting(c, METHOD_NAME);
     }
 
     /**

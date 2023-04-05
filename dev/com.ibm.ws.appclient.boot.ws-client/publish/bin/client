@@ -480,7 +480,7 @@ readClientEnv()
       \#*);;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
+        if var=`safeEcho "$line" | sed -e 's/^\([_[:alnum:]][_[:alnum:]]*\)=.*/\1/'`; then
           extractValueAndEscapeForEval "${line}"
           eval "${var}=${escapeForEvalResult}; export ${var}"
         fi
