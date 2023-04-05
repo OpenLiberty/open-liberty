@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -28,7 +29,9 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DBRotationTest.class,
+	//Ensure failures in @BeforeClass do not result in zero tests run
+	AlwaysPassesTest.class,
+	DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
     private static final String POSTGRES_DB = "testdb";

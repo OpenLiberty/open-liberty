@@ -31,6 +31,7 @@ import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -119,6 +120,8 @@ import web.FailoverServlet;
  */
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
+//Skip on IBM i test class depends on datasource inferrence
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 public class FailoverTestLease extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
