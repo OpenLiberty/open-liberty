@@ -10,6 +10,7 @@ Subsystem-Name: MicroProfile OpenTracing 1.2
 IBM-API-Package: \
   org.eclipse.microprofile.opentracing; type="stable"
 -features=com.ibm.websphere.appserver.opentracing-1.2, \
+  com.ibm.websphere.appserver.mpConfig-1.3, \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing-1.2, \
   com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:="2.0", \
