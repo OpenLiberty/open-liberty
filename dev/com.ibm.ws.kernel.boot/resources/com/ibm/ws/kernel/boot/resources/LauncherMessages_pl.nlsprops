@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Upewnij si\u0119, \u017ce u\u017cyt
 info.checkpoint.restore.failed=CWWKE0957I: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Uruchamianie serwera bez korzystania z obrazu punktu kontrolnego.
 info.checkpoint.restore.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego.  Serwer zosta\u0142 uruchomiony bez u\u017cycia obrazu punktu kontrolnego.
 info.checkpoint.restore.failed.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 websphere.java.security by\u0142a ustawiona w pliku bootstrap.properties. Ta w\u0142a\u015bciwo\u015b\u0107 w\u0142\u0105cza program Java Security Manager i nie jest poprawna, gdy wyst\u0105pi punkt kontrolny serwera.
+error.checkpoint.securitymanager.not.supported.explanation=Aplikacja Liberty nie obs\u0142uguje programu Java Security Manager, je\u015bli za\u017c\u0105dano punktu kontrolnego serwera. Zgodnie z JEP 411 program Java Security Manager jest nieaktualny.
+error.checkpoint.securitymanager.not.supported.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 websphere.java.security z pliku bootstrap.properties.
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

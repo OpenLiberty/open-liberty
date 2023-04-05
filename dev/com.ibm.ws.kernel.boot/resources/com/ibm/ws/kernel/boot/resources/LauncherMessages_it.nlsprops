@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Assicurarsi che l'utente disponga d
 info.checkpoint.restore.failed=CWWKE0957I: Ripristino del processo del server di checkpoint non riuscito. Controllare il log {0} per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Avvio del server senza utilizzare l''immagine di checkpoint.
 info.checkpoint.restore.failed.explanation=Si \u00e8 verificato un errore durante il ripristino di un processo del server di checkpoint.  Il server \u00e8 stato avviato senza utilizzare l'immagine di checkpoint.
 info.checkpoint.restore.failed.useraction=Controllare i log per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 la propriet\u00e0 websphere.java.security era impostata nel file bootstrap.properties. Questa propriet\u00e0 abilita Java Security Manager e non \u00e8 valida quando si verifica un checkpoint del server.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty non supporta Java Security Manager quando viene richiesto un checkpoint del server. Java Security Manager \u00e8 obsoleto, come specificato da JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Rimuovere la propriet\u00e0 websphere.java.security dal file bootstrap.properties.
 
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
