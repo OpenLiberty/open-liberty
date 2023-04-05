@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -19,10 +20,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -207,4 +212,72 @@ public class TCKUtilities {
 
         return tckJar;
     }
+
+    /**
+     * On zos, tag a file as ascii.
+     *
+     * @param file
+     */
+    public static void zosTagASCII(File file) {
+        try {
+            String[] cmd = new String[] { "chtag", "-tcISO8859-1", file.getCanonicalPath() };
+            Process process = startProcess(cmd, file.getParentFile(), Collections.emptyMap());
+            int exitValue = process.waitFor();
+            Log.info(c, "zosTagASCII", "chtag RC = " + exitValue);
+
+            if (exitValue != 0) {
+                BufferedReader buf = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                Log.info(c, "zosTagASCII", "SYSOUT:");
+                for (String line = buf.readLine(); line != null; line = buf.readLine()) {
+                    Log.info(c, "zosTagASCII", line);
+                }
+                buf.close();
+
+                buf = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                Log.info(c, "zosTagASCII", "SYSERR:");
+                for (String line = buf.readLine(); line != null; line = buf.readLine()) {
+                    Log.info(c, "zosTagASCII", line);
+                }
+                buf.close();
+
+                throw new Exception("Process failure <chtag> see log for SYSOUT and SYSERR.");
+            }
+        } catch (Exception e) {
+            Log.error(c, "Could not tag zos file as ASCII", e);
+        }
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("windows");
+    }
+
+    public static boolean isZos() {
+        return System.getProperty("os.name").toLowerCase().contains("z/os");
+    }
+
+    public static Process startProcess(String[] cmd, File workingDirectory, Map<String, String> envProperties) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+
+        // Enables timestamps in the mvnOutput logs
+        Map<String, String> processEnv = pb.environment();
+
+        if (TCKUtilities.isZos()) {
+            //The _BPXK_AUTOCVT environment variable is sent to "ON" to allow ASCII tagged
+            //files to be read in the correct codepage on zos
+            processEnv.put("_BPXK_AUTOCVT", "ON");
+        }
+
+        for (Map.Entry<String, String> envEntry : envProperties.entrySet()) {
+            processEnv.put(envEntry.getKey(), envEntry.getValue());
+        }
+
+        pb.directory(workingDirectory);
+        pb.redirectErrorStream(true);
+
+        Log.info(c, "startProcess", "Running command " + Arrays.asList(cmd));
+
+        Process process = pb.start();
+        return process;
+    }
+
 }

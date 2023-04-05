@@ -117,6 +117,8 @@ public class TCKRunner {
     private final File settingsFile;
     private final File tckRunnerDir;
 
+    private final File mvnWrapperDir;
+
     /**
      * runs "mvn clean test" in the tck folder
      *
@@ -229,14 +231,25 @@ public class TCKRunner {
         } else {
             this.tckRunnerDir = new File(RELATIVE_TCK_RUNNER).getAbsoluteFile();
         }
-        this.mavenUserHome = getM2Dir();
 
+        this.mavenUserHome = getM2Dir();
         //create and populate the dev/.m2 folder if it does not already exist
         if (!this.mavenUserHome.exists()) {
             createDirectory(this.mavenUserHome);
             exportMvnSettings(this.mavenUserHome);
-            exportMvnWrapper(this.mavenUserHome);
         }
+
+        this.mvnWrapperDir = new File(this.tckRunnerDir, ".mvn");
+        if (this.mvnWrapperDir.exists() && !this.mvnWrapperDir.isDirectory()) {
+            throw new IOException(this.mvnWrapperDir + " exists but is not a directory.");
+        }
+
+        //create and populate the tckRunner/.mvn folder if it does not already exist
+        if (!this.mvnWrapperDir.exists()) {
+            createDirectory(this.mvnWrapperDir);
+            exportMvnWrapper(this.mvnWrapperDir);
+        }
+
         this.settingsFile = new File(this.mavenUserHome, "settings.xml");
         Log.info(c, "TCKRunner", "Using maven settings file: " + this.settingsFile);
     }
@@ -266,6 +279,10 @@ public class TCKRunner {
     private static void exportMvnWrapper(File exportDir) throws IOException {
         File mvnwFile = exportResource("mvnw", exportDir);
         mvnwFile.setExecutable(true, false);
+
+        if (TCKUtilities.isZos()) {
+            TCKUtilities.zosTagASCII(mvnwFile);
+        }
 
         File mvnwCmdFile = exportResource("mvnw.cmd", exportDir);
         mvnwCmdFile.setExecutable(true, false);
@@ -417,7 +434,7 @@ public class TCKRunner {
     private String[] runCleanTestCmd() throws Exception {
 
         String[] testcmd = getMvnCommandArray(MVN_CLEAN, MVN_TEST);
-        String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir(), getMavenUserHome());
+        String[] mvnOutput = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome());
         TCKUtilities.writeStringsToFile(mvnOutput, getMvnTestOutputFile());
         return mvnOutput;
     }
@@ -427,7 +444,7 @@ public class TCKRunner {
      */
     private String[] runDependencyCmd() throws Exception {
         String[] dependencyCmd = getMvnCommandArray(MVN_DEPENDENCY);
-        String[] mvnOutput = runCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome());
+        String[] mvnOutput = runMvnCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome());
         TCKUtilities.writeStringsToFile(mvnOutput, getMvnDependencyOutputFile());
         return mvnOutput;
     }
@@ -504,7 +521,7 @@ public class TCKRunner {
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
     private String[] getMvnCommandArray(String... commands) throws Exception {
-        String mvn = getMvn(getMavenUserHome());
+        String mvn = getMvn(getMvnWrapperDir());
 
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add(mvn);
@@ -677,6 +694,10 @@ public class TCKRunner {
 
     private File getMavenUserHome() {
         return this.mavenUserHome;
+    }
+
+    private File getMvnWrapperDir() {
+        return this.mvnWrapperDir;
     }
 
     private File getSettingsFile() {
@@ -964,7 +985,7 @@ public class TCKRunner {
      */
     private static String getMvn(File mvnHomeDir) {
         String mvn = "mvnw";
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (TCKUtilities.isWindows()) {
             mvn = mvn + ".cmd";
         }
         File mvnFile = new File(mvnHomeDir, mvn);
@@ -1095,59 +1116,48 @@ public class TCKRunner {
         return null;
     }
 
-    /**
-     * Run a command using a ProcessBuilder.
-     *
-     * @param  cmd
-     * @param  workingDirectory
-     * @param  outputFile
-     * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
-     * @throws Exception
-     */
-    private static Process startProcess(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
+    private static Process startMvnProcess(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
+        Map<String, String> mvnEnv = getMvnEnv(mavenUserHome);
+        Process process = TCKUtilities.startProcess(cmd, workingDirectory, mvnEnv);
+        return process;
+    }
 
-        // Enables timestamps in the mvnOutput logs
-        Map<String, String> mvnEnv = pb.environment();
+    private static Map<String, String> getMvnEnv(File mavenUserHome) throws IOException, InterruptedException {
+        Map<String, String> mvnEnv = new HashMap<>();
+
         mvnEnv.put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
                                  " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
 
         String artifactoryServer = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
         if (artifactoryServer == null) {
-            Log.info(c, "startProcess", "Artifactory Download Server not found");
+            Log.info(c, "getMvnEnv", "Artifactory Download Server not found");
         } else {
-            Log.info(c, "startProcess", "ARTIFACTORY_SERVER=" + artifactoryServer);
+            Log.info(c, "getMvnEnv", "ARTIFACTORY_SERVER=" + artifactoryServer);
             mvnEnv.put("ARTIFACTORY_SERVER", artifactoryServer);
         }
 
         String artifactoryUser = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
         if (artifactoryUser == null) {
-            Log.info(c, "startProcess", "Artifactory Download User not found");
+            Log.info(c, "getMvnEnv", "Artifactory Download User not found");
         } else {
-            Log.info(c, "startProcess", "MVNW_USERNAME=" + artifactoryUser);
+            Log.info(c, "getMvnEnv", "MVNW_USERNAME=" + artifactoryUser);
             mvnEnv.put("MVNW_USERNAME", artifactoryUser);
         }
 
         String artifactoryToken = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
         if (artifactoryToken == null) {
-            Log.info(c, "startProcess", "Artifactory Download Token not found");
+            Log.info(c, "getMvnEnv", "Artifactory Download Token not found");
         } else {
-            Log.info(c, "startProcess", "MVNW_PASSWORD=XXXXXXX");
+            //Log.info(c, "getMvnEnv", "MVNW_PASSWORD=XXXXXXX");
             mvnEnv.put("MVNW_PASSWORD", artifactoryToken);
         }
 
         String mvnUserHome = mavenUserHome.toString();
-        Log.info(c, "startProcess", "MAVEN_USER_HOME=" + mvnUserHome);
+        Log.info(c, "getMvnEnv", "MAVEN_USER_HOME=" + mvnUserHome);
         mvnEnv.put("MAVEN_USER_HOME", mvnUserHome);
         mvnEnv.put("MVNW_VERBOSE", "true");
 
-        pb.directory(workingDirectory);
-        pb.redirectErrorStream(true);
-
-        Log.info(c, "startProcess", "Running command " + Arrays.asList(cmd));
-
-        Process process = pb.start();
-        return process;
+        return mvnEnv;
     }
 
     private static void assertNotTimedOut(boolean timeout, ArrayList<String> output, long hardTimeout, long softTimeout) {
@@ -1200,8 +1210,7 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static String[] runCmd(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
-
+    private static String[] runMvnCmd(String[] cmd, File workingDirectory, File mavenUserHome) throws IOException, InterruptedException {
         //calculate the timeout
         int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
         long softTimeout = -1;
@@ -1212,10 +1221,9 @@ public class TCKRunner {
         }
         boolean timeout = false;
 
-        //TODO might need an async timeout thread?
-
         //start the process
-        Process process = startProcess(cmd, workingDirectory, mavenUserHome);
+        Process process = startMvnProcess(cmd, workingDirectory, mavenUserHome);
+
         //read the output
         ArrayList<String> output = new ArrayList<>();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
