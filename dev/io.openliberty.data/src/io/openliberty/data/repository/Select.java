@@ -10,15 +10,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package io.openliberty.data.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.management.Query;
+
 /**
- * TODO propose in Jakarta Data?
  * Provides the ability to control which columns are returned by
  * repository method find operations.<p>
  *
@@ -27,6 +28,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Select {
+    // TODO should this include aggregates and distinct? These are not currently available in query-by-method
     /**
      * Aggregate functions.
      */

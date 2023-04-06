@@ -33,8 +33,9 @@ import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
 import jakarta.data.repository.Sort;
+
+import io.openliberty.data.repository.Select;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL

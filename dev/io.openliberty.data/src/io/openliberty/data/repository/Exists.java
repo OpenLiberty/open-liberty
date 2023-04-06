@@ -4,25 +4,24 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package io.openliberty.data.repository;
 
-addRequiredLibraries.dependsOn addDerby
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-// Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
-// This bundle is required both at compiletime and runtime.
-addRequiredLibraries.dependsOn copyTestContainers
-
-// If you are preforming database testing use the copyJdbcDrivers
-// task to copy the common JDBC drivers into the
-// publish/shared/resources/jdbc directory
-addRequiredLibraries.dependsOn copyJdbcDrivers
-
-dependencies {
-  requiredLibs project(':io.openliberty.data')
-  requiredLibs project(':io.openliberty.jakarta.data.1.0')
+/**
+ * Annotates a repository method to designate it as an exists operation.
+ * The {@link Filter &#64;Filter} annotation can be added to provide conditions.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Exists {
 }
