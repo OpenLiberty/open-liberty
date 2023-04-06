@@ -135,6 +135,36 @@ assemble {
     dependsOn copySwidFixpackTagToBuildImage
 }
 
+
+def failOnError = false
+
+configurations {
+   updatePomClasspath
+} 
+
+dependencies {
+   updatePomClasspath project(':wlp-updatePom') 
+}
+
+task updatePoms {
+    dependsOn ':wlp-updatePom:jar'
+    dependsOn parent.subprojects.assemble
+    def updateClassName = "io.openliberty.build.update.pom.UpdatePomJars"
+    def inputDir = project.file('wlp')
+    def tmpDir = new File(project.buildDir, 'pomsTmp')
+
+
+    doLast {      
+            def myArgs = [
+              inputDir, tmpDir, failOnError]                 
+            javaexec {
+                classpath configurations.updatePomClasspath
+                main = updateClassName
+                args = myArgs
+            }
+        }
+}
+
 File packageDir = new File(project.buildDir, 'openliberty')
 
 // Set the generated zip version to the product version and the
@@ -598,6 +628,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 task genChecksums() {
     enabled !isIFIXBuild
     dependsOn parent.subprojects.assemble
+    dependsOn updatePoms
     doLast {
         generateChecksums(ant)
         ant.calcChecksums(installRoot:'wlp') {}

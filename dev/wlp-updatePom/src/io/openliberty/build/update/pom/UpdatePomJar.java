@@ -19,10 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 
 import io.openliberty.build.update.Update;
@@ -161,28 +161,27 @@ public class UpdatePomJar extends UpdateFile {
      * @throws Exception Thrown if processing failed.
      */
     protected Model readPomFromTarget() throws Exception {
-        try ( ZipFile zipFile = new ZipFile(getTargetFile()) ) {
-            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
-            ZipEntry pomEntry = null;
-            while ((pomEntry == null) && entries.hasMoreElements()) {
-                ZipEntry entry = entries.nextElement();
-                String entryName = entry.getName();
-                if (entryName.equals("pom.xml") || entryName.endsWith("/pom.xml")) {
-                    pomEntry = entry;
-                }
-            }
+        try (ZipFile zipFile = new ZipFile(getTargetFile())) {
+            String jarName = zipFile.getName();
+            if (jarName.indexOf("_") != -1)
+                jarName = jarName.substring(0, jarName.indexOf("_"));
+            else
+                jarName = jarName.substring(0, jarName.indexOf(".jar"));
+            jarName = jarName.substring(jarName.lastIndexOf("/"));
+            ZipEntry pomEntry = zipFile.getEntry(PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml");
             if (pomEntry == null) {
+                log("readPomFromTarget", "Pom not found at: " + (PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml"));
                 return null;
             }
 
             Model pomModel;
-            try ( InputStream entryStream = zipFile.getInputStream(pomEntry) ) {
+            try (InputStream entryStream = zipFile.getInputStream(pomEntry)) {
                 pomModel = PomUtils.readPom(entryStream);
                 setPomPath(pomEntry.getName());
             }
             return pomModel;
         }
+
     }
 
     /**
@@ -212,13 +211,10 @@ public class UpdatePomJar extends UpdateFile {
 
         byte[] transferBuffer = new byte[32 * 1024];
         FileUtils.copyReplacing(inputFile, outputFile, usePomPath, pomInput, transferBuffer);
-
-        Path inputPath = Paths.get(inputFile.getPath());
-        Path outputPath = Paths.get(outputFile.getPath());
-
-        // TODO: Should this include 'StandardCopyOption.ATOMIC_MOVE'?
-        // We want to be sure to never leave the target in a broken state.
-
+        // The target is now the original input
+        Path inputPath = Paths.get(outputFile.getPath());
+        Path outputPath = Paths.get(inputFile.getPath());
+        //Now overwrite the origin target file
         Files.move(inputPath, outputPath, StandardCopyOption.REPLACE_EXISTING);
     }
 }

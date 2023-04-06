@@ -53,6 +53,7 @@ public class PomUtils {
     }
 
     protected static final int BUF_SIZE = 32 * 1024;
+    protected static final String POM_PREFIX_PATH = "META-INF/maven/dev";
 
     public static ByteArrayInputStream writePom(Model pomModel) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BUF_SIZE);
