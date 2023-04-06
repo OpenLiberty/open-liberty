@@ -27,7 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.messaging.JMS20contextSecurity.fat.TestUtils;
+import com.ibm.ws.messaging.JMS20contextSecurity2.fat.TestUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
