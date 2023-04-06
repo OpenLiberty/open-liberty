@@ -234,6 +234,14 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.glassfish.json_}</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
