@@ -2684,7 +2684,7 @@
     <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.18.300</version>
+      <version>3.18.200</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
