@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Asigura\u021bi-v\u0103 c\u0103 util
 info.checkpoint.restore.failed=CWWKE0957I: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Lansarea serverului f\u0103r\u0103 a utiliza imaginea punctului de control.
 info.checkpoint.restore.failed.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control.  Serverul a fost pornit f\u0103r\u0103 a folosi imaginea punctului de control.
 info.checkpoint.restore.failed.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: Cererea de punct de control al serverului a e\u0219uat, deoarece a fost setat\u0103 proprietatea websphere.java.security \u00een fi\u0219ierul bootstrap.properties. Aceast\u0103 proprietate activeaz\u0103 Java Security Manager \u0219i nu este valid\u0103 atunci c\u00e2nd apare un punct de control al serverului.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty nu are suport pentru Java Security Manager atunci c\u00e2nd se solicit\u0103 un punct de control al serverului. Java Security Manager este perimat, dup\u0103 cum este specificat pentru JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=\u00cenl\u0103tura\u021bi proprietatea websphere.java.security din fi\u0219ierul bootstrap.properties.
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

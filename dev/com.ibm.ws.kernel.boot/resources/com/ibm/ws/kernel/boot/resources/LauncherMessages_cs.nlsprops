@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Ujist\u011bte se, \u017ee u\u017eiv
 info.checkpoint.restore.failed=CWWKE0957I: Obnova procesu serveru kontroln\u00edch bod\u016f se nezda\u0159ila. Zkontrolujte protokol {0}, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Spu\u0161t\u011bn\u00ed serveru bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
 info.checkpoint.restore.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i obnov\u011b procesu serveru kontroln\u00edch bod\u016f.  Server byl spu\u0161t\u011bn bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
 info.checkpoint.restore.failed.useraction=Zkontrolujte protokoly, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee vlastnost websphere.java.security byla nastavena v souboru bootstrap.properties. Tato vlastnost umo\u017e\u0148uje produkt Java Security Manager a nen\u00ed platn\u00e1, kdy\u017e se vyskytne kontroln\u00ed bod serveru.
+error.checkpoint.securitymanager.not.supported.explanation=Protokol Liberty nepodporuje produkt Java Security Manager, je-li po\u017eadov\u00e1n kontroln\u00ed bod serveru. Produkt Java Security Manager je zam\u00edtnut\u00fd, jak je uvedeno v JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Odeberte vlastnost websphere.java.security ze souboru bootstrap.properties.
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

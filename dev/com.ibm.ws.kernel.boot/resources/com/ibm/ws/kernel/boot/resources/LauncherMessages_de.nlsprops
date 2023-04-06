@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Stellen Sie sicher, dass der Benutz
 info.checkpoint.restore.failed=CWWKE0957I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
 info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
 info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil die Eigenschaft websphere.java.security in der Datei bootstrap.properties definiert wurde. Diese Eigenschaft aktiviert den Java Security Manager und ist nicht g\u00fcltig, wenn ein Serverpr\u00fcfpunkt auftritt.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty unterst\u00fctzt Java Security Manager nicht, wenn ein Serverpr\u00fcfpunkt angefordert wird. Der Java Security Manager ist veraltet, wie in JEP 411 angegeben.
+error.checkpoint.securitymanager.not.supported.useraction=Entfernen Sie die Eigenschaft websphere.java.security aus der Datei bootstrap.properties.
 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.

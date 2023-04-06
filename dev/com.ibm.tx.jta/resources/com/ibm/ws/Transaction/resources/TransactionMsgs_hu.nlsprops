@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -869,5 +869,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: A rendszer szokatlan HA konfigur\u00e1ci\u
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=A HA enged\u00e9lyezett a f\u00fcrtben, de a HA kezel\u0151 le van tiltva.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Ha ez a k\u00edv\u00e1nt konfigur\u00e1ci\u00f3, akkor semmit sem kell tennie. Ellenkez\u0151 esetben jav\u00edtsa ki a HA konfigur\u00e1ci\u00f3t.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s le\u00e1llt, de a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghi\u00fasultk\u00e9nt lett megjel\u00f6lve.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghi\u00fasult, \u00e9s a napl\u00f3hoz nem siker\u00fclt hozz\u00e1f\u00e9rni a kiszolg\u00e1l\u00f3 le\u00e1ll\u00e1sakor.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Jav\u00edtsa ki a napl\u00f3 \u00e9rv\u00e9nytelens\u00e9g\u00e9t jelent\u0151 \u00fczenetek \u00e1ltal jelzett felt\u00e9teleket. Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy a napl\u00f3t ki lehessen jav\u00edtani.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
