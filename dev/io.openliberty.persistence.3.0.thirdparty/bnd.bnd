@@ -17,7 +17,7 @@ bVersion=1.0
 eclVersion=3.0.3
 eclFullVersion=${eclVersion}
 eclPackageVersion=3.0.3
-asmFullVersion=9.4.0
+asmFullVersion=9.5.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.0.thirdparty
 Bundle-Description: EclipseLink JPA
