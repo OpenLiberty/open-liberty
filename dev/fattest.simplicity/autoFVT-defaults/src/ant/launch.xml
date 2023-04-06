@@ -337,7 +337,24 @@
                    else="${env.artifactory.download.server}">
           <isset property="artifactory.download.server" />
         </condition>
-		<property name="fat.test.artifactory.download.token" value="${artifactory.download.token}"/>
+        
+        <condition property="fat.test.artifactory.download.token"
+                   value="${artifactory.download.token}"
+                   else="${env.artifactory.download.token}">
+          <isset property="artifactory.download.token" />
+        </condition>
+        
+        <condition property="fat.test.artifactory.download.user"
+                   value="${artifactory.download.user}"
+                   else="${env.artifactory.download.user}">
+          <isset property="artifactory.download.user" />
+        </condition>
+		
+        <condition property="fat.test.artifactory.docker.server"
+                   value="${artifactory.docker.server}"
+                   else="${env.artifactory.docker.server}">
+          <isset property="artifactory.docker.server" />
+        </condition>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
