@@ -51,6 +51,7 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
   com.ibm.ws.resource;version=latest,\
   com.ibm.ws.threading,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+  io.openliberty.data,\
   io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\

@@ -10,8 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package io.openliberty.data.repository;
 
+/**
+ * Comparison operations for {@link Filter#op()}.
+ */
 public enum Compare {
     Between(null),
     Contains(null),

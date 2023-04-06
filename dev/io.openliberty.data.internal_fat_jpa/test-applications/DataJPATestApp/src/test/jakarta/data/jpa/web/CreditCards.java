@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
 
+import io.openliberty.data.repository.Select;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 

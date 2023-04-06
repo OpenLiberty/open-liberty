@@ -4,9 +4,9 @@ visibility=public
 singleton=true
 IBM-ShortName: data-1.0
 IBM-API-Package: \
+  io.openliberty.data.repository; type="ibm-api",\
   jakarta.data; type="spec",\
   jakarta.data.exceptions; type="spec",\
-  jakarta.data.provider; type="spec",\
   jakarta.data.repository; type="spec"
 Subsystem-Name: Jakarta Data 1.0
 #TODO com.ibm.websphere.appserver.eeCompatible-11.0
@@ -16,6 +16,7 @@ Subsystem-Name: Jakarta Data 1.0
   io.openliberty.cdi-4.0,\
   io.openliberty.jakarta.data-1.0
 -bundles=\
+  io.openliberty.data; location:="dev/api/ibm/,lib/",\
   io.openliberty.data.internal
 kind=beta
 edition=base

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package io.openliberty.data.repository;
 
 public enum Operation {
     Add,

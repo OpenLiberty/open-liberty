@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package io.openliberty.data.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,11 +18,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO propose this in Jakarta Data.
- * Annotates a repository method to designate it as a delete operation.
+ * Annotates a repository method to designate it as a count operation.
  * The {@link Filter &#64;Filter} annotation can be added to provide conditions.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Delete {
+public @interface Count {
 }

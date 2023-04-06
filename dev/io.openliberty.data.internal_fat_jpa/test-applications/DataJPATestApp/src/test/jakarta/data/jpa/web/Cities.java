@@ -14,9 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Exists;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
@@ -24,7 +21,11 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
-import jakarta.data.repository.Update;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Update;
 
 /**
  *
