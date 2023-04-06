@@ -14,33 +14,6 @@
 def toolProject = parseBoolean(bnd.get('tool.project', 'false'))
 def testProject = parseBoolean(bnd.get('test.project', 'false'))
 def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
-def skipPoms = toolProject || testProject || fatProject
-def failOnError = true
-
-if ( !skipPoms ) {
-    dependencies {
-        implementation project(':wlp-updatePom')
-    }
-
-    task updatePoms {
-        dependsOn jar
-
-        def updateClassName = "io.openliberty.build.update.pom.UpdatePomJars"
-
-        // Strangely, this is set to 'build/libs', not to 'build'.
-        def inputDir = project.buildDir
-        def tmpDir = new File(project.buildDir, '../pomsTmp')
-
-        doLast {
-            Class updateClass = Class.forName(updateClassName)
-            def update = updateClass.newInstance(inputDir, tmpDir, failOnError)
-            java.lang.reflect.Method runMethod = updateClass.getMethod("run")
-            runMethod.invoke(update)
-        }
-    }
-
-    assemble.dependsOn updatePoms
-}
 
 def publishWlpJarDefault = testProject ? 'true' : 'false'
 

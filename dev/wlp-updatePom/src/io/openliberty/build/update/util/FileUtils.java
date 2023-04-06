@@ -47,14 +47,14 @@ public class FileUtils {
     }
 
     public static void write(InputStream inputStream, File outputFile, byte[] transferBuffer) throws IOException {
-        try ( FileOutputStream outputStream = new FileOutputStream(outputFile) ) {
+        try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             transfer(inputStream, outputStream, transferBuffer);
         }
     }
 
     public static void transfer(File inputFile, File outputFile, byte[] transferBuffer) throws IOException {
-        try ( InputStream inputStream = new FileInputStream(inputFile);
-                        OutputStream outputStream = new FileOutputStream(outputFile) ) {
+        try (InputStream inputStream = new FileInputStream(inputFile);
+                        OutputStream outputStream = new FileOutputStream(outputFile)) {
             transfer(inputStream, outputStream, transferBuffer);
         }
     }
@@ -67,8 +67,8 @@ public class FileUtils {
     }
 
     public static void copyFile(String inputPath, String outputPath, byte[] transferBuffer) throws IOException {
-        try ( InputStream inputStream = new FileInputStream(new File(inputPath));
-                        OutputStream outputStream = new FileOutputStream(new File(outputPath)) ) {
+        try (InputStream inputStream = new FileInputStream(new File(inputPath));
+                        OutputStream outputStream = new FileOutputStream(new File(outputPath))) {
             transfer(inputStream, outputStream, transferBuffer);
         }
     }
@@ -76,10 +76,10 @@ public class FileUtils {
     public static void copyReplacing(File inputFile, File outputFile,
                                      String entryName, InputStream altEntryStream, byte[] transferBuffer) throws IOException {
 
-        try ( InputStream inputStream = new FileInputStream(inputFile);
+        try (InputStream inputStream = new FileInputStream(inputFile);
                         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
                         OutputStream outputStream = new FileOutputStream(outputFile);
-                        ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream) ) {
+                        ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)) {
 
             ZipEntry inputEntry;
             while ((inputEntry = zipInputStream.getNextEntry()) != null) {
