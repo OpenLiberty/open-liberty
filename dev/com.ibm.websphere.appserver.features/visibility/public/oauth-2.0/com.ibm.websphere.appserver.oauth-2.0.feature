@@ -41,3 +41,4 @@ Subsystem-Name: OAuth 2.0
   dev/api/ibm/javadoc/io.openliberty.oauth_1.2-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
