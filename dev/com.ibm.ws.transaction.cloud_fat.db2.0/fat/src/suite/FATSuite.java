@@ -29,8 +29,9 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	//Ensure failures in @BeforeClass do not result in zero tests run
 	AlwaysPassesTest.class,
-                DBRotationTest.class,
+	DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
     private static final boolean isISeries = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");

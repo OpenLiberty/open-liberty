@@ -29,6 +29,7 @@ import tests.DualServerDynamicDBRotationTest1;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	//Ensure failures in @BeforeClass do not result in zero tests run
 	AlwaysPassesTest.class,
 	DualServerDynamicDBRotationTest1.class,
 })
