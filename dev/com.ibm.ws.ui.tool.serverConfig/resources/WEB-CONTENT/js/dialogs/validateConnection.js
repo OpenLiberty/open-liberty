@@ -616,7 +616,13 @@
 
     // Click action for Add parameter button under login config section in container tab.
     $(".keyValueTableItemActionIconAdd").on("click", addNewRowToKeyValueTable);
-
+    // Handle the enter key for Add parameter button under login config in container tab.
+    $(".keyValueTableItemActionIconAdd").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode === 13) {
+            addNewRowToKeyValueTable(event);
+        }
+    });
 
     // Click action for remove parameter button under login config section in container tab.
     $(document).on("click", ".keyValueTableItemActionIconRemove", function(event) {
