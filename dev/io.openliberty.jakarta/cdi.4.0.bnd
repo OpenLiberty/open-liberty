@@ -48,7 +48,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-
    @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
    @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
    @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
