@@ -24,3 +24,4 @@ IBM-API-Package: com.ibm.websphere.security.social; type="ibm-api"
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.social_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

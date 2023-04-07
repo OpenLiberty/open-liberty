@@ -18,3 +18,4 @@ Subsystem-Name: JSON Web Token Single Sign-On 1.0
 -bundles=com.ibm.ws.security.jwtsso.token
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
