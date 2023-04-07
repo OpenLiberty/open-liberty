@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.jwt.utils;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 
 public class IssuerUtils {
@@ -99,6 +99,10 @@ public class IssuerUtils {
 
         }
         return configId;
+    }
+
+    public static String getCalculatedIssuerIdFromRequest(HttpServletRequest request) {
+        return WebUtils.getFullCtxServletPath(request);
     }
 
     //    private static String getHostName(VirtualHost vhost, String alias) {

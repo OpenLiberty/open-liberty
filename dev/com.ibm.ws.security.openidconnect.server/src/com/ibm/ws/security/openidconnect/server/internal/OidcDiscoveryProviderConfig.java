@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.internal;
 
@@ -17,6 +14,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 
@@ -55,7 +53,7 @@ public class OidcDiscoveryProviderConfig {
     }
 
     private String getCalculatedIssuerId(String providerId) {
-        String fullServletPath = HttpUtils.getFullCtxServletPath(this.request);
+        String fullServletPath = WebUtils.getFullCtxServletPath(this.request);
 
         return (new StringBuffer()).append(fullServletPath).append((fullServletPath.endsWith("/") ? "" : "/")).append(providerId).toString();
     }

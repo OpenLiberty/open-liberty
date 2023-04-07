@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.web;
 
@@ -35,6 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.common.claims.UserClaimsRetrieverService;
+import com.ibm.ws.security.jwt.utils.IssuerUtils;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
@@ -368,7 +366,7 @@ public class TokenIntrospect {
     private String getCalculatedIssuerId(OAuth20Provider provider, HttpServletRequest request) {
         String issuerIdentifier = getCalculatedIssuerIdFromOidcServerConfig(provider);
         if (issuerIdentifier == null) {
-            issuerIdentifier = getCalculatedIssuerIdFromRequest(request);
+            issuerIdentifier = IssuerUtils.getCalculatedIssuerIdFromRequest(request);
         }
         return issuerIdentifier;
     }
@@ -382,17 +380,6 @@ public class TokenIntrospect {
             return null;
         }
         return oidcServerConfig.getIssuerIdentifier();
-    }
-
-    private String getCalculatedIssuerIdFromRequest(HttpServletRequest request) {
-        String hostname = request.getServerName();
-        String scheme = request.getScheme();
-        int port = request.getLocalPort();
-        String path = request.getRequestURI();
-        int lastSlashIndex = path.lastIndexOf("/");
-        String issuerIdentifier = scheme + "://" + hostname + ":" + port + path.substring(0, lastSlashIndex);
-
-        return issuerIdentifier;
     }
 
     /**

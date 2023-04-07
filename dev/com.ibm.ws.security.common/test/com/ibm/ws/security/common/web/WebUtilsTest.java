@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.web;
 
@@ -41,6 +38,9 @@ import org.junit.rules.TestRule;
 public class WebUtilsTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.common.*=all");
+
+    private static final String REQ_SERVLET_PATH = "/myServletPath";
+    private static final String REQ_CONTEXT_PATH = "/myCtxPath";
 
     @Rule
     public final TestName testName = new TestName();
@@ -1597,6 +1597,98 @@ public class WebUtilsTest {
       assertTrue("Output string ["+output+"] does not contains secret parameter ["+secret+"]", output.contains(secret));
       assertTrue("Output string ["+output+"] does not contains secret parameter ["+"client_secret"+"]", output.contains("client_secret"));
       assertTrue("Output string ["+output+"] does not contain the request url ["+url+"]", output.contains(url));
+    }
+
+    @Test
+    public void testGetFullCtxServletPathDefaultInsecurePort() {
+        mock.checking(new Expectations() {
+            {
+                allowing(request).getScheme();
+                will(returnValue("http"));
+                allowing(request).getServerName();
+                will(returnValue("localhost"));
+                allowing(request).getServerPort();
+                will(returnValue(80));
+                allowing(request).getContextPath();
+                will(returnValue(REQ_CONTEXT_PATH));
+                allowing(request).getServletPath();
+                will(returnValue(REQ_SERVLET_PATH));
+            }
+        });
+        String expectedPath = "http://localhost" + REQ_CONTEXT_PATH + REQ_SERVLET_PATH;
+
+        String calculatedPath = WebUtils.getFullCtxServletPath(request);
+
+        assertEquals("did not get the expected full context servlet path", expectedPath, calculatedPath);
+    }
+
+    @Test
+    public void testGetFullCtxServletPathCustomInsecurePort() {
+        mock.checking(new Expectations() {
+            {
+                allowing(request).getScheme();
+                will(returnValue("http"));
+                allowing(request).getServerName();
+                will(returnValue("localhost"));
+                allowing(request).getServerPort();
+                will(returnValue(81));
+                allowing(request).getContextPath();
+                will(returnValue(REQ_CONTEXT_PATH));
+                allowing(request).getServletPath();
+                will(returnValue(REQ_SERVLET_PATH));
+            }
+        });
+        String expectedPath = "http://localhost:81" + REQ_CONTEXT_PATH + REQ_SERVLET_PATH;
+
+        String calculatedPath = WebUtils.getFullCtxServletPath(request);
+
+        assertEquals("did not get the expected full context servlet path", expectedPath, calculatedPath);
+    }
+
+    @Test
+    public void testGetFullCtxServletPathDefaultSecurePort() {
+        mock.checking(new Expectations() {
+            {
+                allowing(request).getScheme();
+                will(returnValue("https"));
+                allowing(request).getServerName();
+                will(returnValue("localhost"));
+                allowing(request).getServerPort();
+                will(returnValue(443));
+                allowing(request).getContextPath();
+                will(returnValue(REQ_CONTEXT_PATH));
+                allowing(request).getServletPath();
+                will(returnValue(REQ_SERVLET_PATH));
+            }
+        });
+        String expectedPath = "https://localhost" + REQ_CONTEXT_PATH + REQ_SERVLET_PATH;
+
+        String calculatedPath = WebUtils.getFullCtxServletPath(request);
+
+        assertEquals("did not get the expected full context servlet path", expectedPath, calculatedPath);
+    }
+
+    @Test
+    public void testGetFullCtxServletPathCustomSecurePort() {
+        mock.checking(new Expectations() {
+            {
+                allowing(request).getScheme();
+                will(returnValue("https"));
+                allowing(request).getServerName();
+                will(returnValue("localhost"));
+                allowing(request).getServerPort();
+                will(returnValue(444));
+                allowing(request).getContextPath();
+                will(returnValue(REQ_CONTEXT_PATH));
+                allowing(request).getServletPath();
+                will(returnValue(REQ_SERVLET_PATH));
+            }
+        });
+        String expectedPath = "https://localhost:444" + REQ_CONTEXT_PATH + REQ_SERVLET_PATH;
+
+        String calculatedPath = WebUtils.getFullCtxServletPath(request);
+
+        assertEquals("did not get the expected full context servlet path", expectedPath, calculatedPath);
     }
 
 }

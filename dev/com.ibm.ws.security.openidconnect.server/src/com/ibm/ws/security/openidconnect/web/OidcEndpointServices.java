@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.web;
 
@@ -61,6 +58,7 @@ import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.claims.UserClaims;
+import com.ibm.ws.security.jwt.utils.IssuerUtils;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
@@ -786,17 +784,6 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
     }
 
-    private String getCalculatedIssuerId(HttpServletRequest request) {
-        String hostname = request.getServerName();
-        String scheme = request.getScheme();
-        int port = request.getLocalPort();
-        String path = request.getRequestURI();
-        int lastSlashIndex = path.lastIndexOf("/");
-        String issuerIdentifier = scheme + "://" + hostname + ":" + port + path.substring(0, lastSlashIndex);
-
-        return issuerIdentifier;
-    }
-
     /**
      * Get the JSONObject that will be returned for userinfo endpoint from the user registry
      *
@@ -822,7 +809,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         responseJSON.put(Constants.USERINFO_CLAIM_SUB, userName);
         String issuer = oidcServerConfig.getIssuerIdentifier();
         if (issuer == null) {
-            issuer = getCalculatedIssuerId(request);
+            issuer = IssuerUtils.getCalculatedIssuerIdFromRequest(request);
         }
         responseJSON.put(Constants.INTROSPECT_CLAIM_ISS, issuer);
         // Get the groups from the user claims (the same ones that go in the idtoken)

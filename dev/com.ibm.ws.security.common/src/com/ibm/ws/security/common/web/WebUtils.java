@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.web;
 
@@ -493,4 +490,31 @@ public class WebUtils {
         }
         String type[] = {"type"};
         return (secretList.toArray(type));
-      }}
+    }
+
+    /**
+     * Provides the full URL request context servlet path, defined by scheme://serverName(:port)/ctxPath/servletPath
+     * 
+     * @return a string of the full URL request context servlet path
+     */
+    public static String getFullCtxServletPath(HttpServletRequest request) {
+        StringBuffer fullCtxServletPath = new StringBuffer();
+
+        fullCtxServletPath.append(request.getScheme());
+        fullCtxServletPath.append("://");
+        fullCtxServletPath.append(request.getServerName());
+
+        int serverPort = request.getServerPort();
+        if (serverPort != 80 && serverPort != 443) {
+            fullCtxServletPath.append(":");
+            fullCtxServletPath.append(serverPort);
+        }
+
+        // TODO - use getRequestURI?
+        fullCtxServletPath.append(request.getContextPath());
+        fullCtxServletPath.append(request.getServletPath());
+
+        return fullCtxServletPath.toString();
+    }
+
+}

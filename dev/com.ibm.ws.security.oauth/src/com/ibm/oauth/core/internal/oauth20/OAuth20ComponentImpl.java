@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.oauth.core.internal.oauth20;
 
@@ -78,6 +75,7 @@ import com.ibm.oauth.core.util.WebUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.context.AuditManager;
+import com.ibm.ws.security.jwt.utils.IssuerUtils;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
@@ -1771,12 +1769,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
     private void populateFromRequestForOpenIDConnect(AttributeList attributeList, HttpServletRequest request) throws OAuth20DuplicateParameterException, OAuth20BadParameterFormatException {
         String methodName = "populateFromRequestForOpenIDConnect";
         _log.entering(CLASS, methodName);
-        String hostname = request.getServerName();
-        String scheme = request.getScheme();
-        int port = request.getLocalPort();
-        String path = request.getRequestURI();
-        int lastSlashIndex = path.lastIndexOf("/");
-        String issuerIdentifier = scheme + "://" + hostname + ":" + port + path.substring(0, lastSlashIndex);
+        String issuerIdentifier = IssuerUtils.getCalculatedIssuerIdFromRequest(request);
         addParameterToAttributeList(OAuth20Constants.ISSUER_IDENTIFIER, OAuth20Constants.ATTRTYPE_REQUEST, issuerIdentifier, attributeList);
         if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             addParameterToAttributeList(OAuth20Constants.REQUEST_FEATURE, OAuth20Constants.ATTRTYPE_REQUEST, OAuth20Constants.REQUEST_FEATURE_OIDC, attributeList);
