@@ -164,6 +164,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.glassfish.json.1.0_}</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
@@ -232,14 +240,6 @@
             <artifactId>javax.activation-api</artifactId>
             <version>1.2.0</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${com.ibm.ws.org.glassfish.json_}</systemPath>
         </dependency>
 
     </dependencies>
