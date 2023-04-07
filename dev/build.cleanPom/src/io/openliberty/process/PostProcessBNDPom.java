@@ -65,10 +65,12 @@ public class PostProcessBNDPom {
 
         jarPath = args[0];
         String outputDir = args[1];
+        System.out.println("Reading jar: " + jarPath);
         Model pom = readJARPom(jarPath);
         if (pom != null) {
             removeDevDependecies(pom);
             writeTempPom(pom, outputDir);
+            System.out.println("Writing pom to: " + outputDir);
             replacePomFile(outputDir + "/pom.xml", jarPath);
         }
     }
