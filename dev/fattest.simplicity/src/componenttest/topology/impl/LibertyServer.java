@@ -1503,6 +1503,8 @@ public class LibertyServer implements LogMonitorClient {
             JVM_ARGS += " " + MAC_RUN;
         }
 
+        addEquinoxDebugTrace(Collections.singletonMap("org.eclipse.osgi/debug/services/deadlock", "true"));
+
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
         if (isJava2SecurityEnabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
@@ -2049,6 +2051,34 @@ public class LibertyServer implements LogMonitorClient {
             return newParms;
         }
         return newParms;
+    }
+
+    private void addEquinoxDebugTrace(Map<String, String> equinoxDebugTrace) throws Exception {
+        RemoteFile bootstrapPropertiesFile = getServerBootstrapPropertiesFile();
+        try {
+            Properties bootstrapProperties = new Properties();
+            try {
+                bootstrapProperties.load(bootstrapPropertiesFile.openForReading());
+            } catch (Exception e1) {
+                // don't care
+            }
+            bootstrapProperties.put("osgi.debug", "equinox.trace");
+            bootstrapProperties.store(bootstrapPropertiesFile.openForWriting(false), "");
+            Log.info(c, "addEquinoxDebugTrace", "Successfully updated bootstrap.properties file with equinox debug trace properties");
+        } catch (Exception e) {
+            Log.info(c, "addEquinoxDebugTrace", "Caught exception updating bootstap.properties file with equinox debug trace properties, e: ", e.getMessage());
+        }
+
+        try {
+            String equinoxTrace = getServerRoot() + "/equinox.trace";
+            Log.info(c, "addEquinoxDebugTrace", "Adding to " + equinoxTrace);
+            Properties equinoxTraceProps = new Properties();
+            equinoxTraceProps.putAll(equinoxDebugTrace);
+            equinoxTraceProps.store(new FileOutputStream(new File(equinoxTrace)), "Test Equinox Trace");
+        } catch (Exception e) {
+            Log.info(c, "addEquinoxDebugTrace", "Caught exception updating equinox.trace file with equinox debug trace properties, e: ", e.getMessage());
+            Log.error(LibertyServer.c, "addEquinoxDebugTrace", e);
+        }
     }
 
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f, boolean debug) throws Exception {
