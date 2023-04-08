@@ -34,3 +34,7 @@ Import-Package: \
 
 -includeresource: \
   @${repo;jakarta.resource:jakarta.resource-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.resource;artifactId=jakarta.resource-api;version=2.1.0;scope=runtime
+
