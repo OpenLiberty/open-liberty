@@ -1,0 +1,24 @@
+/*
+ * Usage:
+ *   gradlew -I ./log.init.gradle <task>*
+ *
+ * From "gradlew --help":
+ *
+ *   -I, --init-script
+ *   Specify an initialization script.
+ */
+
+useLogger(new CustomEventLogger())
+
+class CustomEventLogger extends BuildAdapter implements TaskExecutionListener {
+
+    void beforeExecute(Task task) {
+        Date now = new Date()
+        println "BEGIN [ $now ] [ $task.name ]"
+    }
+
+    void afterExecute(Task task, TaskState state) {
+        Date now = new Date()
+        println "END [ $now ] [ $task.name ]: [ $state ]"
+    }
+}
