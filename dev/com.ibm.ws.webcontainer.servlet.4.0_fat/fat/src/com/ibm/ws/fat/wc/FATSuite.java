@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,8 +25,6 @@ import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
-import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxPropertyTest;
-import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
@@ -80,8 +78,6 @@ import componenttest.topology.impl.JavaInfo;
                 WCAddJspFileTest.class,
                 WCTrailersTest.class,
                 WCEncodingTest.class,
-                WCFileUpLoadFileCountMaxPropertyTest.class,
-                WCFileUpLoadFileCountMaxTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
                 WCGetMappingTest.class,
