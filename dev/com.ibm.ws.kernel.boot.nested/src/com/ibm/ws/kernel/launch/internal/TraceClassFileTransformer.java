@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,18 +16,18 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Wrapper around a ClassFileTransformer for tracing purposes.
  */
+@Trivial
 public class TraceClassFileTransformer implements ClassFileTransformer {
-    static final TraceComponent tc = Tr.register(TraceClassFileTransformer.class, "instrumentation");
 
     // Force tc to be initialized to avoid problems with the RAS
     // ClassFileTransformer.
-    public static void initialize() {}
+    public static void initialize() {
+    }
 
     /**
      * The delegate ClassFileTransformer.
@@ -49,13 +49,9 @@ public class TraceClassFileTransformer implements ClassFileTransformer {
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "transform", transformer, loader, className, classBeingRedefined, protectionDomain, classfileBuffer.length);
 
         byte[] bytes = transformer.transform(loader, className, classBeingRedefined, protectionDomain, classfileBuffer);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "transform", bytes == null ? null : bytes.length);
         return bytes;
     }
 }
