@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh10;
 import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -38,6 +39,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -45,6 +47,8 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+//issue 24772 no need to run EE7 Lite in this test class
+@SkipForRepeat({ RepeatWithEE7cbh10.ID })
 @RunWith(FATRunner.class)
 public class CxfX509MigTests {
 
