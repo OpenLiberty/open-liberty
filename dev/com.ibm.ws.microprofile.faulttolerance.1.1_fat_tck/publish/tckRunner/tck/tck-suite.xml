@@ -17,136 +17,85 @@
                      <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
                      <!-- We exclude all of these tests, but most of them were fixed in the 2.0 TCK and we run them from the 2.0 TCK project -->
 
-                     <!-- TestNG 7.5.0-ibm230227 threw an exception on comments inside the CDATA. As a workaround this copy of the script preserves the comments
-
                      <![CDATA[
                      // All of these bulkhead tests are susceptable to timing issues or "not being parallel enough"
                      // BulkheadAsynchTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
+
+                     if( 
+                     method.getName().startsWith("testBulkheadClassAsynchronous10") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronous10") ||
+                     method.getName().startsWith("testBulkheadClassAsynchronous3") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronous3") ||
+                     method.getName().startsWith("testBulkheadClassAsynchronousDefault") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronousDefault") ||
+                     method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") ||
                      
                      // BulkheadAsynchRetryTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadRetryClassAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") &&
-                     !method.getName().startsWith("testNoRetriesWithoutRetryOn") &&
-                     !method.getName().startsWith("testNoRetriesWithAbortOn") &&
+                     method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") ||
+                     method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") ||
+                     method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") ||
+                     method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") ||
+                     method.getName().startsWith("testBulkheadRetryClassAsynchronous55") ||
+                     method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") ||
+                     method.getName().startsWith("testNoRetriesWithoutRetryOn") ||
+                     method.getName().startsWith("testNoRetriesWithAbortOn") ||
                      
                      // BulkheadFutureTest
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") &&
+                     method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") ||
                      
                      // Note: BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
                      
                      // RetryTest
-                     !method.getName().startsWith("testRetryMaxDuration") &&
-                     !method.getName().startsWith("testRetryMaxDurationSeconds") &&
-                     !method.getName().startsWith("testRetryWithDelay") &&
-                     !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
+                     method.getName().startsWith("testRetryMaxDuration") ||
+                     method.getName().startsWith("testRetryMaxDurationSeconds") ||
+                     method.getName().startsWith("testRetryWithDelay") ||
+                     method.getName().startsWith("testRetryWithNoDelayAndJitter") ||
+                     method.getName().startsWith("testClassLevelRetryMaxDuration") ||
+                     method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") ||
                      
                      // CircuitBreakerTimeoutTest
-                     !method.getDeclaringClass().getSimpleName().equals("CircuitBreakerTimeoutTest") &&
+                     method.getDeclaringClass().getSimpleName().equals("CircuitBreakerTimeoutTest") ||
                      
                      // CircuitBreakerRetryTest
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
+                     method.getName().startsWith("testCircuitOpenWithMultiTimeouts") ||
+                     method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") ||
                      
                      // ConfigTest
-                     !method.getName().startsWith("testConfigMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
+                     method.getName().startsWith("testConfigMaxDuration") ||
+                     method.getName().startsWith("testClassLevelConfigMaxDuration") ||
                      
                      // Note: The annotation disablement tests have some timing sensitive tests for Timeout and Async, but we haven't seen them fail
                      
                      // FallbackTest
-                     !method.getName().startsWith("testFallbackTimeout") &&
-                     !method.getName().startsWith("testFallbacktNoTimeout") &&
+                     method.getName().startsWith("testFallbackTimeout") ||
+                     method.getName().startsWith("testFallbacktNoTimeout") ||
                      
                      // BulkheadMetricTest
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadMetricTest") &&
+                     method.getDeclaringClass().getSimpleName().equals("BulkheadMetricTest") ||
                      
                      // TimeoutMetricTest
-                     !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
+                     method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") ||
                      
                      // RetryTimeoutTest
-                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") &&
+                     method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") ||
                      
                      // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
                      
                      // AsyncTimeoutTest
                      // Some tests in this class were broken in the FT 1.1 TCK and were fixed for FT 2.0
-                     !method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
+                     method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
                      
                      // AsynchronousTest
                      // This test is unreliable in FT 1.1 TCK but was improved in FT 2.0 TCK
                      // Functionality covered by FATs in AsyncServlet
-                     !method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
-                ]]>
-
-                      -->
-
-                     <![CDATA[
-                     !method.getName().startsWith("testBulkheadClassAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
-                     
-                     !method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadRetryClassAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") &&
-                     !method.getName().startsWith("testNoRetriesWithoutRetryOn") &&
-                     !method.getName().startsWith("testNoRetriesWithAbortOn") &&
-                     
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest") &&
-                     
-
-                     !method.getName().startsWith("testRetryMaxDuration") &&
-                     !method.getName().startsWith("testRetryMaxDurationSeconds") &&
-                     !method.getName().startsWith("testRetryWithDelay") &&
-                     !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
-
-                     !method.getDeclaringClass().getSimpleName().equals("CircuitBreakerTimeoutTest") &&
-                     
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
-                     !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
-                     
-                     !method.getName().startsWith("testConfigMaxDuration") &&
-                     !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
-                     
-                     !method.getName().startsWith("testFallbackTimeout") &&
-                     !method.getName().startsWith("testFallbacktNoTimeout") &&
-                     
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadMetricTest") &&
-                     
-                     !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
-                     
-                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") &&
-                     
-                     !method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
-
-                     !method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
+                     method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
+                     ) {
+                         return false;
+                     }
+                     return true;
                 ]]>
                 </script>
             </method-selector>
