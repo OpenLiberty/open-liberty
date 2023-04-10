@@ -18,6 +18,7 @@ import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwt.utils.IssuerUtils;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
@@ -126,19 +127,8 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
 
     @FFDCIgnore(IDTokenValidationFailedException.class)
     void parseAndPopulateDataFromIdTokenHint() {
-        JWT jwt = null;
         try {
-            jwt = endpointServices.createJwt(idTokenHintParameter, oauth20Provider, oidcServerConfig);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "JWT : " + jwt);
-            }
-            if (jwt.verifySignatureOnly()) {
-                subjectFromIdToken = JsonTokenUtil.getSub(jwt.getPayload());
-                clientId = JsonTokenUtil.getAud(jwt.getPayload());
-            } else {
-                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
-                isDataValidForLogout = false;
-            }
+            parseAndValidateIdTokenHint();
         } catch (IDTokenValidationFailedException ivfe) {
             Throwable cause = ivfe.getCause();
             if (cause != null && cause instanceof IllegalStateException) {
@@ -161,6 +151,32 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         } catch (Exception e) {
             Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
             isDataValidForLogout = false;
+        }
+    }
+
+    void parseAndValidateIdTokenHint() throws Exception {
+        JWT jwt = endpointServices.createJwt(idTokenHintParameter, oauth20Provider, oidcServerConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "JWT : " + jwt);
+        }
+        if (jwt.verifySignatureOnly()) {
+            verifyIdTokenHintIssuer(jwt);
+            subjectFromIdToken = JsonTokenUtil.getSub(jwt.getPayload());
+            clientId = JsonTokenUtil.getAud(jwt.getPayload());
+        } else {
+            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
+            isDataValidForLogout = false;
+        }
+    }
+
+    void verifyIdTokenHintIssuer(JWT jwt) throws IDTokenValidationFailedException {
+        String iss = JsonTokenUtil.getIss(jwt.getPayload());
+        String issuerIdentifier = oidcServerConfig.getIssuerIdentifier();
+        if (issuerIdentifier == null || issuerIdentifier.isEmpty()) {
+            issuerIdentifier = IssuerUtils.getCalculatedIssuerIdFromRequest(request);
+        }
+        if (!issuerIdentifier.equals(iss)) {
+            throw IDTokenValidationFailedException.format(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", iss, issuerIdentifier, oidcServerConfig.getProviderId());
         }
     }
 
