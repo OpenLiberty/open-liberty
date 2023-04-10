@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ public final class FreePool implements JCAPMIHelper {
 
     ClassLoader raClassLoader;
 
-    // waiter code
+    // waiter code reset value, add to this value to remove connections from pool
     private int fatalErrorNotificationTime = 0;
 
     /*
@@ -1952,4 +1952,9 @@ public final class FreePool implements JCAPMIHelper {
         return this.gConfigProps.getJNDIName();
     }
     //PMIHelper methods end here
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.pm.maxConnections;
+    }
 }

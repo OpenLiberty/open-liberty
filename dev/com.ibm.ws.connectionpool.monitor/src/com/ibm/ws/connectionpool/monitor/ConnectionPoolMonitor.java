@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -131,6 +131,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
             ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
             if (cStats == null) {
                 cStats = initializeConnectionPoolStats(JNDIName);
+                cStats.updateMaxConnectionCount(fpobj.getMaximumConnectionValue());
             }
             cStats.incCreateCount();
             cStats.incManagedConnectionCount();
@@ -460,8 +461,58 @@ public class ConnectionPoolMonitor extends StatisticActions {
 
     /**
      * @param obj
-     *            This code comes when datasource is removed or during server shutdown to clean up the MXBeans created while Monitoring Framework takes care of cleaning up
-     *            injection code.
+     *                This code comes when connection manager is dynamically updated.
+     *                If maximum connections is changed, this code will change the pmi
+     *                maximum connections.
+     */
+    @ProbeAtReturn
+    @ProbeSite(clazz = "com.ibm.ejs.j2c.PoolManager", method = "vetoableChange")
+    public void updatePMIMaxConnectionsIfNeeded(@This Object fpObject) {
+        try {
+            JCAPMIHelper fpobj = (JCAPMIHelper) fpObject;
+            if (tc.isEntryEnabled()) {
+                Tr.entry(tc, "updatePMIMaxConnectionsIfNeeded");
+            }
+            String JNDIName = fpobj.getJNDIName(); //First get the actual JNDIName
+            if (JNDIName == null) { //Check for null
+                JNDIName = fpobj.getUniqueId(); //IF it is null then use getUniqueId.JndiName will be null when no JNDI name is given.
+            }
+            if (JNDIName == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "JNDI Name returned is null this will only come when DS is created but no JNDI name is provided.We Should not handle this case");
+                }
+                if (tc.isEntryEnabled()) {
+                    Tr.exit(tc, "updatePMIMaxConnectionsIfNeeded");
+                }
+                return;
+            }
+            if (JNDIName.contains(":")) {
+                JNDIName = JNDIName.replace(":", "-");
+            }
+            ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
+            if (cStats != null) {
+                int maxConnections = fpobj.getMaximumConnectionValue();
+                long currentPMIMaxConnections = cStats.getMaxConnectionCount();
+                if (currentPMIMaxConnections != maxConnections) {
+                    cStats.updateMaxConnectionCount(maxConnections);
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Did not update pmi maximum connections");
+                    }
+                }
+            }
+            if (tc.isEntryEnabled()) {
+                Tr.exit(tc, "updatePMIMaxConnectionsIfNeeded");
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    /**
+     * @param obj
+     *                This code comes when datasource is removed or during server shutdown to clean up the MXBeans created while Monitoring Framework takes care of cleaning up
+     *                injection code.
      */
     @ProbeAtReturn
     @ProbeSite(clazz = "com.ibm.ejs.j2c.PoolManager", method = "serverShutDown")
