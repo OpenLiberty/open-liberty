@@ -1399,7 +1399,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
             Compare comparison = filter.op();
-            Compare negatedFrom = comparison.negatedFrom();
+            Compare negatedFrom = comparison.negated();
             boolean negated = negatedFrom != null;
             if (negated)
                 comparison = negatedFrom;

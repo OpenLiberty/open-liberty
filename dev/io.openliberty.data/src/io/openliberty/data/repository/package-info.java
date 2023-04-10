@@ -11,6 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
+ * <p>This package defines extensions to Jakarta Data that
+ * enable you to annotatively define repository operations.</p>
+ *
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")

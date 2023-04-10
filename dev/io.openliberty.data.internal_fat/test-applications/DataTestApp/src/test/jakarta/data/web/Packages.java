@@ -67,7 +67,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
     @Filter(by = "height", op = Compare.LessThan, param = "min")
-    @Filter(as = Filter.Type.OR, by = "height", op = Compare.GreaterThan, param = "max")
+    @Filter(as = Filter.Type.Or, by = "height", op = Compare.GreaterThan, param = "max")
     KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);
