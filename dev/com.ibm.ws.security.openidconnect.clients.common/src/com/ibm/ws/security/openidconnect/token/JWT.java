@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.token;
 
@@ -456,38 +453,23 @@ public class JWT {
         if (this.signingAlgorithm.equals(Constants.SIG_ALG_NONE)) {
             rpSpecifiedSignatureAlgorithm = false;
         }
-        String alg = null;
-        JsonObject header = null;
-        if (!rpSpecifiedSignatureAlgorithm) {
-            String jwtHeaderSegment = jwtParts[0];
-            JsonParser parser = new JsonParser();
-            header = parser.parse(JsonTokenUtil.fromBase64ToJsonString(jwtHeaderSegment))
-                    .getAsJsonObject();
-            alg = header.get("alg").getAsString();
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Signing Algorithm from header: " + alg);
+        JsonObject header = JsonParser.parseString(JsonTokenUtil.fromBase64ToJsonString(jwtParts[0])).getAsJsonObject();
+        String alg = header.get("alg").getAsString();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Signing Algorithm from header: " + alg);
+        }
+        if (rpSpecifiedSignatureAlgorithm) {
+            if (!(this.signingAlgorithm.equals(alg))) {
+                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH", new Object[] { this.clientId, this.signingAlgorithm, alg });
+                throw IDTokenValidationFailedException.format("OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH", this.clientId, this.signingAlgorithm, alg);
             }
-        } else {
-            String jwtHeaderSegment = jwtParts[0];
-            JsonParser parser = new JsonParser();
-            header = parser.parse(JsonTokenUtil.fromBase64ToJsonString(jwtHeaderSegment))
-                    .getAsJsonObject();
-            String algHeader = header.get("alg").getAsString();
-            if (!(this.signingAlgorithm.equals(algHeader))) {
-                Tr.error(tc, "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH", new Object[] { this.clientId, this.signingAlgorithm, algHeader });
-                throw IDTokenValidationFailedException.format("OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH", this.clientId, this.signingAlgorithm, algHeader);
-            }
-            alg = this.signingAlgorithm;
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "RP specified Signing Algorithm : " + alg);
             }
         }
 
         // the old net.oauth version populated the header and payload out of the token string here, do that for consistency.
-        String jwtPayloadSegment = jwtParts[1];
-        JsonParser parser = new JsonParser();
-        JsonObject payload = parser.parse(JsonTokenUtil.fromBase64ToJsonString(jwtPayloadSegment))
-                .getAsJsonObject();
+        JsonObject payload = JsonParser.parseString(JsonTokenUtil.fromBase64ToJsonString(jwtParts[1])).getAsJsonObject();
         WSJsonToken tempToken = new WSJsonToken(header, payload);
         fromJsonToken(tempToken);
 

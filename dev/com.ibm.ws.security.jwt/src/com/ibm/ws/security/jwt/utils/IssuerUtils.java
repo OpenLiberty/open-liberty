@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.jwt.utils;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -99,6 +98,33 @@ public class IssuerUtils {
 
         }
         return configId;
+    }
+
+    public static String getCalculatedIssuerIdFromRequest(HttpServletRequest request) {
+        StringBuffer fullCtxServletPath = new StringBuffer();
+
+        fullCtxServletPath.append(request.getScheme());
+        fullCtxServletPath.append("://");
+        fullCtxServletPath.append(request.getServerName());
+
+        int serverPort = request.getServerPort();
+        if (serverPort != 80 && serverPort != 443) {
+            fullCtxServletPath.append(":");
+            fullCtxServletPath.append(serverPort);
+        }
+
+        fullCtxServletPath.append(request.getContextPath());
+        fullCtxServletPath.append(request.getServletPath());
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null && !pathInfo.isEmpty()) {
+            int nextSlashIndex = pathInfo.indexOf("/", 1);
+            if (nextSlashIndex > 0) {
+                pathInfo = pathInfo.substring(0, nextSlashIndex);
+            }
+            fullCtxServletPath.append(pathInfo);
+        }
+
+        return fullCtxServletPath.toString();
     }
 
     //    private static String getHostName(VirtualHost vhost, String alias) {
