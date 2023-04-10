@@ -26,7 +26,8 @@
 	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
   	<javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" />
   	
-	<!-- Trace logging and debug are turned on to enable feature logging -->
+	<!-- Trace logging and debug are turned on to enable feature logging
 	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.*=debug"/>
+	-->
 	
 </server>
