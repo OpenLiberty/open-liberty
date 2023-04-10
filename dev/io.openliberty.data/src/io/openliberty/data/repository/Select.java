@@ -17,13 +17,43 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.management.Query;
-
 /**
- * Provides the ability to control which columns are returned by
- * repository method find operations.<p>
+ * <p>Specifies which entity attribute values are retrieved by a repository method
+ * find operation and, in the case of multiple entity attributes, also the ordering
+ * of these entity attribute values to use when constructing results for the method.</p>
  *
- * Do not combine on a single method with {@link Query @Query}, which is a more advanced way of providing this information.
+ * <p>Example query for single attribute value:</p>
+ *
+ * <pre>
+ * {@literal @Filter}(by = "id")
+ * {@literal @Select}("price")
+ * Optional{@literal <Float>} priceOf(long productId);
+ * </pre>
+ *
+ * <p>Example usage:</p>
+ *
+ * <pre>
+ * price = products.priceOf(prodId);
+ * </pre>
+ *
+ * <p>Example query of Employee entities converted to record type Person(firstName, surname):</p>
+ *
+ * <pre>
+ * {@literal @Filter}(by = "age")
+ * {@literal @Select}("firstName", "lastName")
+ * {@literal @OrderBy}("lastName")
+ * {@literal @OrderBy}("firstName")
+ * List{@literal <Person>} ofAge(int age);
+ * </pre>
+ *
+ * <p>Example usage:</p>
+ *
+ * <pre>
+ * List{@literal <Person>} thirtyYearOlds = employees.ofAge(30);
+ * </pre>
+ *
+ * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
+ * {@link Count}, {@link Delete}, {@link Exists}, or {@link Update} annotation.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

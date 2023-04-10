@@ -194,7 +194,7 @@ public interface Primes {
 
     @Filter(by = "id", op = Compare.LessThan)
     @Filter(by = "name", op = Compare.EndsWith)
-    @Filter(as = Filter.Type.OR, by = "id", op = Compare.Between)
+    @Filter(as = Filter.Type.Or, by = "id", op = Compare.Between)
     @Filter(by = "name", op = Compare.EndsWith)
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
