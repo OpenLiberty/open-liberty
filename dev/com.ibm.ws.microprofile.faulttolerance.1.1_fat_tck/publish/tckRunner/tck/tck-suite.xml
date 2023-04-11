@@ -149,10 +149,8 @@
                      method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") ||
                      
                      method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest") ||
-                     
-                     // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
 
-                     method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
+                     method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest") ||
 
                      method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
                      ) {
