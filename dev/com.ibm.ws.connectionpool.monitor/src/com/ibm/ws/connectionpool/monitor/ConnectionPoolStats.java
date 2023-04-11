@@ -167,11 +167,11 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     }
 
     @Override
-    public long getMaxConnectionCount() {
+    public long getMaxConnectionsLimit() {
         return this.maxConnections.getCurrentValue();
     }
 
-    public void updateMaxConnectionCount(long maxConnections) {
+    public void updateMaxConnectionsLimit(long maxConnections) {
         long initValue = this.maxConnections.getCurrentValue();
         if (maxConnections != initValue) {
             this.maxConnections.setCurrentValue(maxConnections);
