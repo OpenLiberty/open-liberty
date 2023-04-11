@@ -69,7 +69,7 @@ public class MapCacheTest {
     }
 
     @Test
-    public void testMapCacheTwentySecWait() throws Exception {
+    public void testMapCacheSevenSecWait() throws Exception {
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getVariables().getById("useInactivityParm").setValue("false");
@@ -80,7 +80,7 @@ public class MapCacheTest {
             assertNotNull("cache not populated at startup", result);
         });
         server.startServer();
-        Thread.sleep(11000);
+        Thread.sleep(7000);
         server.checkpointRestore();
         Thread.sleep(1000);
         HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
