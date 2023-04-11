@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,12 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Local in-memory cache used to keep track of oidc sessions based on the sub, sid, and the oidc session id.
@@ -28,12 +31,32 @@ import java.util.Set;
  */
 public class InMemoryOidcSessionCache implements OidcSessionCache {
 
-    private static Set<OidcSessionInfo> invalidatedSessions;
-    private static Map<String, OidcSessionsStore> subToOidcSessionsMap;
+    private final Set<OidcSessionInfo> invalidatedSessions;
+    private final Map<String, OidcSessionsStore> subToOidcSessionsMap;
+
+    private Timer timer;
+    private long timeoutInMilliSeconds = 10 * 60 * 1000;
 
     public InMemoryOidcSessionCache() {
+        this(0);
+    }
+
+    public InMemoryOidcSessionCache(long timeoutInMilliSeconds) {
         invalidatedSessions = Collections.synchronizedSet(new HashSet<>());
         subToOidcSessionsMap = Collections.synchronizedMap(new HashMap<>());
+
+        if (timeoutInMilliSeconds > 0) {
+            this.timeoutInMilliSeconds = timeoutInMilliSeconds;
+        }
+        scheduleEvictionTask(this.timeoutInMilliSeconds);
+    }
+
+    private void scheduleEvictionTask(long timeoutInMilliSeconds) {
+        EvictionTask evictionTask = new EvictionTask();
+        timer = new Timer(true);
+        long period = timeoutInMilliSeconds;
+        long delay = period;
+        timer.schedule(evictionTask, delay, period);
     }
 
     @Override
@@ -127,6 +150,48 @@ public class InMemoryOidcSessionCache implements OidcSessionCache {
     @Override
     public boolean isSessionInvalidated(OidcSessionInfo sessionInfo) {
         return invalidatedSessions.contains(sessionInfo);
+    }
+
+    private class EvictionTask extends TimerTask {
+
+        @Override
+        public void run() {
+            evictStaleEntries();
+        }
+
+    }
+
+    protected synchronized void evictStaleEntries() {
+        removeExpiredSessionsFromInvalidatedSessions();
+        removeExpiredSessionsFromSubToOidcSessionsMap();
+    }
+
+    private void removeExpiredSessionsFromInvalidatedSessions() {
+        Iterator<OidcSessionInfo> sessions = invalidatedSessions.iterator();
+        while (sessions.hasNext()) {
+            OidcSessionInfo session = sessions.next();
+            long currentTimeInMillis = System.currentTimeMillis();
+            long expInMillis = new Long(session.getExp());
+            if (currentTimeInMillis > expInMillis) {
+                invalidatedSessions.remove(session);
+            }
+        }
+    }
+
+    private void removeExpiredSessionsFromSubToOidcSessionsMap() {
+        Iterator<String> subs = subToOidcSessionsMap.keySet().iterator();
+        while (subs.hasNext()) {
+            String sub = subs.next();
+            OidcSessionsStore store = subToOidcSessionsMap.get(sub);
+            List<OidcSessionInfo> sessions = store.getSessions();
+            for (OidcSessionInfo session : sessions) {
+                long currentTimeInMillis = System.currentTimeMillis();
+                long expInMillis = new Long(session.getExp());
+                if (currentTimeInMillis > expInMillis) {
+                    store.removeSessionBySessionId(session.getSessionId());
+                }
+            }
+        }
     }
 
 }

@@ -59,7 +59,6 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
-import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class Jose4jUtil {
 
@@ -210,9 +209,9 @@ public class Jose4jUtil {
         String iss = jwtClaims.getIssuer();
         String sub = jwtClaims.getSubject();
         String sid = jwtClaims.getClaimValue("sid", String.class);
-        String timestamp = Utils.getTimeStamp();
+        String exp = String.valueOf(jwtClaims.getExpirationTime().getValueInMillis());
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
 
         OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
         oidcSessionCache.insertSession(sessionInfo);

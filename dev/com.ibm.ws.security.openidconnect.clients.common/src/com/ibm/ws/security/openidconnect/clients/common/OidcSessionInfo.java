@@ -34,14 +34,14 @@ public class OidcSessionInfo {
     private final String iss;
     private final String sub;
     private final String sid;
-    private final String timestamp;
+    private final String exp;
 
-    public OidcSessionInfo(String configId, String iss, String sub, String sid, String timestamp, ConvergedClientConfig clientConfig) {
+    public OidcSessionInfo(String configId, String iss, String sub, String sid, String exp, ConvergedClientConfig clientConfig) {
         this.configId = configId != null ? configId : "";
         this.iss = iss != null ? iss : "";
         this.sub = sub != null ? sub : "";
         this.sid = sid != null ? sid : "";
-        this.timestamp = timestamp != null ? timestamp : "";
+        this.exp = exp != null ? exp : "";
 
         this.sessionId = createSessionId(clientConfig);
     }
@@ -49,7 +49,7 @@ public class OidcSessionInfo {
     /**
      * Gets the base64 encoded session id from the request cookies
      * and returns an OidcSessionInfo object which contains
-     * the config id, sub, sid, and timestamp embedded in the session id.
+     * the config id, sub, sid, and exp embedded in the session id.
      *
      * @param request The http servlet request.
      * @return An OidcSessionInfo object containing info parsed from the session id.
@@ -82,9 +82,9 @@ public class OidcSessionInfo {
         String iss = new String(Base64.decodeBase64(parts[1]));
         String sub = new String(Base64.decodeBase64(parts[2]));
         String sid = new String(Base64.decodeBase64(parts[3]));
-        String timestamp = new String(Base64.decodeBase64(parts[4]));
+        String exp = new String(Base64.decodeBase64(parts[4]));
 
-        return new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        return new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
     }
 
     private static String getSessionIdFromCookies(Cookie[] cookies) {
@@ -111,8 +111,8 @@ public class OidcSessionInfo {
         return this.sid;
     }
 
-    public String getTimestamp() {
-        return this.timestamp;
+    public String getExp() {
+        return this.exp;
     }
 
     @Override
@@ -121,27 +121,27 @@ public class OidcSessionInfo {
     }
 
     /**
-     * Generate a new session id using the config id, sub, sid, and timestamp in the
-     * format of 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)'.
+     * Generate a new session id using the config id, sub, sid, and exp in the
+     * format of 'Base64(configId):Base64(sub):Base64(sid):Base64(exp)'.
      * A signature is then appended using a hash of the session id and the client secret.
      * It is assumed that the inputs have been validated before creating the session id.
      *
-     * @return A session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)_Signature(SessionId, ClientSecret)'.
+     * @return A session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(exp)_Signature(SessionId, ClientSecret)'.
      */
     private String createSessionId(ConvergedClientConfig clientConfig) {
         String encodedConfigId = new String(Base64.encodeBase64(configId.getBytes()));
         String encodedIss = new String(Base64.encodeBase64(iss.getBytes()));
         String encodedSub = new String(Base64.encodeBase64(sub.getBytes()));
         String encodedSid = new String(Base64.encodeBase64(sid.getBytes()));
-        String encodedTimestamp = new String(Base64.encodeBase64(timestamp.getBytes()));
+        String encodedExp = new String(Base64.encodeBase64(exp.getBytes()));
 
-        String sessionId = String.join(DELIMITER, encodedConfigId, encodedIss, encodedSub, encodedSid, encodedTimestamp);
+        String sessionId = String.join(DELIMITER, encodedConfigId, encodedIss, encodedSub, encodedSid, encodedExp);
         return OidcClientUtil.addSignatureToStringValue(sessionId, clientConfig);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(configId, iss, sid, sub, timestamp);
+        return Objects.hash(configId, iss, sid, sub, exp);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class OidcSessionInfo {
         if (getClass() != obj.getClass())
             return false;
         OidcSessionInfo other = (OidcSessionInfo) obj;
-        return Objects.equals(configId, other.configId) && Objects.equals(iss, other.iss) && Objects.equals(sid, other.sid) && Objects.equals(sub, other.sub) && Objects.equals(timestamp, other.timestamp);
+        return Objects.equals(configId, other.configId) && Objects.equals(iss, other.iss) && Objects.equals(sid, other.sid) && Objects.equals(sub, other.sub) && Objects.equals(exp, other.exp);
     }
 
 }
