@@ -131,7 +131,7 @@ public class ConnectionPoolMonitor extends StatisticActions {
             ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
             if (cStats == null) {
                 cStats = initializeConnectionPoolStats(JNDIName);
-                cStats.updateMaxConnectionCount(fpobj.getMaximumConnectionValue());
+                cStats.updateMaxConnectionsLimit(fpobj.getMaximumConnectionValue());
             }
             cStats.incCreateCount();
             cStats.incManagedConnectionCount();
@@ -492,9 +492,9 @@ public class ConnectionPoolMonitor extends StatisticActions {
             ConnectionPoolStats cStats = connectionPoolCountByName.get(JNDIName);
             if (cStats != null) {
                 int maxConnections = fpobj.getMaximumConnectionValue();
-                long currentPMIMaxConnections = cStats.getMaxConnectionCount();
+                long currentPMIMaxConnections = cStats.getMaxConnectionsLimit();
                 if (currentPMIMaxConnections != maxConnections) {
-                    cStats.updateMaxConnectionCount(maxConnections);
+                    cStats.updateMaxConnectionsLimit(maxConnections);
                 } else {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Did not update pmi maximum connections");
