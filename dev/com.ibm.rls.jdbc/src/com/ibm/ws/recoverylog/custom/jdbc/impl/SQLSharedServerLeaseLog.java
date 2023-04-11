@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -549,7 +549,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         try {
             String queryString = "SELECT LEASE_TIME, LEASE_OWNER" +
                                  " FROM " + _leaseTableName +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'" +
                                  ((_isSQLServer) ? "" : " FOR UPDATE") +
                                  ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
@@ -906,8 +906,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -1119,7 +1119,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         _deleteStmt = conn.createStatement();
 
         String deleteString = "DELETE FROM " + _leaseTableName +
-                              (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                              (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                               " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'";
         if (tc.isDebugEnabled())
             Tr.debug(tc, "delete server lease for " + recoveryIdentity + "using string " + deleteString);
@@ -1309,7 +1309,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         try {
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM " + _leaseTableName +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "'" +
                                  ((_isSQLServer) ? "" : " FOR UPDATE") +
                                  ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");

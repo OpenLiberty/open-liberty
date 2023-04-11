@@ -2343,7 +2343,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME" +
                                  " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
@@ -3343,7 +3343,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Use RDBMS SELECT FOR UPDATE to lock table for recovery
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
                              (_isSQLServer ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
@@ -3812,7 +3812,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
@@ -4019,7 +4019,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
