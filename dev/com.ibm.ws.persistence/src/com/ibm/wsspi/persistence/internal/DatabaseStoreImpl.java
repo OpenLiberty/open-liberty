@@ -748,7 +748,10 @@ public class DatabaseStoreImpl implements DatabaseStore {
      * @return the database product name.
      * @throws Exception if unable to obtain the database product name.
      */
-    private String getDatabaseProductName(WSDataSource dataSource) throws Exception {
+    private synchronized String getDatabaseProductName(WSDataSource dataSource) throws Exception {
+        //Synchronized to avoid a race condition in tests where attempting to boot two
+        //derby instances simultaneously causes tests to fail
+
         String dbProductName = dataSource.getDatabaseProductName();
         if (dbProductName == null) {
             // Query the metadata under a new transaction and commit right away
