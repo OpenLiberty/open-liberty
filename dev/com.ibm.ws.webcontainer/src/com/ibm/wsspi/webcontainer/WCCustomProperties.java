@@ -329,9 +329,6 @@ public class WCCustomProperties {
     //23.0.0.1
     public static boolean SKIP_ENCODED_CHAR_VERIFICATION;
 
-    //23.0.0.3
-    public static boolean DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION;
-    
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -426,8 +423,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("sethtmlcontenttypeonerror", "com.ibm.ws.webcontainer.sethtmlcontenttypeonerror"); //PH34054
         WCCustomProperties.FullyQualifiedPropertiesMap.put("excludeallhandledtypesclasses", "com.ibm.ws.webcontainer.excludeallhandledtypesclasses");
-	WCCustomProperties.FullyQualifiedPropertiesMap.put("skipencodedcharverification", "com.ibm.ws.webcontainer.skipencodedcharverification");
-        WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("skipencodedcharverification", "com.ibm.ws.webcontainer.skipencodedcharverification");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -816,10 +812,7 @@ public class WCCustomProperties {
 
         //23.0.0.1 - Servlet 6.0
         SKIP_ENCODED_CHAR_VERIFICATION = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.skipencodedcharverification"))).booleanValue();
-
-        //23.0.0.3
-        DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror", "false")).booleanValue();
-
+        
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {
