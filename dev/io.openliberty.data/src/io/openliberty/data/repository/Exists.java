@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package io.openliberty.data.repository;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,9 +18,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO propose this in Jakarta Data.
- * Annotates a repository method to designate it as an exists operation.
- * The {@link Filter &#64;Filter} annotation can be added to provide conditions.
+ * <p>Annotates a repository method to designate it as an exists operation.
+ * The {@link Filter &#64;Filter} annotation can be added to provide conditions.</p>
+ *
+ * <p>Example query:</p>
+ *
+ * <pre>
+ * {@literal @Exists}
+ * {@literal @Filter}(by = "email")
+ * boolean alreadyRegistered(String email);
+ * </pre>
+ *
+ * <p>Example usage:</p>
+ *
+ * <pre>
+ * foundExisting = customers.alreadyRegistered(emailAddress));
+ * </pre>
+ *
+ * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
+ * {@link Count}, {@link Delete}, {@link Select}, or {@link Update} annotation.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

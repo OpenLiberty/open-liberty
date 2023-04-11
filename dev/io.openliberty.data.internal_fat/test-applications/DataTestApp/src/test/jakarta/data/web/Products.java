@@ -17,20 +17,21 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Count;
-import jakarta.data.repository.Delete;
-import jakarta.data.repository.Exists;
-import jakarta.data.repository.Filter;
-import jakarta.data.repository.Operation;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
-import jakarta.data.repository.Select.Aggregate;
-import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Count;
+import io.openliberty.data.repository.Delete;
+import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Operation;
+import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.Select.Aggregate;
+import io.openliberty.data.repository.Update;
 
 /**
  * Repository interface for the unannotated Product entity, which has a UUID as the Id.

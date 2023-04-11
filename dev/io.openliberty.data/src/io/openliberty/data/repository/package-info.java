@@ -10,12 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
-
-public enum Operation {
-    Add,
-    Assign,
-    Divide,
-    Multiply,
-    Subtract
-}
+/**
+ * <p>This package defines extensions to Jakarta Data that
+ * enable you to annotatively define repository operations.</p>
+ *
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+package io.openliberty.data.repository;
