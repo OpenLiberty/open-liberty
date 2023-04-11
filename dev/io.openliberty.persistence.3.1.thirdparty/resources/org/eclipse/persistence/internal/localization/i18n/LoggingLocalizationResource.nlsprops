@@ -117,7 +117,7 @@ connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Versi
 
 corrupt_object=corrupt object: {0}
 
-corrupt_object_referenced_through_mapping=corrupt object referenced through mapping: {0}
+corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}.
 
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
