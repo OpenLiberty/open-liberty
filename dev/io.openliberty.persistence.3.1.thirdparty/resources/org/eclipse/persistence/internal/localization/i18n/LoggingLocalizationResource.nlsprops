@@ -727,7 +727,7 @@ validate_object_space=validate object space.
 
 verifiy_columns_read_locking_not_supported=Optimistic setting "Read" on "verify-columns" in entity ({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
 
-verifiy_rows_read_locking_not_supported=Optimistic setting "Read" on "verify-rows" in entity ({0}) is not directly supported in EclipseLink CMP. See migration doc for details..
+verifiy_rows_read_locking_not_supported=Optimistic setting "Read" on "verify-rows" in entity ({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
 
 weaver_class_not_in_project=Weaver found a class that is not part of the project: {0}.
 
