@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat;
 
@@ -18,7 +21,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
-import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
@@ -26,10 +28,11 @@ import com.ibm.ws.jsp23.fat.tests.JSPSkipMetaInfTests;
 import com.ibm.ws.jsp23.fat.tests.JSPTests;
 import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
+import componenttest.topology.impl.JavaInfo;
+
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 
 /**
  * JSP 2.3 Tests
@@ -39,7 +42,6 @@ import componenttest.topology.impl.JavaInfo;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JSPTests.class,
-                JSPExceptionTests.class,
                 JSPSkipMetaInfTests.class,
                 JSPJava8Test.class,
                 JSPCdiTest.class,
@@ -66,23 +68,24 @@ public class FATSuite {
     public static RepeatTests repeat;
 
     static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
+        if(JavaInfo.JAVA_VERSION>=11)
+        {
             repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                            .withID("CDI-2.0")
+                            .forceAddFeatures(false)
+                            .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES());
         } else {
             repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES());
+                        .with(new EmptyAction().fullFATOnly())
+                        .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                        .withID("CDI-2.0")
+                                        .forceAddFeatures(false)
+                                        .fullFATOnly())
+                        .andWith(FeatureReplacementAction.EE9_FEATURES());
         }
     }
 }

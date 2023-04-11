@@ -1414,11 +1414,8 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                                                     CollaboratorHelper.allCollabEnum);
         } catch (ServletErrorReport ser) {
             // PK79464
-            if (dispatcherRethrowSER&&httpServletReq.getAttribute(WebContainerConstants.IGNORE_DISPATCH_STATE) == null) {
-                if (WCCustomProperties.DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION) 
-                   exception = true;
+            if (dispatcherRethrowSER&&httpServletReq.getAttribute(WebContainerConstants.IGNORE_DISPATCH_STATE) == null)
                 throw ser;
-	    }
             webapp.sendError(httpServletReq, httpServletRes, ser);
         } catch (ServletException se) {
             exception = true;
