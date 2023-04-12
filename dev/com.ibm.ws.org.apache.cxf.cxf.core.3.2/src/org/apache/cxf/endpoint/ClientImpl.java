@@ -20,6 +20,7 @@
 package org.apache.cxf.endpoint;
 
 import java.io.Closeable;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
@@ -76,6 +77,9 @@ import org.apache.cxf.workqueue.SynchronousExecutor;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+
+// Liberty Changes - Could potentially be removed when updating to CXF 3.5.5 
+// Trace changes could be removed for instrumentation disabled in bundle file
 @Trivial // Liberty Change: Other Liberty overrides cause tracing to print sensitive message objects
 public class ClientImpl
     extends AbstractBasicInterceptorProvider
@@ -249,6 +253,7 @@ public class ClientImpl
         responseContext.remove(t);
     }
 
+    @Override
     public Contexts getContexts() {
         return new Contexts() {
             @Override
@@ -269,10 +274,7 @@ public class ClientImpl
     public Map<String, Object> getRequestContext() {
         if (isThreadLocalRequestContext()) {
             final Thread t = Thread.currentThread();
-            if (!requestContext.containsKey(t)) {
-                EchoContext freshRequestContext = new EchoContext(currentRequestContext);
-                requestContext.put(t, freshRequestContext);
-            }
+            requestContext.computeIfAbsent(t, k -> new EchoContext(currentRequestContext));
             latestContextThread = t;
             return requestContext.get(t);
         }
@@ -688,7 +690,7 @@ public class ClientImpl
         return null;
     }
 
-    @Sensitive
+    @Sensitive // Liberty Code Change
     protected void setContext(Map<String, Object> ctx, Message message) {
         if (ctx != null) {
             message.putAll(ctx);
@@ -1093,7 +1095,7 @@ public class ClientImpl
      * Class to handle the response contexts.   The clear is overloaded to remove
      * this context from the threadLocal caches in the ClientImpl
      */
-    @Trivial
+    @Trivial // Liberty Code Change
     static class ResponseContext implements Map<String, Object>, Serializable {
         private static final long serialVersionUID = 2L;
         final Map<String, Object> wrapped;

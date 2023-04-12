@@ -18,7 +18,6 @@
  */
 package org.apache.cxf.bus.osgi;
 
-import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -56,7 +55,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
         this.id = bundleId;
     }
 
-    public void registerExistingBundles(BundleContext context) throws IOException {
+    public void registerExistingBundles(BundleContext context) {
         for (Bundle bundle : context.getBundles()) {
             if ((bundle.getState() == Bundle.RESOLVED
                 || bundle.getState() == Bundle.STARTING
@@ -101,7 +100,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
         for (Extension ext : orig) {
             names.add(ext.getName());
         }
-        LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName()
+        LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName() // Liberty Change: Log at finest
                  + " (" + bundle.getBundleId() + ") " + names);
         List<OSGiExtension> list = extensions.get(bundle.getBundleId());
         if (list == null) {
@@ -121,7 +120,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     protected void unregister(final long bundleId) {
         List<OSGiExtension> list = extensions.remove(bundleId);
         if (list != null) {
-            LOG.finest("Removing the extensions for bundle " + bundleId);
+            LOG.finest("Removing the extensions for bundle " + bundleId);  // Liberty Change: Log at finest
             ExtensionRegistry.removeExtensions(list);
         }
     }
@@ -183,6 +182,8 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
 
             return super.load(cl, b);
         }
+        
+        @Override
         protected Class<?> tryClass(String name, ClassLoader cl) {
             Class<?> c = null;
 
@@ -223,6 +224,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
             return c;
         }
 
+        @Override
         public Extension cloneNoObject() {
             OSGiExtension ext = new OSGiExtension(this, bundle);
             ext.obj = serviceObject;

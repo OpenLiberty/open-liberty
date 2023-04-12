@@ -51,6 +51,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     private Object[] contents = new Object[20];
     private int index;
 
+    // private Map<String, Object> contextCache; Liberty code Change
 
 
     public MessageImpl() {
@@ -70,6 +71,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             interceptorChain = impl.interceptorChain;
             contents = impl.contents;
             index = impl.index;
+            // contextCache = impl.contextCache; Liberty code Change
         } else {
             throw new RuntimeException("Not a MessageImpl! " + m.getClass());
         }
@@ -106,7 +108,7 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
-        // Liberty code change start
+        // Liberty code change start - Add logging statments
         LOG.entering("MessageImpl", "getContent");
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
@@ -183,7 +185,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         this.interceptorChain = ic;
     }
 
-    //Liberty code change start
+    // Liberty code change start
     // Since these maps can have null value, use the getOrDefault API
     // to prevent calling get twice under the covers
     private static final Object NOT_FOUND = new Object();

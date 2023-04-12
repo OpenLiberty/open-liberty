@@ -63,6 +63,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
 // Liberty Change - Backport https://github.com/apache/cxf/pull/960
+// Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
 public final class AttachmentUtil {
     // Liberty Change - Start
     // The xop:include "href" attribute (https://www.w3.org/TR/xop10/#xop_href) may include

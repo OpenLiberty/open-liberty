@@ -34,8 +34,18 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  *
  */
 public class ProxyHelper {
-    static final ProxyHelper HELPER = new ProxyHelper(); //Liberty change
-
+    // Liberty Change Start: 
+	// Dont use CglibProxyHelper as default
+    static final ProxyHelper HELPER = new ProxyHelper(); 
+    // static {
+    //     ProxyHelper theHelper;
+    //     try {
+    //         theHelper = new CglibProxyHelper();
+    //     } catch (Throwable ex) {
+    //          theHelper = new ProxyHelper();
+    //     }
+    //    HELPER = theHelper;
+    // }
     private static final Logger LOG = LogUtils.getL7dLogger(ProxyHelper.class);
     
     protected ProxyClassLoaderCache proxyClassLoaderCache = 
@@ -89,7 +99,7 @@ public class ProxyHelper {
     }
     
     private String getSortedNameFromInterfaceArray(Class<?>[] interfaces) {
-        SortedArraySet<String> arraySet = new SortedArraySet<String>();
+        SortedArraySet<String> arraySet = new SortedArraySet<>();
         for (Class<?> currentInterface : interfaces) {
             arraySet.add(currentInterface.getName() + ClassLoaderUtils.getClassLoaderName(currentInterface));
         }
@@ -97,7 +107,7 @@ public class ProxyHelper {
     }
 
 
-    @FFDCIgnore({ClassNotFoundException.class})
+    @FFDCIgnore({ClassNotFoundException.class}) // Liberty Change Start
     private boolean canSeeAllInterfaces(ClassLoader loader, Class<?>[] interfaces) {
         for (Class<?> currentInterface : interfaces) {
             String ifName = currentInterface.getName();
