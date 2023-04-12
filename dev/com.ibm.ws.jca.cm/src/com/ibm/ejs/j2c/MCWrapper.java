@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 20213 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2130,14 +2130,24 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * Since this object already knows it's PM it can release itself.
      */
     protected void releaseToPoolManager() throws ResourceException {
+        releaseToPoolManager(false);
+    }
+
+    /**
+     * Releases itself to the <code>PoolManager</code>.
+     * Since this object already knows it's PM it can release itself.
+     *
+     * @param pausedPoolAbortOverRide - If true used to bypass locking during release
+     */
+    protected void releaseToPoolManager(boolean pausedPoolAbortOverRide) throws ResourceException {
 
         if (inSharedPool) {
-            pm.release(this, uowCoord);
+            pm.release(this, uowCoord, pausedPoolAbortOverRide);
         } else {
             // Non-shareable connections are Always reserved with a null coordinator,
             //  and thus must be release with one regardless of whether or not the
             //  current uowCoord is non-null.
-            pm.release(this, null);
+            pm.release(this, null, pausedPoolAbortOverRide);
         }
 
     }
@@ -3274,22 +3284,31 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * @return whether or not the connection was successfully aborted.
      */
     public boolean abortMC() {
+        return abortMC(false);
+    }
+
+    /**
+     * Abort the manage connection associated with this MCWrapper.
+     *
+     * @param pausedPoolAbortOverRide - If true used to bypass locking during release
+     *
+     * @return whether or not the connection was successfully aborted.
+     */
+    protected boolean abortMC(boolean pausedPoolAbortOverRide) {
         boolean trace = TraceComponent.isAnyTracingEnabled();
         if (!(mc instanceof WSManagedConnection)) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, "abortMC", "Skipping MC abort because MC is not an instance of WSManagedConnection");
             return false;
         }
-
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "abortMC");
-
         WSManagedConnection wsmc = (WSManagedConnection) mc;
         try {
             do_not_reuse_mcw = true;
             wsmc.abort(pm.connectorSvc.execSvcRef.getServiceWithException());
             aborted = true;
-            releaseToPoolManager(); // Get the connection out of the pool
+            releaseToPoolManager(pausedPoolAbortOverRide); // Get the connection out of the pool
         } catch (SQLFeatureNotSupportedException e) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(tc, "JDBC feature or driver does not support aborting connections.");
@@ -3298,12 +3317,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Caught exception aborting connection or releasing aborted connection to the pool manager.");
         }
-
         if (trace && tc.isEntryEnabled())
             Tr.exit(tc, "abortMC", aborted);
         return aborted;
     }
-
     public boolean isMCAborted() {
         if (aborted)
             return true;
@@ -3313,7 +3330,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         }
         return false;
     }
-
+    
     /**
      * @return
      */
