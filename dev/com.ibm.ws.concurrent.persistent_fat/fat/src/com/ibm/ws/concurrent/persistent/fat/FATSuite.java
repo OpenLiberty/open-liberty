@@ -24,7 +24,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;

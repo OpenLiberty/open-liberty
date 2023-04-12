@@ -495,8 +495,10 @@ public class LibertyServer implements LogMonitorClient {
     private CheckpointInfo checkpointInfo;
 
     public static class CheckpointInfo {
-
-        final Consumer<LibertyServer> defaultLambda = (LibertyServer s) -> {
+        final Consumer<LibertyServer> defaultCheckpointLambda = (LibertyServer s) -> {
+            Log.debug(c, "No beforeCheckpointLambda supplied.");
+        };
+        final Consumer<LibertyServer> defaultRestoreLambda = (LibertyServer s) -> {
             Log.debug(c, "No beforeRestoreLambda supplied.");
         };
 
@@ -506,6 +508,11 @@ public class LibertyServer implements LogMonitorClient {
 
         public CheckpointInfo(CheckpointPhase phase, boolean autorestore, boolean expectCheckpointFailure, boolean expectRestoreFailure,
                               Consumer<LibertyServer> beforeRestoreLambda) {
+            this(phase, autorestore, expectCheckpointFailure, expectRestoreFailure, null, beforeRestoreLambda);
+        }
+
+        public CheckpointInfo(CheckpointPhase phase, boolean autorestore, boolean expectCheckpointFailure, boolean expectRestoreFailure,
+                              Consumer<LibertyServer> beforeCheckpointLambda, Consumer<LibertyServer> beforeRestoreLambda) {
             if (phase == null) {
                 throw new IllegalArgumentException("Phase must not be null");
             }
@@ -513,8 +520,17 @@ public class LibertyServer implements LogMonitorClient {
             this.autoRestore = autorestore;
             this.expectCheckpointFailure = expectCheckpointFailure;
             this.expectRestoreFailure = expectRestoreFailure;
+            if (beforeCheckpointLambda == null) {
+                this.beforeCheckpointLambda = defaultCheckpointLambda;
+            } else {
+                this.beforeCheckpointLambda = (LibertyServer svr) -> {
+                    Log.debug(c, "Begin execution of supplied beforeCheckpointLambda.");
+                    beforeCheckpointLambda.accept(svr);
+                    Log.debug(c, "Excecution of supplied beforeCheckpointLambda complete.");
+                };
+            }
             if (beforeRestoreLambda == null) {
-                this.beforeRestoreLambda = defaultLambda;
+                this.beforeRestoreLambda = defaultRestoreLambda;
             } else {
                 this.beforeRestoreLambda = (LibertyServer svr) -> {
                     Log.debug(c, "Begin execution of supplied beforeRestoreLambda.");
@@ -529,6 +545,7 @@ public class LibertyServer implements LogMonitorClient {
          */
         private final CheckpointPhase checkpointPhase; //Phase to checkpoint
         private final boolean autoRestore; // weather or not to perform restore after checkpoint
+        private final Consumer<LibertyServer> beforeCheckpointLambda;
         //AN optional function executed after checkpoint but before restore
         private final Consumer<LibertyServer> beforeRestoreLambda;
         private final boolean expectCheckpointFailure;
@@ -1608,6 +1625,7 @@ public class LibertyServer implements LogMonitorClient {
         if (doCheckpoint()) {
             // save off envVars for checkpoint
             checkpointInfo.checkpointEnv = envVars;
+            checkpointInfo.beforeCheckpointLambda.accept(this);
         }
 
         ProgramOutput output;
@@ -2601,6 +2619,8 @@ public class LibertyServer implements LogMonitorClient {
                 assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 
                 assertNotNull("Security service did not report it was ready", waitForStringInLogUsingMark("CWWKS0008I"));
+
+                assertNotNull("The JMX REST connector message was not found", waitForStringInLogUsingMark("CWWKX0103I"));
 
                 //backup the key file
 
@@ -3780,6 +3800,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public RemoteFile getMostRecentTraceFile() throws Exception {
         List<String> files = listDirectoryContents(logsRoot, DEFAULT_TRACE_FILE_PREFIX);
+        Log.debug(c, "Current list of trace logs: " + files);
 
         if (files == null || files.isEmpty()) {
             return null;
@@ -3787,10 +3808,14 @@ public class LibertyServer implements LogMonitorClient {
 
         RemoteFile rf = null;
         long maxLastModified = 0;
+        int nameLength = 0;
         for (int i = 0; i < files.size(); i++) {
             final RemoteFile f = getTraceFile(files.get(i));
-            if (f.lastModified() > maxLastModified) {
+            Log.debug(c, "Trace file " + f + "[modified: " + f.lastModified() + "]");
+            if (f.lastModified() > maxLastModified ||
+                f.lastModified() == maxLastModified && f.getName().length() < nameLength) {
                 maxLastModified = f.lastModified();
+                nameLength = f.getName().length();
                 rf = f;
             }
         }

@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -81,18 +78,18 @@ Export-Package: \
   com.ibm.ws.jsf.cdi, \
   com.ibm.ws.jsf.config.*, \
   com.ibm.ws.jsf.ext, \
-  com.ibm.ws.jsf.spi.*, \
   com.ibm.ws.jsf.extprocessor, \
+  com.ibm.ws.jsf.spi.*, \
   org.apache.myfaces.application;thread-context=true, \
   org.apache.myfaces.application.viewstate;thread-context=true, \
-  org.apache.myfaces.cdi.view;thread-context=true, \
   org.apache.myfaces.cdi.util;thread-context=true, \
+  org.apache.myfaces.cdi.view;thread-context=true, \
   org.apache.myfaces.component;thread-context=true, \
   org.apache.myfaces.component.visit;thread-context=true, \
-  org.apache.myfaces.context;thread-context=true, \
-  org.apache.myfaces.context.servlet;thread-context=true, \
   org.apache.myfaces.config.annotation;thread-context=true, \
   org.apache.myfaces.config.impl.digester.elements;thread-context=true, \
+  org.apache.myfaces.context;thread-context=true, \
+  org.apache.myfaces.context.servlet;thread-context=true, \
   org.apache.myfaces.el.convert;thread-context=true,\
   org.apache.myfaces.flow;thread-context=true, \
   org.apache.myfaces.flow.cdi;thread-context=true, \
@@ -130,11 +127,11 @@ Export-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
-  !org.apache.myfaces.ee6, \
   !com.google.inject, \
+  javax.annotation;version=!,\
   !javax.ejb, \
   !javax.persistence, \
-  javax.annotation;version=!,\
+  !org.apache.myfaces.ee6, \
   *
 
 Include-Resource: \

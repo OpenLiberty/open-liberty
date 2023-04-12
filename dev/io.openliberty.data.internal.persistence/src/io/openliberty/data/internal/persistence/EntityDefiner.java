@@ -31,6 +31,9 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -60,20 +63,31 @@ import jakarta.persistence.metamodel.Type;
  * Runs asynchronously to supply orm.xml for entities that aren't already Jakarta Persistence entities
  * and to discover information about entities.
  */
-class EntityDefiner implements Runnable {
+public class EntityDefiner implements Runnable {
     private static final String EOLN = String.format("%n");
     private static final TraceComponent tc = Tr.register(EntityDefiner.class);
 
     private final String databaseId;
-    private final List<Class<?>> entities;
+    private final List<Class<?>> entities = new ArrayList<>();
+    final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
     private final ClassLoader loader;
-    private final PersistenceDataProvider provider;
 
-    EntityDefiner(PersistenceDataProvider provider, String databaseId, ClassLoader loader, List<Class<?>> entities) {
-        this.provider = provider;
+    public EntityDefiner(String databaseId, ClassLoader loader) {
         this.databaseId = databaseId;
         this.loader = loader;
-        this.entities = entities;
+    }
+
+    /**
+     * Adds an entity class to be handled.
+     *
+     * @param entityClass entity class.
+     */
+    @Trivial
+    public void add(Class<?> entityClass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "add: " + entityClass.getName());
+
+        entities.add(entityClass);
     }
 
     /**
@@ -316,25 +330,25 @@ class EntityDefiner implements Runnable {
                                 idClassAttributeAccessors, //
                                 punit);
 
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");
         } catch (RuntimeException x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
         } catch (Exception x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw new RuntimeException(x);
         } catch (Error x) {
             for (Class<?> entityClass : entities)
-                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
@@ -381,9 +395,12 @@ class EntityDefiner implements Runnable {
             // (1) has name of Id, or ID, or id.
             // (2) name ends with Id.
             // (3) name ends with ID.
-            // (4) name ends with id.
+            // (4) type is UUID.
+            // (5) name ends with id.
             int precedence = 10;
-            for (String name : attributes.keySet())
+            for (Map.Entry<String, Class<?>> attribute : attributes.entrySet()) {
+                String name = attribute.getKey();
+                Class<?> type = attribute.getValue(); // TODO compare type against the repository key type if defined
                 if (name.length() > 2) {
                     if (precedence > 2) {
                         char i = name.charAt(name.length() - 2);
@@ -396,16 +413,20 @@ class EntityDefiner implements Runnable {
                                 keyAttributeName = name;
                                 precedence = 3;
                             }
-                        } else if (i == 'i' && precedence > 4 && name.charAt(name.length() - 1) == 'd') {
+                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
                             keyAttributeName = name;
-                            precedence = 4;
+                            precedence = 5;
                         }
                     }
                 } else if (name.equalsIgnoreCase("ID")) {
                     keyAttributeName = name;
                     precedence = 1;
                     break;
+                } else if (precedence > 4 && UUID.class.equals(type)) {
+                    keyAttributeName = name;
+                    precedence = 4;
                 }
+            }
 
             if (keyAttributeName == null)
                 throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
@@ -419,9 +440,10 @@ class EntityDefiner implements Runnable {
             String attributeName = attributeInfo.getKey();
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
+            boolean isPrimitive = attributeType.isPrimitive();
 
             String columnType;
-            if (attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType) || attributeType.isPrimitive()) {
+            if (isPrimitive || attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType)) {
                 columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
                                 "version".equalsIgnoreCase(attributeName) ? "version" : //
                                                 isCollection ? "element-collection" : //
@@ -433,8 +455,13 @@ class EntityDefiner implements Runnable {
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
 
-            if (isEmbeddable && !"embedded".equals(columnType))
-                xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+            if (isEmbeddable) {
+                if (!"embedded".equals(columnType))
+                    xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+            } else {
+                if (isPrimitive)
+                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
+            }
 
             xml.append("   </" + columnType + ">").append(EOLN);
         }

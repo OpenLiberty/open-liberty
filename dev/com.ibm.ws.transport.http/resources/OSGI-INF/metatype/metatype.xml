@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2022 IBM Corporation and others.
+    Copyright (c) 2011, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -221,7 +221,16 @@
 
         <AD name="%http2.maxFrameSize" description="%http2.maxFrameSize.desc"
             id="maxFrameSize" required="false" type="Integer" min="16384" max="16777215" default="57344" /> 
-            
+
+        <AD name="%http2.settingsInitialWindowSize" description="%http2.settingsInitialWindowSize.desc"
+            id="settingsInitialWindowSize" required="false" type="Integer" min="1" max="2147483647" default="65535" />
+
+        <AD name="%http2.connectionWindowSize" description="%http2.connectionWindowSize.desc"
+            id="connectionWindowSize" required="false" type="Integer" min="65535" max="2147483647" default="65535" />
+
+        <AD name="%http2.limitWindowUpdateFrames" description="%http2.limitWindowUpdateFrames.desc"
+            id="limitWindowUpdateFrames" required="false" type="Boolean" default="false" />
+
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"
             id="v0CookieDateRFC1123compat" required="false" type="Boolean" default="true" />

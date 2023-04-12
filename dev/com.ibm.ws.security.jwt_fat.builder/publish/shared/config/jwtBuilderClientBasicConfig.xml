@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server>
 
-	<jwtBuilder id="jwt1" />
+	<jwtBuilder id="jwt1"
+		issuer="testIssuer" />
 
 	<jwtBuilder
 		id="jwt_jtiTrue"
+		issuer="testIssuer"
 		jti="true" />
 
 	<jwtBuilder
 		id="altJwt1"
+		issuer="testIssuer"
 		expiry="1h"
 		audiences="Client02,Client03"
 		jti="true" />
@@ -16,10 +19,12 @@
 
 	<jwtBuilder
 		id="jwKEnabled"
+		issuer="testIssuer"
 		jwkEnabled="true"/>
         
 	<jwtBuilder
 		id="encryptJwtRS256"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -30,6 +35,7 @@
      
 	<jwtBuilder
 		id="encryptJwtRS384"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"

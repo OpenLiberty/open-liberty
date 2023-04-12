@@ -29,6 +29,7 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -114,6 +115,8 @@ import web.FailoverServlet;
  */
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
+//Skip on IBM i test class depends on datasource inferrence
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 public class FailoverTest2 extends FailoverTest {
 
     @Server("com.ibm.ws.transaction")
@@ -345,7 +348,7 @@ public class FailoverTest2 extends FailoverTest {
      * Simulate an unexpected sqlcode on the first attempt to connect to the database
      */
     @Test
-    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", })
+    @ExpectedFFDC(value = { "java.sql.SQLException", })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.InternalLogException",
                            "javax.transaction.SystemException", "java.sql.SQLRecoverableException", "java.lang.Exception",
                            "java.sql.SQLException",
@@ -368,7 +371,7 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0112E: An unexpected error occured whilst opening the recovery log. The log configuration was SQLMultiScopeRecoveryLog.......
-        assertNotNull("No error message signifying log failure", server.waitForStringInLog("HADB Peer locking, local recovery failed"));
+        assertNotNull("No error message signifying log failure", server.waitForStringInTrace("Local recovery failed"));
     }
 
     /**

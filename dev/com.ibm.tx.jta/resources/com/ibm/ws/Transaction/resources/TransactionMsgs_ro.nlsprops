@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -869,5 +869,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: A fost detectat\u0103 o configura\u0163ie 
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA este activat pentru acest cluster, dar managerul HA este dezactivat.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Dac\u0103 aceasta este configura\u0163ia dorit\u0103, nu este necesar\u0103 nicio ac\u0163iune. Altfel, corecta\u0163i configura\u0163ia HA.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Serviciul de tranzac\u021bii s-a \u00eenchis, dar istoricul de recuperare a fost marcat ca e\u0219uat.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Istoricul de recuperare a e\u0219uat \u0219i nu s-a realizat accesul la istoric la oprirea serverului.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corecta\u021bi condi\u021biile indicate de mesajele care au raportat invalidarea istoricului. Reporni\u0163i serverul astfel \u00eenc\u00e2t istoricul s\u0103 poat\u0103 fi reparat.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

@@ -15,6 +15,7 @@ Subsystem-Name: OpenAPI 3.1
   com.ibm.websphere.appserver.adminSecurity-1.0, \
   io.openliberty.securityAPI.javaee-1.0, \
   com.ibm.websphere.appserver.mpOpenAPI-1.0, \
+  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3,1.4", \
   com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1"
 
 -bundles= \

@@ -45,7 +45,7 @@
     
     <dataSource jndiName="jdbc/postgres/minimal">
       <jdbcDriver libraryRef="PostgresLibJar" />
-      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}" autosave="never"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/xa" type="javax.sql.XADataSource">

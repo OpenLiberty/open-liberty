@@ -11,48 +11,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-/**
- * Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
- * 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
- * and 'publishLibNative' tasks.
- *
- * Configure 'assemble' to depend on above tasks.
- */
+def toolProject = parseBoolean(bnd.get('tool.project', 'false'))
+def testProject = parseBoolean(bnd.get('test.project', 'false'))
+def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
 
-def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
-def shouldIncludePoms = ('true'.equals(bnd.get('test.project', bnd.get('fat.project', 'false'))))
-
-configurations {
-   cleanPomClasspath
-} 
-
-dependencies {
-   cleanPomClasspath project(':build.cleanPom') 
-}
-
-if(!shouldIncludePoms) {
-    task cleanAllEmbeddedPoms {
-        dependsOn jar
-        dependsOn ':build.cleanPom:jar'
-        doLast {
-          fileTree(project.buildDir).matching {
-          include "**/*.jar"
-              }.each { aFile ->
-                def myArgs = [
-                  aFile, new File(project.buildDir, 'tmp')]                 
-                javaexec {
-                    classpath configurations.cleanPomClasspath
-                    main = 'io.openliberty.process.PostProcessBNDPom'
-                    args = myArgs
-                }
-              }
-            }
-        }
-    assemble.dependsOn cleanAllEmbeddedPoms
-}
-
-
-
+def publishWlpJarDefault = testProject ? 'true' : 'false'
 
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {

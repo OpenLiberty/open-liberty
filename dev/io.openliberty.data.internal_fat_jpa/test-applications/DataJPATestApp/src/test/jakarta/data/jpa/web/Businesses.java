@@ -15,14 +15,15 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Compare;
 import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Select;
 
 /**
  *

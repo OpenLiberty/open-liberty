@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -869,5 +869,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Configura\u00e7\u00e3o de alta disponibili
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=Alta disponibilidade est\u00e1 ativada para esse cluster, mas o gerenciador de alta disponibilidade est\u00e1 desativado.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Se essa for a configura\u00e7\u00e3o desejada, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Caso contr\u00e1rio, corrija a configura\u00e7\u00e3o de alta disponibilidade.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: O servi\u00e7o de transa\u00e7\u00f5es foi encerrado, mas o log de recupera\u00e7\u00e3o foi marcado como com falha.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=O log de recupera\u00e7\u00e3o falhou e o acesso ao log n\u00e3o ocorreu no encerramento do servidor.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrija quaisquer condi\u00e7\u00f5es indicadas pelas mensagens que relataram a invalida\u00e7\u00e3o do log. Reinicie o servidor para que o log possa ser corrigido.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

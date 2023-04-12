@@ -1,28 +1,35 @@
 <server>
  
-	<jwtBuilder id="emptyConfig" />
+	<jwtBuilder id="emptyConfig" 
+		issuer="testIssuer" />  <!-- need the issuer to work around a test issue with test systems that have multiple addresses -->
 
-	<jwtBuilder id="" />
+	<jwtBuilder id="" 
+		issuer="testIssuer"/>
 
 	<jwtBuilder
 		id="specificExpiry"
+		issuer="testIssuer"
 		expiry="1h" />
 		
 	<jwtBuilder
 		id="specificExpirySeconds"
+		issuer="testIssuer"
 		expiry="1h" 
 		expiresInSeconds="1800s"/>
 
 	<jwtBuilder
 		id="specificAudiences"
+		issuer="testIssuer"
 		audiences="Client02, Client03" />
 
 	<jwtBuilder
 		id="specificScopes"
+		issuer="testIssuer"
 		scope="myScope yourScope" />
 
 	<jwtBuilder
 		id="specificJti"
+		issuer="testIssuer"
 		jti="true" />
 
 	<jwtBuilder
@@ -31,121 +38,151 @@
 		
 	<jwtBuilder
 		id="specificNbfOffset"
+		issuer="testIssuer"
 		nbfOffset="1800s"
 	/>
 
 	<jwtBuilder
 		id="emptyClaims"
+		issuer="testIssuer"
 		claims="" />
 
 	<jwtBuilder
 		id="specificClaims_allSet"
+		issuer="testIssuer"
 		claims="uid, cn, sn" />
 
 	<jwtBuilder
 		id="specificClaims_someNotSet"
+		issuer="testIssuer"
 		claims="uid, cn, sn, yourClaim" />
 		
-	<jwtBuilder id="AMRTestValid" amrInclude="amrTest" />
+	<jwtBuilder id="AMRTestValid" 
+		issuer="testIssuer" 
+		amrInclude="amrTest" />
 	
-	<jwtBuilder id="AMRTestInvalid" amrInclude="random" />
+	<jwtBuilder id="AMRTestInvalid" 
+		issuer="testIssuer"
+		amrInclude="random" />
 	
-	<jwtBuilder id="AMRTestEmpty" amrInclude="" />
+	<jwtBuilder id="AMRTestEmpty" 
+		issuer="testIssuer"
+		amrInclude="" />
 
 	<jwtBuilder
 		id="key_x509"
+		issuer="testIssuer"
 		key="x509" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_noKeyRef"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="configServerDefault" />
 
 	<!-- jwtBuilder
 		id="key_sigAlg_RS256_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="configServerDefault"
 		keyAlias="configserverdefault" / -->
  
 	<jwtBuilder
 		id="key_sigAlg_RS256_goodKeyAlias_global"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyAlias="rsacert" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_badKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="configServerDefault"
 		keyAlias="badAlias" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_badKeyAlias_global"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyAlias="badAlias" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_badKeyStoreRef"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="doesntExist" />
 
 	<jwtBuilder
 		id="key_sigAlg_HS256_with_sharedKey"
+		issuer="testIssuer"
 		signatureAlgorithm="HS256"
 		sharedKey="someKeyvalue" />
 
 	<jwtBuilder
 		id="key_sigAlg_HS256_with_xor_sharedKey"
+		issuer="testIssuer"
 		signatureAlgorithm="HS256"
 		sharedKey="{xor}LDAyOhQ6Jik+Myo6" />
 
 	<jwtBuilder
 		id="key_sigAlg_HS256_without_sharedKey"
+		issuer="testIssuer"
 		signatureAlgorithm="HS256" />
 		    
 	<jwtBuilder
 		id="jwkEnabled"
+		issuer="testIssuer"
 		tokenEndpointEnabled="true"
 		jwkEnabled="true" />
 		
 	<jwtBuilder
-		id="jwkEnabledNoTokenEndpoint"		
+		id="jwkEnabledNoTokenEndpoint"
+		issuer="testIssuer"		
 		jwkEnabled="true" />		
 
     <jwtBuilder
 		id="jwkFromServerX509"
+		issuer="testIssuer"
 		jwkEnabled="false" />
 
     <jwtBuilder
 		id="jwkFromKeyStoreX509"
+		issuer="testIssuer"
 		keyStoreRef="configServerDefault"
 		keyAlias="configserverdefault" />
 
 	<jwtBuilder
 		id="jwkEnabled_size_1024"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		jwkSigningKeySize="1024" />
 
 	<jwtBuilder
 		id="jwkEnabled_size_2048"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		jwkSigningKeySize="2048" />
 
 	<jwtBuilder
 		id="jwkEnabled_size_4096"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		jwkSigningKeySize="4096" />
 		
 	<jwtBuilder
 		id="jwkEnabled_size_invalid"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		jwkSigningKeySize="2000" />
 
 	<jwtBuilder
 		id="jwkEnabled_HS256"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="HS256"
 		sharedKey="someKeyvalue" />
@@ -154,12 +191,14 @@
 
 	<jwtBuilder
 		id="jwkEnabled_HS256_xor"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="HS256"
 		sharedKey="{xor}LDAyOhQ6Jik+Myo6" />
 
 	<jwtBuilder
 		id="jwkEnabled_RS256"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="RS256"
 		keyStoreRef="configServerDefault" />
@@ -168,70 +207,82 @@
 
 	<jwtBuilder
 		id="key_sigAlg_HS384_with_sharedKey"
+		issuer="testIssuer"
 		signatureAlgorithm="HS384"
 		sharedKey="someKeyvalue" />
 
 	<jwtBuilder
 		id="key_sigAlg_HS512_with_sharedKey"
+		issuer="testIssuer"
 		signatureAlgorithm="HS512"
 		sharedKey="someKeyvalue" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_RS384_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs384" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS512_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs512" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES256_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_ES384_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es384" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES512_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es512" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS256_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_PS384_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps384" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS512_goodKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
 
 	<jwtBuilder
 		id="jwkEnabled_RS384"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg" 
@@ -239,6 +290,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_RS512"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
@@ -246,6 +298,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_ES256"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="ES256"
 		keyStoreRef="key_allSigAlg"
@@ -253,6 +306,7 @@
 
 	<jwtBuilder
 		id="jwkEnabled_ES384"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
@@ -260,6 +314,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_ES512"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="ES512"
 		keyStoreRef="key_allSigAlg"
@@ -267,6 +322,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_PS256"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="PS256"
 		keyStoreRef="key_allSigAlg"
@@ -274,6 +330,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_PS384"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="PS384"
 		keyStoreRef="key_allSigAlg"
@@ -281,6 +338,7 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_PS512"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
@@ -288,12 +346,14 @@
 		
 	<jwtBuilder
 		id="jwkEnabled_HS384"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="HS384"
 		sharedKey="someKeyvalue" />
 		
 	<jwtBuilder
 		id="jwkEnabled_HS512"
+		issuer="testIssuer"
 		jwkEnabled="true"
 		signatureAlgorithm="HS512"
 		sharedKey="someKeyvalue" />										
@@ -301,165 +361,193 @@
 
 	<jwtBuilder
 		id="key_sigAlg_RS256_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs384" />
 		
 	<jwtBuilder
 		id="key_sigAlg_RS256_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_RS256_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_RS384_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs512" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS384_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es384" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS384_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps384" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS512_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS512_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es512" />
 
 	<jwtBuilder
 		id="key_sigAlg_RS512_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES256_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es384" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES256_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256" />
 	<jwtBuilder
 		id="key_sigAlg_ES256_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_ES384_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es512" />
 		
 	<jwtBuilder
 		id="key_sigAlg_ES384_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs384" />
 		
 	<jwtBuilder
 		id="key_sigAlg_ES384_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps384" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES512_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es256" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES512_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs512" />
 
 	<jwtBuilder
 		id="key_sigAlg_ES512_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="ES512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS256_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps384" />
 		
 	<jwtBuilder
 		id="key_sigAlg_PS256_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_PS256_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256" />
 		
 	<jwtBuilder
 		id="key_sigAlg_PS384_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS384_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es384" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS384_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS384"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs384" />
 
 	<jwtBuilder
 		id="key_sigAlg_PS512_badPSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps256" />
 	<jwtBuilder
 		id="key_sigAlg_PS512_badESKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="es512" />
 	<jwtBuilder
 		id="key_sigAlg_PS512_badRSKeyAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs512" />
 
 	<jwtBuilder
 		id="key_encrypt_good_RS256"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -470,6 +558,7 @@
         
 	<jwtBuilder
 		id="key_encrypt_good_RS384"
+		issuer="testIssuer"
 		signatureAlgorithm="RS384"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -480,6 +569,7 @@
         
 	<jwtBuilder
 		id="key_encrypt_good_RS512"
+		issuer="testIssuer"
 		signatureAlgorithm="RS512"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -490,6 +580,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_good_ES256"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -500,6 +591,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_good_RS256_sigAlgES384"
+		issuer="testIssuer"
 		signatureAlgorithm="ES384"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -510,6 +602,7 @@
 
     <jwtBuilder
 		id="key_encrypt_bad_keyMgmtKey"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -520,6 +613,7 @@
         
     <jwtBuilder
 		id="key_encrypt_missing_keyMgmtKey"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -529,6 +623,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_rsaOaep256_RS256"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -539,6 +634,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_bad_contentEncryptAlg"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -549,6 +645,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_missing_contentEncryptAlg"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -558,6 +655,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_missing_keyMgmtAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -567,6 +665,7 @@
                        
 	<jwtBuilder
 		id="key_encrypt_bad_keyMgmtAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -577,6 +676,7 @@
         
 	<jwtBuilder
 		id="key_encrypt_missing_trustStoreRef"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256"
@@ -586,6 +686,7 @@
           
 	<jwtBuilder
 		id="key_encrypt_missing_trustStoreRef_userServerWideAlias"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="rs256"
@@ -595,6 +696,7 @@
 
 	<jwtBuilder
 		id="key_encrypt_invalid_trustStoreRef"
+		issuer="testIssuer"
 		signatureAlgorithm="RS256"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="badTrustRef"

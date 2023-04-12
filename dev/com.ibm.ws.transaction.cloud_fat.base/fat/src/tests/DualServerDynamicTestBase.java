@@ -59,7 +59,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
     }
 
     public void setUp(LibertyServer server) throws Exception {

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,9 @@ Bundle-Description: Maps Jakarta Data to Jakarta NoSQL; version=${bVersion}
 
 WS-TraceGroup: data
 
-Import-Package:\
-  io.openliberty.data.internal,\
-  *
-
 Private-Package: \
   io.openliberty.data.internal.nosql.*,\
   io.openliberty.data.internal.nosql.resources.*
-
-Include-Resource:\
-  OSGI-INF=resources/OSGI-INF
-
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
--dsannotations: io.openliberty.data.internal.nosql.NoSQLDataProvider
 
 instrument.classesExcludes: io/openliberty/data/internal/nosql/resources/*.class
 

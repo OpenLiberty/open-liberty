@@ -1,6 +1,6 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,14 @@
 <server>
 
     <featureManager>
-        <feature>servlet-3.1</feature> <!-- required for EE9 repeat -->
+        <feature>servlet-3.1</feature> <!-- required for EE9/EE10 repeat -->
         <feature>ssl-1.0</feature>
         <feature>jsp-2.3</feature>
         <feature>appSecurity-2.0</feature>
         <feature>socialLogin-1.0</feature>
         <feature>jwt-1.0</feature>
         <feature>jaxrs-2.0</feature>
+        <feature>json-1.0</feature> <!-- required for EE9/EE10 repeat -->
     </featureManager>
 
 </server>

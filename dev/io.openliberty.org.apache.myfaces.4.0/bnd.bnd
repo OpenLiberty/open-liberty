@@ -48,11 +48,11 @@ Service-Component: \
 # Not used directly, so these packages needs to be dynamically imported
 DynamicImport-Package: \
   io.openliberty.faces40.internal.cdi, \
-  io.openliberty.faces40.internal.config.annotion,\
-  io.openliberty.faces40.internal.config.resource,\
+  io.openliberty.faces40.internal.config.annotion, \
+  io.openliberty.faces40.internal.config.resource, \
   io.openliberty.faces40.internal.ee, \
-  io.openliberty.faces40.internal.spi.impl, \
-  io.openliberty.faces40.internal.extprocessor
+  io.openliberty.faces40.internal.extprocessor, \
+  io.openliberty.faces40.internal.spi.impl
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is myfaces-builder-annotations-1.0.9.jar
@@ -73,17 +73,17 @@ Export-Package: \
   org.apache.myfaces.component;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.search;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.visit;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.annotation;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.config.impl.element;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.flash;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.context.servlet;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.flow.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.lifecycle.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.push.cdi;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
-  org.apache.myfaces.context.flash;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.spi.impl;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.util.lang;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view;thread-context=true;version=${Implementation-Version}, \
@@ -108,8 +108,8 @@ Export-Package: \
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: \
-  !io.openliberty.faces40.internal.ee, \
   !com.google.inject, \
+  !io.openliberty.faces40.internal.ee, \
   !jakarta.ejb, \
   !jakarta.persistence, \
   !org.apache.tomcat, \

@@ -44,7 +44,7 @@ class GrpcServletApplication {
     void addServiceName(String serviceName, String contextPath, Class<?> clazz) {
         serviceNames.add(serviceName);
         if (serviceName != null && contextPath != null && clazz != null) {
-            GrpcServletServices.addServletGrpcService(serviceName, contextPath, clazz);
+            GrpcServletServices.addServletGrpcService(serviceName, contextPath, clazz, j2eeAppName);
         }
     }
 
@@ -102,7 +102,7 @@ class GrpcServletApplication {
             Tr.entry(tc, "destroy", this);
         }
         for (String service : serviceNames) {
-            GrpcServletServices.removeServletGrpcService(service);
+            GrpcServletServices.removeServletGrpcService(service, j2eeAppName);
         }
         if (j2eeAppName != null) {
             GrpcServiceConfigImpl.removeApplication(j2eeAppName);

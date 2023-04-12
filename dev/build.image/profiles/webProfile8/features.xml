@@ -1,4 +1,6 @@
 <feature>webProfile-8.0</feature> 
+<feature>jdbc-4.2</feature>
+<feature>jdbc-4.3</feature>
 <feature>monitor-1.0</feature>
 <feature>ldapRegistry-3.0</feature>
 <feature>appSecurity-3.0</feature>

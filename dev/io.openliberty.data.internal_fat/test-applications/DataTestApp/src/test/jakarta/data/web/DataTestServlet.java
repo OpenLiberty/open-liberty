@@ -21,6 +21,7 @@ import static test.jakarta.data.web.Assertions.assertIterableEquals;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -51,7 +53,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
-import jakarta.data.Template;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -67,8 +69,11 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
 import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
 import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.TransactionRequiredException;
@@ -79,10 +84,18 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
+                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
+                      databaseName = "memory:testdb",
+                      properties = "createDatabase=create")
+@Resource(name = "java:module/jdbc/env/DerbyDataSourceRef", lookup = "java:app/jdbc/DerbyDataSource")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
+
+    @Inject
+    Houses houses;
 
     @Inject
     Packages packages;
@@ -98,7 +111,7 @@ public class DataTestServlet extends FATServlet {
     Primes primes;
 
     @Inject
-    ProductRepo products;
+    Products products;
 
     @Inject
     Reservations reservations;
@@ -107,13 +120,13 @@ public class DataTestServlet extends FATServlet {
     Shipments shipments;
 
     @Inject
-    Template template;
-
-    @Inject
     Things things;
 
     @Resource
     private UserTransaction tran;
+
+    @Inject
+    Vehicles vehicles;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -149,29 +162,29 @@ public class DataTestServlet extends FATServlet {
         // Remove data from previous test:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
         if (allProducts.length > 0)
-            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.pk).collect(Collectors.toSet()));
 
         // Add data for this test to use:
         Product prod1 = new Product();
-        prod1.id = "AF-006E905-LE";
+        prod1.pk = UUID.nameUUIDFromBytes("AF-006E905-LE".getBytes());
         prod1.name = "TestAggregateFunctions Lite Edition";
         prod1.price = 104.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "AF-006E005-RK";
+        prod2.pk = UUID.nameUUIDFromBytes("AF-006E005-RK".getBytes());
         prod2.name = "TestAggregateFunctions Repair Kit";
         prod2.price = 104.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "AF-006E905-CE";
+        prod3.pk = UUID.nameUUIDFromBytes("AF-006E905-CE".getBytes());
         prod3.name = "TestAggregateFunctions Classic Edition";
         prod3.price = 306.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "AF-006E205-CE";
+        prod4.pk = UUID.nameUUIDFromBytes("AF-006E205-CE".getBytes());
         prod4.name = "TestAggregateFunctions Classic Edition";
         prod4.description = "discontinued";
         prod4.price = 286.99f;
@@ -534,39 +547,54 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Delete multiple entries.
+     * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
     @Test
-    public void testDeleteMultiple() {
+    public void testDefaultRepositoryMethod() {
+        products.clear();
+
         Product prod1 = new Product();
-        prod1.id = "TDM-SE";
-        prod1.name = "TestDeleteMultiple Standard Edition";
+        prod1.pk = UUID.nameUUIDFromBytes("TDM-SE".getBytes());
+        prod1.name = "TestDefaultRepositoryMethod Standard Edition";
         prod1.price = 115.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "TDM-AE";
-        prod2.name = "TestDeleteMultiple Advanced Edition";
+        prod2.pk = UUID.nameUUIDFromBytes("TDM-AE".getBytes());
+        prod2.name = "TestDefaultRepositoryMethod Advanced Edition";
         prod2.price = 197.99f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "TDM-EE";
-        prod3.name = "TestDeleteMultiple Expanded Edition";
+        prod3.pk = UUID.nameUUIDFromBytes("TDM-EE".getBytes());
+        prod3.name = "TestDefaultRepositoryMethod Expanded Edition";
         prod3.price = 153.99f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "TDM-NFE";
-        prod4.name = "TestDeleteMultiple Nearly Free Edition";
+        prod4.pk = UUID.nameUUIDFromBytes("TDM-NFE".getBytes());
+        prod4.name = "TestDefaultRepositoryMethod Nearly Free Edition";
         prod4.price = 1.99f;
         products.save(prod4);
 
-        assertEquals(2, products.discontinueProducts(Set.of("TDM-AE", "TDM-NFE", "TDM-NOT-FOUND")));
+        assertEquals(2, products.discontinueProducts(Set.of(prod2.pk, prod4.pk, UUID.nameUUIDFromBytes("TDM-NOT-FOUND".getBytes()))));
 
         // expect that 2 remain
-        assertNotNull(products.findItem("TDM-SE"));
-        assertNotNull(products.findItem("TDM-EE"));
+        assertNotNull(products.findItem(prod1.pk));
+        assertNotNull(products.findItem(prod3.pk));
+
+        // In the future it will only be possible to run this on Java 21+
+        // and then the following condition can be removed so that this part of the test always runs:
+        if (Runtime.version().feature() >= 17) {
+            // Use custom method:
+            Product removed = products.remove(prod1.pk);
+            assertEquals("TestDefaultRepositoryMethod Standard Edition", removed.name);
+
+            assertEquals(false, products.findById(prod1.pk).isPresent());
+            assertEquals(true, products.findById(prod3.pk).isPresent());
+        }
+
+        products.clear();
     }
 
     /**
@@ -575,37 +603,37 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testDistinctAttribute() {
         Product prod1 = new Product();
-        prod1.id = "TDA-T-L1";
+        prod1.pk = UUID.nameUUIDFromBytes("TDA-T-L1".getBytes());
         prod1.name = "TestDistinctAttribute T-Shirt Size Large";
         prod1.price = 7.99f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "TDA-T-M1";
+        prod2.pk = UUID.nameUUIDFromBytes("TDA-T-M1".getBytes());
         prod1.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod2.price = 7.89f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "TDA-T-S1";
+        prod3.pk = UUID.nameUUIDFromBytes("TDA-T-S1".getBytes());
         prod3.name = "TestDistinctAttribute T-Shirt Size Small";
         prod3.price = 7.79f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "TDA-T-M2";
+        prod4.pk = UUID.nameUUIDFromBytes("TDA-T-M2".getBytes());
         prod4.name = "TestDistinctAttribute T-Shirt Size Medium";
         prod4.price = 7.49f;
         products.save(prod4);
 
         Product prod5 = new Product();
-        prod5.id = "TDA-T-XS1";
+        prod5.pk = UUID.nameUUIDFromBytes("TDA-T-XS1".getBytes());
         prod5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
         prod5.price = 7.59f;
         products.save(prod5);
 
         Product prod6 = new Product();
-        prod6.id = "TDA-T-L2";
+        prod6.pk = UUID.nameUUIDFromBytes("TDA-T-L2".getBytes());
         prod6.name = "TestDistinctAttribute T-Shirt Size Large";
         prod6.price = 7.49f;
         products.save(prod6);
@@ -618,6 +646,166 @@ public class DataTestServlet extends FATServlet {
                                      "TestDistinctAttribute T-Shirt Size Medium",
                                      "TestDistinctAttribute T-Shirt Size Small"),
                              uniqueProductNames);
+    }
+
+    /**
+     * Unannotated entity with an attribute that is an embeddable type.
+     */
+    @Test
+    public void testEmbeddable() {
+        houses.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1800;
+        h1.garage = new Garage();
+        h1.garage.area = 200;
+        h1.garage.door = new GarageDoor();
+        h1.garage.door.setHeight(8);
+        h1.garage.door.setWidth(10);
+        h1.garage.type = Garage.Type.Attached;
+        h1.kitchen = new Kitchen();
+        h1.kitchen.length = 15;
+        h1.kitchen.width = 12;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "TestEmbeddable-104-2288-60";
+        h1.purchasePrice = 162000;
+        h1.sold = Year.of(2018);
+        houses.save(h1);
+
+        House h2 = new House();
+        h2.area = 2000;
+        h2.garage = new Garage();
+        h2.garage.area = 220;
+        h2.garage.door = new GarageDoor();
+        h2.garage.door.setHeight(8);
+        h2.garage.door.setWidth(12);
+        h2.garage.type = Garage.Type.Detached;
+        h2.kitchen = new Kitchen();
+        h2.kitchen.length = 16;
+        h2.kitchen.width = 13;
+        h2.lotSize = 0.18f;
+        h2.numBedrooms = 4;
+        h2.parcelId = "TestEmbeddable-204-2992-20";
+        h2.purchasePrice = 188000;
+        h2.sold = Year.of(2020);
+        houses.save(h2);
+
+        House h3 = new House();
+        h3.area = 1700;
+        h3.garage = new Garage();
+        h3.garage.area = 180;
+        h3.garage.door = new GarageDoor();
+        h3.garage.door.setHeight(8);
+        h3.garage.door.setWidth(9);
+        h3.garage.type = Garage.Type.TuckUnder;
+        h3.kitchen = new Kitchen();
+        h3.kitchen.length = 14;
+        h3.kitchen.width = 12;
+        h3.lotSize = 0.17f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "TestEmbeddable-304-3655-30";
+        h3.purchasePrice = 153000;
+        h3.sold = Year.of(2018);
+        houses.save(h3);
+
+        House h4 = new House();
+        h4.area = 2400;
+        h4.garage = new Garage();
+        h4.garage.area = 220;
+        h4.garage.door = new GarageDoor();
+        h4.garage.door.setHeight(9);
+        h4.garage.door.setWidth(13);
+        h4.garage.type = Garage.Type.Detached;
+        h4.kitchen = new Kitchen();
+        h4.kitchen.length = 16;
+        h4.kitchen.width = 14;
+        h4.lotSize = 0.24f;
+        h4.numBedrooms = 5;
+        h4.parcelId = "TestEmbeddable-404-4418-40";
+        h4.purchasePrice = 204000;
+        h4.sold = Year.of(2022);
+        houses.save(h4);
+
+        House h = houses.findById("TestEmbeddable-104-2288-60");
+
+        assertNotNull(h.kitchen);
+        assertEquals(15, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+
+        assertNotNull(h.garage);
+        assertEquals(200, h.garage.area);
+        assertEquals(Garage.Type.Attached, h.garage.type);
+
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+
+        // Query and order by embeddable attributes
+
+        List<House> found = houses.findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type.Detached);
+        assertEquals(found.toString(), 2, found.size());
+
+        h = found.get(0);
+        assertEquals("TestEmbeddable-404-4418-40", h.parcelId);
+        assertEquals(2400, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(9, h.garage.door.getHeight());
+        assertEquals(13, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(14, h.kitchen.width);
+        assertEquals(0.24f, h.lotSize, 0.001f);
+        assertEquals(5, h.numBedrooms);
+        assertEquals(204000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2022), h.sold);
+
+        h = found.get(1);
+        assertEquals("TestEmbeddable-204-2992-20", h.parcelId);
+        assertEquals(2000, h.area);
+        assertNotNull(h.garage);
+        assertEquals(220, h.garage.area);
+        assertEquals(Garage.Type.Detached, h.garage.type);
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(12, h.garage.door.getWidth());
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(13, h.kitchen.width);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(188000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2020), h.sold);
+
+        assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Update embeddable attributes
+
+        assertEquals(true, houses.updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30", null, 180, 2, 4));
+
+        h = houses.findById("TestEmbeddable-304-3655-30");
+        assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
+        assertEquals(1880, h.area);
+        // Null embeddables aren't required by JPA, but EclipseLink claims to support it as the default behavior.
+        // See https://wiki.eclipse.org/EclipseLink/UserGuide/JPA/Basic_JPA_Development/Entities/Embeddable#Nullable_embedded_values
+        // But it looks like EclipseLink has a bug here in that it only nulls out 1 of the fields of Garage, not all,
+        // JPQL: UPDATE House o SET o.garage=?2, o.area=o.area+?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms=?5 WHERE (o.parcelId=?1)
+        // SQL:  UPDATE WLPHouse SET NUMBEDROOMS = 4, AREA = (AREA + 180), GARAGEAREA = NULL, KITCHENLENGTH = (KITCHENLENGTH + 2) WHERE (PARCELID = 'TestEmbeddable-304-3655-30')
+        // This causes the following assertion to fail:
+        // assertEquals(null, h.garage);
+        // TODO re-enable the above if fixed
+        assertNotNull(h.kitchen);
+        assertEquals(16, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+        assertEquals(0.17f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals(153000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2018), h.sold);
+
+        assertEquals(2, houses.deleteAll());
     }
 
     /**
@@ -691,23 +879,25 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindCreateFind() {
+        UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
+
         try {
-            Product prod = products.findItem("OL306-233F");
+            Product prod = products.findItem(id);
             fail("Should not find " + prod);
         } catch (EmptyResultException x) {
             // expected
         }
 
         Product prod = new Product();
-        prod.id = "OL306-233F";
+        prod.pk = id;
         prod.name = "Something";
         prod.price = 3.99f;
         prod.description = "An item for sale.";
 
         products.save(prod);
 
-        Product p = products.findItem("OL306-233F");
-        assertEquals(prod.id, p.id);
+        Product p = products.findItem(id);
+        assertEquals(prod.pk, p.pk);
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
@@ -740,34 +930,34 @@ public class DataTestServlet extends FATServlet {
         // Remove data from previous tests:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
         if (allProducts.length > 0)
-            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.id).collect(Collectors.toSet()));
+            products.discontinueProducts(Arrays.stream(allProducts).map(p -> p.pk).collect(Collectors.toSet()));
 
         Product p1 = new Product();
-        p1.id = "TFL-1";
+        p1.pk = UUID.nameUUIDFromBytes("TFL-1".getBytes());
         p1.name = "TestFindLike_1";
         p1.price = 1.00f;
         products.save(p1);
 
         Product p2 = new Product();
-        p2.id = "TFL-2";
+        p2.pk = UUID.nameUUIDFromBytes("TFL-2".getBytes());
         p2.name = "2% TestFindLike";
         p2.price = 2.00f;
         products.save(p2);
 
         Product p10 = new Product();
-        p10.id = "TFL-10";
+        p10.pk = UUID.nameUUIDFromBytes("TFL-10".getBytes());
         p10.name = "TestFindLike 1";
         p10.price = 10.00f;
         products.save(p10);
 
         Product p100 = new Product();
-        p100.id = "TFL-100";
+        p100.pk = UUID.nameUUIDFromBytes("TFL-100".getBytes());
         p100.name = "TestFindLike  1";
         p100.price = 100.00f;
         products.save(p100);
 
         Product p200 = new Product();
-        p200.id = "TFL-200";
+        p200.pk = UUID.nameUUIDFromBytes("TFL-200".getBytes());
         p200.name = "200 TestFindLike";
         p200.price = 200.00f;
         products.save(p200);
@@ -1828,6 +2018,85 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Intermix two different types of entities in the same transaction.
+     */
+    @Test
+    public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
+                    IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
+        houses.deleteAll();
+        vehicles.deleteAll();
+
+        House h1 = new House();
+        h1.area = 1900;
+        h1.lotSize = 0.19f;
+        h1.numBedrooms = 4;
+        h1.parcelId = "111-222-333";
+        h1.purchasePrice = 219000.00f;
+        h1.sold = Year.of(2019);
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Nissan";
+        v1.model = "Altima";
+        v1.numSeats = 5;
+        v1.price = 24000f;
+        v1.vinId = "TME09876543210001";
+
+        House h;
+        Vehicle v;
+        tran.begin();
+        try {
+            h = houses.save(h1).get(0);
+            v = vehicles.save(List.of(v1)).iterator().next();
+        } finally {
+            tran.commit();
+        }
+
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and roll back
+        tran.begin();
+        try {
+            h1.purchasePrice = 222000f;
+            h1.sold = Year.of(2020);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 200f));
+        } finally {
+            tran.rollback();
+        }
+
+        // Ensure all updates were rolled back
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(219000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2019), h.sold);
+        assertEquals(24000f, v.price, 0.001f);
+
+        // Make updates and commit
+        tran.begin();
+        try {
+            h1.purchasePrice = 241000f;
+            h1.sold = Year.of(2021);
+            houses.save(h1);
+            assertEquals(true, vehicles.updateByIdAddPrice("TME09876543210001", 2000f));
+        } finally {
+            tran.commit();
+        }
+
+        // Ensure all updates were committed
+        h = houses.findById("111-222-333");
+        v = vehicles.findById("TME09876543210001").get();
+
+        assertEquals(241000f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2021), h.sold);
+        assertEquals(26000f, v.price, 0.001f);
+
+        houses.deleteAll();
+        vehicles.deleteAll();
+    }
+
+    /**
      * Various return types for a repository query that performs multiple aggregate functions.
      */
     @Test
@@ -2321,6 +2590,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
+        // TODO This fails on SQL Server, with: 10030009L, 10030004L, 10030006L, 10030008L, considering 14:00-15:00 CDT a match for 9:00-10:00 CDT. Why is it off by 5 hours?
         assertIterableEquals(List.of(10030001L, 10030002L, 10030004L, 10030006L, 10030008L),
                              reservations.findByMeetingIDOrLocationLikeAndStartAndStopOrHost(10030006,
                                                                                              "050-2 %",
@@ -2838,6 +3108,165 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Insert, update, find, and delete entities.
+     */
+    @Test
+    public void testSaveAndUpdateMultiple() {
+        // find none
+        houses.deleteAll();
+        assertEquals(false, houses.existsById("001-203-401"));
+
+        // insert
+        House h1 = new House();
+        h1.area = 1500;
+        h1.lotSize = 0.18f;
+        h1.numBedrooms = 3;
+        h1.parcelId = "001-203-401";
+        h1.purchasePrice = 125000.00f;
+        h1.sold = Year.of(2015);
+
+        List<House> saved = houses.save(h1);
+
+        assertEquals(saved.toString(), 1, saved.size());
+        assertEquals("001-203-401", saved.get(0).parcelId);
+
+        // update
+        h1.numBedrooms = 4;
+        h1.purchasePrice = 136000.00f;
+        h1.sold = Year.of(2016);
+
+        saved = houses.save(h1);
+        assertEquals(saved.toString(), 1, saved.size());
+        House h = saved.get(0);
+
+        assertEquals(1500, h.area);
+        assertEquals(0.18f, h.lotSize, 0.001f);
+        assertEquals(4, h.numBedrooms);
+        assertEquals("001-203-401", h.parcelId);
+        assertEquals(136000.00f, h.purchasePrice, 0.001f);
+        assertEquals(Year.of(2016), h.sold);
+
+        // insert multiple
+        House h2 = new House();
+        h2.area = 1200;
+        h2.lotSize = 0.21f;
+        h2.numBedrooms = 2;
+        h2.parcelId = "001-203-402";
+        h2.purchasePrice = 112000.00f;
+        h2.sold = Year.of(2012);
+
+        House h3 = new House();
+        h3.area = 1300;
+        h3.lotSize = 0.13f;
+        h3.numBedrooms = 3;
+        h3.parcelId = "001-203-403";
+        h3.purchasePrice = 113000.00f;
+        h3.sold = Year.of(2013);
+
+        Iterable<House> inserted = houses.save(h2, h3);
+
+        Iterator<House> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals(h2.parcelId, i.next().parcelId);
+        assertEquals(true, i.hasNext());
+        assertEquals(h3.parcelId, i.next().parcelId);
+        assertEquals(false, i.hasNext());
+
+        // find
+        h = houses.findById(h1.parcelId);
+        assertEquals(h1.area, h.area);
+        assertEquals(h1.lotSize, h.lotSize, 0.001f);
+        assertEquals(h1.numBedrooms, h.numBedrooms);
+        assertEquals(h1.parcelId, h.parcelId);
+        assertEquals(h1.purchasePrice, h.purchasePrice, 0.001f);
+        assertEquals(h1.sold, h.sold);
+
+        // update multiple
+        h2.purchasePrice = 152000.00f;
+        h2.sold = Year.of(2022);
+
+        h1.purchasePrice = 191000.00f;
+        h1.sold = Year.of(2019);
+
+        Iterable<House> updated = houses.save(h1, h2);
+
+        Iterator<House> u = updated.iterator();
+        assertEquals(true, u.hasNext());
+        assertEquals(191000.00f, u.next().purchasePrice, 0.001f);
+        assertEquals(true, u.hasNext());
+        assertEquals(Year.of(2022), u.next().sold);
+        assertEquals(false, u.hasNext());
+
+        // delete
+        assertEquals(1L, houses.deleteById(h1.parcelId));
+
+        // find none
+        assertEquals(false, houses.existsById(h1.parcelId));
+
+        // delete nothing
+        assertEquals(0L, houses.deleteById(h1.parcelId));
+
+        assertEquals(2L, houses.deleteAll());
+    }
+
+    /**
+     * Insert, update, find, and delete an unannotated entity.
+     */
+    @Test
+    public void testSaveMultipleAndUpdate() {
+        vehicles.deleteAll();
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Honda";
+        v1.model = "Accord";
+        v1.numSeats = 5;
+        v1.price = 26000f;
+        v1.vinId = "TE201234567890001";
+
+        Vehicle v2 = new Vehicle();
+        v2.make = "Ford";
+        v2.model = "F-150";
+        v2.numSeats = 3;
+        v2.price = 32000f;
+        v2.vinId = "TE201234567890002";
+
+        Vehicle v3 = new Vehicle();
+        v3.make = "Toyota";
+        v3.model = "Camry";
+        v3.numSeats = 5;
+        v3.price = 25000f;
+        v3.vinId = "TE201234567890003";
+
+        // insert multiple
+        Iterable<Vehicle> inserted = vehicles.save(List.of(v1, v2, v3));
+        Iterator<Vehicle> i = inserted.iterator();
+        assertEquals(true, i.hasNext());
+        assertEquals("Honda", i.next().make);
+        assertEquals(true, i.hasNext());
+        assertEquals(3, i.next().numSeats);
+        assertEquals(true, i.hasNext());
+        assertEquals(25000f, i.next().price, 0.001f);
+        assertEquals(false, i.hasNext());
+
+        // delete
+        assertEquals(true, vehicles.deleteById(v1.vinId));
+
+        // find none
+        Optional<Vehicle> found = vehicles.findById(v1.vinId);
+        assertEquals(false, found.isPresent());
+
+        // update
+        assertEquals(true, vehicles.updateByIdAddPrice("TE201234567890003", 500.0f));
+
+        // find
+        found = vehicles.findById("TE201234567890003");
+        assertEquals(true, found.isPresent());
+        assertEquals(25500f, found.get().price, 0.001f);
+
+        vehicles.deleteAll();
+    }
+
+    /**
      * Experiment with making a repository method return a record-like type.
      */
     @Test
@@ -3310,46 +3739,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Entity classes that are accessed via repository methods can also be accessed via template.
-     */
-    @Test
-    public void testTemplateUsesRepositoryEntities() {
-        // insert by repository
-        Product prod1 = new Product();
-        prod1.id = "TTU-75-00-6144RE";
-        prod1.name = "testTemplateUsesRepositoryEntities Item";
-        prod1.price = 10.99f;
-        products.save(prod1);
-
-        // find by template
-        Optional<Product> found = template.find(Product.class, prod1.id);
-        assertEquals(true, found.isPresent());
-        Product p = found.get();
-        assertEquals("TTU-75-00-6144RE", p.id);
-        assertEquals("testTemplateUsesRepositoryEntities Item", p.name);
-        assertEquals(10.99f, p.price, 0.001f);
-
-        // insert by template
-        Shipment s1 = new Shipment();
-        s1.setId(1010101L);
-        s1.setDestination("2800 37th St NW, Rochester, MN 55901");
-        s1.setLocation("1315 6th St NW, Rochester, MN 55901");
-        s1.setOrderedAt(OffsetDateTime.now().minusHours(1));
-        s1.setShippedAt(OffsetDateTime.now().minusMinutes(5));
-        s1.setStatus("IN_TRANSIT");
-        s1 = template.insert(s1);
-        assertNotNull(s1.getId());
-
-        // find by repository
-        Shipment s = shipments.find(1010101L);
-        assertEquals(1010101L, s.getId());
-        assertEquals("IN_TRANSIT", s.getStatus());
-        assertEquals("1315 6th St NW, Rochester, MN 55901", s.getLocation());
-
-        shipments.removeEverything();
-    }
-
-    /**
      * Obtain total counts of number of elements and pages.
      */
     @Test
@@ -3664,37 +4053,37 @@ public class DataTestServlet extends FATServlet {
         products.clear();
 
         Product prod1 = new Product();
-        prod1.id = "UPD-ANNO-1";
+        prod1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-1".getBytes());
         prod1.name = "Fairly Priced TestUpdateAnnotation Item";
         prod1.price = 5.00f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "UPD-ANNO-2";
+        prod2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-2".getBytes());
         prod2.name = "Highly Priced TestUpdateAnnotation Item";
         prod2.price = 100.00f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "UPD-ANNO-3";
+        prod3.pk = UUID.nameUUIDFromBytes("UPD-ANNO-3".getBytes());
         prod3.name = "Middle Priced TestUpdateAnnotation Item";
         prod3.price = 40.00f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "UPD-ANNO-4";
+        prod4.pk = UUID.nameUUIDFromBytes("UPD-ANNO-4".getBytes());
         prod4.name = "Inexpensive TestUpdateAnnotation Item";
         prod4.price = 2.00f;
         products.save(prod4);
 
         Product prod5 = new Product();
-        prod5.id = "UPD-ANNO-5";
+        prod5.pk = UUID.nameUUIDFromBytes("UPD-ANNO-5".getBytes());
         prod5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
         prod5.price = 500.00f;
         products.save(prod5);
 
         Product prod6 = new Product();
-        prod6.id = "UPD-ANNO-6";
+        prod6.pk = UUID.nameUUIDFromBytes("UPD-ANNO-6".getBytes());
         prod6.name = "Lowest Priced TestUpdateAnnotation Item";
         prod6.price = 1.00f;
         products.save(prod6);
@@ -3706,7 +4095,7 @@ public class DataTestServlet extends FATServlet {
 
         Product[] found = products.findByVersionGreaterThanEqualOrderByPrice(2);
 
-        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
                      5, found.length);
 
         assertEquals(1.07f, found[0].price, 0.001f);
@@ -3715,14 +4104,14 @@ public class DataTestServlet extends FATServlet {
         assertEquals(107.00f, found[3].price, 0.001f);
         assertEquals(535.00f, found[4].price, 0.001f);
 
-        Product item = products.findItem("UPD-ANNO-4");
+        Product item = products.findItem(prod4.pk);
         assertEquals(2.00f, item.price, 0.001f);
 
-        products.undoPriceIncrease(Set.of("UPD-ANNO-5", "UPD-ANNO-2", "UPD-ANNO-1"), 1.07f);
+        products.undoPriceIncrease(Set.of(prod5.pk, prod2.pk, prod1.pk), 1.07f);
 
         found = products.findByVersionGreaterThanEqualOrderByPrice(1);
 
-        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
                      6, found.length);
 
         assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
@@ -3764,25 +4153,25 @@ public class DataTestServlet extends FATServlet {
         assertEquals(0, products.putOnSale("TestUpdateMultiple-match", .10f));
 
         Product prod1 = new Product();
-        prod1.id = "800-2024-S";
+        prod1.pk = UUID.nameUUIDFromBytes("800-2024-S".getBytes());
         prod1.name = "Small size TestUpdateMultiple-matched item";
         prod1.price = 10.00f;
         products.save(prod1);
 
         Product prod2 = new Product();
-        prod2.id = "800-3024-M";
+        prod2.pk = UUID.nameUUIDFromBytes("800-3024-M".getBytes());
         prod2.name = "Medium size TestUpdateMultiple-matched item";
         prod2.price = 15.00f;
         products.save(prod2);
 
         Product prod3 = new Product();
-        prod3.id = "C6000-814BH0003Y";
+        prod3.pk = UUID.nameUUIDFromBytes("C6000-814BH0003Y".getBytes());
         prod3.name = "Medium size TestUpdateMultiple non-matching item";
         prod3.price = 18.00f;
         products.save(prod3);
 
         Product prod4 = new Product();
-        prod4.id = "800-4024-L";
+        prod4.pk = UUID.nameUUIDFromBytes("800-4024-L".getBytes());
         prod4.name = "Large size TestUpdateMultiple-matched item";
         prod4.price = 20.00f;
         products.save(prod4);
@@ -3792,19 +4181,19 @@ public class DataTestServlet extends FATServlet {
         // JPA knows to update the version even through the JPQL didn't explicitly tell it to
         assertEquals(3, products.putOnSale("TestUpdateMultiple-match", .20f));
 
-        Product p1 = products.findItem(prod1.id);
+        Product p1 = products.findItem(prod1.pk);
         assertEquals(8.00f, p1.price, 0.001f);
         assertEquals(p[0].version + 1, p1.version); // updated
 
-        Product p2 = products.findItem(prod2.id);
+        Product p2 = products.findItem(prod2.pk);
         assertEquals(12.00f, p2.price, 0.001f);
         assertEquals(p[1].version + 1, p2.version); // updated
 
-        Product p3 = products.findItem(prod3.id);
+        Product p3 = products.findItem(prod3.pk);
         assertEquals(18.00f, p3.price, 0.001f);
         assertEquals(p[2].version, p3.version); // not updated, version remains the same
 
-        Product p4 = products.findItem(prod4.id);
+        Product p4 = products.findItem(prod4.pk);
         assertEquals(16.00f, p4.price, 0.001f);
         assertEquals(p[3].version + 1, p4.version); // updated
     }
@@ -3815,19 +4204,19 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
-        prod1.id = "Q6008-U8-21001";
+        prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
         prod1.name = "testVersionedUpdateViaQuery Product 1";
         prod1.price = 82.99f;
         products.save(prod1);
 
-        Product p = products.findItem(prod1.id);
+        Product p = products.findItem(prod1.pk);
         long initialVersion = p.version;
 
-        assertEquals(true, products.setPrice(prod1.id, initialVersion, 84.99f));
-        assertEquals(false, products.setPrice(prod1.id, initialVersion, 83.99f));
-        assertEquals(true, products.setPrice(prod1.id, initialVersion + 1, 88.99f));
+        assertEquals(true, products.setPrice(prod1.pk, initialVersion, 84.99f));
+        assertEquals(false, products.setPrice(prod1.pk, initialVersion, 83.99f));
+        assertEquals(true, products.setPrice(prod1.pk, initialVersion + 1, 88.99f));
 
-        p = products.findItem(prod1.id);
+        p = products.findItem(prod1.pk);
         assertEquals(88.99f, p.price, 0.001f);
         assertEquals(initialVersion + 2, p.version);
     }
@@ -3838,13 +4227,13 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();
-        prod1.id = "3400R-6120-1";
+        prod1.pk = UUID.nameUUIDFromBytes("3400R-6120-1".getBytes());
         prod1.name = "TestVersionedUpdateViaRepository Product 1";
         prod1.price = 139.99f;
         products.save(prod1);
 
-        Product prod1a = products.findItem(prod1.id);
-        Product prod1b = products.findItem(prod1.id);
+        Product prod1a = products.findItem(prod1.pk);
+        Product prod1b = products.findItem(prod1.pk);
 
         long version;
         assertEquals(version = prod1a.version, prod1b.version);
@@ -3864,46 +4253,8 @@ public class DataTestServlet extends FATServlet {
                 throw x;
         }
 
-        Product p = products.findItem(prod1.id);
+        Product p = products.findItem(prod1.pk);
         assertEquals(149.99f, p.price, 0.001f);
-        assertEquals(version + 1, p.version);
-    }
-
-    /**
-     * Use template to update based on version.
-     */
-    @Test
-    public void testVersionedUpdateViaTemplate() {
-        Product prod1 = new Product();
-        prod1.id = "G1600-T-90251";
-        prod1.name = "TestVersionedUpdateViaTemplate Product 1";
-        prod1.price = 210.00f;
-        prod1 = template.insert(prod1);
-
-        long version = prod1.version;
-
-        Product prod1a = template.find(Product.class, prod1.id).orElseThrow();
-        Product prod1b = template.find(Product.class, prod1.id).orElseThrow();
-
-        prod1a.price += 25.00f;
-        prod1b.price += 20.00f;
-
-        Product p1b = template.update(prod1b);
-
-        try {
-            Product p1a = template.update(prod1a);
-            fail("Able to update using old version " + p1a);
-        } catch (DataException x) {
-            Throwable cause = x.getCause();
-            if (cause == null || !"jakarta.persistence.OptimisticLockException".equals(cause.getClass().getName()))
-                throw x;
-        }
-
-        assertEquals(230.00f, p1b.price, 0.001f);
-        assertEquals(version + 1, p1b.version);
-
-        Product p = products.findItem(prod1.id);
-        assertEquals(230.00f, p.price, 0.001f);
         assertEquals(version + 1, p.version);
     }
 }

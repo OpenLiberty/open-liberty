@@ -41,9 +41,9 @@ import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ShortTokenLifetimePrep;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
-import oidc.client.base.utils.ShortTokenLifetimePrep;
 
 /**
  * Tests @OpenIdAuthenticationMechanismDefinition tokenMinValidity and tokenMinValidityExpression
@@ -108,7 +108,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
         ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
-        s.shortTokenLifetimePrep(rpHttpsBase, "TokenMinValidity5s/TokenMinValidity5sServlet");
+        s.shortTokenLifetimePrep(opServer, rpHttpsBase, "TokenMinValidity5s/TokenMinValidity5sServlet");
 
     }
 

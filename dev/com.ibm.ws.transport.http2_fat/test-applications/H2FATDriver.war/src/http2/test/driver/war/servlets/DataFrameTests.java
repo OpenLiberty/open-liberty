@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -295,6 +295,132 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame5);
         h2Client.sendFrame(dataFrame7);
+
+        // now send EOS for streams 3 and 7
+        FrameData eosFrame = new FrameData(3, "".getBytes(), 0, true, true, false);
+        h2Client.sendFrame(eosFrame);
+        eosFrame = new FrameData(7, "".getBytes(), 0, true, true, false);
+        h2Client.sendFrame(eosFrame);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its stream read window
+     * This test uses a server.xml with stream initial window size set to 1000 and connection set to 65537
+     *
+     * Window update frames aren't sent until the window is less than 1/2 the max window size. The stream max window size is set
+     * to 1000 and the connection is set to 32768.
+     *
+     * server.xml has stream window set to 1000, connection window set to 35567, and limit window update frames set to true
+     *
+     */
+    public void testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testSimpleWindowUpdatesReceived";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // expect window updates on streams 0 (connection) and 3 (stream)
+        FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 502, false);
+        // This one should be sent just after the preface is processed to add 2 to the existing connection window size
+        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 2, false);
+        h2Client.addExpectedFrame(streamUpdateFrame);
+        h2Client.addExpectedFrame(connectionUpdateFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // generate 251 bytes for data frame
+        byte[] data = new byte[250];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = 0x01;
+        }
+        FrameData dataFrame = new FrameData(3, data, 0, false, true, false);
+
+        //Send headers followed by 251 bytes, and then another 251 bytes.
+        // We should only get one window_udpate frame back, and it should have a value of 502.
+        h2Client.sendFrame(frameHeadersToSend);
+        h2Client.sendFrame(dataFrame);
+        h2Client.sendFrame(dataFrame);
+
+        // now send EOS
+        dataFrame = new FrameData(3, "".getBytes(), 0, true, true, false);
+        h2Client.sendFrame(dataFrame);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a DATA frames on streams 3 and 7 with no EOS, and expect WINDOW_UPDATE frames from the server which restore the
+     * stream read windows. Additionally, send DATA on stream 5 with an EOS set - so no WINDOW_UPDATE is expected.
+     *
+     * server.xml has stream window set to 1000, connection window set to 35567, and limit window update frames set to true
+     *
+     */
+    public void testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testMultiStreamWindowUpdatesReceived";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // expect window updates on streams 0 (connection), 3, and 7
+        FrameWindowUpdate stream3UpdateFrame = new FrameWindowUpdate(3, 1000, false);
+        FrameWindowUpdate stream7UpdateFrame = new FrameWindowUpdate(7, 1000, false);
+        h2Client.addExpectedFrame(stream3UpdateFrame);
+        h2Client.addExpectedFrame(stream7UpdateFrame);
+        // connection window size is large, so no window_udpates are expected on stream 0
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+
+        FrameHeadersClient frameHeadersToSend3 = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend3.setHeaderEntries(firstHeadersToSend);
+
+        FrameHeadersClient frameHeadersToSend5 = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend5.setHeaderEntries(firstHeadersToSend);
+
+        FrameHeadersClient frameHeadersToSend7 = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend7.setHeaderEntries(firstHeadersToSend);
+
+        // generate 1000 bytes for data frame
+        byte[] data = new byte[999];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = 0x01;
+        }
+        FrameData dataFrame3 = new FrameData(3, data, 0, false, true, false);
+        // EOS set, so we do NOT expect a window update response since the stream is closing
+        FrameData dataFrame5 = new FrameData(5, data, 0, true, true, false);
+        FrameData dataFrame7 = new FrameData(7, data, 0, false, true, false);
+
+        // send over all the headers and data
+        h2Client.sendFrame(frameHeadersToSend3);
+        h2Client.sendFrame(frameHeadersToSend5);
+        h2Client.sendFrame(frameHeadersToSend7);
+        h2Client.sendFrame(dataFrame3);
+        h2Client.sendFrame(dataFrame5);
+        h2Client.sendFrame(dataFrame7);
+
+        // Sleep just a bit to wait for server to send window update frames before we send eos on streams 3 and 7
+        try {
+            Thread.sleep(1000);
+        } catch (Exception x) {
+        }
 
         // now send EOS for streams 3 and 7
         FrameData eosFrame = new FrameData(3, "".getBytes(), 0, true, true, false);

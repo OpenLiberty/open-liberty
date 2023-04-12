@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ autoFVT.doLast {
         'com.ibm.ws.wssecurity_fat.endsuptokens',
         'com.ibm.ws.wssecurity_fat.x509mig',
         'com.ibm.ws.wssecurity_fat.x509migsym',
+        'com.ibm.ws.wssecurity_fat.x509migsym.ee7lite',
         'com.ibm.ws.wssecurity_fat.sha2sig'
                 
   ]
@@ -59,7 +60,8 @@ autoFVT.doLast {
   servers = [
         'com.ibm.ws.wssecurity_fat.endsuptokens',
         'com.ibm.ws.wssecurity_fat.x509mig',
-        'com.ibm.ws.wssecurity_fat.x509migsym'
+        'com.ibm.ws.wssecurity_fat.x509migsym',
+        'com.ibm.ws.wssecurity_fat.x509migsym.ee7lite'
   ]
 
   servers.each { server ->
@@ -149,7 +151,8 @@ autoFVT.doLast {
   servers = [
     'com.ibm.ws.wssecurity_fat.endsuptokens',
     'com.ibm.ws.wssecurity_fat.x509mig',
-    'com.ibm.ws.wssecurity_fat.x509migsym'
+    'com.ibm.ws.wssecurity_fat.x509migsym',
+    'com.ibm.ws.wssecurity_fat.x509migsym.ee7lite'
   ]
 
   servers.each { server ->
@@ -165,7 +168,8 @@ autoFVT.doLast {
 
   servers = [
     'com.ibm.ws.wssecurity_fat.x509mig',
-    'com.ibm.ws.wssecurity_fat.x509migsym'
+    'com.ibm.ws.wssecurity_fat.x509migsym',
+    'com.ibm.ws.wssecurity_fat.x509migsym.ee7lite'
   ]
 
   servers.each { server ->

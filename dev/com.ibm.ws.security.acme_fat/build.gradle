@@ -65,6 +65,7 @@ task runPebble(type: JavaExec) {
     
     /*
      * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.
+     * FIXME - this can be fixed by using a numbered version for containers instead of *latest*
      */
     systemProperty "fat.test.use.remote.docker", "false"
 }
@@ -81,6 +82,7 @@ task runBoulder(type: JavaExec) {
     
     /*
      * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.
+     * FIXME - this can be fixed by using a numbered version for containers instead of *latest*
      */
     systemProperty "fat.test.use.remote.docker", "false"
 }

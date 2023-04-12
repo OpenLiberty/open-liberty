@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -112,7 +112,7 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigAltKeyStoreTests_sigAlg_RS256_badGlobalKeyStore_goodKeyStoreRef_noKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
@@ -139,7 +139,7 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigAltKeyStoreTests_sigAlg_RS256_badGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_goodKeyAlias";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 

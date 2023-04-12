@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.openidconnect.backchannellogout;
 
@@ -20,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -55,13 +50,11 @@ public class LogoutTokenBuilder {
 
     public static final String EVENTS_MEMBER_NAME = "http://schemas.openid.net/event/backchannel-logout";
 
-    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
     private final OAuth20Provider oauth20provider;
     private final OAuth20EnhancedTokenCache tokenCache;
 
-    public LogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
-        this.request = request;
+    public LogoutTokenBuilder(OidcServerConfig oidcServerConfig) {
         this.oidcServerConfig = oidcServerConfig;
         this.oauth20provider = getOAuth20Provider(oidcServerConfig);
         this.tokenCache = oauth20provider.getTokenCache();
@@ -122,8 +115,8 @@ public class LogoutTokenBuilder {
 
     void verifyIssuer(JwtClaims idTokenClaims) throws MalformedClaimException, IdTokenDifferentIssuerException {
         String issuerClaim = idTokenClaims.getIssuer();
-        String expectedIssuer = getIssuer();
-        if (!expectedIssuer.equals(issuerClaim)) {
+        String expectedIssuer = oidcServerConfig.getIssuerIdentifier();
+        if (expectedIssuer != null && !expectedIssuer.equals(issuerClaim)) {
             String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
             throw new IdTokenDifferentIssuerException(errorMsg);
         }
@@ -317,6 +310,7 @@ public class LogoutTokenBuilder {
 
             String sharedKey = client.getClientSecret();
             JWTData jwtData = new JWTData(sharedKey, oidcServerConfig, JWTData.TYPE_JWT_TOKEN);
+            jwtData.setTypHeader("logout+jwt");
 
             // When we add support for JWE ID tokens, this will need to be updated to create a JWE logout token as well
             return JwsSigner.getSignedJwt(logoutTokenClaims, oidcServerConfig, jwtData);
@@ -326,10 +320,15 @@ public class LogoutTokenBuilder {
         }
     }
 
-    JwtClaims populateLogoutTokenClaimsFromIdToken(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException {
-        JwtClaims logoutTokenClaims = populateLogoutTokenClaims(client);
+    JwtClaims populateLogoutTokenClaimsFromIdToken(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException, LogoutTokenBuilderException {
+        JwtClaims logoutTokenClaims = populateLogoutTokenClaims(client, idTokenClaims);
 
-        logoutTokenClaims.setSubject(idTokenClaims.getSubject());
+        String subject = idTokenClaims.getSubject();
+        if (subject == null || subject.isEmpty()) {
+            String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_MISSING_REQUIRED_CLAIMS", "sub");
+            throw new LogoutTokenBuilderException(errorMsg);
+        }
+        logoutTokenClaims.setSubject(subject);
 
         String sid = idTokenClaims.getStringClaimValue("sid");
         if (sid != null && !sid.isEmpty()) {
@@ -338,9 +337,14 @@ public class LogoutTokenBuilder {
         return logoutTokenClaims;
     }
 
-    JwtClaims populateLogoutTokenClaims(OidcBaseClient client) {
+    JwtClaims populateLogoutTokenClaims(OidcBaseClient client, JwtClaims idTokenClaims) throws MalformedClaimException, LogoutTokenBuilderException {
         JwtClaims logoutTokenClaims = new JwtClaims();
-        logoutTokenClaims.setIssuer(getIssuer());
+        String issuer = idTokenClaims.getIssuer();
+        if (issuer == null || issuer.isEmpty()) {
+            String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_MISSING_REQUIRED_CLAIMS", new Object[] { "iss" });
+            throw new LogoutTokenBuilderException(errorMsg);
+        }
+        logoutTokenClaims.setIssuer(issuer);
         logoutTokenClaims.setAudience(client.getClientId());
         logoutTokenClaims.setIssuedAtToNow();
         logoutTokenClaims.setGeneratedJwtId();
@@ -350,22 +354,6 @@ public class LogoutTokenBuilder {
         logoutTokenClaims.setClaim("events", eventsClaim);
 
         return logoutTokenClaims;
-    }
-
-    String getIssuer() {
-        String issuerIdentifier = oidcServerConfig.getIssuerIdentifier();
-        if (issuerIdentifier != null && !issuerIdentifier.isEmpty()) {
-            return issuerIdentifier;
-        }
-        issuerIdentifier = request.getScheme() + "://" + request.getServerName();
-        int port = request.getServerPort();
-        if (port != 80 && port != 443) {
-            issuerIdentifier += ":" + port;
-        }
-        String requestUri = request.getRequestURI();
-        requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
-        issuerIdentifier += requestUri;
-        return issuerIdentifier;
     }
 
 }

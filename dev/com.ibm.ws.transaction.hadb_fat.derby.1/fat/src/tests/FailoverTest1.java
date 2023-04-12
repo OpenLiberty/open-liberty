@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import suite.FATSuite;
@@ -117,6 +118,8 @@ import suite.FATSuite;
  */
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
+//Skip on IBM i test class depends on datasource inferrence
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 public class FailoverTest1 extends FailoverTest {
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = "transaction/FailoverServlet";
@@ -144,9 +147,9 @@ public class FailoverTest1 extends FailoverTest {
 
     // Test we get back the actual exception that scuppered the test
     @Test
-    // @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
-    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "com.ibm.ws.recoverylog.spi.InvalidStateException",
-                            "java.lang.IllegalStateException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InvalidStateException", "java.lang.IllegalStateException" })
+//    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "com.ibm.ws.recoverylog.spi.InvalidStateException",
+//                            "java.lang.IllegalStateException" })
     public void testGetDriverConnectionFailure() throws Exception {
         final String method = "testGetDriverConnectionFailure";
 
@@ -329,7 +332,7 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", })
+    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
     public void testHADBNonRecoverableStartupFailover() throws Exception {
         final String method = "testHADBNonRecoverableStartupFailover";
 

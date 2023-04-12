@@ -101,6 +101,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
     private static final String CHECKPOINT_ALLOWED_FEATURES = "io.openliberty.checkpoint.allowed.features";
+    private static final String CHECKPOINT_FORCE_FAIL_TYPE = "io.openliberty.checkpoint.fail.type";
     private static final String CHECKPOINT_ALLOWED_FEATURES_ALL = "ALL_FEATURES";
     static final String CHECKPOINT_PAUSE_RESTORE = "io.openliberty.checkpoint.pause.restore";
 
@@ -128,7 +129,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicReference<CountDownLatch> waitForConfig = new AtomicReference<>();
     private final ExecuteCRIU criu;
     private final long pauseRestore;
-
+    private final CheckpointFailedException forceFail;
     private static volatile CheckpointImpl INSTANCE = null;
 
     @Activate
@@ -164,6 +165,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         this.checkpointAt = phase;
 
         this.pauseRestore = getPauseTime(cc.getBundleContext().getProperty(CHECKPOINT_PAUSE_RESTORE));
+        this.forceFail = getForceFailCheckpointCode(cc.getBundleContext().getProperty(CHECKPOINT_FORCE_FAIL_TYPE));
 
         // Keep assignment of static INSTANCE as last thing done.
         // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
@@ -178,6 +180,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.transformerReg = null;
             INSTANCE = null;
         }
+    }
+
+    private CheckpointFailedException getForceFailCheckpointCode(String property) {
+        if (property == null) {
+            return null;
+        }
+        CheckpointFailedException.Type type = Type.valueOf(property);
+        return new CheckpointFailedException(type, "TESTING FAILURE", null);
     }
 
     private long getPauseTime(String pauseRestoreTime) {
@@ -262,7 +272,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              * The issue is that if we block the event thread then there is a deadlock that prevents the server
              * shutdown from happening until a 30 second timeout is reached.
              */
-            new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint failed, exiting...").start();
+            new Thread(() -> System.exit(e.getErrorCode()), e.isRestore() ? "Restore failed, exiting..." : "Checkpoint failed, exiting...").start();
         }
     }
 
@@ -301,6 +311,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
         Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
 
+        if (forceFail != null && !forceFail.isRestore()) {
+            // only done for tests
+            throw (CheckpointFailedException) forceFail.fillInStackTrace();
+        }
         prepare(multiThreadPrepareHooks);
         try {
             try {
@@ -321,6 +335,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                       unprivileged);
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
+            if (forceFail != null && forceFail.isRestore()) {
+                // only done for tests
+                throw (CheckpointFailedException) forceFail.fillInStackTrace();
+            }
         } catch (Exception e) {
             if (e instanceof CheckpointFailedException) {
                 if (!((CheckpointFailedException) e).isRestore()) {

@@ -11,7 +11,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
--include= jar:${fileuri;${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.3.0.20211005;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-nobundles=true
 
--includeresource: \
-    @${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.3.0.20211005;EXACT}!/!META-INF/maven/*
+tool.project: true
+
+generate.replacement: true

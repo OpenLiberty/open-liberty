@@ -48,6 +48,7 @@ import componenttest.topology.impl.LibertyServer;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicServletTest.class,
+                CheckpointFailTest.class,
                 CheckpointPhaseTest.class,
                 LogsVerificationTest.class,
                 OSGiConsoleTest.class,

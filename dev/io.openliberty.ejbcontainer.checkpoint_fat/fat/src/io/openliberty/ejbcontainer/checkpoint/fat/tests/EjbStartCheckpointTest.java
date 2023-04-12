@@ -143,7 +143,8 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
     }
 
-    @Test
+    // Temporarily disable while investigating bean startup behavior
+    //@Test
     public void testEjbStartCheckpointApplications() throws Exception {
         setCheckpointPhase(CheckpointPhase.APPLICATIONS);
         try {

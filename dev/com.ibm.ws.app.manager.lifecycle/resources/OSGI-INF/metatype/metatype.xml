@@ -17,7 +17,7 @@
     <OCD id="com.ibm.wsspi.application.lifecycle.ApplicationPrereq" 
          description="internal use only" name="internal" 
          ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
-        <AD id="id" description="internal use only" name="internal" type="String" required="true"/>
+        <AD id="application.prereq.id" name="internal" description="internal use only" type="String" default="${id}" ibm:unique="application.prereq.id" />
     </OCD>
     
     <Designate factoryPid="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">

@@ -17,9 +17,6 @@ import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import componenttest.containers.ArtifactoryImageNameSubstitutor;
-import componenttest.containers.ExternalTestServiceDockerClientStrategy;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

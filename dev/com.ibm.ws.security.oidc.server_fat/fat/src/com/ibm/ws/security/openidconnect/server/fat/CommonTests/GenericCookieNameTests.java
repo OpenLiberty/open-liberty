@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ package com.ibm.ws.security.openidconnect.server.fat.CommonTests;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.AuthorizationHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonCookieTools;
@@ -24,6 +25,8 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonValidationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -33,10 +36,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * They run with both oauth and oidc. The extending class will set the test
  * setting appropriatly for the flow/provider being tested.
  * The extending class specifies the action/flow.
- * 
+ *
  * @author chrisc
- * 
+ *
  */
+@RunWith(FATRunner.class)
 public class GenericCookieNameTests extends CommonTest {
 
     private static final Class<?> thisClass = GenericCookieNameTests.class;

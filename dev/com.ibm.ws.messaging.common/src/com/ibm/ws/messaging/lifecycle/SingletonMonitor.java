@@ -18,24 +18,23 @@ import static com.ibm.websphere.ras.Tr.exit;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Stream.concat;
+import static org.osgi.framework.Constants.SERVICE_PID;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -76,64 +75,23 @@ public class SingletonMonitor implements Introspector {
     // OSGi allows unbind calls to happen after logically subsequent bind calls, so Set<> semantics will not suffice.
     // List<> allows duplicates, so the eventual result of out-of-order operations will be correct.
     private final List<String> errors = new ArrayList<>();
-    private final List<String> realizedSingletons = new ArrayList<>();
     private final List<String> pendingSingletons = new ArrayList<>();
+    private final List<String> realizedSingletons = new ArrayList<>();
     private int singletonsReadyBindCount, singletonsReadyUnbindCount;
 
     @Activate
-    public SingletonMonitor(@Reference(name="configAdmin") ConfigurationAdmin configAdmin) {
+    public SingletonMonitor(@Reference(name="configAdmin") ConfigurationAdmin configAdmin, Map<String, Object> properties) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "<init>");
         this.configAdmin = configAdmin;
-        this.declaredSingletons = unmodifiableSet(findDeclaredSingletons());
+        this.declaredSingletons = unmodifiableSet(findDeclarations(properties));
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(tc, "<init>");
     }
 
-    /**
-     * Get the current set of ids of declared SingletonAgents.
-     */
-    private Set<String> findDeclaredSingletons() {
-        // The singleton declaration config PIDs could be retrieved from this component's config properties.
-        // The PIDs could then be passed to configAdmin.getConfiguration(pid).getProperties().get("id") to retrieve the id.
-        // However, those declarations are made in other bundles and ConfigAdmin prohibits this bundle from looking them up using getConfiguration().
-        // Therefore the declarations are retrieved using configAdmin.listConfigurations() instead.
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "findDeclaredSingletons");
-        Configuration[] configs;
-        try {
-            configs = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.messaging.lifecycle.SingletonAgent)");
-            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "Singleton configs: ", Arrays.toString(configs));
-        } catch (IOException | InvalidSyntaxException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.messaging.lifecycle.SingletonMonitor.findDeclaredSingletons", "list configs");
-            throw new LifecycleError("Could not list declared singletons", e);
-        }
-        Set<String> result = Stream.of(configs)
-                .map(this::retrieveId)
-                .filter(Objects::nonNull)
-                .collect(TreeSet::new, Set::add, Set::addAll);
-        result = unmodifiableSet(result);
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "findDeclaredSingletons", result);
-        return result;
-    }
-
-    private String retrieveId(Configuration config) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "retrieveId", config);
-        String result = null;
-        try {
-            Dictionary<String, Object> dict = config.getProperties();
-            Object definition = dict.get("id");
-            result = (String) definition;
-        } catch (Exception e) {
-            errors.add("" + e);
-            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "retrieveId", e);
-        }
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "retrieveId", result);
-        return result;
-    }
-
     @Modified
-    public synchronized void modified() {
+    public synchronized void modified(Map<String, Object> properties) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "modified");
         Set<String> oldSet = declaredSingletons;
-        Set<String> newSet = findDeclaredSingletons();
+        Set<String> newSet = findDeclarations(properties);
         if (newSet.equals(oldSet)) return;
         // Now we know there are some changes.
         this.declaredSingletons = newSet;
@@ -156,6 +114,49 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) {
             entry(this, tc, "deactivate");
             exit(this, tc, "deactivate");
+        }
+    }
+
+    /**
+     * Get the current set of ids of declared SingletonAgents.
+     */
+    private Set<String> findDeclarations(Map<String, Object> properties) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "findDeclaredSingletons", (Object[])properties.get("singletonDeclarations"));
+        final Set<String> result = Optional.of(properties)
+            .map(props -> props.get("singletonDeclarations"))
+            .filter(String[].class::isInstance)
+            .map(String[].class::cast)
+            .map(Stream::of)
+            .orElse(Stream.empty())
+            .map(this::servicePidToConfigId)
+            .filter(Objects::nonNull)
+            .collect(TreeSet::new, Set::add, Set::addAll);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "findDeclaredSingletons", result);
+        return unmodifiableSet(result);
+    }
+
+    private String servicePidToConfigId(String servicePid) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "retrieveId", servicePid);
+        try {
+            Configuration[] configs = configAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
+            if (configs == null)
+                // We may be processing a pid from a deleted application
+                throw new IllegalStateException("No configs found matching servicePid=" + servicePid);
+            if (configs.length > 1)
+                throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
+
+            // even if we get to here, the config we successfully retrieved may have been deleted
+            // which will result in an IllegalStateException
+            String id = (String) configs[0].getProperties().get("id");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "retrieveId", id);
+            return id;
+        } catch (Exception e) {
+            // This is unlikely to be a genuine problem.
+            // These exceptions result from config changes being drip-fed to this component while other config changes are being processed.
+            // Record this error for any future dumps, but otherwise just return null.
+            errors.add("" + e);
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "retrieveId", e);
+            return null;
         }
     }
 
@@ -190,12 +191,13 @@ public class SingletonMonitor implements Introspector {
     }
 
     @Reference(cardinality = MULTIPLE, policy = DYNAMIC, policyOption = GREEDY)
-    synchronized void addSingletonsReady(SingletonsReady ready) {
+    synchronized void addSingletonsReady(SingletonsReady ready, Map<String, Object> properties) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "addSingletonsReady", new Object[] {ready});
         // SingletonMonitor may not YET have received notification of the config update that allowed SingletonsReady to be created.
         // As a workaround, call modified() now before processing the rest of the bind logic.
-        // Any trailing call to modified() from OSGi declarative services for this same configuration should observe zero change and do nothing.
-        modified();
+        // Pass in the properties for SingletonsReady which are from the same config element as SingletonMonitor.
+        // Any trailing call to modified() from OSGi declarative services for this same config change should observe zero change and do nothing.
+        modified(properties);
 
         // Process the call to bind: increment the bind count, log some debug trace, and check for errors
         singletonsReadyBindCount++;
@@ -205,23 +207,27 @@ public class SingletonMonitor implements Introspector {
             debug(this, tc, "Pending singletons:  " + pending);
             debug(this, tc, "Realized singletons: " + realized);
         }
-        if (declaredSingletons.equals(realized)) return;
-        Set<String> missing = new TreeSet<>(declaredSingletons), blocked = pending, extra = realized;
-        blocked.removeAll(realized);
-        missing.removeAll(realized);
-        extra.removeAll(declaredSingletons);
-        Exception e = new IllegalStateException("Singleton mismatch detected:"
-                + "\n\tmissing: " + missing
-                + "\n\tblocked: " + blocked
-                + "\n\textra:   " + extra);
-        FFDCFilter.processException(e, SingletonMonitor.class.getName(), "addSingletonsReady");
+
+        if (declaredSingletons.equals(realized)) {
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "addSingletonsReady");
+            return;
+        }
+
         if (singletonsReadyBindCount > singletonsReadyUnbindCount + 1) {
-            // This bind call has arrived out of order with respect to a logicially preceding unbind call.
+            // This bind call has arrived out of order with respect to a logically preceding unbind call.
             // Clear the errors now, and not when the unbind happens.
             errors.clear();
+        } else {
+            Set<String> missing = new TreeSet<>(declaredSingletons), blocked = pending, extra = realized;
+            blocked.removeAll(realized);
+            missing.removeAll(realized);
+            extra.removeAll(declaredSingletons);
+            errors.add("addSingletonsReady: singleton mismatch detected"
+                    + "\n\tmissing: " + missing
+                    + "\n\tblocked: " + blocked
+                    + "\n\textra:   " + extra);
         }
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "addSingletonsReady");
-
     }
 
     synchronized void removeSingletonsReady(SingletonsReady ready) {

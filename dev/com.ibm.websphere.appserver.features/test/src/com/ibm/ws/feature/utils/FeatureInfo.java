@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +29,11 @@ import aQute.bnd.header.Attrs;
 public class FeatureInfo {
 
     private String[] lockedAutoFeatures;
-    private String[] lockedDependentFeatures;
+    private Map<String, Attrs> lockedDependentFeatures;
     private String[] lockedActivatingAutoFeature;
 
     private Set<String> autoFeatures = new LinkedHashSet<String>();
-    private Set<String> dependentFeatures = new LinkedHashSet<String>();
+    private Map<String, Attrs> dependentFeatures = new LinkedHashMap<String, Attrs>();
     private Set<String> activatingAutoFeature = new LinkedHashSet<String>();
 
     private String edition;
@@ -149,7 +151,7 @@ public class FeatureInfo {
         activatingAutoFeature = null;
     }
 
-    public String[] getDependentFeatures() {
+    public Map<String, Attrs> getDependentFeatures() {
         if (!isInit)
             populateInfo();
 
@@ -214,11 +216,10 @@ public class FeatureInfo {
             this.lockedAutoFeatures = this.autoFeatures.toArray(new String[this.autoFeatures.size()]);
 
             for (Map.Entry<String, Attrs> feature : builder.getFeatures()) {
-                String item = feature.getKey().toString();
-                this.dependentFeatures.add(item);
+                this.dependentFeatures.put(feature.getKey(), feature.getValue());
             }
 
-            this.lockedDependentFeatures = this.dependentFeatures.toArray(new String[this.dependentFeatures.size()]);
+            this.lockedDependentFeatures = Collections.unmodifiableMap(new LinkedHashMap<String, Attrs>(this.dependentFeatures));
 
             this.autoFeatures = null;
             this.dependentFeatures = null;

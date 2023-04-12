@@ -19,6 +19,8 @@
 
 package org.jboss.resteasy.concurrent;
 
+import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -34,9 +36,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier; //Liberty change
 
-import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
-
-import com.ibm.ws.threading.CompletionStageExecutor;
+import com.ibm.ws.threading.CompletionStageExecutor; //Liberty change
 
 import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
 
@@ -81,21 +81,11 @@ public class ContextualExecutorService implements ExecutorService {
                 // Clear the delegate as we're done with it
                 delegate = null;
             } else {
-                // Liberty start: https://issues.redhat.com/projects/RESTEASY/issues/RESTEASY-3238
-                boolean java2SecurityEnabled = System.getSecurityManager() != null;
-                if (java2SecurityEnabled)
-                {
-                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                        @Override
-                        public Void run() {
-                            getDelegate().shutdown();
-                            return null;
-                         }
-                     });
-                } else {
-                    getDelegate().shutdown();
-                } 
-                //Liberty end
+                final ExecutorService delegate = getDelegate();
+                shutdownDelegate(() -> {
+                    delegate.shutdown();
+                    return null;
+                });
             }
         }
     }
@@ -107,7 +97,8 @@ public class ContextualExecutorService implements ExecutorService {
                 // Clear the delegate as we're done with it
                 delegate = null;
             } else {
-                return getDelegate().shutdownNow();
+                final ExecutorService delegate = getDelegate();
+                return shutdownDelegate(delegate::shutdownNow);
             }
         }
         return Collections.emptyList();
@@ -206,6 +197,14 @@ public class ContextualExecutorService implements ExecutorService {
         }
         return delegate;
     }
+
+    private static <T> T shutdownDelegate(final PrivilegedAction<T> action) {
+        if (System.getSecurityManager() == null) {
+            return action.run();
+        }
+        return AccessController.doPrivileged(action);
+    }
+
 
   //Liberty change start
     public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {

@@ -1,0 +1,194 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.checkpoint.fat;
+
+import static io.openliberty.checkpoint.fat.FATSuite.configureBootStrapProperties;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.spi.CheckpointPhase.APPLICATIONS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Collections;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
+
+@RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
+public class CheckpointFailTest {
+    @Rule
+    public TestName testName = new TestName();
+
+    @Server("checkpointFailServer")
+    public static LibertyServer server;
+
+    @Before
+    public void beforeEachTest() throws Exception {
+        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
+        Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+        configureBootStrapProperties(server, Collections.singletonMap("io.openliberty.checkpoint.fail.type", testMethod.getType()));
+        server.setCheckpoint(new CheckpointInfo(APPLICATIONS, false, testMethod.failCheckpoint(), testMethod.failRestore(), //
+                        // do before checkpoint
+                        s -> {
+                            if (testMethod == TestMethod.testSystemCheckpointFailed) {
+                                try {
+                                    server.copyFileToLibertyServerRoot("logs/checkpoint/", "testlogs/checkpoint.log");
+                                } catch (Exception e) {
+                                    fail(e.getMessage());
+                                }
+                            }
+                        }, //
+                        // do before restore
+                        null));
+        ProgramOutput checkpointOutput = server.startServer(getTestMethodNameOnly(testName) + ".log");
+        if (testMethod.failCheckpoint()) {
+            testMethod.verifyOutput(checkpointOutput);
+        }
+        if (testMethod.failRestore()) {
+            if (testMethod == TestMethod.testCriuRestoreFailed) {
+                RemoteFile checkpointImage = server.getFileFromLibertyServerRoot("workarea/checkpoint/image");
+                if (checkpointImage.isDirectory()) {
+                    for (RemoteFile imageFile : checkpointImage.list(false)) {
+                        // force a failure by removing the ids file from the image
+                        if (imageFile.getName().startsWith("ids-")) {
+                            imageFile.delete();
+                        }
+                    }
+                } else {
+                    fail("No image found");
+                }
+            }
+            ProgramOutput restoreOutput = server.checkpointRestore();
+            testMethod.verifyOutput(restoreOutput);
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        server.stopServer();
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testUnsupportedInJvm() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testDisabledInJvm() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testLibertyPrepareFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testJvmCheckpointFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testSystemCheckpointFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testUnknownCheckpointFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testSystemRestoreFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testJvmRestoreFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testLibertyRestoreFailed() {
+    }
+
+    @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    public void testUnknownRestoreFailed() {
+    }
+
+    static enum TestMethod {
+        testUnsupportedInJvm("UNSUPPORTED_IN_JVM", true, 70),
+        testDisabledInJvm("UNSUPPORTED_DISABLED_IN_JVM", true, 71),
+        testLibertyPrepareFailed("LIBERTY_PREPARE_FAILED", true, 72),
+        testJvmCheckpointFailed("JVM_CHECKPOINT_FAILED", true, 73),
+        testSystemCheckpointFailed("SYSTEM_CHECKPOINT_FAILED", true, 74, "CWWKE0962E", "TESTING CHECKPOINT.LOG"),
+        testUnknownCheckpointFailed("UNKNOWN_CHECKPOINT", true, 75),
+        // Note that 1 is by criu when it fails to restore
+        testCriuRestoreFailed("SYSTEM_RESTORE_FAILED", false, 1, "CWWKE0961I"),
+        testSystemRestoreFailed("SYSTEM_RESTORE_FAILED", false, 80),
+        testJvmRestoreFailed("JVM_RESTORE_FAILED", false, 81),
+        testLibertyRestoreFailed("LIBERTY_RESTORE_FAILED", false, 82),
+        testUnknownRestoreFailed("UNKNOWN_RESTORE", false, 83);
+
+        private final String type;
+        private final boolean failCheckpoint;
+        private final int returnCode;
+        private final String[] messages;
+
+        boolean failCheckpoint() {
+            return failCheckpoint;
+        }
+
+        boolean failRestore() {
+            return !failCheckpoint;
+        }
+
+        String getType() {
+            return type;
+        }
+
+        void verifyOutput(ProgramOutput output) {
+            assertEquals("Wrong return code.", returnCode, output.getReturnCode());
+            String stdOut = output.getStdout();
+            for (String message : messages) {
+                assertTrue("Expected message not found in output: " + message + " -- " + stdOut, stdOut.contains(message));
+            }
+        }
+
+        TestMethod(String type, boolean failCheckpoint, int returnCode, String... messages) {
+            this.type = type;
+            this.failCheckpoint = failCheckpoint;
+            this.returnCode = returnCode;
+            this.messages = messages;
+        }
+    }
+}

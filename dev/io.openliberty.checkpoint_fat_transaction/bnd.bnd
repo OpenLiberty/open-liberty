@@ -19,7 +19,9 @@ src: \
 	test-applications/transactionservletstartup/src,\
 	test-applications/transactionstartupbean/src,\
 	test-applications/transactionalbean/src,\
-	test-applications/transactionscopedbean/src
+	test-applications/transactionscopedbean/src,\
+	test-applications/transactionrecovery/src
+
 
 fat.project: true
 
@@ -42,19 +44,11 @@ tested.features: \
 -buildpath: \
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.componenttest,\
-	com.ibm.ws.org.slf4j.simple;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest,\
-	io.openliberty.com.google.gson;version=latest,\
 	io.openliberty.jakarta.cdi.3.0,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	commons-httpclient:commons-httpclient;version='3.1',\
-	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	org.apache.derby:derby;version=latest,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.websphere.javaee.websocket.1.1,\
-	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.transaction.cdi;version=latest,\

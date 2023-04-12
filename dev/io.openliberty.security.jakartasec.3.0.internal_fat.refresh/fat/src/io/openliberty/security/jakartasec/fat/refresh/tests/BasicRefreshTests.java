@@ -40,8 +40,8 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.ShortTokenLifetimePrep;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
-import oidc.client.base.utils.ShortTokenLifetimePrep;
 
 /**
  * Tests various flows using refresh.  Make sure that we refresh tokens when we should and do NOT refresh tokens when we should not.
@@ -111,7 +111,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         baseAppName = "BasicRefreshServlet";
 
         ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
-        s.shortTokenLifetimePrep(rpHttpsBase,
+        s.shortTokenLifetimePrep(opServer, rpHttpsBase,
                                  getShortAppName(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry) + "/" + baseAppName);
 
     }

@@ -98,7 +98,7 @@ public class DisableAllFeaturesOnConflictTest {
             assertTrue("Server should have removed the feature: " + f, removedFeatures.contains(f));
         });
         String installedFeatures = server.waitForStringInLogUsingMark(INSTALLED_FEATURES, 1);
-        assertNull("Should be no features installed.", installedFeatures);
+        assertTrue("Expected the list of installed features to be empty, but found " + installedFeatures, installedFeatures.contains("[]"));
         server.setMarkToEndOfLog();
     }
 

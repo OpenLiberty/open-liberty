@@ -1,15 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.resources.beans.jsf22;
 
 import java.net.URISyntaxException;
@@ -32,11 +29,12 @@ public class MapResourcePathBean extends ResourceResolver {
 
     private final FacesContext facesContext = FacesContext.getCurrentInstance();
 
-    public MapResourcePathBean() {}
+    public MapResourcePathBean() {
+    }
 
     /**
      * Map a given viewId to a URL through the View Resource object
-     * 
+     *
      * @param viewId the viewId (path) to the resource file
      * @return a URL object
      */
@@ -62,7 +60,7 @@ public class MapResourcePathBean extends ResourceResolver {
     /**
      * Map a resource file to a URL by calling the ResourceResolver.resolveUrl method
      * so it can be used in a Facelet view
-     * 
+     *
      * @param resourceName Name of the resource
      * @return a String containing the URI path used in the Facelet view
      * @throws URISyntaxException

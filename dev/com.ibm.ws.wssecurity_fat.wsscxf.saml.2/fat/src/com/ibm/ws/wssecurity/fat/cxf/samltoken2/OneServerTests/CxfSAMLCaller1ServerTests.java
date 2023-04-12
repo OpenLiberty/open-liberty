@@ -25,11 +25,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CxfSAMLCallerTests;
+import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh10;
 
 import componenttest.topology.impl.LibertyServerWrapper;
 import componenttest.annotation.SkipForRepeat;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 
 /**
@@ -48,6 +47,7 @@ import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ RepeatWithEE7cbh10.ID })
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {

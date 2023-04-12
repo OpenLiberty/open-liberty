@@ -17,6 +17,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 
@@ -32,7 +34,7 @@ public class TxTestContainerSuite extends TestContainerSuite {
         if (testContainer == null) {
           testContainer = DatabaseContainerFactory.createType(databaseContainerType);
         }
-        testContainer.setStartupAttempts(2);
+        testContainer.setStartupAttempts(TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 2 : 1);
         testContainer.start();
         Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }

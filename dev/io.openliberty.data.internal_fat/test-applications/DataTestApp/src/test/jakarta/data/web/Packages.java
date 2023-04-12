@@ -14,18 +14,19 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Operation;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Update;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Operation;
+import io.openliberty.data.repository.Update;
 
 /**
  *
@@ -66,7 +67,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
     @Filter(by = "height", op = Compare.LessThan, param = "min")
-    @Filter(as = Filter.Type.OR, by = "height", op = Compare.GreaterThan, param = "max")
+    @Filter(as = Filter.Type.Or, by = "height", op = Compare.GreaterThan, param = "max")
     KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);

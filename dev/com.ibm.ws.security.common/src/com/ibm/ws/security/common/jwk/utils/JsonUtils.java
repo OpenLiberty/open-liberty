@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,10 +56,6 @@ public class JsonUtils {
     public static final String CFG_KEY_JWK_SIGNING_KEY_SIZE = "jwkSigningKeySize";
     public static final String CFG_KEY_JWK_ENDPOINT_URL = "jwkEndpointUrl";
     public static final String CFG_KEY_CLOCK_SKEW = "clockSkew";
-
-    public static final String JCEPROVIDER_IBM = "IBMJCE";
-    public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
-    public static final String SECRANDOM_IBM = "IBMSecureRandom";
 
     public static final String ISSUER = "iss";
     public static final String SUBJECT = "sub";
@@ -261,41 +257,6 @@ public class JsonUtils {
             return jwtInfo[1];
         }
         return null;
-    }
-
-    public static String getRandom(int length) {
-        StringBuffer result = new StringBuffer(length);
-        final char[] chars = new char[] {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                'U', 'V', 'W', 'X', 'Y', 'Z',
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-                'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                'u', 'v', 'w', 'x', 'y', 'z'
-        };
-        Random r = getRandom();
-
-        for (int i = 0; i < length; i++) {
-            int n = r.nextInt(62);
-            result.append(chars[n]);
-        }
-
-        return result.toString();
-    }
-
-    static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            result = new Random();
-        }
-        return result;
     }
 
     public static long calculate(long valid) {
