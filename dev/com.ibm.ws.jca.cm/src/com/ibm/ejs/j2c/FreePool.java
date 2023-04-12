@@ -382,9 +382,9 @@ public final class FreePool implements JCAPMIHelper {
      * - If removeFromFreePool is false, the mcWrapper do not exist in the free pool
      *
      * @param Managed connection wrapper
-     * @param Remove from free pool
-     * @param Are we already synchronized on the freeLockObject
-     * @param Skip waiter notify
+     * @param Remove  from free pool
+     * @param Are     we already synchronized on the freeLockObject
+     * @param Skip    waiter notify
      * @param Cleanup and Destroy MCWrapper
      * @pre mcWrapper != null
      * @throws ClassCastException
