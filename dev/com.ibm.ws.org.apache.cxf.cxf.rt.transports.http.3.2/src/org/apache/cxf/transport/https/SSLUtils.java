@@ -49,14 +49,19 @@ public final class SSLUtils {
         HostnameVerifier verifier;
 
         if (tlsClientParameters.getHostnameVerifier() != null) {
+	    LOG.fine("Getting HostnameVerifier from tlsClientParameters.");
             verifier = tlsClientParameters.getHostnameVerifier();
         } else if (tlsClientParameters.isUseHttpsURLConnectionDefaultHostnameVerifier()) {
+	    LOG.fine("Getting DefaultHostnameVerifier from HttpsURLConnection.");
             verifier = HttpsURLConnection.getDefaultHostnameVerifier();
         } else if (tlsClientParameters.isDisableCNCheck()) {
+	    LOG.fine("isDisableCNCheck is true, setting verifier to AllowAllHostnameVerifier.");
             verifier = new AllowAllHostnameVerifier();
         } else {
+	    LOG.fine("Getting new DefaultHostnameVerifier from PublicSuffixMatcherLoader.");
             verifier = new DefaultHostnameVerifier(PublicSuffixMatcherLoader.getDefault());
         }
+	LOG.fine("getHostnameVerifier() returning: " + verifier.getClass().getCanonicalName());
         return verifier;
     }
 
@@ -66,6 +71,8 @@ public final class SSLUtils {
 
         String protocol = parameters.getSecureSocketProtocol() != null ? parameters
             .getSecureSocketProtocol() : "TLS";
+
+	LOG.fine("getSSLContext: provider = " + provider + " and protocol = " + protocol);
 
         SSLContext ctx = provider == null ? SSLContext.getInstance(protocol) : SSLContext
             .getInstance(protocol, provider);
@@ -81,12 +88,16 @@ public final class SSLUtils {
             trustManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultTrustStoreManagers(LOG);
         }
 
+	LOG.fine("trustManagers: " + trustManagers);
+	LOG.fine("configuredkeyManagers: " +  configuredKeyManagers);
+
         ctx.init(configuredKeyManagers, trustManagers, parameters.getSecureRandom());
 
         if (parameters instanceof TLSClientParameters && ctx.getClientSessionContext() != null) {
             ctx.getClientSessionContext().setSessionTimeout(((TLSClientParameters)parameters).getSslCacheTimeout());
         }
 
+	LOG.fine("getSSLContext returning: " + ctx.getClass().getCanonicalName());
         return ctx;
     }
 
@@ -94,6 +105,7 @@ public final class SSLUtils {
                                                       KeyManager[] keyManagers)
         throws GeneralSecurityException {
         if (tlsParameters.getCertAlias() == null || keyManagers == null) {
+	    LOG.fine("Alias or keyManagers is NULL.");
             return keyManagers;
         }
 
