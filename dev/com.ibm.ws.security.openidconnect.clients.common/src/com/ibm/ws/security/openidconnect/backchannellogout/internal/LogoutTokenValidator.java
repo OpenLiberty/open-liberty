@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class LogoutTokenValidator {
             JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, config);
 
             verifyAllRequiredClaimsArePresent(claims);
-            verifyIssAudIatExpClaims(claims);
+            verifyIssAudIatClaims(claims);
             verifySubAndOrSidPresent(claims);
             verifyEventsClaim(claims);
             verifyNonceClaimNotPresent(claims);
@@ -125,13 +125,13 @@ public class LogoutTokenValidator {
     }
 
     /**
-     * Validate the iss, aud, and iat (and exp) Claims in the same way they are validated in ID Tokens.
+     * Validate the iss, aud, and iat Claims in the same way they are validated in ID Tokens.
      */
-    void verifyIssAudIatExpClaims(JwtClaims claims) throws IDTokenValidationFailedException, Exception, MalformedClaimException, JWTTokenValidationFailedException {
+    void verifyIssAudIatClaims(JwtClaims claims) throws IDTokenValidationFailedException, Exception, MalformedClaimException, JWTTokenValidationFailedException {
         Jose4jValidator validator = getJose4jValidator();
         validator.verifyIssForIdToken(claims.getIssuer());
         validator.verifyAudForIdToken(claims.getAudience());
-        validator.verifyIatAndExpClaims(claims);
+        validator.verifyIatAndExpClaims(claims.getIssuedAt(), null, claims.getSubject());
     }
 
     Jose4jValidator getJose4jValidator() {
