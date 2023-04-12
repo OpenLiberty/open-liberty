@@ -45,8 +45,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Http2Config40H2Off.class, // FULL
                 Http2Config31H2Off.class, // FULL
                 Http2Config31H2On.class, // FULL
-                //MultiSessionTests.class // FULL; disabled for now
-                Http2WindowUpdateTests.class
+                Http2WindowUpdateTests.class, //FULL
+                Http2CompressionTests.class //FULL
+//MultiSessionTests.class // FULL; disabled for now
 })
 
 public class FATSuite {
