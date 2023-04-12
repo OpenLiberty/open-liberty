@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017,2022 IBM Corporation and others.
+    Copyright (c) 2017,2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -139,7 +139,38 @@
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
     </dataSource>
     
+    <dataSource id="dsfat22MaxInUseTime"  jndiName="jdbc/${id}">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager maxInUseTime="500ms" connectionTimeout="-1" maxPoolSize="4"/>
+    </dataSource>
+    
+    <dataSource id="dsfat22MaxInUseTime2"  jndiName="jdbc/${id}">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager maxInUseTime="20m" connectionTimeout="-1" maxPoolSize="2"/>
+    </dataSource>
+    
+    <dataSource id="dsfat22MaxInUseTime3"  jndiName="jdbc/${id}">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager maxInUseTime="0" connectionTimeout="-1" maxPoolSize="2"/>
+    </dataSource>
+    
+    <dataSource id="dsfat22MaxInUseTimeDefault"  jndiName="jdbc/${id}">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager connectionTimeout="-1" maxPoolSize="2"/>
+    </dataSource>
+    
+    <dataSource id="maxInUseUpdateTest"  jndiName="jdbc/${id}">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <connectionManager maxInUseTime="250ms" connectionTimeout="-1" maxPoolSize="4"/>
+    </dataSource>
+    
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="callAbort"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.sql.SQLPermission" name="callAbort"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="getClassLoader"/>

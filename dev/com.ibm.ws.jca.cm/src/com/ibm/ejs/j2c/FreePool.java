@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1561,6 +1561,28 @@ public final class FreePool implements JCAPMIHelper {
                                                 throw e;
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if ((pm.maxInUseTime > 0)) {
+                    if (pm.maxInUseTimeAlarmThreadCounter.get() == 0) {
+                        synchronized (pm.amMaxInUseTimeLockObject) {
+                            if (pm.maxInUseTimeAlarmThreadCounter.get() == 0) {
+                                if (pm.totalConnectionCount.get() > 0) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(this, tc, "Creating deferrable alarm for maxInUseTime thread");
+                                    }
+                                    pm.maxInUseTimeAlarmThreadCounter.incrementAndGet();
+                                    try {
+                                        pm.amMaxInUseTime = pm.connectorSvc.deferrableSchedXSvcRef.getServiceWithException().schedule(pm.new MaxInUseTimeThreadStarter(),
+                                                                                                                                      pm.maxInUseTime,
+                                                                                                                                      TimeUnit.MILLISECONDS);
+                                    } catch (Exception e) {
+                                        pm.maxInUseTimeAlarmThreadCounter.decrementAndGet();
+                                        throw e;
                                     }
                                 }
                             }
