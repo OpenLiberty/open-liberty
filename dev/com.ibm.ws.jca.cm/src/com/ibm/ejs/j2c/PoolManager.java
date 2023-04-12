@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -177,19 +177,18 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     public transient ConcurrentHashMap<String, AtomicInteger> getConnectionMap = new ConcurrentHashMap<String, AtomicInteger>();
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
-    
+
     //maxInUseTime related variables
     protected static final String abortConnectionsActionName = "abortConnections";
     protected static final String abortConnectionsInUse = "inuse";
     protected final Object amMaxInUseTimeLockObject = new PoolManagerLock();
     protected final AtomicInteger maxInUseTimeAlarmThreadCounter = new AtomicInteger(0);
-    protected int maxInUseTime = 0;    
+    protected int maxInUseTime = 0;
     protected ScheduledFuture<?> amMaxInUseTime = null;
     protected boolean maxInUseTimeThreadStarted = false;
     private final Object maxInUseTimeTaskTimerLockObject = new PoolManagerLock();
     private int maxInUseTimeCollectorCount = 0;
-    
-    
+
     public PoolManager(
                        AbstractConnectionFactoryService cfSvc,
                        Properties dsProps,
@@ -785,8 +784,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * with the affinity, it is registered as unused. Otherwise it is prepared
      * for reuse (using <code>cleanup</code> method and then registered as unused.
      *
-     * @param managed ManagedConnection A connection to release
-     * @param affinity Object, an affinity, can be represented using <code>Identifier</code> interface.
+     * @param managed                 ManagedConnection A connection to release
+     * @param affinity                Object, an affinity, can be represented using <code>Identifier</code> interface.
      * @param pausedPoolAbortOverRide - If true used to bypass locking during release
      *
      * @concurrency concurrent
@@ -5308,6 +5307,11 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
     protected AtomicInteger getTotalConnectionCount() {
         return totalConnectionCount;
+    }
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.maxConnections;
     }
 
     public class MaxInUseTimeThreadStarter implements Runnable {

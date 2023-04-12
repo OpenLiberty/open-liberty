@@ -3392,4 +3392,9 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                 throw new ResourceAllocationException(cause);
         }
     }
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.pm.maxConnections;
+    }
 }

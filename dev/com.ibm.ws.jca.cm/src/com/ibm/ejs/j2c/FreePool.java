@@ -57,7 +57,7 @@ public final class FreePool implements JCAPMIHelper {
 
     ClassLoader raClassLoader;
 
-    // waiter code
+    // waiter code reset value, add to this value to remove connections from pool
     private int fatalErrorNotificationTime = 0;
 
     /*
@@ -382,9 +382,9 @@ public final class FreePool implements JCAPMIHelper {
      * - If removeFromFreePool is false, the mcWrapper do not exist in the free pool
      *
      * @param Managed connection wrapper
-     * @param Remove from free pool
-     * @param Are we already synchronized on the freeLockObject
-     * @param Skip waiter notify
+     * @param Remove  from free pool
+     * @param Are     we already synchronized on the freeLockObject
+     * @param Skip    waiter notify
      * @param Cleanup and Destroy MCWrapper
      * @pre mcWrapper != null
      * @throws ClassCastException
@@ -1974,4 +1974,9 @@ public final class FreePool implements JCAPMIHelper {
         return this.gConfigProps.getJNDIName();
     }
     //PMIHelper methods end here
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.pm.maxConnections;
+    }
 }
