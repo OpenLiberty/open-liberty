@@ -138,6 +138,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private List<String> forwardLoginParameter = null;
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     private String keyManagementKeyAlias = null;
+    public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
+    private String pkceCodeChallengeMethod = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -218,6 +220,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
+        pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
@@ -943,6 +946,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public OidcSessionCache getOidcSessionCache() {
     	return this.oidcSessionCache;
+    }
+
+    @Override
+    public String getPkceCodeChallengeMethod() {
+        return pkceCodeChallengeMethod;
     }
 
 }
