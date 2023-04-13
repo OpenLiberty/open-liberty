@@ -11,10 +11,10 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.checkpoint.fat;
+package io.openliberty.checkpoint.fat.security.social;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
-import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
+import static io.openliberty.checkpoint.fat.securty.common.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.securty.common.FATSuite.updateVariableConfig;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -112,15 +112,12 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-
-        opServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         opServer.startServer(testMethod + ".log");
 
         genericServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         genericServer.startServer(testMethod + ".log");
         configureBeforeRestore();
 
-        opServer.checkpointRestore();
         genericServer.checkpointRestore();
 
         setActionsForProvider(SocialConstants.LIBERTYOP_PROVIDER, SocialConstants.OAUTH_OP);
