@@ -24,7 +24,8 @@ import jakarta.data.repository.Repository;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
 /**
- * Repository for testing OneToMany relationship between Customer and CreditCard entities.
+ * Repository for testing OneToMany relationship between Customer and CreditCard entities
+ * and for testing the ManyToMany relationship between Customer and DeliveryLocation entities.
  */
 @Repository(dataStore = "java:module/jdbc/RepositoryDataStore")
 public interface Customers extends DataRepository<Customer, Integer> {
@@ -37,8 +38,14 @@ public interface Customers extends DataRepository<Customer, Integer> {
     Set<DeliveryLocation> findLocationsByEmail(String emailAddress);
 
     @OrderBy("email")
+    Stream<DeliveryLocation> findLocationsByPhoneIn(List<Long> phoneNumbers);
+
+    @OrderBy("email")
     @Query("SELECT c.email FROM Customer c JOIN c.cards cc WHERE (cc.issuer=?1)")
     List<String> withCardIssuer(Issuer cardIssuer);
+
+    @Query("SELECT dl.street FROM Customer c JOIN c.deliveryLocations dl WHERE (dl.type=?1) ORDER BY dl.street.name DESC, dl.street.direction")
+    Stream<Street> withLocationType(DeliveryLocation.Type locationType);
 
     void save(Customer... customers);
 }
