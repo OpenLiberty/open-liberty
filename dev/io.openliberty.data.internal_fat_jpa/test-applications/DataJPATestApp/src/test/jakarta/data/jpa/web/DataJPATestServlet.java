@@ -1058,6 +1058,47 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a custom join query so that a ManyToMany association can query by attributes of the many side of the relationship.
+     */
+    @Test
+    public void testManyToManyCustomJoinQuery() {
+
+        assertIterableEquals(List.of("4th Ave SE",
+                                     "4th Ave SE",
+                                     "4th Ave SE",
+                                     "2nd Ave NE",
+                                     "2nd Ave NE",
+                                     "1st Ave SW"),
+                             customers.withLocationType(DeliveryLocation.Type.HOME)
+                                             .map(Street::toString)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("37th St NW",
+                                     "37th St NW",
+                                     "37th St NW",
+                                     "37th St NW"),
+                             customers.withLocationType(DeliveryLocation.Type.BUSINESS)
+                                             .map(Street::toString)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Query that matches multiple entities and returns a combined collection of results across matches for the ManyToMany association.
+     */
+    @Test
+    public void testManyToManyReturnsCombinedCollectionFromMany() {
+
+        List<String> addresses = customers.findLocationsByPhoneIn(List.of(5075552444L, 5075550101L))
+                        .map(loc -> loc.houseNum + " " + loc.street.toString())
+                        .collect(Collectors.toList());
+
+        // Customer 1's delivery addresses must come before Customer 4's card numbers due to the ordering on Customer.email.
+        assertEquals(addresses.toString(),
+                     true, List.of("1001 1st Ave SW", "2800 37th St NW", "4004 4th Ave SE").equals(addresses) ||
+                           List.of("1001 1st Ave SW", "4004 4th Ave SE", "2800 37th St NW").equals(addresses));
+    }
+
+    /**
      * Query that matches a single entity and returns the corresponding collection from its ManyToMany association.
      */
     @Test
