@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0.16
+ * @version 1.2.0
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.2.0")
 package com.ibm.websphere.jca.pmi;

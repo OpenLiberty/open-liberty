@@ -17,15 +17,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Delete;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
 import jakarta.data.repository.Streamable;
-import jakarta.data.repository.Update;
 import jakarta.enterprise.concurrent.Asynchronous;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Delete;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.Update;
 
 /**
  * This is a second repository interface for the Person entity,

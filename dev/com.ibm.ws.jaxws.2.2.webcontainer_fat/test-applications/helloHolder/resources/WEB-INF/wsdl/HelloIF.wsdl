@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://hello" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="HelloIF" targetNamespace="http://hello">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://hello" targetNamespace="http://hello" version="1.0">
+
+  <xs:element name="getAddressFromName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" nillable="true" type="xs:string"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="getAddressFromNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="getAddressFromNameReturn" nillable="true" type="tns:Address"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sayHello">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Address" nillable="true" type="tns:Address"></xs:element>
+        <xs:element name="Address2" type="tns:Address"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sayHelloLocation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="location" nillable="true" type="tns:Location"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sayHelloLocationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Location" nillable="true" type="tns:Location"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sayHelloResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Address" nillable="true" type="tns:Address"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Address">
+    <xs:sequence>
+      <xs:element name="streetNum" type="xs:int"></xs:element>
+      <xs:element name="streetName" nillable="true" type="xs:string"></xs:element>
+      <xs:element name="city" nillable="true" type="xs:string"></xs:element>
+      <xs:element name="state" nillable="true" type="xs:string"></xs:element>
+      <xs:element name="zip" type="xs:int"></xs:element>
+    </xs:sequence>
+    <xs:attribute name="lang" type="xs:string"></xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Location">
+    <xs:sequence>
+      <xs:element name="address" nillable="true" type="xs:anyType"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="StateType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OH"></xs:enumeration>
+      <xs:enumeration value="IN"></xs:enumeration>
+      <xs:enumeration value="TX"></xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="sayHelloResponse">
+    <wsdl:part element="tns:sayHello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHello">
+    <wsdl:part element="tns:sayHello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHelloLocationResponse">
+    <wsdl:part element="tns:sayHelloLocation" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sayHelloLocation">
+    <wsdl:part element="tns:sayHelloLocation" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HelloIF">
+    <wsdl:operation name="sayHello">
+      <wsdl:input message="tns:sayHello" name="sayHello">
+    </wsdl:input>
+      <wsdl:output message="tns:sayHelloResponse" name="sayHelloResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHelloLocation">
+      <wsdl:input message="tns:sayHelloLocation" name="sayHelloLocation">
+    </wsdl:input>
+      <wsdl:output message="tns:sayHelloLocationResponse" name="sayHelloLocationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HelloIFSoapBinding" type="tns:HelloIF">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="sayHello">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="sayHello">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="sayHelloResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sayHelloLocation">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="sayHelloLocation">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="sayHelloLocationResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HelloIF">
+    <wsdl:port binding="tns:HelloIFSoapBinding" name="HelloIF">
+      <soap:address location="http://localhost:8010/helloHolder/HelloIF"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

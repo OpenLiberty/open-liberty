@@ -22,6 +22,7 @@ src: \
   test-applications/helloClient/src,\
   test-applications/helloClientDDMerge/src,\
   test-applications/helloClientServiceResource/src,\
+  test-applications/helloHolder/src,\
   test-applications/helloServer/src,\
   test-applications/httpConduitProperties/src,\
   test-applications/pureCXF/src,\
@@ -75,30 +76,32 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
-  	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
-	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-ts;version=2.6.0,\
-	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version=2.6.0,\
-	org.springframework:spring-aop;version=3.0.7.RELEASE,\
-	org.springframework:spring-asm;version=3.0.7.RELEASE,\
-	org.springframework:spring-beans;version=3.0.7.RELEASE,\
-	org.springframework:spring-context;version=3.0.7.RELEASE,\
-	org.springframework:spring-core;version=3.0.7.RELEASE,\
-	org.springframework:spring-expression;version=3.0.7.RELEASE,\
-	org.springframework:spring-web;version=3.0.7.RELEASE,\
+	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-dv;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-ts;version='2.6.0',\
+	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version='2.6.0',\
+	org.springframework:spring-aop;version='3.0.7.RELEASE',\
+	org.springframework:spring-asm;version='3.0.7.RELEASE',\
+	org.springframework:spring-beans;version='3.0.7.RELEASE',\
+	org.springframework:spring-context;version='3.0.7.RELEASE',\
+	org.springframework:spring-core;version='3.0.7.RELEASE',\
+	org.springframework:spring-expression;version='3.0.7.RELEASE',\
+	org.springframework:spring-web;version='3.0.7.RELEASE',\
 	fattest.simplicity,\
 	com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.ws.org.slf4j.jdk14;version=latest
+	com.ibm.ws.org.slf4j.jdk14;version=latest,\
+	slf4j.api,\
+	org.apache.commons.logging
   

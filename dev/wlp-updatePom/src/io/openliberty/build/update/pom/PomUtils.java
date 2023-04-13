@@ -47,13 +47,13 @@ public class PomUtils {
 
     public static void writePom(Model pomModel, OutputStream outputStream) throws Exception {
         MavenXpp3Writer writer = new MavenXpp3Writer();
-        try ( OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream) ) {
+        try (OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream)) {
             writer.write(streamWriter, pomModel);
         }
     }
 
     protected static final int BUF_SIZE = 32 * 1024;
-    protected static final String POM_PREFIX_PATH = "META-INF/maven/dev";
+    protected static final String POM_PREFIX_PATH = "META-INF/maven/dev/";
 
     public static ByteArrayInputStream writePom(Model pomModel) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(BUF_SIZE);

@@ -19,13 +19,14 @@
 	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator" />
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.net.URLPermission" name="http://192.168.1.6:8010/helloServer/PeopleService" actions="POST:Accept,SOAPAction,User-Agent" />
+	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/helloHolder/HelloIF" actions="GET:" />
 	<javaPermission className="java.security.SecurityPermission" name="getPolicy"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
   	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get" />
 	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
   	<javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" />
-	
+  	
 	<!-- Trace logging and debug are turned on to enable feature logging -->
-	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.*=debug"/>
+	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.*=debug"/>
 	
 </server>
