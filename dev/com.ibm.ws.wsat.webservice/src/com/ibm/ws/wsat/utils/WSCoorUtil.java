@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -208,7 +208,13 @@ public class WSCoorUtil {
         if (isServer) {
             setupBindingOperationInfo((SoapMessage) msg);
             BindingOperationInfo boi = ex.getBindingOperationInfo();
-            ep = pe.getEffectiveServerRequestPolicy(ei, boi, msg);
+            // This may be null if invoking a SOAP Provider WebService acting as a gateway
+            if (boi == null)
+                boi = getBindingOperationForInvoke(ex);
+            if (boi != null)
+                ep = pe.getEffectiveServerRequestPolicy(ei, boi, msg);
+            else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "isOptional", "Could not determine BindingOperationInfo");
         } else {
             Conduit conduit = ex.getConduit(msg);
             BindingOperationInfo boi = ex.getBindingOperationInfo();
@@ -229,6 +235,19 @@ public class WSCoorUtil {
         }
 
         return result;
+    }
+
+    private static BindingOperationInfo getBindingOperationForInvoke(Exchange ex) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getBindingOperationForInvoke", ex != null);
+
+        BindingOperationInfo boi = ServiceModelUtil.getOperationForWrapperElement(ex, new QName("http://cxf.apache.org/jaxws/provider", "invoke"), false);
+        if (boi == null)
+            boi = ServiceModelUtil.getOperation(ex, "invoke");
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "getBindingOperationForInvoke", boi);
+        return boi;
     }
 
     public static AssertionInfo checkWSATAssertion(SoapMessage message) {

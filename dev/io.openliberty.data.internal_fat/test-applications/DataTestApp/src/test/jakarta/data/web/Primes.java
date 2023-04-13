@@ -23,10 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Count;
-import jakarta.data.repository.Exists;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -40,6 +36,11 @@ import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Count;
+import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Filter;
 
 /**
  * Repository with data that is pre-populated.
@@ -193,7 +194,7 @@ public interface Primes {
 
     @Filter(by = "id", op = Compare.LessThan)
     @Filter(by = "name", op = Compare.EndsWith)
-    @Filter(as = Filter.Type.OR, by = "id", op = Compare.Between)
+    @Filter(as = Filter.Type.Or, by = "id", op = Compare.Between)
     @Filter(by = "name", op = Compare.EndsWith)
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,

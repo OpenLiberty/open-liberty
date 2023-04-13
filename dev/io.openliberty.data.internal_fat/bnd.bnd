@@ -49,6 +49,7 @@ fat.test.databases: true
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
   fattest.simplicity;version=latest,\
+  io.openliberty.data,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
