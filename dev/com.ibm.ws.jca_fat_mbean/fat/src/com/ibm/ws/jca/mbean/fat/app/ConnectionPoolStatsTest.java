@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -37,6 +38,9 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConnectionManager;
+import com.ibm.websphere.simplicity.config.DataSource;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -150,12 +154,28 @@ public class ConnectionPoolStatsTest {
     }
 
     /**
-     * Test that the MaxConnectionsLimit value is correct after first connection request.
+     * Test that the MaxConnectionsLimit value is correct after first connection request and
+     * after a dynamic update of maximum connections.
      */
     @Test
     public void testGetMaxConnectionsLimit() throws Exception {
         final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+		// run test, check for 50 
         runInServlet(testName.getMethodName(), fvtweb);
+
+        // Dynamically change the maximum connections while server is running.
+        ServerConfiguration clone = server.getServerConfiguration().clone();
+        DataSource ds1_maxconlimit = clone.getDataSources().getBy("id", "ds1_maxconlimit");
+        String cmr = ds1_maxconlimit.getConnectionManagerRef();
+        ConnectionManager cm = clone.getConnectionManagers().getBy("id", cmr);
+        cm.setMaxPoolSize("20");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(clone);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // run test again, check for 20
+        runInServlet(testName.getMethodName(), fvtweb);
+
     }
 
     /**
