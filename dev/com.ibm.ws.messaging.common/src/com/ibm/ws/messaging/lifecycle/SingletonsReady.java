@@ -63,8 +63,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
                 "singletons.target=(id=unbound)",
                 "allSingletons.cardinality.minimum=100000"})
 public final class SingletonsReady {
-    private static final TraceComponent tc = Tr.register(SingletonsReady.class);
-
+    private static final TraceComponent tc = Tr.register(SingletonsReady.class); 
     private enum AMBIGUOUS_ENTRY implements Singleton {INSTANCE};
 
     private static final AtomicReference<SingletonsReady> CURRENT = new AtomicReference<>();
@@ -145,7 +144,7 @@ public final class SingletonsReady {
             debug(this, tc, "Messaging singletons are now available: ", impls);
             debug(this, tc, "Messaging singletons also available as: ", intfs);
         }
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "<init>");
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "<init>", "System.identityHashCode="+System.identityHashCode(SingletonsReady.class));
     }
 
     @Deactivate
@@ -163,6 +162,7 @@ public final class SingletonsReady {
      */
     public static <T extends Singleton> T requireService(Class<T> type) {
         SingletonsReady current = CURRENT.get();
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) debug(tc, "requireService CURRENT: ", current, "IdentityHashCode: ", System.identityHashCode(SingletonsReady.class));
         if (current == null)
             throw new LifecycleError("Singletons are not yet ready. Examine the call stack for a service component where a dependency on " + SingletonsReady.class.getSimpleName() + " can be declared to resolve this error.");
         Object value = current.singletonMap.get(type);

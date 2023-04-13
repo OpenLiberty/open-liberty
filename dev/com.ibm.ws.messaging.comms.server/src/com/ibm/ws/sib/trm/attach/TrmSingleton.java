@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.sib.comms.ClientConnection;
 import com.ibm.ws.sib.comms.ComponentData;
 import com.ibm.ws.sib.comms.DirectConnection;
 import com.ibm.ws.sib.comms.MEConnection;
+import com.ibm.ws.sib.mfp.MessageEncodeFailedException;
 import com.ibm.ws.sib.mfp.trm.TrmClientBootstrapReply;
 import com.ibm.ws.sib.mfp.trm.TrmClientBootstrapRequest;
 import com.ibm.ws.sib.mfp.trm.TrmFirstContactMessage;
@@ -81,9 +82,8 @@ public final class TrmSingleton implements
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "handShake", new Object[] { cc, data });
 
-        boolean ok = true;
-        byte[] reply = null;
-
+        TrmClientBootstrapRequest cbrq;
+        TrmClientBootstrapReply cbrp;
         try {
             TrmMessageFactory mf = CommsServerServiceFacade.getTrmMessageFactory();
             TrmFirstContactMessage fcm = mf.createInboundTrmFirstContactMessage(data, 0, data.length);
@@ -92,82 +92,105 @@ public final class TrmSingleton implements
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(tc, "Received " + fcmt.toString() + " msg");
 
-            TrmClientBootstrapRequest cbrq = fcm.makeInboundTrmClientBootstrapRequest();
-            TrmClientBootstrapReply cbrp = mf.createNewTrmClientBootstrapReply();
-            //set return code to NOK
-            cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_NOK);
+            cbrq = fcm.makeInboundTrmClientBootstrapRequest();
+            cbrp = mf.createNewTrmClientBootstrapReply();
+            
+        } catch (Exception e) {
+        	// The request is so badly formed that we will not be able to send a response.
+            FFDCFilter.processException(e, "" + ".handShake",
+                                        TrmConstantsImpl.PROBE_18, this);
+            SibTr.exception(tc, e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "handShake");
+            return null;
+        }
+        
+        List<String> failureReason = new ArrayList<>();
+        try {
+        	// Set return code to NOK until we have a more explicit one.
+        	cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_NOK);
 
-            cbrp.setEndPointData(null); // Keep MFP happy
-            cbrp.setBusName(null);
-            cbrp.setSubnetName(null);
-            cbrp.setMessagingEngineName(null);
+        	cbrp.setEndPointData(null); // Keep MFP happy
+        	cbrp.setBusName(null);
+        	cbrp.setSubnetName(null);
+        	cbrp.setMessagingEngineName(null);
 
-            String bus = cbrq.getBusName();
-            String credentialType = cbrq.getCredentialType();
-            String userid = cbrq.getUserid();
-            String password = cbrq.getPassword();
-            String targetName = cbrq.getTargetGroupName();
-            String targetType = cbrq.getTargetGroupType();
-            String targetSignificance = cbrq.getTargetSignificance();
-            String targetTransportChain = cbrq.getTargetTransportChain();
-            String connectionProximity = cbrq.getConnectionProximity();
-            String connectionMode = cbrq.getConnectionMode();
+        	String bus = cbrq.getBusName();
+        	String credentialType = cbrq.getCredentialType();
+        	String userid = cbrq.getUserid();
+        	String password = cbrq.getPassword();
+        	String targetName = cbrq.getTargetGroupName();
+        	String targetType = cbrq.getTargetGroupType();
+        	String targetSignificance = cbrq.getTargetSignificance();
+        	String targetTransportChain = cbrq.getTargetTransportChain();
+        	String connectionProximity = cbrq.getConnectionProximity();
+        	String connectionMode = cbrq.getConnectionMode();
 
-            // connectionMode is a schema update so will contain null when a WAS 6.0 client connects due to the     LIDB3645
-            // schema propagation compatibility support                                                             LIDB3645
-            if (connectionMode == null) //LIDB3645
-                connectionMode = SibTrmConstants.CONNECTION_MODE_DEFAULT; //LIDB3645
+        	// connectionMode is a schema update so will contain null when a WAS 6.0 client connects due to the     LIDB3645
+        	// schema propagation compatibility support                                                             LIDB3645
+        	if (connectionMode == null) //LIDB3645
+        		connectionMode = SibTrmConstants.CONNECTION_MODE_DEFAULT; //LIDB3645
 
-            JsAdminService admnService = CommsServerServiceFacade.getJsAdminService();
+        	JsAdminService admnService = CommsServerServiceFacade.getJsAdminService();     
+        	if (admnService == null) {       		
+        		cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIResourceException);
+        		failureReason.add("Messaging engine not activated");
+        		cbrp.setFailureReason(failureReason);
 
-            JsMessagingEngine local_ME = null;
+        	} else {
+        		final JsMessagingEngine local_ME = admnService.getMessagingEngine(JsConstants.DEFAULT_BUS_NAME, JsConstants.DEFAULT_ME_NAME); 
 
-            try {
-                local_ME = admnService.getMessagingEngine(JsConstants.DEFAULT_BUS_NAME, JsConstants.DEFAULT_ME_NAME);
-            } catch (Exception e) {
-                // Should not come here at all as COMMS always have runtime service thus ME.
-                //sends return code as NOK.
-                cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_NOK);
-            }
+        		if (local_ME == null) {
+        			cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIResourceException);
+        			failureReason.add("Messaging engine not initialized");
+        			cbrp.setFailureReason(failureReason);
+        		
+        		} else {	
+        			// Get a connection to the messaging engine.      				
+        			try {
+        				SICoreConnectionFactory scf = (SICoreConnectionFactory) local_ME.getMessageProcessor();
+        				SICoreConnection sc = scf.createConnection(cc, credentialType, userid, password);
+        				cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_OK);
+        				cc.setSICoreConnection(sc);
+        				
+        			} catch (SINotAuthorizedException e) {
+        				//No FFDC code needed
+        				cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SINotAuthorizedException);
+        				failureReason.add(e.getMessage());
+        				cbrp.setFailureReason(failureReason);
+        			} catch (SIResourceException e) {
+        				//No FFDC code needed
+        				cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIResourceException);
+        				failureReason.add(e.getMessage());
+        				cbrp.setFailureReason(failureReason);
+        			} catch (SIAuthenticationException e) {
+        				//No FFDC code needed
+        				cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIAuthenticationException);
+        				failureReason.add(e.getMessage());
+        				cbrp.setFailureReason(failureReason);
+        			}
 
-            SICoreConnection sc = null;
-            List failureReason = new ArrayList();
-            if (local_ME != null) {
-                try {
-                    //only if matching ME .. proceed and get connection
-                    SICoreConnectionFactory scf = (SICoreConnectionFactory) local_ME.getMessageProcessor();
-                    sc = scf.createConnection(cc, credentialType, userid, password);
-                    cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_OK);
-                    cc.setSICoreConnection(sc);
-                } catch (SINotAuthorizedException e) {
-                    //No FFDC code needed
-                    cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SINotAuthorizedException);
-                    failureReason.add(e.getMessage());
-                    cbrp.setFailureReason(failureReason);
-                } catch (SIResourceException e) {
-                    //No FFDC code needed
-                    cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIResourceException);
-                    failureReason.add(e.getMessage());
-                    cbrp.setFailureReason(failureReason);
-                } catch (SIAuthenticationException e) {
-                    //No FFDC code needed
-                    cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_SIAuthenticationException);
-                    failureReason.add(e.getMessage());
-                    cbrp.setFailureReason(failureReason);
-                }
-                reply = cbrp.encode(cc);
-            }
+        		}
+        	}
 
         } catch (Exception e) {
-            FFDCFilter.processException(e, "" + ".handShake",
-                                        TrmConstantsImpl.PROBE_19, this);
-            SibTr.exception(tc, e);
-
+        	FFDCFilter.processException(e, "" + ".handShake", TrmConstantsImpl.PROBE_19, this);
+        	SibTr.exception(tc, e);
+        	// Unexpected exception, reset the return code to NOK.
+        	cbrp.setReturnCode(TrmConstantsImpl.RETURN_CODE_NOK);
+        	failureReason.add(e.getMessage());
+        	cbrp.setFailureReason(failureReason);
         }
 
+        byte[] reply = null;
+		try {
+			reply = cbrp.encode(cc);
+		} catch (MessageEncodeFailedException e) {
+			FFDCFilter.processException(e, "" + ".handShake", TrmConstantsImpl.PROBE_20, this);
+        	SibTr.exception(tc, e);
+		}
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "handShake", reply);
-
+        	SibTr.exit(tc, "handShake", reply);
         return reply;
     }
 
