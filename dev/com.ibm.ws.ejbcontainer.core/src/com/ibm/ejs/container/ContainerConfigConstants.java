@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1115,4 +1115,15 @@ public class ContainerConfigConstants {
      * <p><b>Property values:</b> true or false (default true)
      */
     public static final String createInstanceAtStartup = "com.ibm.websphere.ejbcontainer.createInstanceAtStart"; // PI23717
+
+    /**
+     * Property that allows the user to indicate that all Singleton beans should be
+     * started at application start, similar to using the <code>@Startup</code> annotation.
+     *
+     * Singleton beans without the <code>@Startup</code> annotation will be started after all
+     * startup beans have started and incoming work has been unblocked.
+     *
+     * <p><b>Property values:</b> true or false (default false)
+     */
+    public static final String startAllSingletons = "io.openliberty.ejb.startAllSingletons";
 }

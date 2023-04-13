@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ejs.csi;
+
+import static com.ibm.ejs.container.ContainerProperties.StartAllSingletons;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -174,17 +176,17 @@ public class EJBApplicationMetaData {
     /**
      * This ArrayList contains a list of all Singleton Session Beans that have not been
      * marked as "Startup" via annotations or XML that should still be started because
-     * the server has been configured to create a checkpoint after application start.
+     * the server has been configured to start all singleton beans.
      *
      * Singleton beans that have been explicitly configured for deferred initialization
-     * will not be included in this list. Checkpoint processing only changes the default
-     * behavior; it does not override explicit configuration options.
+     * will not be included in this list. The server wide configuration option only changes
+     * the default behavior; it does not override explicit bean configuration options.
      *
      * <p>
      * This list is null until the first non-startup singleton is found. This list is always
      * null after the application has started.
      */
-    private List<J2EEName> ivCheckpointSingletonList;
+    private List<J2EEName> ivNonStartupSingletonList;
 
     /**
      * List of singletons that have dependencies on other singletons. A LinkedHashMap is
@@ -437,11 +439,11 @@ public class EJBApplicationMetaData {
                 ivStartupSingletonList = new ArrayList<J2EEName>();
             }
             ivStartupSingletonList.add(bmd.j2eeName);
-        } else if (isCheckpointApplications && !bmd.ivDeferEJBInitialization) {
-            if (ivCheckpointSingletonList == null) {
-                ivCheckpointSingletonList = new ArrayList<J2EEName>();
+        } else if (StartAllSingletons && !bmd.ivDeferEJBInitialization) {
+            if (ivNonStartupSingletonList == null) {
+                ivNonStartupSingletonList = new ArrayList<J2EEName>();
             }
-            ivCheckpointSingletonList.add(bmd.j2eeName);
+            ivNonStartupSingletonList.add(bmd.j2eeName);
         }
 
         if (dependsOnLinks != null) {
@@ -676,10 +678,10 @@ public class EJBApplicationMetaData {
         // Signal that the application is "fully started".
         unblockThreadsWaitingForStart(); // F743-15941
 
-        // Non-startup singletons may now be created when starting server for checkpoint
-        if (ivCheckpointSingletonList != null) {
-            createSingletonBeansForCheckpoint();
-            ivCheckpointSingletonList = null;
+        // Non-startup singletons may now be created when configured to start all singletons
+        if (ivNonStartupSingletonList != null) {
+            createNonStartupSingletonBeans();
+            ivNonStartupSingletonList = null;
         }
 
         // Now that the application is unblocked, preloading of the bean pools may begin.
@@ -1020,26 +1022,26 @@ public class EJBApplicationMetaData {
     }
 
     /**
-     * Creates non-startup singleton beans when the server has been started for
-     * checkpoint after application start.
+     * Creates non-startup singleton beans when the server has been configured to
+     * start all singleton beans after application start.
      *
      * Unlike startup singleton beans, the application may finish starting even
      * if a non-startup singleton fails to initialize.
      */
-    private void createSingletonBeansForCheckpoint() {
+    private void createNonStartupSingletonBeans() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (EJSPlatformHelper.isZOSCRA()) {
             if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(tc, "createSingletonBeansForCheckpoint: skipped in adjunct process");
+                Tr.debug(tc, "createNonStartupSingletonBeans: skipped in adjunct process");
             return;
         }
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "createSingletonBeansForCheckpoint : " + ivCheckpointSingletonList.size());
+            Tr.entry(tc, "createNonStartupSingletonBeans : " + ivNonStartupSingletonList.size());
 
-        for (int i = 0, size = ivCheckpointSingletonList.size(); i < size; i++) {
-            J2EEName singletonName = ivCheckpointSingletonList.get(i);
+        for (int i = 0, size = ivNonStartupSingletonList.size(); i < size; i++) {
+            J2EEName singletonName = ivNonStartupSingletonList.get(i);
             try {
                 EJSHome home = (EJSHome) EJSContainer.homeOfHomes.getHome(singletonName);
                 if (home == null) {
@@ -1053,15 +1055,15 @@ public class EJBApplicationMetaData {
                 }
             } catch (Throwable t) {
                 // Post an FFDC, log the failure, but allow application start to continue.
-                // The application would start without checkpoint; the bean just won't be accessible.
-                FFDCFilter.processException(t, CLASS_NAME + ".createSingletonBeansForCheckpoint", "1052", this);
+                // The application would otherwise start; the bean just won't be accessible.
+                FFDCFilter.processException(t, CLASS_NAME + ".createNonStartupSingletonBeans", "1052", this);
                 Tr.error(tc, "UNEXPECTED_EJB_START_FAILURE_CNTR0149E", new Object[] { singletonName.getComponent(),
                                                                                       singletonName.getModule(), t });
             }
         }
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "createSingletonBeansForCheckpoint");
+            Tr.exit(tc, "createNonStartupSingletonBeans");
     }
 
     /**
@@ -1342,7 +1344,7 @@ public class EJBApplicationMetaData {
                 // internal state.
                 ivSingletonDependencies = null;
                 ivStartupSingletonList = null;
-                ivCheckpointSingletonList = null;
+                ivNonStartupSingletonList = null;
                 ivQueuedNonPersistentTimers = null;
                 ivPreloadBeanPools = null;
             }
