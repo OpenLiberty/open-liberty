@@ -10,7 +10,8 @@ Subsystem-Name: Social Media Login 1.0
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
   io.openliberty.socialLogin1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
-  com.ibm.websphere.appserver.authFilter-1.0
+  com.ibm.websphere.appserver.authFilter-1.0, \
+  com.ibm.websphere.appserver.oauth-2.0
 -bundles=\
   com.ibm.ws.security.common.jsonwebkey, \
   io.openliberty.org.apache.commons.codec, \
