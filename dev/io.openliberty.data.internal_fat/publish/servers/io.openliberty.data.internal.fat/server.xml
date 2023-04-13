@@ -24,19 +24,31 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <application location="DataTestApp.war"/>
+  <application location="DataTestApp.war">
+    <classloader commonLibraryRef="DerbyLib"/>
+  </application>
 
   <application location="ProviderTestApp.war"/>
 
-  <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
-  </dataSource>
+  <authData id="auth1" user="user1" password="pwd1"/>
+  <authData id="auth2" user="user2" password="pwd2"/>
 
+  <!-- For DataSourceDefinition java:app/jdbc/DerbyDataSource which is used by the Vehicles repository -->
   <library id="DerbyLib">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
 
+  <!-- For all other repositories: -->
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+  </dataSource>
+
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+
   <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>

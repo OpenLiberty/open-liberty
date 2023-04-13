@@ -43,7 +43,8 @@ import junit.framework.Assert;
  */
 @RunWith(FATRunner.class)
 public class JSF23CDIInjectionTests extends CDITestBase {
-    private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
+    protected static final Class<?> c = JSF23CDIInjectionTests.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
     private static final String CDI_INJECTION_TESTS_APP_NAME = "CDIInjectionTests.war";
     private static final String ACTION_LISTENER_INJECTION_APP_NAME = "ActionListenerInjection.war";
 
@@ -115,7 +116,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23CDIInjectionTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
 
     }
 

@@ -17,8 +17,7 @@ src: \
     fat/src
 
 fat.project: true
-fat.test.databases: true
-tested.features: persistence-3.1, persistenceContainer-3.1, enterpriseBeansLite-4.0, servlet-6.0, jdbc-4.2, jndi-1.0, xmlbinding-4.0, checkpoint-1.0
+#tested.features: persistence-3.1, persistenceContainer-3.1, enterpriseBeansLite-4.0, servlet-6.0, jdbc-4.2, jndi-1.0, xmlbinding-4.0, checkpoint-1.0
 
 javac.source: 11
 javac.target: 11

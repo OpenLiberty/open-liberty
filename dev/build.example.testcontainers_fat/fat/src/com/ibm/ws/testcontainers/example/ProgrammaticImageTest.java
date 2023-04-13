@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -75,7 +75,7 @@ public class ProgrammaticImageTest {
      *
      * When testing locally a DefaultImageNameSubstitutor will be used and postgres:14.1-alpine will be returned as normal.
      * When testing on a remote docker host, our internal ArtifactoryImageNameSubstitutor will be used and
-     *   wasliberty-docker-remote.artifactory.swg-devops.com/postgres:14.1-alpine will be returned
+     *   [ARTIFACTORY_REGISTRY]/wasliberty-docker-remote/postgres:14.1-alpine will be returned
      *
      * </pre>
      *

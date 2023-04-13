@@ -14,9 +14,10 @@ package test.jakarta.data.jpa.web;
 
 import java.util.List;
 
-import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+
+import io.openliberty.data.repository.Delete;
 
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.

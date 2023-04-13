@@ -52,6 +52,10 @@ public class LargeProjectRepeatActions {
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
 
         RepeatTests rTests = null;
 
@@ -70,10 +74,10 @@ public class LargeProjectRepeatActions {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
-                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE9Action.ID, addEE9Feature, removeFeatureList, insertFeatureList));
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE9Action.ID, addEE9Feature, removeFeatureList, insertFeatureList, serverPaths));
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
-                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE10Action.ID, addEE10Feature, removeFeatureList, insertFeatureList));
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE10Action.ID, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths));
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
@@ -93,17 +97,17 @@ public class LargeProjectRepeatActions {
             return rTests.andWith(currentRepeat);
         }
     }
-    
+
     /**
      * Create the requests level of EE action and then add or remove the requested features.
-     * 
+     *
      * @param featureType
      * @param addEEFeature
      * @param removeFeatureList
      * @param insertFeatureList
      * @return
      */
-    public static FeatureReplacementAction adjustFeatures(String featureType, String addEEFeature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+    public static FeatureReplacementAction adjustFeatures(String featureType, String addEEFeature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
         FeatureReplacementAction featureAction = null;
         if (featureType.equals(JakartaEE9Action.ID)) {
             featureAction = new JakartaEE9Action();
@@ -122,7 +126,9 @@ public class LargeProjectRepeatActions {
         if (insertFeatureList != null) {
             featureAction.addFeatures(insertFeatureList);
         }
-        
+        if (serverPaths != null && serverPaths.length != 0) {
+            featureAction.forServerConfigPaths(serverPaths);
+        }
         return featureAction;
     }
 

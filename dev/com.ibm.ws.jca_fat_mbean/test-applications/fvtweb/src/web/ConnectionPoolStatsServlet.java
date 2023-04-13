@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -407,6 +407,22 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
         }
     }
 
+    public void testGetMaxConnectionsLimit(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        Connection conn = ds1.getConnection();
+        try {
+            ObjectName objName = getConnPoolStatsMBeanObjName("ds1");
+            conn.close();
+            int maxConnectionsLimit = getMonitorData(objName, "MaxConnectionsLimit");
+            if (maxConnectionsLimit != 50) {
+                throw new Exception("Expected maximum connections to be 50, but was: " + maxConnectionsLimit);
+            }
+
+        } finally {
+            if (conn != null && !conn.isClosed())
+                conn.close();
+        }
+    }
+
     public void testMbeanAttributeList(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         List<String> attributes = new ArrayList<String>(Arrays.asList("CreateCount",
                                                                       "DestroyCount",
@@ -416,7 +432,8 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
                                                                       "FreeConnectionCount",
                                                                       "InUseTime",
                                                                       "WaitTimeDetails",
-                                                                      "InUseTimeDetails"));
+                                                                      "InUseTimeDetails",
+                                                                      "MaxConnectionsLimit"));
         int attributeListSize = attributes.size();
         ObjectName objName = getConnPoolStatsMBeanObjName("ds1");
         MBeanInfo mi = mbeanServer.getMBeanInfo(objName);

@@ -2614,7 +2614,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.4.0</version>
+      <version>9.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3119,7 +3119,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3134,7 +3134,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client-api</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3159,7 +3159,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3174,12 +3174,12 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core-spi</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>4.7.2.Final</version>
+      <version>4.7.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3189,7 +3189,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3204,12 +3204,12 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>4.7.2.Final</version>
+      <version>4.7.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3219,7 +3219,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3229,7 +3229,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-rxjava2</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3244,7 +3244,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-servlet-initializer</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3264,7 +3264,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-validator-provider</artifactId>
-      <version>6.2.0.Final</version>
+      <version>6.2.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
@@ -3664,27 +3664,27 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-tree</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>9.4</version>
+      <version>9.5</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

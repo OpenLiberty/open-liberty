@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -737,6 +737,10 @@ error.checkpoint.workarea.restore.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f
 info.checkpoint.restore.failed=CWWKE0957I: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl.
 info.checkpoint.restore.failed.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor.  A kiszolg\u00e1l\u00f3 az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl indult el.
 info.checkpoint.restore.failed.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert be van \u00e1ll\u00edtva a websphere.java.security tulajdons\u00e1g a bootstrap.properties f\u00e1jlban. Ez a tulajdons\u00e1g enged\u00e9lyezi a Java biztons\u00e1gkezel\u0151t, \u00e9s nem \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont eset\u00e9n.
+error.checkpoint.securitymanager.not.supported.explanation=A Liberty nem t\u00e1mogatja a Java biztons\u00e1gkezel\u0151t egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor. A Java biztons\u00e1gkezel\u0151 elavult, a JEP 411 szerint.
+error.checkpoint.securitymanager.not.supported.useraction=T\u00e1vol\u00edtsa el a websphere.java.security tulajdons\u00e1got a bootstrap.properties f\u00e1jlb\u00f3l.
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

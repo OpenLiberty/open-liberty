@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,9 @@ import javax.json.JsonObject;
 import org.jose4j.jwt.NumericDate;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -43,6 +45,8 @@ import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.OSSkipRules.SkipIfISeries;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderClaimRepeatActions;
@@ -92,6 +96,9 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     // This allows us to use the same tests with a variety of claims without having to duplicate test cases
     @ClassRule
     public static RepeatTests r = RepeatTests.with(JwtBuilderClaimRepeatActions.asCollection()).andWith(JwtBuilderClaimRepeatActions.asSingle());
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
@@ -160,12 +167,13 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
-    @SkipForRepeat(JwtBuilderClaimRepeatActions.CollectionID)
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_create_id_defaultJWT() throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_CREATE_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, null);
@@ -198,11 +206,13 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_create_id_defaultJWT_consumeToken() throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "user2");
         expectationSettings.put("overrideSettings", testSettings);
@@ -384,8 +394,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_one() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-        expectationSettings.put(PayloadConstants.ISSUER, builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
+        //        expectationSettings.put(PayloadConstants.ISSUER, builderId);
 
         JSONArray parmarray = new JSONArray();
         parmarray.add("Client02");
@@ -430,7 +440,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_multiple() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONArray parmarray = new JSONArray();
@@ -476,7 +486,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_duplicates() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONArray parmarray = new JSONArray();
@@ -527,7 +537,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_duplicates_caseSensitive() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONArray parmarray = new JSONArray();
@@ -574,7 +584,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_nullListEntry() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONArray parmarray = new JSONArray();
@@ -621,7 +631,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_audience_emptyListEntry() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONArray parmarray = new JSONArray();
@@ -673,7 +683,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_expirationTime() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -845,7 +855,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_notBefore() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -973,7 +983,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_jwtId_cfgFalse_apiFalse() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1020,7 +1030,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_jwtId_cfgFalse_apiTrue() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1066,7 +1076,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_jwtId_cfgTrue_apiTrue() throws Exception {
 
         String builderId = "jwt_jtiTrue";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1112,7 +1122,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_jwtId_cfgTrue_apiFalse() throws Exception {
 
         String builderId = "jwt_jtiTrue";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1160,7 +1170,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_subject_validUser() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1203,7 +1213,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_subject_invalidUser() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1332,7 +1342,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_issuer_validIssuer() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -1459,7 +1469,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_one() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -1509,7 +1519,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_multiple() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -1559,7 +1569,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_azp_causeItsSpecial() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -1717,7 +1727,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_emptyValueInList() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -1817,7 +1827,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_exp_long() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -1911,7 +1921,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_iat_long() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2006,7 +2016,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_nbf_long() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2100,7 +2110,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_iss_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2195,7 +2205,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_token_type_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2290,7 +2300,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_sub_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2385,7 +2395,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_jti_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2482,7 +2492,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_alg_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2530,7 +2540,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_claim_kid_String() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // key_id is really a header attribute, but, we're add a claim to the payload with a value, so, we can't use the
         // normal tooling to add an expectation for it.  We won't add it to the settings that we build the expectations from
@@ -2572,7 +2582,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_extraClaim() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -2615,7 +2625,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_nonExistant_extraClaim() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json array.  Add that array into the json object of things to set
@@ -2652,7 +2662,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_defaultClaim_exp() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2695,7 +2705,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_defaultClaim_iss() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2731,7 +2741,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_defaultClaim_iat() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2767,7 +2777,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_defaultClaim_tokenType() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2864,7 +2874,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_apiClaim_nbf() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2906,7 +2916,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_apiClaim_sub() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims to remove into a json object.  Add that object into the json object of things to set
@@ -2948,7 +2958,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_apiClaim_aud() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         JSONArray parmarray = new JSONArray();
         parmarray.add("Client02");
@@ -2984,7 +2994,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_remove_apiClaim_jti() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -3223,7 +3233,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put("overrideSettings", testSettings);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
@@ -3264,7 +3274,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3315,7 +3325,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3366,7 +3376,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -3595,7 +3605,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         // Now, add any override values - for this test, there are none
         // Invoke the builder app to create a token (using one builder), then create a builder for another builder, load all claims from the token into the second builder
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
         expectationSettings.put("overrideSettings", testSettings);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
@@ -3984,7 +3994,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -4130,7 +4140,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -4275,7 +4285,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
         JSONObject baseSettings = BuilderHelpers.setClaimsFromToken(jwtToken);
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // build settings that will tell the test app how to run/what to pass to the "claimFrom" api
         // give it a flag that says jwt string, and then pass the 3 part jwt token string
@@ -4542,7 +4552,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS256_key_string() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -4850,7 +4860,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS256_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -4894,7 +4904,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS384_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -4937,7 +4947,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_RS512_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -4980,7 +4990,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES256_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5023,7 +5033,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES384_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5067,7 +5077,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_ES512_key_privKey() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5111,7 +5121,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS256
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5156,7 +5166,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS384
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5200,7 +5210,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
         // TODO - need to add code to handle non-Java 11 case handling - it may/may not make sense depending on whether we can get through the test client to actually call the builder with the alg set to PS512
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5243,7 +5253,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS384_key_string() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5287,7 +5297,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_signWith_sigAlg_HS512_key_string() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5548,13 +5558,15 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
      * </UL>
      * </OL>
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @SkipForRepeat(JwtBuilderClaimRepeatActions.SingleID)
     @Mode(TestMode.LITE)
     @Test
     public void JwtBuilderAPIBasicTests_multiple_apis_and_consumeToken() throws Exception {
 
         String builderId = null;
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpSecureUrlBase(builderServer) + "jwt/defaultJWT");
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         // set freeform claims into a json object.  Add that object into the json object of things to set
@@ -5608,7 +5620,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5689,7 +5701,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_RS256() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5729,7 +5741,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_ES384() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5769,7 +5781,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A256GCM_signWith_HS512() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5810,7 +5822,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5891,7 +5903,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_RS384() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5931,7 +5943,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_ES512() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -5971,7 +5983,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS384_publicKey_A256GCM_signWith_HS256() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6012,7 +6024,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6093,7 +6105,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_RS512() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6133,7 +6145,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_ES256() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6173,7 +6185,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS512_publicKey_A256GCM_signWith_HS256() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6214,7 +6226,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS256_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6267,7 +6279,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS384_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6294,7 +6306,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_256_RS512_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6321,7 +6333,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_A192GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6374,7 +6386,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_RS256_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6400,7 +6412,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_goodBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6464,7 +6476,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_RSA_OAEP_RS256_publicKey_nullContentEncryptAlg() throws Exception {
 
         String builderId = "jwt1";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6490,7 +6502,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_nullContentEncryptAlg_goodBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6516,7 +6528,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_useSameSettingsAsBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6543,7 +6555,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_useDifferentKeyMgmtKeyAlgThanBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.KEY_MGMT_KEY_ALG_256, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6570,7 +6582,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_useDifferentPublicKeyThanBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();
@@ -6597,7 +6609,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_useDifferentContentEncryptAlgThanBuilderConfig() throws Exception {
 
         String builderId = "encryptJwtRS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.CONTENT_ENCRYPT_ALG_192);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results
         JSONObject testSettings = new JSONObject();

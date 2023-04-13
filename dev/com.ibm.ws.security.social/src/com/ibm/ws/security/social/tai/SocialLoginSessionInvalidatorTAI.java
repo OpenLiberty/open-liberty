@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionUtils;
 import com.ibm.ws.security.social.Constants;
@@ -36,7 +37,6 @@ import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.OidcLoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.SocialTaiRequest;
-import com.ibm.ws.security.social.web.utils.SocialWebUtils;
 import com.ibm.wsspi.security.tai.TAIResult;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
@@ -83,7 +83,8 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
         if (!isRunningBetaMode()) {
             return false;
         }
-        taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(req);
+        SocialTaiRequest socialTaiRequest = taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(req);
+        taiRequestHelper.requestShouldBeHandledByTAI(req, socialTaiRequest);
         logoutIfSessionInvalidated(req);
         return false;
     }
@@ -111,22 +112,36 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
             return;
         }
 
-        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request);
-        if (sessionInfo == null) {
+        SocialLoginConfig clientConfig = null;
+        try {
+            clientConfig = socialTaiRequest.getTheOnlySocialLoginConfig();
+        } catch (SocialLoginException e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session info coud not be retrieved from client cookies.");
+                Tr.debug(tc, "A unique social login config wasn't found for this request. Exception was " + e.getMessage());
             }
             return;
         }
-        
-        SocialLoginConfig clientConfig = SocialLoginTAI.getSocialLoginConfig(sessionInfo.getConfigId());
         if (clientConfig == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Client config for request could not be found. An error must have occurred initializing this request.");
             }
             return;
         }
+        if (!(clientConfig instanceof ConvergedClientConfig)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Client config not an instance of ConvergedClientConfig.");
+            }
+            return;
+        }
         
+        OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(request, (ConvergedClientConfig) clientConfig);
+        if (sessionInfo == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Session info could not be retrieved from client cookies.");
+            }
+            return;
+        }
+
         if (clientConfig instanceof OidcLoginConfigImpl) {
             OidcSessionUtils.logoutIfSessionInvalidated(request, sessionInfo, (OidcLoginConfigImpl) clientConfig);
         }

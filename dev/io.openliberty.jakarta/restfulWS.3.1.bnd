@@ -24,3 +24,7 @@ Export-Package: jakarta.ws.rs.*; version="3.1.0"
 
 -includeresource: \
    @${repo;jakarta.ws.rs:jakarta.ws.rs-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.ws.rs;artifactId=jakarta.ws.rs-api;version=3.1.0;scope=runtime
+

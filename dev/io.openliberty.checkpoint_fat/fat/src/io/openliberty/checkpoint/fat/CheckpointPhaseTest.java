@@ -71,16 +71,16 @@ public class CheckpointPhaseTest {
             assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
         server.startServer();
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
         assertEquals("Unexpected app code ran.", null, server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
 
         server.stopServer(false, "");
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
 
         server.stopServer(false, "");
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
@@ -98,13 +98,13 @@ public class CheckpointPhaseTest {
     public void testMultCheckpointNoClean() throws Exception {
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
 
         server.stopServer(false, "");
         server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, false /* clean start */,
                                       LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
@@ -122,6 +122,11 @@ public class CheckpointPhaseTest {
 
         assertNotNull("'CWWKC0460E:",
                       server.waitForStringInLogUsingMark(".* CWWKC0460E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
+    }
+
+    private void restoreServerCheckConsoleLogHeader(LibertyServer server) throws Exception {
+        server.checkpointRestore();
+        server.waitForStringInLog("Launching checkpointFATServer", 100);
     }
 
     @Before

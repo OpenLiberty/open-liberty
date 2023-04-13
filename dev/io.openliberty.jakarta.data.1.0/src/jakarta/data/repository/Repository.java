@@ -26,6 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Repository {
     static final String ANY_PROVIDER = "";
+    static final String DEFAULT_DATA_STORE = "";
+
+    String dataStore() default DEFAULT_DATA_STORE;
 
     String provider() default ANY_PROVIDER;
 }

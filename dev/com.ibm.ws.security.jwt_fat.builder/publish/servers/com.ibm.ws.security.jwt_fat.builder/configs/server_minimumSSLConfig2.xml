@@ -12,6 +12,7 @@
 	<jwtBuilder
 		id="defaultJWT"
 		signatureAlgorithm="RS256"
+		issuer="testIssuer"
 		keyStoreRef="configServerDefault"
 		keyAlias="configserverdefault" />
 

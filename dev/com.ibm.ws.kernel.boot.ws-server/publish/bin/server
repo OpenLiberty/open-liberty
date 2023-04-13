@@ -830,7 +830,7 @@ readServerEnv()
            fi ;;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
+        if var=`safeEcho "$line" | sed -e 's/^\([_[:alnum:]][_[:alnum:]]*\)=.*/\1/'`; then
            case $var in
            *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
@@ -867,6 +867,9 @@ criuEnvDefaults() {
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+  # Disable CRIU's use of HW breakpoints on restore.
+  # HW breakpoints are slower in some environments.
+  export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
 }
 
 ##
@@ -1052,6 +1055,16 @@ javaCmd()
     if [ $rc -eq 74 ] && [ -f "${X_LOG_DIR}/checkpoint/checkpoint.log" ]; then
       issueMessage --message:error.checkpoint.failed "${X_LOG_DIR}/checkpoint/checkpoint.log"
       cat "${X_LOG_DIR}/checkpoint/checkpoint.log"
+      # check if selinux is preventing net_diag feature in criu
+      CRIU_UNPRIVILEGED_ARGS=""
+      if [ $DO_CRIU_UNPRIVILEGED = true ]; then
+        CRIU_UNPRIVILEGED_ARGS="--unprivileged"
+      fi
+      criu "$CRIU_UNPRIVILEGED_ARGS" check "--feature=net_diag_raw" > /dev/null 2>&1
+      ckrc=$?
+      if [ $ckrc -ne 0 ]; then
+         issueMessage --message:error.checkpoint.failed.selinux.netdiag "${SERVER_OUTPUT_DIR}/workarea"
+      fi
     fi
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
@@ -1392,7 +1405,7 @@ criuRestore()
     rc=$?
     PID=`cat ${X_PID_FILE}`
     if [ $rc = 0 ]; then
-      # successful restore, not check server status
+      # successful restore, now check server status
       JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
       OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
@@ -1432,7 +1445,7 @@ restoreServer()
   BACKGROUND_RESTORE=$1
 
   if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
-    return 1
+    return 104
   fi
 
   # must check for --clean option before restoring
@@ -1440,7 +1453,7 @@ restoreServer()
     if [ -n "${option}" ]; then
       if [ -z "${option##--clean}" ]; then
         # never restore if --clean is specified
-        return 1
+        return 104
       fi
     fi
   done
@@ -1523,7 +1536,8 @@ case "$ACTION" in
     rc=$?
     if [ $rc = 0 ]; then
       exit 0
-    elif [ $rc -ne 1 ]; then
+    # 104 is the code for no image found to restore (or --clean is used)
+    elif [ $rc -ne 104 ]; then
       if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
         exit $rc
       fi
@@ -1604,7 +1618,8 @@ case "$ACTION" in
         rc=$?
         if [ $rc = 0 ]; then
           exit 0
-        elif [ $rc -ne 1 ]; then
+        # 104 is the code for no image found to restore (or --clean is used)
+        elif [ $rc -ne 104 ]; then
           if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
             exit $rc
           fi

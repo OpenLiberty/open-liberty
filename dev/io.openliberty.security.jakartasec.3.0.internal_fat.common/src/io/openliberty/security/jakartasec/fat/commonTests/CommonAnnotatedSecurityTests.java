@@ -29,6 +29,8 @@ import org.junit.Before;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
@@ -89,6 +91,28 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
             }
             Log.info(thisClass, "skipIfUseRedirectToOriginalResource",
                      "Test case is NOT using useRedirectToOriginalResource - App annotation of this test contains that setting - run test");
+            return false;
+        }
+    }
+
+    public static class skipIfWindows extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+
+            OperatingSystem currentOS = null;
+            try {
+                currentOS = Machine.getLocalMachine().getOperatingSystem();
+            } catch (Exception e) {
+                Log.info(thisClass, "isEnabled", "Encountered and exception trying to determine OS type - assume we'll need to run: " + e.getMessage());
+            }
+            Log.info(thisClass, "isEnabled", "OS: " + currentOS.toString());
+            if (OperatingSystem.WINDOWS != currentOS) {
+
+                Log.info(thisClass, "skipIfWindows", "Running on Windows - skip test");
+                testSkipped();
+                return true;
+            }
+            Log.info(thisClass, "skipIfWindows", "Not Running on Windows - run test");
             return false;
         }
     }

@@ -41,13 +41,17 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
   com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.cm;version=latest,\
   com.ibm.websphere.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
+  com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.persistence.jakarta;version=latest,\
+  com.ibm.ws.resource;version=latest,\
   com.ibm.ws.threading,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+  io.openliberty.data,\
   io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\

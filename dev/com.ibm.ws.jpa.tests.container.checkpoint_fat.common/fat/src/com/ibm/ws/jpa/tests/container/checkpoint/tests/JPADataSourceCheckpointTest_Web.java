@@ -241,7 +241,7 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
         try {
             if (CheckpointPhase.INACTIVE.equals(checkpointPhase)) {
                 // Verify that the server application started
-                Assert.assertNotNull(appName + " was expected to start, but did not", server.waitForStringInTraceUsingMark(MSG_APP_START));
+                Assert.assertNotNull(appName + " was expected to start, but did not", server.waitForStringInLog(MSG_APP_START, server.getDefaultTraceFile()));
                 // Make sure that the checkpoint was not requested
                 Assert.assertTrue("Expected a server checkpoint to be requested, but it was not", server.findStringsInTrace(MSG_CHECKPOINT).isEmpty());
                 // Verify that the application didn't restart after checkpoint
@@ -268,7 +268,7 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
                 Assert.assertTrue("Application restarted unexpectedly", server.findStringsInLogsUsingMark(MSG_APP_RESTART, server.getDefaultTraceFile()).isEmpty());
             } else {
                 // Verify that the server application started
-                Assert.assertNotNull(appName + " was expected to start, but did not", server.waitForStringInTraceUsingMark(MSG_APP_START));
+                Assert.assertNotNull(appName + " was expected to start, but did not", server.waitForStringInLog(MSG_APP_START, server.getDefaultTraceFile()));
                 // Make sure that the checkpoint was requested
                 Assert.assertFalse("Expected a server checkpoint to be requested, but it was not", server.findStringsInTrace(MSG_CHECKPOINT).isEmpty());
                 // Verify that the application didn't restart after checkpoint

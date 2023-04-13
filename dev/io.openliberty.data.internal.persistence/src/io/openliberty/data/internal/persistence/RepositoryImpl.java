@@ -51,32 +51,32 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Count;
+import io.openliberty.data.repository.Delete;
+import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Operation;
+import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.Select.Aggregate;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
-import jakarta.data.repository.Compare;
-import jakarta.data.repository.Count;
-import jakarta.data.repository.Delete;
-import jakarta.data.repository.Exists;
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
-import jakarta.data.repository.Operation;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.Select;
-import jakarta.data.repository.Select.Aggregate;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
-import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.NoResultException;
@@ -106,6 +106,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
+            if (method.isDefault()) // skip default methods
+                continue;
+
             Class<?> returnArrayType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
@@ -1396,7 +1399,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
             Compare comparison = filter.op();
-            Compare negatedFrom = comparison.negatedFrom();
+            Compare negatedFrom = comparison.negated();
             boolean negated = negatedFrom != null;
             if (negated)
                 comparison = negatedFrom;
@@ -1501,20 +1504,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     @Trivial
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         CompletableFuture<QueryInfo> queryInfoFuture = queries.get(method);
+        boolean isDefaultMethod = false;
 
-        if (queryInfoFuture == null) {
-            String methodName = method.getName();
-            if (args == null) {
-                if ("hashCode".equals(methodName))
-                    return System.identityHashCode(proxy);
-                else if ("toString".equals(methodName))
-                    return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
-            } else if (args.length == 1) {
-                if ("equals".equals(methodName))
-                    return proxy == args[0];
+        if (queryInfoFuture == null)
+            if (method.isDefault()) {
+                isDefaultMethod = true;
+            } else {
+                String methodName = method.getName();
+                if (args == null) {
+                    if ("hashCode".equals(methodName))
+                        return System.identityHashCode(proxy);
+                    else if ("toString".equals(methodName))
+                        return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
+                } else if (args.length == 1) {
+                    if ("equals".equals(methodName))
+                        return proxy == args[0];
+                }
+                throw new UnsupportedOperationException(method.toString());
             }
-            throw new UnsupportedOperationException(method.toString());
-        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -1524,6 +1531,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
                                                 "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
                                                 " is no longer in scope."); // TODO
+
+            if (isDefaultMethod) {
+                // TODO invoke directly once compiling against Java 17+
+                Object returnValue = InvocationHandler.class.getMethod("invokeDefault", Object.class, Method.class, Object[].class) //
+                                .invoke(null, proxy, method, args);
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
+                return returnValue;
+            }
 
             QueryInfo queryInfo = queryInfoFuture.join();
 

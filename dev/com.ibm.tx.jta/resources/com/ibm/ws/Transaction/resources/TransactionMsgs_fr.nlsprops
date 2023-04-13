@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -693,12 +693,7 @@ WTRN0121_INVALID_HA_CONFIG.explanation=Au moins un serveur d'un cluster, configu
 WTRN0121_INVALID_HA_CONFIG.useraction=Examinez les messages connexes pour plus d'informations sur les serveurs affect\u00e9s. Corrigez les r\u00e9pertoires de journal des transactions pour ces serveurs et red\u00e9marrez le cluster.
 
 WTRN0122_LOG_FREE_SPACE=WTRN0122W: Le fichier journal du service des transactions {0} a utilis\u00e9 {1} octets sur un total de {2}. Il se peut que la taille du fichier journal doive \u00eatre augment\u00e9e.
-WTRN0122_LOG_FREE_SPACE.explanation=Apr\u00e8s une op\u00e9ration de point cl\u00e9 r\u00e9ussie (au cours de laquelle \
-les entr\u00e9es supprim\u00e9es et achev\u00e9es sont retir\u00e9es d'un fichier journal ayant atteint sa capacit\u00e9 maximale), il a \u00e9t\u00e9 \
-d\u00e9termin\u00e9 que le fichier journal \u00e9tait toujours \u00e0 plus de 75 % plein en raison de la charge de travail transactionnelle \
-active. D\u00e8s lors que ce fichier est plein, le serveur doit \u00eatre red\u00e9marr\u00e9. Notez que ce message n'est g\u00e9n\u00e9r\u00e9 qu'apr\u00e8s une \
-op\u00e9ration de point cl\u00e9 r\u00e9ussie sur un fichier journal, car ce n'est qu'\u00e0 ce moment-l\u00e0 que la capacit\u00e9 des journaux en cours d'utilisation peut \u00eatre \
-calcul\u00e9e.
+WTRN0122_LOG_FREE_SPACE.explanation=Apr\u00e8s une op\u00e9ration de point cl\u00e9 r\u00e9ussie (au cours de laquelle les entr\u00e9es supprim\u00e9es et achev\u00e9es sont retir\u00e9es d'un fichier journal ayant atteint sa capacit\u00e9 maximale), il a \u00e9t\u00e9 d\u00e9termin\u00e9 que le fichier journal \u00e9tait toujours \u00e0 plus de 75 % plein en raison de la charge de travail transactionnelle active. D\u00e8s lors que ce fichier est plein, le serveur doit \u00eatre red\u00e9marr\u00e9. Notez que ce message n'est g\u00e9n\u00e9r\u00e9 qu'apr\u00e8s une op\u00e9ration de point cl\u00e9 r\u00e9ussie sur un fichier journal, car ce n'est qu'\u00e0 ce moment-l\u00e0 que la capacit\u00e9 des journaux en cours d'utilisation peut \u00eatre calcul\u00e9e.
 WTRN0122_LOG_FREE_SPACE.useraction=Envisagez d'affecter une plus grande taille de fichier aux journaux des transaction.
 
 WTRN0123_INVALID_EXTERNAL_WSTX_URL_PREFIX=WTRN0123E: Un pr\u00e9fixe d''URL WS-Transaction HTTP(S) externe incorrect a \u00e9t\u00e9 d\u00e9fini : {0}
@@ -741,9 +736,7 @@ WTRN0131_BRANCH_COUPLING_CLUSTER.useraction=Cr\u00e9ez des membres de cluster su
 # 1 - server uuid or server long name (zos)
 # 2 - server restart epoch value
 WTRN0132_RECOVERY_INITIATED=WTRN0132I: Reprise de la transaction pour {0} lanc\u00e9e avec l''identificateur unique universel de serveur {1} et red\u00e9marrage de l''\u00e9poque {2}
-WTRN0132_RECOVERY_INITIATED.explanation=La proc\u00e9dure de reprise des transactions d\u00e9marre pour le serveur.  Les valeurs de l'identificateur unique universel du serveur et de l'\u00e9poque \u00e0 partir des journaux de transactions existants sont indiqu\u00e9es.  Ces valeurs permettent d'identifier les xid en attente de validation dans les \
-gestionnaires de ressources xa qui peuvent avoir \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9s par des instances \
-pr\u00e9c\u00e9dentes de ce serveur.  Si les journaux de transactions n'existaient pas au d\u00e9marrage du serveur, les valeurs de l'identificateur unique universel et de l'\u00e9poque en sortie sont celles qui seront consign\u00e9es dans les journaux et utilis\u00e9es ult\u00e9rieurement par le serveur.
+WTRN0132_RECOVERY_INITIATED.explanation=La proc\u00e9dure de reprise des transactions d\u00e9marre pour le serveur.  Les valeurs de l'identificateur unique universel du serveur et de l'\u00e9poque \u00e0 partir des journaux de transactions existants sont indiqu\u00e9es.  Ces valeurs permettent d'identifier les xid en attente de validation dans les gestionnaires de ressources xa qui peuvent avoir \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9s par des instances pr\u00e9c\u00e9dentes de ce serveur.  Si les journaux de transactions n'existaient pas au d\u00e9marrage du serveur, les valeurs de l'identificateur unique universel et de l'\u00e9poque en sortie sont celles qui seront consign\u00e9es dans les journaux et utilis\u00e9es ult\u00e9rieurement par le serveur.
 WTRN0132_RECOVERY_INITIATED.useraction=Aucune intervention de l'utilisateur n'est requise.
 
 WTRN0133_RECOVERY_COMPLETE=WTRN0133I: Le traitement de reprise des transactions de ce serveur est termin\u00e9
@@ -876,5 +869,8 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Configuration haute disponibilit\u00e9 inh
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=La haute disponibilit\u00e9 est activ\u00e9e pour ce cluster, mais le gestionnaire \u00e0 haute disponibilit\u00e9 est d\u00e9sactiv\u00e9.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=S'il s'agit de la configuration souhait\u00e9e, aucune action n'est requise. Sinon, corrigez la configuration haute disponibilit\u00e9.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: le service de transaction s'est arr\u00eat\u00e9 mais le journal de reprise a \u00e9t\u00e9 marqu\u00e9 comme ayant \u00e9chou\u00e9.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Le journal de reprise a \u00e9chou\u00e9 et l'acc\u00e8s au journal n'a pas eu lieu lors de l'arr\u00eat du serveur.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrigez les conditions indiqu\u00e9es par les messages qui ont signal\u00e9 l'invalidation du journal. Red\u00e9marrez le serveur afin de r\u00e9parer le journal.
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1

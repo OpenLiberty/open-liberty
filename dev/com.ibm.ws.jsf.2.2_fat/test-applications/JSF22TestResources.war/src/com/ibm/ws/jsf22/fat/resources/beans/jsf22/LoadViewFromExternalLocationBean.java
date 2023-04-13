@@ -1,15 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.resources.beans.jsf22;
 
 import java.net.URISyntaxException;
@@ -26,14 +23,15 @@ import javax.faces.view.facelets.ResourceResolver;
 @SessionScoped
 public class LoadViewFromExternalLocationBean extends ResourceResolver {
 
-    public LoadViewFromExternalLocationBean() {}
+    public LoadViewFromExternalLocationBean() {
+    }
 
     /**
      * Map a given viewId (class-path) from an external location to a URL.
-     * 
+     *
      * Resources packaged into the class-path must be accessed using the getResource() method
      * of the ClassLoader obtained by calling the getContextClassLoader() method of the current Thread
-     * 
+     *
      * @param viewId the viewId (class-path) to the resource file in the external location
      * @return a URL object
      */
@@ -46,7 +44,7 @@ public class LoadViewFromExternalLocationBean extends ResourceResolver {
     /**
      * Map a resource file from an external location using a class-path to a URL
      * by calling the ResourceResolver.resolveUrl method.
-     * 
+     *
      * @param resourceName Name of the resource in the external location
      * @return a String containing the URI path used in the Facelet view
      * @throws URISyntaxException

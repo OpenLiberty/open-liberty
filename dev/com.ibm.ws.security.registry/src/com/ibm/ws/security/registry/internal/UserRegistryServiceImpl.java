@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -398,7 +398,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
      */
     private UserRegistry autoDetectUserRegistry(boolean exceptionOnError) throws RegistryException {
         // Determine if there is a federation registry configured.
-        UserRegistry ur = getFederationRegistry(exceptionOnError);
+        UserRegistry ur = getFederationRegistry();
         synchronized (userRegistrySync) {
             if (ur != null) {
                 setRegistriesToBeFederated((FederationRegistry) ur, exceptionOnError);
@@ -441,7 +441,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
      * @throws RegistryException
      *
      */
-    private UserRegistry getFederationRegistry(boolean exceptionOnError) throws RegistryException {
+    private UserRegistry getFederationRegistry() throws RegistryException {
         return federationRegistryServiceRef.getService();
     }
 

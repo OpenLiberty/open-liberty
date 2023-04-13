@@ -68,6 +68,7 @@ class CertificateRevocationChecker {
     private static String os_name = System.getProperty("os.name").toLowerCase();
     private static String java_vendor = System.getProperty("java.vendor").toLowerCase();
     private static String java_version = System.getProperty("java.version");
+    private static String java_runtime = System.getProperty("java.runtime.version");
     private static String IBMJCE ="IBMJCE";
     private static String IBM_CERT_PARTH= "IBMCertPath";
     boolean overrideForIBMJDK = false;
@@ -87,12 +88,12 @@ class CertificateRevocationChecker {
 		 * hitting NPEs.
 		 */
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "Check for hybrid JDK: " + os_name + ", " + java_vendor + ", " + java_version);
+			Tr.debug(tc, "Check for hybrid JDK: " + os_name + ", " + java_vendor + ", " + java_version + ", " + java_runtime);
 		}
-		if (os_name.startsWith("mac") && java_vendor.contains("ibm")
+		if (os_name.startsWith("mac") && (java_vendor.contains("ibm") || (java_vendor.contains("oracle") && java_runtime.contains("SR")))
 				&& java_version.startsWith("1.8")) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Detected IBM JDK 1.8 on Mac, will set IBM Providers on getIntance for isRevoked checks");
+				Tr.debug(tc, "Detected Hybrid JDK 1.8 on Mac, will set IBM Providers on getInstance for isRevoked checks");
 			}
 			overrideForIBMJDK = true;
 		}

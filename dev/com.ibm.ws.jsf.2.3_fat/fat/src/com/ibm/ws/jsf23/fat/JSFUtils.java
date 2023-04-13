@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat;
 
@@ -26,12 +23,12 @@ public class JSFUtils {
 
     protected static final Class<?> c = JSFUtils.class;
 
-     /**
+    /**
      * Construct a URL for a test case so a request can be made.
      *
-     * @param server - The server that is under test, this is used to get the port and host name.
+     * @param server      - The server that is under test, this is used to get the port and host name.
      * @param contextRoot - The context root of the application
-     * @param path - Additional path information for the request.
+     * @param path        - Additional path information for the request.
      * @return - A fully formed URL.
      * @throws Exception
      */
@@ -42,9 +39,9 @@ public class JSFUtils {
     /**
      * Construct a URL for a test case so a request can be made.
      *
-     * @param server - The server that is under test, this is used to get the port and host name.
+     * @param server      - The server that is under test, this is used to get the port and host name.
      * @param contextRoot - The context root of the application
-     * @param path - Additional path information for the request.
+     * @param path        - Additional path information for the request.
      * @return - A fully formed URL string.
      * @throws Exception
      */
@@ -52,13 +49,13 @@ public class JSFUtils {
 
         StringBuilder sb = new StringBuilder();
         sb.append("http://")
-          .append(server.getHostname())
-          .append(":")
-          .append(server.getHttpDefaultPort())
-          .append("/")
-          .append(contextRoot)
-          .append("/")
-          .append(path);
+                        .append(server.getHostname())
+                        .append(":")
+                        .append(server.getHttpDefaultPort())
+                        .append("/")
+                        .append(contextRoot)
+                        .append("/")
+                        .append(path);
 
         return sb.toString();
     }

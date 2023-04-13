@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/DataTestApp/src"/>
 	<classpathentry kind="src" path="test-applications/ProviderTestApp/src"/>
-	<classpathentry kind="src" path="test-applications/TemplateTestApp/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>

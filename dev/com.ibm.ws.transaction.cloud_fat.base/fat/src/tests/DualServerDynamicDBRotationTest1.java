@@ -21,7 +21,6 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -31,7 +30,6 @@ import servlets.Simple2PCCloudServlet;
 @Mode
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
-@SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
 public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")

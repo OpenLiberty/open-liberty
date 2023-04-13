@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -90,8 +89,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
             }
 
             // Get the bundle context
-            HttpSession session = request.getSession();
-            ServletContext sc = session.getServletContext();
+            ServletContext sc = request.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
 
             ServiceReference<RESTHandlerContainer> ref = ctxt.getServiceReference(RESTHandlerContainer.class);
@@ -101,6 +99,8 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
                 throw new ServletException("OSGi service RESTHandlerContainer is not available.");
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
+                // generate initial session metrics
+                request.getSession();
             }
         }
     }

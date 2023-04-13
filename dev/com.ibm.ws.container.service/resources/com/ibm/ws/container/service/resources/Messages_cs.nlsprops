@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Do\u0161lo k intern\u00ed c
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: Anotace {0} je ignorov\u00e1na na t\u0159\u00edd\u00e1ch v modulu {1} aplikace {2}. Aplikace Jakarta EE mus\u00ed pou\u017e\u00edvat anotaci {3}. Ovlivn\u011bn\u00e9 t\u0159\u00eddy jsou: {4}
+wrong.annotation.package.CWWKM0483I.explanation=Aplikace obsahuje anotaci Java EE s n\u00e1zvem bal\u00edku 'javax', ale aplika\u010dn\u00ed server m\u00e1 povoleny funkce Jakarta EE. Aplika\u010dn\u00ed server nezpracoval anotaci n\u00e1zvu bal\u00edku 'javax'.
+wrong.annotation.package.CWWKM0483I.useraction=Upravte aplikaci tak, aby pou\u017e\u00edvala verzi n\u00e1zvu bal\u00edku 'jakarta' anotace, nebo upravte konfiguraci aplika\u010dn\u00edho serveru tak, aby povoloval funkce Java EE.
