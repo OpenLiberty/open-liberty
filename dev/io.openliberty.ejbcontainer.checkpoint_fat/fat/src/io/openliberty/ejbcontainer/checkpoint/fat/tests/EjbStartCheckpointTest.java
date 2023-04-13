@@ -67,6 +67,24 @@ public class EjbStartCheckpointTest extends FATServletClient {
                                                                          "SGCheckpointBeanS", "SGCheckpointBeanT", "SGCheckpointBeanU", "SGCheckpointBeanW",
                                                                          "SLCheckpointBeanS", "SLCheckpointBeanT", "SLCheckpointBeanW", "SLCheckpointBeanX" };
 
+    private static final String[] START_ALL_INIT_ON_START = new String[] { "SGCheckpointBeanA", "SGCheckpointBeanB", "SGCheckpointBeanC", "SGCheckpointBeanD",
+                                                                           "SLCheckpointBeanC", "SLCheckpointBeanD",
+                                                                           "SGCheckpointBeanG", "SGCheckpointBeanH", "SGCheckpointBeanI", "SGCheckpointBeanJ",
+                                                                           "SLCheckpointBeanI", "SLCheckpointBeanJ",
+                                                                           "SGCheckpointBeanM", "SGCheckpointBeanN", "SGCheckpointBeanO", "SGCheckpointBeanP",
+                                                                           "SLCheckpointBeanO", "SLCheckpointBeanP",
+                                                                           "SGCheckpointBeanS", "SGCheckpointBeanT", "SGCheckpointBeanU", "SGCheckpointBeanV",
+                                                                           "SLCheckpointBeanU", "SLCheckpointBeanV" };
+
+    private static final String[] START_ALL_DEFERRED_INIT = new String[] { "SGCheckpointBeanE",
+                                                                           "SLCheckpointBeanA", "SLCheckpointBeanB", "SLCheckpointBeanE", "SLCheckpointBeanF",
+                                                                           "SGCheckpointBeanK",
+                                                                           "SLCheckpointBeanG", "SLCheckpointBeanH", "SLCheckpointBeanK", "SLCheckpointBeanL",
+                                                                           "SGCheckpointBeanQ",
+                                                                           "SLCheckpointBeanM", "SLCheckpointBeanN", "SLCheckpointBeanQ", "SLCheckpointBeanR",
+                                                                           "SGCheckpointBeanW",
+                                                                           "SLCheckpointBeanS", "SLCheckpointBeanT", "SLCheckpointBeanW", "SLCheckpointBeanX" };
+
     private static final String[] CHECKPOINT_INIT_ON_START = new String[] { "SGCheckpointBeanA", "SGCheckpointBeanB", "SGCheckpointBeanC", "SGCheckpointBeanD",
                                                                             "SLCheckpointBeanA", "SLCheckpointBeanB", "SLCheckpointBeanC", "SLCheckpointBeanD",
                                                                             "SGCheckpointBeanG", "SGCheckpointBeanH", "SGCheckpointBeanI", "SGCheckpointBeanJ",
@@ -130,6 +148,21 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
+    public void testEjbStartCheckpointInactiveStartAllSingletons() throws Exception {
+        setCheckpointPhase(CheckpointPhase.INACTIVE);
+        enableStartAllSingletons();
+        try {
+            server.startServer();
+            assert_24_BeanMetaDataInitilzedAtStart();
+            runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
+        } finally {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        }
+    }
+
+    @Test
     public void testEjbStartCheckpointDeployment() throws Exception {
         setCheckpointPhase(CheckpointPhase.DEPLOYMENT);
         try {
@@ -173,6 +206,13 @@ public class EjbStartCheckpointTest extends FATServletClient {
                 jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
                 server.setExtraArgs(CHECKPOINT_INACTIVE);
         }
+        jvmOptions.remove("-Dio.openliberty.ejb.startAllSingletons", "true");
+        server.setJvmOptions(jvmOptions);
+    }
+
+    private void enableStartAllSingletons() throws Exception {
+        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        jvmOptions.put("-Dio.openliberty.ejb.startAllSingletons", "true");
         server.setJvmOptions(jvmOptions);
     }
 
@@ -194,6 +234,28 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
         assertEquals("Unexpected number of beans deferred until first use", 32, deferred.size());
         for (String beanName : DEFAULT_DEFERRED_INIT) {
+            assertTrue(beanName + " not deferred initialize", deferred.removeIf(line -> line.contains(beanName)));
+        }
+    }
+
+    private void assert_24_BeanMetaDataInitilzedAtStart() throws Exception {
+        logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
+        List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
+        for (String line : initialized) {
+            logger.info("    found : " + line);
+        }
+        assertEquals("Unexpected number of beans initialized at application start", 24, initialized.size());
+        for (String beanName : START_ALL_INIT_ON_START) {
+            assertTrue(beanName + " not initialized on start", initialized.removeIf(line -> line.contains(beanName)));
+        }
+
+        logger.info("Looking for \"" + MSG_DEFERRED_INIT + "\"");
+        List<String> deferred = server.findStringsInTrace(MSG_DEFERRED_INIT);
+        for (String line : deferred) {
+            logger.info("    found : " + line);
+        }
+        assertEquals("Unexpected number of beans deferred until first use", 20, deferred.size());
+        for (String beanName : START_ALL_DEFERRED_INIT) {
             assertTrue(beanName + " not deferred initialize", deferred.removeIf(line -> line.contains(beanName)));
         }
     }

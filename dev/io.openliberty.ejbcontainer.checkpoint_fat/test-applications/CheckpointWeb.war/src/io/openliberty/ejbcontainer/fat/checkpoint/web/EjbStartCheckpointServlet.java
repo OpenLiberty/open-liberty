@@ -50,6 +50,29 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assert_24_StatelessClassInstancesCreated();
     }
 
+    public void testEjbStartCheckpointInactiveStartAllSingletons() throws Exception {
+        // All Singleton that don't disable StartAtAppStart bean classes should be initialized
+        assertEquals("Wrong number of classes initialized", 16, CheckpointStatistics.getInitializedClassListSize());
+        assert_16_SingletonClassesInitialized();
+
+        // All beans from above should be fully created; 1 each
+        assertEquals("Wrong number of classes created", 16, CheckpointStatistics.getInstanceCountMapSize());
+        assert_16_SingletonClassInstancesCreated();
+
+        // Access all beans and verify they are functional
+        verifyAllBeans();
+
+        // All bean classes should now be initialized
+        assertEquals("Wrong number of classes initialized", 44, CheckpointStatistics.getInitializedClassListSize());
+        assert_20_SingletonClassesInitialized();
+        assert_24_StatelessClassesInitialized();
+
+        // At least one instance per bean should now be created; more for those with a hard minimum poolSize
+        assertEquals("Wrong number of classes created", 44, CheckpointStatistics.getInstanceCountMapSize());
+        assert_20_SingletonClassInstancesCreated();
+        assert_24_StatelessClassInstancesCreated();
+    }
+
     public void testEjbStartCheckpointDeployment() throws Exception {
         // Only the @Startup Singleton bean classes should be initialized
         assertEquals("Wrong number of classes initialized", 8, CheckpointStatistics.getInitializedClassListSize());

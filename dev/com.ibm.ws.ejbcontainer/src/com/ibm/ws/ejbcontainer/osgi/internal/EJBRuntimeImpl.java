@@ -1722,7 +1722,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      */
     @Override
     public boolean isCheckpointDeployment() {
-        return CheckpointPhase.DEPLOYMENT == checkpointPhase;
+        return CheckpointPhase.DEPLOYMENT == checkpointPhase && !checkpointPhase.restored();
     }
 
     /**
@@ -1733,7 +1733,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      */
     @Override
     public boolean isCheckpointApplications() {
-        return CheckpointPhase.APPLICATIONS == checkpointPhase;
+        return CheckpointPhase.APPLICATIONS == checkpointPhase && !checkpointPhase.restored();
     }
 
     @Override

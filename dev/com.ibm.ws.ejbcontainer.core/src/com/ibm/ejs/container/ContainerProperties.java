@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2017 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,6 +48,7 @@ import static com.ibm.ejs.container.ContainerConfigConstants.persistentTimerSing
 import static com.ibm.ejs.container.ContainerConfigConstants.poolSizeSpecProp;
 import static com.ibm.ejs.container.ContainerConfigConstants.portableFinderProp;
 import static com.ibm.ejs.container.ContainerConfigConstants.portableProp;
+import static com.ibm.ejs.container.ContainerConfigConstants.startAllSingletons;
 import static com.ibm.ejs.container.ContainerConfigConstants.strictMaxCacheSize;
 import static com.ibm.ejs.container.ContainerConfigConstants.timerCancelTimeout;
 import static com.ibm.ejs.container.ContainerConfigConstants.timerQOSAtLeastOnceForRequired;
@@ -438,6 +439,15 @@ public final class ContainerProperties {
     public static final int RMICCompatible = JITDeploy.RMICCompatible; // PM46698
 
     /**
+     * Property that allows the user to indicate that all Singleton beans should be
+     * started at application start, similar to using the <code>@Startup</code> annotation.
+     *
+     * Singleton beans without the <code>@Startup</code> annotation will be started after all
+     * startup beans have started and incoming work has been unblocked.
+     */
+    public static final boolean StartAllSingletons;
+
+    /**
      * Property that allows the user to specify that the EJB max cache size
      * should be strictly enforced.
      */
@@ -631,6 +641,8 @@ public final class ContainerProperties {
 
         PortableFinder = System.getProperty(portableFinderProp);
 
+        StartAllSingletons = Boolean.getBoolean(startAllSingletons);
+
         StrictMaxCacheSize = Boolean.getBoolean(strictMaxCacheSize);
 
         TimerCancelTimeout = Integer.getInteger(timerCancelTimeout, 60) * 1000; // d703086
@@ -746,6 +758,7 @@ public final class ContainerProperties {
         writer.println("Property: Portable                = " + Portable);
         writer.println("Property: PortableFinder          = " + PortableFinder);
         writer.println("Property: RMICCompatible          = " + RMICCompatible);
+        writer.println("Property: StartAllSingletons      = " + StartAllSingletons);
         writer.println("Property: StrictMaxCacheSize      = " + StrictMaxCacheSize);
         writer.println("Property: TimerCancelTimeout      = " + TimerCancelTimeout);
         writer.println("Property: TimerQOSAtLeastOnceForRequired = " + TimerQOSAtLeastOnceForRequired);
