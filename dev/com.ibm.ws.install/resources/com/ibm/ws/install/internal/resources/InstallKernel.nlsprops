@@ -524,7 +524,7 @@ LOG_CANNOT_CLOSE_OBJECT=Temporary files cannot be deleted.
 LOG_CANNOT_CLOSE_OBJECT.explanation=The sample requires Java 7 or higher to delete the installTmp directory.
 LOG_CANNOT_CLOSE_OBJECT.action=Remove the installTmp directory manually, or use Java 7 or higher.
 
-LOG_VERIFIED_FEATURE=Successfully verified feature {0}.
+LOG_VERIFIED_FEATURE=Successfully verified the {0} feature.
 LOG_VERIFIED_FEATURE.explanation=The specified feature was successfully verified.
 LOG_VERIFIED_FEATURE.useraction=No action is required.
 
@@ -610,7 +610,7 @@ MSG_VALIDATION_UNSUPPORT_PROTOCOL=The URL protocol for the following repository 
 MSG_VALIDATION_INVALID_HOST=The following proxy server host is not valid: {0}. Specify a valid HTTP proxy server host name. The http:// prefix is not required.
 MSG_VALIDATION_EMPTY_PUBKEY_NAME=The public key name is not specified. Either specify a name for the public key, or remove the property if it is unused.
 MSG_VALIDATION_INVALID_VERIFY_OPTION=The feature.verify property does not support a value of {0}. Specify a valid value, which is either "enforce", "warn", "skip", or "all".
-MSG_VALIDATION_INVALID_KEYID={0} is not in long (64 bit) format. Run GnuPG command to find the long key ID format. 
+MSG_VALIDATION_INVALID_KEYID={0} is not in 64-bit format. Run the GnuPG command to find the long key ID format. 
 MSG_VALIDATION_MISSING_KEYID=The key ID is not specified. Specify the key ID for the key URL, or comment out the key URL properties.
 
 # Message for find action
@@ -911,19 +911,19 @@ MSG_STABILIZING_FEATUREMANAGER=This featureManager action is stabilized. Use ins
 
 ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: The feature verify option "{0}" does not match "{1}" in the command line.
 ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=The feature verify option on properties file or environment variable should match the one in the command line. 
-ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Ensure specified feature verify options match each other or choose one option.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Ensure specified feature verify options match each other.
 
-ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: The verify option {0} isn't valid. Ensure that the option is valid.
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: The {0} verify option isn't valid. Ensure that the option is valid.
 ERROR_VERIFY_OPTION_NOT_VALID.explanation=The specified option is not valid. 
-ERROR_VERIFY_OPTION_NOT_VALID.useraction=Specify the valid option from the following: {"enforce", "warn", "skip", "all"}.
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Specify one of the following valid options: enforce, warn, skip, all.
 
-ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: The public key could not be downloaded: {0}.
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: The public key could not be downloaded: {0}
 ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=The specified public key was not downloaded from the specified key URL. 
-ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verify your key ID, key URL and network access, then try the action again. If the connection still fails, the key URL might be temporarily unavailable.
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verify your key ID, key URL, and network access, then try the action again. If the connection still fails, the key URL might be temporarily unavailable.
 
-ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: The public key ID for {0} key URL was not provided. 
-ERROR_KEYID_NOT_PROVIDED.explanation=The public key ID for the specified key URL was not provided. The 64 bits key ID is required to download and verify the authenticity of the key. 
-ERROR_KEYID_NOT_PROVIDED.useraction=Provide the key ID in long (64 bits) format. To find out the key ID, run GnuPG command. 
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: The public key ID for the {0} key URL was not provided. 
+ERROR_KEYID_NOT_PROVIDED.explanation=The public key ID for the specified key URL was not provided. The 64-bit key ID is required to download and verify the authenticity of the key. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Provide the key ID in 64-bit format. To find out the key ID, run GnuPG command. 
 
 ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: The URL protocol for the following key URL is not supported: {0}. Supported protocols are HTTP, HTTPS, and file. Ensure that the URL is specified correctly.
 ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=The URL protocol for the specified key URL is not supported.
@@ -931,21 +931,21 @@ ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Ensure that the URL is specified co
 
 ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: The public key ID {0} has been revoked. 
 ERROR_REVOKED_PUBLIC_KEY.explanation=The public key has been revoked. 
-ERROR_REVOKED_PUBLIC_KEY.useraction=Provide the new public key ID and signature(s). If the revoked key is Liberty public key, apply the interim fix or provide the new public key ID available on IBM website.
+ERROR_REVOKED_PUBLIC_KEY.useraction=Provide the new public key ID and signatures. If the revoked key is a Liberty public key, apply the interim fix or provide the new public key ID, which is available on the OpenLiberty.io website.
 
-ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: The public key ID {0} has been expired on {1}.
-ERROR_EXPIRED_PUBLIC_KEY.explanation=The public key has been expired.
-ERROR_EXPIRED_PUBLIC_KEY.useraction=Extend the expiry date of the public key using the GnuPG command and try again. 
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: The {0} public key ID is expired on {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=The public key is expired.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Run the GnuPG command to extend the expiration date of the public key and try again. 
 
 ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Unable to verify the following feature signatures: {0}.  
-ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Feature signature(s) was not verified.
-ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Use --verbose to see the debug traces.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Feature signature were not verified.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Use the --verbose option to see the debug traces.
 
 ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: The public key URL for {0} key ID was not provided. 
-ERROR_KEYURL_NOT_PROVIDED.explanation= he public key URL for {0} key ID was not provided.
+ERROR_KEYURL_NOT_PROVIDED.explanation= The public key URL for {0} key ID was not provided. The public key URL is a mandatory field to download the public key. 
 ERROR_KEYURL_NOT_PROVIDED.useraction=Provide public key URL. Supported protocols are HTTP, HTTPS, and file. 
 
-ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: The public key ID of {0} does not match the provided key ID of {1}. 
-ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=The public key might have been changed. 
-ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=If the public key is local file, make sure to provide the correct file.
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: The {0} public key ID does not match the {1} provided key ID. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=The public key might have changed. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=If the public key is a local file, make sure to provide the correct file.
 

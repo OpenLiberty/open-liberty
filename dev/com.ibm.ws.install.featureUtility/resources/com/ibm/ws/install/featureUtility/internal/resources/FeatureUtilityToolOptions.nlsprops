@@ -75,11 +75,11 @@ installFeature.option-desc.--from=\
 installFeature.option-key.--verify=\
 \ \ \ \ --verify=[enforce|warn|skip|all]
 installFeature.option-desc.--verify=\
-\tUse this option to specify how features should be verified. The      \n\
-\tdefault option, "enforce" verifies the signatures of all Liberty     \n\
+\tUse this option to specify how features are verified. The      \n\
+\tdefault option is "enforce", which verifies the signatures of all Liberty     \n\
 \tfeatures except for user features. The "warn" option is the same as  \n\
-\t"enforce", but it will not terminate installation in the event that  \n\
-\tverification fails. The "skip" option skips verification altogether   \n\
+\t"enforce", but it does not terminate installation if  \n\
+\tverification fails. The "skip" option skips verification \n\
 \tand does not download any feature signatures. The "all" option verifies \n\
 \tboth Liberty features and user features.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -124,11 +124,11 @@ installServerFeatures.option-desc.--from=\
 installServerFeatures.option-key.--verify=\
 \ \ \ \ --verify=[enforce|warn|skip|all]
 installServerFeatures.option-desc.--verify=\
-\tUse this option to specify how features should be verified. The      \n\
-\tdefault option, "enforce," verifies the signatures of all Liberty    \n\
+\tUse this option to specify how features are verified. The      \n\
+\tdefault option is "enforce," which verifies the signatures of all Liberty    \n\
 \tfeatures except for user features. The "warn" option is the same as  \n\
-\t"enforce," but it will not terminate installation in case of failure.\n\
-\tThe "skip" option skips verification altogether and does not download\n\
+\t"enforce," but it does not terminate installation if verification fails.\n\
+\tThe "skip" option skips verification and does not download\n\
 \tany feature signatures. The "all" option verifies both Liberty       \n\
 \tfeatures and user features.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
