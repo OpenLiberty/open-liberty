@@ -87,7 +87,7 @@ public class HttpsURLConnectionFactory {
     public HttpURLConnection createConnection(TLSClientParameters tlsClientParameters,
             Proxy proxy, URL url) throws IOException {
 
-        LOG.fine("Create HttpURLConnection to:  " + url);
+        LOG.fine("Create HttpURLConnection to:  " + url); // Liberty Change 
 
         HttpURLConnection connection =
             (HttpURLConnection) (proxy != null
@@ -96,7 +96,7 @@ public class HttpsURLConnectionFactory {
         if (HTTPS_URL_PROTOCOL_ID.equals(url.getProtocol())) {
 
             if (tlsClientParameters == null) {
-		LOG.fine("tlsClientParameters is NULL, get new");
+		LOG.fine("tlsClientParameters is NULL, get new"); // Liberty Change
                 tlsClientParameters = new TLSClientParameters();
             }
 
@@ -121,7 +121,7 @@ public class HttpsURLConnectionFactory {
 
         int hash = tlsClientParameters.hashCode();
         if (hash != lastTlsHash) {
-	    LOG.fine("Hash does not match!");
+	    LOG.fine("Hash does not match!"); // Liberty Change
             lastTlsHash = hash;
             socketFactory = null;
         }
@@ -130,22 +130,23 @@ public class HttpsURLConnectionFactory {
         // tlsClientParameters.sslSocketFactory to allow runtime configuration change
 
         if (tlsClientParameters.isUseHttpsURLConnectionDefaultSslSocketFactory()) {
-            LOG.fine("tlsClientParameters property: isUseHttpsURLConnectionDefaultSslSocketFactory is set to true!");
+            LOG.fine("tlsClientParameters property: isUseHttpsURLConnectionDefaultSslSocketFactory is set to true!"); // Liberty Change
             socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
         } else if (tlsClientParameters.getSSLSocketFactory() != null) {
             // see if an SSLSocketFactory was set. This allows easy interop
             // with not-yet-commons-ssl.jar, or even just people who like doing their
             // own JSSE.
-            LOG.fine("Get SSL socketFactory from tlsClientParameters");
+            LOG.fine("Get SSL socketFactory from tlsClientParameters"); // Liberty Change
             socketFactory = tlsClientParameters.getSSLSocketFactory();
         } else if (socketFactory == null) {
             SSLContext ctx = null;
-            LOG.fine("SSL socketFactory is NULL");
+            LOG.fine("SSL socketFactory is NULL"); // Liberty Change
             if (tlsClientParameters.getSslContext() != null) {
                 // Use the SSLContext which was set
-                LOG.fine("Get SSLContext from tlsClientParameters");
+                LOG.fine("Get SSLContext from tlsClientParameters"); // Liberty Change
                 ctx = tlsClientParameters.getSslContext();
             } else {
+		// Liberty Change Start
 	        if (tlsClientParameters.getTrustManagers() != null && 
 			tlsClientParameters.getKeyManagers() != null) {
                    // Get sslcontext with tlsClientParameters's Trust Managers, Key Managers, etc
@@ -156,6 +157,7 @@ public class HttpsURLConnectionFactory {
                    LOG.fine("No trustManagers set on tlsClientParameters, so use Liberty's DefaultSSLSocketFactory");
                    socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
 		}
+		// Liberty Change End
             }
 	    if (ctx != null) { // do we have SSL context?
                 LOG.fine("Create new socketFactory from SSLContext and set Ciphersuites");
@@ -172,18 +174,19 @@ public class HttpsURLConnectionFactory {
 	    }
 
 	    if (socketFactory != null) {
-               LOG.fine("SSL socketFactory: " +  socketFactory.getClass().getCanonicalName());
+               LOG.fine("SSL socketFactory: " +  socketFactory.getClass().getCanonicalName()); // Liberty Change
 	    }
             //recalc the hashcode since some of the above MAY have changed the tlsClientParameters
             lastTlsHash = tlsClientParameters.hashCode();
         } else {
-            LOG.fine("SSL socketFactory already initialized!");
+            LOG.fine("SSL socketFactory already initialized!");  // Liberty Change
            // ssl socket factory already initialized, reuse it to benefit of keep alive
         }
 
         HostnameVerifier verifier = org.apache.cxf.transport.https.SSLUtils
             .getHostnameVerifier(tlsClientParameters);
 
+	// Liberty Change Start
 	if (verifier != null) {
            LOG.fine("Hostname verifier obtained from SSLUtils.getHostnameVerifier: " +  verifier.getClass().getCanonicalName());
 	}
@@ -191,33 +194,36 @@ public class HttpsURLConnectionFactory {
 	if (tlsClientParameters != null) {
            LOG.fine("isDisableCNCheck value in tlsClientParameters: " +  tlsClientParameters.isDisableCNCheck());
 	}
+	// Liberty Change End
 
         if (connection instanceof HttpsURLConnection) {
             // handle the expected case (javax.net.ssl)
             HttpsURLConnection conn = (HttpsURLConnection) connection;
+	    // Liberty Change Start
 	    if (verifier != null) {
                LOG.fine("Setting Hostname verifier to: " +  verifier.getClass().getCanonicalName());
 	    }
 	    else {
                LOG.fine("Something wrong! verifier is NULL!");
 	    }
+	    // Liberty Change End
             conn.setHostnameVerifier(verifier);
             AccessController.doPrivileged(new PrivilegedAction<Void>() {
 
                 @Override
                 public Void run() {
                     LOG.fine("Setiing SSLSocketFactory on connection: " + 
-						socketFactory.getClass().getCanonicalName());
+						socketFactory.getClass().getCanonicalName());  // Liberty Change
                     conn.setSSLSocketFactory(socketFactory);
                     return null;
                 } });
         } else {
             // handle the deprecated sun case and other possible hidden API's
             // that are similar to the Sun cases
-            LOG.fine("Handle deprecated sun case...");
+            LOG.fine("Handle deprecated sun case..."); // Liberty Change
             try {
                 Method method = connection.getClass().getMethod("getHostnameVerifier");
-                LOG.fine("Invoking method 1: " +  method.getName());
+                LOG.fine("Invoking method 1: " +  method.getName()); // Liberty Change
 
                 InvocationHandler handler = new ReflectionInvokationHandler(verifier) {
                     public Object invoke(Object proxy,
@@ -226,7 +232,7 @@ public class HttpsURLConnectionFactory {
                         try {
                             return super.invoke(proxy, method, args);
                         } catch (Exception ex) {
-                            LOG.fine("Exception from invoke: " + ex);
+                            LOG.fine("Exception from invoke: " + ex); // Liberty Change
                             return false;
                         }
                     }
@@ -236,10 +242,10 @@ public class HttpsURLConnectionFactory {
                                                                         handler);
 
                 method = connection.getClass().getMethod("setHostnameVerifier", method.getReturnType());
-                LOG.fine("Invoking method 2: " +  method.getName());
+                LOG.fine("Invoking method 2: " +  method.getName()); // Liberty Change
                 method.invoke(connection, proxy);
             } catch (Exception ex) {
-                LOG.fine("Exception occurred: " +  ex);
+                LOG.fine("Exception occurred in decorateWithTLS: " +  ex); // Liberty Change
                 //Ignore this one
             }
             try {
@@ -247,7 +253,7 @@ public class HttpsURLConnectionFactory {
                 Method setSSLSocketFactory = connection.getClass()
                     .getMethod("setSSLSocketFactory", getSSLSocketFactory.getReturnType());
                 if (getSSLSocketFactory.getReturnType().isInstance(socketFactory)) {
-                    LOG.fine("Calling setSSLSocketFactory.invoke 1");
+                    LOG.fine("Calling setSSLSocketFactory.invoke 1"); // Liberty Change
                     setSSLSocketFactory.invoke(connection, socketFactory);
                 } else {
                     //need to see if we can create one - mostly the weblogic case.   The
@@ -256,7 +262,7 @@ public class HttpsURLConnectionFactory {
                     Constructor<?> c = getSSLSocketFactory.getReturnType()
                         .getDeclaredConstructor(SSLSocketFactory.class);
                     ReflectionUtil.setAccessible(c);
-                    LOG.fine("Calling setSSLSocketFactory.invoke 2");
+                    LOG.fine("Calling setSSLSocketFactory.invoke 2"); // Liberty Change
                     setSSLSocketFactory.invoke(connection, c.newInstance(socketFactory));
                 }
             } catch (Exception ex) {
