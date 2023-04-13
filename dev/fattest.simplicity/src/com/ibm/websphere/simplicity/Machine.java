@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -325,7 +325,7 @@ public class Machine {
      * give the parameters in an Array.
      *
      * @param  cmd                The command to execute.
-     * @param  timeout            Execute the command with timeout
+     * @param  timeout            Execute the command with timeout (ms)
      * @param  workDir            The directory to execute the command from
      * @return                    The result of the command
      * @throws ExecutionException
@@ -434,18 +434,18 @@ public class Machine {
      * @param  workDir    The directory to execute the command from
      * @param  envVars    A Properties Object which contain name/value pairs for environment variables
      *                        needed to execute the command
-     * @param  timeout    Execute the command with timeout
+     * @param  timeout    Execute the command with timeout (ms)
      * @return            The result of the command
      * @throws Exception
      */
-    public ProgramOutput execute(String cmd, String[] parameters, String workDir, Properties envVars, int timeout) throws Exception {
+    public ProgramOutput execute(String cmd, String[] parameters, String workDir, Properties envVars, long timeout) throws Exception {
         // On iSeries, we should be adding the qsh -c flag to the start of any command.
         // This means commands are executed in a native-like shell, rather than a
         // PASE environment.
         if (OperatingSystem.ISERIES.compareTo(getOperatingSystem()) == 0) {
             cmd = "qsh -c " + cmd;
         }
-        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars);
+        return LocalProvider.executeCommand(this, cmd, parameters, workDir, envVars, timeout);
     }
 
     /**
