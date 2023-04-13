@@ -162,12 +162,11 @@ public class UpdatePomJar extends UpdateFile {
      */
     protected Model readPomFromTarget() throws Exception {
         try (ZipFile zipFile = new ZipFile(getTargetFile())) {
-            String jarName = zipFile.getName();
+            String jarName = getTargetFile().getName();
             if (jarName.indexOf("_") != -1)
                 jarName = jarName.substring(0, jarName.indexOf("_"));
             else
                 jarName = jarName.substring(0, jarName.indexOf(".jar"));
-            jarName = jarName.substring(jarName.lastIndexOf("/"));
             ZipEntry pomEntry = zipFile.getEntry(PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml");
             if (pomEntry == null) {
                 log("readPomFromTarget", "Pom not found at: " + (PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml"));

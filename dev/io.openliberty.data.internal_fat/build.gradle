@@ -23,5 +23,6 @@ addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDrivers
 
 dependencies {
+  requiredLibs project(':io.openliberty.data')
   requiredLibs project(':io.openliberty.jakarta.data.1.0')
 }

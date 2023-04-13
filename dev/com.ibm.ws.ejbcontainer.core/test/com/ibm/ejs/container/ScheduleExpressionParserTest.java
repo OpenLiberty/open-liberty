@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -553,6 +553,7 @@ public class ScheduleExpressionParserTest {
     public void testParseSecondIncrement() {
         parse(new ScheduleExpression().second("0/59"));
         parse(new ScheduleExpression().second("59/1"));
+        parse(new ScheduleExpression().second("20/0"));
         failParse(new ScheduleExpression().second("-1/59"));
         failParse(new ScheduleExpression().second("59/-1"));
         failParse(new ScheduleExpression().second("0/61"));
@@ -563,6 +564,7 @@ public class ScheduleExpressionParserTest {
     public void testParseMinuteIncrement() {
         parse(new ScheduleExpression().minute("0/59"));
         parse(new ScheduleExpression().minute("59/1"));
+        parse(new ScheduleExpression().minute("20/0"));
         failParse(new ScheduleExpression().minute("-1/59"));
         failParse(new ScheduleExpression().minute("59/-1"));
         failParse(new ScheduleExpression().minute("0/61"));
@@ -573,6 +575,7 @@ public class ScheduleExpressionParserTest {
     public void testParseHourIncrement() {
         parse(new ScheduleExpression().hour("0/23"));
         parse(new ScheduleExpression().hour("23/1"));
+        parse(new ScheduleExpression().hour("20/0"));
         failParse(new ScheduleExpression().hour("-1/23"));
         failParse(new ScheduleExpression().hour("23/-1"));
         failParse(new ScheduleExpression().hour("0/24"));
@@ -839,6 +842,14 @@ public class ScheduleExpressionParserTest {
         verifyNextTimeout(new ScheduleExpression().second("30/0"),
                           "9996-01-01 00:00:30",
                           "9996-01-02 00:00:30");
+
+        // verify that "30/0" is equivalent to "30"
+        verifyNextTimeout(new ScheduleExpression().second("30"),
+                          "9996-01-01 00:00:00",
+                          "9996-01-01 00:00:30");
+        verifyNextTimeout(new ScheduleExpression().second("30"),
+                          "9996-01-01 00:00:30",
+                          "9996-01-02 00:00:30");
     }
 
     @Test
@@ -967,6 +978,20 @@ public class ScheduleExpressionParserTest {
         verifyNextTimeout(new ScheduleExpression().minute("29/31"),
                           "9996-01-01 00:29:56",
                           "9996-01-02 00:29:00");
+
+        // verify that "20/0" is equivalent to "20"
+        verifyNextTimeout(new ScheduleExpression().minute("20/0"),
+                          "9996-01-01 00:00:00",
+                          "9996-01-01 00:20:00");
+        verifyNextTimeout(new ScheduleExpression().minute("20/0"),
+                          "9996-01-01 00:20:00",
+                          "9996-01-02 00:20:00");
+        verifyNextTimeout(new ScheduleExpression().minute("20"),
+                          "9996-01-01 00:00:00",
+                          "9996-01-01 00:20:00");
+        verifyNextTimeout(new ScheduleExpression().minute("20"),
+                          "9996-01-01 00:20:00",
+                          "9996-01-02 00:20:00");
     }
 
     @Test
@@ -1095,6 +1120,20 @@ public class ScheduleExpressionParserTest {
         verifyNextTimeout(new ScheduleExpression().hour("11/13"),
                           "9996-01-01 11:34:56",
                           "9996-01-02 11:00:00");
+
+        // verify that "5/0" is equivalent to "5"
+        verifyNextTimeout(new ScheduleExpression().hour("5/0"),
+                          "9996-01-01 00:00:00",
+                          "9996-01-01 05:00:00");
+        verifyNextTimeout(new ScheduleExpression().hour("5/0"),
+                          "9996-01-01 05:00:00",
+                          "9996-01-02 05:00:00");
+        verifyNextTimeout(new ScheduleExpression().hour("5"),
+                          "9996-01-01 00:00:00",
+                          "9996-01-01 05:00:00");
+        verifyNextTimeout(new ScheduleExpression().hour("5"),
+                          "9996-01-01 05:00:00",
+                          "9996-01-02 05:00:00");
     }
 
     @Test

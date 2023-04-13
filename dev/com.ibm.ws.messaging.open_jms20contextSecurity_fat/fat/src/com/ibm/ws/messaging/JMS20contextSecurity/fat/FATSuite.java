@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.messaging.JMS20.fat.ContextInject.JMSContextInjectTest;
-import com.ibm.ws.messaging.JMS20.fat.TemporaryQueue.JMSContextTest_118066;
-import com.ibm.ws.messaging.JMS20.fat.TemporaryQueue.JMSContextTest_118068;
-import com.ibm.ws.messaging.JMS20.fat.Transaction.JMSContextTest_118065;
 import com.ibm.ws.messaging.JMS20contextSecurity.fat.JMSContextTest.JMSContextTest;
 
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
@@ -32,10 +28,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 DummyTest.class,
                 JMSContextTest.class,
-                JMSContextTest_118066.class,
-                JMSContextTest_118068.class,
-                JMSContextTest_118065.class,
-                JMSContextInjectTest.class
+              
 })
 public class FATSuite {
     @ClassRule

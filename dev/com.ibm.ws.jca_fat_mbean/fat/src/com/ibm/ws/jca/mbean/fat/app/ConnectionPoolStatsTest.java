@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,15 @@ public class ConnectionPoolStatsTest {
      */
     @Test
     public void testMbeanAttributeList() throws Exception {
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test that the MaxConnectionsLimit value is correct after first connection request.
+     */
+    @Test
+    public void testGetMaxConnectionsLimit() throws Exception {
         final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
         runInServlet(testName.getMethodName(), fvtweb);
     }

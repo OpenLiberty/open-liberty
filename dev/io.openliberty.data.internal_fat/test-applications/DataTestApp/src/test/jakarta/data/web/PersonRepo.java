@@ -14,14 +14,15 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import jakarta.data.repository.Filter;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
-import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
+
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.Update;
 
 /**
  * This example only references the entity class as a parameterized type.

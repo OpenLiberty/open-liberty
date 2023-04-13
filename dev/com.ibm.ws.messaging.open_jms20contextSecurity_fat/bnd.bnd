@@ -15,9 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/JMSContext/src, \
-  test-applications/TemporaryQueue/src, \
-  test-applications/JMSContextInject/src
+  test-applications/JMSContext/src
+ 
 
 fat.project: true
 
