@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2022 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import static com.ibm.ejs.container.ContainerProperties.FbpkAlwaysReadOnly;
 import static com.ibm.ejs.container.ContainerProperties.LimitSetRollbackOnlyBehaviorToInstanceFor;
 import static com.ibm.ejs.container.ContainerProperties.NoEJBPool;
 import static com.ibm.ejs.container.ContainerProperties.PoolSize;
+import static com.ibm.ejs.container.ContainerProperties.StartAllSingletons;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapper.LOCAL_BEAN_WRAPPER_FIELD;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapper.MANAGED_BEAN_BEANO_FIELD;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapper.MESSAGE_ENDPOINT_BASE_FIELD;
@@ -498,7 +499,8 @@ public abstract class EJBMDOrchestrator {
                 // homes, so it is only important to check the individual flags when the global flag is not
                 // set.
                 if (!initAtStartupSet) {
-                    isStartEJBAtApplicationStart = bmd.wccm.isStartEJBAtApplicationStart(initAtStartup);
+                    boolean initAtStartupDefault = (StartAllSingletons && bmd.type == InternalConstants.TYPE_SINGLETON_SESSION) ? true : initAtStartup;
+                    isStartEJBAtApplicationStart = bmd.wccm.isStartEJBAtApplicationStart(initAtStartupDefault);
                 } // !initAtStartupSet
             } //!isStartupBean
         } // !isMessageDriven
