@@ -34,6 +34,8 @@ public interface Customers extends DataRepository<Customer, Integer> {
 
     Set<CreditCard> findCardsById(int customerId);
 
+    Set<DeliveryLocation> findLocationsByEmail(String emailAddress);
+
     @OrderBy("email")
     @Query("SELECT c.email FROM Customer c JOIN c.cards cc WHERE (cc.issuer=?1)")
     List<String> withCardIssuer(Issuer cardIssuer);
