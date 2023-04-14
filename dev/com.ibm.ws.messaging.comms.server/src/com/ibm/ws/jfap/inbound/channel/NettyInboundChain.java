@@ -14,6 +14,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLEngine;
 
@@ -22,6 +25,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.jfap.inbound.channel.CommsInboundChain.ChainState;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.server.impl.NettyJMSServerHandler;
@@ -34,6 +38,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ConfigConstants;
+import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -42,13 +47,19 @@ import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleUserEventChannelHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.concurrent.Future;
+import io.openliberty.netty.internal.impl.NettyConstants;
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
+
 
 public class NettyInboundChain implements InboundChain{
     private static final TraceComponent tc = Tr.register(NettyInboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
@@ -83,6 +94,8 @@ public class NettyInboundChain implements InboundChain{
     private EventLoopGroup parentGroup = new NioEventLoopGroup();
     private EventLoopGroup childGroup = new NioEventLoopGroup();
     private Channel serverChan;
+    
+    private FutureTask<ChannelFuture> channelFuture;
 
     NettyInboundChain(CommsServerServiceFacade commsServer, boolean isSecureChain) {
         _commsServerFacade = commsServer;
@@ -112,18 +125,52 @@ public class NettyInboundChain implements InboundChain{
 	public void enable(boolean enabled) {
 		_isEnabled = enabled;
 	}
+	
+
+	public boolean isEnabled() {
+		return _isEnabled;
+	}
 
 
 	public boolean isRunning() {
 		return _isEnabled && _isChainStarted;
 	}
 	
+	private void quiesceListener(Channel channel) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "quiesceListener", channel);
+
+        //First stop any MP connections which are established through COMMS 
+        //stopping connections is Non-blocking
+        try {
+            if (this._isSecureChain)
+                _commsServerFacade.closeViaCommsMPConnections(JsConstants.ME_STOP_COMMS_SSL_CONNECTIONS);
+            else
+                _commsServerFacade.closeViaCommsMPConnections(JsConstants.ME_STOP_COMMS_CONNECTIONS);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(tc, "Failed in stopping MP connections which are establised through COMMS: ", e);
+        }
+
+        // no current connections, notify the final stop can happen now
+        _nettyFramework.stop(serverChan);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "quiesceListener");
+	}
+	
 	public void stopChannel(boolean closeGroups) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "stopChannel");
+		if(!_isChainStarted) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                SibTr.debug(tc, "Chain not started. Moving along");
+			return;
+		}
 		if(serverChan == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "Netty channel not initialized");
+                SibTr.debug(tc, "Netty channel not initialized. Setting chain stop");
+			channelFuture.cancel(true);
+			_isChainStarted = false;
 			return;
 		}else {
 			SibTr.debug(tc, "stopChannel","Stopping Channel "+ serverChan +" --- "+ serverChan.localAddress());
@@ -131,19 +178,11 @@ public class NettyInboundChain implements InboundChain{
 	        //stopchain() first quiesce's(invokes chainQuiesced) depending on the chainQuiesceTimeOut
 	        //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
 	        try {
-	        	//First stop any MP connections which are established through COMMS 
-	            //stopping connections is Non-blocking
-	            try {
-	                if (this._isSecureChain)
-	                    _commsServerFacade.closeViaCommsMPConnections(JsConstants.ME_STOP_COMMS_SSL_CONNECTIONS);
-	                else
-	                    _commsServerFacade.closeViaCommsMPConnections(JsConstants.ME_STOP_COMMS_CONNECTIONS);
-	            } catch (Exception e) {
-	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-	                    SibTr.debug(tc, "Failed in stopping MP connections which are establised through COMMS: ", e);
-	            }
 	            if(NettyNetworkConnectionFactory.USE_BUNDLE) {
-		    		_nettyFramework.stop(serverChan); //BLOCK till stopChain actually completes from StopChainTask
+	            	SibTr.debug(tc, "Waiting for server channel: "+serverChan + " to stop.");
+	            	ChannelFuture future = _nettyFramework.stop(serverChan);
+	            	if(future!=null)
+	            		future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
 	            }else {
 	            	ChannelFuture future = serverChan.close().sync();
 		            if(!future.isSuccess()) {
@@ -289,17 +328,52 @@ public class NettyInboundChain implements InboundChain{
                 }
             	bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
             	NettyInboundChain parent = this;
-            	_nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
+            	this.channelFuture = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
             		if (f.isCancelled() || !f.isSuccess()) {
 						SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
 						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", (Exception) f.cause());
 						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
 					}else {
 						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
-						parent.serverChan = f.channel();
+						Channel chan = f.channel();
+						parent.serverChan = chan;
+//						if(!_isChainStarted) {
+//							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//			                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " will be closed because chain was disabled");
+//			                }
+//							quiesceListener(chan);
+//							return;
+//						}
+						f.addListener(innerFuture -> {
+							if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
+								SibTr.debug(this, tc, "Channel exception during connect. Couldn't add quiesce handler: " + f.cause().getMessage());
+								quiesceListener(chan);
+							}else {
+								if(!_isChainStarted) {
+									if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " will be closed because chain was disabled");
+					                }
+									quiesceListener(chan);
+								}else {
+									if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "adding quiesce", f);
+									_nettyFramework.registerEndpointQuiesce(chan, new Callable<Void>() {
+										@Override
+										public Void call() throws Exception {
+											if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+							                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " received quiesce event so running close");
+							                }
+											quiesceListener(chan);
+											return null;
+										}
+										
+									});
+								}
+							}
+						});
 						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
 					}
             	});
+            	_isChainStarted = true;
             }else {
             	// TODO: Hackish way of re-setting group so need to address this later on
                 ServerBootstrapExtended serverBootstrap = _nettyFramework.createTCPBootstrap(options);
@@ -322,6 +396,9 @@ public class NettyInboundChain implements InboundChain{
                     inetHost = "0.0.0.0";
                 }
                 serverChan = bootstrap.bind(inetHost, ep.getPort()).sync().channel();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " handler names: " + serverChan.pipeline().names());
+                }
                 TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
                 // set common channel attrs
                 serverChan.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
@@ -384,8 +461,12 @@ public class NettyInboundChain implements InboundChain{
             }
             pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
             pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-            pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
-            pipeline.addLast(NettyNetworkConnectionFactory.JMS_SERVER_HANDLER_KEY, new NettyJMSServerHandler());
+            // Replace the timeout handler to handler the timeouts ourselves
+            pipeline.replace(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
+			pipeline.addLast(NettyNetworkConnectionFactory.JMS_SERVER_HANDLER_KEY, new NettyJMSServerHandler());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                SibTr.debug(this, tc, "Channel: " + ch + " handler names: " + pipeline.names());
+            }
         }
     }
 

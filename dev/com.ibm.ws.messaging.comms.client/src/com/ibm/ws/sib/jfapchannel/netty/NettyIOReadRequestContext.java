@@ -9,12 +9,16 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
+import java.io.IOException;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
+
+import io.netty.channel.Channel;
 
 /**
  * An implementation of com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext. It
@@ -64,7 +68,12 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 		// Just return null here for now. Eventually could look into disabling autoRead and managing
 		// Reads manually but currently all calls are async and original channelfw implementation
 		// was expecting null if async so will mimic behavior
-		this.conn.getVirtualConnection().read();
+		Channel chan = this.conn.getVirtualConnection();
+		if(chan.isActive())
+			this.conn.getVirtualConnection().read();
+		else 
+			completionCallback.error(getNetworkConnectionInstance(chan), this, new IOException("Read was attempted on a channel that is not active!! " + chan));
+		
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "read", null);
 		return null;

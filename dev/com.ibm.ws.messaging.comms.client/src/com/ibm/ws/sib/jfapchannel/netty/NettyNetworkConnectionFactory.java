@@ -20,6 +20,7 @@ import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
+import com.ibm.ws.sib.jfapchannel.impl.Connection;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -29,6 +30,9 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
+
+import io.netty.util.AttributeKey;
+
 
 /**
  * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory. Based
@@ -60,6 +64,8 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	private NettyFramework nettyBundle;
 	private Map<Object, Object> sslOptions;
 	private NettyTlsProvider tlsProvider;
+	
+	public static final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("CONNECTION");
 
 	public static final String HEARTBEAT_HANDLER_KEY = "heartBeatHandler";
 	public static final String SSL_HANDLER_KEY = "sslHandler";
@@ -69,7 +75,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	public static final String JMS_SERVER_HANDLER_KEY = "jmsServerHandler";
 
 	//TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce. https://github.com/OpenLiberty/open-liberty/issues/24817
-	public static final boolean USE_BUNDLE = false;
+	public static final boolean USE_BUNDLE = true;
 
 	/**
 	 * Constructor.

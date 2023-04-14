@@ -32,10 +32,12 @@ import com.ibm.ws.sib.jfapchannel.impl.ConversationImpl;
 import com.ibm.ws.sib.jfapchannel.impl.NettyConnectionReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.netty.NettyIOReadRequestContext;
 import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnection;
+import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnectionFactory;
 import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnectionContext;
 import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
+
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -59,9 +61,9 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 	}
 
 
-	protected final static AttributeKey<InboundConnection> CONNECTION_KEY = AttributeKey.valueOf("InboundConnection");
 	public final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
 	public final static AttributeKey<NettyInboundChain> ATTR_KEY = AttributeKey.valueOf("CHAIN");
+	
 
 	/** Called when a new connection is established */
 	@Override
@@ -77,6 +79,7 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 		// Heartbeat passing in Null since hasn't been implemented to be configurable per endpoint properties
 		int heartbeatInterval = determineHeartbeatInterval(null);
 		int heartbeatTimeout = determineHeartbeatTimeout(null);
+		
 		// end F196678.10
 
 		NettyNetworkConnection conn = new NettyNetworkConnection(ctx.channel(), ctx.channel().attr(CHAIN_ATTR_KEY).get(), true);
@@ -102,7 +105,7 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
         }
 
         if (connection != null) {
-        	ctx.channel().attr(CONNECTION_KEY).set(connection);
+        	ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(connection);
             ConversationImpl conversation = new ConversationImpl(Connection.FIRST_CONVERSATION_ID,
                                                               true,
                                                               connection,
@@ -178,8 +181,8 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 			SibTr.debug(this, tc, "channelRead0", ctx.channel() + ". [" + msg.array() + "] bytes received");
 		}
 
-		Attribute<InboundConnection> attr = ctx.channel().attr(CONNECTION_KEY);
-		InboundConnection connection = attr.get();
+		Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
+		Connection connection = attr.get();
 
 		//TODO: Check if connection is closed
 		if (connection != null) {
@@ -218,8 +221,8 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 			SibTr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
 		}
 		// TODO: Check how to manage inactive channels
-		InboundConnection connection = ctx.channel().attr(CONNECTION_KEY).get();
-		ctx.channel().attr(CONNECTION_KEY).set(null);
+		Connection conn = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).get();
+		ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(null);
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "channelInactive", ctx.channel());
 	}

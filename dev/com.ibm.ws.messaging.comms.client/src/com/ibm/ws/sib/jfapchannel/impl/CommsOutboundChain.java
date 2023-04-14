@@ -104,8 +104,6 @@ public class CommsOutboundChain implements ApplicationPrereq {
             ChannelConfiguration tcpOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
-//            @Reference(name="tlsProviderService")
-//            NettyTlsProvider tlsProviderService,
             /* Require SingletonsReady so that we will wait for it to ensure its availability at least until the chain is deactivated. */ 
             @Reference(name="singletonsReady")
             SingletonsReady singletonsReady,
@@ -116,7 +114,6 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         this.tcpOptions = tcpOptions;
         this.commsClientService = commsClientService;
-//        this.tlsProviderService = tlsProviderService;
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
         
@@ -276,7 +273,14 @@ public class CommsOutboundChain implements ApplicationPrereq {
         }else {
         	// Use Netty Framework for transport
         	// TODO: Verify Dynamic updates with SSL on Netty
-            chainList.put(chainName, this);
+        	try {
+        		if (null == secureFacet) throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { chainName }, "Chain not started " + chainName)));
+            	if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JFAP Outbound secure chain" + chainName + " successfully started ");
+                chainList.put(chainName, this);
+            }catch (ChainException exception) {
+                FFDCFilter.processException(exception, "CommsOutboundChain.createSecureJFAPChain for chain " + this.chainName, jfapChannelName, this);
+                if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JFAP Outbound secure chain " + chainName + " failed to start, exception ="+exception);
+            }
         }
         
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "createSecureJFAPChain");
@@ -287,8 +291,6 @@ public class CommsOutboundChain implements ApplicationPrereq {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "deactivate");
         if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "CommsOutboundChain: Destroying " + (isSecureChain ? "Secure" : "Non-Secure") + " chain ", chainName);
         terminateConnectionsAssociatedWithChain(DEACTIVATE, null, null);
-        // TODO: Check about having this in both deactivate and terminate connections
-        chainList.put(chainName, this);
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this,tc, "deactivate");
     }
 

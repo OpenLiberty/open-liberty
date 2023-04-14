@@ -49,9 +49,8 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 	}
 
 
-	protected final static AttributeKey<Connection> CONNECTION_KEY = AttributeKey.valueOf("OutboundConnection");
 	protected final static AttributeKey<String> CHAIN_ATTR_KEY = AttributeKey.valueOf("CHAIN_NAME");
-
+	
 	/** Called when a new connection is established */
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -68,7 +67,7 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "channelRead0", ctx.channel());
 
-		Attribute<Connection> attr = ctx.channel().attr(CONNECTION_KEY);
+		Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
 		Connection connection = attr.get();
 
 		if (connection != null) {
@@ -104,13 +103,12 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 			SibTr.entry(this, tc, "channelInactive", ctx.channel());
 
 		// TODO: Check how to manage inactive channels appropriately
-		Connection connection = ctx.channel().attr(CONNECTION_KEY).get();
+		Connection connection = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).get();
 
 		if (tc.isEntryEnabled() && tc.isDebugEnabled()) {
 			SibTr.debug(this, tc, "Fired for connection which is closed?: " + connection.isClosed() + " closedDeffered?: " + connection.isCloseDeferred(), new Object[] {ctx.channel(), connection});
 		}
-		ctx.channel().attr(CONNECTION_KEY).set(null);
-		ctx.close();
+		ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(null);
 
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "channelInactive", ctx.channel());
@@ -121,7 +119,7 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "exceptionCaught", new Object[] {ctx.channel(), cause});
 
-		Attribute<Connection> attr = ctx.channel().attr(CONNECTION_KEY);
+		Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
 		Connection connection = attr.get();
 
 		if (connection == null) {
@@ -130,7 +128,7 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 			ctx.close();
 		}else {
 			connection.invalidate(false, cause, "Connection closed due to exception");
-			ctx.channel().attr(CONNECTION_KEY).set(null);
+			ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(null);
 			ctx.close();
 		}
 

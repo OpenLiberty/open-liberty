@@ -76,6 +76,13 @@ public class NettyJMSHeartbeatHandler extends IdleStateHandler{
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "handlerAdded", ctx.channel());
 	}
+	
+	@Override
+    protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception{
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
+			SibTr.debug(this,tc, "channelIdleTriggered for: " + ctx.channel());
+    	userEventTriggered(ctx, evt);
+    }
 
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -87,12 +94,9 @@ public class NettyJMSHeartbeatHandler extends IdleStateHandler{
 
 			if(event.state() != IdleState.READER_IDLE) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) 
-					SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. Event will be moved to start of pipeline.", evt);
-				// TODO: Run from the start to verify. This should probably be before the inactivity timeout in the pipeline
-				ctx.pipeline().firstContext().fireUserEventTriggered(evt);
-				return;
+					SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. Event will be moved through the pipeline.", evt);
 			}else {
-				Attribute<Connection> attr = ctx.channel().attr(NettyJMSClientHandler.CONNECTION_KEY);
+				Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
 				Connection connection = attr.get();
 				if (connection != null) {
 					IOReadCompletedCallback callback = connection.getReadCompletedCallback();

@@ -26,6 +26,7 @@ import static org.osgi.service.component.annotations.ReferencePolicyOption.GREED
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.ComponentConstants;
@@ -83,6 +84,8 @@ public class CommsServerServiceFacade implements Singleton {
     private boolean useNettyTransport = false;
 
     private final JsAdminService jsAdminService;
+    
+    private volatile AtomicBoolean awaitingTlsProvider = new AtomicBoolean(false);
 
     private final CHFWBundle chfw;
     private final NettyFramework nettyBundle;
@@ -172,6 +175,12 @@ public class CommsServerServiceFacade implements Singleton {
     void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindTlsProviderService", tlsProvider);
         this.nettyTlsProvider = tlsProvider;
+        if(awaitingTlsProvider.getAndSet(false)) {
+        	if (securePort >= 0 && secureFacetRef.get().areSecureSocketsEnabled()) inboundSecureChain.enable(true);
+            synchronized (factotum) {
+                factotum.updateSecureChain();
+            }
+        }
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
     }
     
@@ -190,12 +199,19 @@ public class CommsServerServiceFacade implements Singleton {
     @Reference(name = "secureFacet", cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY, unbind = "unbindSecureFacet")
     void bindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindSecureFacet", facet);
-        if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
-        synchronized (factotum) {
-            this.secureFacetRef.set(facet);
-            factotum.updateSecureChain();
+        if(nettyTlsProvider == null) {
+        	if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "bindSecureFacet: got SSL Options with No Netty TLS Provider yet set.");
+        	this.secureFacetRef.set(facet);
+        	awaitingTlsProvider.set(true);
+        }else {
+        	if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
+            synchronized (factotum) {
+            	this.secureFacetRef.set(facet);
+                factotum.updateSecureChain();
+            }
         }
     }
+    
 
     void unbindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindSecureFacet", facet);

@@ -63,20 +63,26 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 		final IOWriteRequestContext me = this;
 
 		Channel chan = this.conn.getVirtualConnection();
+		
+		if(chan.isActive()) {
+			
+			ChannelFuture future = chan.writeAndFlush(buffer, chan.newPromise().addListener(f -> {
+				if (f.isDone() && f.isSuccess()) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Succesful write for "+chan);
+					completionCallback.complete(getNetworkConnectionInstance(chan), me);
+				} else {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "Unsuccesful write", new Object[]{chan, f.cause()});
+					completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException(f.cause()));
+					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "Unsuccesful write");
+				}
+			}));
 
-		ChannelFuture future = chan.writeAndFlush(buffer, chan.newPromise().addListener(f -> {
-			if (f.isDone() && f.isSuccess()) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Succesful write for "+chan);
-				completionCallback.complete(getNetworkConnectionInstance(chan), me);
-			} else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "Unsuccesful write", new Object[]{chan, f.cause()});
-				completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException(f.cause()));
-				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "Unsuccesful write");
+			if(future.isDone()) {
+				retConn = getNetworkConnectionInstance(chan); 
 			}
-		}));
-
-		if(future.isDone()) {
-			retConn = getNetworkConnectionInstance(chan); 
+			
+		}else {
+			completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException("Write was attempted on a channel that is not active!! " + chan));
 		}
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "write", retConn);

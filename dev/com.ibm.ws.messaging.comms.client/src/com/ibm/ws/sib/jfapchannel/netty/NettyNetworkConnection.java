@@ -24,6 +24,8 @@ import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionTarget;
 import com.ibm.ws.sib.jfapchannel.impl.OutboundConnection;
 import com.ibm.ws.sib.utils.ras.SibTr;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -33,6 +35,7 @@ import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
@@ -113,10 +116,10 @@ public class NettyNetworkConnection implements NetworkConnection{
 		if(this.chan == null) {
 			throw new NettyException("Error linking connection appropriately");
 		}
-		if(chan.attr(NettyJMSClientHandler.CONNECTION_KEY).get() != null) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "linkOutboundConnection","Connection was already set: "+chan.attr(NettyJMSClientHandler.CONNECTION_KEY).get());
+		if(chan.attr(NettyNetworkConnectionFactory.CONNECTION).get() != null) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "linkOutboundConnection","Connection was already set: "+chan.attr(NettyNetworkConnectionFactory.CONNECTION).get());
 		}
-		chan.attr(NettyJMSClientHandler.CONNECTION_KEY).set(conn);
+		chan.attr(NettyNetworkConnectionFactory.CONNECTION).set(conn);
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "linkOutboundConnection");
 	}
 
@@ -150,15 +153,24 @@ public class NettyNetworkConnection implements NetworkConnection{
 	 * @throws NettyException 
 	 */
 	public void setHearbeatInterval(int timeout) throws NettyException {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this.chan, tc, "setHearbeatInterval", Integer.valueOf(timeout));
 		if(chan == null) {
 			throw new NettyException("Haven't registered channel to set timeout");
 		}
 		ChannelPipeline pipeline = this.chan.pipeline();
-		if(getHearbeatInterval() != timeout * 1000)
+		if(getHearbeatInterval() != timeout * 1000) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+				SibTr.debug(this, tc, "setHearbeatInterval", "Replacing Heartbeat Interval for Channel: "+this.chan+" from: " + getHearbeatInterval() + " to: "+timeout);
 			pipeline.replace(
 					NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, 
 					NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, 
 					new NettyJMSHeartbeatHandler(timeout));
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+				SibTr.debug(this, tc, "setHearbeatInterval", "Heartbeat Interval set for Channel: "+this.chan+" pipeline names" + pipeline.names());
+			
+		}
+			
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setHearbeatInterval");
 	}
 
 
@@ -202,40 +214,28 @@ public class NettyNetworkConnection implements NetworkConnection{
 		final NettyNetworkConnection readyConnection = this;
 
 
-
 		if(this.isInbound) {
 			listener.connectRequestFailedNotification(new NettyException("Can't start outbound connection with an inbound channel"));
 			return;
 		}
 
-		try {
-			
-			bootstrap.handler(new NettyJMSClientInitializer(bootstrap.getBaseInitializer(), target, listener));
- 			
-			NettyNetworkConnection parent = this;
+		if (FrameworkState.isStopping()) {
+			// Drive the callback directly here.
+			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+				SibTr.debug(this, tc, "Framework.isStopping() == true");
+			listener.connectRequestFailedNotification(new IllegalStateException("Framework stopped"));
+
+		}
+		else {
+			try {
+
+				bootstrap.handler(new NettyJMSClientInitializer(bootstrap.getBaseInitializer(), target, listener));
+
+				NettyNetworkConnection parent = this;
 
 
-			if(NettyNetworkConnectionFactory.USE_BUNDLE) {
-				nettyBundle.startOutbound(this.bootstrap, target.getRemoteAddress().getAddress().getHostAddress(), target.getRemoteAddress().getPort(), f -> {
-					if (f.isCancelled() || !f.isSuccess()) {
-						SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
-						listener.connectRequestFailedNotification((Exception) f.cause());
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
-					}else {
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
-						parent.chan = f.channel();
-						listener.connectRequestSucceededNotification(readyConnection);
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
-					}
-
-				});
-			}else {
-				ChannelFuture oFuture = bootstrap.connect(target.getRemoteAddress());
-				oFuture.addListener(new ChannelFutureListener() {
-
-					@Override
-					public void operationComplete(ChannelFuture f) throws Exception {
+				if(NettyNetworkConnectionFactory.USE_BUNDLE) {
+					nettyBundle.startOutbound(this.bootstrap, target.getRemoteAddress().getAddress().getHostAddress(), target.getRemoteAddress().getPort(), f -> {
 						if (f.isCancelled() || !f.isSuccess()) {
 							SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
 							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
@@ -247,20 +247,39 @@ public class NettyNetworkConnection implements NetworkConnection{
 							listener.connectRequestSucceededNotification(readyConnection);
 							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
 						}
-					}
-				});
+
+					});
+				}else {
+					ChannelFuture oFuture = bootstrap.connect(target.getRemoteAddress());
+					oFuture.addListener(new ChannelFutureListener() {
+
+						@Override
+						public void operationComplete(ChannelFuture f) throws Exception {
+							if (f.isCancelled() || !f.isSuccess()) {
+								SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
+								listener.connectRequestFailedNotification((Exception) f.cause());
+								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
+							}else {
+								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
+								parent.chan = f.channel();
+								listener.connectRequestSucceededNotification(readyConnection);
+								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
+							}
+						}
+					});
+				}
+
+
+
+
+			} catch (Exception e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "destroy", e);
+				listener.connectRequestFailedNotification(e);
+				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "destroy");
+
 			}
-
-
-
-
-		} catch (Exception e) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "destroy", e);
-			listener.connectRequestFailedNotification(e);
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "destroy");
-
 		}
-
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "connectAsynch");
 	}
@@ -326,7 +345,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 			}
 			pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
 			pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-			pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
+			pipeline.replace(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
 			pipeline.addLast(NettyNetworkConnectionFactory.JMS_CLIENT_HANDLER_KEY, new NettyJMSClientHandler());
 		}
 	}
