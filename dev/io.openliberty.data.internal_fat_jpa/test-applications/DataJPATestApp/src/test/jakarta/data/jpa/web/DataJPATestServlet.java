@@ -95,6 +95,9 @@ public class DataJPATestServlet extends FATServlet {
     @Inject
     Tariffs tariffs;
 
+    @Inject
+    TaxPayers taxpayers;
+
     @Resource
     private UserTransaction tran;
 
@@ -243,6 +246,43 @@ public class DataJPATestServlet extends FATServlet {
         shippingAddresses.save(a1);
 
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Use an Entity which has an attribute which is a collection of embeddables, as permitted by the JPA ElementCollection annotation.
+     */
+    @Test
+    public void testEmbeddableCollection() {
+        taxpayers.delete();
+
+        AccountId a1 = AccountId.of(15561600, 391588);
+        AccountId a2 = AccountId.of(26122300, 410224);
+        AccountId a3 = AccountId.of(60212900, 391588);
+        AccountId a4 = AccountId.of(43014400, 410224);
+        AccountId a5 = AccountId.of(55435500, 560237);
+        AccountId a6 = AccountId.of(66320100, 410224);
+        AccountId a7 = AccountId.of(77512000, 705030);
+        AccountId a8 = AccountId.of(88191200, 410224);
+        AccountId a9 = AccountId.of(99105300, 391588);
+        AccountId a10 = AccountId.of(10105600, 560237);
+
+        TaxPayer t1 = new TaxPayer(123001230L, TaxPayer.FilingStatus.HeadOfHousehold, 3, 54000.0f, a1, a10);
+        TaxPayer t2 = new TaxPayer(234002340L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 212000.0f, a6, a7, a8);
+        TaxPayer t3 = new TaxPayer(345003450L, TaxPayer.FilingStatus.MarriedFilingSeparately, 0, 95000.0f, a2, a3);
+        TaxPayer t4 = new TaxPayer(456004560L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 41000.0f, a4);
+        TaxPayer t5 = new TaxPayer(567005670L, TaxPayer.FilingStatus.Single, 0, 133000.0f, a5, a9);
+        TaxPayer t6 = new TaxPayer(678006780L, TaxPayer.FilingStatus.MarriedFilingSeparately, 3, 126000.0f, a2);
+
+        taxpayers.save(t1, t2, t3, t4, t5, t6);
+
+        assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
+                             taxpayers.findAccountsBySSN(234002340L)
+                                             .stream()
+                                             .map(AccountId::toString)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        taxpayers.delete();
     }
 
     /**
