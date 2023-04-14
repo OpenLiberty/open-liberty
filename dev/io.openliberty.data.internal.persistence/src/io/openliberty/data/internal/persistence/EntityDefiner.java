@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,6 +89,26 @@ public class EntityDefiner implements Runnable {
             Tr.debug(this, tc, "add: " + entityClass.getName());
 
         entities.add(entityClass);
+    }
+
+    /**
+     * Obtains the entity class (if any) for a type that might be parameterized.
+     *
+     * @param type a type that might be parameterized.
+     * @return entity class or null.
+     */
+    @Trivial
+    private Class<?> getEntityClass(java.lang.reflect.Type type) {
+        Class<?> c = null;
+        if (type instanceof ParameterizedType) {
+            java.lang.reflect.Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+            type = typeParams.length == 1 ? typeParams[0] : null;
+            if (type instanceof Class && ((Class<?>) type).isAnnotationPresent(Entity.class))
+                c = (Class<?>) type;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "getEntityClass from parameterized " + type + ": " + c);
+        }
+        return c;
     }
 
     /**
@@ -176,12 +197,17 @@ public class EntityDefiner implements Runnable {
             // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
             for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
                 if (entityClassNames.add(c.getName())) {
+                    Class<?> e;
                     for (Field f : c.getFields())
                         if (f.getType().isAnnotationPresent(Entity.class))
                             annotatedEntityClassQueue.add(f.getType());
+                        else if ((e = getEntityClass(f.getGenericType())) != null)
+                            annotatedEntityClassQueue.add(e);
                     for (Method m : c.getMethods())
                         if (m.getReturnType().isAnnotationPresent(Entity.class))
                             annotatedEntityClassQueue.add(m.getReturnType());
+                        else if ((e = getEntityClass(m.getGenericReturnType())) != null)
+                            annotatedEntityClassQueue.add(e);
                 }
 
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
