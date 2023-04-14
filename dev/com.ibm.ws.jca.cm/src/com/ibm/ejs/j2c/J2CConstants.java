@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -129,5 +129,7 @@ public interface J2CConstants {
 
     public final static String MAPPING_MODULE_mappingConfigAlias = "mappingConfigAlias";
     public final static String MAPPING_MODULE_authDataAlias = "authDataAlias";
+
+    public final static String POOL_MaxInUseTime = "maxInUseTime";
 
 }

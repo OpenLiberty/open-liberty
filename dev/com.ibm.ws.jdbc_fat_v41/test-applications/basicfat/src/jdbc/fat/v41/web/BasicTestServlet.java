@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -138,6 +138,21 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     @Resource(name = "jdbc/XAds")
     DataSource xads;
+
+    @Resource(name = "jdbc/dsfat22MaxInUseTime")
+    DataSource dsfat22MaxInUseTime;
+
+    @Resource(name = "jdbc/dsfat22MaxInUseTime2")
+    DataSource dsfat22MaxInUseTime2;
+
+    @Resource(name = "jdbc/dsfat22MaxInUseTime3")
+    DataSource dsfat22MaxInUseTime3;
+
+    @Resource(name = "jdbc/dsfat22MaxInUseTimeDefault")
+    DataSource dsfat22MaxInUseTimeDefault;
+
+    @Resource(name = "jdbc/maxInUseUpdateTest")
+    DataSource maxInUseUpdateTest;
 
     @Override
     public void init() throws ServletException {
@@ -1946,5 +1961,105 @@ public class BasicTestServlet extends FATDatabaseServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * Test if maxInUseTime will cause connections to be removed when older than the timeout
+     * And kept if younger than the timeout
+     */
+    public void testMaxInUseTime() throws Throwable {
+        //Timeout on this ds is 500ms
+        Connection cnt = dsfat22MaxInUseTime.getConnection();
+        Connection cnt2 = dsfat22MaxInUseTime.getConnection();
+        Connection cnt3 = dsfat22MaxInUseTime.getConnection();
+        Connection cnt4 = dsfat22MaxInUseTime.getConnection();
+
+        //Timeout on this ds is 20m
+        Connection cnt5 = dsfat22MaxInUseTime2.getConnection();
+        Connection cnt6 = dsfat22MaxInUseTime2.getConnection();
+
+        //Timeout on this ds is 0
+        Connection cnt7 = dsfat22MaxInUseTime3.getConnection();
+        Connection cnt8 = dsfat22MaxInUseTime3.getConnection();
+
+        //Timeout on this ds is the default/not set
+        Connection cnt9 = dsfat22MaxInUseTimeDefault.getConnection();
+        Connection cnt10 = dsfat22MaxInUseTimeDefault.getConnection();
+        try {
+            Thread.sleep(2000);
+
+            int size = getPoolSize("jdbc/dsfat22MaxInUseTime");
+            if (size != 0)
+                throw new Exception("Expected pool to be 0, but it was " + size);
+
+            size = getPoolSize("jdbc/dsfat22MaxInUseTime2");
+            if (size != 2)
+                throw new Exception("Expected pool to be 2, but it was " + size);
+
+            size = getPoolSize("jdbc/dsfat22MaxInUseTime3");
+            if (size != 2)
+                throw new Exception("Expected pool to be 2, but it was " + size);
+
+            size = getPoolSize("jdbc/dsfat22MaxInUseTimeDefault");
+            if (size != 2)
+                throw new Exception("Expected pool to be 2, but it was " + size);
+        } finally {
+            if (cnt != null && !cnt.isClosed())
+                cnt.close();
+            if (cnt2 != null && !cnt2.isClosed())
+                cnt2.close();
+            if (cnt3 != null && !cnt3.isClosed())
+                cnt3.close();
+            if (cnt4 != null && !cnt4.isClosed())
+                cnt4.close();
+            if (cnt5 != null && !cnt5.isClosed())
+                cnt5.close();
+            if (cnt6 != null && !cnt6.isClosed())
+                cnt6.close();
+            if (cnt7 != null && !cnt7.isClosed())
+                cnt7.close();
+            if (cnt8 != null && !cnt8.isClosed())
+                cnt8.close();
+            if (cnt9 != null && !cnt9.isClosed())
+                cnt9.close();
+            if (cnt10 != null && !cnt10.isClosed())
+                cnt10.close();
+
+        }
+    }
+
+    /**
+     * Test if maxInUseTime will cause connections to be removed when older than the timeout
+     * And kept if younger than the timeout
+     */
+    public void testGet2MaxInUseTimeConnections() throws Throwable {
+        //Timeout on this ds is 250ms
+        Connection cnt = maxInUseUpdateTest.getConnection();
+        Connection cnt2 = maxInUseUpdateTest.getConnection();
+
+        try {
+            if (cnt != null && !cnt.isClosed())
+                cnt.close();
+            if (cnt2 != null && !cnt2.isClosed())
+                cnt2.close();
+        } finally {
+            if (cnt != null && !cnt.isClosed())
+                cnt.close();
+            if (cnt2 != null && !cnt2.isClosed())
+                cnt2.close();
+            Thread.sleep(1500);
+        }
+    }
+
+    public void testGet2MaxInUseTimeConnectionsAreGone() throws Throwable {
+        int size = getPoolSize("jdbc/maxInUseUpdateTest");
+        if (size != 0)
+            throw new Exception("Expected pool to be 0, but it was " + size);
+    }
+
+    public void testGet2MaxInUseTimeConnectionsRemain() throws Throwable {
+        int size = getPoolSize("jdbc/maxInUseUpdateTest");
+        if (size != 2)
+            throw new Exception("Expected pool to be 2, but it was " + size);
     }
 }

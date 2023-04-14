@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,15 @@ package com.ibm.ws.jdbc.fat.v41;
 
 import static com.ibm.ws.jdbc.fat.v41.FATSuite.appName;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.config.DataSource;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -127,6 +132,43 @@ public class JDBC41Test extends FATServletClient {
     @Test
     public void testJDBCVersionLimiting() throws Exception {
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testJDBCVersionLimiting&expectedVersion=4.1");
+    }
+
+    @Test
+    public void testMaxInUseTime() throws Exception {
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testMaxInUseTime");
+    }
+
+    @Test
+    public void testMaxInUsePropertyUpdate() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        ServerConfiguration newConfig = config.clone();
+        try {
+            FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testGet2MaxInUseTimeConnections");
+            FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testGet2MaxInUseTimeConnectionsAreGone");
+
+            for (DataSource datasource : newConfig.getDataSources()) {
+                if (datasource.getId().equalsIgnoreCase("maxInUseUpdateTest")) {
+                    datasource.getConnectionManagers().get(0).setMaxInUseTime("0");
+                    break;
+                }
+            }
+
+            // Update the config, to make sure the server registers it gone.
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(newConfig);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
+            server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+
+            FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testGet2MaxInUseTimeConnections");
+            FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testGet2MaxInUseTimeConnectionsRemain");
+        } finally {
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
+            server.waitForStringInLogUsingMark(".*CWWKZ000[13]I.*");
+        }
+
     }
 
 }
