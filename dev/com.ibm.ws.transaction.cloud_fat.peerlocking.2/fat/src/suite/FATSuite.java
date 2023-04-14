@@ -30,8 +30,10 @@ import tests.DualServerPeerLockingTest2;
 })
 public class FATSuite extends TxTestContainerSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerPeerLockingTest.serverNames));
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                    .forServers(DualServerPeerLockingTest.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerPeerLockingTest.serverNames));
 }

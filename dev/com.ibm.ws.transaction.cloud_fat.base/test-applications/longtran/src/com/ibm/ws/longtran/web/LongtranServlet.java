@@ -12,18 +12,14 @@
  *******************************************************************************/
 package com.ibm.ws.longtran.web;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +30,6 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
-import javax.enterprise.concurrent.ManagedExecutorService;
-
-//import javax.enterprise.concurrent.ManagedExecutorService;
 
 import componenttest.app.FATServlet;
 
@@ -190,33 +183,22 @@ public class LongtranServlet extends FATServlet {
             }
 
         }
-
     }
 
     public void writeTranState(String writeMe) {
 
         TRAN_STATE_FILE = System.getenv("WLP_OUTPUT_DIR") + "/../shared/" + "longtran.dat";
-        FileOutputStream fos = null;
-		System.out.println("writeTranState: write " + writeMe + ", to " + TRAN_STATE_FILE);
-        try {
-            fos = new FileOutputStream(TRAN_STATE_FILE);
-            PrintWriter p = new PrintWriter(fos);
+
+        System.out.println("writeTranState: write " + writeMe + ", to " + TRAN_STATE_FILE);
+        try (FileOutputStream fos = new FileOutputStream(TRAN_STATE_FILE); PrintWriter p = new PrintWriter(fos)) {
             p.println(writeMe);
-			p.flush();
+            p.flush();
         } catch (FileNotFoundException e) {
             System.out.println("writeTranState caught exc " + e);
             e.printStackTrace();
         } catch (IOException e) {
             System.out.println("writeTranState caught exc " + e);
             e.printStackTrace();
-        } finally {
-            try {
-
-                if (fos != null)
-                    fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-	}
+    }
 }

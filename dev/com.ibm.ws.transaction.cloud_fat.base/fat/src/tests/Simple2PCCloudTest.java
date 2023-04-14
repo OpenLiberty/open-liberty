@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,13 +35,11 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 public class Simple2PCCloudTest extends FATServletClient {
@@ -52,15 +50,12 @@ public class Simple2PCCloudTest extends FATServletClient {
     private static final long LOG_SEARCH_TIMEOUT = 300000;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1;
 
     @Server("com.ibm.ws.transaction_CLOUD002")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
     @Server("longLeaseLengthServer1")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseLengthServer1;
 
     @BeforeClass

@@ -21,11 +21,9 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
-import servlets.Simple2PCCloudServlet;
 
 @Mode
 @RunWith(FATRunner.class)
@@ -33,11 +31,9 @@ import servlets.Simple2PCCloudServlet;
 public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer firstServer;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
 
     public static String[] serverNames = new String[] {

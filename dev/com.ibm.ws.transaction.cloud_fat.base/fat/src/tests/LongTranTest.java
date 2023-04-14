@@ -14,7 +14,6 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,12 +30,10 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.longtran.web.LongtranServlet;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -46,9 +43,8 @@ public class LongTranTest extends FATServletClient {
 
     public static final String APP_NAME = "longtran";
     public static final String SERVLET_NAME = APP_NAME + "/LongtranServlet";
-    private String TRAN_STATE_FILE;
+
     @Server("com.ibm.ws.transaction_longtran")
-    @TestServlet(servlet = LongtranServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -57,7 +53,6 @@ public class LongTranTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.longtran.web.*");
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-
     }
 
     /**
@@ -151,7 +146,6 @@ public class LongTranTest extends FATServletClient {
     }
 
     private String readTranState() {
-        FileInputStream fis = null;
         String stateString = "";
         try {
             RemoteFile rf = server.getFileFromLibertyInstallRoot("/usr/shared/longtran.dat");
@@ -176,13 +170,6 @@ public class LongTranTest extends FATServletClient {
         } catch (Exception e) {
             System.out.println("Caught exc " + e);
             e.printStackTrace();
-        } finally {
-            try {
-                if (fis != null)
-                    fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return stateString;
     }
