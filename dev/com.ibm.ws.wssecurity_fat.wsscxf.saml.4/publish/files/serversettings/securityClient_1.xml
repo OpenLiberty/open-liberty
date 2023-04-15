@@ -1,9 +1,0 @@
-<server>
-
-	<wsSecurityClient
-		id="default"
-		ws-security.saml-callback-handler="com.ibm.ws.wssecurity.callback.Saml20PropagationCallbackHandler"
-	>
-	</wsSecurityClient>
-
-</server>
