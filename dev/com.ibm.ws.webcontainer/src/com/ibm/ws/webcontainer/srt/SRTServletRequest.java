@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.srt;
 
@@ -59,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.commons.fileupload.FileCountLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
@@ -3847,7 +3845,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     private void parseMultipart(IServletConfig multiPartServletConfig, int fileThreshold, String location, long maxFileSize, long maxRequestSize) throws IOException {
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE);
+        
+        if (isTraceOn) {  
             logger.logp(Level.FINE, CLASS_NAME,"parseMultipart"," "+ multiPartServletConfig.getServletName()+" ["+ fileThreshold +", "+location+ ", " + maxFileSize+" , " + maxRequestSize+"]"); //PI75528
         }
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
@@ -3890,7 +3890,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     }
                 }       
             }
-            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            if (isTraceOn) {  
                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "uploadFile location --> " + uploadFile.getAbsolutePath());
             }
             multiPartServletConfig.setMultipartBaseLocation(uploadFile);
@@ -3899,11 +3899,18 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         ServletFileUpload sfu = new ServletFileUpload(fact);
         sfu.setFileSizeMax(maxFileSize);
         if(WCCustomProperties.USE_MAXREQUESTSIZE_FOR_MULTIPART){//PI75528
-            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            if (isTraceOn) { 
                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "usemaxrequestsizeformultipart property set");
             }
             sfu.setSizeMax(maxRequestSize); 
         }
+       
+        int maxFileCount = ((maxFileCount = WCCustomProperties.MAX_FILE_COUNT) < 0) ? -1 : maxFileCount;
+        if (isTraceOn) 
+            logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "maxFileCount set to ["+maxFileCount+"]");
+
+        sfu.setFileCountMax(maxFileCount);
+
         List list=null;
         try {
             if (_srtRequestHelper.multipartException!=null) {
@@ -3934,9 +3941,20 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
             if (list!= null) {
                 //724365.2 Start
-                if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-                    logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "size after parsing request --> " + list.size());
+                if (isTraceOn) { 
+                    logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "part size after parsing request body --> " + list.size());
                 }
+                
+                int maxParamPerRequest = WCCustomProperties.MAX_PARAM_PER_REQUEST;
+                if ((maxParamPerRequest != -1) &&  maxParamPerRequest < list.size()) {
+                    if (isTraceOn) { 
+                        logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "part size is greater than max param per request ["+maxParamPerRequest+"] ; throw ISE Exceeding.maximum.parameters");
+                    }
+                    
+                    //the second maxParamPerRequest is a stand-in to satisfy the message parameters
+                    throw new IllegalArgumentException(MessageFormat.format(nls.getString("Exceeding.maximum.parameters"), new Object[]{maxParamPerRequest, maxParamPerRequest})); 
+                }
+                
                 int totalPartSize = 0;
                 int dupSize = 0; // 728397
                 HashSet<Integer> key_hset = new HashSet<Integer>(); // 728397
@@ -3948,7 +3966,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     if( !multipartPartsMapcontainsKey){ 
                         if(!(key_hset.add(p.getName().hashCode()))){ 
                             dupSize++;// if false then count as duplicate hashcodes for unique keys
-                            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+                            if (isTraceOn) {
                                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "duplicate hashCode generated by part --> " + p.getName());
                             }
                             if( dupSize > WCCustomProperties.MAX_DUPLICATE_HASHKEY_PARAMS){                                                                                               
@@ -3957,7 +3975,6 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                         } 
                     }
                     // 728397 End
-                    int maxParamPerRequest = WCCustomProperties.MAX_PARAM_PER_REQUEST;
                     if((maxParamPerRequest == -1) || (totalPartSize < maxParamPerRequest)){
                         //91002 Liberty Start
                         if(multipartPartsMapcontainsKey){
@@ -3978,6 +3995,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     }// 724365.2 End
                 }                
             }
+        }
+        catch(FileCountLimitExceededException maxFileCountException) {
+            _srtRequestHelper.multipartException = new IllegalStateException(MessageFormat.format(nls.getString("multipart.file.count.max.exceeded"), new Object[]{maxFileCount}));
+            _srtRequestHelper.multipartISEException = true;
+            throw (IllegalStateException)_srtRequestHelper.multipartException;
         }
         catch(FileSizeLimitExceededException fileSizeException) {
             _srtRequestHelper.multipartException = new IllegalStateException(nls.getString("multipart.file.size.too.big"));
