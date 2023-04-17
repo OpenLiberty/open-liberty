@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.jpa31.AsmServiceTest;
 import com.ibm.ws.jpa.jpa31.JPA31Test;
 import com.ibm.ws.jpa.jpa31.JPABootstrapTest;
 import com.ibm.ws.jpa.jpa31.JPAJSONTest;
@@ -33,6 +34,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 JPABootstrapTest.class,
                 JPA31Test.class,
                 JPAJSONTest.class,
+                AsmServiceTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 

@@ -18,7 +18,8 @@ src: \
     test-applications/helpers/DatabaseManagement/src,\
     test-applications/jpabootstrap/src,\
     test-applications/jpa31/src,\
-    test-applications/json/src
+    test-applications/json/src,\
+    test-applications/eclAsmService/src
 
 fat.project: true
 fat.test.databases: true
