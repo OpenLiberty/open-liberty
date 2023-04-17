@@ -16,6 +16,7 @@ def grpcVersion='1.43.2'
 configurations {
   telemetryAgent
   jaegerClient
+  zipkinFeatureBundle
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
   
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
   
+  zipkinFeatureBundle 'com.ibm.ws.io.opentracing:com-ibm-ws-io-opentracing-zipkintracer:0.33'
   // Jaeger Client is needed for testing with mpOpenTracing-3.0
   jaegerClient 'io.opentracing:opentracing-util:0.33.0'
   jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
@@ -67,7 +69,18 @@ task addJaegerClientLibs (type: Copy) {
     from configurations.jaegerClient
 }
 
+task copyFeatureBundle(type: Copy) {
+    from configurations.zipkinFeatureBundle
+    into new File(autoFvtDir, 'publish/bundles')
+    rename { 'com.ibm.ws.opentracing.zipkin.jar' }
+}
+
+repositories {
+    mavenLocal()
+}
+
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addAgent
 addRequiredLibraries.dependsOn addJaegerClientLibs
+addRequiredLibraries.dependsOn copyFeatureBundle
