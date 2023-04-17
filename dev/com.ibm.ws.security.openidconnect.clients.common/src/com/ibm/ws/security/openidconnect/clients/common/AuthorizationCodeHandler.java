@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -16,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -153,7 +151,7 @@ public class AuthorizationCodeHandler {
         tokenRequestBuilder.isHostnameVerification(clientConfig.isHostNameVerificationEnabled());
         tokenRequestBuilder.authMethod(clientConfig.getTokenEndpointAuthMethod());
         tokenRequestBuilder.resources(OIDCClientAuthenticatorUtil.getResources(clientConfig));
-        tokenRequestBuilder.customParams(clientConfig.getTokenRequestParams());
+        tokenRequestBuilder.customParams(getTokenRequestCustomParameters());
         tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
 
@@ -171,6 +169,20 @@ public class AuthorizationCodeHandler {
         addAuthCodeToUsedList(authzCode);
 
         return oidcResult;
+    }
+
+    HashMap<String, String> getTokenRequestCustomParameters() {
+        HashMap<String, String> customParams = clientConfig.getTokenRequestParams();
+        String pkceChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
+        if (pkceChallengeMethod != null) {
+            customParams = addPkceParameters(customParams);
+        }
+        return customParams;
+    }
+
+    HashMap<String, String> addPkceParameters(HashMap<String, String> parameters) {
+        // TODO
+        return parameters;
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.
