@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,6 +62,9 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
     @Resource(name = "jdbc/ds1", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds1;
 
+    @Resource(name = "jdbc/ds1_maxconlimit", shareable = false, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds1_maxconlimit;
+
     @Resource(name = "jdbc/sharedDS", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource sharedDS;
 
@@ -77,6 +80,8 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
     public static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
     String tableName = "COLORS";
+
+    private static boolean firstTime = true;
 
     @Override
     public void init() throws ServletException {
@@ -408,13 +413,18 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
     }
 
     public void testGetMaxConnectionsLimit(HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        Connection conn = ds1.getConnection();
+        Connection conn = ds1_maxconlimit.getConnection();
         try {
-            ObjectName objName = getConnPoolStatsMBeanObjName("ds1");
+            ObjectName objName = getConnPoolStatsMBeanObjName("ds1_maxconlimit");
             conn.close();
             int maxConnectionsLimit = getMonitorData(objName, "MaxConnectionsLimit");
-            if (maxConnectionsLimit != 50) {
-                throw new Exception("Expected maximum connections to be 50, but was: " + maxConnectionsLimit);
+            if (firstTime) {
+                firstTime = false;
+                if (maxConnectionsLimit != 50) {
+                    throw new Exception("Expected maximum connections to be 50, but was: " + maxConnectionsLimit);
+                }
+            } else if (maxConnectionsLimit != 20) {
+                throw new Exception("Expected maximum connections to be 20, but was: " + maxConnectionsLimit);
             }
 
         } finally {
@@ -625,7 +635,7 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
     private ObjectName getConnPoolStatsMBeanObjName(String dsName) throws Exception {
         Set<ObjectInstance> mxBeanSet;
         ObjectInstance oi;
-        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=ConnectionPoolStats,name=*" + dsName + "*"), null);
+        mxBeanSet = mbeanServer.queryMBeans(new ObjectName("WebSphere:type=ConnectionPoolStats,name=*" + dsName + ",*"), null);
         if (mxBeanSet != null && mxBeanSet.size() > 0) {
             Iterator<ObjectInstance> it = mxBeanSet.iterator();
             oi = it.next();
