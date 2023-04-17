@@ -41,7 +41,7 @@ plugins {
     id "eclipse-wtp"
 }
 
-def grpcVersion = '1.43.2'
+def grpcVersion = '1.54.0'
 def protocVersion = '3.19.6'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
@@ -128,7 +128,7 @@ dependencies {
     storeAppWarLibs 'com.google.protobuf:protobuf-java-util:3.19.6',
     project(':io.openliberty.com.google.gson'),
     'com.google.guava:guava:30.1-android',
-    'com.google.errorprone:error_prone_annotations:2.4.0',
+    'com.google.errorprone:error_prone_annotations:2.18.0',
     'com.google.guava:failureaccess:1.0.1',
     'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava',
     'org.codehaus.mojo:animal-sniffer-annotations:1.18',
