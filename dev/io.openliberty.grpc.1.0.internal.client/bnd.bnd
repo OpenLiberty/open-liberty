@@ -21,6 +21,7 @@ nettyVersion=4.1.86.Final
 
 
 Import-Package: \
+  !com.google.errorprone.annotations
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\
   !com.google.protobuf.nano,\
