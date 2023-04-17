@@ -6,16 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # This file follows the WebSphere Message Guidelines.
 # For more information, visit: 
@@ -29,15 +26,6 @@
 # Messages used by Config 1.4 Impl -  range is 0300-0399, plus 9996 for the emergency message
 # Messages used by Config 2.0 Impl -  range is 0400-0499, plus 9995 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
-
-# The {0} property was not found in the configuration.
-no.such.element.CWMCG0300E=CWMCG0300E: The {0} property was not found in the configuration.
-no.such.element.CWMCG0300E.explanation=The requested property did not exist in any of the configured Config Sources.
-no.such.element.CWMCG0300E.useraction=Add the property to one of the existing Config Sources, or add a Config Source that contains the property.
-
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: The MicroProfile Config cache invalidation cannot be scheduled. The exception is {0}.
-failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Changes in MicroProfile Config might not be reflected in the application
-failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Server XML Application Properties Config Source
@@ -53,6 +41,6 @@ server.xml.default.variables.config.source=Server XML Default Variables Config S
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # The following Config API error occurred: {0}.
-temporary.CWMCG9996E=CWMCG9996E: The following Config API error has occurred: {0}.
-temporary.CWMCG9996E.explanation=A Config API error occurred that prevents normal operation.
-temporary.CWMCG9996E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+temporary.CWMCG9995E=CWMCG9995E: The following Config API error has occurred: {0}.
+temporary.CWMCG9995E.explanation=A Config API error occurred that prevents normal operation.
+temporary.CWMCG9995E.useraction=Review the server message.log file and FFDC logs to identify the problem.
