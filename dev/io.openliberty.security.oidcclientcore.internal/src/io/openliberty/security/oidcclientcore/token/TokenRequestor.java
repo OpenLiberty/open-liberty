@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
@@ -24,11 +21,17 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 public class TokenRequestor {
+
+    public static final TraceComponent tc = Tr.register(TokenRequestor.class);
 
     private final String tokenEndpoint;
     private final String clientId;
@@ -48,6 +51,8 @@ public class TokenRequestor {
     private final boolean useSystemPropertiesForHttpClientConnections;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
+
+    private static boolean issuedBetaMessage = false;
 
     private TokenRequestor(Builder builder) {
         this.tokenEndpoint = builder.tokenEndpoint;
@@ -88,8 +93,37 @@ public class TokenRequestor {
         if (authMethod.equals(TokenConstants.METHOD_POST) || authMethod.equals(TokenConstants.METHOD_CLIENT_SECRET_POST)) {
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_SECRET, clientSecret));
+        } else if (authMethod.equals(TokenConstants.METHOD_PRIVATE_KEY_JWT)) {
+            addPrivateKeyJwtParameters(params);
         }
         return params;
+    }
+
+    void addPrivateKeyJwtParameters(List<NameValuePair> params) {
+        if (!isRunningBetaMode()) {
+            return;
+        }
+        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION_TYPE, TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER));
+        String clientAssertionJwt = buildClientAssertionJwt();
+        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION, clientAssertionJwt));
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
+    }
+
+    private String buildClientAssertionJwt() {
+        PrivateKeyJwtAuthMethod pkjAuthMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpoint);
+        return pkjAuthMethod.createPrivateKeyJwt();
     }
 
     private void mergeCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {

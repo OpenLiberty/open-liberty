@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.http;
 
@@ -47,6 +44,8 @@ import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
+import io.openliberty.security.oidcclientcore.token.TokenConstants;
+
 public class OidcClientHttpUtil {
 
     public static final List<NameValuePair> commonHeaders;
@@ -83,27 +82,29 @@ public class OidcClientHttpUtil {
     }
 
     HttpPost setupPost(String url,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            String authMethod) throws Exception {
+                       @Sensitive List<NameValuePair> params,
+                       String baUsername,
+                       @Sensitive String baPassword,
+                       String accessToken,
+                       String authMethod) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO RP POST TO URL [" + WebUtils.stripSecretFromUrl(url, "client_secret") + "]");
             httpUtils.debugPostToEndPoint(url, params, baUsername, baPassword, accessToken, commonHeaders);
         }
         HttpPost postMethod = httpUtils.createHttpPostMethod(url, commonHeaders);
+        if (!TokenConstants.METHOD_PRIVATE_KEY_JWT.equals(authMethod)) {
+            setAuthorizationHeaderForPostMethod(baUsername, baPassword, accessToken, postMethod, authMethod);
+        }
         postMethod.setEntity(new UrlEncodedFormEntity(params));
-        setAuthorizationHeaderForPostMethod(baUsername, baPassword, accessToken, postMethod, authMethod);
         return postMethod;
     }
 
     @FFDCIgnore({ SSLException.class })
     HttpResponse setupResponse(SSLSocketFactory sslSocketFactory,
-            String url,
-            boolean isHostnameVerification,
-            boolean useSystemPropertiesForHttpClientConnections,
-            HttpPost postMethod) throws Exception {
+                               String url,
+                               boolean isHostnameVerification,
+                               boolean useSystemPropertiesForHttpClientConnections,
+                               HttpPost postMethod) throws Exception {
         HttpClient httpClient = createHTTPClient(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections);
         HttpResponse response = null;
 
@@ -129,13 +130,13 @@ public class OidcClientHttpUtil {
     }
 
     public Map<String, Object> postToEndpoint(String url,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
+                                              @Sensitive List<NameValuePair> params,
+                                              String baUsername,
+                                              @Sensitive String baPassword,
+                                              String accessToken,
+                                              SSLSocketFactory sslSocketFactory,
+                                              boolean isHostnameVerification,
+                                              String authMethod, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
 
         HttpPost postMethod = setupPost(url, params, baUsername, baPassword, accessToken, authMethod);
         HttpResponse response = setupResponse(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, postMethod);
@@ -159,13 +160,13 @@ public class OidcClientHttpUtil {
     }
 
     public Map<String, Object> postToIntrospectEndpoint(String url,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
+                                                        @Sensitive List<NameValuePair> params,
+                                                        String baUsername,
+                                                        @Sensitive String baPassword,
+                                                        String accessToken,
+                                                        SSLSocketFactory sslSocketFactory,
+                                                        boolean isHostnameVerification,
+                                                        String authMethod, boolean useSystemPropertiesForHttpClientConnections) throws Exception {
 
         HttpPost postMethod = setupPost(url, params, baUsername, baPassword, accessToken, authMethod);
         HttpResponse response = setupResponse(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, postMethod);
@@ -174,9 +175,9 @@ public class OidcClientHttpUtil {
     }
 
     public void setAuthorizationHeaderForPostMethod(String baUsername,
-            @Sensitive String baPassword, String accessToken,
-            HttpPost postMethod,
-            String authMethod) {
+                                                    @Sensitive String baPassword, String accessToken,
+                                                    HttpPost postMethod,
+                                                    String authMethod) {
         if (authMethod.contains(HttpConstants.METHOD_BASIC)) { // social constant differs
             String userpass = baUsername + ":" + baPassword;
             String encodedUserpass = Base64.getEncoder().encodeToString(userpass.getBytes());
@@ -213,13 +214,13 @@ public class OidcClientHttpUtil {
     }
 
     public Map<String, Object> getFromEndpoint(String url,
-            List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            String accessToken,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            boolean useSystemPropertiesForHttpClientConnections) throws HttpException, IOException {
+                                               List<NameValuePair> params,
+                                               String baUsername,
+                                               @Sensitive String baPassword,
+                                               String accessToken,
+                                               SSLSocketFactory sslSocketFactory,
+                                               boolean isHostnameVerification,
+                                               boolean useSystemPropertiesForHttpClientConnections) throws HttpException, IOException {
 
         String query = null;
         if (params != null) {
@@ -269,7 +270,7 @@ public class OidcClientHttpUtil {
     }
 
     public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification,
-            String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {
+                                       String baUser, @Sensitive String baPassword, boolean useSystemPropertiesForHttpClientConnections) {
         BasicCredentialsProvider credentialsProvider = httpUtils.createCredentialsProvider(baUser, baPassword);
         return httpUtils.createHttpClientWithCookieSpec(sslSocketFactory, url, isHostnameVerification, useSystemPropertiesForHttpClientConnections, credentialsProvider);
     }
