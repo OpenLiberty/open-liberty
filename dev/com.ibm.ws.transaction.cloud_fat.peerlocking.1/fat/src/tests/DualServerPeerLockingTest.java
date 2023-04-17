@@ -25,46 +25,33 @@ import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
-import servlets.Simple2PCCloudServlet;
 
-/**
- *
- */
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
     @Server("com.ibm.ws.transaction_LKCLOUD001")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer firstServer;
 
     @Server("com.ibm.ws.transaction_LKCLOUD002")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer secondServer;
 
     @Server("defaultAttributesServer1")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultAttributesServer1;
 
     @Server("defaultAttributesServer2")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultAttributesServer2;
 
     @Server("longPeerStaleTimeServer1")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longPeerStaleTimeServer1;
 
     @Server("longPeerStaleTimeServer2")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longPeerStaleTimeServer2;
 
     @Server("peerLockingDisabledServer1")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer peerLockingDisabledServer1;
 
     @Server("peerLockingEnabledServer1")
-    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer peerLockingEnabledServer1;
 
     public static String[] serverNames = new String[] {

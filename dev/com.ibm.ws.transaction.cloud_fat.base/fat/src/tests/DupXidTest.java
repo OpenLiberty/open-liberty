@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,15 +30,11 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import servlets.DupXidServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class DupXidTest extends FATServletClient {
 
     //Prior to the change made under RTC 179941 server's could not distinguish Xids that belonged to them. The test works as follows...
@@ -56,11 +52,9 @@ public class DupXidTest extends FATServletClient {
     public static final String SERVLET_NAME = APP_NAME + "/DupXidServlet";
 
     @Server("com.ibm.ws.transaction_DUPXID001")
-    @TestServlet(servlet = DupXidServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1;
 
     @Server("com.ibm.ws.transaction_DUPXID002")
-    @TestServlet(servlet = DupXidServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
     @BeforeClass
