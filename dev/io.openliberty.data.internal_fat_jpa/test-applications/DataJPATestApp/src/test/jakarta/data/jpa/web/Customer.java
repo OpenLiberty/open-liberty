@@ -16,6 +16,7 @@ import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 /**
@@ -29,6 +30,9 @@ public class Customer {
 
     @Id
     public int customerId;
+
+    @ManyToMany
+    public Set<DeliveryLocation> deliveryLocations;
 
     @Column
     public String email;
@@ -48,6 +52,7 @@ public class Customer {
             card.debtor = this;
             cards.add(card);
         }
+        deliveryLocations = new LinkedHashSet<>();
     }
 
     public void addCard(CreditCard card) {
@@ -55,9 +60,19 @@ public class Customer {
         cards.add(card);
     }
 
+    public void addDeliveryLocation(DeliveryLocation loc) {
+        deliveryLocations.add(loc);
+        loc.customers.add(this);
+    }
+
     public void removeCard(CreditCard card) {
         cards.remove(card);
         card.debtor = null;
+    }
+
+    public void removeDeliveryLocation(DeliveryLocation loc) {
+        deliveryLocations.remove(loc);
+        loc.customers.remove(this);
     }
 
     @Override
@@ -66,6 +81,11 @@ public class Customer {
         boolean first = true;
         for (CreditCard card : cards) {
             s.append(first ? " with " : ", ").append(card.issuer).append(" card #").append(card.number);
+            first = false;
+        }
+        first = false;
+        for (DeliveryLocation loc : deliveryLocations) {
+            s.append(first ? " @ " : ", ").append(loc.houseNum).append(' ').append(loc.street);
             first = false;
         }
         return s.toString();

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -175,6 +172,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED = "accessTokenCacheEnabled";
     public static final String CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT = "accessTokenCacheTimeout";
+    public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -270,6 +268,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String keyManagementKeyAlias;
     private boolean accessTokenCacheEnabled = true;
     private long accessTokenCacheTimeout = 1000 * 60 * 5;
+    private String pkceCodeChallengeMethod = null;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -548,6 +547,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
         accessTokenCacheEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_ENABLED, accessTokenCacheEnabled);
         accessTokenCacheTimeout = configUtils.getLongConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT, accessTokenCacheTimeout);
+        pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -624,6 +624,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "forwardLoginParameter:" + forwardLoginParameter);
             Tr.debug(tc, "accessTokenCacheEnabled:" + accessTokenCacheEnabled);
             Tr.debug(tc, "accessTokenCacheTimeout:" + accessTokenCacheTimeout);
+            Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
         }
     }
 
@@ -1899,6 +1900,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public OidcSessionCache getOidcSessionCache() {
         return oidcSessionCache;
+    }
+
+    @Override
+    public String getPkceCodeChallengeMethod() {
+        return pkceCodeChallengeMethod;
     }
 
 }

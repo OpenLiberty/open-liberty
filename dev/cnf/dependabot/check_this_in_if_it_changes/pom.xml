@@ -3189,7 +3189,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>4.7.2.Final</version>
+      <version>4.7.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3219,7 +3219,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>4.7.2.Final</version>
+      <version>4.7.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>

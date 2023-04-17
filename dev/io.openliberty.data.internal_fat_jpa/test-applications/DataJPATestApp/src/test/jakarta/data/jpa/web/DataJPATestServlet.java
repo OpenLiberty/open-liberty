@@ -155,6 +155,12 @@ public class DataJPATestServlet extends FATServlet {
         c6.addCard(new CreditCard(c6, 6000921061110001L, 601, LocalDate.of(2022, 6, 1), LocalDate.of(2026, 6, 1), Issuer.AmericanExtravagance));
         c6.addCard(new CreditCard(c6, 6000921062220002L, 222, LocalDate.of(2022, 6, 2), LocalDate.of(2026, 6, 2), Issuer.Feesa));
 
+        // These are implicitly saved when the corresponding Customer entities are saved.
+        new DeliveryLocation(10001L, 1001, new Street("1st Ave", "SW"), DeliveryLocation.Type.HOME, c1);
+        new DeliveryLocation(20002L, 2002, new Street("2nd Ave", "NE"), DeliveryLocation.Type.HOME, c2, c3);
+        new DeliveryLocation(30003L, 2800, new Street("37th St", "NW"), DeliveryLocation.Type.BUSINESS, c3, c4, c5, c6);
+        new DeliveryLocation(40004L, 4004, new Street("4th Ave", "SE"), DeliveryLocation.Type.HOME, c4, c5, c7);
+
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
@@ -1049,6 +1055,82 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
 
         shippingAddresses.removeAll();
+    }
+
+    /**
+     * Use a custom join query so that a ManyToMany association can query by attributes of the many side of the relationship.
+     */
+    @Test
+    public void testManyToManyCustomJoinQuery() {
+
+        assertIterableEquals(List.of("4th Ave SE",
+                                     "4th Ave SE",
+                                     "4th Ave SE",
+                                     "2nd Ave NE",
+                                     "2nd Ave NE",
+                                     "1st Ave SW"),
+                             customers.withLocationType(DeliveryLocation.Type.HOME)
+                                             .map(Street::toString)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("37th St NW",
+                                     "37th St NW",
+                                     "37th St NW",
+                                     "37th St NW"),
+                             customers.withLocationType(DeliveryLocation.Type.BUSINESS)
+                                             .map(Street::toString)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Query that matches multiple entities and returns a combined collection of results across matches for the ManyToMany association.
+     */
+    @Test
+    public void testManyToManyReturnsCombinedCollectionFromMany() {
+
+        List<String> addresses = customers.findLocationsByPhoneIn(List.of(5075552444L, 5075550101L))
+                        .map(loc -> loc.houseNum + " " + loc.street.toString())
+                        .collect(Collectors.toList());
+
+        // Customer 1's delivery addresses must come before Customer 4's card numbers due to the ordering on Customer.email.
+        assertEquals(addresses.toString(),
+                     true, List.of("1001 1st Ave SW", "2800 37th St NW", "4004 4th Ave SE").equals(addresses) ||
+                           List.of("1001 1st Ave SW", "4004 4th Ave SE", "2800 37th St NW").equals(addresses));
+    }
+
+    /**
+     * Query that matches a single entity and returns the corresponding collection from its ManyToMany association.
+     */
+    @Test
+    public void testManyToManyReturnsOneSetOfMany() {
+        Set<DeliveryLocation> locations = customers.findLocationsByEmail("Maximilian@tests.openliberty.io");
+
+        assertEquals(locations.toString(), 2, locations.size());
+
+        DeliveryLocation loc3 = null;
+        DeliveryLocation loc4 = null;
+        for (DeliveryLocation loc : locations) {
+            if (loc.locationId == 30003L)
+                loc3 = loc;
+            else if (loc.locationId == 40004L)
+                loc4 = loc;
+            else
+                fail("Unexpected delivery location: " + loc);
+        }
+
+        assertNotNull(locations.toString(), loc3);
+        assertEquals(DeliveryLocation.Type.BUSINESS, loc3.type);
+        assertNotNull(loc3.street);
+        assertEquals(2800, loc3.houseNum);
+        assertEquals("37th St", loc3.street.name);
+        assertEquals("NW", loc3.street.direction);
+
+        assertNotNull(locations.toString(), loc4);
+        assertEquals(DeliveryLocation.Type.HOME, loc4.type);
+        assertNotNull(loc4.street);
+        assertEquals(4004, loc4.houseNum);
+        assertEquals("4th Ave", loc4.street.name);
+        assertEquals("SE", loc4.street.direction);
     }
 
     /**

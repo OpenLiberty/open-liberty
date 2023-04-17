@@ -16,7 +16,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 /**
- *
+ * Embeddable for Address and DeliveryLocation
  */
 @Embeddable
 public class Street {
