@@ -26,6 +26,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan.Annotation;
+import io.opentelemetry.api.trace.SpanKind;
 
 /**
  * Hamcrest {@link Matcher} for performing assertions against {@link ZipkinSpan} objects retrieved from Zipkin
@@ -35,6 +36,7 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
     Map<String, String> expectedTags = new HashMap<>();
     List<Matcher<String>> expectedAnnotations = new ArrayList<>();
     String expectedTraceId = null;
+    String expectedKind = null;
     String expectedParentSpanId = null;
     Boolean expectHasParent = null;
 
@@ -48,6 +50,11 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
         if (expectedTraceId != null) {
             desc.appendText("\n  with traceId: ");
             desc.appendText(expectedTraceId.toString());
+        }
+
+        if (expectedKind != null) {
+            desc.appendText("\n  with kind: ");
+            desc.appendText(expectedKind.toString());
         }
 
         if (expectedParentSpanId != null) {
@@ -82,6 +89,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
         desc.appendValue(span);
 
         if (expectedTraceId != null && !expectedTraceId.equals(span.getTraceId())) {
+            return false;
+        }
+
+        if (expectedKind != null && !expectedKind.equals(span.getKind())) {
             return false;
         }
 
@@ -154,6 +165,15 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
         return this;
     }
 
+    public ZipkinSpanMatcher withKind(SpanKind kind) {
+        expectedKind = kind.name();
+        return this;
+    }
+
+    public static ZipkinSpanMatcher hasKind(SpanKind kind) {
+        return span().withKind(kind);
+    }
+    
     public static ZipkinSpanMatcher span() {
         return new ZipkinSpanMatcher();
     }

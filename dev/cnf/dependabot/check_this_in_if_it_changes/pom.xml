@@ -207,6 +207,11 @@
       <version>2.5.0</version>
     </dependency>
     <dependency>
+      <groupId>com.ibm.ws.io.opentracing</groupId>
+      <artifactId>com-ibm-ws-io-opentracing-zipkintracer</artifactId>
+      <version>0.33</version>
+    </dependency>
+    <dependency>
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail</artifactId>
       <version>1.5.10</version>

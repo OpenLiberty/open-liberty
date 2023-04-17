@@ -145,7 +145,6 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
 fattest.simplicity
-io.openliberty.checkpoint_fat_container
 io.openliberty.checkpoint_fat_persistence
 io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa

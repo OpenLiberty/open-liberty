@@ -46,12 +46,13 @@ import io.opentelemetry.api.trace.SpanKind;
 
 /**
  * Tests propagating traces between liberty servers running mpOpenTracing-3.0 and mpTelemetry-1.0, feeding traces to the same trace server.
+ * Spans are exported to Jaeger
  */
 @RunWith(FATRunner.class)
-public class CrossFeatureTest {
+public class CrossFeatureJaegerTest {
 
     private static final String APP_NAME = "crossFeature";
-    private static final Class<?> c = CrossFeatureTest.class;
+    private static final Class<?> c = CrossFeatureJaegerTest.class;
 
     @ClassRule
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
