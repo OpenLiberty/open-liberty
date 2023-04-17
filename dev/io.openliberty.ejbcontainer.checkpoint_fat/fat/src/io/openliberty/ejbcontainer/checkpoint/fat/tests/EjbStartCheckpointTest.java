@@ -138,7 +138,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         setCheckpointPhase(CheckpointPhase.INACTIVE);
         try {
             server.startServer();
-            assert_12_BeanMetaDataInitilzedAtStart();
+            assert_12_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -153,7 +153,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         enableStartAllSingletons();
         try {
             server.startServer();
-            assert_24_BeanMetaDataInitilzedAtStart();
+            assert_24_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -167,7 +167,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         setCheckpointPhase(CheckpointPhase.DEPLOYMENT);
         try {
             server.startServer();
-            assert_32_BeanMetaDataInitilzedAtStart();
+            assert_32_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -176,13 +176,12 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
     }
 
-    // Temporarily disable while investigating bean startup behavior
-    //@Test
+    @Test
     public void testEjbStartCheckpointApplications() throws Exception {
         setCheckpointPhase(CheckpointPhase.APPLICATIONS);
         try {
             server.startServer();
-            assert_32_BeanMetaDataInitilzedAtStart();
+            assert_32_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -206,7 +205,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
                 jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
                 server.setExtraArgs(CHECKPOINT_INACTIVE);
         }
-        jvmOptions.remove("-Dio.openliberty.ejb.startAllSingletons", "true");
+        jvmOptions.remove("-Dio.openliberty.ejb.startAllSingletons");
         server.setJvmOptions(jvmOptions);
     }
 
@@ -216,7 +215,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         server.setJvmOptions(jvmOptions);
     }
 
-    private void assert_12_BeanMetaDataInitilzedAtStart() throws Exception {
+    private void assert_12_BeanMetaDataInitializedAtStart() throws Exception {
         logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
         List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
         for (String line : initialized) {
@@ -238,7 +237,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
     }
 
-    private void assert_24_BeanMetaDataInitilzedAtStart() throws Exception {
+    private void assert_24_BeanMetaDataInitializedAtStart() throws Exception {
         logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
         List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
         for (String line : initialized) {
@@ -260,7 +259,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
     }
 
-    private void assert_32_BeanMetaDataInitilzedAtStart() throws Exception {
+    private void assert_32_BeanMetaDataInitializedAtStart() throws Exception {
         logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
         List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
         for (String line : initialized) {

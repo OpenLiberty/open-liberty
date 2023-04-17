@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 
 import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointLocal;
 import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
@@ -30,11 +32,12 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * <li>Startup : no</li>
  * <li>DependsOn : dependency of H</li>
  * <li>StartAtAppStart : not specified</li>
+ * <li>PostConstruct Transaction : BEAN</li>
  * </ul
  *
  * The expected checkpoint phase startup behavior is:
  * <ul>
- * <li>FEATURES : initialized and constructed on module start; may reference other beans in module</li>
+ * <li>INACTIVE : initialized and constructed on module start; may reference other beans in module</li>
  * <li>DEPLOYMENT : initialized and constructed on module start; may reference other beans in module</li>
  * <li>APPLICATIONS : initialized and constructed on module start; may reference other beans in module</li>
  * </ul>
@@ -44,6 +47,7 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * Note: may only reference other beans in the same module since constructed at module start.
  */
 @Singleton
+@TransactionManagement(TransactionManagementType.BEAN)
 public class SGCheckpointBeanG implements CheckpointLocal {
     private static final String BEAN_NAME = SGCheckpointBeanG.class.getSimpleName();
     private static final Logger logger = Logger.getLogger(SGCheckpointBeanG.class.getName());
