@@ -12,7 +12,6 @@
  -->
 <server description="new server">
     <featureManager>
-      <feature>ejbLite-3.2</feature>
       <feature>cdi-2.0</feature>
       <feature>jaxrs-2.1</feature>
       <feature>mpFaultTolerance-3.0</feature>
