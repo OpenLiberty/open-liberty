@@ -1974,7 +1974,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.0.18</version>
+      <version>10.0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -1984,7 +1984,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.0.18</version>
+      <version>10.0.27</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>

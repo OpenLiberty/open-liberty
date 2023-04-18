@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -26,7 +23,7 @@ Export-Package: \
        uses:="jakarta.el"
 
 -includeresource: \
-    @${repo;org.apache.tomcat:tomcat-el-api;10.0.18;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    @${repo;org.apache.tomcat:tomcat-el-api;10.0.27;EXACT}!/!(META-INF/maven/*|module-info.class),\
     jakarta=resources/jakarta
 
 instrument.disabled: true
@@ -34,4 +31,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.0.18
+  org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.0.27
