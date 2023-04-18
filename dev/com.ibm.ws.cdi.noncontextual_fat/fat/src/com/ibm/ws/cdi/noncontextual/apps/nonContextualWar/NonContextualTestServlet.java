@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.apps.nonContextualWar;
+package com.ibm.ws.cdi.noncontextual.apps.nonContextualWar;
 
 import static org.junit.Assert.assertEquals;
 

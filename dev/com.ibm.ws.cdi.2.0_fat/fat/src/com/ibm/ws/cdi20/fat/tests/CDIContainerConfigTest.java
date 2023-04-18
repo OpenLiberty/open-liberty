@@ -50,7 +50,7 @@ public class CDIContainerConfigTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi20ConfigServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE8);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     public static final String APP_NAME = "cdiContainerConfigApp";
 

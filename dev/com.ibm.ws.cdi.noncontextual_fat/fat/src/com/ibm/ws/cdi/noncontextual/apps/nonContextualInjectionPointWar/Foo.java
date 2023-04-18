@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.apps.nonContextualWar;
+package com.ibm.ws.cdi.noncontextual.apps.nonContextualInjectionPointWar;
 
-public class NonContextualBean {
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
-    public NonContextualBean() {
+public class Foo {
 
-    }
+    @Inject
+    private InjectionPoint injectionPoint;
 
-    public String hello() {
-        return "42!";
+    public InjectionPoint getInjectionPoint() {
+        return injectionPoint;
     }
 
 }

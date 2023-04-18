@@ -59,7 +59,7 @@ public class BasicCdi20Tests extends FATServletClient {
     public static final String SERVER_NAME = "cdi20BasicServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE8);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     public static final String BEAN_MANAGER_LOOKUP_APP_NAME = "beanManagerLookupApp";
     public static final String CONFIGURATION_APP_NAME = "configuratorApp";

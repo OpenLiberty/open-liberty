@@ -10,37 +10,51 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.tests;
+package com.ibm.ws.cdi.noncontextual.tests;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.cdi12.fat.apps.nonContextualInjectionPointWar.NonContextualInjectionPointTestServlet;
-import com.ibm.ws.cdi12.fat.apps.nonContextualWar.NonContextualTestServlet;
+import com.ibm.ws.cdi.noncontextual.apps.nonContextualInjectionPointWar.NonContextualInjectionPointTestServlet;
+import com.ibm.ws.cdi.noncontextual.apps.nonContextualWar.NonContextualTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class NonContextualTests extends FATServletClient {
 
     private static final String NON_CONTEXTUAL_APP = "nonContextual";
     private static final String INJECTION_POINT_APP = "nonContextualInjectionPoint";
 
-    @Server("nonContextualServer")
+    private static final String SERVER_NAME = "nonContextualServer";
+
+    @Server(SERVER_NAME)
     @TestServlets({ @TestServlet(contextRoot = NON_CONTEXTUAL_APP, servlet = NonContextualTestServlet.class),
                     @TestServlet(contextRoot = INJECTION_POINT_APP, servlet = NonContextualInjectionPointTestServlet.class)
     })
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE8,
+                                                         EERepeatActions.EE7);
 
     @BeforeClass
     public static void setup() throws Exception {

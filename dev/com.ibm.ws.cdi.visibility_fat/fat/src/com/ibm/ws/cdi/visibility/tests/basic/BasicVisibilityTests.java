@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -78,7 +78,7 @@ public class BasicVisibilityTests extends FATServletClient {
                     @TestServlet(servlet = Web1Servlet.class, contextRoot = MULTI_MOD3_APP_NAME), //FULL
                     @TestServlet(servlet = Web2Servlet.class, contextRoot = MULTI_MOD4_APP_NAME), //FULL
                     @TestServlet(servlet = ClassLoadPrereqLoggerServlet.class, contextRoot = CLASS_LOAD_APP_NAME), //FULL
-                    @TestServlet(servlet = RootClassLoaderServlet.class, contextRoot = ROOT_CLASSLOADER_APP_NAME),
+                    @TestServlet(servlet = RootClassLoaderServlet.class, contextRoot = ROOT_CLASSLOADER_APP_NAME), //LITE
                     @TestServlet(servlet = WarLibsTestServlet.class, contextRoot = WAR_LIB_ACCESS_APP_NAME) }) //LITE
     public static LibertyServer server;
 
