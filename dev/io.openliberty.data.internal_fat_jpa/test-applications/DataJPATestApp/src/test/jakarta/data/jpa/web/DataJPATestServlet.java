@@ -272,8 +272,9 @@ public class DataJPATestServlet extends FATServlet {
         TaxPayer t4 = new TaxPayer(456004560L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 41000.0f, a4);
         TaxPayer t5 = new TaxPayer(567005670L, TaxPayer.FilingStatus.Single, 0, 133000.0f, a5, a9);
         TaxPayer t6 = new TaxPayer(678006780L, TaxPayer.FilingStatus.MarriedFilingSeparately, 3, 126000.0f, a2);
+        TaxPayer t7 = new TaxPayer(789007890L, TaxPayer.FilingStatus.Single, 0, 37000.0f);
 
-        taxpayers.save(t1, t2, t3, t4, t5, t6);
+        taxpayers.save(t1, t2, t3, t4, t5, t6, t7);
 
         assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
                              taxpayers.findAccountsBySSN(234002340L)
@@ -281,6 +282,26 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(AccountId::toString)
                                              .sorted()
                                              .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
+                             taxpayers.findAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
+                                             .map(AccountId::toString)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // TODO report EclipseLink bug that occurs on the following
+        if (false)
+            assertIterableEquals(List.of(345003450L, 678006780L),
+                                 taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
+                                                 .map(t -> t.ssn)
+                                                 .collect(Collectors.toList()));
+
+        // TODO also fails with EclipseLink error
+        if (false)
+            assertIterableEquals(List.of(789007890L),
+                                 taxpayers.findByBankAccountsNotEmpty()
+                                                 .map(t -> t.ssn)
+                                                 .collect(Collectors.toList()));
 
         taxpayers.delete();
     }
