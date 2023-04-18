@@ -98,9 +98,6 @@ public class JPATestOLGH19342Logic extends AbstractTestLogic {
                             }
                         } finally {
                             if (em != null) {
-                                if (em.getTransaction().isActive()) {
-                                    em.getTransaction().rollback();;
-                                }
                                 em.close();
                             }
                         }

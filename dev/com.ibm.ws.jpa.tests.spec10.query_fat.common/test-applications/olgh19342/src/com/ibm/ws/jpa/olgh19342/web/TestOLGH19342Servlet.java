@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,8 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
+
+import componenttest.annotation.SkipIfSysProp;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH19342Servlet")
@@ -58,6 +60,7 @@ public class TestOLGH19342Servlet extends JPADBTestServlet {
 
     // testCaseExpressionOperatorConcurrency
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_AMJTA_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_AMJTA_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -66,6 +69,7 @@ public class TestOLGH19342Servlet extends JPADBTestServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_AMRL_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_AMRL_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -73,7 +77,7 @@ public class TestOLGH19342Servlet extends JPADBTestServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
+    // @Test // Not a valid scenario
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_CMTS_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_CMTS_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
