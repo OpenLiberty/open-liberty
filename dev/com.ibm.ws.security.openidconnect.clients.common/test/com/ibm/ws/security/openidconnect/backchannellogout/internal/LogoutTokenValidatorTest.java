@@ -380,7 +380,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
 
-            validator.verifyIssAudIatExpClaims(claims);
+            validator.verifyIssAudIatClaims(claims);
             fail("Should have thrown an exception but didn't.");
         } catch (IDTokenValidationFailedException e) {
             verifyException(e, CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR);
@@ -395,7 +395,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
 
-            validator.verifyIssAudIatExpClaims(claims);
+            validator.verifyIssAudIatClaims(claims);
             fail("Should have thrown an exception but didn't.");
         } catch (IDTokenValidationFailedException e) {
             verifyException(e, CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR);

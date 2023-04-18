@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -579,38 +579,11 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    public void LogoutTokenValidationTests_invalid_iat_yesterday_without_exp() throws Exception {
+    public void LogoutTokenValidationTests_invalid_iat_yesterday() throws Exception {
 
         long yesterday = System.currentTimeMillis() / 1000 - hoursToSeconds(24);
 
         genericAddedUpdatedClaimsTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, yesterday);
-
-    }
-
-    /**
-     * Test shows that even though the token is "old", the runtime doens't check its value - as long as
-     * the exp (+clockskew) is still after now
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenValidationTests_invalid_iat_yesterday_with_exp() throws Exception {
-
-        JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-
-        String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
-
-        long yesterday = System.currentTimeMillis() / 1000 - hoursToSeconds(24);
-        long soon = System.currentTimeMillis() / 1000 + minutesToSeconds(2);
-
-        builder.setClaim(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, yesterday);
-        builder.setClaim(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, soon);
-
-        List<endpointSettings> parms = createParmFromBuilder(builder);
-
-        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.OK_STATUS);
-
-        invokeBcl(logutOutEndpoint, parms, expectations);
 
     }
 
@@ -620,63 +593,11 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    public void LogoutTokenValidationTests_invalid_iat_1971_without_exp() throws Exception {
+    public void LogoutTokenValidationTests_invalid_iat_1971() throws Exception {
 
         // 02/21/1971
         genericAddedUpdatedClaimsTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, 36010452);
 
-    }
-
-    /**
-     * Test shows that even though the token is very, very "old", the runtime doens't check its value - as long as
-     * the exp (+clockskew) is still after now
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenValidationTests_invalid_iat_1971_with_exp() throws Exception {
-
-        JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-
-        String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
-
-        // 02/21/1971
-        long soon = System.currentTimeMillis() / 1000 + hoursToSeconds(2);
-
-        builder.setClaim(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, 36010452);
-        builder.setClaim(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, soon);
-
-        List<endpointSettings> parms = createParmFromBuilder(builder);
-
-        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.OK_STATUS);
-
-        invokeBcl(logutOutEndpoint, parms, expectations);
-
-    }
-
-    /**
-     * Test that the logout token is valid when it contains an exp that is not earlier than now (+clockskew)
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenValidationTests_optional_exp_notExpired() throws Exception {
-
-        long stillValid = System.currentTimeMillis() / 1000 + hoursToSeconds(2);
-        genericAddedUpdatedClaimsTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, stillValid);
-
-    }
-
-    /**
-     * Test that the backchannelLogout fails when we specify an exp that is prior to the current time (just beyond the clockskew)
-     *
-     * @throws Exception
-     */
-    @Test
-    public void LogoutTokenValidationTests_optional_exp_expired() throws Exception {
-
-        long expired = System.currentTimeMillis() / 1000 - hoursToSeconds(1); // time is outside clockskew
-        genericInvalidClaimTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, expired, "InvalidJwtException");
     }
 
     /**
@@ -997,8 +918,8 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         HashMap<String, Object> claimMap = new HashMap<String, Object>() {
             {
 
-                // TODO - once the runtime validation is updated, re-enable the next line and remove the last check in this method
-                //put(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS, 2056387597);
+                put(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, System.currentTimeMillis() / 1000 - hoursToSeconds(1)); // time is outside clockskew
+                put(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS, 2056387597);
                 put("email", "joe@something.com");
                 put(Constants.PAYLOAD_AUTHZ_TIME_IN_SECS, 478550797);
                 put(Constants.PAYLOAD_AUTHORIZED_PARTY, "noOne");
@@ -1017,9 +938,6 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
             genericAddedUpdatedClaimsTest(entry.getKey(), entry.getValue());
         }
-
-        // TODO - once the runtime validation is updated, remove the next line and restore the line in the map above
-        genericInvalidClaimTest(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS, 2056387597, "InvalidJwtException");
 
     }
 
