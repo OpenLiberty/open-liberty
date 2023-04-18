@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,7 +49,7 @@ class ManagedServiceTracker extends ServiceTracker<ManagedService, ManagedServic
     private final Map<String, ServiceReference<ManagedService>> managedServiceReferences = new HashMap<String, ServiceReference<ManagedService>>();
 
     /**
-     * 
+     *
      * @param bc
      */
     public ManagedServiceTracker(ConfigAdminServiceFactory casf, BundleContext bc) {
@@ -85,7 +85,7 @@ class ManagedServiceTracker extends ServiceTracker<ManagedService, ManagedServic
     /**
      * Processes registered ManagedService and updates each with their own
      * configuration properties.
-     * 
+     *
      * @param reference
      */
     @Override
@@ -147,7 +147,7 @@ class ManagedServiceTracker extends ServiceTracker<ManagedService, ManagedServic
     /**
      * MangedService service removed. Process removal and unget service from its
      * context.
-     * 
+     *
      * @param reference
      * @param service
      */
@@ -264,6 +264,10 @@ class ManagedServiceTracker extends ServiceTracker<ManagedService, ManagedServic
     }
 
     private Future<?> asyncUpdated(final ManagedService service, final String pid, final Dictionary<String, ?> properties) {
+        if ("com.ibm.ws.kernel.feature".equals(pid)) {
+            System.out.println("asyncUpdate for: " + pid + " - " + System.identityHashCode(service));
+            Thread.dumpStack();
+        }
         return caFactory.updateQueue.add(pid, new Runnable() {
             @Override
             public void run() {

@@ -631,7 +631,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         final ProvisioningMode mode = provisioningMode;
         provisioningMode = ProvisioningMode.UPDATE;
 
-        System.out.println("TJW - update with provisionongMode: " + provisioningMode + " current mode: " + mode);
+        System.out.println("TJW - update with provisioningMode: " + provisioningMode + " current mode: " + mode);
+	Thread.dumpStack();
+	//new RuntimeException("TJW - update with provisioningMode: " + provisioningMode).printStackTrace();
         if (configuration == null) {
             if (mode != ProvisioningMode.UPDATE) {
                 notifyFrameworkReady();
@@ -693,6 +695,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     protected void update(FeatureChange featureChange) throws IllegalStateException {
+        System.out.println("TJW - update(FeatureChange) " + featureChange.provisioningMode);
         featureChange.createNotifications();
 
         Set<String> preInstalledFeatures = Collections.emptySet();
