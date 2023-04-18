@@ -410,7 +410,7 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
             server.stopServer("CWWKE0700W", // EXPECTED
                               "CWWKE0701E", // EXPECTED
                               "J2CA8802E: .*(adapter_jca16_jbv_ActivationSpecValidation_Failure|sampleapp_jca16_jbv_embeddedas.adapter_jca16_jbv_ActivationSpecValidation_Embedded).*javax.validation.ConstraintViolationException:", // EXPECTED
-                              "CNTR4015W: .*(sampleapp_jca16_jbv_standaloneasfailure/jbv_ejb2/OverrideMdb|sampleapp_jca16_jbv_embeddedas/jbv_ejb2/SampleMdb)", // EXPECTED in some cases where activateEndpoint Entry get delayed.
+                              "CNTR4015W: .*(sampleapp_jca16_jbv_standaloneasfailure/jbv_ejb2/OverrideMdb|sampleapp_jca16_jbv_embeddedas/jbv_ejb2/SampleMdb|sampleapp_jca16_jbv_standaloneassuccess/jbv_ejb2/SampleMdb)", // EXPECTED in some cases where activateEndpoint Entry get delayed.
                               "J2CA0238E: .*(JBVFAT(Adapter|AO|ActSpec|MCF)(Failure|Embedded)Impl)" // EXPECTED
             );
         }
