@@ -1120,7 +1120,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Class<?> attributeType = queryInfo.entityInfo.collectionElementTypes.get(singleAttributeName);
                 if (attributeType == null)
                     attributeType = queryInfo.entityInfo.attributeTypes.get(singleAttributeName);
-                selectAsColumns = attributeType != null && singleType.isAssignableFrom(attributeType);
+                selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
+                                                            || singleType.isAssignableFrom(attributeType));
             }
             if (selectAsColumns) {
                 // Specify columns without creating new instance

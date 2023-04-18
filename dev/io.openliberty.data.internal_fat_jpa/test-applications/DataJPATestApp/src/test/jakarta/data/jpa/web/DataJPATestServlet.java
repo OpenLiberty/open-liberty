@@ -75,6 +75,9 @@ public class DataJPATestServlet extends FATServlet {
     Cities cities;
 
     @Inject
+    Counties counties;
+
+    @Inject
     CreditCards creditCards;
 
     @Inject
@@ -1572,5 +1575,68 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
+     */
+    @Test
+    public void testUnannotatedCollection() {
+        assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+
+        County olmsted = new County("Olmsted", "Minnesota", 162847, "Rochester", "Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Stewartville");
+        County winona = new County("Winona", "Minnesota", 49671, "Winona", "Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton", "Utica");
+        County wabasha = new County("Wabasha", "Minnesota", 21387, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
+        County fillmore = new County("Fillmore", "Minnesota", 21228, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
+
+        counties.save(olmsted, winona, wabasha, fillmore);
+
+        // find one entity by id as Optional
+        County c = counties.findByName("Olmsted").orElseThrow();
+        assertEquals("Olmsted", c.name);
+        assertEquals(162847, c.population);
+        assertIterableEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
+                             c.cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // find multiple collection attributes as List
+        List<Set<CityId>> cityLists = counties.findCityListByNameStartsWith("W");
+        assertEquals(cityLists.toString(), 2, cityLists.size());
+
+        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                             cityLists.get(0)
+                                             .stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton",
+                                     "Utica", "Winona"),
+                             cityLists.get(1)
+                                             .stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // find multiple entities
+        List<County> found = counties.findByPopulationLessThanEqual(25000);
+        assertEquals(found.toString(), 2, found.size());
+
+        assertIterableEquals(List.of("Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Preston", "Rushford", "Rushford Village",
+                                     "Spring Valley", "Whalen", "Wykoff"),
+                             found.get(0).cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                             found.get(1).cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
     }
 }
