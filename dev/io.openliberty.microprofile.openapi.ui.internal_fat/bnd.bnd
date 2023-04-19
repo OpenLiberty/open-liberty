@@ -17,7 +17,7 @@ src: \
 	fat/src
 
 fat.project: true
-
+fat.minimum.java.level: 11
 fat.test.container.images: selenium/standalone-chrome:4.8.3, alpine:3.16
 
 -buildpath: \
