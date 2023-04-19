@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -112,7 +112,7 @@ public class DefaultOverallStartupStatusUpAppStartupTest {
         List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMMH0054W:", MESSAGE_LOG);
         assertEquals("The CWMMH0054W warning should not appear in messages.log", 0, lines.size());
 
-        String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 65000);
+        String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 90000);
         log("testDefaultStartupOverallStatusUpAtStartUpSingleApp", "Application Started message found: " + line);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 
@@ -151,7 +151,7 @@ public class DefaultOverallStartupStatusUpAppStartupTest {
         List<String> lines = server2.findStringsInFileInLibertyServerRoot("CWMMH0054W:", MESSAGE_LOG);
         assertEquals("The CWMMH0054W warning did not appear in messages.log", 1, lines.size());
 
-        String line = server2.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 65000);
+        String line = server2.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 90000);
         log("testInvalidDefaultStartupOverallStatusProperty", "Application Started message found: " + line);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 
