@@ -13,6 +13,7 @@ exporters:
 
 processors:
  batch:
+   timeout: 0s
 
 service:
   telemetry:
