@@ -12,25 +12,18 @@
  *******************************************************************************/
 package timeoutTest;
 
-import javax.annotation.PostConstruct;
-
-//import javax.ejb.Singleton;
-//import javax.ejb.Startup;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-// Temporary change while investigating support for EJB types that require
-// transactional behavior during app startup, such at @Startup and @Singleton.
-//@Startup
-//@Singleton
-@Stateless
+@ApplicationScoped
 public class TimeoutStartup {
 
     @Inject
     TimeoutService timeoutTester;
 
-    @PostConstruct
-    public void getProperties() {
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
         System.out.println("TIMEOUT CALLED");
         timeoutTester.spawnTimeoutThread();
     }
