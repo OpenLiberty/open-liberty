@@ -324,12 +324,16 @@ class QueryInfo {
      *
      * @return true if it is possible to provide sort criteria dynamically, otherwise false.
      */
+    @Trivial
     boolean hasDynamicSortCriteria() {
+        boolean hasDynamicSort = false;
         Class<?>[] paramTypes = method.getParameterTypes();
-        for (int i = paramCount - paramAddedCount; i < paramTypes.length; i++)
-            if (Pageable.class.equals(paramTypes[i]) || Sort[].class.equals(paramTypes[i]) || Sort.class.equals(paramTypes[i]))
-                return true;
-        return false;
+        for (int i = paramCount - paramAddedCount; i < paramTypes.length && !hasDynamicSort; i++)
+            hasDynamicSort = Pageable.class.equals(paramTypes[i]) || Sort[].class.equals(paramTypes[i]) || Sort.class.equals(paramTypes[i]);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "hasDynamicSortCriteria? " + hasDynamicSort);
+        return hasDynamicSort;
     }
 
     /**
