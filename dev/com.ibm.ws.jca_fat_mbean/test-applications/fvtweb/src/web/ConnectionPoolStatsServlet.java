@@ -32,7 +32,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
+import javax.management.JMX;
 import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
@@ -43,6 +45,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
+
+import com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean;
 
 public class ConnectionPoolStatsServlet extends HttpServlet {
 
@@ -64,6 +68,10 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
 
     @Resource(name = "jdbc/ds1_maxconlimit", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds1_maxconlimit;
+
+    @Resource(name = "jdbc/ds1s", lookup = "jdbc/ds1", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource ds1s;
+
 
     @Resource(name = "jdbc/sharedDS", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource sharedDS;
@@ -185,6 +193,854 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
                 conn.close();
             if (conn1 != null && !conn1.isClosed())
                 conn1.close();
+        }
+    }
+
+    public void testCountsAfterInUseInuseAbortNoIdlesArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseInuseAbortNoIdlesArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", "2000" }, null); // 2 seconds should work for slow systems.
+            String unexpectedString1 = "in use connections added to the in use abort list";
+            String expectedString1 = "1 free connections not added to the in use abort list";
+            String expectedString2 = "1 in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unexpectedString1)) {
+                throw new Exception("Found unexpected return string " + unexpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after close and abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 0;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    /**
+     * @param dsStatobjName
+     * @param expectNumFreePoolConns
+     * @param expectedNumConnectionHandles
+     * @param expectedNumManagedConns
+     * @param dsObjectName
+     * @throws Exception
+     */
+    private void checkStats(String test, ObjectName dsStatobjName, ObjectInstance dsObjectName, int expectNumFreePoolConns, int expectedNumConnectionHandles,
+                            int expectedNumManagedConns) throws Exception {
+        int numFreePoolConns = getMonitorData(dsStatobjName, "FreeConnectionCount");
+        int numConnectionHandles = getMonitorData(dsStatobjName, "ConnectionHandleCount");
+        int numManagedConns = getMonitorData(dsStatobjName, "ManagedConnectionCount");
+        System.out.println(test + " - FreeConnectionCount=" + numFreePoolConns + " ConnectionHandleCount=" + numConnectionHandles + " numManagedConns="
+                           + numManagedConns);
+        if (numFreePoolConns != expectNumFreePoolConns)
+            throw new Exception("Expected " + expectNumFreePoolConns + " connections in the free pool, but found " + numFreePoolConns + "\n"
+                                + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        if (numConnectionHandles != expectedNumConnectionHandles)
+            throw new Exception("Expected " + expectedNumConnectionHandles + " connection handles, but found " + numConnectionHandles + "\n"
+                                + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        if (numManagedConns != expectedNumManagedConns)
+            throw new Exception("Expected " + expectedNumManagedConns + " managed connections, but found " + numManagedConns + "\n"
+                                + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+    }
+
+    public void testCountsAfterInUseSharedInuseAbortConnectionManagerMBean(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedInuseAbortConnectionManagerMBean";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        ConnectionManagerMBean cmb = getConnectionManagerBean("jdbc/ds1");
+        //clear any connections
+        cmb.purgePoolContents("abort");
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            String abortInfo = cmb.abortConnections("inuse", (long) 1);
+            String expectedString1 = "1 in use connections added to the in use abort list";
+            String expectedString2 = "1 free connections not added to the in use abort list";
+            String unexpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unexpectedString1)) {
+                throw new Exception("Found unexpected return string " + unexpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after close and abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 1;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 1;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + cmb.showPoolContents());
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseSharedInuseAbortArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedInuseAbortArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", "1" }, null);
+            String expectedString1 = "1 in use connections added to the in use abort list";
+            String expectedString2 = "1 free connections not added to the in use abort list";
+            String unExpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unExpectedString1)) {
+                throw new Exception("Found unexpected return string " + unExpectedString1 + " \nString returned " + abortInfo);
+            }
+            // expected values after close and abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 1;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 1;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseSharedInuseAbortIntegerArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedInuseAbortIntegerArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            Integer inuseIdleMax = new Integer(1);
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", inuseIdleMax }, null);
+            String expectedString1 = "1 in use connections added to the in use abort list";
+            String expectedString2 = "1 free connections not added to the in use abort list";
+            String unExpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unExpectedString1)) {
+                throw new Exception("Found unexpected return string " + unExpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after close and abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 1;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 1;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseSharedInuseAbortLongArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedInuseAbortLongArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            Long inuseIdleMax = new Long(1);
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", inuseIdleMax }, null);
+            String expectedString1 = "1 in use connections added to the in use abort list";
+            String expectedString2 = "1 free connections not added to the in use abort list";
+            String unExpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unExpectedString1)) {
+                throw new Exception("Found unexpected return string " + unExpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after close and abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 1;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 1;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseSharedInuseAbortDoubleArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedInuseAbortDoubleArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before close and abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            connunshared.close();
+
+            // expected values after close before abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            Double inuseIdleMax = new Double(1);
+            try {
+                mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", inuseIdleMax }, null);
+            } catch (MBeanException e) {
+                // no purge of idle connection should occur.
+            }
+
+            // expected values after close and no abort
+            expectNumFreePoolConns = 1;
+            expectedNumConnectionHandles = 1;
+            expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 0;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseSharedAndUnsharedInuseAbortArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseSharedAndUnsharedInuseAbortArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+
+        try {
+            // expected values before abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 2;
+            int expectedNumManagedConns = 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", "1" }, null);
+            String expectedString1 = "2 in use connections added to the in use abort list";
+            String unexpectedString2 = "free connections not added to the in use abort list";
+            String unExpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unexpectedString2)) {
+                throw new Exception("Found unexpected return string " + unexpectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unExpectedString1)) {
+                throw new Exception("Found unexpected return string " + unExpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after abort
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 0;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 2;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+        }
+    }
+
+    public void testCountsAfterInUse2SharedAnd2UnsharedInuseAbortArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUse2SharedAnd2UnsharedInuseAbortArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection conn1shared = ds1s.getConnection();
+        Connection connunshared = ds1.getConnection();
+        Connection conn2shared = ds1s.getConnection();
+        Connection conn2unshared = ds1.getConnection();
+
+        try {
+            // expected values before abort
+            int expectNumFreePoolConns = 0;
+            int expectedNumConnectionHandles = 4;
+            int expectedNumManagedConns = 4;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+
+            Thread.sleep(2); // simulate in use time running a query.
+
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", "1" }, null);
+            String expectedString1 = "4 in use connections added to the in use abort list";
+            String unexpectedString2 = "free connections not added to the in use abort list";
+            String unExpectedString1 = "in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unexpectedString2)) {
+                throw new Exception("Found unexpected return string " + unexpectedString2 + " \nString returned " + abortInfo);
+            }
+            if (abortInfo.contains(unExpectedString1)) {
+                throw new Exception("Found unexpected return string " + unExpectedString1 + " \nString returned " + abortInfo);
+            }
+
+            // expected values after abort
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 0;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 4;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+
+        } finally {
+            if (connunshared != null && !connunshared.isClosed())
+                connunshared.close();
+            if (conn1shared != null && !conn1shared.isClosed())
+                conn1shared.close();
+            if (conn2unshared != null && !conn2unshared.isClosed())
+                conn2unshared.close();
+            if (conn2shared != null && !conn2shared.isClosed())
+                conn2shared.close();
+        }
+    }
+
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection[] connsharedFirstSet = new Connection[10];
+        Connection[] connunsharedFirstSet = new Connection[10];
+
+        int expectNumFreePoolConns = 0;
+        int expectedNumConnectionHandles = 0;
+        int expectedNumManagedConns = 0;
+
+        long creatingConnectionStartFirstSet = System.currentTimeMillis();
+
+        for (int i = 0; i < 10; ++i) {
+
+            connsharedFirstSet[i] = ds1s.getConnection();
+            connunsharedFirstSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        Thread.sleep(40); // simulate in use time running a query.
+
+        long creatingConnectionStartSecondSet = System.currentTimeMillis();
+
+        long ApproxConnectionInuseDurationTimeFirstSet = creatingConnectionStartSecondSet - creatingConnectionStartFirstSet;
+        Connection[] connsharedSecondSet = new Connection[10];
+        Connection[] connunsharedSecondSet = new Connection[10];
+        for (int i = 0; i < 10; ++i) {
+            connsharedSecondSet[i] = ds1s.getConnection();
+            connunsharedSecondSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        try {
+            // expected values before close and abort
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = 40;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            for (Connection cs : connsharedSecondSet) {
+                if (cs != null)
+                    cs.close();;
+            }
+            for (Connection cs : connunsharedSecondSet) {
+                if (cs != null)
+                    cs.close();;
+            }
+            // expected values after close and before abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 20;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(40); // simulate in use time running a query.
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
+            String expectedString1 = "20 in use connections added to the in use abort list";
+            String expectedString2 = "10 free connections not added to the in use abort list";
+            String expectedString3 = "10 in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString3)) {
+                throw new Exception("Did not find exected return string " + expectedString3 + " \nString returned " + abortInfo);
+            }
+            // expected values after abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 20;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 20;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+
+        } finally {
+            for (Connection c : connunsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
+            for (Connection c : connsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
+        }
+    }
+
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSCloseFSSharedArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSCloseFSSharedArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection[] connsharedFirstSet = new Connection[10];
+        Connection[] connunsharedFirstSet = new Connection[10];
+
+        int expectNumFreePoolConns = 0;
+        int expectedNumConnectionHandles = 0;
+        int expectedNumManagedConns = 0;
+
+        long creatingConnectionStartFirstSet = System.currentTimeMillis();
+
+        for (int i = 0; i < 10; ++i) {
+
+            connsharedFirstSet[i] = ds1s.getConnection();
+            connunsharedFirstSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        Thread.sleep(40); // simulate in use time running a query.
+
+        long creatingConnectionStartSecondSet = System.currentTimeMillis();
+
+        long ApproxConnectionInuseDurationTimeFirstSet = creatingConnectionStartSecondSet - creatingConnectionStartFirstSet;
+        Connection[] connsharedSecondSet = new Connection[10];
+        Connection[] connunsharedSecondSet = new Connection[10];
+        for (int i = 0; i < 10; ++i) {
+            connsharedSecondSet[i] = ds1s.getConnection();
+            connunsharedSecondSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        try {
+            // expected values before close and abort
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = 40;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            for (Connection cs : connsharedSecondSet) {
+                if (cs != null)
+                    cs.close();
+            }
+            for (Connection cs : connunsharedSecondSet) {
+                if (cs != null)
+                    cs.close();
+            }
+            for (Connection cs : connsharedFirstSet) {
+                if (cs != null) {
+                    cs.close();
+                }
+            }
+            for (int i = 0; i < 10; ++i) {
+                connsharedFirstSet[i] = ds1s.getConnection();
+            }
+            // expected values after close and before abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 20;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(40); // simulate in use time running a query.
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
+            String expectedString1 = "20 in use connections added to the in use abort list";
+            String expectedString2 = "10 free connections not added to the in use abort list";
+            String expectedString3 = "10 in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString3)) {
+                throw new Exception("Did not find exected return string " + expectedString3 + " \nString returned " + abortInfo);
+            }
+            // expected values after abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 0;
+            expectedNumManagedConns = 20;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 20;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+
+        } finally {
+            for (Connection c : connunsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
+            for (Connection c : connsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
+        }
+    }
+
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortFSArray(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String test = "testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortFSArray";
+        ObjectName dsStatobjName = getConnPoolStatsMBeanObjName("ds1");
+        ObjectInstance dsObjectName = getMBeanObjectInstance("jdbc/ds1");
+        //clear any connections
+        mbeanServer.invoke(dsObjectName.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+
+        // get one shared and one unshared connection.
+        Connection[] connsharedFirstSet = new Connection[10];
+        Connection[] connunsharedFirstSet = new Connection[10];
+
+        int expectNumFreePoolConns = 0;
+        int expectedNumConnectionHandles = 0;
+        int expectedNumManagedConns = 0;
+
+        long creatingConnectionStartFirstSet = System.currentTimeMillis();
+
+        for (int i = 0; i < 10; ++i) {
+
+            connsharedFirstSet[i] = ds1s.getConnection();
+            connunsharedFirstSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        Thread.sleep(40); // simulate in use time running a query.
+
+        long creatingConnectionStartSecondSet = System.currentTimeMillis();
+
+        long ApproxConnectionInuseDurationTimeFirstSet = creatingConnectionStartSecondSet - creatingConnectionStartFirstSet;
+        Connection[] connsharedSecondSet = new Connection[10];
+        Connection[] connunsharedSecondSet = new Connection[10];
+        for (int i = 0; i < 10; ++i) {
+            connsharedSecondSet[i] = ds1s.getConnection();
+            connunsharedSecondSet[i] = ds1.getConnection();
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = expectedNumConnectionHandles + 2;
+            expectedNumManagedConns = expectedNumManagedConns + 2;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+        }
+
+        try {
+            // expected values before close and abort
+            expectNumFreePoolConns = 0;
+            expectedNumConnectionHandles = 40;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            for (Connection cs : connsharedFirstSet) {
+                if (cs != null)
+                    cs.close();;
+            }
+            for (Connection cs : connunsharedFirstSet) {
+                if (cs != null)
+                    cs.close();;
+            }
+            // expected values after close and before abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 20;
+            expectedNumManagedConns = 40;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            Thread.sleep(40); // simulate in use time running a query.
+
+            int destroyCountBeforeAbort = getMonitorData(dsStatobjName, "DestroyCount");
+
+            long testvalue = System.currentTimeMillis() - creatingConnectionStartSecondSet + 20;
+            String abortInfo = (String) mbeanServer.invoke(dsObjectName.getObjectName(), "abortConnections", new Object[] { "inuse", testvalue }, null);
+            String expectedString1 = "10 in use connections added to the in use abort list";
+            String expectedString2 = "10 free connections not added to the in use abort list";
+            String expectedString3 = "20 in use connections not added to the in use abort list";
+            if (!abortInfo.contains(expectedString1)) {
+                throw new Exception("Did not find exected return string " + expectedString1 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString2)) {
+                throw new Exception("Did not find exected return string " + expectedString2 + " \nString returned " + abortInfo);
+            }
+            if (!abortInfo.contains(expectedString3)) {
+                throw new Exception("Did not find exected return string " + expectedString3 + " \nString returned " + abortInfo);
+            }
+            // expected values after abort
+            expectNumFreePoolConns = 10;
+            expectedNumConnectionHandles = 20;
+            expectedNumManagedConns = 30;
+            checkStats(test, dsStatobjName, dsObjectName, expectNumFreePoolConns, expectedNumConnectionHandles, expectedNumManagedConns);
+
+            int expectNumberOfAddedAborts = 10;
+            int destroyCountAfterAbort = getMonitorData(dsStatobjName, "DestroyCount");
+            if (destroyCountAfterAbort != destroyCountBeforeAbort + expectNumberOfAddedAborts)
+                throw new Exception("Expected destroy count to increase by " + expectNumberOfAddedAborts + " after abort.  Before: " + destroyCountBeforeAbort + " After: "
+                                    + destroyCountAfterAbort + "\n"
+                                    + (String) mbeanServer.invoke(dsObjectName.getObjectName(), "showPoolContents", null, null));
+
+        } finally {
+            for (Connection c : connunsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
+            for (Connection c : connsharedFirstSet) {
+                if (c != null && !c.isClosed())
+                    c.close();
+            }
         }
     }
 
@@ -630,6 +1486,19 @@ public class ConnectionPoolStatsServlet extends HttpServlet {
 
     private int getMonitorData(ObjectName name, String attribute) throws Exception {
         return Integer.parseInt((mbeanServer.getAttribute(name, attribute)).toString());
+    }
+
+    private ConnectionManagerMBean getConnectionManagerBean(String jndiName) throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName obn = new ObjectName("WebSphere:type=" + MBEAN_TYPE + ",jndiName=" + jndiName + ",*");
+        Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
+        if (s.size() != 1) {
+            System.out.println("ERROR: Found incorrect number of MBeans (" + s.size() + ")");
+            for (ObjectInstance i : s)
+                System.out.println("  Found MBean: " + i.getObjectName());
+            throw new Exception("Expected to find exactly 1 MBean, instead found " + s.size());
+        }
+        return JMX.newMBeanProxy(mbs, s.iterator().next().getObjectName(), ConnectionManagerMBean.class);
     }
 
     private ObjectName getConnPoolStatsMBeanObjName(String dsName) throws Exception {

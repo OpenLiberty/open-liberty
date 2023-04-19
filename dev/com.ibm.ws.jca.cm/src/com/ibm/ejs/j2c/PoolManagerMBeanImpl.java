@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -107,7 +107,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     @Override
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(this, tc, "invoke", params, signature);
+            Tr.entry(this, tc, "invoke", actionName, params, signature);
 
         Object o = null;
 
@@ -130,6 +130,22 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
                     Tr.debug(tc, "Purging the connection pool using option", (String) params[0]);
                 }
                 purgePoolContents((String) params[0]);
+            } else {
+                throw new MBeanException(new IllegalArgumentException(Arrays.toString(params)), Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params),
+                                                                                                                 actionName));
+            }
+        } else if ("abortConnections".equalsIgnoreCase(actionName)) {
+            if (params == null) {
+                Exception e = new Exception("no parms");
+                throw new MBeanException(e);
+            } else if (params.length > 1 && params[0] instanceof java.lang.String) {
+                if (((String) params[0]).equalsIgnoreCase("inuse")) {
+                    try {
+                        o = _pm.abortConnections(actionName, params);
+                    } catch (ResourceException e) {
+                        throw new MBeanException(e);
+                    }
+                }
             } else {
                 throw new MBeanException(new IllegalArgumentException(Arrays.toString(params)), Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params),
                                                                                                                  actionName));
@@ -184,17 +200,42 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
         String purgeParamDesc = "Use 'immediate' to purge the pool contents immediately. " +
                                 "Any other string value will purge the pool contents normally.";
+        String abortParamDescP1 = null;
+        String abortParamDescP2 = null;
+        final MBeanParameterInfo abortParamP1;
+        final MBeanParameterInfo abortParamP2;
+        MBeanParameterInfo[] abortPurgeParams = null;
+        final MBeanOperationInfo abortop2;
         // The abort option should only be visible on >= jdbc-4.1
-        if (atLeastJDBCVersion(new Version(4, 1, 0)))
+        boolean isjdbc41ORLater = false;
+        if (atLeastJDBCVersion(new Version(4, 1, 0))) {
+            isjdbc41ORLater = true;
             purgeParamDesc = "Use 'abort' to abort all connections in the pool using Connection.abort(). " + purgeParamDesc;
+
+            // Abort function supported in jdbc-4.1 and later.  If jca specifications are updated to include abort,
+            // likely this information will need to be updated or make everything visible and throw exceptions, since 
+			// jdbc 4.1 drivers can still can throw unsupported exceptions.
+            abortParamDescP1 = "Use 'inuse', for aborting inuse connections.";
+            abortParamDescP2 = "Use a long value in millisecond for in use time.";
+            abortParamP1 = new MBeanParameterInfo("arg0", String.class.getCanonicalName(), abortParamDescP1);
+            abortParamP2 = new MBeanParameterInfo("arg1", Long.class.getCanonicalName(), abortParamDescP2);
+            abortPurgeParams = new MBeanParameterInfo[] { abortParamP1, abortParamP2 };
+            abortop2 = new MBeanOperationInfo("abortConnections", "Aborts contents of the Connection Manager.", abortPurgeParams, String.class.getCanonicalName(), MBeanOperationInfo.ACTION);
+        } else {
+            abortop2 = null;
+        }
 
         final MBeanParameterInfo p0 = new MBeanParameterInfo("arg0", String.class.getCanonicalName(), purgeParamDesc);
         MBeanParameterInfo[] purgeParams = new MBeanParameterInfo[] { p0 };
 
         final MBeanOperationInfo op0 = new MBeanOperationInfo("purgePoolContents", "Purges the contents of the Connection Manager.", purgeParams, Void.class.getCanonicalName(), MBeanOperationInfo.ACTION);
         final MBeanOperationInfo op1 = new MBeanOperationInfo("showPoolContents", "Displays the current contents of the Connection Manager in a human readable format.", null, String.class.getCanonicalName(), MBeanOperationInfo.INFO);
-        final MBeanOperationInfo[] ops = { op0, op1 };
-
+        final MBeanOperationInfo[] ops;
+        if (isjdbc41ORLater) {
+            ops = new MBeanOperationInfo[] { op0, op1, abortop2 };
+        } else {
+            ops = new MBeanOperationInfo[] { op0, op1 };
+        }
         final MBeanInfo nmbi = new MBeanInfo(cname, text, null, null, ops, null, null);
 
         return nmbi;
@@ -433,6 +474,17 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
 
     private boolean atLeastJDBCVersion(Version v) {
         return jdbcRuntimeVersion != null && jdbcRuntimeVersion.compareTo(v) >= 0;
+    }
+
+    @Override
+    public String abortConnections(String type, Long inUseTime) throws MBeanException {
+        String abortConnectionsInfo = null;
+        try {
+            abortConnectionsInfo = _pm.abortConnections("abortConnections", new Object[] { type, inUseTime });
+        } catch (ResourceException e) {
+            throw new MBeanException(e);
+        }
+        return abortConnectionsInfo;
     }
 
     @Override

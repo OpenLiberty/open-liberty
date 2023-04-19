@@ -9,7 +9,7 @@ visibility=private
   com.ibm.websphere.appserver.jcaSecurity-1.0, \
   com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0, 8.0, 9.0, 10.0"
 -jars=com.ibm.websphere.appserver.api.connectionmanager; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionmanager_1.2-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionmanager_1.3-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
