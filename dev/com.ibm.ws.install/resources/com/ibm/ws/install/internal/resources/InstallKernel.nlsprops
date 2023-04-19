@@ -910,7 +910,7 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformat the features BOM Maven 
 MSG_STABILIZING_FEATUREMANAGER=This featureManager action is stabilized. Use installUtility {0} instead. The installUtility command is recommended for installation and repository-related actions.
 
 ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: The feature verify option "{0}" does not match "{1}" in the command line.
-ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=The feature verify option on properties file or environment variable should match the one in the command line. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=The feature verify option on properties file or environment variable must match the one in the command line. 
 ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Ensure specified feature verify options match each other.
 
 ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: The {0} verify option isn't valid. Ensure that the option is valid.
@@ -923,14 +923,14 @@ ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verify your key ID, key URL
 
 ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: The public key ID for the {0} key URL was not provided. 
 ERROR_KEYID_NOT_PROVIDED.explanation=The public key ID for the specified key URL was not provided. The 64-bit key ID is required to download and verify the authenticity of the key. 
-ERROR_KEYID_NOT_PROVIDED.useraction=Provide the key ID in 64-bit format. To find out the key ID, run GnuPG command. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Provide the key ID in 64-bit format. To find out the key ID, run the GnuPG command. 
 
 ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: The URL protocol for the following key URL is not supported: {0}. Supported protocols are HTTP, HTTPS, and file. Ensure that the URL is specified correctly.
 ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=The URL protocol for the specified key URL is not supported.
 ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Ensure that the URL is specified correctly. Supported protocols are HTTP, HTTPS, and file. 
 
-ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: The public key ID {0} has been revoked. 
-ERROR_REVOKED_PUBLIC_KEY.explanation=The public key has been revoked. 
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: The {0} public key ID is revoked. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=The public key is revoked. 
 ERROR_REVOKED_PUBLIC_KEY.useraction=Provide the new public key ID and signatures. If the revoked key is a Liberty public key, apply the interim fix or provide the new public key ID, which is available on the OpenLiberty.io website.
 
 ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: The {0} public key ID is expired on {1}.
@@ -941,9 +941,9 @@ ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Unable to verify the follow
 ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Feature signature were not verified.
 ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Use the --verbose option to see the debug traces.
 
-ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: The public key URL for {0} key ID was not provided. 
-ERROR_KEYURL_NOT_PROVIDED.explanation= The public key URL for {0} key ID was not provided. The public key URL is a mandatory field to download the public key. 
-ERROR_KEYURL_NOT_PROVIDED.useraction=Provide public key URL. Supported protocols are HTTP, HTTPS, and file. 
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: The public key URL for the {0} key ID was not provided. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= The public key URL for the {0} key ID was not provided. The public key URL is a mandatory field to download the public key. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Provide the public key URL. Supported protocols are HTTP, HTTPS, and file. 
 
 ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: The {0} public key ID does not match the {1} provided key ID. 
 ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=The public key might have changed. 
