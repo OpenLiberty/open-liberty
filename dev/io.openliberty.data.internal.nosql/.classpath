@@ -3,5 +3,70 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+	<classpathentry kind="lib" path="/io.openliberty.jakarta/generated/io.openliberty.jakarta.cdi.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="io.openliberty.jakarta.cdi.4.0"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="io.openliberty.jakarta"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="jakarta/decorator/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/context/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/context/control/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/context/spi/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/event/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/build/compatible/spi/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/literal/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/se/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/spi/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/inject/spi/configurator/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/util/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/lang/model/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/lang/model/declarations/*"/>
+			<accessrule kind="accessible" pattern="jakarta/enterprise/lang/model/types/*"/>
+			<accessrule kind="accessible" pattern="jakarta/inject/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.cdi.interfaces"/>
+	<classpathentry kind="lib" path="/io.openliberty.org.eclipse.jnosql.1.0/generated/io.openliberty.org.eclipse.jnosql.1.0.jar">
+		<attributes>
+			<attribute name="bsn" value="io.openliberty.org.eclipse.jnosql.1.0"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="io.openliberty.org.eclipse.jnosql.1.0"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/document/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/driver/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/driver/attachment/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/mongodb/document/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/query/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/query/method/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/reader/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/communication/writer/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/config/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/document/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/document/configuration/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/document/query/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/document/spi/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/mongodb/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/query/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/reflection/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/reflection/collection/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/repository/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/repository/returns/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/spi/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/mapping/util/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/query/grammar/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/jnosql/query/grammar/method/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
