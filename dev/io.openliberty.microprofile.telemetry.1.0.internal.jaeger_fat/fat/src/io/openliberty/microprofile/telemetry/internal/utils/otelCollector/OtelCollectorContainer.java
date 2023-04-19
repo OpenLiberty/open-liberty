@@ -26,7 +26,7 @@ import org.testcontainers.utility.ImageNameSubstitutor;
  *
  * <pre>
  * {@code @ClassName}
- * public static otelCollectorContainer otelCollectorContainer = new OtelCollectorContainer("exporter").withLogConsumer(new SimpleLogConsumer(MyTest.class, "otelCol"));
+ * public static otelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(configFile).withLogConsumer(new SimpleLogConsumer(MyTest.class, "otelCol"));
  * </pre>
  *
  */
