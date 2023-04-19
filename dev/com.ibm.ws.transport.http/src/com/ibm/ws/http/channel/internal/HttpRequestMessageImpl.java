@@ -273,6 +273,17 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             Tr.event(tc, "Clearing this request: " + this);
         }
         super.clear();
+        this.myMethod = MethodValues.UNDEF;
+        this.myScheme = null;
+        this.myURIBytes = SLASH;
+        this.myURIString = null;
+        this.myQueryBytes = null;
+        this.queryParams = null;
+        this.sUrlHost = null;
+        this.sHdrHost = null;
+        this.iUrlPort = HeaderStorage.NOTSET;
+        this.iHdrPort = NOT_TESTED;
+        this.deserialized = false;
 
     }
 

@@ -410,7 +410,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      */
     @Override
     public void clear() {
-        super.clearBuffers();
+        super.clear();
         this.completedFirstLine = false;
         this.numFirstLineTokensRead = 0;
         this.firstLineChanged = false;

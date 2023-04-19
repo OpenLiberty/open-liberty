@@ -188,6 +188,25 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     @Override
     public void clear() {
         super.clear();
+        // 313642 - if the individual headers are set (content-length, age, etc)
+        // then the base clear() layer will trigger the resets when the header
+        // is removed there
+        this.myVersion = VersionValues.V11;
+        this.cookieCache = null;
+        this.cookie2Cache = null;
+        this.setCookieCache = null;
+        this.setCookie2Cache = null;
+        this.bIsCommitted = false;
+        // 347066 - these connection related flags do not require the Connection
+        // header be present so must be explicitly cleared
+        this.bIsKeepAliveSet = true;
+        this.bIsCloseSet = false;
+        setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
+        if (null != this.myTrailers) {
+            this.myTrailers.destroy();
+            this.myTrailers = null;
+        }
+
     }
 
     /*

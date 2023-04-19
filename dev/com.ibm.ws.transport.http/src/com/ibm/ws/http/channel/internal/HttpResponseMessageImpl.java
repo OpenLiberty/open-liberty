@@ -292,6 +292,9 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
             Tr.event(tc, "Clearing this response: " + this);
         }
         super.clear();
+        this.myStatusCode = StatusCodes.OK;
+        this.myReason = null;
+        this.myReasonBytes = null;
         /*
          * this.myStatusCode = StatusCodes.OK;
          * this.myReason = null;

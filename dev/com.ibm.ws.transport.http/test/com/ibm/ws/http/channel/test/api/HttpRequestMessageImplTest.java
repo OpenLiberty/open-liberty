@@ -64,7 +64,6 @@ public class HttpRequestMessageImplTest {
 
     /** The local reference to test objects. */
     private HttpRequestMessageImpl request = null;
-    private MockOutboundSC sc = null;
 
     /**
      * Capture stdout/stderr output to the manager.
@@ -110,16 +109,8 @@ public class HttpRequestMessageImplTest {
     @Before
     public void setUp() {
         HttpChannelConfig cfg = new HttpChannelConfig(new ChannelDataImpl("HTTP", null, new HashMap<Object, Object>(), 10, ChannelFrameworkFactory.getChannelFramework()));
-        sc = new MockOutboundSC(new InboundVirtualConnectionFactoryImpl().createConnection(), cfg);
+        MockOutboundSC sc = new MockOutboundSC(new InboundVirtualConnectionFactoryImpl().createConnection(), cfg);
         this.request = new MockRequestMessage(sc);
-    }
-
-    protected void getNewRequest() {
-        if (this.sc != null) {
-            this.request = new MockRequestMessage(sc);
-        } else {
-            setUp();
-        }
     }
 
     protected WsByteBuffer[] duplicateBuffers(WsByteBuffer[] list) {
@@ -160,20 +151,20 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - setHeader(HeaderKeys, String)
             // @ Tested API - containsHeader(HeaderKeys)
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, "close");
             assertTrue(getRequest().containsHeader(HttpHeaderKeys.HDR_CONNECTION));
 
             // @ Tested API - setHeader(String, byte[])
             // @ Tested API - getHeaderAsString(HeaderKeys)
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_CONNECTION, "close".getBytes());
             String val = getRequest().getHeader(HttpHeaderKeys.HDR_CONNECTION).asString();
             assertEquals(val, "close");
 
             // @ Tested API - setHeader(String, byte[])
             // @ Tested API - getHeaderAsString(String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("TestSetHeader", "TestValue1".getBytes());
             val = getRequest().getHeader("TestSetHeader").asString();
             assertEquals(val, "TestValue1");
@@ -194,7 +185,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - appendHeader(HeaderKeys, byte[])
             // @ Tested API - getHeaderAsByteArray(HeaderKeys)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue".getBytes());
             byte[] hdr = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT).asBytes();
             byte[] acceptBytes = "AcceptValue".getBytes();
@@ -207,7 +198,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - appendHeader(String, byte[])
             // @ Tested API - getHeaderAsByteArray(String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader("Accept", "AcceptValue".getBytes());
             hdr = getRequest().getHeader("Accept").asBytes();
             assertEquals(hdr.length, acceptBytes.length);
@@ -219,7 +210,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - appendHeader(String, String)
             // @ Tested API - getHeaderValues(HeaderKeys)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader("Accept", "AcceptValue");
             List<HeaderField> hdrValues = getRequest().getHeaders(HttpHeaderKeys.HDR_ACCEPT);
             assertEquals(1, hdrValues.size());
@@ -227,7 +218,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - appendHeader(HeaderKeys, String)
             // @ Tested API - getHeaderValues(String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue");
             hdrValues = getRequest().getHeaders("Accept");
             assertEquals(1, hdrValues.size());
@@ -236,7 +227,7 @@ public class HttpRequestMessageImplTest {
             // @ Tested API - instancesOfHeader(HeaderKeys)
             // @ Tested API - instancesOfHeader(String)
             // @ Tested API - appendHeader(HeaderKeys, String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue");
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue2");
             assertEquals(getRequest().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_ACCEPT), 2);
@@ -244,14 +235,14 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - appendHeader(HeaderKeys, String)
             // @ Tested API - getAllHeaders()
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue");
             List<HeaderField> hdrs = getRequest().getAllHeaders();
             assertEquals(1, hdrs.size());
 
             // @ Tested API - removeHeader(HeaderKeys)
             // @ Tested API - removeHeader(String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue");
             getRequest().appendHeader("Test", "TestValue");
             getRequest().removeHeader(HttpHeaderKeys.HDR_ACCEPT);
@@ -260,7 +251,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - removeHeader(HeaderKeys, int)
             // @ Tested API - removeHeader(String, int)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "AcceptValue");
             getRequest().appendHeader(HttpHeaderKeys.HDR_ACCEPT, "Accept2");
             getRequest().appendHeader("Test", "TestValue");
@@ -272,7 +263,7 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API ... saving unknown headers and pulling with different
             // case
-            getNewRequest();
+            getRequest().clear();
             String value = "testing";
             getRequest().setHeader("myIntHeader", value);
             assertTrue(getRequest().containsHeader("MyINTHeader".getBytes()));
@@ -286,7 +277,7 @@ public class HttpRequestMessageImplTest {
 
             // @Tested API - setCookie(String, String, HeaderKeys);
             // @Tested API - getCookie(String)
-            getNewRequest();
+            getRequest().clear();
             getRequest().setCookie("TestCookie", "TestCookieValue", HttpHeaderKeys.HDR_COOKIE);
             getRequest().setHeader(HttpHeaderKeys.HDR_COOKIE2, "TestCookie1=TestCookieValue1");
             HttpCookie cookie1 = getRequest().getCookie("TestCookie");
@@ -303,7 +294,7 @@ public class HttpRequestMessageImplTest {
             assertNull(cookie);
 
             // @Tested API- setCookie(Cookie, HeaderKeys);
-            getNewRequest();
+            getRequest().clear();
             cookie = new HttpCookie("TestCookie", "TestCookieValue");
             getRequest().setCookie(cookie, HttpHeaderKeys.HDR_COOKIE);
             cookie = getRequest().getCookie("TestCookie");
@@ -314,7 +305,7 @@ public class HttpRequestMessageImplTest {
             // Add a list of cookie objects
             // @ Tested API - removeCookie(String, HeaderKeys)
             // @ Tested API - getAllCookies()
-            getNewRequest();
+            getRequest().clear();
             assertEquals(0, getRequest().getAllCookies().size());
             getRequest().setCookie(new HttpCookie("TestCookie1", "TestCookieValue1"),
                                    HttpHeaderKeys.HDR_COOKIE);
@@ -333,7 +324,7 @@ public class HttpRequestMessageImplTest {
 
             // Test setting the header directly
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_COOKIE,
                                    "TestCookie1=TestCookieValue1;"
                                                               + "TestCookie2=TestCookieValue2;"
@@ -345,7 +336,7 @@ public class HttpRequestMessageImplTest {
 
             // Test marshalling cookies
 
-            getNewRequest();
+            getRequest().clear();
             cookie = new HttpCookie("TestCookie1", "TestCookieValue1");
             cookie.setPath("www.ibm.com");
             cookie.setVersion(1);
@@ -362,7 +353,7 @@ public class HttpRequestMessageImplTest {
             WsByteBuffer[] marshalledMessage = duplicateBuffers(getRequest().marshallMessage());
 
             // deserialize the cookies
-            getNewRequest();
+            getRequest().clear();
             if (null != marshalledMessage) {
                 for (int i = 0; i < marshalledMessage.length; i++) {
                     if (getRequest().parseMessage(marshalledMessage[i], true)) {
@@ -383,7 +374,7 @@ public class HttpRequestMessageImplTest {
             assertNull(getRequest().getCookie(null));
 
             // @Tested API ... getCookieValue
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_COOKIE, "myCookie=myValue");
             assertEquals(new String(getRequest().getCookieValue("myCookie")), "myValue");
 
@@ -509,7 +500,7 @@ public class HttpRequestMessageImplTest {
             // @Tested API - getAllCookieValues(String)
             // @Tested API - getAllCookies(String)
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Cookie", "jsessionid=s1;bogus=test;jsessionid=s2");
             getRequest().setHeader("Cookie2", "bogus2=test2;jsessionid=s3");
             List<String> cvalues = getRequest().getAllCookieValues("jsessionid");
@@ -518,7 +509,7 @@ public class HttpRequestMessageImplTest {
             assertEquals("s2", cvalues.get(1));
             assertEquals("s3", cvalues.get(2));
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Cookie", "ws=this;id=that");
             getRequest().setHeader("Cookie2", "ignore=me;id=something;id=otherthing");
             List<HttpCookie> cookies = getRequest().getAllCookies("id");
@@ -536,7 +527,7 @@ public class HttpRequestMessageImplTest {
             // @ Tested API - setMethod(MethodValues)
             // @ Tested API - getMethod()
             // @ Tested API - getMethodValue()
-            getNewRequest();
+            getRequest().clear();
             getRequest().setMethod("GET");
             assertEquals("GET", getRequest().getMethod());
             getRequest().setMethod("POST".getBytes());
@@ -551,7 +542,7 @@ public class HttpRequestMessageImplTest {
             // @ Tested API - setConnection(ConnectionValues)
             // @ Tested API - setConnection(ConnectionValues[])
             // @ Tested API - getConnection()
-            getNewRequest();
+            getRequest().clear();
             getRequest().setConnection(ConnectionValues.CLOSE);
             ConnectionValues[] connValues = getRequest().getConnection();
             assertTrue(connValues[0].equals(ConnectionValues.CLOSE));
@@ -572,7 +563,7 @@ public class HttpRequestMessageImplTest {
             // @ Tested API - setContentEncoding(ContentEncodingValues)
             // @ Tested API - setContentEncoding(ContentEncodingValues[])
             // @ Tested API - getContentEncoding()
-            getNewRequest();
+            getRequest().clear();
             getRequest().setContentEncoding(ContentEncodingValues.GZIP);
             ContentEncodingValues[] ceList = getRequest().getContentEncoding();
             assertEquals(ceList.length, 1);
@@ -606,20 +597,20 @@ public class HttpRequestMessageImplTest {
 
             // @ Tested API - setContentLength(long)
             // @ Tested API - getContentLength()
-            getNewRequest();
+            getRequest().clear();
             getRequest().setContentLength(100);
             assertEquals(100, getRequest().getContentLength());
 
             // Test setting long values
-            getNewRequest();
+            getRequest().clear();
             getRequest().setContentLength(Integer.MAX_VALUE + 1L);
             assertEquals(Integer.MAX_VALUE + 1L, getRequest().getContentLength());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setContentLength(Long.MAX_VALUE);
             assertEquals(Long.MAX_VALUE, getRequest().getContentLength());
             getRequest().setHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH, Long.toString(Integer.MAX_VALUE + 1L));
             assertEquals(Integer.MAX_VALUE + 1L, getRequest().getContentLength());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH, Long.toString(Long.MAX_VALUE));
             assertEquals(Long.MAX_VALUE, getRequest().getContentLength());
 
@@ -627,7 +618,7 @@ public class HttpRequestMessageImplTest {
             // Test the URI specific APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // Test simple URIs
 
@@ -744,7 +735,7 @@ public class HttpRequestMessageImplTest {
             // @ Tested API - getVirtualHost()
             // @ Tested API - getVirtualPort()
 
-            getNewRequest();
+            getRequest().clear();
 
             // Test hostname formats
             getRequest().setRequestURL("http://urlhost/index.html");
@@ -755,10 +746,10 @@ public class HttpRequestMessageImplTest {
             getRequest().setRequestURI("/index.html");
             assertEquals("hostheader", getRequest().getVirtualHost());
             assertEquals(-1, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Host", "");
             assertEquals(null, getRequest().getVirtualHost());
-            getNewRequest();
+            getRequest().clear();
 
             // Test hostname formats with ports
             getRequest().setRequestURL("http://urlhost:80/index.html");
@@ -766,12 +757,12 @@ public class HttpRequestMessageImplTest {
             assertEquals(80, getRequest().getURLPort());
             assertEquals("urlhost", getRequest().getVirtualHost());
             assertEquals(80, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Host", "hostheader:9080");
             getRequest().setRequestURI("/index.html");
             assertEquals("hostheader", getRequest().getVirtualHost());
             assertEquals(9080, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
 
             // Test IP formats
             getRequest().setRequestURL("http://1.2.3.4/index.html");
@@ -782,7 +773,7 @@ public class HttpRequestMessageImplTest {
             getRequest().setRequestURI("/index.html");
             assertEquals("5.6.7.8", getRequest().getVirtualHost());
             assertEquals(-1, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
 
             // Test IP formats with port
             getRequest().setRequestURL("http://1.2.3.4:88/index.html");
@@ -790,12 +781,12 @@ public class HttpRequestMessageImplTest {
             assertEquals(88, getRequest().getURLPort());
             assertEquals("1.2.3.4", getRequest().getVirtualHost());
             assertEquals(88, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Host", "5.6.7.8:9088");
             getRequest().setRequestURI("/index.html");
             assertEquals("5.6.7.8", getRequest().getVirtualHost());
             assertEquals(9088, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
 
             // Test IPv6 IP formats
             getRequest().setRequestURL("http://[urlhost]/index.html");
@@ -806,7 +797,7 @@ public class HttpRequestMessageImplTest {
             getRequest().setRequestURI("/index.html");
             assertEquals("[hostheader]", getRequest().getVirtualHost());
             assertEquals(-1, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
 
             // Test IPv6 IP formats with port
             getRequest().setRequestURL("http://[urlhost]:88/index.html");
@@ -814,12 +805,12 @@ public class HttpRequestMessageImplTest {
             assertEquals(88, getRequest().getURLPort());
             assertEquals("[urlhost]", getRequest().getVirtualHost());
             assertEquals(88, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("Host", "[hostheader]:9088");
             getRequest().setRequestURI("/index.html");
             assertEquals("[hostheader]", getRequest().getVirtualHost());
             assertEquals(9088, getRequest().getVirtualPort());
-            getNewRequest();
+            getRequest().clear();
 
             // test the URL creation API
             getRequest().setRequestURI("/index.html");
@@ -830,7 +821,7 @@ public class HttpRequestMessageImplTest {
             // Test the query string APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API - setRequestURL(byte[])
             // @ Tested API - setQueryString(byte[])
@@ -848,7 +839,7 @@ public class HttpRequestMessageImplTest {
             // Test the Transfer-Encoding header APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API - setTransferEncoding(TransferEncodingValues)
             // @ Tested API - setTransferEncoding(TransferEncodingValues[])
@@ -870,7 +861,7 @@ public class HttpRequestMessageImplTest {
             // Test the duplicate method
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API - duplicate()
             getRequest().setRequestURI("/index.html");
@@ -901,7 +892,7 @@ public class HttpRequestMessageImplTest {
             // Test the request scheme related APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API - setScheme(byte[])
             // @ Tested API - setScheme(String)
@@ -919,7 +910,7 @@ public class HttpRequestMessageImplTest {
             // Test the header tokenizer APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API getHeaderTokens(String, byte)
             // @ Tested API getHeaderTokens(HeaderKeys, byte)
@@ -930,7 +921,7 @@ public class HttpRequestMessageImplTest {
             assertEquals(parsedHeaderTokens.size(), 4);
 
             // @ Tested API getHeaderTokens(String, byte, int)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRAILER,
                                       "Content-Language, Date, trailer_test1, trailer_test2");
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRAILER,
@@ -940,7 +931,7 @@ public class HttpRequestMessageImplTest {
             assertEquals(parsedHeaderTokens.size(), 5);
 
             // @ Tested API getHeaderTokens(HeaderKeys, byte, int)
-            getNewRequest();
+            getRequest().clear();
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRAILER,
                                       "Content-Language, Date, trailer_test1, trailer_test2");
             getRequest().appendHeader(HttpHeaderKeys.HDR_TRAILER,
@@ -953,7 +944,7 @@ public class HttpRequestMessageImplTest {
             // Test the marshalling/parsing code
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // Test known first line request headers
             getRequest().setMethod(MethodValues.POST);
@@ -972,7 +963,7 @@ public class HttpRequestMessageImplTest {
 
             // Test unknown first line information
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setMethod(MethodValues.find("SUPERGET"));
             getRequest().setRequestURI("/index.html");
             getRequest().setVersion(VersionValues.find("HTTP/3.0"));
@@ -987,7 +978,7 @@ public class HttpRequestMessageImplTest {
 
             // Test Known and Unknown first line with request headers
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setMethod(MethodValues.GET);
             getRequest().setRequestURI("/index.html");
             getRequest().setVersion(VersionValues.V09);
@@ -1005,7 +996,7 @@ public class HttpRequestMessageImplTest {
 
             // Test forward proxy type requests
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setRequestURL("http://target/index.html");
             assertEquals("http://target:80/index.html", getRequest().getRequestURLAsString());
 
@@ -1019,7 +1010,7 @@ public class HttpRequestMessageImplTest {
             // Test the Connection header APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // test setConnection
 
@@ -1303,7 +1294,7 @@ public class HttpRequestMessageImplTest {
             // Test the header as Date APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @Tested API - getHeaderAsDate(HeaderKey)
             // @Tested API - getHeaderAsDate(byte[], int)
@@ -1340,7 +1331,7 @@ public class HttpRequestMessageImplTest {
             // Test the header as Integer APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API -- getHeaderAsInteger(HeaderKeys)
             // @ Tested API -- getHeaderAsInteger(String, int)
@@ -1367,7 +1358,7 @@ public class HttpRequestMessageImplTest {
             // Test the mime-type APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // @ Tested API getMIMEType() ... <type>
             // @ Tested API getMIMEType() ... <type>;<charset>
@@ -1382,7 +1373,7 @@ public class HttpRequestMessageImplTest {
             // Test the header parsing code
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
 
             // Test small indirect buffer parsing where second token straddles
             WsByteBufferPoolManager mgr = ChannelFrameworkFactory.getBufferManager();
@@ -1401,7 +1392,7 @@ public class HttpRequestMessageImplTest {
             buff2.release();
 
             // Test small direct buffer parsing where second token straddles
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(32);
             buff2 = mgr.allocateDirect(32);
             buff1.put("GET /012345678901234567890123456".getBytes());
@@ -1417,7 +1408,7 @@ public class HttpRequestMessageImplTest {
             buff2.release();
 
             // Test small indirect buffer parsing where first token straddles
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocate(32);
             buff2 = mgr.allocate(32);
             buff1.put("GETAABBCCDDEEFFGGHHIIJJKKLLMMNNO".getBytes());
@@ -1434,7 +1425,7 @@ public class HttpRequestMessageImplTest {
             buff2.release();
 
             // Test small direct buffer parsing where first token straddles
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(32);
             buff2 = mgr.allocateDirect(32);
             buff1.put("GETAABBCCDDEEFFGGHHIIJJKKLLMMNNO".getBytes());
@@ -1452,7 +1443,7 @@ public class HttpRequestMessageImplTest {
 
             // Test small indirect buffer parsing where first token ends at end
             // of byteCache
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocate(32);
             buff2 = mgr.allocate(32);
             WsByteBuffer buff3 = mgr.allocate(32);
@@ -1474,7 +1465,7 @@ public class HttpRequestMessageImplTest {
 
             // Test small direct buffer parsing where first token delimiter ends
             // on byteCache last character
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(32);
             buff2 = mgr.allocateDirect(32);
             buff3 = mgr.allocateDirect(32);
@@ -1495,7 +1486,7 @@ public class HttpRequestMessageImplTest {
             buff3.release();
 
             // test direct buffers when a token straddles bytecaches
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(1024);
             buff1.put(("GETXXXXXXXXXXXXXXXXXXXXXXXXXXX /MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM "
                        + "HTTP/1.0\r\n\r\n").getBytes());
@@ -1508,7 +1499,7 @@ public class HttpRequestMessageImplTest {
 
             // test direct buffers when a token has one character in the last
             // bytecache but the rest in the following one
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(1024);
             buff1.put("GET /index.htmlaafdafaweafasdfaqadsfa HTTP/1.0\r\nTestingsomeaa: a".getBytes());
             buff1.put("ll\r\n\r\n".getBytes());
@@ -1520,7 +1511,7 @@ public class HttpRequestMessageImplTest {
             buff1.release();
 
             // test header names straddling buffers
-            getNewRequest();
+            getRequest().clear();
             buff1 = mgr.allocateDirect(32);
             buff1.put("GET /index.html HTTP/1.1\r\nCon".getBytes());
             buff1.flip();
@@ -1546,7 +1537,7 @@ public class HttpRequestMessageImplTest {
             // Test the query parameter APIs
             // *****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setQueryString("itcs=300&http=405&test+ing=this&http=409&say%20what=you");
             Enumeration<String> enum1 = getRequest().getParameterNames();
             assertTrue(enum1.hasMoreElements());
@@ -1576,7 +1567,7 @@ public class HttpRequestMessageImplTest {
             // Test duplication
             // ****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setMethod(MethodValues.DELETE);
             getRequest().setRequestURI("/index.html?q1=v1");
             getRequest().setHeader("host", "localhost");
@@ -1596,7 +1587,7 @@ public class HttpRequestMessageImplTest {
             // Test empty header handling (for webservices)
             // ****************************************************************
 
-            getNewRequest();
+            getRequest().clear();
             getRequest().setHeader("SOAPAction", new byte[0]);
             assertEquals("", getRequest().getHeader("SOAPAction").asString());
             assertEquals(0, getRequest().getHeader("SOAPAction").asBytes().length);
