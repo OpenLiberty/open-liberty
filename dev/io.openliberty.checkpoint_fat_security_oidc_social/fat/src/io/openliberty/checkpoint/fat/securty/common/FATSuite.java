@@ -33,12 +33,14 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.fat.security.oidc.OidcClientBasicTests;
 import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_usingSocialConfig;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                LibertyOP_BasicTests_oauth_usingSocialConfig.class
+                LibertyOP_BasicTests_oauth_usingSocialConfig.class,
+                OidcClientBasicTests.class
 })
 
 public class FATSuite {
