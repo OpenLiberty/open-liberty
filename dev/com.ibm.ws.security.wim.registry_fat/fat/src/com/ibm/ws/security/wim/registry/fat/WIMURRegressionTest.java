@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,11 +29,13 @@ import com.ibm.websphere.simplicity.config.BasicRegistry;
 import com.ibm.websphere.simplicity.config.BasicRegistry.Group;
 import com.ibm.websphere.simplicity.config.BasicRegistry.Group.Member;
 import com.ibm.websphere.simplicity.config.BasicRegistry.User;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.BaseEntry;
 import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.Realm;
+import com.ibm.websphere.simplicity.config.wim.RealmPropertyMapping;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
@@ -181,6 +183,7 @@ public class WIMURRegressionTest {
         entry.addAttribute("uid", USER);
         entry.addAttribute("sn", USER + "_sn");
         entry.addAttribute("cn", USER + "_cn");
+        entry.addAttribute("mail", USER + "@acme.org");
         entry.addAttribute("userPassword", USER_PASSWORD);
         ldapServer1.add(entry);
 
@@ -195,6 +198,7 @@ public class WIMURRegressionTest {
         entry = new Entry(GROUP_DN);
         entry.addAttribute("objectclass", "groupOfNames");
         entry.addAttribute("cn", GROUP_CN);
+        entry.addAttribute("description", GROUP_CN + "_description");
         entry.addAttribute("member", USER_DN);
         ldapServer1.add(entry);
     }
@@ -410,5 +414,80 @@ public class WIMURRegressionTest {
          */
         assertFalse("Calling isValidUser() with valid group should return false.", servlet.isValidUser(BASIC_GROUP));
         assertTrue("Calling isValidUser() with valid user should return true.", servlet.isValidUser(BASIC_USER));
+    }
+
+    /**
+     * When non-idenfitifier properies are configured as the group and user security name output property
+     * mappings in Liberty, it is possible that they don't exist. In fact, they will NOT exist when the entity
+     * is from a UserRegistry and not a Repository. Make sure we handle those properties missing.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_SearchBridge_withNonIdentifierOutputProps() throws Exception {
+        ServerConfiguration clone = startConfiguration.clone();
+
+        /*
+         * Create an LDAP registry.
+         */
+        createLdapRegistry1(clone);
+
+        /*
+         * Create a basic registry.
+         */
+        BasicRegistry registry = new BasicRegistry();
+        registry.setRealm("BasicRealm");
+        User user = new User();
+        user.setName(BASIC_USER);
+        user.setPassword(BASIC_USER_PASSWORD);
+        registry.getUsers().add(user);
+        Group group = new Group();
+        group.setName(BASIC_GROUP);
+        Member member = new Member();
+        member.setName(BASIC_USER);
+        group.getMembers().add(member);
+        registry.getGroups().add(group);
+        clone.getBasicRegistries().add(registry);
+
+        /*
+         * Explicitly configure federated registries.
+         */
+        FederatedRepository federatedRepository = new FederatedRepository();
+        Realm primaryRealm = new Realm();
+        primaryRealm.setName("FederatedRealm");
+        ConfigElementList<BaseEntry> pes = new ConfigElementList<BaseEntry>();
+        pes.add(new BaseEntry("o=BasicRealm"));
+        pes.add(new BaseEntry(LDAP1_BASE_DN));
+        primaryRealm.setParticipatingBaseEntries(pes);
+
+        /*
+         * Group input/output mappings.
+         */
+        primaryRealm.setGroupSecurityNameMapping(new RealmPropertyMapping("description", "description"));
+
+        /*
+         * User input/output mappings.
+         */
+        primaryRealm.setUserSecurityNameMapping(new RealmPropertyMapping("mail", "mail"));
+
+        federatedRepository.setPrimaryRealm(primaryRealm);
+        clone.setFederatedRepositoryElement(federatedRepository);
+
+        LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
+
+        /*
+         *
+         */
+        SearchResult result = servlet.getGroups("*", 10);
+        assertEquals("Expect only the LDAP group in the getGroups() result.", 1, result.getList().size());
+        assertTrue("Expect only the LDAP group in the getGroups() result.", "group_description".equals(result.getList().get(0)));
+
+        /*
+         * SearchBridge.getUsers() would throw an NPE when a UserRegistry user came back because
+         * the output attribute would not exist, unless it was an identifier property.
+         */
+        result = servlet.getUsers("*", 10);
+        assertEquals("Expect only the LDAP user in the getUsers() result.", 1, result.getList().size());
+        assertTrue("Expect only the LDAP user in the getUsers() result.", "test//@acme.org".equals(result.getList().get(0)));
     }
 }
