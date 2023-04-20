@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,17 @@ installFeature.option-desc.--from=\
 \tUse this option to specify the file path of a Maven artifact         \n\
 \trepository as a source for featureUtility to install assets.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\
+\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\
+\tUse this option to specify how features are verified. The      \n\
+\tdefault option is "enforce", which verifies the signatures of all Liberty     \n\
+\tfeatures except for user features. The "warn" option is the same as  \n\
+\t"enforce", but it does not terminate installation if  \n\
+\tverification fails. The "skip" option skips verification \n\
+\tand does not download any feature signatures. The "all" option verifies \n\
+\tboth Liberty features and user features.                                  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\
 \ \ \ \ --verbose
 installFeature.option-desc.--verbose=\
@@ -109,6 +120,17 @@ installServerFeatures.option-key.--from=\
 installServerFeatures.option-desc.--from=\
 \tUse this option to specify the file path of a Maven artifact         \n\
 \trepository as a source for featureUtility to install assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\
+\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\
+\tUse this option to specify how features are verified. The      \n\
+\tdefault option is "enforce," which verifies the signatures of all Liberty    \n\
+\tfeatures except for user features. The "warn" option is the same as  \n\
+\t"enforce," but it does not terminate installation if verification fails.\n\
+\tThe "skip" option skips verification and does not download\n\
+\tany feature signatures. The "all" option verifies both Liberty       \n\
+\tfeatures and user features.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\
 \ \ \ \ --verbose
