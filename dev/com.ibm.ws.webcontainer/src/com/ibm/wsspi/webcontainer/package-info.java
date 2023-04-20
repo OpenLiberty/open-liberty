@@ -11,5 +11,5 @@
 /**
  * @version 1.12.0
  */
-@org.osgi.annotation.versioning.Version("1.12.0")
+@org.osgi.annotation.versioning.Version("1.13.0")
 package com.ibm.wsspi.webcontainer;
