@@ -111,9 +111,13 @@ import org.apache.cxf.wsdl.interceptors.WrappedOutInterceptor;
 import org.apache.cxf.wsdl11.WSDLServiceBuilder;
 
 import static org.apache.cxf.helpers.CastUtils.cast;
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 
 
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 @NoJSR250Annotations(unlessNull = { "bus" })
 public class SoapBindingFactory extends AbstractWSDLBindingFactory {
     public static final Collection<String> DEFAULT_NAMESPACES = Collections.unmodifiableList(Arrays.asList(
@@ -179,7 +183,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
 
             BindingMessageInfo bInput = bop.getInput();
             if (bInput != null) {
-                MessageInfo input = null;
+                final MessageInfo input;
                 BindingMessageInfo unwrappedMsg = bInput;
                 if (bop.isUnwrappedCapable()) {
                     input = bop.getOperationInfo().getUnwrappedOperation().getInput();
@@ -192,7 +196,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
 
             BindingMessageInfo bOutput = bop.getOutput();
             if (bOutput != null) {
-                MessageInfo output = null;
+                final MessageInfo output;
                 BindingMessageInfo unwrappedMsg = bOutput;
                 if (bop.isUnwrappedCapable()) {
                     output = bop.getOperationInfo().getUnwrappedOperation().getOutput();
@@ -342,8 +346,8 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
 
         boolean hasWrapped = false;
 
-        org.apache.cxf.binding.soap.SoapBinding sb = null;
-        SoapVersion version = null;
+        final org.apache.cxf.binding.soap.SoapBinding sb;
+        final SoapVersion version;
         if (binding instanceof SoapBindingInfo) {
             SoapBindingInfo sbi = (SoapBindingInfo) binding;
             version = sbi.getSoapVersion();
@@ -465,7 +469,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
         // matter on such small messages anyway) to make sure we pickup those
         // namespaces that are declared there.
         p.getOutInterceptors().add(new AbstractSoapInterceptor(Phase.POST_LOGICAL) {
-            public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+            public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
                 AddressingProperties p = ContextUtils.retrieveMAPs(message, false, true);
                 if (p == null) {
                     return;
@@ -557,11 +561,10 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
     private void addOutOfBandParts(final BindingOperationInfo bop, final javax.wsdl.Message msg,
                                    final SchemaCollection schemas, boolean isInput,
                                    final String partName) {
-        MessageInfo minfo = null;
         MessageInfo.Type type;
 
         int nextId = 0;
-        minfo = bop.getOperationInfo().getInput();
+        MessageInfo minfo = bop.getOperationInfo().getInput();
         if (minfo != null) {
             for (MessagePartInfo part : minfo.getMessageParts()) {
                 if (part.getIndex() >= nextId) {

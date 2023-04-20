@@ -59,7 +59,7 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamReader;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive;  // Liberty Change
 
 /**
  * Sets up the outgoing chain to build a SAAJ tree instead of writing
@@ -68,6 +68,10 @@ import com.ibm.websphere.ras.annotation.Sensitive;
  * at the end of the chain in the SEND phase which writes the resulting
  * SOAPMessage.
  */
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 @NoJSR250Annotations
 public class SAAJOutInterceptor extends AbstractSoapInterceptor {
     public static final String ORIGINAL_XML_WRITER
@@ -96,7 +100,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
         }
         return SAAJFactoryResolver.createMessageFactory(null);
     }
-    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault {  // Liberty Change
         SOAPMessage saaj = message.getContent(SOAPMessage.class);
 
         try {
@@ -158,7 +162,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
         message.getInterceptorChain().add(SAAJOutEndingInterceptor.INSTANCE);
     }
     @Override
-    public void handleFault(@Sensitive SoapMessage message) {
+    public void handleFault(@Sensitive SoapMessage message) {  // Liberty Change
         super.handleFault(message);
         //need to clear these so the fault writing will work correctly
         message.removeContent(SOAPMessage.class);
@@ -178,7 +182,7 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
             super(SAAJOutEndingInterceptor.class.getName(), Phase.PRE_PROTOCOL_ENDING);
         }
 
-        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault {  // Liberty Change
             SOAPMessage soapMessage = message.getContent(SOAPMessage.class);
 
             if (soapMessage != null) {

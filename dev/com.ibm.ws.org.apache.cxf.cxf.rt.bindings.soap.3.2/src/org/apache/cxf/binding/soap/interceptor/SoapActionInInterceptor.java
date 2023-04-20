@@ -47,6 +47,10 @@ import org.apache.cxf.ws.addressing.JAXWSAConstants;
 import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
 
 @Trivial // Liberty code change
+// Liberty Change; This class has no Liberty specific changes other than the Trivial annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class SoapActionInInterceptor extends AbstractSoapInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(SoapActionInInterceptor.class);

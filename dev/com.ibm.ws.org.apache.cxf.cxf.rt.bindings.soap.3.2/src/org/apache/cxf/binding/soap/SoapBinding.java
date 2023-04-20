@@ -19,22 +19,17 @@
 
 package org.apache.cxf.binding.soap;
 
-import java.util.logging.Logger;
-
-import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPMessage; // Liberty Change
 
 import org.apache.cxf.binding.Binding;
-import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.interceptor.AbstractBasicInterceptorProvider;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.service.factory.AbstractServiceFactoryBean;
 import org.apache.cxf.service.model.BindingInfo;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 
+// Liberty Changes - should try to commit back to CXF 
 public class SoapBinding extends AbstractBasicInterceptorProvider implements Binding {
-
-    private static final Logger LOG = LogUtils.getL7dLogger(SoapBinding.class);
 
     private SoapVersion version;
     private BindingInfo bindingInfo;
@@ -60,14 +55,14 @@ public class SoapBinding extends AbstractBasicInterceptorProvider implements Bin
         return version;
     }
 
-    @Sensitive
+    @Sensitive // Liberty Change
     public Message createMessage() {
         SoapMessage soapMessage = new SoapMessage(version);
         soapMessage.put(Message.CONTENT_TYPE, soapMessage.getVersion().getContentType());
         return soapMessage;
     }
 
-    public Message createMessage(@Sensitive Message m) {
+    public Message createMessage(@Sensitive Message m) { // Liberty Change
        
         SoapMessage soapMessage = new SoapMessage(m);
         if (m.getExchange() != null) {
@@ -80,11 +75,13 @@ public class SoapBinding extends AbstractBasicInterceptorProvider implements Bin
             soapMessage.setVersion(version); 
         }
 
+	    // Liberty Change Start: If Message doesn't contain content-type add the SOAPMessage content-type
         if (!m.containsKey(Message.CONTENT_TYPE)) {
             m.put(Message.CONTENT_TYPE, soapMessage.getVersion().getContentType());
             SoapMessage newMessage = new SoapMessage(m);
             newMessage.setVersion(soapMessage.getVersion());
         }
+		// Liberty Change End
         
         if (!soapMessage.containsKey(Message.CONTENT_TYPE)) {
             soapMessage.put(Message.CONTENT_TYPE, soapMessage.getVersion().getContentType());
