@@ -103,10 +103,10 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
             try {
                 currentOS = Machine.getLocalMachine().getOperatingSystem();
             } catch (Exception e) {
-                Log.info(thisClass, "isEnabled", "Encountered and exception trying to determine OS type - assume we'll need to run: " + e.getMessage());
+                Log.info(thisClass, "skipIfWindows", "Encountered an exception trying to determine OS type - assume we'll need to run: " + e.getMessage());
             }
             Log.info(thisClass, "isEnabled", "OS: " + currentOS.toString());
-            if (OperatingSystem.WINDOWS != currentOS) {
+            if (OperatingSystem.WINDOWS == currentOS) {
 
                 Log.info(thisClass, "skipIfWindows", "Running on Windows - skip test");
                 testSkipped();
