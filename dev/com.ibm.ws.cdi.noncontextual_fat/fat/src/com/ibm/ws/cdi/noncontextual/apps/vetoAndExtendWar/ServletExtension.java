@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.apps.nonContextualInjectionPointWar;
+package com.ibm.ws.cdi.noncontextual.apps.vetoAndExtendWar;
 
-import javax.ejb.Stateful;
-import javax.inject.Inject;
-
-@Stateful(name = "Bar")
-public class Bar {
-
-    @Inject
-    private Foo foo;
-
-    public Foo getFoo() {
-        return foo;
-    }
-
-}
+//This class intentionally left blank.
+public class ServletExtension extends VetoAndExtendTestServlet {}

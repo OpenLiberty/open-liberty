@@ -16,10 +16,7 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-	test-applications/appNonContextual.war/src,\
-	test-applications/nonContextual.war/src,\
-	test-applications/vetoAndExtendNonContextual.war/src
+	fat/src
 	
 tested.features:\
 	cdi-2.0,\

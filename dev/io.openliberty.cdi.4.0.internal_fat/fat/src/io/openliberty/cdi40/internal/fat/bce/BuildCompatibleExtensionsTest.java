@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,12 +47,12 @@ import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 public class BuildCompatibleExtensionsTest extends FATServletClient {
 
     @Server("cdiBceTestServer")
-    @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class),
-                    @TestServlet(contextRoot = "war2", servlet = EarBCETestServlet2.class),
-                    @TestServlet(contextRoot = "basicWar", servlet = BasicBCETestServlet.class),
-                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class),
-                    @TestServlet(contextRoot = "extensionArchiveNotScanned", servlet = ExtensionArchiveNotScannedTestServlet.class),
-                    @TestServlet(contextRoot = "beanCreatorLookup", servlet = BeanCreatorLookupTestServlet.class)
+    @TestServlets({ @TestServlet(contextRoot = "war1", servlet = EarBCETestServlet1.class), //LITE
+                    @TestServlet(contextRoot = "war2", servlet = EarBCETestServlet2.class), //LITE
+                    @TestServlet(contextRoot = "basicWar", servlet = BasicBCETestServlet.class), //LITE
+                    @TestServlet(contextRoot = "enhance", servlet = BceEnhanceTestServlet.class), //FULL
+                    @TestServlet(contextRoot = "extensionArchiveNotScanned", servlet = ExtensionArchiveNotScannedTestServlet.class), //FULL
+                    @TestServlet(contextRoot = "beanCreatorLookup", servlet = BeanCreatorLookupTestServlet.class) //FULL
     })
     public static LibertyServer server;
 

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.apps.vetoAndExtendWar;
+package com.ibm.ws.cdi.noncontextual.apps.vetoAndExtendWar;
 
 import static org.junit.Assert.assertEquals;
 

@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,16 +40,29 @@ import com.ibm.ws.cdi.thirdparty.apps.entityListenersWar.web.EntityListenersTest
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ThirdPartyTests extends FATServletClient {
 
-    @Server("cdiThirdPartyServer")
+    public static final String SERVER_NAME = "cdiThirdPartyServer";
+
+    @Server(SERVER_NAME)
     @TestServlet(contextRoot = "deltaspikeTest", servlet = DeltaspikeTestServlet.class)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE7);
 
     @BeforeClass
     public static void setUp() throws Exception {

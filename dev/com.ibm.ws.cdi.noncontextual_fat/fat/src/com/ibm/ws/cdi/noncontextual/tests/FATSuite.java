@@ -10,15 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi12.fat.tests;
+package com.ibm.ws.cdi.noncontextual.tests;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import componenttest.rules.repeater.EERepeatActions;
-import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to cdi-1.2
@@ -29,12 +25,5 @@ import componenttest.rules.repeater.RepeatTests;
                 VetoAndExtendTests.class
 })
 public class FATSuite {
-
-    @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(null,
-                                                         EERepeatActions.EE7,
-                                                         EERepeatActions.EE10,
-                                                         EERepeatActions.EE9,
-                                                         EERepeatActions.EE8);
 
 }
