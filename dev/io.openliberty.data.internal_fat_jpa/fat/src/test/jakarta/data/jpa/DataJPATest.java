@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -35,6 +36,7 @@ import test.jakarta.data.jpa.web.DataJPATestServlet;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11) // TODO 17
 public class DataJPATest extends FATServletClient {
+    private static String jdbcJarName;
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -47,7 +49,7 @@ public class DataJPATest extends FATServletClient {
     public static void setUp() throws Exception {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("DB_DRIVER", jdbcJarName = type.getDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
@@ -67,5 +69,13 @@ public class DataJPATest extends FATServletClient {
         server.stopServer("DSRA8020E.*data.createTables",
                           "DSRA8020E.*data.dropTables",
                           "DSRA8020E.*data.tablePrefix");
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testUnannotatedCollection() throws Exception {
+        runTest(server, "DataJPATestApp", "testUnannotatedCollection&jdbcJarName=" + jdbcJarName);
     }
 }

@@ -32,6 +32,8 @@ public interface Counties {
     @OrderBy("population")
     List<County> findByPopulationLessThanEqual(int maxPopulation);
 
+    Optional<County> findByZipCodes(int... zipcodes);
+
     @Select("cities")
     @OrderBy("name")
     List<Set<CityId>> findCityListByNameStartsWith(String pattern);
