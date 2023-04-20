@@ -60,17 +60,20 @@ public class ChainInitiationObserver implements MessageObserver {
         }
     }
 
+    // Liberty Change Start: Add FFDCIgnore for runtime exception below
     @FFDCIgnore(value = { RuntimeException.class })
     @Override
     public void onMessage(Message m) {
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
 
         try {
-            //no need reset TCClassloader as already set to bus
+	        // Liberty Change Start
+            // no need reset TCClassloader as already set to bus
 //            if (loader != null) {
 //                origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
 //            }
-            InterceptorChain phaseChain = null;
+            // Liberty Change End
+            InterceptorChain phaseChain;
 
             if (m.getInterceptorChain() != null) {
                 phaseChain = m.getInterceptorChain();
@@ -119,19 +122,23 @@ public class ChainInitiationObserver implements MessageObserver {
 
             addToChain(phaseChain, message);
 
+			// Catch runtime exception as mentioned above
             try {
                 phaseChain.doIntercept(message);
             } catch (RuntimeException re) {
                 throw re;
             }
+			// Liberty Change End
 
         } finally {
             if (origBus != bus) {
                 BusFactory.setThreadDefaultBus(origBus);
             }
+			  // Liberty Change Start
 //            if (origLoader != null) {
 //                origLoader.reset();
 //            }
+              // Liberty Change End
         }
     }
 
@@ -144,7 +151,8 @@ public class ChainInitiationObserver implements MessageObserver {
         }
         Collection<Interceptor<? extends Message>> is = CastUtils.cast((Collection<?>) m.get(Message.IN_INTERCEPTORS));
         if (is != null) {
-            //this helps to detect if need add CertConstraintsInterceptor to chain
+			// Liberty Change Start:
+            // This helps us to detect if CertConstraintsInterceptor  needs to be added to chain
             String rqURL = (String) m.get(Message.REQUEST_URL);
             boolean isHttps = (rqURL != null && rqURL.indexOf("https:") > -1) ? true : false;
             for (Interceptor<? extends Message> i : is) {
@@ -154,6 +162,7 @@ public class ChainInitiationObserver implements MessageObserver {
 
                 chain.add(i);
             }
+			// Liberty Change end
         }
         if (m.getDestination() instanceof InterceptorProvider) {
             chain.add(((InterceptorProvider) m.getDestination()).getInInterceptors());

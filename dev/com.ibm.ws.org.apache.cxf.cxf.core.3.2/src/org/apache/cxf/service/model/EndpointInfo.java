@@ -26,6 +26,8 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 /**
  * The EndpointInfo contains the information for a web service 'port' inside of a service.
+ * 
+ * Liberty Changes - should try to commit back to CXF 
  */
 public class EndpointInfo extends AbstractDescriptionElement implements NamedItem {
     String transportId;

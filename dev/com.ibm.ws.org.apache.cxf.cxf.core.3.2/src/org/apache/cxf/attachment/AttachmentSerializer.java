@@ -23,16 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Level;  // Liberty Change
+import java.util.logging.Logger;  // Liberty Change
 
 import javax.activation.DataHandler;
 
@@ -40,7 +43,7 @@ import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.common.logging.LogUtils;  // Liberty Change
 
 
 public class AttachmentSerializer {
@@ -49,7 +52,7 @@ public class AttachmentSerializer {
 
     private String contentTransferEncoding = "binary";
 
-    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentSerializer.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentSerializer.class);  // Liberty Change
 
     private Message message;
     private String bodyBoundary;
@@ -59,7 +62,8 @@ public class AttachmentSerializer {
     private String multipartType;
     private Map<String, List<String>> rootHeaders = Collections.emptyMap();
     private boolean xop = true;
-    private boolean writeOptionalTypeParameters = true;
+    private boolean writeOptionalTypeParameters = true;	
+    // Liberty Change Start 
     private static boolean supportSeparateAction = false;  
 
     static {
@@ -75,6 +79,7 @@ public class AttachmentSerializer {
             supportSeparateAction = true;
         }
     }
+	// Liberty Change End
 
     public AttachmentSerializer(Message messageParam) {
         message = messageParam;
@@ -159,6 +164,7 @@ public class AttachmentSerializer {
         if (writeOptionalTypeParameters || xop) {
             ct.append("; start-info=\"")
                 .append(bodyCt);
+		    // Liberty Change Start
             if (supportSeparateAction) {
                if (LOG.isLoggable(Level.FINE)) {
                   LOG.log(Level.FINE, "TS011473115: Format Content-Type using separate action attribute");
@@ -167,7 +173,7 @@ public class AttachmentSerializer {
                    ct.append("\"").append(bodyCtParams);
                }
 	    }
-	    else {
+	    else { // Liberty Change End
                if (bodyCtParamsEscaped != null) {
                    ct.append(bodyCtParamsEscaped);
                }
@@ -243,7 +249,42 @@ public class AttachmentSerializer {
         if (attachmentId != null) {
             attachmentId = checkAngleBrackets(attachmentId);
             writer.write("Content-ID: <");
-            writer.write(URLDecoder.decode(attachmentId, StandardCharsets.UTF_8.name()));
+            
+            // 
+            // RFC-2392 (https://datatracker.ietf.org/doc/html/rfc2392) says:
+            // A "cid" URL is converted to the corresponding Content-ID message
+            // header [MIME] by removing the "cid:" prefix, converting the % encoded
+            // character to their equivalent US-ASCII characters, and enclosing the
+            // remaining parts with an angle bracket pair, "<" and ">".  
+            //
+            if (attachmentId.startsWith("cid:")) {
+                writer.write(decode(attachmentId.substring(4),
+                    StandardCharsets.UTF_8));
+            } else { 
+                //
+                // RFC-2392 (https://datatracker.ietf.org/doc/html/rfc2392) says:
+                // 
+                //   content-id = url-addr-spec
+                //   url-addr-spec = addr-spec ; URL encoding of RFC 822 addr-spec
+                // 
+                // RFC-822 addr-spec (https://datatracker.ietf.org/doc/html/rfc822#appendix-D) says:
+                //  
+                //   addr-spec = local-part "@" domain ; global address
+                //
+                String[] address = attachmentId.split("@", 2);
+                if (address.length == 2) {
+                    // See please AttachmentUtil::createContentID, the domain part is URL encoded
+                    final String decoded = tryDecode(address[1], StandardCharsets.UTF_8);
+                    // If the domain part is encoded, decode it 
+                    if (!decoded.equalsIgnoreCase(address[1])) {
+                        writer.write(address[0] + "@" + decoded);
+                    } else {
+                        writer.write(attachmentId);
+                    }
+                } else {
+                    writer.write(URLEncoder.encode(attachmentId, StandardCharsets.UTF_8.name()));
+                }
+            }
             writer.write(">\r\n");
         }
         // headers like Content-Disposition need to be serialized
@@ -286,7 +327,7 @@ public class AttachmentSerializer {
                 writer.write("\r\n--");
                 writer.write(bodyBoundary);
 
-                Map<String, List<String>> headers = null;
+                final Map<String, List<String>> headers;
                 Iterator<String> it = a.getHeaderNames();
                 if (it.hasNext()) {
                     headers = new LinkedHashMap<>();
@@ -370,4 +411,21 @@ public class AttachmentSerializer {
         this.xop = xop;
     }
 
+    // URL decoder would also decode '+' but according to  RFC-2392 we need to convert
+    // only the % encoded character to their equivalent US-ASCII characters. 
+    private static String decode(String s, Charset charset) throws UnsupportedEncodingException {
+        return URLDecoder.decode(s.replaceAll("([^%])[+]", "$1%2B"), charset.name());
+    }
+
+    // Try to decode the string assuming the decoding may fail, the original string is going to
+    // be returned in this case.
+    private static String tryDecode(String s, Charset charset) {
+        try { 
+            return decode(s, charset);
+        } catch (IllegalArgumentException ex) {
+            return s;
+        } catch (UnsupportedEncodingException ex) {
+            return s;
+        }
+    }
 }

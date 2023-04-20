@@ -19,12 +19,15 @@
 
 package org.apache.cxf.common.logging;
 
+// import java.io.BufferedReader; Liberty Change
+// import java.io.InputStream; Liberty Change
+// import java.io.InputStreamReader; Liberty Change
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedActionException; // Liberty Change
+import java.security.PrivilegedExceptionAction; // Liberty Change
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -33,8 +36,8 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.apache.cxf.common.i18n.BundleUtils;
-
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+// import org.apache.cxf.common.util.StringUtils; Liberty Change
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 /**
  * A container for static utility methods related to logging.
@@ -51,11 +54,11 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 
 public final class LogUtils {
-    public static final String KEY = "org.apache.cxf.Logger";
+    private static final String KEY = "org.apache.cxf.Logger";
 
     private static final Object[] NO_PARAMETERS = new Object[0];
 
-    private static Class<?> loggerClass = null;
+    private static Class<?> loggerClass;
 
     /**
      * Prevents instantiation.
@@ -236,7 +239,7 @@ public final class LogUtils {
     /**
      * Create a logger
      */
-    @FFDCIgnore({ MissingResourceException.class, IllegalArgumentException.class })
+    @FFDCIgnore({ MissingResourceException.class, IllegalArgumentException.class }) // Liberty Change
     protected static Logger createLogger(final Class<?> cls,
                                          String name,
                                          String loggerName) {
@@ -247,7 +250,6 @@ public final class LogUtils {
         }
         String bundleName = name;
         try {
-            Logger logger = null;
             ResourceBundle b = null;
             if (bundleName == null) {
                 //grab the bundle prior to the call to Logger.getLogger(...) so the
@@ -296,15 +298,12 @@ public final class LogUtils {
                 }
             }
 
+            Logger logger;
             try {
                 logger = Logger.getLogger(loggerName, bundleName); //NOPMD
-            } catch (IllegalArgumentException iae) {
+            } catch (IllegalArgumentException | MissingResourceException ex) {
                 //likely a mismatch on the bundle name, just return the default
                 logger = Logger.getLogger(loggerName); //NOPMD
-            } catch (MissingResourceException rex) {
-                logger = Logger.getLogger(loggerName); //NOPMD
-            } finally {
-                b = null;
             }
             return logger;
         } finally {
@@ -318,7 +317,6 @@ public final class LogUtils {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
-               @Override
                 public Object run() {
                     Thread.currentThread().setContextClassLoader(classLoader);
                     return null;
@@ -473,7 +471,7 @@ public final class LogUtils {
 
         //try to get the right class name/method name - just trace
         //back the stack till we get out of this class
-        StackTraceElement stack[] = (new Throwable()).getStackTrace();
+        StackTraceElement[] stack = (new Throwable()).getStackTrace();
         String cname = LogUtils.class.getName();
         for (int x = 0; x < stack.length; x++) {
             StackTraceElement frame = stack[x];
