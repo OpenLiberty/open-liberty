@@ -33,3 +33,4 @@ Subsystem-Name: OpenID Connect Client 1.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
