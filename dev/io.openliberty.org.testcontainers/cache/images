@@ -30,5 +30,7 @@ openzipkin/zipkin-slim:2.23
 otel/opentelemetry-collector:0.74.0
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
+selenium/standalone-chrome:4.8.3
 testcontainers/ryuk:0.3.4
 testcontainers/sshd:1.1.0
+testcontainers/vnc-recorder:1.2.0
