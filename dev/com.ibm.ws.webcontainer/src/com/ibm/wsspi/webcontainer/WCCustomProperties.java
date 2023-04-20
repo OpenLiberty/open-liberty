@@ -332,6 +332,9 @@ public class WCCustomProperties {
     //23.0.0.4
     public static int MAX_FILE_COUNT;
 
+    //23.0.0.5
+    public static boolean DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION;
+    
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -428,6 +431,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("excludeallhandledtypesclasses", "com.ibm.ws.webcontainer.excludeallhandledtypesclasses");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("skipencodedcharverification", "com.ibm.ws.webcontainer.skipencodedcharverification");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("maxfilecount", "com.ibm.ws.webcontainer.maxfilecount");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -820,6 +824,9 @@ public class WCCustomProperties {
         //24.0.0.4
         MAX_FILE_COUNT = Integer.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.maxfilecount", "5000")).intValue();
         
+        //23.0.0.5
+        DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror", "false")).booleanValue();
+
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60) {
