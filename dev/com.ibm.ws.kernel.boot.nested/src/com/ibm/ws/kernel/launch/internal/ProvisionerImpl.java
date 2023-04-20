@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -70,6 +70,7 @@ public class ProvisionerImpl implements Provisioner {
      */
     protected BundleContext context = null;
     protected FrameworkStartLevel frameworkStartLevel = null;
+    protected FrameworkWiring frameworkWiring = null;
 
     /**
      * Install the platform bundles, and check the returned install status for
@@ -177,8 +178,10 @@ public class ProvisionerImpl implements Provisioner {
 
         // OSGi 4.3 uses the bundle.adapt() mechanism as a way to get to
         // behavior that is fundamentally a part of the framework
-        frameworkStartLevel = bundleCtx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkStartLevel.class);
+        Bundle systemBundle = bundleCtx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+        frameworkStartLevel = systemBundle.adapt(FrameworkStartLevel.class);
         frameworkStartLevel.setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
+        frameworkWiring = systemBundle.adapt(FrameworkWiring.class);
 
         serviceTracker = new ServiceTracker<LibertyBootRuntime, LibertyBootRuntime>(context, LibertyBootRuntime.class, null);
         serviceTracker.open();
@@ -243,7 +246,10 @@ public class ProvisionerImpl implements Provisioner {
                 installKernelBundle(element, installStatus, repo);
             }
         }
-
+        // do a resolve of all bundles now
+        if (frameworkWiring != null) {
+            frameworkWiring.resolveBundles(null);
+        }
         return installStatus;
     }
 
@@ -314,7 +320,7 @@ public class ProvisionerImpl implements Provisioner {
                         }
                     }, null);
                     try {
-                        context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class).resolveBundles(Collections.singleton(bundle));
+                        frameworkWiring.resolveBundles(Collections.singleton(bundle));
                     } finally {
                         hookReg.unregister();
                     }
