@@ -94,7 +94,7 @@ public class DBRotationTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
-        TxTestContainerSuite.beforeSuite();
+
         final WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
         final DeployOptions[] dO = new DeployOptions[0];
 
@@ -332,7 +332,7 @@ public class DBRotationTest extends FATServletClient {
     @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     public void testLogFailure() throws Exception {
         final String method = "testLogFailure";
-        if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { longLeaseLogFailServer1, server2 };
 
             longLeaseLogFailServer1.setFFDCChecking(false);
@@ -373,7 +373,7 @@ public class DBRotationTest extends FATServletClient {
     @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
-        if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
             serversToCleanup = new LibertyServer[] { noShutdownServer1, server2 };
 
             noShutdownServer1.setFFDCChecking(false);

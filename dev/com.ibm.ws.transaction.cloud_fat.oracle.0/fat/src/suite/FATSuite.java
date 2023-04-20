@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.transaction.test;
+package suite;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ import tests.DBRotationTest;
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
-		databaseContainerType = DatabaseContainerType.Oracle;
+		beforeSuite(DatabaseContainerType.Oracle);
 	}
 
 	@ClassRule
