@@ -448,7 +448,11 @@ public class DataFrameTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
+        setupDefaultUpgradedConnection(h2Client);
+
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", COMPRESSION_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("data", "compression"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("content-type", "application/xml"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
