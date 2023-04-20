@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
+//issue 25015 merged saml.3 and saml.4
 //issue 23060
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
@@ -802,4 +803,483 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     	
     }	
     
+    //issue 25015: This is the start test for saml.4 before merging saml.3 and saml.4
+
+    
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = True
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     */
+   
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    	
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     */
+    
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad() throws Exception {
+        
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    	
+    }
+  
+    /******* mapToUserRegistry = User *******/
+    /********** identifiers are Good **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local user's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGood() throws Exception {
+        
+    	 generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    	
+    }
+  
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expectd
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
+        
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
+    	
+    }
+
+    /********** identifiers are Omitted **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = omitted
+     * userUniqueIdentifier = omitted
+     * groupIdentfier = omitted
+     * realmIdentifier = omitted
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: testuser
+     * Group: Local user's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmitted() throws Exception { 
+    	
+    	 generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
+    	
+    }
+  
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = Omitted
+     * groupIdentfier = Omitted
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
+        
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
+    	
+    }
+   
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = Omitted
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local server's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted() throws Exception {    
+    	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = Omitted
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
+         	
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
+    	
+    }
+ 
+    
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local server's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    	
+    }
+  
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID }) 
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
+        
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: testuser
+     * Group: Local Server's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted() throws Exception {
+        
+   	    generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
+    
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
+          	
+        notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = Omitted
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server's group
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = Omitted
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {    
+    	
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
+    	
+    }
+ 
+    /********** identifiers are Bad **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = BAD value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server groups
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBad() throws Exception {
+       	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = BAD value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
+    	
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
+    	
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server groups
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBad() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    	
+    }
+    
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = BAD value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException"  }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
+        
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = BAD value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userIdentifier in the message
+     */
+    
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBad() throws Exception {
+           	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad.xml", userIdentifierString);  	
+    	
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = BAD value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userIdentifier in the message
+     */
+   
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBad() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+    	
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server groups
+     */
+    
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad() throws Exception {     
+    	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    	
+    }
+ 
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
+        
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad.xml");
+    	
+    }
+
 }
