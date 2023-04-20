@@ -33,9 +33,10 @@ Include-Resource: \
 
 Service-Component: \
   com.ibm.ws.ejbcontainer.security.internal.EJBSecurityCollaboratorImpl; \
-    implementation:=com.ibm.ws.ejbcontainer.security.internal.EJBSecurityCollaboratorImpl; \
+    implementation:=com.ibm.ws.ejbcontainer.security.internal.EJBSecurityCollaboratorImplServiceFactory; \
     provide:='com.ibm.ws.ejbcontainer.EJBSecurityCollaborator,\
               com.ibm.ws.container.service.metadata.ComponentMetaDataListener'; \
+    servicefactory:=true; \
     activate:=activate; \
     deactivate:=deactivate; \
     modified:='modified'; \
