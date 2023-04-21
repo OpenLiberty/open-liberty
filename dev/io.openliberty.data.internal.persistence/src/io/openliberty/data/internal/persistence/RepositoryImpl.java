@@ -51,6 +51,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Delete;
@@ -58,9 +59,8 @@ import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Update;
 import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
+import io.openliberty.data.repository.Update;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -1110,11 +1110,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
             }
         } else { // Individual columns are requested by @Select
-            if (singleType.isAssignableFrom(queryInfo.entityInfo.type)
-                || singleType.isInterface() // NEW instance doesn't apply to interfaces
-                || singleType.isPrimitive() // NEW instance should not be used on primitives
-                || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
-                || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
+            boolean selectAsColumns = singleType.isAssignableFrom(queryInfo.entityInfo.type)
+                                      || singleType.isInterface() // NEW instance doesn't apply to interfaces
+                                      || singleType.isPrimitive() // NEW instance should not be used on primitives
+                                      || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
+                                      || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType);
+            if (!selectAsColumns && cols.length == 1) {
+                String singleAttributeName = queryInfo.entityInfo.getAttributeName(cols[0]);
+                Class<?> attributeType = queryInfo.entityInfo.collectionElementTypes.get(singleAttributeName);
+                if (attributeType == null)
+                    attributeType = queryInfo.entityInfo.attributeTypes.get(singleAttributeName);
+                selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
+                                                            || singleType.isAssignableFrom(attributeType));
+            }
+            if (selectAsColumns) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++) {
                     generateSelectExpression(q, i == 0, function, distinct, o, queryInfo.entityInfo.getAttributeName(cols[i]));

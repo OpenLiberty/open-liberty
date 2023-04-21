@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ public class InstallException extends Exception {
     public static final int NOT_VALID_FOR_CURRENT_PRODUCT = 29; // same as ReturnCode.NOT_VALID_FOR_CURRENT_PRODUCT
     public static final int CONNECTION_FAILED = 33; // same as ReturnCode.CONNECTION_FAILED for installUtility
     public static final int USER_FEATURE_REPO_TYPE_INVALID = 36; //same as ReturnCode.USER_FEATURE_REPO_TYPE_INVALID for installUtility
+    public static final int SIGNATURE_VERIFICATION_FAILED = 37;
 
     int rc = RUNTIME_EXCEPTION;
     List<Object> data = new ArrayList<Object>();
@@ -38,7 +39,7 @@ public class InstallException extends Exception {
      * Creates an Install Exception with a cause and return code.
      *
      * @param message Exception message
-     * @param cause Exception cause
+     * @param cause   Exception cause
      * @parm rc Return code
      */
     public InstallException(String message, Throwable cause, int rc) {

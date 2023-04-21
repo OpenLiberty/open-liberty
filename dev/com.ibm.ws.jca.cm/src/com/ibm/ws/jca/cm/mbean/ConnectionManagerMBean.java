@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -86,6 +86,24 @@ import javax.management.MBeanException;
  *
  */
 public interface ConnectionManagerMBean {
+    /**
+     * Abort contents of the connection pool associated with
+     * this Connection Manager.
+     *
+     * @param type The type of abort to be used aborting connections from connection pool.
+     *                 Type <code>"inuse"</code>, will abort connection that are in use based
+     *                 on the time provided. In use connections in the shared and unshared pools
+     *                 will be aborted if the in use time for the connections exceeds the time
+     *                 provided.
+     *
+     * @param time The time to be used for aborting connections from connection pool based on type.
+     *                 Parameter time is a Long and in milliseconds.
+     *
+     * @throws MBeanException
+     */
+    @Deprecated
+    public String abortConnections(String type, Long time) throws MBeanException;
+
     /**
      * Purge the contents of the connection pool associated with
      * this Connection Manager.

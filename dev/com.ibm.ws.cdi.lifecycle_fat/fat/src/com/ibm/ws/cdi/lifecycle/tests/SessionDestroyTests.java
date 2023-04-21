@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -40,7 +43,15 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class SessionDestroyTests {
 
-    @Server("cdi12SessionInvalidationServer")
+    private static final String SERVER_NAME = "cdi12SessionInvalidationServer";
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE7);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static final String expectedResults = "session created: true session destroyed: true";

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -53,6 +55,7 @@ import componenttest.topology.utils.HttpUtils;
  * Test the runtime extension to function correctly
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class CDI12ExtensionTest extends FATServletClient {
 
     public static final String SERVER_NAME = "cdi12RuntimeExtensionServer";
@@ -66,8 +69,10 @@ public class CDI12ExtensionTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS,
+                                                                   CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE7_PLUS);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -134,7 +139,7 @@ public class CDI12ExtensionTest extends FATServletClient {
         // invocationContext.war
 
         WebArchive invocationContextWar = ShrinkWrap.create(WebArchive.class, "invocationContext.war")
-                                             .addPackage(InvocationContextTestServlet.class.getPackage());
+                                                    .addPackage(InvocationContextTestServlet.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, invocationContextWar, DeployOptions.SERVER_ONLY);
 

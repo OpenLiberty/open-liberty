@@ -38,6 +38,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
+
+// Liberty Changes - should try to commit back to CXF 
 public class StaxSource extends SAXSource implements XMLReader {
 
     private XMLStreamReader streamReader;

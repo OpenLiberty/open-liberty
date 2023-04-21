@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,8 @@ public class ArquillianLoadableExtension extends AbstractArquillianLoadableExten
 
     @Override
     public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.HAMCREST);
+        return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, 
+                          TCKArchiveModifications.HAMCREST,
+                          TCKArchiveModifications.SLF4J);
     }
 }

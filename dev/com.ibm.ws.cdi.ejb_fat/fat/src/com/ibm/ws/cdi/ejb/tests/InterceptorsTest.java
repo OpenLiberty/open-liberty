@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -26,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -43,6 +46,7 @@ import componenttest.topology.utils.FATServletClient;
  * {@code InterceptorSubClass1} and {@code InterceptorSubClass2} are beans with that type.
  */
 @RunWith(FATRunner.class)
+@Mode(FULL)
 public class InterceptorsTest extends FATServletClient {
 
     public static final String INTERCEPTORS_APP_NAME = "interceptorsApp";

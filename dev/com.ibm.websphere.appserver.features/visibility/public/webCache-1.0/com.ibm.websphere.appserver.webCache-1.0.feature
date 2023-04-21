@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.webCache-1.0
 WLP-DisableAllFeatures-OnConflict: false
+WLP-InstantOn-Enabled: true
 visibility=public
 IBM-API-Package: com.ibm.websphere.servlet.cache; type="ibm-api", \
  com.ibm.websphere.command; type="ibm-api", \

@@ -39,7 +39,7 @@ public class AbstractTestJavaSourceLevel {
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
 
     public final static int MIN_JAVA_LEVEL = 7;
-    public final static int MAX_JAVA_LEVEL = 20; // Update this when supporting a new level of JDK
+    public final static int MAX_JAVA_LEVEL = 21; // Update this when supporting a new level of JDK
     public final static int JVM_JAVA_LEVEL = JavaInfo.JAVA_VERSION;
 
     public static boolean isJakartaLevel = false;

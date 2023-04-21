@@ -34,7 +34,7 @@ import tests.DBRotationTest;
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
-		databaseContainerType = DatabaseContainerType.SQLServer;
+		beforeSuite(DatabaseContainerType.SQLServer);
 	}
 
 	@ClassRule

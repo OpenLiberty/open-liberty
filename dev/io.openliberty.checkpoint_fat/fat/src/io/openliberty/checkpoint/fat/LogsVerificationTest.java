@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileReader;
@@ -152,6 +153,17 @@ public class LogsVerificationTest {
 
         assertEquals("Checkpoint message was not expected here", 0, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
         assertEquals("Expected restore message not found", 1, server.findStringsInLogs("CWWKC0452I", server.getDefaultLogFile()).size());
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testRestoreHideMessageTRAS3001I() throws Exception {
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
+
+        server.checkpointRestore();
+        assertNotNull("Expected TRAS3001I message not found", server.waitForStringInLogUsingMark("TRAS3001I", 100));
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 

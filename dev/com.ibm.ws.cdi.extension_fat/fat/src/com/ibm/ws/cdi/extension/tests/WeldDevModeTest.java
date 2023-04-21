@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,8 @@ import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1TestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -42,6 +44,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the runtime extension to function correctly
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class WeldDevModeTest {
 
     public static final String SERVER_NAME = "weldDevModeServer";
@@ -51,7 +54,7 @@ public class WeldDevModeTest {
 
     //Does not repeat against CDI 4.0 where dev mode is not supported
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE9_PLUS, CDIExtensionRepeatActions.EE7_PLUS);
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -125,4 +125,10 @@ public class TestJPA21_JavaSourceLevel extends AbstractTestJavaSourceLevel {
     public void testJPA21WithJava20() throws Exception {
         runTest(server_jss_jpa21, 20);
     }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 21)
+    public void testJPA21WithJava21() throws Exception {
+        runTest(server_jss_jpa21, 21);
+    }
 }

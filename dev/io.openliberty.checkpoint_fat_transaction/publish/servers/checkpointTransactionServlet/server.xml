@@ -51,5 +51,7 @@
 
     <application location="transactionservlet.war"/>
 
+    <!--
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    -->
 </server>

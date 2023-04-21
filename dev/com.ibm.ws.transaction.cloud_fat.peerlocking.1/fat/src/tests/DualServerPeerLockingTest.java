@@ -22,10 +22,8 @@ import org.junit.BeforeClass;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.Server;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.impl.LibertyServer;
 
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
@@ -72,9 +70,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         System.out.println("NYTRACE: DualServerPeerLockingTest.setUp called");
         servletName = APP_NAME + "/Simple2PCCloudServlet";
         cloud1RecoveryIdentity = "cloud001";
-
-        // Pretend we're Derby even though we're not using test containers here
-        TxTestContainerSuite.databaseContainerType = DatabaseContainerType.Derby;
 
         TxShrinkHelper.defaultApp(firstServer, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.defaultApp(secondServer, APP_NAME, APP_PATH, "servlets.*");

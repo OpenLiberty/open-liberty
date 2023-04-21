@@ -45,20 +45,20 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
     @Override
     public synchronized Class<?> createNamespaceWrapperClass(Class<?> mcls, Map<String, String> map) {
         String postFix = "";
-
-        if (mcls.getName().contains("eclipse")) {
-            return createEclipseNamespaceMapper(mcls, map);
-        } else if (mcls.getName().contains("com.sun") && mcls.getName().contains(".internal")) {
-            postFix = "Internal";
-        } else if (mcls.getName().contains("com.sun")) {
-            postFix = "RI";
-        //Liberty change begin
-        } else if (mcls.getName().startsWith("org.glassfish")) {
+        //Liberty change begin: Check for Jakarta and IBM namespace wrappers
+        if (mcls.getName().startsWith("org.glassfish")) {
             postFix = "Glassfish";
         } else if (mcls.getName().startsWith("com.ibm")) {
             postFix = "IBM";
         }
         //Liberty change end
+        if (mcls.getName().contains("eclipse")) {
+            return createEclipseNamespaceMapper();
+        } else if (mcls.getName().contains(".internal")) {
+            postFix = "Internal";
+        } else if (mcls.getName().contains("com.sun")) {
+            postFix = "RI";
+	    }
 
         String className = "org.apache.cxf.jaxb.NamespaceMapper";
         className += postFix;
@@ -68,7 +68,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
             try {
                 byte[] bts = createNamespaceWrapperInternal(postFix);
                 className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix; 
-                
+                // handle IBM namespace wrapper look up
                 if(postFix.equals("IBM")) {
                     try {
                         return loadClass(className, NamespaceClassCreator.class, bts);
@@ -100,17 +100,20 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                 t = ex2;
             }
         }
-        LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " + mcls.getName(), t);
-        return cls;
+		if (cls == null) {
+            LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " 
+                + mcls.getName(), t); // Liberty Change - Level to FINEST
+        }
+		return cls;
     }
 
-    private Class<?> createEclipseNamespaceMapper(Class<?> mcls, Map<String, String> map) {
+    private Class<?> createEclipseNamespaceMapper() {
         String className = "org.apache.cxf.jaxb.EclipseNamespaceMapper";
         Class<?> cls = findClass(className, NamespaceClassCreator.class);
         if (cls != null) {
             return cls;
         }
-        byte[] bts = createEclipseNamespaceMapper();
+        byte[] bts = doCreateEclipseNamespaceMapper();
         //previous code use mcls instead of NamespaceClassGenerator.class
         return loadClass(className, NamespaceClassCreator.class, bts);
     }
@@ -146,7 +149,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
     */
     //CHECKSTYLE:OFF
     //bunch of really long ASM based methods that cannot be shortened easily
-    private byte[] createEclipseNamespaceMapper() {
+    private byte[] doCreateEclipseNamespaceMapper() {
         OpcodesProxy Opcodes = helper.getOpCodes();
         String slashedName = "org/apache/cxf/jaxb/EclipseNamespaceMapper";
         ASMHelper.ClassWriter cw = helper.createClassWriter();
@@ -311,8 +314,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         cw.visitEnd();
 
-        byte[] bts = cw.toByteArray();
-        return bts;
+        return cw.toByteArray();
     }
 
     private byte[] createNamespaceWrapperInternal(String postFix) {
@@ -337,63 +339,63 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         }
         ASMHelper.FieldVisitor fv;
         ASMHelper.MethodVisitor mv;
-        OpcodesProxy Opcodes= helper.getOpCodes();
-        cw.visit(Opcodes.V1_6,
-                Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
+        OpcodesProxy opcodes= helper.getOpCodes();
+        cw.visit(opcodes.V1_6,
+                opcodes.ACC_PUBLIC + opcodes.ACC_FINAL + opcodes.ACC_SUPER,
                 postFixedName, null,
                 superName, null);
 
         cw.visitSource("NamespaceMapper.java", null);
 
-        fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL,
+        fv = cw.visitField(opcodes.ACC_PRIVATE + opcodes.ACC_FINAL,
                 "nspref", "Ljava/util/Map;",
                 "Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;", null);
         fv.visitEnd();
 
-        fv = cw.visitField(Opcodes.ACC_PRIVATE, "nsctxt", "[Ljava/lang/String;", null, null);
+        fv = cw.visitField(opcodes.ACC_PRIVATE, "nsctxt", "[Ljava/lang/String;", null, null);
         fv.visitEnd();
 
-        fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC,
+        fv = cw.visitField(opcodes.ACC_PRIVATE + opcodes.ACC_FINAL + opcodes.ACC_STATIC,
                 "EMPTY_STRING", "[Ljava/lang/String;", null, null);
         fv.visitEnd();
 
-        mv = cw.visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
+        mv = cw.visitMethod(opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
         mv.visitCode();
         ASMHelper.Label l0 = helper.createLabel();
         mv.visitLabel(l0);
         mv.visitLineNumber(30, l0);
-        mv.visitInsn(Opcodes.ICONST_0);
-        mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/String");
-        mv.visitFieldInsn(Opcodes.PUTSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
-        mv.visitInsn(Opcodes.RETURN);
+        mv.visitInsn(opcodes.ICONST_0);
+        mv.visitTypeInsn(opcodes.ANEWARRAY, "java/lang/String");
+        mv.visitFieldInsn(opcodes.PUTSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
+        mv.visitInsn(opcodes.RETURN);
         mv.visitMaxs(0, 0);
         mv.visitEnd();
 
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
+        mv = cw.visitMethod(opcodes.ACC_PUBLIC, "<init>",
                 "(Ljava/util/Map;)V",
                 "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)V", null);
         mv.visitCode();
         l0 = helper.createLabel();
         mv.visitLabel(l0);
         mv.visitLineNumber(32, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, superName, "<init>", "()V", false);
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitMethodInsn(opcodes.INVOKESPECIAL, superName, "<init>", "()V", false);
         ASMHelper.Label l1 = helper.createLabel();
         mv.visitLabel(l1);
         mv.visitLineNumber(29, l1);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitFieldInsn(opcodes.GETSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
+        mv.visitFieldInsn(opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
         ASMHelper.Label l2 = helper.createLabel();
         mv.visitLabel(l2);
         mv.visitLineNumber(33, l2);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nspref", "Ljava/util/Map;");
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitVarInsn(opcodes.ALOAD, 1);
+        mv.visitFieldInsn(opcodes.PUTFIELD, postFixedName, "nspref", "Ljava/util/Map;");
         ASMHelper.Label l3 = helper.createLabel();
         mv.visitLabel(l3);
         mv.visitLineNumber(34, l3);
-        mv.visitInsn(Opcodes.RETURN);
+        mv.visitInsn(opcodes.RETURN);
         ASMHelper.Label l4 = helper.createLabel();
         mv.visitLabel(l4);
         mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l4, 0);
@@ -403,36 +405,36 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         mv.visitMaxs(0, 0);
         mv.visitEnd();
 
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPreferredPrefix",
+        mv = cw.visitMethod(opcodes.ACC_PUBLIC, "getPreferredPrefix",
                 "(Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;",
                 null, null);
         mv.visitCode();
         l0 = helper.createLabel();
         mv.visitLabel(l0);
         mv.visitLineNumber(39, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, postFixedName, "nspref", "Ljava/util/Map;");
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/Map",
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitFieldInsn(opcodes.GETFIELD, postFixedName, "nspref", "Ljava/util/Map;");
+        mv.visitVarInsn(opcodes.ALOAD, 1);
+        mv.visitMethodInsn(opcodes.INVOKEINTERFACE, "java/util/Map",
                 "get", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
-        mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/String");
-        mv.visitVarInsn(Opcodes.ASTORE, 4);
+        mv.visitTypeInsn(opcodes.CHECKCAST, "java/lang/String");
+        mv.visitVarInsn(opcodes.ASTORE, 4);
         l1 = helper.createLabel();
         mv.visitLabel(l1);
         mv.visitLineNumber(40, l1);
-        mv.visitVarInsn(Opcodes.ALOAD, 4);
+        mv.visitVarInsn(opcodes.ALOAD, 4);
         l2 = helper.createLabel();
-        mv.visitJumpInsn(Opcodes.IFNULL, l2);
+        mv.visitJumpInsn(opcodes.IFNULL, l2);
         l3 = helper.createLabel();
         mv.visitLabel(l3);
         mv.visitLineNumber(41, l3);
-        mv.visitVarInsn(Opcodes.ALOAD, 4);
-        mv.visitInsn(Opcodes.ARETURN);
+        mv.visitVarInsn(opcodes.ALOAD, 4);
+        mv.visitInsn(opcodes.ARETURN);
         mv.visitLabel(l2);
         mv.visitLineNumber(43, l2);
-        mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/String"}, 0, null);
-        mv.visitVarInsn(Opcodes.ALOAD, 2);
-        mv.visitInsn(Opcodes.ARETURN);
+        mv.visitFrame(opcodes.F_APPEND, 1, new Object[] {"java/lang/String"}, 0, null);
+        mv.visitVarInsn(opcodes.ALOAD, 2);
+        mv.visitInsn(opcodes.ARETURN);
         l4 = helper.createLabel();
         mv.visitLabel(l4);
         mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l4, 0);
@@ -443,18 +445,18 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         mv.visitMaxs(0, 0);
         mv.visitEnd();
 
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "setContextualNamespaceDecls", "([Ljava/lang/String;)V", null, null);
+        mv = cw.visitMethod(opcodes.ACC_PUBLIC, "setContextualNamespaceDecls", "([Ljava/lang/String;)V", null, null);
         mv.visitCode();
         l0 = helper.createLabel();
         mv.visitLabel(l0);
         mv.visitLineNumber(47, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitVarInsn(opcodes.ALOAD, 1);
+        mv.visitFieldInsn(opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
         l1 = helper.createLabel();
         mv.visitLabel(l1);
         mv.visitLineNumber(48, l1);
-        mv.visitInsn(Opcodes.RETURN);
+        mv.visitInsn(opcodes.RETURN);
         l2 = helper.createLabel();
         mv.visitLabel(l2);
         mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l2, 0);
@@ -462,14 +464,14 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         mv.visitMaxs(0, 0);
         mv.visitEnd();
 
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getContextualNamespaceDecls", "()[Ljava/lang/String;", null, null);
+        mv = cw.visitMethod(opcodes.ACC_PUBLIC, "getContextualNamespaceDecls", "()[Ljava/lang/String;", null, null);
         mv.visitCode();
         l0 = helper.createLabel();
         mv.visitLabel(l0);
         mv.visitLineNumber(51, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
-        mv.visitInsn(Opcodes.ARETURN);
+        mv.visitVarInsn(opcodes.ALOAD, 0);
+        mv.visitFieldInsn(opcodes.GETFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
+        mv.visitInsn(opcodes.ARETURN);
         l1 = helper.createLabel();
 
         mv.visitLabel(l1);

@@ -1,5 +1,6 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub.
+alpine:3.16
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
 gvenzl/oracle-xe:21.3.0-full-faststart
@@ -26,7 +27,10 @@ letsencrypt/pebble:latest
 mariadb:10.3
 mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 openzipkin/zipkin-slim:2.23
+otel/opentelemetry-collector:0.74.0
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
+selenium/standalone-chrome:4.8.3
 testcontainers/ryuk:0.3.4
 testcontainers/sshd:1.1.0
+testcontainers/vnc-recorder:1.2.0

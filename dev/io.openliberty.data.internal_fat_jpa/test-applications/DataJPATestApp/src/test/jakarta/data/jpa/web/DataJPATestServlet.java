@@ -75,6 +75,9 @@ public class DataJPATestServlet extends FATServlet {
     Cities cities;
 
     @Inject
+    Counties counties;
+
+    @Inject
     CreditCards creditCards;
 
     @Inject
@@ -94,6 +97,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Tariffs tariffs;
+
+    @Inject
+    TaxPayers taxpayers;
 
     @Resource
     private UserTransaction tran;
@@ -243,6 +249,64 @@ public class DataJPATestServlet extends FATServlet {
         shippingAddresses.save(a1);
 
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Use an Entity which has an attribute which is a collection of embeddables, as permitted by the JPA ElementCollection annotation.
+     */
+    @Test
+    public void testEmbeddableCollection() {
+        taxpayers.delete();
+
+        AccountId a1 = AccountId.of(15561600, 391588);
+        AccountId a2 = AccountId.of(26122300, 410224);
+        AccountId a3 = AccountId.of(60212900, 391588);
+        AccountId a4 = AccountId.of(43014400, 410224);
+        AccountId a5 = AccountId.of(55435500, 560237);
+        AccountId a6 = AccountId.of(66320100, 410224);
+        AccountId a7 = AccountId.of(77512000, 705030);
+        AccountId a8 = AccountId.of(88191200, 410224);
+        AccountId a9 = AccountId.of(99105300, 391588);
+        AccountId a10 = AccountId.of(10105600, 560237);
+
+        TaxPayer t1 = new TaxPayer(123001230L, TaxPayer.FilingStatus.HeadOfHousehold, 3, 54000.0f, a1, a10);
+        TaxPayer t2 = new TaxPayer(234002340L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 212000.0f, a6, a7, a8);
+        TaxPayer t3 = new TaxPayer(345003450L, TaxPayer.FilingStatus.MarriedFilingSeparately, 0, 95000.0f, a2, a3);
+        TaxPayer t4 = new TaxPayer(456004560L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 41000.0f, a4);
+        TaxPayer t5 = new TaxPayer(567005670L, TaxPayer.FilingStatus.Single, 0, 133000.0f, a5, a9);
+        TaxPayer t6 = new TaxPayer(678006780L, TaxPayer.FilingStatus.MarriedFilingSeparately, 3, 126000.0f, a2);
+        TaxPayer t7 = new TaxPayer(789007890L, TaxPayer.FilingStatus.Single, 0, 37000.0f);
+
+        taxpayers.save(t1, t2, t3, t4, t5, t6, t7);
+
+        assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
+                             taxpayers.findAccountsBySSN(234002340L)
+                                             .stream()
+                                             .map(AccountId::toString)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
+                             taxpayers.findAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
+                                             .map(AccountId::toString)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // TODO report EclipseLink bug that occurs on the following
+        if (false)
+            assertIterableEquals(List.of(345003450L, 678006780L),
+                                 taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
+                                                 .map(t -> t.ssn)
+                                                 .collect(Collectors.toList()));
+
+        // TODO also fails with EclipseLink error
+        if (false)
+            assertIterableEquals(List.of(789007890L),
+                                 taxpayers.findByBankAccountsNotEmpty()
+                                                 .map(t -> t.ssn)
+                                                 .collect(Collectors.toList()));
+
+        taxpayers.delete();
     }
 
     /**
@@ -1511,5 +1575,68 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
+    }
+
+    /**
+     * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
+     */
+    @Test
+    public void testUnannotatedCollection() {
+        assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+
+        County olmsted = new County("Olmsted", "Minnesota", 162847, "Rochester", "Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Stewartville");
+        County winona = new County("Winona", "Minnesota", 49671, "Winona", "Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton", "Utica");
+        County wabasha = new County("Wabasha", "Minnesota", 21387, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
+        County fillmore = new County("Fillmore", "Minnesota", 21228, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
+
+        counties.save(olmsted, winona, wabasha, fillmore);
+
+        // find one entity by id as Optional
+        County c = counties.findByName("Olmsted").orElseThrow();
+        assertEquals("Olmsted", c.name);
+        assertEquals(162847, c.population);
+        assertIterableEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
+                             c.cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // find multiple collection attributes as List
+        List<Set<CityId>> cityLists = counties.findCityListByNameStartsWith("W");
+        assertEquals(cityLists.toString(), 2, cityLists.size());
+
+        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                             cityLists.get(0)
+                                             .stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton",
+                                     "Utica", "Winona"),
+                             cityLists.get(1)
+                                             .stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // find multiple entities
+        List<County> found = counties.findByPopulationLessThanEqual(25000);
+        assertEquals(found.toString(), 2, found.size());
+
+        assertIterableEquals(List.of("Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Preston", "Rushford", "Rushford Village",
+                                     "Spring Valley", "Whalen", "Wykoff"),
+                             found.get(0).cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                             found.get(1).cities.stream()
+                                             .map(city -> city.name)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
     }
 }
