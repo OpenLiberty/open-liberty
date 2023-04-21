@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDb;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertFalse;
@@ -42,6 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -68,7 +68,8 @@ public class TransactionManagerTest extends FATServletClient {
     TestMethod testMethod;
     Transaction tm;
 
-    private static String DERBY_DS_JNDINAME = "jdbc/derby";
+    static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server config
+    static final int DERBY_TXLOG_PORT = 9099; // Same as server config
 
     @Before
     public void setUp() throws Exception {
@@ -101,6 +102,8 @@ public class TransactionManagerTest extends FATServletClient {
                 serverTranLogRecOnStart.startServer();
                 break;
             case testRecoveryBeginsAfterStartup:
+                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
+
                 serverTranDbLogNoRecOnStart = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
 
                 ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, "servlets.simple.*");
@@ -111,7 +114,6 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-
                 serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
                 serverTranDbLogNoRecOnStart.setServerStartTimeout(300000);
                 serverTranDbLogNoRecOnStart.startServer();
@@ -128,8 +130,11 @@ public class TransactionManagerTest extends FATServletClient {
                 stopServer(serverTranLogRecOnStart, "WTRN0017W");
                 break;
             case testRecoveryBeginsAfterStartup:
-                stopServer(serverTranDbLogNoRecOnStart, "WTRN0017W");
-                deleteTranlogDb(serverTranDbLogNoRecOnStart);
+                try {
+                    stopServer(serverTranDbLogNoRecOnStart, "WTRN0017W");
+                } finally {
+                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
+                }
                 break;
             default:
                 break;

@@ -143,8 +143,13 @@ public class TransactionLogTest extends FATServletClient {
      */
     @Test
     public void testCheckpointRemovesDefaultTranlogDir() throws Exception {
+        // Checkpoint should fail iff the pre-existing tran logs could not
+        // be deleted, which we can't test for. But we can ensure the TM
+        // otherwise removed the tran logs.
         assertTrue("Checkpoint should have the deleted transaction log directory, but did not.",
                    !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
+        serverTranLog.checkpointRestore();
     }
 
     /**
