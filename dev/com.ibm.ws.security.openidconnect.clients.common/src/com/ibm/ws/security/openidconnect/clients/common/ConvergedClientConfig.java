@@ -61,6 +61,10 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
 
     public String getTokenEndpointAuthMethod();
 
+    public String getTokenEndpointAuthSigningAlgorithm();
+
+    public String getKeyAliasName();
+
     public String getRedirectUrlFromServerToClient();
 
     public String getRedirectUrlWithJunctionPath(String redirect_url);
