@@ -100,15 +100,6 @@ autoFVT.doLast {
   /*
   * oidc client tests
   */
-    /*
-   * Copy the local ApacheDS LDAP instances. 
-   */
-  copy {
-    from project(':com.ibm.ws.org.apache.directory.server').projectDir
-    into autoFvtDir
-    include 'apacheds-2.0.0-M15/**'
-  }
-  
   servers = [
     'com.ibm.ws.security.openidconnect.client-1.0_fat.op',
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rp'
@@ -118,14 +109,6 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
-
-    /* copy shared key/trust stores from the common security fat project */
-    copy { 
-     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
-     into new File(autoFvtDir, 'publish/servers/' + server + '/')
-     include 'allAlgKeyStore.p12'
-     include 'allAlgTrustStore.p12'
-    }  
 
     copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
