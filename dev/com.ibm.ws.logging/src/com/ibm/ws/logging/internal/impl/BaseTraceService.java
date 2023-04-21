@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -384,10 +384,6 @@ public class BaseTraceService implements TrService {
         }
 
         initializeWriters(trConfig);
-        if (hideMessageids.size() > 0) {
-            String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
-            Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
-        }
 
         scheduleTimeBasedLogRollover(trConfig);
 
@@ -558,6 +554,10 @@ public class BaseTraceService implements TrService {
         }
 
         applyJsonFields(trConfig.getjsonFields());
+        if (hideMessageids.size() > 0) {
+            String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
+            Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
+        }
     }
 
     public static void applyJsonFields(String value) {
@@ -1444,7 +1444,7 @@ public class BaseTraceService implements TrService {
             }
         }
 
-        if(maxFfdcAge < 0) {
+        if (maxFfdcAge < 0) {
             return;
         }
 
@@ -1458,13 +1458,12 @@ public class BaseTraceService implements TrService {
         //set calendar start time
         Calendar sched = Calendar.getInstance();
 
-        if(startDelay < 0) {
+        if (startDelay < 0) {
             sched.set(Calendar.HOUR_OF_DAY, 0);
             sched.set(Calendar.MINUTE, 0);
-            sched.add(Calendar.DATE, 1);                //The cleanup will run everyday at midnight.
-        }
-        else {
-            sched.add(Calendar.SECOND, startDelay);      //Used for test cases in order to trigger the cleanup event after the configured delay.
+            sched.add(Calendar.DATE, 1); //The cleanup will run everyday at midnight.
+        } else {
+            sched.add(Calendar.SECOND, startDelay); //Used for test cases in order to trigger the cleanup event after the configured delay.
         }
 
         Date firstFfdcCleanup = sched.getTime();
@@ -2184,7 +2183,7 @@ public class BaseTraceService implements TrService {
             for (int i = 0; i < postExceptionFiles.length; i++) {
                 try {
                     Date fileLastModifiedDate = sdf.parse(sdf.format(postExceptionFiles[i].lastModified()));
-                    long fileAge = TimeUnit.MINUTES.convert(System.currentTimeMillis() - fileLastModifiedDate.getTime(),TimeUnit.MILLISECONDS);
+                    long fileAge = TimeUnit.MINUTES.convert(System.currentTimeMillis() - fileLastModifiedDate.getTime(), TimeUnit.MILLISECONDS);
 
                     if (fileAge > maxFfdcAge) {
                         postExceptionFiles[i].delete();
@@ -2194,7 +2193,7 @@ public class BaseTraceService implements TrService {
                     Tr.info(tc, "lwas.FFDCIncidentEmitted", "Error: " + e.getStackTrace());
                 }
             }
-            if(deletedCounter > 0) {
+            if (deletedCounter > 0) {
                 Tr.info(tc, "FFDC_FILE_DELETION", deletedCounter);
             }
         }
