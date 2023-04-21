@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,16 +34,25 @@ public class DeflateOutputHandler implements CompressionHandler {
     /** Deflater used for this output stream */
     private Deflater deflater = null;
     /** Output buffer used during the compression stage */
-    private final byte[] buf = new byte[32768];
+    private byte[] buf = null;
 
     /**
      * Create this deflate compression method output handler.
      *
      */
     public DeflateOutputHandler() {
+        this.buf = new byte[32768];
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created a deflate output handler; " + this);
+            Tr.debug(tc, "Created a deflate output handler; " + this + " with buffer size 32768");
+        }
+    }
+
+    public DeflateOutputHandler(Integer bufferSize) {
+        this.buf = new byte[bufferSize];
+        this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created a deflate output handler; " + this + " with buffer size " + bufferSize);
         }
     }
 
@@ -53,9 +62,10 @@ public class DeflateOutputHandler implements CompressionHandler {
      * requires that there is no deflate wrapper around the compressed bytes.
      *
      * @param useragent
-     *            - header from request
+     *                      - header from request
      */
     public DeflateOutputHandler(byte[] useragent) {
+        this.buf = new byte[32768];
         if (null != useragent && isIEBrowser(useragent)) {
             // IE cannot handle the compressed bytes wrapped with encryption
             // markers, so we need to create a Deflater with the nowrap enabled
@@ -67,7 +77,24 @@ public class DeflateOutputHandler implements CompressionHandler {
             this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created a deflate output handler; " + this);
+            Tr.debug(tc, "Created a deflate output handler; " + this + " with buffer size 32768");
+        }
+    }
+
+    public DeflateOutputHandler(byte[] useragent, Integer bufferSize) {
+        this.buf = new byte[bufferSize];
+        if (null != useragent && isIEBrowser(useragent)) {
+            // IE cannot handle the compressed bytes wrapped with encryption
+            // markers, so we need to create a Deflater with the nowrap enabled
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "User-Agent indicates IE browser [" + GenericUtils.getEnglishString(useragent) + "]");
+            }
+            this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+        } else {
+            this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created a deflate output handler; " + this + " with buffer size " + bufferSize);
         }
     }
 
@@ -119,9 +146,6 @@ public class DeflateOutputHandler implements CompressionHandler {
      */
     @Override
     public List<WsByteBuffer> compress(WsByteBuffer[] buffers) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "compress, input=" + buffers);
-        }
         List<WsByteBuffer> list = new LinkedList<WsByteBuffer>();
         if (null != buffers) {
             for (int i = 0; i < buffers.length; i++) {
