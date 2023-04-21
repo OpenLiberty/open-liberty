@@ -28,8 +28,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
@@ -1602,7 +1605,7 @@ public class DataJPATestServlet extends FATServlet {
         County c = counties.findByName("Olmsted").orElseThrow();
         assertEquals("Olmsted", c.name);
         assertEquals(162847, c.population);
-        assertEquals(Arrays.toString(olmstedZipCodes) + " != " + Arrays.toString(c.zipcodes), 0, Arrays.compare(olmstedZipCodes, c.zipcodes));
+        assertEquals(Arrays.toString(olmstedZipCodes), Arrays.toString(c.zipcodes));
 
         assertIterableEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
                              c.cities.stream()
@@ -1654,6 +1657,69 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(city -> city.name)
                                              .sorted()
                                              .collect(Collectors.toList()));
+
+        // find single array
+        assertEquals(Arrays.toString(fillmoreZipCodes),
+                     Arrays.toString(counties.findZipCodesById("Fillmore")));
+
+        // stream of array attribute
+        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             counties.findZipCodesByNameEndsWith("a")
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // list of array attribute
+        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(olmstedZipCodes)),
+                             counties.findZipCodesByNameNotStartsWith("W")
+                                             .stream()
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // page of array attribute
+        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             counties.findZipCodesByNameStartsWith("W", Pageable.ofSize(10))
+                                             .stream()
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // optional iterator of array attribute
+        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000).orElseThrow();
+        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // optional for single array with none found
+        counties.findZipCodesByName("Dodge") //
+                        .ifPresent(array -> fail("Unexpected value: " + Arrays.toString(array)));
+
+        // stream of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameEndsWith("ower").count());
+
+        // list of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameNotStartsWith("_").size());
+
+        // page of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", Pageable.ofSize(5)).numberOfElements());
+
+        // optional for iterator over array attribute with none found
+        counties.findZipCodesByPopulationLessThanEqual(1) //
+                        .ifPresent(i -> fail("Unexpected iterator: " + (i.hasNext() ? Arrays.toString(i.next()) : "(empty)")));
+
+        // update array value to empty
+        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
+
+        // query on array value
+        assertEquals(Arrays.toString(new int[0]),
+                     Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
+
+        // update array value to non-empty
+        int[] wabashaZipCodesDescending = new int[] { 55991, 55981, 55968, 55964, 55957, 55956, 55945, 55932, 55910, 55041 };
+        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", wabashaZipCodesDescending));
+
+        // query on array value
+        assertEquals(Arrays.toString(wabashaZipCodesDescending),
+                     Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
     }

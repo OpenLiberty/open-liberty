@@ -1675,6 +1675,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "createQuery", queryInfo.jpql, queryInfo.entityInfo.type.getName());
+
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
                             queryInfo.setParameters(query, args);
 
@@ -1708,23 +1711,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                                 List<?> results = query.getResultList();
 
-                                if (multiType == null && queryInfo.entityInfo.type.equals(singleType)) {
-                                    returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
+                                if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
+                                    returnValue = null;
+                                } else if (multiType == null && queryInfo.entityInfo.type.equals(singleType)) {
+                                    returnValue = oneResult(results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
-                                } else if (queryInfo.returnArrayType != null) {
-                                    int size = results.size();
-                                    if (size == 1 && results.get(0) instanceof Object[]) {
-                                        Object[] a = (Object[]) results.get(0);
-                                        returnValue = Array.newInstance(queryInfo.returnArrayType, a.length);
-                                        for (int i = 0; i < a.length; i++)
-                                            Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(a[i]) ? a[i] : to(queryInfo.returnArrayType, a[i]));
-                                    } else {
-                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
-                                        int i = 0;
-                                        for (Object result : results)
-                                            Array.set(returnValue, i++, result);
-                                    }
                                 } else if (Streamable.class.equals(multiType)) {
                                     returnValue = new StreamableImpl<>(results);
                                 } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
@@ -1757,8 +1749,37 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     }
                                 } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
+                                } else if (queryInfo.returnArrayType != null) {
+                                    int size = results.size();
+                                    Object firstResult = size == 0 ? null : results.get(0);
+                                    if (firstResult != null && firstResult.getClass().isArray()) {
+                                        if (size == 1) {
+                                            Class<?> optionalType = queryInfo.getOptionalResultType();
+                                            if (firstResult.getClass().equals(optionalType))
+                                                returnValue = firstResult;
+                                            else {
+                                                int len = Array.getLength(firstResult);
+                                                returnValue = Array.newInstance(queryInfo.returnArrayType, len);
+                                                for (int i = 0; i < len; i++) {
+                                                    Object element = Array.get(firstResult, i);
+                                                    Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) ? element : to(queryInfo.returnArrayType, element));
+                                                }
+                                            }
+                                        } else { // result is a list of multiple arrays
+                                            returnValue = results;
+                                        }
+                                    } else {
+                                        // TODO Size 0 should be an error when the selected attribute is an array.
+                                        // The following makes sense when not selecting an array attribute, and instead
+                                        // using array to represent multiple results returned.
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                        int i = 0;
+                                        for (Object result : results)
+                                            Array.set(returnValue, i++, result);
+                                    }
                                 } else if (results.isEmpty()) {
-                                    returnValue = nullIfOptional(returnType);
+                                    throw new EmptyResultException("Query with return type of " + returnType.getName() +
+                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
                                     if (returnValue != null && !singleType.isAssignableFrom(returnValue.getClass())) {
@@ -1888,26 +1909,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
     }
 
-    /**
-     * Handles the cases where no results are found by return null or raising EmptyResultException.
-     *
-     * @param returnType return type of repository method.
-     * @return null if the specified return type is java.util.Optional.
-     * @throws EmptyResultException if not Optional.
-     */
-    @Trivial
-    private final Void nullIfOptional(Class<?> returnType) {
-        if (Optional.class.equals(returnType))
-            return null;
-        else
-            throw new EmptyResultException("Query with return type of " + returnType.getName() +
-                                           " returned no results. If this is expected, specify a return type of array, Collection, or Optional for the repository method.");
-    }
-
     @Trivial
     private final Object oneResult(List<?> results) {
-        if (results.size() == 1)
+        int size = results.size();
+        if (size == 1)
             return results.get(0);
+        else if (size == 0)
+            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
         else
             throw new NonUniqueResultException("Found " + results.size() +
                                                " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
