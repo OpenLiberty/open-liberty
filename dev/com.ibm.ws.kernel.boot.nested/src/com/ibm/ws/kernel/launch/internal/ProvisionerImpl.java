@@ -237,23 +237,28 @@ public class ProvisionerImpl implements Provisioner {
         if (bundleList == null || bundleList.size() <= 0)
             return installStatus;
 
+        boolean doResolveBundles = false;
         boolean libertyBoot = Boolean.parseBoolean(config.get(BootstrapConstants.LIBERTY_BOOT_PROPERTY));
         for (final KernelBundleElement element : bundleList) {
+            Bundle b;
             if (libertyBoot) {
                 // For boot bundles the LibertyBootRuntime must be used to install the bundles
-                installLibertBootBundle(element, installStatus);
+                b = installLibertBootBundle(element, installStatus);
             } else {
-                installKernelBundle(element, installStatus, repo);
+                b = installKernelBundle(element, installStatus, repo);
             }
+            // Check if the kernel bundle needs to be resolved; only state we care about is INSTALLED
+            doResolveBundles = doResolveBundles || ((b != null) ? b.getState() == Bundle.INSTALLED : false);
         }
         // do a resolve of all bundles now
-        if (frameworkWiring != null) {
+        if (doResolveBundles && frameworkWiring != null) {
             frameworkWiring.resolveBundles(null);
         }
         return installStatus;
     }
 
-    private void installKernelBundle(KernelBundleElement element, BundleInstallStatus installStatus, ContentBasedLocalBundleRepository repo) throws InvalidBundleContextException {
+    private Bundle installKernelBundle(KernelBundleElement element, BundleInstallStatus installStatus,
+                                       ContentBasedLocalBundleRepository repo) throws InvalidBundleContextException {
         // First, check/use previously stored Bundle path..
         File bundleFile = element.getCachedBestMatch();
         if (bundleFile == null || !bundleFile.exists()) {
@@ -263,14 +268,12 @@ public class ProvisionerImpl implements Provisioner {
                                            VersionUtility.stringToVersionRange(element.getRangeString()));
             element.setBestMatch(bundleFile);
         }
-
+        Bundle bundle = null;
         if (bundleFile == null || !bundleFile.exists()) {
             // make note of bundle that could not be found
             installStatus.addMissingBundle(element.toNameVersionString());
         } else {
             // attempt to install bundle resource
-            Bundle bundle;
-
             try {
                 // Get URL from resource
                 URL resourceURL = bundleFile.toURI().toURL();
@@ -338,6 +341,7 @@ public class ProvisionerImpl implements Provisioner {
                 installStatus.addInstallException(element.toNameVersionString(), e);
             }
         }
+        return bundle;
     }
 
     private void setStartLevel(Bundle bundle, KernelBundleElement element, BundleInstallStatus installStatus) throws InvalidBundleContextException {
@@ -378,11 +382,11 @@ public class ProvisionerImpl implements Provisioner {
      * @param installStatus
      * @throws InvalidBundleContextException
      */
-    private void installLibertBootBundle(KernelBundleElement kernelBundle, BundleInstallStatus installStatus) throws InvalidBundleContextException {
+    private Bundle installLibertBootBundle(KernelBundleElement kernelBundle, BundleInstallStatus installStatus) throws InvalidBundleContextException {
 
         if (kernelBundle.getStartLevel() == KernelStartLevel.LIBERTY_BOOT.getLevel()) {
             // Ignore boot.jar bundles
-            return;
+            return null;
         }
 
         //getting the LibertyBootRuntime service and installing boot bundle
@@ -409,7 +413,7 @@ public class ProvisionerImpl implements Provisioner {
         } else if (b.getBundleId() != 0) {
             setStartLevel(b, kernelBundle, installStatus);
         }
-
+        return b;
     }
 
     /**

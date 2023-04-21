@@ -240,6 +240,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleStartLevel.class);
                 will(returnValue(mockBundleStartLevel));
@@ -288,6 +290,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleStartLevel.class);
                 will(returnValue(mockBundleStartLevel));
@@ -358,6 +362,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle("kernel@" + locationString, null);
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleRevision.class);
                 will(returnValue(mockBundleRevision));
@@ -461,6 +467,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleRevision.class);
                 will(returnValue(mockBundleRevision));
