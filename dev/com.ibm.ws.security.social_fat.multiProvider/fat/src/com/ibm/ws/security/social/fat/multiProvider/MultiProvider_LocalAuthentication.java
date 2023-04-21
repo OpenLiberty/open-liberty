@@ -161,7 +161,7 @@ public class MultiProvider_LocalAuthentication extends CommonMultiProviderLocalA
         updatedSocialTestSettings = updateSettingsForLocalAuthentication(updatedSocialTestSettings);
 
         List<validationData> expectations = set401LocalLoginExpectations(updatedSocialTestSettings);
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying a user registry was not found.", SocialMessageConstants.CWWKS3005E_NO_USER_REGISTRY);
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying a user registry was not found.", SocialMessageConstants.CWIMK0011E_MISSING_REGISTRY_DEFINITION);
 
         genericSocial(_testName, getAndSaveWebClient(), ACTIONS_WITH_LOCAL_AUTHENTICATION, updatedSocialTestSettings, expectations);
     }
@@ -210,6 +210,7 @@ public class MultiProvider_LocalAuthentication extends CommonMultiProviderLocalA
 
         List<validationData> expectations = set401LocalLoginExpectations(updatedSocialTestSettings);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying authentication did not succeed for the bad user.", SocialMessageConstants.CWWKS1100A_LOGIN_FAILED + ".+" + badUser);
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying authentication did not succeed because of incorrect credentials.", SocialMessageConstants.CWIML4537E_PRINCIPAL_NOT_FOUND + ".+" + updatedSocialTestSettings.getUserName());
 
         genericSocial(_testName, getAndSaveWebClient(), ACTIONS_WITH_LOCAL_AUTHENTICATION, updatedSocialTestSettings, expectations);
     }
