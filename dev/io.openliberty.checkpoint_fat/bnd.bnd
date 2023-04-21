@@ -46,7 +46,8 @@ src: \
 	test-applications/virtualhost/src,\
 	test-applications/DefaultPrincipalMappingApp/src,\
 	test-applications/concurrentApp/src,\
-	test-applications/mapCache/src
+	test-applications/mapCache/src,\
+	test-applications/webCacheApp/src
 
 fat.project: true
 

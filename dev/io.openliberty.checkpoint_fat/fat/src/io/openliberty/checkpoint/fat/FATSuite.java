@@ -86,7 +86,8 @@ import componenttest.topology.impl.LibertyServer;
                 RestConnectorTest.class,
                 AuditTest.class,
                 ConcurrencyTest.class,
-                MapCacheTest.class
+                MapCacheTest.class,
+                WebCacheTest.class
 })
 
 public class FATSuite {
