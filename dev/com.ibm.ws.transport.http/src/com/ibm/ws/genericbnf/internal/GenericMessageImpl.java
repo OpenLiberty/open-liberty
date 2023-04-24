@@ -421,7 +421,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      */
     @Override
     protected void destroy() {
-        clear();
+        super.destroy();
     }
 
     /*

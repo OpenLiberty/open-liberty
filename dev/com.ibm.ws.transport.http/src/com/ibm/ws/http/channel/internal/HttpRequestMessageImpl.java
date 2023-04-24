@@ -295,7 +295,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Destroying this request: " + this);
         }
-        super.clear();
+        super.destroy();
     }
 
     @Override
