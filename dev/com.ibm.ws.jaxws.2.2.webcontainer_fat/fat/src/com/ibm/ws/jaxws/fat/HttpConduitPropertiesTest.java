@@ -87,9 +87,6 @@ public class HttpConduitPropertiesTest {
         server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/xmlwsTest-3.0.mf");
         server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/xmlwsTest-4.0.mf");
 
-        defaultSimpleEchoServiceEndpointAddr = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/SimpleEchoService").toString();
-        defaultSimpleEchoServiceEndpointAddr2 = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties2/SimpleEchoService").toString();
-        defaultHelloServiceEndpointAddr = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/HelloService").toString();
         testServletURL = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/TestServlet?target=SimpleEchoService").toString();
         testServletURL2 = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties2/TestServlet?target=SimpleEchoService").toString();
         testServletURLForHelloService = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/TestServlet?target=HelloService").toString();
