@@ -146,6 +146,9 @@ public class DeflateOutputHandler implements CompressionHandler {
      */
     @Override
     public List<WsByteBuffer> compress(WsByteBuffer[] buffers) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "compress, input=" + buffers);
+        }
         List<WsByteBuffer> list = new LinkedList<WsByteBuffer>();
         if (null != buffers) {
             for (int i = 0; i < buffers.length; i++) {
