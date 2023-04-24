@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: The token response from the OpenID 
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Either the OpenID Connect provider did not return a required parameter or failed to process the token request.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verify that the configured token endpoint is correct and capable of responding to OAuth token requests.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: The [{0}] OpenID Connect client failed to build a JSON Web Token to use for client authentication. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=The OpenID Connect client is configured to use JSON Web Tokens for client authentication, but an error occurred while creating the token.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=For more information, see the error in the message.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: The [{0}] OpenID Connect client is missing the key that is needed to sign the token that is used for client authentication.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=The OpenID Connect client configuration is missing data, or a key cannot be found with the key alias name in the SSL configuration that is specified in the OpenID Connect client.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Ensure that the OpenID Connect client has a key alias name and SSL reference configured. Verify that the keystore that is referenced by the SSL configuration contains a key whose alias matches the key alias name in the OpenID Connect client configuration.

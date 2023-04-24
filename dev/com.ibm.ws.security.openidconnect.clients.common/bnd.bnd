@@ -37,7 +37,8 @@ Export-Package: \
     com.ibm.ws.security.openidconnect.jwk, \
     com.ibm.ws.security.openidconnect.pkce, \
     com.ibm.ws.security.openidconnect.token.impl, \
-    com.ibm.ws.security.openidconnect.common
+    com.ibm.ws.security.openidconnect.common, \
+    com.ibm.ws.security.openidconnect.common.token.auth
 
 Import-Package: \
     !*.internal.*, \

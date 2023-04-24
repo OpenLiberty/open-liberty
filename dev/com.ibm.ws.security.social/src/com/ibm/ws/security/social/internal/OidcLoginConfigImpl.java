@@ -162,6 +162,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, userInfoEndpointEnabled);
         signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
         tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
+        if (!"private_key_jwt".equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
+            // TODO - log new warning message letting them know a client secret is required unless they're using the private_key_jwt auth method
+        }
         tokenEndpointAuthSigningAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM);
         keyAliasName = configUtils.getConfigAttribute(props, KEY_keyAliasName);
         scope = configUtils.getConfigAttribute(props, KEY_scope);
@@ -422,7 +425,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
             Tr.debug(tc, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM + " = " + tokenEndpointAuthSigningAlgorithm);
             Tr.debug(tc, KEY_keyAliasName + " = " + keyAliasName);
-            Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED + " = " + hostNameVerificationEnabled);
             Tr.debug(tc, KEY_nonce + " = " + nonce);
