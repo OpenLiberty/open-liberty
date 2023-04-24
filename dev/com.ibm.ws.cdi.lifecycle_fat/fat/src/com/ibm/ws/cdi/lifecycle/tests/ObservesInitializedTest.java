@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -30,14 +31,27 @@ import com.ibm.ws.cdi.lifecycle.apps.observesInitializedWebInfJar.WebInfAutostar
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class ObservesInitializedTest extends FATServletClient {
 
+    private static final String SERVER_NAME = "cdi12BasicServer";
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE7);
+
     @TestServlet(contextRoot = "ObservesInitialized", servlet = ObservesInitializedTestServlet.class)
-    @Server("cdi12BasicServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass

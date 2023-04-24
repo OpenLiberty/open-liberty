@@ -87,6 +87,7 @@ import org.w3c.dom.UserDataHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+// Liberty Change
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -99,7 +100,8 @@ import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.message.Message;
 
 // Liberty change -- must be trivial to avoid StackOverflow when tracing methods like createXMLStreamReader -
-//                   which creates/logs the W3CDOMStreamReader class that can print a stack trace.
+//                   which creates/logs the W3CDOMStreamReader class that can print a stack trace. (Could have instrumentation disabled)
+// Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
 @Trivial
 public final class StaxUtils {
     // System properties for defaults, but also contextual properties usable
@@ -207,7 +209,6 @@ public final class StaxUtils {
             }
         } catch (Throwable t) {
             //ignore, can always drop down to the pooled factories
-            xif = null;
         }
         SAFE_INPUT_FACTORY = xif;
 
@@ -303,6 +304,7 @@ public final class StaxUtils {
      * @param nsAware
      * @throws XMLStreamException
      */
+	 // Liberty Change
     @FFDCIgnore(Throwable.class)
     public static XMLInputFactory createXMLInputFactory(boolean nsAware) {
         XMLInputFactory factory = null;
@@ -312,7 +314,6 @@ public final class StaxUtils {
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "XMLInputFactory.newInstance() failed with: ", t);
             }
-            factory = null;
         }
         if (factory == null || !setRestrictionProperties(factory)) {
             try {
@@ -320,8 +321,10 @@ public final class StaxUtils {
             } catch (Throwable t) {
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.log(Level.FINE, "Cannot create Woodstox XMLInputFactory ");
+					// Liberty Change Start:
                     if(t instanceof NoClassDefFoundError)
                         LOG.log(Level.FINE, "The WoodStox API is not availible on the classpath");
+				    // Liberty Change End
                 }
             }
 
@@ -378,6 +381,7 @@ public final class StaxUtils {
             && setProperty(factory, P_MIN_TEXT_SEGMENT, MIN_TEXT_SEGMENT_VAL);
     }
 
+    // Liberty Change
     @FFDCIgnore(Throwable.class)
     private static boolean setProperty(XMLInputFactory f, String p, Object o) {
         try {
@@ -1930,6 +1934,7 @@ public final class StaxUtils {
             } finally {
                 StaxUtils.close(writer);
             }
+			// Liberty Change - Prevent from going to message logs
             LOG.finest(sw.toString());
         } catch (XMLStreamException e) {
             LOG.severe(e.getMessage());

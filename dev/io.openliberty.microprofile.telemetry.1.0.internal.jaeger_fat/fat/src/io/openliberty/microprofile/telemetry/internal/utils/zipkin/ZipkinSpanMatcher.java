@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan.Annotation;
@@ -32,7 +33,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan.An
 public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
 
     Map<String, String> expectedTags = new HashMap<>();
-    List<String> expectedAnnotations = new ArrayList<>();
+    List<Matcher<String>> expectedAnnotations = new ArrayList<>();
     String expectedTraceId = null;
     String expectedParentSpanId = null;
     Boolean expectHasParent = null;
@@ -105,10 +106,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
             }
         }
 
-        for (String expectedAnnotation : expectedAnnotations) {
+        for (Matcher<String> expectedAnnotation : expectedAnnotations) {
             Optional<Annotation> anno = span.getAnnotations()
                                             .stream()
-                                            .filter(a -> expectedAnnotation.equals(a.getValue()))
+                                            .filter(a -> expectedAnnotation.matches(a.getValue()))
                                             .findAny();
             if (!anno.isPresent()) {
                 return false;
@@ -119,7 +120,12 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
     }
 
     public ZipkinSpanMatcher withAnnotation(String name) {
-        expectedAnnotations.add(name);
+        expectedAnnotations.add(Matchers.equalTo(name));
+        return this;
+    }
+
+    public ZipkinSpanMatcher withAnnotation(Matcher<String> matcherString) {
+        expectedAnnotations.add(matcherString);
         return this;
     }
 
@@ -162,6 +168,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
 
     public static ZipkinSpanMatcher hasAnnotation(String name) {
         return span().withAnnotation(name);
+    }
+
+    public static ZipkinSpanMatcher hasAnnotation(Matcher<String> matcherString) {
+        return span().withAnnotation(matcherString);
     }
 
     public static ZipkinSpanMatcher hasParent() {

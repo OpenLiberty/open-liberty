@@ -12,11 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +41,10 @@ import test.utils.TestUtils;
 public abstract class FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
+
+    protected static String libertyVersion = "23.0.0.2";
+    // ${buildDir}/publish/repo
+    protected static String mavenLocalRepo = Paths.get("publish/repo/").toAbsolutePath().toString();
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
@@ -59,10 +67,11 @@ public abstract class FeatureUtilityToolTest {
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
     
     protected static void setupEnv() throws Exception {
+
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
 
-        // jbe/build/dev/image/output/wlp
+	// dev/build.image/wlp
         installRoot = server.getInstallRoot();
         Log.info(c, methodName, "install root: " + installRoot);
 
@@ -78,9 +87,14 @@ public abstract class FeatureUtilityToolTest {
         minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + relativeMinifiedRoot);
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
+	Log.info(c, methodName, "mavenLocalRepo : " + mavenLocalRepo.toString());
+
         if(!new File(minifiedRoot).exists()){
             throw new Exception("The minified root does not exist!");
         }
+
+	// beta
+	copyFileToMinifiedRoot("lib/versions/public_key", "publish/tmp/libertyKey.asc");
 
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
@@ -163,9 +177,10 @@ public abstract class FeatureUtilityToolTest {
      * @throws Exception
      */
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
-        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
+	LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, fileName);
     }
     
+
     public static void writeToProps(String remoteFileName, String property, String value) throws Exception {
         OutputStream os = null;
         featureUtilityProps = new Properties();
@@ -325,6 +340,10 @@ public abstract class FeatureUtilityToolTest {
             os = rf.openForWriting(false);
             wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
             Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
+	    // beta
+	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
+	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
+
             wlpVersionProps.store(os, null);
             os.close();
         } finally {
@@ -345,6 +364,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
+	// beta
+	envProps.put("JVM_ARGS", "-Denable.verify=true");
 //        envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
 //        envProps.put("INSTALL_LOG_LEVEL", "FINE");
 //        if (debug)
@@ -357,6 +378,8 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
             // always run feature utility with minified root
+	    // beta
+	    envProps.put("JVM_ARGS", "-Denable.verify=true");
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 
@@ -396,7 +419,8 @@ public abstract class FeatureUtilityToolTest {
     }
     
     protected static boolean deleteRepo(String methodName) throws IOException {
-    	boolean repo = TestUtils.deleteFolder(new File(minifiedRoot + "/repo"));
+	boolean repo = TestUtils.deleteFolder(new File(mavenLocalRepo));
+	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo + "?" + repo);
     	return repo;
     }
 
@@ -420,6 +444,14 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "DELETED files/folders: /usr/cik ? VALUE: " + usr);
 
         return usr;
+    }
+
+    protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear)
+		throws Exception {
+	Log.info(c, methodName, "If Exists, Deleting files for " + featureName);
+	for (String filePath : filePathsToClear) {
+	    server.deleteFileFromLibertyInstallRoot(filePath);
+	}
     }
 
     protected static void assertFilesExist(String[] filePaths)  throws Exception {
@@ -447,6 +479,49 @@ public abstract class FeatureUtilityToolTest {
 
         writeToProps(propsFile.toString(),"com.ibm.websphere.productId", extensionName );
         writeToProps(propsFile.toString(),"com.ibm.websphere.productInstall", extensionsInstallDir.getAbsolutePath() );
+    }
+
+    /*
+     * Check the exit code of the command.
+     * 
+     * @param ProgramOutput from command utility
+     * 
+     * @param exitCode expected exit code of the command
+     * 
+     * @param errorCode expected error code
+     * 
+     * @param fileLists expected files to be installed
+     * 
+     * @return True if exit code matches expected.
+     */
+    protected static void checkCommandOutput(ProgramOutput po, int exitCode, String errorCode, String[] filesList)
+	    throws Exception {
+	String output = po.getStdout();
+
+	    if (errorCode != null) {
+		assertTrue(String.format("Should contain %s", errorCode), output.contains(errorCode));
+	    }
+	    if (filesList != null) {
+		assertFilesExist(filesList);
+	    }
+	    assertEquals(String.format("Exit code should be %d", exitCode), exitCode, po.getReturnCode());
 
     }
+
+    /*
+     * / Copy Maven central features and signatures to local repository
+     */
+    protected static void constructLocalMavenRepo(Path artifactPath) throws Exception {
+	Log.info(c, "constructLocalMavenRepo",
+		"Creating local repository using " + artifactPath.toAbsolutePath().toString());
+
+	ZipFile zipFile = new ZipFile(artifactPath.toFile());
+	TestUtils.unzipFileIntoDirectory(zipFile, Paths.get(mavenLocalRepo).toFile());
+	Log.info(c, "constructLocalMavenRepo", "Unzipped to " + Paths.get(mavenLocalRepo).toAbsolutePath().toString());
+
+    }
+
+
+
+
 }

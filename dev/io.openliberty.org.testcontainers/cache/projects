@@ -150,4 +150,5 @@ io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
+io.openliberty.microprofile.openapi.ui.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.jaeger_fat

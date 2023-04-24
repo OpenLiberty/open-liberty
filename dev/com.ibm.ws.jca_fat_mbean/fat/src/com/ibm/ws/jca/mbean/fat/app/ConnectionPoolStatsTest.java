@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
@@ -37,6 +38,9 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConnectionManager;
+import com.ibm.websphere.simplicity.config.DataSource;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -150,12 +154,28 @@ public class ConnectionPoolStatsTest {
     }
 
     /**
-     * Test that the MaxConnectionsLimit value is correct after first connection request.
+     * Test that the MaxConnectionsLimit value is correct after first connection request and
+     * after a dynamic update of maximum connections.
      */
     @Test
     public void testGetMaxConnectionsLimit() throws Exception {
         final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+		// run test, check for 50 
         runInServlet(testName.getMethodName(), fvtweb);
+
+        // Dynamically change the maximum connections while server is running.
+        ServerConfiguration clone = server.getServerConfiguration().clone();
+        DataSource ds1_maxconlimit = clone.getDataSources().getBy("id", "ds1_maxconlimit");
+        String cmr = ds1_maxconlimit.getConnectionManagerRef();
+        ConnectionManager cm = clone.getConnectionManagers().getBy("id", cmr);
+        cm.setMaxPoolSize("20");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(clone);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // run test again, check for 20
+        runInServlet(testName.getMethodName(), fvtweb);
+
     }
 
     /**
@@ -229,6 +249,154 @@ public class ConnectionPoolStatsTest {
      */
     @Test
     public void testCountsAfterAbort() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with string "inuse" and long 1.
+     *
+     * Both connections should be aborted.
+     */
+    @Test
+    public void testCountsAfterInUseSharedInuseAbortConnectionManagerMBean() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with object String "inuse" and object Integer 1.
+     *
+     * One connection is aborted and one connection remains in the pool
+     */
+    @Test
+    public void testCountsAfterInUseSharedInuseAbortIntegerArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with object String "inuse" and object String 2000.
+     *
+     * Not connection found to be aborted using 2000 milliseconds.
+     */
+    @Test
+    public void testCountsAfterInUseInuseAbortNoIdlesArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with object String "inuse" and object String 1.
+     *
+     * One connection is aborted, one connection in the free pool
+     */
+    @Test
+    public void testCountsAfterInUseSharedInuseAbortArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with object String "inuse" and object Long 1.
+     *
+     * One connection is aborted and one connection remains in the pool
+     */
+    @Test
+    public void testCountsAfterInUseSharedInuseAbortLongArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 2 connections, one shared, one unshared, close one, use connection
+     * manager mbean method with object String "inuse" and object Double 1.
+     *
+     * Mbean exceptions occurs, in use abort does not support all types, no connections aborted.
+     */
+    @Test
+    public void testCountsAfterInUseSharedInuseAbortDoubleArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 40 connections, 20 shared, 20 unshared, close 10 shared and
+     * close 10 unshared from the second set. Calculate the right time to in use abort 20 connections from the first
+     * set created.
+     *
+     * 20 connections should be aborted, 10 should be in the free pool and 10 should
+     * be in the shared pool, 0 connection handles. Total connections remaining 20
+     */
+    @Test
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 40 connections, 20 shared, 20 unshared, close 10 shared and
+     * close 10 unshared from the second set, close 10 shared from first set, 10 more
+     * getConnection request for shared connections from first set. Calculate the right time to abort 20 connections from the first
+     * set created.
+     *
+     * 20 connections should be aborted, 10 should be in the free pool and 10 should
+     * be in the shared pool, 0 connection handles. Total connections remaining 20
+     */
+    @Test
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortSSCloseFSSharedArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Test in use abort with 40 connections, 20 shared, 20 unshared, close 10 shared and
+     * close 10 unshared from the first set. Calculate the right time to in use abort 20 connections from the first
+     * set created.
+     *
+     * 10 connections should be aborted, 10 should be in the free pool and 10 should
+     * be in the shared pool, 20 connection handles. Total connection remaining 30
+     */
+    @Test
+    public void testCountsAfterInUseMultipleSharedAndUnsharedInuseAbortFSArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Get two connections and use in use abort with 1 millisecond
+     *
+     * Both connection should be aborted
+     */
+    @Test
+    public void testCountsAfterInUseSharedAndUnsharedInuseAbortArray() throws Exception {
+
+        final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
+        runInServlet(testName.getMethodName(), fvtweb);
+    }
+
+    /**
+     * Get four connections and use in use abort with 1 millisecond
+     *
+     * All four should be aborted.
+     */
+    @Test
+    public void testCountsAfterInUse2SharedAnd2UnsharedInuseAbortArray() throws Exception {
 
         final String fvtweb = "fvtweb/ConnectionPoolStatsServlet";
         runInServlet(testName.getMethodName(), fvtweb);

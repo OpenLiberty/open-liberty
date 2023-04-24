@@ -45,7 +45,7 @@ public class DisablingBeansXmlValidationTest extends FATServletClient {
     public static final String INVALID_BEANS_XML_APP_NAME = "invalidBeansXml";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE8, EERepeatActions.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     @TestServlets({

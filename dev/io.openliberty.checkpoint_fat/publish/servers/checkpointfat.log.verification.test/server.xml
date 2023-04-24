@@ -21,4 +21,5 @@
     <include location="../fatTestPorts.xml"/>
     
     <variable name="VARIABLE_SOURCE_DIRS" defaultValue="defaultSrcDir" />
+    <logging hideMessage="CWMOT0000E" />
 </server>

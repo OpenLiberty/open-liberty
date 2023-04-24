@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointLocal;
 import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
@@ -30,11 +32,12 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * <li>Startup : no</li>
  * <li>DependsOn : dependency of T</li>
  * <li>StartAtAppStart : not specified</li>
+ * <li>PostConstruct Transaction : NOT_SUPPORTED</li>
  * </ul
  *
  * The expected checkpoint phase startup behavior is:
  * <ul>
- * <li>FEATURES : initialized and constructed on module start; may reference other beans in module</li>
+ * <li>INACTIVE : initialized and constructed on module start; may reference other beans in module</li>
  * <li>DEPLOYMENT : initialized and constructed on module start; may reference other beans in module</li>
  * <li>APPLICATIONS : initialized and constructed on module start; may reference other beans in module</li>
  * </ul>
@@ -68,6 +71,7 @@ public class SGCheckpointBeanS implements CheckpointLocal {
     }
 
     @PostConstruct
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void postConstruct() {
         logger.info(BEAN_NAME + ": postConstruct");
         CheckpointStatistics.incrementPostConstructCount(BEAN_NAME);

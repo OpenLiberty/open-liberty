@@ -43,7 +43,7 @@ public class EnablingBeansXmlValidationTest {
     public static final String SERVER_NAME = "cdi12BeansXmlValidationServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE8);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

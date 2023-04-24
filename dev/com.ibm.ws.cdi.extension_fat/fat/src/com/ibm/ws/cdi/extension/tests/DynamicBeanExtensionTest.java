@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,8 +50,11 @@ public class DynamicBeanExtensionTest extends FATServletClient {
     public static final String APP_NAME = "dynamicallyAddedBeans";
     public static final String SERVER_NAME = "cdi12DynamicallyAddedBeansServer";
 
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+    @ClassRule
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS,
+                                                                   CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE7_PLUS);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

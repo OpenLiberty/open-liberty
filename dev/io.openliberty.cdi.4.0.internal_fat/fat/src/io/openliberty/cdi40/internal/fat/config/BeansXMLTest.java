@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.cdi40.internal.fat.config.beansxml.AllBeansServlet;
@@ -36,6 +38,7 @@ import io.openliberty.cdi40.internal.fat.config.beansxml.RequestScopedBean;
 import io.openliberty.cdi40.internal.fat.config.beansxml.UnannotatedBean;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class BeansXMLTest extends FATServletClient {
     public static final String SERVER_NAME = "CDI40BeansXMLServer";
 

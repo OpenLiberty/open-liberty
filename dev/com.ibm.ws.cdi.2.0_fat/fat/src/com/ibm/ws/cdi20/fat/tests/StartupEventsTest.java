@@ -47,7 +47,7 @@ public class StartupEventsTest extends FATServletClient {
     public static final String STARTUP_EVENTS_APP_NAME = "StartupEvents";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE8);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8);
 
     @Server(SERVER_NAME)
     @TestServlets({

@@ -14,9 +14,9 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=4.0.0
+eclVersion=4.0.1
 eclFullVersion=${eclVersion}
-eclPackageVersion=4.0.0
+eclPackageVersion=4.0.1
 asmFullVersion=9.5.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.1.thirdparty
@@ -104,7 +104,12 @@ Import-Package: \
             org.w3c.dom;resolution:=optional, \
             org.xml.sax;resolution:=optional, \
             org.xml.sax.ext;resolution:=optional, \
-            org.xml.sax.helpers;resolution:=optional
+            org.xml.sax.helpers;resolution:=optional,\
+            org.objectweb.asm;resolution:=optional,\
+            org.objectweb.asm.commons;resolution:=optional,\
+            org.objectweb.asm.signature;resolution:=optional,\
+            org.objectweb.asm.tree;resolution:=optional,\
+            org.objectweb.asm.util;resolution:=optional
 
 # Use dynamicImport-Package for JAXB APIs, with this, Equinox will have a chance to wire
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system

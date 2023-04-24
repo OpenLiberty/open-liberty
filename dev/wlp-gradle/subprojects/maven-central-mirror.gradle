@@ -28,6 +28,7 @@ repositories {
       content {
         includeGroup "biz.aQute.bnd"
         includeGroup "org.eclipse.transformer"
+        includeVersion "org.testng", "testng", "7.5.0-ibm230227" //Part of https://github.com/OpenLiberty/open-liberty/issues/23781, this can be removed if we go back to an upstream testng
       }
       metadataSources {
         mavenPom()

@@ -23,18 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
 
-@Trivial
 public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    private static final TraceComponent tc = Tr.register(BaseMetricsRESTProxyServlet.class);
 
     private transient RESTHandlerContainer REST_HANDLER_CONTAINER = null;
 
@@ -80,14 +74,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
      * @throws ServletException When the RESTHandlerContainer service is unavailable
      */
     private synchronized void getAndSetRESTHandlerContainer(HttpServletRequest request) throws ServletException {
-
         if (REST_HANDLER_CONTAINER == null) {
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Request Session ID [{0}], Thread [{1}]", request.getRequestedSessionId(),
-                         Thread.currentThread());
-            }
-
             // Get the bundle context
             ServletContext sc = request.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");

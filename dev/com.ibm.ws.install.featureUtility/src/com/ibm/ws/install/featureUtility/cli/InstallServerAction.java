@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ public class InstallServerAction implements ActionHandler {
         private Boolean acceptLicense;
         private ProgressBar progressBar;
         private Map<String, String> featureToExt;
+	private String verify;
 
 
         @Override public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -99,25 +100,25 @@ public class InstallServerAction implements ActionHandler {
                         return rc;
                 }
 
-                this.noCache = args.getOption("nocache") != null;
-                
+		this.noCache = args.getOption("nocache") != null;
                 this.acceptLicense = args.getOption("acceptlicense") != null;
-                
                 this.featuresBom = args.getOption("featuresbom");
                 this.additionalJsons = new ArrayList<String>();
+		this.verify = args.getOption("verify");
                 try {
-					if (featuresBom != null && checkValidCoord(featuresBom)) {
-						additionalJsons.add(bomCoordToJsonCoord(featuresBom));
-					}
-				} catch (InstallException e1) {
-					logger.log(Level.SEVERE, e1.getMessage(), e1);
+		    if (featuresBom != null && checkValidCoord(featuresBom)) {
+			additionalJsons.add(bomCoordToJsonCoord(featuresBom));
+		    }
+		} catch (InstallException e1) {
+		    logger.log(Level.SEVERE, e1.getMessage(), e1);
                     return FeatureUtilityExecutor.returnCode(e1.getRc());
-				}
+		}
                 
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
                 this.featureToExt = new HashMap<String, String>();
+
 
                 HashMap<String, Double> methodMap = new HashMap<>();
                 // initialize feature utility and install kernel map
@@ -128,7 +129,8 @@ public class InstallServerAction implements ActionHandler {
                 methodMap.put("fetchArtifacts", 10.00);
                 methodMap.put("downloadArtifacts", 25.00);
                 // 10 + 15 = 35 for download artifact
-                methodMap.put("installFeatures", 35.00);
+		methodMap.put("verifyFeatures", 10.00);
+		methodMap.put("installFeatures", 25.00);
                 methodMap.put("cleanUp", 5.00);
 
                 progressBar.setMethodMap(methodMap);
@@ -257,7 +259,9 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).setAdditionalJsons(additionalJsons).build();
+				.setFeaturesToInstall(featureNames).setNoCache(noCache)
+				.setlicenseAccepted(acceptLicense).setAdditionalJsons(additionalJsons).setVerify(verify)
+				.build();
                         featureUtility.setFeatureToExt(featureToExt);
                         featureUtility.setIsInstallServerFeature(true);
                         featureUtility.installFeatures();

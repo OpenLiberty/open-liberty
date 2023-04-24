@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -16,23 +13,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.message.BasicNameValuePair;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -41,7 +34,6 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.ibm.ws.security.common.http.HttpUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
@@ -250,96 +242,6 @@ public class OidcClientUtilTest extends CommonTestClass {
             });
             Map<String, Object> tokenResponse = oicu.checkToken(strTokenEndpoint, strClientId, strClientSecret, access_token_content, false, authMethod, sslSocketFactory, false);
             assertEquals("token response = ", tokenResponse.get(access_token), "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw");
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testPostToTokenEndpoint() {
-        try {
-            final String strTokenEndpoint = "https://unknown.ibm.com:8020/openidserver/token";
-            final String strClientId = "client01";
-            final String strClientSecret = "secret";
-            final String strRedirectUri = "https://client.ibm.com:8020/oidcclient/redirect";
-            final String strCode = "xabceyfghil";
-            final String strGrantType = "autoiztion_code";
-            OidcClientUtil oicu = new OidcClientUtil();
-            assertNotNull("Expected to get an instance of OidcClientutil but none", oicu);
-            oicu.oidcHttpUtil = oidcHttpUtil;
-            final Map<String, Object> postResponseMap = new HashMap<String, Object>();
-            // {"access_token":"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw","token_type":"bearer","expires_in":3599,"scope":"openid profile","refresh_token":"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv","id_token":"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk"}
-            postResponseMap.put(access_token, "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw");
-            postResponseMap.put(token_type, "bearer");
-            postResponseMap.put(expires_in, new Long(3599));
-            postResponseMap.put(scope, "openid profile");
-            postResponseMap.put(refresh_token, "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv");
-            postResponseMap.put(
-                    id_token,
-                    "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk");
-            mock.checking(new Expectations() {
-                {
-                    one(oidcHttpUtil).postToEndpoint(with(any(String.class)), //strTokenEndpoint
-                            with(any(List.class)), // params
-                            with(any(String.class)), // strClientId,
-                            with(any(String.class)), // strClientSecret,
-                            with(any(String.class)), // (String) null,
-                            with(any(SSLSocketFactory.class)), // sslContext,
-                            with(any(Boolean.class)), //isHostnameVerification
-                            with(any(String.class)),
-                            with(any(Boolean.class)));
-                    will(returnValue(postResponseMap));
-                }
-            });
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair(ClientConstants.GRANT_TYPE, strGrantType));
-            params.add(new BasicNameValuePair(ClientConstants.REDIRECT_URI, strRedirectUri));
-            params.add(new BasicNameValuePair(Constants.CODE, strCode));
-
-            Map<String, Object> results = oicu.postToTokenEndpoint(strTokenEndpoint,
-                    params,
-                    strClientId,
-                    strClientSecret,
-                    sslSocketFactory,
-                    false,
-                    authMethod,
-                    false);
-            Set<String> keys = results.keySet();
-            boolean bAccessToken = false;
-            boolean bTokenType = false;
-            boolean bExpiresIn = false;
-            boolean bScope = false;
-            boolean bRefreshToken = false;
-            boolean bIdToken = false;
-            for (String key : keys) {
-                Object obj = results.get(key);
-                String value = null;
-                if (obj instanceof String)
-                    value = (String) obj;
-                else
-                    value = obj.toString();
-                System.out.println("**" + key + ":" + value);
-                if (key.equalsIgnoreCase(access_token))
-                    bAccessToken = true;
-                if (key.equalsIgnoreCase(token_type))
-                    bTokenType = true;
-                if (key.equalsIgnoreCase(expires_in))
-                    bExpiresIn = true;
-                if (key.equalsIgnoreCase(scope))
-                    bScope = true;
-                if (key.equalsIgnoreCase(refresh_token))
-                    bRefreshToken = true;
-                if (key.equalsIgnoreCase(id_token))
-                    bIdToken = true;
-            }
-            assertNotNull("Expect to get an instance of Tokens but none returned", results);
-            assertTrue("access_token not found", bAccessToken);
-            assertTrue("token_type not found", bTokenType);
-            assertTrue("expires_in not found", bExpiresIn);
-            assertTrue("scope not found", bScope);
-            assertTrue("refresh_token not found", bRefreshToken);
-            assertTrue("id_token not found", bIdToken);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

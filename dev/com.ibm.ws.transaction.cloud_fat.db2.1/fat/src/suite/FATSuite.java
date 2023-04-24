@@ -34,7 +34,7 @@ import tests.DualServerDynamicDBRotationTest1;
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
-		databaseContainerType = DatabaseContainerType.DB2;
+		beforeSuite(DatabaseContainerType.DB2);
 	}
 
 	@ClassRule

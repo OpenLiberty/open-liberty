@@ -251,6 +251,9 @@ public class EntityDefiner implements Runnable {
                             collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
                     } else if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId()) {
                         attributeNames.put("id", attributeName);
+                    } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
+                        // collection attribute that is not annotated with ElementCollection
+                        collectionElementTypes.put(attributeName, Object.class);
                     }
                 }
 

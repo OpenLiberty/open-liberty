@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.cdi40.internal.fat.startupEvents.ear.ejb.StartupSingletonEJB;
@@ -37,6 +39,7 @@ import io.openliberty.cdi40.internal.fat.startupEvents.ear.war.StartupEventsServ
 import io.openliberty.cdi40.internal.fat.startupEvents.sharedLib.AbstractObserver;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class StartupEventsTest extends FATServletClient {
     public static final String SERVER_NAME = "StartupEventsServer";
 

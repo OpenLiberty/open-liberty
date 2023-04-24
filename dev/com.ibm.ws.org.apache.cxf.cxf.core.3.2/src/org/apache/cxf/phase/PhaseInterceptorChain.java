@@ -206,7 +206,6 @@ public class PhaseInterceptorChain implements InterceptorChain {
         if (iterator == null) {
             iterator = new PhaseInterceptorIterator(heads);
             outputChainToLog(false);
-            //System.out.println(toString());
         }
     }
 
@@ -395,8 +394,8 @@ public class PhaseInterceptorChain implements InterceptorChain {
     }
 
     private void doDefaultLogging(Message message, Exception ex, String description) {
-        FaultMode mode = (FaultMode) message.get(FaultMode.class);
-        //Liberty Change Start
+        FaultMode mode = message.get(FaultMode.class);
+        //Liberty Change Start - Prevent logging from ending up in message.log
         if (mode == FaultMode.CHECKED_APPLICATION_FAULT && this.isFineLogging) {
             Throwable t = ex;
             if (ex instanceof Fault && ex.getCause() != null) {

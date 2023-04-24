@@ -33,7 +33,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.lang.NoClassDefFoundError;
+import java.lang.NoClassDefFoundError; // Liberty Change
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -77,7 +77,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;  // Liberty Change
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
@@ -178,7 +178,7 @@ public final class JAXBUtils {
     private JAXBUtils() {
     }
 
-    @FFDCIgnore(IOException.class)
+    @FFDCIgnore(IOException.class) // Liberty Change
     public static void closeUnmarshaller(Unmarshaller u) {
         if (u instanceof Closeable) {
             //need to do this to clear the ThreadLocal cache
@@ -266,7 +266,7 @@ public final class JAXBUtils {
      * @param namespaceURI the namespace URI.
      * @return the package name.
      */
-    @FFDCIgnore(URISyntaxException.class)
+    @FFDCIgnore(URISyntaxException.class) // Liberty Change
     public static String namespaceURIToPackage(String namespaceURI) {
         try {
             return nameSpaceURIToPackage(new URI(namespaceURI));
@@ -595,7 +595,7 @@ public final class JAXBUtils {
         return cls;
     }
 
-    @FFDCIgnore({Exception.class, Exception.class})
+    @FFDCIgnore({Exception.class, Exception.class}) // Liberty Change
     private static synchronized ClassLoader getXJCClassLoader() {
         if (jaxbXjcLoader == null) {
             try {
@@ -630,7 +630,13 @@ public final class JAXBUtils {
         ClassLoaderService classLoaderService = bus.getExtension(ClassLoaderService.class);
         Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
-            if ((marshaller.getClass().getName().contains("com.sun") && marshaller.getClass().getName().contains(".internal."))) {
+		    //Liberty change begin: Add checks for Jakarta and IBM Namespace Mappers
+            if (marshaller.getClass().getName().startsWith("org.glassfish.")) {
+                marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", mapper);
+            } else if (marshaller.getClass().getName().startsWith("com.ibm")) {
+                marshaller.setProperty("com.ibm.jtc.jax.xml.bind.namespacePrefixMapper", mapper);
+            }  
+            else if (marshaller.getClass().getName().contains(".internal.")) { //Liberty change end
                 marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
                                        mapper);
             } else if (marshaller.getClass().getName().contains("com.sun")) {
@@ -639,17 +645,11 @@ public final class JAXBUtils {
             } else if (marshaller.getClass().getName().contains("eclipse")) {
                 marshaller.setProperty("eclipselink.namespace-prefix-mapper",
                                        mapper);
-            //Liberty change begin
-            } else if (marshaller.getClass().getName().startsWith("org.glassfish.")) {
-                marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", mapper);
-            } else if (marshaller.getClass().getName().startsWith("com.ibm")) {
-                marshaller.setProperty("com.ibm.jtc.jax.xml.bind.namespacePrefixMapper", mapper);
             }
-           //Liberty change end
         }
         return mapper;
     }
-    @FFDCIgnore({ClassNotFoundException.class, Exception.class})
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class}) // Liberty Change
     public static BridgeWrapper createBridge(Set<Class<?>> ctxClasses,
                                       QName qname,
                                       Class<?> refcls,
@@ -657,17 +657,19 @@ public final class JAXBUtils {
         try {
             Class<?> cls;
             Class<?> refClass;
-            //Liberty change begin
+            //Liberty change begin: Check for Jakarta JAXB Context
             if (isEE9OrHigher) {
                 cls = Class.forName("org.glassfish.jaxb.runtime.api.JAXBRIContext");
                 refClass = Class.forName("org.glassfish.jaxb.runtime.api.TypeReference");
             } else {
+			   String pkg = "com.sun.xml.bind.";
                 try {
-                    cls = Class.forName("com.sun.xml.bind.api.JAXBRIContext");
-                    refClass = Class.forName("com.sun.xml.bind.api.TypeReference");
+                    cls = Class.forName(pkg + ".api.JAXBRIContext");
+                    refClass = Class.forName(pkg + "api.TypeReference");
                 } catch (ClassNotFoundException e) {
-                    cls = Class.forName("com.sun.xml.internal.bind.api.JAXBRIContext", true, getXJCClassLoader());
-                    refClass = Class.forName("com.sun.xml.internal.bind.api.TypeReference", true, getXJCClassLoader());
+				   pkg = "com.sun.xml.internal.bind.";
+                   cls = Class.forName(pkg + ".api.JAXBRIContext", true, getXJCClassLoader());             
+                  refClass = Class.forName(pkg + "api.TypeReference", true, getXJCClassLoader());
                 }
             }
             //Liberty change end
@@ -719,11 +721,11 @@ public final class JAXBUtils {
     }
 
 
-    @FFDCIgnore({Throwable.class, Exception.class})
+    @FFDCIgnore({Throwable.class, Exception.class}) // Liberty Change
     public static SchemaCompiler createSchemaCompiler() throws JAXBException {
         try {
             Class<?> cls;
-            Object sc = null;
+            Object sc;
             try {
                 cls = Class.forName("com.sun.tools.xjc.api.XJC");
                 sc = cls.getMethod("createSchemaCompiler").invoke(null);
@@ -739,7 +741,7 @@ public final class JAXBUtils {
         }
     }
 
-    @FFDCIgnore(JAXBException.class)
+    @FFDCIgnore(JAXBException.class) // Liberty Change
     public static SchemaCompiler createSchemaCompilerWithDefaultAllocator(Set<String> allocatorSet) {
 
         try {
@@ -793,7 +795,7 @@ public final class JAXBUtils {
     public static Object createFileCodeWriter(File f) throws JAXBException {
         return createFileCodeWriter(f, StandardCharsets.UTF_8.name());
     }
-    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class})
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class}) // Liberty Change
     public static Object createFileCodeWriter(File f, String encoding) throws JAXBException {
         try {
             Class<?> cls;
@@ -867,7 +869,7 @@ public final class JAXBUtils {
                                     Map<Package, CachedClass> objectFactoryCache) {
         scanPackages(classes, null, objectFactoryCache);
     }
-    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class, Exception.class})
+    @FFDCIgnore({ClassNotFoundException.class, Exception.class, Exception.class, Exception.class}) // Liberty Change
     public static void scanPackages(Set<Class<?>> classes,
                                     Class<?>[] extraClass,
                                     Map<Package, CachedClass> objectFactoryCache) {
@@ -1129,14 +1131,15 @@ public final class JAXBUtils {
 
     private static String getPostfix(Class<?> cls) {
         String className = cls.getName();
+		// Liberty Code Change
         if (!isJdkJaxbAvailable() && 
             (className.contains("com.sun.xml.internal")
              || className.contains("eclipse"))) {
             //eclipse moxy accepts sun package CharacterEscapeHandler 
             return ".internal";
-        } else if (className.contains("com.sun.xml.bind")) {
-            return "";
-        }
+        } else if (className.contains("com.sun.xml.bind")|| className.startsWith("com.ibm.xml")) {
+		    return "";
+		}
         return null;
     }
 
@@ -1154,7 +1157,7 @@ public final class JAXBUtils {
         jaxbNoEscapeHandler.ifPresent(p -> setEscapeHandler(marshaller, p));
     }
 
-    @FFDCIgnore(PropertyException.class)
+    @FFDCIgnore(PropertyException.class) // Liberty Change
     public static void setEscapeHandler(Marshaller marshaller, Object escapeHandler) {
         try {
             //Liberty change begin
@@ -1213,7 +1216,6 @@ public final class JAXBUtils {
                                                                cls);
             Class<?> handlerInterface = ClassLoaderUtils
                 .loadClass(packageName + ".CharacterEscapeHandler", cls);
-            //Liberty change end
             Object targetHandler = ReflectionUtil.getDeclaredField(handlerClass, "theInstance").get(null);
             ClassLoader loader = System.getSecurityManager() == null ? cls.getClassLoader() : 
                 AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
@@ -1222,26 +1224,30 @@ public final class JAXBUtils {
             return ProxyHelper.getProxy(loader,
                                         new Class[] {handlerInterface},
                                         new EscapeHandlerInvocationHandler(targetHandler));
+										
+            //Liberty change end
         } catch (Exception e) {
             if ("NoEscapeHandler".equals(simpleClassName)) {
                 //this class doesn't exist in JAXB 2.2 so expected
                 LOG.log(Level.FINER, "Failed to create " + simpleClassName);
             } else {
-                LOG.log(Level.FINER, "Failed to create " + simpleClassName);
+                LOG.log(Level.FINER, "Failed to create " + simpleClassName); // Liberty Change: Make log level FINER
             }
         }
         return null;
     }
     
+	// Liberty Change Start:
+    // JAX-B is only available in the JDK in JDK 1.7 and 1.8, but not in JDK 9+
     private static boolean isJdkJaxbAvailable() {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
             public Boolean run() {
-                // JAX-B is only available in the JDK in JDK 1.7 and 1.8, but not in JDK 9+
                 return System.getProperty("java.specification.version").startsWith("1.");
             }
         });
     }
+	// Liberty Change End
 
 }
 

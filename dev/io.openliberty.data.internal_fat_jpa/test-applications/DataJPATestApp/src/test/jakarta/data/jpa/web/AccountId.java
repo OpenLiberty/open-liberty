@@ -13,7 +13,8 @@ package test.jakarta.data.jpa.web;
 import jakarta.persistence.Embeddable;
 
 /**
- * Id class for Account entity.
+ * Id class for Account entity
+ * and embeddable for the TaxPayer entity, which has a collection of embeddable.
  */
 @Embeddable
 public class AccountId {

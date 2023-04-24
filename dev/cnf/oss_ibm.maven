@@ -70,4 +70,5 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-tck:1.4.2-20210215
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.mock-server:mockserver-core:3.10.7-IBM20191022
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
+org.testng:testng:7.5.0-ibm230227
 org.xmlunit:xmlunit-core:2.0.0.ibm
