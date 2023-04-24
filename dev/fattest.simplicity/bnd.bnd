@@ -43,6 +43,7 @@ Export-Package: \
         componenttest.logging.ffdc;version=2.0,\
         componenttest.rules;version=2.0,\
         componenttest.rules.repeater;version=2.0,\
+        componenttest.selenium;version=2.0,\
         componenttest.topology.database;version=2.0,\
         componenttest.topology.database.container;version=2.0,\
         componenttest.topology.impl;version=2.0,\
@@ -106,4 +107,7 @@ fat.test.container.images: testcontainers/ryuk:0.3.4, testcontainers/sshd:1.1.0,
 	com.ibm.ws.kernel.boot;version=latest,\
 	io.openliberty.org.eclipse.openj9.criu;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
-	io.openliberty.com.fasterxml.jackson;version=latest
+	io.openliberty.com.fasterxml.jackson;version=latest,\
+	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-support;version=4.8.3
+	
