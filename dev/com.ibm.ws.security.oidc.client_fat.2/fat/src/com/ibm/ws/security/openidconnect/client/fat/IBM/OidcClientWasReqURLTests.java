@@ -302,6 +302,7 @@ public class OidcClientWasReqURLTests extends CommonTest {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfISeries.class)
     @Test
     public void OidcClientWasReqURLTests_wasReqUrl_setToMultipleHosts_updateCookieTo_localHostAddress() throws Exception {
 
