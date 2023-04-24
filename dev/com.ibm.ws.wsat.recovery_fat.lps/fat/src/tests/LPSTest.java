@@ -34,12 +34,12 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
 @RunWith(FATRunner.class)
 public class LPSTest {
 	@Server("WSATRecovery1")
@@ -51,7 +51,6 @@ public class LPSTest {
 	private static String BASE_URL2;
 
 	private final static int REQUEST_TIMEOUT = 10;
-	private final static int START_TIMEOUT = 300000; // in ms
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
@@ -67,8 +66,8 @@ public class LPSTest {
 		ShrinkHelper.exportDropinAppToServer(server1, recoveryServer);
 		ShrinkHelper.exportDropinAppToServer(server2, recoveryServer);
 
-		server1.setServerStartTimeout(START_TIMEOUT);
-		server2.setServerStartTimeout(START_TIMEOUT);
+		server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+		server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	}
 
 	@Before
@@ -93,6 +92,7 @@ public class LPSTest {
 	}
 	
 	@Test
+	@ExpectedFFDC("javax.transaction.xa.XAException")
 	public void WSTXLPS301BFVT() throws Exception {
 		recoveryTest("3012","server2");
 		if (server1 != null && server1.isStarted()) {
@@ -111,6 +111,7 @@ public class LPSTest {
 	}
 	
 	@Test
+	@ExpectedFFDC("javax.transaction.xa.XAException")
 	public void WSTXLPS302BFVT() throws Exception {
 		recoveryTest("3022","server2");
 		if (server1 != null && server1.isStarted()) {
@@ -132,55 +133,32 @@ public class LPSTest {
 	protected void recoveryTest(String id, String startServer) throws Exception {
         final String method = "recoveryTest";
         String result = null;
-        String logKeyword = "Jordan said in test: ";
-		System.out.println(logKeyword + "========== recoveryTest " + id
-				+ " start ==========");
-		
+
         try {
             // We expect this to fail since it is gonna crash the server
-        	System.out.println(logKeyword + "callSetupServlet "
-					+ id + " start");
         	result = callSetupServlet(id);
-        	System.out.println(logKeyword + "callSetupServlet "
-					+ id + " end");
         } catch (Throwable e) {
-        	System.out.println("Server(s) should be killed. Next step is restarting server(s)");
+        	// This is fine
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + result);
         
         //restart server in three modes
-        if(startServer.equals("server1")){
+        if (startServer.equals("server1")){
         		restartServer(server1);
                 server1.waitForStringInTrace("Performed recovery for "+server1.getServerName());
-        } else if(startServer.equals("server2")){
+        } else if (startServer.equals("server2")){
         		restartServer(server2);
                 server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
-        } else if(startServer.equals("both")){
+        } else if (startServer.equals("both")){
         		restartServer(server1);
             	restartServer(server2);
                 server1.waitForStringInTrace("Performed recovery for "+server1.getServerName());
                 server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
         }
-        System.out.println(logKeyword + "restarted server: " + startServer);
 
-        Log.info(this.getClass(), method, "calling checkRec" + id);
-        try
-        {
-        	System.out.println(logKeyword + "callCheckServlet "
-					+ id + " start");
-        	result = callCheckServlet(id);
-        	System.out.println(logKeyword + "callCheckServlet "
-					+ id + " end");
-        } catch (Exception e)
-        {
-            Log.error(this.getClass(), method, e);
-            throw e;
-        }
-        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + result);
-        System.out.println(logKeyword + "checkRec" + id + " returned: " + result);
+        callCheckServlet(id);
     }
-	
-	
+
 	private String callSetupServlet(String testNumber) throws IOException{
 		String method = "callSetupServlet";
 		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
@@ -210,6 +188,7 @@ public class LPSTest {
 	}
 
 	private String callCheckServlet(String testNumber) throws IOException {
+		final String method = "callCheckServlet";
 		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
 		String servletName = "MultiRecoveryCheckServlet";
 		//check XAResource status on server1
@@ -218,57 +197,52 @@ public class LPSTest {
 		//check XAResource status on server2
 		String urlStr2 = BASE_URL2 + "/recoveryServer/" + servletName
 				+ "?number=" + testNumber+"02";
-		System.out.println("callCheckServlet URL1: " + urlStr1);
-		System.out.println("callCheckServlet URL2: " + urlStr2);
+		Log.info(getClass(), method, "callCheckServlet URL1: " + urlStr1);
+		Log.info(getClass(), method, "callCheckServlet URL2: " + urlStr2);
 		String result1 = "";
 		HttpURLConnection con1 = HttpUtils.getHttpConnection(new URL(urlStr1), 
 				expectedConnectionCode, REQUEST_TIMEOUT);
-		try{
+		try {
 	        BufferedReader br1 = HttpUtils.getConnectionStream(con1);
 	        result1 = br1.readLine();
-		}finally{
+		} finally {
 			con1.disconnect();
 		}
 		String result2 = "";
 		HttpURLConnection con2 = HttpUtils.getHttpConnection(new URL(urlStr2), 
 				expectedConnectionCode, REQUEST_TIMEOUT);
-		try{
+		try {
 	        BufferedReader br2 = HttpUtils.getConnectionStream(con2);
 	        result2 = br2.readLine();
-		}finally{
+		} finally {
 			con2.disconnect();
 		}
         assertNotNull(result1);
         assertNotNull(result2);
-		System.out.println("Recover test " + testNumber + 
+        Log.info(getClass(), method, "Recover test " + testNumber + 
 				"\n Result1 : " + result1 + 
 				"\n Result2 : " + result2);
 		if (testNumber.startsWith("13") || testNumber.startsWith("15") || testNumber.startsWith("16")) {
 			assertTrue("All XAResources should rollback but do not get "
 					+ "allRollback in the result.", result2.contains("allRollback"));
-		}else if (testNumber.startsWith("14")) {
+		} else if (testNumber.startsWith("14")) {
 			assertTrue("All XAResources should commit but do not get "
 					+ "allCommit in the result.", result2.contains("allCommitted"));
-		}else if (testNumber.equals("3011") || testNumber.equals("3021")) {
+		} else if (testNumber.equals("3011") || testNumber.equals("3021")) {
 			assertTrue("Can not get the One Phase XAResource in STARTED state", result1.contains("The One Phase XAResource is in STARTED state."));
-//			assertTrue("Can not get the XAResource in ROLLEDBACK state", result2.contains("Get expected one XAResource") &&
-//					result2.contains("The XAResource is in ROLLEDBACK state."));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state", result2.contains("allRollback"));
-		}else if (testNumber.equals("3012") || testNumber.equals("3022")) {
+		} else if (testNumber.equals("3012") || testNumber.equals("3022")) {
 			assertTrue("Can not get the One Phase XAResource in ROLLEDBACK state on server1", 
 					result1.contains("The One Phase XAResource is in ROLLEDBACK state"));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
-		}else if (testNumber.equals("3013") || testNumber.equals("3023")) {
+		} else if (testNumber.equals("3013") || testNumber.equals("3023")) {
 			assertTrue("Can not get the One Phase XAResource in STARTED state", result1.contains("The One Phase XAResource is in STARTED state."));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
-		}else if (testNumber.equals("3031")) {
+		} else if (testNumber.equals("3031")) {
 			assertTrue("Can not get the One Phase XAResource in ROLLEDBACK state on server1", 
 					result1.contains("The One Phase XAResource is in ROLLEDBACK state"));
-//			assertTrue("Can not get the XAResource in ROLLEDBACK state", result2.contains("Get expected one XAResource") &&
-//					result2.contains("The XAResource is in ROLLEDBACK state."));
 			assertTrue("Can not get the XAResource in ROLLEDBACK state on server2", result2.contains("allRollback"));
-		}
-		else {
+		} else {
 			assertTrue("Atomicity is not satisfied.",
 					result1.contains("allCommitted") == result2
 							.contains("allCommitted"));
