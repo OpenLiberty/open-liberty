@@ -28,12 +28,15 @@ public class County {
 
     public int population;
 
+    public int[] zipcodes;
+
     public County() {
     }
 
-    County(String name, String stateName, int population, String... cities) {
+    County(String name, String stateName, int population, int[] zipcodes, String... cities) {
         this.name = name;
         this.population = population;
+        this.zipcodes = zipcodes;
         this.cities = new LinkedHashSet<>();
         for (String c : cities)
             this.cities.add(CityId.of(c, stateName));

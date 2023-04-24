@@ -307,6 +307,30 @@ class QueryInfo {
     }
 
     /**
+     * @return returns the type that is returned by the repository method as an Optional<Type>.
+     *         Null if the repository method result type does not include Optional.
+     */
+    @Trivial
+    Class<?> getOptionalResultType() {
+        Class<?> type = null;
+        int depth = returnTypeAtDepth.size();
+        for (int d = 0; d < depth - 1; d++) {
+            type = returnTypeAtDepth.get(d);
+            if (Optional.class.equals(type)) {
+                type = returnTypeAtDepth.get(d + 1);
+                break;
+            } else {
+                type = null;
+                if (!CompletionStage.class.equals(type) || !CompletableFuture.class.equals(type))
+                    break;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getOptionalResultType: " + (type == null ? null : type.getName()));
+        return type;
+    }
+
+    /**
      * @return returns the type of a single result obtained by the query.
      *         For example, a single result of a query that returns List<MyEntity> is of type MyEntity.
      */
