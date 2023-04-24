@@ -29,6 +29,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.Color;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode;
@@ -95,7 +96,7 @@ public class UIBasicTest {
 
         // Check the headerbar colour
         WebElement headerbar = waitForElement(driver, By.cssSelector("div.headerbar"));
-        assertEquals("Headerbar colour", "rgba(25, 28, 44, 1)", headerbar.getCssValue("background-color"));
+        assertEquals("Headerbar colour", Color.fromString("#191c2c"), Color.fromString(headerbar.getCssValue("background-color")));
 
         // Check the headerbar has a background image. It's a data URL, so it's hard to assert it's actually correct, we just assert that there is one
         WebElement headerbarWrapper = waitForElement(headerbar, By.cssSelector("div.headerbar-wrapper"));
