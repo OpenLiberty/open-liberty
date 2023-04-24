@@ -30,7 +30,6 @@
         recoveryIdentity="cloud001-1"
         recoveryGroup="defaultGroup"
         leaseCheckInterval="1"
-        leaseLength="300"
     />
 
     <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">
