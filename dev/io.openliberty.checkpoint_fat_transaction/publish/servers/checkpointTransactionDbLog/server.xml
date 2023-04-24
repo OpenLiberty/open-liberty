@@ -24,39 +24,43 @@
       <feature>componentTest-1.0</feature>
     </featureManager>
 
-    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
-    <library id="DerbyLib" filesetRef="DerbyFileset" />
-    <fileset id="DerbyFileset"
-             dir="${shared.resource.dir}derby"
-             includes="derby.jar" />
+    <jdbcDriver id="DerbyEmbeddedDriver" libraryRef="DerbyLib"/>
+    <library id="DerbyLib" filesetRef="DerbyFileset"/>
+    <fileset id="DerbyFileset" dir="${shared.resource.dir}derby" includes="derby.jar"/>
 
-    <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
-    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
-    <variable name="DERBY_DS_JNDINAME" defaultValue="jdbc/derby" />
+    <variable name="DERBY_DS_UID" defaultValue="dbuser1"/>
+    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu"/>
+    <variable name="DERBY_DS_JNDINAME" defaultValue="jdbc/derby"/>
 
     <dataSource
         jndiName="${DERBY_DS_JNDINAME}"
-        jdbcDriverRef="DerbyEmbedded">
+        jdbcDriverRef="DerbyEmbeddedDriver">
       <properties
-          databaseName="${shared.resource.dir}/data/transactionFAT7"
+          databaseName="${shared.resource.dir}data/transactionFAT7"
           createDatabase="create"
           user="${DERBY_DS_UID}"
           password="${DERBY_DS_PW}"/>
     </dataSource>
 
-    <!-- Configure to the valid jndi name during restore -->
-    <!-- <variable name="DERBY_TXLOG_DS_JNDINAME" defaultValue="XXXXXjdbc/tranlogDataSource" /> -->
-    <variable name="DERBY_TXLOG_DS_JNDINAME" defaultValue="jdbc/tranlogDataSource" />
+    <jdbcDriver id="DerbyClientDriver" libraryRef="DerbyClientLib"/>
+    <library id="DerbyClientLib" filesetRef="DerbyClientFileset"/>
+    <fileset id="DerbyClientFileset" dir="${shared.resource.dir}derbyclient" includes="derbyclient.jar"/>
+
+    <variable name="DERBY_TXLOG_PORT" defaultValue="9099"/>
+    <variable name="DERBY_TXLOG_DS_JNDINAME" defaultValue="jdbc/tranlogDataSource"/>
 
     <dataSource
         id="tranlogDataSource"
-        jdbcDriverRef="DerbyEmbedded"
+        jdbcDriverRef="DerbyClientDriver"
         jndiName="${DERBY_TXLOG_DS_JNDINAME}"
-        transactional="false"> 
-      <properties
-          databaseName="${shared.resource.dir}/data/tranlogdb"
-          createDatabase="create"/>
+        transactional="false">
+      <properties.derby.client
+         databaseName="memory:tranlogdb"
+         createDatabase="create"
+         portNumber="${DERBY_TXLOG_PORT}"
+         password="userPassword"/>
     </dataSource>
+
 
     <transaction
         dataSourceRef="tranlogDataSource"
@@ -66,14 +70,6 @@
     />
 
     <application location="transactionservlet.war"/>
-
-    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}/apps/transactionservlet.war" className="java.security.AllPermission"/>
-    <!-- Needed for application to use a ForkJoinPool, access the thread context class loader, and shut down an unmanaged ExecutorService that the test application creates -->
-    <javaPermission codebase="${server.config.dir}/apps/transactionservlet.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/apps/transactionservlet.war" className="java.lang.RuntimePermission" name="modifyThread"/>
-    <javaPermission codebase="${server.config.dir}/apps/transactionservlet.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/apps/transactionservlet.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
 
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
 </server>

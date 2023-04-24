@@ -43,18 +43,6 @@
       />  <!-- password="dbpwd1" -->
     </dataSource>
 
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
-
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
     
 </server>

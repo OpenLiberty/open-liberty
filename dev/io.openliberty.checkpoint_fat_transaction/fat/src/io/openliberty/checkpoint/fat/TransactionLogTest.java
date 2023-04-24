@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDb;
 import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
@@ -41,6 +40,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -62,7 +62,7 @@ public class TransactionLogTest extends FATServletClient {
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    static String DERBY_TXLOG_DS_JNDINAME = "jdbc/tranlogDataSource"; // Must differ from server.xml
+    static final int DERBY_TXLOG_PORT = 1619; // Differs from server configuration
 
     static LibertyServer serverTranLog;
     static LibertyServer serverTranDbLog;
@@ -86,14 +86,16 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.startServer();
                 break;
             case testTransactionDbLogBasicConnection:
+                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
+
                 serverTranDbLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
                 ShrinkHelper.defaultApp(serverTranDbLog, APP_NAME, "servlets.simple.*");
 
                 Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
-                    // Configure the tran db log datasource's jndiName used by the tx service at restore
+                    // Override the tran log datasource configuration for restore
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                        serverEnvWriter.println("DERBY_TXLOG_DS_JNDINAME=" + DERBY_TXLOG_DS_JNDINAME);
+                        serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
@@ -119,8 +121,11 @@ public class TransactionLogTest extends FATServletClient {
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
             case testTransactionDbLogBasicConnection:
-                stopServer(serverTranDbLog, "WTRN0017W");
-                deleteTranlogDb(serverTranDbLog);
+                try {
+                    stopServer(serverTranDbLog, "WTRN0017W");
+                } finally {
+                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
+                }
                 break;
             default:
                 break;
@@ -138,20 +143,27 @@ public class TransactionLogTest extends FATServletClient {
      */
     @Test
     public void testCheckpointRemovesDefaultTranlogDir() throws Exception {
+        // Checkpoint should fail iff the pre-existing tran logs could not
+        // be deleted, which we can't test for. But we can ensure the TM
+        // otherwise removed the tran logs.
         assertTrue("Checkpoint should have the deleted transaction log directory, but did not.",
                    !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
+
+        serverTranLog.checkpointRestore();
     }
 
-    // TODO: The tran log datasource does not reconfigure at restore. The issue will
-    // be a limitation or require further work to resolve. The following test is ideal
-    // to verify tranlog DS configuration at restore.
-
     /**
-     * Test basic database connectivity w/ transactions logging to an RDB.
+     * Verify transactions log to a datasource within a restored server.
+     * The test further ensures the datasource configuration has updated
+     * with config attribute(s) declared in server.env file.
      */
     @Test
     public void testTransactionDbLogBasicConnection() throws Exception {
         serverTranDbLog.checkpointRestore();
+
+        // Exercise a transaction to start tran logging to the datasource.
+        // The server will throw an exception and fail this test if it cannot
+        // establish a connection to the database.
         runTest("testBasicConnection", serverTranDbLog);
     }
 
