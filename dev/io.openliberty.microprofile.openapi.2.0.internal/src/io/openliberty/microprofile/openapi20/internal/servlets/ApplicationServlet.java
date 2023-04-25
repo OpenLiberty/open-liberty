@@ -71,8 +71,8 @@ public class ApplicationServlet extends OpenAPIServletBase {
         final String contentType = (responseFormat == Format.JSON) ? MediaType.APPLICATION_JSON : MediaType.TEXT_PLAIN;
 
         // Make sure that the client is requesting /openapi only
-        final String requestURI = request.getRequestURI();
-        if (Constants.REGEX_COMPONENT_REQUEST_URI.matcher(requestURI).matches()) {
+        final String servletPath = request.getServletPath();
+        if (servletPath == null || servletPath.equals("/")) {
 
             /*
              * Retrieve the current provider and get the OpenAPI model for it. If there is no current provider then
