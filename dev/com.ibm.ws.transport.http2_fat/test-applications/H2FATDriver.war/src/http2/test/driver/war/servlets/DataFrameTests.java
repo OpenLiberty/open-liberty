@@ -247,7 +247,7 @@ public class DataFrameTests extends H2FATDriverServlet {
     public void testMultiStreamWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testSimpleWindowUpdatesReceived";
+        String testName = "testMultiStreamWindowUpdatesReceived";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // expect window updates on streams 0 (connection), 3, and 7
@@ -319,7 +319,7 @@ public class DataFrameTests extends H2FATDriverServlet {
     public void testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testSimpleWindowUpdatesReceived";
+        String testName = "testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // expect window updates on streams 0 (connection) and 3 (stream)
@@ -371,7 +371,7 @@ public class DataFrameTests extends H2FATDriverServlet {
     public void testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testMultiStreamWindowUpdatesReceived";
+        String testName = "testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // expect window updates on streams 0 (connection), 3, and 7
@@ -427,6 +427,48 @@ public class DataFrameTests extends H2FATDriverServlet {
         h2Client.sendFrame(eosFrame);
         eosFrame = new FrameData(7, "".getBytes(), 0, true, true, false);
         h2Client.sendFrame(eosFrame);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+
+    }
+
+    /**
+     * Use both http/2 and deflate compression at the same time. This should not produce an http/2 FRAME_SIZE_ERROR
+     */
+    public void testCompression(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testCompression";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+        secondHeadersReceived.add(new H2HeaderField(":status", "200"));
+        secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
+        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
+        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+        h2Client.addExpectedFrame(secondFrameHeaders);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", COMPRESSION_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("data", "compression"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("content-type", "application/xml"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("accept-encoding", "deflate"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(5, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        h2Client.sendFrame(frameHeadersToSend);
+
+        // delay to try to make sure all activity is done before sending the frame, so we can see
+        // the GOAWAY coming back before the connection close
+        try {
+            Thread.sleep(1000);
+        } catch (Exception x) {
+        }
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
