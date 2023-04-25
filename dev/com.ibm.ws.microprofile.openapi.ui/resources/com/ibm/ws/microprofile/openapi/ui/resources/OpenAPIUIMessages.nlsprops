@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API UI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_NONE
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1750 - CWWKO1799
+CWWKO1750I_OPEN_API_PATH_UPDATE=CWWKO1750I: The OpenAPI UI path has been set to {0}.
+CWWKO1750I_OPEN_API_PATH_UPDATE.explanation=The OpenAPI UI path has been set to a value that is not the default.
+CWWKO1750I_OPEN_API_PATH_UPDATE.useraction=No action is required.
+
+CWWKO1751W_OPEN_API_PATH_UPDATE_FAILED=CWWKO1751W: The OpenAPI UI path is invalid, the default value will be used instead. Check previous warnings for cause of validation failure.
+CWWKO1751W_OPEN_API_PATH_UPDATE_FAILED.explanation= The OpenAPI UI path is invalid and will use the default value instead.
+CWWKO1751W_OPEN_API_PATH_UPDATE_FAILED.useraction=Check earlier warning messages for causes of validation failures.
+
+CWWKO1752W_OPEN_API_PATH_CONFLICT=CWWKO1752W: The OpenAPI UI path cannot be set to {0}. This path is used to retrieve the OpenAPI documents.
+CWWKO1752W_OPEN_API_PATH_CONFLICT.explanation=The OpenAPI document and OpenAPI UI paths cannot be the same.
+CWWKO1752W_OPEN_API_PATH_CONFLICT.useraction=Specify a unique path for the OpenAPI UI.
+
+CWWKO1753W_OPEN_API_UI_PATH_POTENTIAL_CONFLICT=CWWKO1753W: The OpenAPI UI path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
+CWWKO1753W_OPEN_API_UI_PATH_POTENTIAL_CONFLICT.explanation=The OpenAPI UI path was set to the same path as another feature, which can prevent startup or access.
+CWWKO1753W_OPEN_API_UI_PATH_POTENTIAL_CONFLICT.useraction=Specify a different path for the OpenAPI UI path.
+
+CWWKO1754W_OPEN_API_UI_PATH_INVALID=CWWKO1754W: The OpenAPI UI path is invalid or contains invalid characters. The URL must be constructed using Unicode alphanumeric characters A-Za-z0-9, the underscore (_), dash (-), forward slash (/) and period (.).
+CWWKO1754W_OPEN_API_UI_PATH_INVALID.explanation=The value assigned to the OpenAPI UI path must not include any characters that are considered invalid.
+CWWKO1754W_OPEN_API_UI_PATH_INVALID.useraction=The OpenAPI UI path cannot be set to a value that contains invalid characters.
+
+CWWKO1755W_OPEN_API_UI_PATH_SEGMENT_INVALID=CWWKO1755W: OpenAPI UI path segments "/." or "/.." are invalid.
+CWWKO1755W_OPEN_API_UI_PATH_SEGMENT_INVALID.explanation=OpenAPI UI path segments "/." or "/.." are invalid.
+CWWKO1755W_OPEN_API_UI_PATH_SEGMENT_INVALID.useraction=Remove any path "/." or "/.." segments from the path.

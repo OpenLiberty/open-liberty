@@ -5,18 +5,41 @@ Bundle-Name: OpenAPI UI
 Bundle-SymbolicName: com.ibm.ws.microprofile.openapi.ui
 Bundle-Description: OpenAPI User Interface, version ${bVersion}
 
-Web-ContextPath: /openapi/ui
+Web-ContextPath: @openAPIUIPATH
 
 IBM-Authorization-Roles: com.ibm.ws.management
 
 Import-Package: \
-  com.ibm.ws.microprofile.openapi.servlet.filter
+  com.ibm.ws.microprofile.openapi.servlet.filter, \
+  org.eclipse.microprofile.config.*;version="[1.0,4)",\
+  *
+
+Private-Package: \
+  com.ibm.ws.microprofile.openapi.ui,\
+  com.ibm.ws.microprofile.openapi.ui.resources
+
+-dsannotations-inherit: true
+-dsannotations: \
+  com.ibm.ws.microprofile.openapi.ui.OpenAPIUIEndpointManager
 
 Include-Resource: \
   WEB-INF=resources/WEB-INF, \
-  ../com.ibm.ws.openapi.ui/swagger-ui/dist;filter:=!(*.html|*.map), \
-  ../com.ibm.ws.openapi.ui/swagger-ui/dist/oauth2-redirect.html, \
+  ../com.ibm.ws.openapi.ui/swagger-ui/dist;filter:=!(*.html|*.map),\
+  ../com.ibm.ws.openapi.ui/swagger-ui/dist/oauth2-redirect.html,\
   index.html=../com.ibm.ws.openapi.ui/swagger-ui/dist/mpOpenApi.html
 
 -buildpath: \
-  com.ibm.ws.openapi.ui
+  com.ibm.ws.openapi.ui;version=latest,\
+  com.ibm.ws.app.manager.wab;version=latest,\
+  com.ibm.ws.logging;version=latest,\
+  com.ibm.ws.kernel.boot.core;version=latest,\
+  com.ibm.ws.kernel.service;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.wsspi.org.osgi.service.event;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file
