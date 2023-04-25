@@ -1,18 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.pkce;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -69,10 +65,12 @@ public class ProofKeyForCodeExchangeTest extends CommonTestClass {
         assertNotNull("Code verifier should not have been null.", codeVerifier);
 
         assertTrue("Code verifier contained a character outside the allowed set " + ALLOWED_CHARS_REGEX, codeVerifier.matches(ALLOWED_CHARS_REGEX + "+"));
-        assertEquals("Code verifier did not have the expected length. Code verifier was [" + codeVerifier + "].", 43, codeVerifier.length());
+        // Don't care how long the verifier was as long as it was within the allowed length requirement
+        assertTrue("Code verifier [" + codeVerifier + "] did not meet the minimum length requirement (" + ProofKeyForCodeExchange.CODE_VERIFIER_MIN_LENGTH + ").", codeVerifier.length() >= ProofKeyForCodeExchange.CODE_VERIFIER_MIN_LENGTH);
+        assertTrue("Code verifier [" + codeVerifier + "] did not meet the maximum length requirement (" + ProofKeyForCodeExchange.CODE_VERIFIER_MAX_LENGTH + ").", codeVerifier.length() <= ProofKeyForCodeExchange.CODE_VERIFIER_MAX_LENGTH);
 
         String codeVerifier2 = ProofKeyForCodeExchange.generateCodeVerifier();
-        assertFalse("Two calls to generate code verifiers should not have produced the same value.", codeVerifier2.equals(codeVerifier));
+        assertFalse("Two calls to generate code verifiers should not have produced the same value. Value was [" + codeVerifier + "].", codeVerifier2.equals(codeVerifier));
     }
 
     @Test

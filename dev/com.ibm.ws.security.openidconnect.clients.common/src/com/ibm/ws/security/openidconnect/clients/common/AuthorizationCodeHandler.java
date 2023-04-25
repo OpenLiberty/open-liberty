@@ -27,6 +27,7 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -151,7 +152,7 @@ public class AuthorizationCodeHandler {
         tokenRequestBuilder.isHostnameVerification(clientConfig.isHostNameVerificationEnabled());
         tokenRequestBuilder.authMethod(clientConfig.getTokenEndpointAuthMethod());
         tokenRequestBuilder.resources(OIDCClientAuthenticatorUtil.getResources(clientConfig));
-        tokenRequestBuilder.customParams(getTokenRequestCustomParameters());
+        tokenRequestBuilder.customParams(getTokenRequestCustomParameters(responseState));
         tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
 
@@ -171,18 +172,18 @@ public class AuthorizationCodeHandler {
         return oidcResult;
     }
 
-    HashMap<String, String> getTokenRequestCustomParameters() {
+    HashMap<String, String> getTokenRequestCustomParameters(String state) {
         HashMap<String, String> customParams = clientConfig.getTokenRequestParams();
-        String pkceChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
-        if (pkceChallengeMethod != null) {
-            customParams = addPkceParameters(customParams);
+        String codeChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
+        if (codeChallengeMethod != null) {
+            customParams = addPkceParameters(state, customParams);
         }
         return customParams;
     }
 
-    HashMap<String, String> addPkceParameters(HashMap<String, String> parameters) {
-        // TODO
-        return parameters;
+    HashMap<String, String> addPkceParameters(String state, HashMap<String, String> parameters) {
+        ProofKeyForCodeExchangeHelper pkceHelper = new ProofKeyForCodeExchangeHelper();
+        return pkceHelper.addCodeVerifierToTokenRequestParameters(state, parameters);
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.
