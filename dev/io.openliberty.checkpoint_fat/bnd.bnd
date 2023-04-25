@@ -47,7 +47,8 @@ src: \
 	test-applications/DefaultPrincipalMappingApp/src,\
 	test-applications/concurrentApp/src,\
 	test-applications/mapCache/src,\
-	test-applications/webCacheApp/src
+	test-applications/webCacheApp/src,\
+	test-applications/xmlBindings/src
 
 fat.project: true
 

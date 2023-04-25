@@ -35,3 +35,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-AlsoKnownAs: jaxb-4.0
+WLP-InstantOn-Enabled: true
