@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,6 +60,7 @@ import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.SharedBootstrapConfig;
@@ -188,7 +189,7 @@ public class ProvisionerTest {
     }
 
     /** Trivial interface that groups Bundle & FrameworkStartLevel so mock can push through the adapt method */
-    interface TestFrameworkStartLevel extends Bundle, FrameworkStartLevel {
+    interface TestFrameworkAdaptations extends Bundle, FrameworkStartLevel, FrameworkWiring {
     }
 
     Mockery context = new Mockery();
@@ -198,7 +199,7 @@ public class ProvisionerTest {
     final Filter mockFilter = context.mock(Filter.class);
     final TestBundleRevision mockBundleRevision = context.mock(TestBundleRevision.class);
     final TestBundleStartLevel mockBundleStartLevel = context.mock(TestBundleStartLevel.class);
-    final TestFrameworkStartLevel mockFrameworkStartLevel = context.mock(TestFrameworkStartLevel.class);
+    final TestFrameworkAdaptations mockFrameworkAdaptations = context.mock(TestFrameworkAdaptations.class);
 
     final ProvisionerImpl provisioner = new ProvisionerImpl();
 
@@ -209,12 +210,17 @@ public class ProvisionerTest {
         context.checking(new Expectations() {
             {
                 atLeast(1).of(mockBundleContext).getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-                will(returnValue(mockFrameworkStartLevel));
+                will(returnValue(mockFrameworkAdaptations));
 
-                one(mockFrameworkStartLevel).adapt(FrameworkStartLevel.class);
-                will(returnValue(mockFrameworkStartLevel));
+                one(mockFrameworkAdaptations).adapt(FrameworkStartLevel.class);
+                will(returnValue(mockFrameworkAdaptations));
 
-                one(mockFrameworkStartLevel).setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
+                one(mockFrameworkAdaptations).setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
+
+                one(mockFrameworkAdaptations).adapt(FrameworkWiring.class);
+                will(returnValue(mockFrameworkAdaptations));
+                allowing(mockFrameworkAdaptations).resolveBundles(null);
+                will(returnValue(Boolean.TRUE));
 
                 allowing(mockBundleContext).createFilter(with(any(String.class)));
                 will(returnValue(mockFilter));
@@ -230,7 +236,35 @@ public class ProvisionerTest {
     public void testInstallNonexistentBundle() throws Exception {
 
         BundleInstallStatus iStatus;
+        context.checking(new Expectations() {
+            {
+                one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
+                will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
+                one(mockBundle).adapt(BundleStartLevel.class);
+                will(returnValue(mockBundleStartLevel));
+
+                one(mockBundle).adapt(BundleRevision.class);
+                will(returnValue(mockBundleRevision));
+                one(mockBundle).adapt(Module.class);
+                will(returnValue(testModule));
+
+                one(mockBundle).getSymbolicName();
+                will(returnValue("mock.bundle"));
+
+                one(mockBundleRevision).getTypes();
+                will(returnValue(0));
+
+                one(mockBundleStartLevel).getStartLevel();
+                will(returnValue(1));
+
+                one(mockBundleStartLevel).setStartLevel(with(any(int.class)));
+
+                allowing(mockFrameworkAdaptations).resolveBundles(null);
+            }
+        });
         // B -- non-existent bundle
 
         KernelResolver resolver = new KernelResolver(config.getInstallRoot(), null, "kernelCoreMissing-1.0", "defaultLogging-1.0", null);
@@ -256,6 +290,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleStartLevel.class);
                 will(returnValue(mockBundleStartLevel));
@@ -275,6 +311,8 @@ public class ProvisionerTest {
                 will(returnValue(1));
 
                 one(mockBundleStartLevel).setStartLevel(KernelStartLevel.BOOTSTRAP.getLevel());
+
+                allowing(mockFrameworkAdaptations).resolveBundles(null);
             }
         });
 
@@ -324,6 +362,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle("kernel@" + locationString, null);
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleRevision.class);
                 will(returnValue(mockBundleRevision));
@@ -427,6 +467,8 @@ public class ProvisionerTest {
             {
                 one(mockBundleContext).installBundle(with(any(String.class)), with(any(InputStream.class)));
                 will(returnValue(mockBundle));
+                allowing(mockBundle).getState();
+                will(returnValue(Bundle.INSTALLED));
 
                 one(mockBundle).adapt(BundleRevision.class);
                 will(returnValue(mockBundleRevision));
@@ -493,10 +535,15 @@ public class ProvisionerTest {
         // C -- Felix path
         context.checking(new Expectations() {
             {
-                one(mockFrameworkStartLevel).adapt(FrameworkStartLevel.class);
-                will(returnValue(mockFrameworkStartLevel));
+                one(mockFrameworkAdaptations).adapt(FrameworkStartLevel.class);
+                will(returnValue(mockFrameworkAdaptations));
 
-                one(mockFrameworkStartLevel).setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
+                one(mockFrameworkAdaptations).setInitialBundleStartLevel(KernelStartLevel.ACTIVE.getLevel());
+
+                one(mockFrameworkAdaptations).adapt(FrameworkWiring.class);
+                will(returnValue(mockFrameworkAdaptations));
+                allowing(mockFrameworkAdaptations).resolveBundles(null);
+                will(returnValue(Boolean.TRUE));
 
                 one(mockBundle).getState();
                 will(returnValue(org.osgi.framework.Bundle.RESOLVED));
