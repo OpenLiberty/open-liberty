@@ -891,5 +891,31 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Log.exiting(c, METHOD_NAME);
 	}
 
+	/*
+	 * Test the updated resolve() api which returns all tolerated dependencies of
+	 * all features to be installed. Test with "RestfulWS-3.0".
+	 */
+	@Test
+	public void testComplexVersionTolerates() throws Exception {
+	    final String METHOD_NAME = "testComplexVersionTolerates";
+	    Log.entering(c, METHOD_NAME);
+
+	    // Begin Test
+	    String[] param1s = { "installFeature", "RestfulWS-3.0" };
+	    String[] filesList = { "/lib/features/com.ibm.websphere.appserver.eeCompatible-6.0.mf",
+		    "/lib/features/com.ibm.websphere.appserver.eeCompatible-7.0.mf",
+		    "/lib/features/com.ibm.websphere.appserver.eeCompatible-8.0.mf",
+		    "/lib/features/com.ibm.websphere.appserver.eeCompatible-9.0.mf",
+		    "/lib/features/io.openliberty.servlet.api-3.0.mf",
+		    "/lib/features/io.openliberty.servlet.api-3.1.mf",
+		    "/lib/features/io.openliberty.servlet.api-4.0.mf",
+		    "/lib/features/io.openliberty.servlet.api-5.0.mf" };
+
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	    checkCommandOutput(po, 0, null, filesList);
+
+	    Log.exiting(c, METHOD_NAME);
+	}
 
 }
