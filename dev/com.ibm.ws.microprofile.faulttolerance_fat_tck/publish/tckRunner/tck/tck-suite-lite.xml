@@ -1,9 +1,9 @@
-<!-- Licensed under the Apache License, Version 2.0 (the "License"); you
-    may not use this file except in compliance with the License. You may obtain
-    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
-    required by applicable law or agreed to in writing, software distributed
-    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
-    OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
+    may not use this file except in compliance with the License. You may obtain 
+    a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+    required by applicable law or agreed to in writing, software distributed 
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+    OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
     the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
@@ -16,33 +16,31 @@
                 <script language="beanshell">
                      <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
                      <!-- We exclude all of these tests, but most of them were fixed in the 2.0 TCK and we run them from the 2.0 TCK project -->
-                     <!-- All conditions need to be wrapped otherwise beanshell will throw EOF errors-->
                      <![CDATA[
-                        (
-                         // RetryTest
-                         !method.getName().startsWith("testRetryMaxDuration") &&
-                         !method.getName().startsWith("testRetryMaxDurationSeconds") &&
-                         !method.getName().startsWith("testRetryWithDelay") &&
-                         !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
-                         !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
-                         !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
-
-                         // CircuitBreakerRetryTest
-                         !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
-                         !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
-
-                         // ConfigTest
-                         !method.getName().startsWith("testConfigMaxDuration") &&
-                         !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
-
-                         // FallbackTest
-                         !method.getName().startsWith("testFallbackTimeout") &&
-                         !method.getName().startsWith("testFallbacktNoTimeout") &&
-
-                         // RetryTimeoutTest
-                         // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
-                         !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")
-                       )
+                     // RetryTest
+                     !method.getName().startsWith("testRetryMaxDuration") &&
+                     !method.getName().startsWith("testRetryMaxDurationSeconds") &&
+                     !method.getName().startsWith("testRetryWithDelay") &&
+                     !method.getName().startsWith("testRetryWithNoDelayAndJitter") &&
+                     !method.getName().startsWith("testClassLevelRetryMaxDuration") &&
+                     !method.getName().startsWith("testClassLevelRetryMaxDurationSeconds") &&
+                     
+                     // CircuitBreakerRetryTest
+                     !method.getName().startsWith("testCircuitOpenWithMultiTimeouts") &&
+                     !method.getName().startsWith("testCircuitOpenWithMultiTimeoutsAsync") &&
+                     
+                     // ConfigTest
+                     !method.getName().startsWith("testConfigMaxDuration") &&
+                     !method.getName().startsWith("testClassLevelConfigMaxDuration") &&
+                     
+                     // FallbackTest
+                     !method.getName().startsWith("testFallbackTimeout") &&
+                     !method.getName().startsWith("testFallbacktNoTimeout") &&
+                     
+                     // RetryTimeoutTest
+                     !method.getDeclaringClass().getSimpleName().equals("RetryTimeoutTest")
+                     
+                     // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
                 ]]>
                 </script>
             </method-selector>

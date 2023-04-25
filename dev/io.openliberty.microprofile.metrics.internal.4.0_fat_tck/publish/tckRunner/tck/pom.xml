@@ -16,7 +16,6 @@
 
     <properties>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
-        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
         <microprofile.metrics.version>4.0.1</microprofile.metrics.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -96,7 +95,7 @@
         <dependency>
 		    <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>${arquillian.liberty.managed.jakarta.version}</version>
+            <version>2.1.1</version>
             <scope>test</scope>
         </dependency>
         

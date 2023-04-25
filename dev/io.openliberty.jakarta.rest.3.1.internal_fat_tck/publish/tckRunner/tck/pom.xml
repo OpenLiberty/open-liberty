@@ -66,7 +66,7 @@
         <jakarta.ws.rs-tck.version>3.1.3</jakarta.ws.rs-tck.version>
 
         <!-- TODO: update Arquillian BOM -->
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian-bom.version>1.7.0.Alpha13</arquillian-bom.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
 
         <!-- Test Utilities -->
@@ -79,7 +79,7 @@
         <!-- TODO: OpenLiberty server -->
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
-        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <arquillian-liberty-jakarta.version>2.1.1</arquillian-liberty-jakarta.version>
 
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
@@ -96,7 +96,7 @@
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.version}</version>
+                <version>${arquillian-bom.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -535,7 +535,7 @@
                 <dependency>
                     <groupId>io.openliberty.arquillian</groupId>
                     <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-                    <version>${arquillian.liberty.managed.jakarta.version}</version>
+                    <version>${arquillian-liberty-jakarta.version}</version>
                 </dependency>
              </dependencies>
             <build>
@@ -577,7 +577,7 @@
                                         <artifactItem>
                                             <groupId>io.openliberty.arquillian</groupId>
                                             <artifactId>arquillian-liberty-support-jakarta</artifactId>
-                                            <version>${arquillian.liberty.managed.jakarta.version}</version>
+                                            <version>${arquillian-liberty-jakarta.version}</version>
                                             <type>zip</type>
                                             <classifier>feature</classifier>
                                             <overWrite>false</overWrite>

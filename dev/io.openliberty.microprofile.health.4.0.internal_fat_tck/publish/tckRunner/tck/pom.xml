@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2021, 2023 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2021, 2022 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
@@ -21,9 +21,6 @@
     <properties>
         <microprofile.health.version>4.0.1</microprofile.health.version>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
-        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
-        <testng.version>7.5.0-ibm230227</testng.version>
-        <slf4j.version>2.0.6</slf4j.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -87,31 +84,18 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.version}</version>
+            <version>7.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>${arquillian.liberty.managed.jakarta.version}</version>
+            <version>2.1.1</version>
             <scope>test</scope>
         </dependency>
 
