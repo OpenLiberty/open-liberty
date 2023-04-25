@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2020, 2023 IBM Corporation and others. All rights reserved. 
+<!-- Copyright (c) 2020, 2021 IBM Corporation and others. All rights reserved. 
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
@@ -16,10 +16,7 @@
         <microprofile.opentracing.version>2.0</microprofile.opentracing.version>
         <microprofile.config.version>2.0</microprofile.config.version>
         <microprofile.rest.client.version>2.0</microprofile.rest.client.version>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
-		<arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
-		<testng.version>7.5.0-ibm230227</testng.version>
-        <slf4j.version>2.0.6</slf4j.version>
+        <arquillian.version>1.1.14.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -91,41 +88,20 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <version>6.9.9</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
+            <version>1.1.14.Final</version>
         </dependency>
 
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>${arquillian.liberty.managed.version}</version>
+            <version>1.0.5</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>fattest.simplicity</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
         </dependency>
 
         <dependency>
