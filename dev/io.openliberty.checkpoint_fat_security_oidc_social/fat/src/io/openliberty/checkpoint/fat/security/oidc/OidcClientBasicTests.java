@@ -65,10 +65,14 @@ public class OidcClientBasicTests extends CommonTest {
 
     private static LibertyServer rpServer;
 
+    private static final String OP_SERVER = "com.ibm.ws.security.openidconnect.client-1.0_fat.op";
+
+    private static final String RP_SERVER = "com.ibm.ws.security.openidconnect.client-1.0_fat.rp";
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().fullFATOnly())
-                    .andWith(new JakartaEE10Action().fullFATOnly());
+                    .andWith(new JakartaEE9Action().forServers(OP_SERVER, RP_SERVER).fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers(OP_SERVER, RP_SERVER).fullFATOnly());
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -88,13 +92,13 @@ public class OidcClientBasicTests extends CommonTest {
 
         skipServerStart = true;
 
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", "server.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
+        testOPServer = commonSetUp(OP_SERVER, "server.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
                                    Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         opServer = testOPServer.getServer();
 
         skipServerStart = true;
-        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "server.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
+        testRPServer = commonSetUp(RP_SERVER, "server.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
                                    Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         rpServer = testRPServer.getServer();
