@@ -23,11 +23,12 @@ import jakarta.data.repository.Repository;
  */
 @Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
 public interface Vehicles {
-    long deleteAll();
-
-    boolean deleteById(String vin);
 
     Optional<Vehicle> findById(String vin);
+
+    long removeAll();
+
+    boolean removeById(String vin);
 
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 

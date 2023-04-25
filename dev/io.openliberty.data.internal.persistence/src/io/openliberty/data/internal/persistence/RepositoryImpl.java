@@ -959,7 +959,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (orderBy >= c)
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.SELECT;
-        } else if (methodName.startsWith("delete")) {
+        } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
             if (by > 6) {

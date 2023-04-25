@@ -536,7 +536,7 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        accounts.delete(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+        accounts.remove(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
 
         // JPQL with "IN", which this needs, is not supported by EclipseLink for embeddables
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));

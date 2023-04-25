@@ -46,8 +46,6 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     long deleteByHostNot(String host);
 
-    int deleteByHostNotIn(Collection<String> hosts);
-
     Iterable<Reservation> findByHost(String host);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
@@ -101,6 +99,8 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
     CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
+
+    int removeByHostNotIn(Collection<String> hosts);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 

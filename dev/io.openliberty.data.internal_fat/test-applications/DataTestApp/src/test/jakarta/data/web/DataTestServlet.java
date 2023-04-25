@@ -2024,7 +2024,7 @@ public class DataTestServlet extends FATServlet {
     public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
                     IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
         houses.deleteAll();
-        vehicles.deleteAll();
+        vehicles.removeAll();
 
         House h1 = new House();
         h1.area = 1900;
@@ -2093,7 +2093,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(26000f, v.price, 0.001f);
 
         houses.deleteAll();
-        vehicles.deleteAll();
+        vehicles.removeAll();
     }
 
     /**
@@ -2487,7 +2487,7 @@ public class DataTestServlet extends FATServlet {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
-        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+        reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
         assertEquals(0, reservations.count());
 
@@ -3214,7 +3214,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testSaveMultipleAndUpdate() {
-        vehicles.deleteAll();
+        vehicles.removeAll();
 
         Vehicle v1 = new Vehicle();
         v1.make = "Honda";
@@ -3249,7 +3249,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, i.hasNext());
 
         // delete
-        assertEquals(true, vehicles.deleteById(v1.vinId));
+        assertEquals(true, vehicles.removeById(v1.vinId));
 
         // find none
         Optional<Vehicle> found = vehicles.findById(v1.vinId);
@@ -3263,7 +3263,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, found.isPresent());
         assertEquals(25500f, found.get().price, 0.001f);
 
-        vehicles.deleteAll();
+        vehicles.removeAll();
     }
 
     /**
@@ -3274,7 +3274,7 @@ public class DataTestServlet extends FATServlet {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
-        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+        reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
         assertEquals(0, reservations.count());
 

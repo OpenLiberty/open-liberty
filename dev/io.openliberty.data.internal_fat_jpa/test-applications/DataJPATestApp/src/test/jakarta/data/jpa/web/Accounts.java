@@ -22,8 +22,6 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Accounts {
 
-    void delete(Account account); // copied from CrudRepository
-
     // "IN" (which is needed for this) is not supported for embeddables, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
     void deleteAll(Iterable<Account> list); // copied from CrudRepository
@@ -74,6 +72,8 @@ public interface Accounts {
     // Mapping: org.eclipse.persistence.mappings.AggregateObjectMapping[accountId]
     // Descriptor: RelationalDescriptor(test.jakarta.data.jpa.web.Account --> [DatabaseTable(WLPAccount)])
     List<Account> findByIdTrue();
+
+    void remove(Account account);
 
     void save(Account a);
 }
