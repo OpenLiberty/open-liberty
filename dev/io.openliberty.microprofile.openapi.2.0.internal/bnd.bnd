@@ -19,7 +19,7 @@ bVersion=1.0
 
 IBM-Web-Extension-Processing-Disabled: true
 
-Web-ContextPath: /openapi
+Web-ContextPath: @openAPIDOCPATH
 
 
 Import-Package: \

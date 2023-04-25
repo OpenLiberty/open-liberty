@@ -21,7 +21,7 @@ Bundle-Description: MicroProfile OpenAPI 1.0, version ${bVersion}
 
 IBM-Web-Extension-Processing-Disabled: true
 
-Web-ContextPath: /openapi
+Web-ContextPath: @openAPIDOCPATH
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

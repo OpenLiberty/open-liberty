@@ -19,11 +19,34 @@ Bundle-SymbolicName: io.openliberty.microprofile.openapi.internal.common
 
 Bundle-Description: MicroProfile OpenAPI Common Bundle, version ${bVersion}
 
+Import-Package: \
+  *
+
+-dsannotations-inherit: true
+-dsannotations: \
+  io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager
+
 Export-Package: \
 	io.openliberty.microprofile.openapi.internal.resources; version="1.0",\
-	io.openliberty.microprofile.openapi.internal.resources.validation; version="1.0"
+	io.openliberty.microprofile.openapi.internal.resources.validation; version="1.0",\
+    io.openliberty.microprofile.openapi.internal.common;version="1.0"
+
+Include-Resource: \
+	OSGI-INF=resources/OSGI-INF
 
 WS-TraceGroup: MPOPENAPI
 
 -buildpath: \
-	com.ibm.ws.logging;version=latest
+	com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.app.manager.wab;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.kernel.boot.core;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.wsspi.org.osgi.service.event;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file

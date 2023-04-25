@@ -5,7 +5,7 @@ Bundle-Name: OpenAPI UI
 Bundle-SymbolicName: com.ibm.ws.microprofile.openapi.ui
 Bundle-Description: OpenAPI User Interface, version ${bVersion}
 
-Web-ContextPath: /openapi/ui
+Web-ContextPath: @openAPIUIPATH
 
 IBM-Authorization-Roles: com.ibm.ws.management
 
@@ -14,9 +14,9 @@ Import-Package: \
 
 Include-Resource: \
   WEB-INF=resources/WEB-INF, \
-  ../com.ibm.ws.openapi.ui/swagger-ui/dist;filter:=!(*.html|*.map), \
-  ../com.ibm.ws.openapi.ui/swagger-ui/dist/oauth2-redirect.html, \
+  ../com.ibm.ws.openapi.ui/swagger-ui/dist;filter:=!(*.html|*.map),\
+  ../com.ibm.ws.openapi.ui/swagger-ui/dist/oauth2-redirect.html,\
   index.html=../com.ibm.ws.openapi.ui/swagger-ui/dist/mpOpenApi.html
 
 -buildpath: \
-  com.ibm.ws.openapi.ui
+  com.ibm.ws.openapi.ui;version=latest
