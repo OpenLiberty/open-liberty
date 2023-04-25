@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/JSPWithEL/src"/>
 	<classpathentry kind="src" path="test-applications/appsecurity/src"/>
 	<classpathentry kind="src" path="test-applications/inventory/src/java"/>
 	<classpathentry kind="src" path="test-applications/system/src/java"/>
