@@ -1,7 +1,7 @@
 biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0
 biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0
 biz.aQute.bnd:biz.aQute.bnd:6.3.0
-cglib:cglib-nodep:3.3.0
+cglib:cglib:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 com.beust:jcommander:1.72
 com.cloudant:cloudant-client:2.16.0

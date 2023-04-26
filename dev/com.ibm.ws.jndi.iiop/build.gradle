@@ -1,5 +1,5 @@
 /* ***************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ task stageEndorsed(type: Sync) {
 test {
     // subtests must only run as part of containing suites
     filter { excludeTestsMatching "com.ibm.ws.jndi.iiop.subtests.*" }
+
+    jvmArgs = ["--add-opens", "java.base/java.io=ALL-UNNAMED", "--add-opens", "java.rmi/java.rmi=ALL-UNNAMED"]
+
     // pre Java 9: use the endorsed standards mechanism to override ORB API
     if (JavaVersion.current() < JavaVersion.VERSION_1_9) {
         dependsOn stageEndorsed                                      // populate endorsed dir
