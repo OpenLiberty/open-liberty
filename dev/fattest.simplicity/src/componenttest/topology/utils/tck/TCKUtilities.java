@@ -424,9 +424,12 @@ public class TCKUtilities {
         while (!completed) {
             FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
             FileChannel fileChannel = fileOutputStream.getChannel();
-            ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
+            ReadableByteChannel readableByteChannel = null;
             try {
-
+                URLConnection connection = new URL(url).openConnection();
+                connection.setConnectTimeout(60000);
+                connection.setReadTimeout(60000);
+                readableByteChannel = Channels.newChannel(connection.getInputStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 
                 completed = true;
@@ -438,7 +441,9 @@ public class TCKUtilities {
             } finally {
                 fileOutputStream.close();
                 fileChannel.close();
-                readableByteChannel.close();
+                if(readableByteChannel!=null) {
+                    readableByteChannel.close();
+                }
             }
         }
         return targetFile;
