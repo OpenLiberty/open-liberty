@@ -23,6 +23,8 @@ Import-Package: com.ibm.json.java,com.ibm.json.xml
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.json/pom.xml=com.ibm.websphere.appserver.api.json.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

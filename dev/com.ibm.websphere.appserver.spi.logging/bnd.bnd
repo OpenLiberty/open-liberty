@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.ras,com.ibm.websphere.ras.annotation,com.ibm.w
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.logging/pom.xml=com.ibm.websphere.appserver.spi.logging.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

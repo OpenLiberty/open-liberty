@@ -39,6 +39,8 @@ Export-Package: \
 
 -includeresource: {META-INF/maven/io.openliberty.api/io.openliberty.jaxrs30/pom.xml=io.openliberty.jaxrs30.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

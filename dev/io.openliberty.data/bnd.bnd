@@ -27,6 +27,8 @@ Export-Package: \
 
 instrument.classesExcludes: io/openliberty/data/repository/*.class
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

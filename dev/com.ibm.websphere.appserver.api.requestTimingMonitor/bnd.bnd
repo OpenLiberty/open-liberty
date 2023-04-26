@@ -23,6 +23,8 @@ Import-Package: com.ibm.websphere.request.timing
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.requestTimingMonitor/pom.xml=com.ibm.websphere.appserver.api.requestTimingMonitor.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

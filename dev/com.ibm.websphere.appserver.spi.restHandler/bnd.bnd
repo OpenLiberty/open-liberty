@@ -23,6 +23,8 @@ Export-Package: com.ibm.wsspi.rest.handler,com.ibm.wsspi.rest.handler.helper
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.restHandler/pom.xml=com.ibm.websphere.appserver.spi.restHandler.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

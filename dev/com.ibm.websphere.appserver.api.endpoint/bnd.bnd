@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.endpoint
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.endpoint/pom.xml=com.ibm.websphere.appserver.api.endpoint.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

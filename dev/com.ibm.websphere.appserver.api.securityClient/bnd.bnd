@@ -22,6 +22,8 @@ Export-Package: com.ibm.websphere.security,com.ibm.websphere.security.auth.callb
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.securityClient/pom.xml=com.ibm.websphere.appserver.api.securityClient.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
