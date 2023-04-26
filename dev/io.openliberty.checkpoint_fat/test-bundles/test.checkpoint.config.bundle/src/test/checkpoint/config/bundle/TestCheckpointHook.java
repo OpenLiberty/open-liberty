@@ -86,7 +86,6 @@ public class TestCheckpointHook implements CheckpointHook {
 
     @Modified
     public void modifiedConfig(Map<String, Object> modified) {
-        config.clear();
         config.putAll(modified);
         System.out.println("TESTING - modified " + getConfig());
     }
