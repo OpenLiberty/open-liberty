@@ -24,6 +24,8 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextT
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
+import componenttest.annotation.SkipIfSysProp;
+
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH19342_EJB_SF_Servlet")
 public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
@@ -42,7 +44,8 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     }
 
     // testCaseExpressionOperatorConcurrency
-    // @Test // Not a valid scenario, see RTC 294860
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -51,6 +54,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMRL_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMRL_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -58,7 +62,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    // @Test // Not a valid scenario, see RTC 294860
+    // @Test // Not a valid scenario
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";

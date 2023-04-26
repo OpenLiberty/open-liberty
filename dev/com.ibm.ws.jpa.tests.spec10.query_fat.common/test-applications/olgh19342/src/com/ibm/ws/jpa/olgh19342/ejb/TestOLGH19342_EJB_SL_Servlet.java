@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,8 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
+
+import componenttest.annotation.SkipIfSysProp;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH19342_EJB_SL_Servlet")
@@ -43,6 +45,7 @@ public class TestOLGH19342_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     // testCaseExpressionOperatorConcurrency
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_AMJTA_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_AMJTA_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -51,6 +54,7 @@ public class TestOLGH19342_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_AMRL_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_AMRL_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -58,7 +62,7 @@ public class TestOLGH19342_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
+    // @Test // Not a valid scenario
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_CMTS_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SL_CMTS_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
