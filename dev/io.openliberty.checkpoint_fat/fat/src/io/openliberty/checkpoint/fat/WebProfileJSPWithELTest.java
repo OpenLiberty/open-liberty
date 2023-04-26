@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -50,13 +52,16 @@ public class WebProfileJSPWithELTest {
     public static LibertyServer server;
 
     @BeforeClass
-    public static void exportWebApp() throws Exception {
+    public static void exportWebAppAndServerSetup() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "jsp.with.el");
         war = (WebArchive) ShrinkHelper.addDirectory(war, "test-applications/" + APP_NAME + "/resources");
         CDIArchiveHelper.addBeansXML(war, DiscoveryMode.ALL);
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.OVERWRITE);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, (s) -> {
+            assertNotNull("No Initializing application context message",
+                          server.waitForStringInLogUsingMark(": Initializing application context", 0));
+        });
         server.startServer();
     }
 
