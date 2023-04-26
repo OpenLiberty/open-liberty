@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
+package com.ibm.ws.openapi.ui.fat.tests;
 
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,12 +38,12 @@ import org.testcontainers.containers.VncRecordingContainer.VncRecordingFormat;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.fat.util.Props;
+import com.ibm.ws.openapi.ui.fat.app.TestResource;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
 
 /**
  * A basic test that we can open the UI and that it appears to have loaded correctly
@@ -83,16 +83,28 @@ public class UIBasicTest {
 
     @Before
     public void setupTest() {
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
     }
 
     @Test
-    public void testUI() {
-        driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/openapi/ui");
+    public void testPublicUI() {
+        driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/api/explorer");
+        testUI();
+    }
 
+    @Test
+    public void testPrivateUI() {
+        driver.get("https://admin:test@host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/ibm/api/explorer");
+        testUI();
+    }
+
+    /**
+     * Tests common to both the public and private UI
+     */
+    private void testUI() {
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
-        assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
+        assertThat("Page title", title.getText(), Matchers.containsString("Liberty REST APIs"));
 
         // Check the headerbar colour
         WebElement headerbar = waitForElement(driver, By.cssSelector("div.headerbar"));
@@ -103,11 +115,11 @@ public class UIBasicTest {
         assertThat("Headerbar image", headerbarWrapper.getCssValue("background-image"), startsWith("url(\"data:image/png"));
 
         // Check we can see and open the operation
-        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-testGet"));
         WebElement testGetButton = testGetOpBlock.findElement(By.tagName("button"));
         testGetButton.click();
-        WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));
-        assertNotNull("200 response line", testGet200Response);
+        WebElement testGetDefaultResponse = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"default\"]"));
+        assertNotNull("response line", testGetDefaultResponse);
     }
 
 }
