@@ -11,6 +11,9 @@ package com.ibm.ws.security.social.internal;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +42,7 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
@@ -964,6 +968,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public String getPkceCodeChallengeMethod() {
         return pkceCodeChallengeMethod;
+    }
+
+    @Sensitive
+    @Override
+    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
+        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), JwtUtils.getKeyStoreService());
     }
 
 }

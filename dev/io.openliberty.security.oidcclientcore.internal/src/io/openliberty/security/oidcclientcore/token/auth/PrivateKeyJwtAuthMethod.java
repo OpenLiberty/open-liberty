@@ -19,6 +19,7 @@ import org.jose4j.jwt.JwtClaims;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
@@ -33,9 +34,10 @@ public class PrivateKeyJwtAuthMethod {
     private final String clientId;
     private final String tokenEndpoint;
     private final String clientAssertionSigningAlgorithm;
+    @Sensitive
     private final Key clientAssertionSigningKey;
 
-    public PrivateKeyJwtAuthMethod(String clientId, String tokenEndpoint, String clientAssertionSigningAlgorithm, Key clientAssertionSigningKey) {
+    public PrivateKeyJwtAuthMethod(String clientId, String tokenEndpoint, String clientAssertionSigningAlgorithm, @Sensitive Key clientAssertionSigningKey) {
         this.clientId = clientId;
         this.tokenEndpoint = tokenEndpoint;
         this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;

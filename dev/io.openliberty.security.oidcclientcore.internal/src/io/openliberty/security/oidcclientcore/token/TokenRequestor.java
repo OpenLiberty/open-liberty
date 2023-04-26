@@ -53,6 +53,7 @@ public class TokenRequestor {
     private final HashMap<String, String> customParams;
     private final boolean useSystemPropertiesForHttpClientConnections;
     private final String clientAssertionSigningAlgorithm;
+    @Sensitive
     private final Key clientAssertionSigningKey;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
@@ -187,6 +188,7 @@ public class TokenRequestor {
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;
         private String clientAssertionSigningAlgorithm = "RS256";
+        @Sensitive
         private Key clientAssertionSigningKey = null;
 
         public Builder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String redirectUri, String code) {
@@ -242,7 +244,7 @@ public class TokenRequestor {
             return this;
         }
 
-        public Builder clientAssertionSigningKey(Key clientAssertionSigningKey) {
+        public Builder clientAssertionSigningKey(@Sensitive Key clientAssertionSigningKey) {
             this.clientAssertionSigningKey = clientAssertionSigningKey;
             return this;
         }

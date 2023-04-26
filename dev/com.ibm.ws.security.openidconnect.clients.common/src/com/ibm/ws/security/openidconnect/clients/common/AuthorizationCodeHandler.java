@@ -28,6 +28,7 @@ import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethod;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -191,7 +192,7 @@ public class AuthorizationCodeHandler {
         return pkceHelper.addCodeVerifierToTokenRequestParameters(state, parameters);
     }
 
-    void setAuthMethodSpecificSettings(Builder tokenRequestBuilder, String tokenEndpointAuthMethod) {
+    void setAuthMethodSpecificSettings(Builder tokenRequestBuilder, String tokenEndpointAuthMethod) throws TokenEndpointAuthMethodSettingsException {
         TokenEndpointAuthMethod authMethod = TokenEndpointAuthMethod.getInstance(tokenEndpointAuthMethod, clientConfig);
         if (authMethod == null) {
             return;

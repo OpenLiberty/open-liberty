@@ -25,6 +25,6 @@ public abstract class TokenEndpointAuthMethod {
         return null;
     }
 
-    public abstract void setAuthMethodSpecificSettings(Builder tokenRequestBuilder);
+    public abstract void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException;
 
 }
