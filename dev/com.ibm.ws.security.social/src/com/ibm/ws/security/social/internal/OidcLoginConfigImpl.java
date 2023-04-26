@@ -1,18 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.ArrayList;
@@ -26,17 +22,14 @@ import javax.net.ssl.SSLSocketFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
-import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.SocialLoginWrapperException;
-import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -140,6 +133,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String keyManagementKeyAlias = null;
     public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
     private String pkceCodeChallengeMethod = null;
+    public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
+    private String tokenEndpointAuthSigningAlgorithm = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -167,6 +162,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, userInfoEndpointEnabled);
         signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
         tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
+        tokenEndpointAuthSigningAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM);
+        keyAliasName = configUtils.getConfigAttribute(props, KEY_keyAliasName);
         scope = configUtils.getConfigAttribute(props, KEY_scope);
 
         discovery = false;
@@ -248,7 +245,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         jwksUri = null;
         issuer = null;
         discoveryDocumentHash = null;
-        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
+        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, scope);
     }
 
     @FFDCIgnore({ Exception.class, SocialLoginWrapperException.class })
@@ -305,7 +302,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
      */
     boolean discoverEndpointUrls(JSONObject json) {
 
-        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(json).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
+        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(json).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, scope);
         if (discoveryUtil.calculateDiscoveryDocumentHash(json)) {
             authorizationEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
             tokenEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
@@ -318,6 +315,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             }
             //adjustSignatureAlgorithm();
             tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
+            tokenEndpointAuthSigningAlgorithm = discoveryUtil.adjustTokenEndpointAuthSigningAlgorithm();
             scope = discoveryUtil.adjustScopes();
             discoveryDocumentHash = discoveryUtil.getDiscoveryDocumentHash();
         }
@@ -421,6 +419,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_userUniqueIdAttribute + " = " + userUniqueIdAttribute);
             Tr.debug(tc, KEY_CLOCKSKEW + " = " + clockSkewMsec);
             Tr.debug(tc, KEY_SIGNATURE_ALGORITHM + " = " + signatureAlgorithm);
+            Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
+            Tr.debug(tc, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM + " = " + tokenEndpointAuthSigningAlgorithm);
+            Tr.debug(tc, KEY_keyAliasName + " = " + keyAliasName);
             Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED + " = " + hostNameVerificationEnabled);
@@ -911,6 +912,16 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     }
 
     @Override
+    public String getTokenEndpointAuthSigningAlgorithm() {
+        return tokenEndpointAuthSigningAlgorithm;
+    }
+
+    @Override
+    public String getKeyAliasName() {
+        return keyAliasName;
+    }
+
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
@@ -942,7 +953,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         }
         return null;
     }
-    
+
     @Override
     public OidcSessionCache getOidcSessionCache() {
     	return this.oidcSessionCache;
