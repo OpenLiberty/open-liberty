@@ -33,9 +33,9 @@ import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;

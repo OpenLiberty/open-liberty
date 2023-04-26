@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.common;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException
 public abstract class OidcCommonClientRequest {
 
     private static final TraceComponent tcCommon = Tr.register(OidcCommonClientRequest.class,
-            TraceConstants.TRACE_GROUP,
-            TraceConstants.MESSAGE_BUNDLE);
+            TraceConstantsCommonMessages.TRACE_GROUP,
+            TraceConstantsCommonMessages.MESSAGE_BUNDLE);
 
     public static final String TYPE_ID_TOKEN = "ID Token";
     public static final String TYPE_JWT_TOKEN = "Json Web Token";

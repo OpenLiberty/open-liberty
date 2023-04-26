@@ -15,8 +15,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ibm.ws.security.openidconnect.common.Constants;
-
 /**
  * This is used by the openidconnect client code.
  */

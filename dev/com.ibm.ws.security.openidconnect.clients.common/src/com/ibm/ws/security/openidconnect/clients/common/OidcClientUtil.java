@@ -36,7 +36,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;

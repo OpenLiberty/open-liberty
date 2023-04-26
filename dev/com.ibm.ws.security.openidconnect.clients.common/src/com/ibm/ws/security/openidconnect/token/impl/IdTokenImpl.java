@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.token.PayloadConstants;
 
 public class IdTokenImpl implements Serializable {

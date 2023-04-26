@@ -50,7 +50,6 @@ import com.google.gson.JsonObject;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.structures.Cache;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWSHeader;

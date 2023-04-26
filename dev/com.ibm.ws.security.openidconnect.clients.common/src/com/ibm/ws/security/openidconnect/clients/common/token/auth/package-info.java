@@ -12,7 +12,7 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-package com.ibm.ws.security.openidconnect.common.token.auth;
+package com.ibm.ws.security.openidconnect.clients.common.token.auth;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-import com.ibm.ws.security.openidconnect.common.TraceConstants;
+import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;

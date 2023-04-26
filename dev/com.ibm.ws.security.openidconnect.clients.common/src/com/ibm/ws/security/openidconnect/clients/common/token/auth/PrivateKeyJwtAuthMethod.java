@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.common.token.auth;
+package com.ibm.ws.security.openidconnect.clients.common.token.auth;
 
 import java.security.Key;
 

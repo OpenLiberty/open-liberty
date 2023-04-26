@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.common;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 /**
  * Common constants for OpenID Connect

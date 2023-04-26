@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.common;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
  * This is the config utility class
  */
 public class ConfigUtils {
-    private static final TraceComponent tc = Tr.register(ConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(ConfigUtils.class, TraceConstantsCommonMessages.TRACE_GROUP, TraceConstantsCommonMessages.MESSAGE_BUNDLE);
     private final AtomicServiceReference<ConfigurationAdmin> configAdminRef;
 
     private final CommonConfigUtils commonConfigUtils = new CommonConfigUtils();

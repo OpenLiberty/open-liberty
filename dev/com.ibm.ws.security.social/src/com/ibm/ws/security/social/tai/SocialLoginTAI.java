@@ -537,7 +537,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
             aca.createJwtUserApiResponseAndIssuedJwtFromIdToken(idToken);
             TAISubjectUtils subjectUtils = getTAISubjectUtils(aca);
             // if have userinfo data, put it in the UserProfile object
-            String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.common.Constants.USERINFO_STR);
+            String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.clients.common.Constants.USERINFO_STR);
             if (userInfo != null) {
                 subjectUtils.setUserInfo(userInfo);
             }

@@ -31,14 +31,13 @@ WS-TraceGroup: \
 Export-Package: \
     com.ibm.ws.security.openidconnect.backchannellogout, \
     com.ibm.ws.security.openidconnect.clients.common, \
+    com.ibm.ws.security.openidconnect.clients.common.token.auth, \
     com.ibm.ws.security.openidconnect.client.jose4j.util.*, \
     com.ibm.ws.security.openidconnect.jose4j.*, \
     com.ibm.ws.security.openidconnect.token, \
     com.ibm.ws.security.openidconnect.jwk, \
     com.ibm.ws.security.openidconnect.pkce, \
-    com.ibm.ws.security.openidconnect.token.impl, \
-    com.ibm.ws.security.openidconnect.common, \
-    com.ibm.ws.security.openidconnect.common.token.auth
+    com.ibm.ws.security.openidconnect.token.impl
 
 Import-Package: \
     !*.internal.*, \
