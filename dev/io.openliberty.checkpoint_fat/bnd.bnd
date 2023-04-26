@@ -45,6 +45,7 @@ src: \
 	test-applications/bells/src,\
 	test-applications/virtualhost/src,\
 	test-applications/DefaultPrincipalMappingApp/src,\
+	test-applications/JSPWithEL/src,\
 	test-applications/concurrentApp/src,\
 	test-applications/mapCache/src,\
 	test-applications/webCacheApp/src,\

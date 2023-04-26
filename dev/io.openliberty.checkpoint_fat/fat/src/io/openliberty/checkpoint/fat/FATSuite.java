@@ -68,6 +68,7 @@ import componenttest.topology.impl.LibertyServer;
                 WebSocketTest.class,
                 FacesTest.class,
                 FacesBeanTest.class,
+                WebProfileJSPWithELTest.class,
                 OpenAPITest.class,
                 MPJWTTest.class,
                 MPMetricsTest.class,
