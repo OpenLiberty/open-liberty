@@ -23,6 +23,8 @@ Export-Package: com.ibm.wsspi.security.saml2
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.saml20/pom.xml=com.ibm.websphere.appserver.spi.saml20.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

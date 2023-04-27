@@ -32,6 +32,8 @@ Export-Package: com.ibm.wsspi.webcontainer.extension, \
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.servlet/pom.xml=com.ibm.websphere.appserver.spi.servlet.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

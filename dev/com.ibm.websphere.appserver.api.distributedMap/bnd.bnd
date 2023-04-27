@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.cache,com.ibm.websphere.cache.exception,com.ib
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.distributedMap/pom.xml=com.ibm.websphere.appserver.api.distributedMap.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

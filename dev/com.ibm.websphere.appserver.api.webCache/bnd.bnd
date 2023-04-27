@@ -22,6 +22,8 @@ Export-Package: com.ibm.websphere.command,com.ibm.websphere.command.web,com.ibm.
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.webCache/pom.xml=com.ibm.websphere.appserver.api.webCache.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

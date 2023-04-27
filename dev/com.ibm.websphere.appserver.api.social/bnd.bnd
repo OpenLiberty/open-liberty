@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.security.social
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.social/pom.xml=com.ibm.websphere.appserver.api.social.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

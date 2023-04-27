@@ -78,13 +78,13 @@ public class UpdatePomFiles extends UpdateDirectory {
      */
     @Override
     public String getCriteria() {
-        return "**/pom.xml";
+        return "**/*.pom";
     }
 
     @Override
     public boolean select(String targetPath) {
         // DO NOT USE 'endsWith', which would match "someDir/junkPom.xml".
-        return targetPath.equals("pom.xml") || targetPath.endsWith("/pom.xml");
+        return targetPath.endsWith(".pom");
     }
 
     @Override

@@ -23,6 +23,8 @@ Export-Package: io.openliberty.opentracing.spi.tracer;version=2.0
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/io.openliberty.opentracing.2.0.spi/pom.xml=io.openliberty.opentracing.2.0.spi.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \
