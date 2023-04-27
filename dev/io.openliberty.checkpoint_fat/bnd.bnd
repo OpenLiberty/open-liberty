@@ -167,6 +167,7 @@ tested.features: \
 	io.openliberty.jakarta.concurrency.3.0;version=latest,\
 	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.appserver.api.distributedMap;version=latest
 
 -sub: *.bnd
