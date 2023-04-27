@@ -342,12 +342,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         for (Type interfaceType : repositoryInterface.getGenericInterfaces()) {
             if (interfaceType instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) interfaceType;
-                if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName())) {
-                    Type typeParams[] = parameterizedType.getActualTypeArguments();
-                    if (typeParams.length == 2 && typeParams[0] instanceof Class) {
-                        entityClass = (Class<?>) typeParams[0];
-                        break;
-                    }
+                Type typeParams[] = parameterizedType.getActualTypeArguments();
+                if (typeParams.length == 2 && typeParams[0] instanceof Class) {
+                    entityClass = (Class<?>) typeParams[0];
+                    if (parameterizedType.getRawType().getTypeName().startsWith(DataRepository.class.getPackageName()))
+                        break; // spec-defined repository interfaces take precedence if multiple interfaces are present
                 }
             }
         }
@@ -379,7 +378,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             // TODO if still not found, look through @Query/@Select annotations that indicate an entity result class type?
             if (entityClass == null)
                 throw new IllegalArgumentException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
-                                                   ". To correct this, have the repository interface extend DataRepository " +
+                                                   " To correct this, have the repository interface extend DataRepository" +
                                                    " or another built-in repository interface and supply the entity class as the first parameter.");
         }
 
