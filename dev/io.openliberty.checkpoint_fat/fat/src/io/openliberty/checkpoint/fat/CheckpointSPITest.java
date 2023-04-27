@@ -18,6 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -97,6 +99,12 @@ public class CheckpointSPITest {
     public void testRestoreWithDropinConfig() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("No restore config", "TESTING - modified config: ", "a=override b=override c=override", 500);
+    }
+
+    @Test
+    public void testRestoreWithVariableDirConfig() throws Exception {
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        findLogMessage("No restore config", "TESTING - modified config: ", "a=fileValue b=fileValue c=fileValue", 500);
     }
 
     @Test
@@ -225,6 +233,12 @@ public class CheckpointSPITest {
                     // dropin configs value overrides defaultValue in restore
                     server.addDropinOverrideConfiguration("dropinConfigChange/override.xml");
                     break;
+                case testRestoreWithVariableDirConfig:
+                    // add files to variables directory that overrides defaultValue in restore
+                    new File(server.getServerRoot(), "variables").mkdirs();
+                    server.copyFileToLibertyServerRoot("variables", "configVariables/a_value");
+                    server.copyFileToLibertyServerRoot("variables", "configVariables/b_value");
+                    server.copyFileToLibertyServerRoot("variables", "configVariables/c_value");
                 case testStaticHook:
                     findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
                     findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
@@ -249,6 +263,10 @@ public class CheckpointSPITest {
             server.restoreServerConfiguration();
             server.deleteFileFromLibertyServerRoot("server.env");
             server.deleteDropinOverrideConfiguration("override.xml");
+            server.deleteFileFromLibertyServerRoot("variables/a_value");
+            server.deleteFileFromLibertyServerRoot("variables/b_value");
+            server.deleteFileFromLibertyServerRoot("variables/c_value");
+
         } finally {
             server.unsetCheckpoint();
         }
@@ -258,6 +276,7 @@ public class CheckpointSPITest {
         testRestoreWithDefaults,
         testRestoreWithEnvSet,
         testRestoreWithDropinConfig,
+        testRestoreWithVariableDirConfig,
         testAddImmutableEnvKey,
         testRunningConditionLaunch,
         testFailedCheckpoint,
