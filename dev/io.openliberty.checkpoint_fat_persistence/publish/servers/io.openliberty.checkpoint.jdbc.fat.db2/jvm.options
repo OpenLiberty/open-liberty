@@ -1,2 +1,3 @@
 -Djavax.net.debug=all
 -Dcom.ibm.ws.beta.edition=true
+-Xdump:java:events=throw+systhrow,filter=org/eclipse/openj9/criu/JVMCheckpointException,request=exclusive+preempt
