@@ -493,6 +493,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     @FFDCIgnore(Exception.class)
+    @Trivial
     private void callHooks(String operation, List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
@@ -507,6 +508,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
+    @Trivial
     private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks("prepare",
                   checkpointHooks,
