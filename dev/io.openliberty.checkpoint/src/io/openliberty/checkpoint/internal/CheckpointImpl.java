@@ -520,6 +520,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E", cause.getMessage()), cause);
     }
 
+    @Trivial
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         // The first thing is to set the jvmRestore flag
         jvmRestore.set(true);
