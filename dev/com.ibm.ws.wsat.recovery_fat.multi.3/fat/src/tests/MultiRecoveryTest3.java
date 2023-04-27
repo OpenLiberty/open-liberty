@@ -61,13 +61,8 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest {
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	// Need Jon Review:
-	// javax.transaction.xa.XAException 
-	// Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
-	// Need review on whether it is expected
-	// Maybe a defect so
-	// Add @ExpectedFFDC(value = {"javax.transaction.xa.XAException"})
-	// Because javax.transaction.xa.XAException > at com.ibm.tx.jta.embeddable.impl.WSATParticipantWrapper.commit(WSATParticipantWrapper.java:118)
+	// Can get HeuristicRollbackException if commit gets through to subordinate after resources were already dumped
+	@AllowedFFDC(value={"javax.transaction.HeuristicRollbackException"})
 	public void WSTXMPR010CFVT() throws Exception {
 		recoveryTest(server1, server2, "1003","both");
 	}
