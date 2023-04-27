@@ -22,17 +22,22 @@ public class LTPAConstants {
     /**
      * Used to identify the LTPA shared key.
      */
-    protected static final String SECRET_KEY = "ltpa_shared_key";
+    protected static final String PRIMARY_SECRET_KEY = "primary_ltpa_shared_key";
 
     /**
      * Used to identify the LTPA private key.
      */
-    protected static final String PRIVATE_KEY = "ltpa_private_key";
+    protected static final String PRIMARY_PRIVATE_KEY = "primary_ltpa_private_key";
 
     /**
      * Used to identify the LTPA public key.
      */
-    protected static final String PUBLIC_KEY = "ltpa_public_key";
+    protected static final String PRIMARY_PUBLIC_KEY = "primary_ltpa_public_key";
+
+    /**
+     *
+     */
+    public static final String VALIDATION_KEYS = "ltpa_validation_keys";
 
     /**
      * Used to identify the unique identifier of a user.

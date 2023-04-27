@@ -1,16 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.token.ltpa;
+
+import java.util.List;
+import java.util.Properties;
 
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -40,6 +43,13 @@ public interface LTPAConfiguration {
      */
     public static final String CFG_KEY_MONITOR_INTERVAL = "monitorInterval";
 
+    static final String CFG_KEY_MONITOR_DIRECTORY = "monitorDirectory";
+
+    static final String CFG_KEY_VALIDATION_KEYS = "validationKeys";
+    static final String CFG_KEY_VALIDATION_FILE_NAME = "fileName";
+    static final String CFG_KEY_VALIDATION_PASSWORD = "password";
+    static final String CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE = "notUseAfterDate";
+
     /**
      * @return TokenFactory instance corresponding to this LTPA configuration
      */
@@ -53,12 +63,12 @@ public interface LTPAConfiguration {
     /**
      * @return LTPA key file
      */
-    String getKeyFile();
+    String getPrimaryKeyFile();
 
     /**
      * @return LTPA key password
      */
-    String getKeyPassword();
+    String getPrimaryKeyPassword();
 
     /**
      * @return LTPA expiration
@@ -66,7 +76,7 @@ public interface LTPAConfiguration {
     long getTokenExpiration();
 
     /**
-     * @return authFilter reference
+     * @return authFiler reference
      */
     String getAuthFilterRef();
 
@@ -74,5 +84,15 @@ public interface LTPAConfiguration {
      * @return Maximum expiration difference allowed
      */
     long getExpirationDifferenceAllowed();
+
+    /**
+     * @return monitor directory
+     */
+    boolean getMonitorDirectory();
+
+    /**
+     * @return validation Keys
+     */
+    List<Properties> getValidationKeys();
 
 }

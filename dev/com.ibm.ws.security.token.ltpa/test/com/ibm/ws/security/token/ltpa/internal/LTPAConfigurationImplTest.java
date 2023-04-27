@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,8 +37,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
@@ -47,6 +45,8 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -216,12 +216,12 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getKeyFile()}.
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getPrimaryKeyFile()}.
      */
     @Test
     public void getKeyFile() {
         assertEquals("Key file value was not the expected value",
-                     PATH_TO_FILE, ltpaConfig.getKeyFile());
+                     PATH_TO_FILE, ltpaConfig.getPrimaryKeyFile());
     }
 
     /**
@@ -258,12 +258,12 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getKeyPassword()}.
+     * Test method for {@link com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl#getPrimaryKeyPassword()}.
      */
     @Test
     public void getKeyPassword() {
         assertEquals("Key file value was not the expected value",
-                     PWD, ltpaConfig.getKeyPassword());
+                     PWD, ltpaConfig.getPrimaryKeyPassword());
     }
 
     /**
@@ -408,7 +408,7 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, RESOLVED_DEFAULT_OUTPUT_LOCATION);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
         assertEquals("Key file value was not the expected value",
-                     RESOLVED_DEFAULT_CONFIG_LOCATION, ltpaConfig.getKeyFile());
+                     RESOLVED_DEFAULT_CONFIG_LOCATION, ltpaConfig.getPrimaryKeyFile());
     }
 
     @Test
@@ -425,7 +425,7 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, RESOLVED_DEFAULT_OUTPUT_LOCATION);
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
         assertEquals("Key file value was not the expected value",
-                     RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getKeyFile());
+                     RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getPrimaryKeyFile());
     }
 
 }

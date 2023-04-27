@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,13 +27,16 @@ public interface LTPAKeyFileUtility {
 	public static final String CREATION_DATE_PROPERTY = "com.ibm.websphere.CreationDate";
 	public static final String CREATION_HOST_PROPERTY = "com.ibm.websphere.CreationHost";
 
+	public static final String VALIDATION_KEYS_PROPERTY = "com.ibm.websphere.ltpa.ltpa_validation_keys";
+
 	/**
-	 * Create the LTPA keys file at the specified location using
-	 * the specified password bytes.
+	 * Create the LTPA keys file at the specified location using the specified
+	 * password bytes.
 	 *
 	 * @param keyFile
 	 * @param keyPasswordBytes
-	 * @return A Properties object containing the various attributes created for the LTPA keys
+	 * @return A Properties object containing the various attributes created for the
+	 *         LTPA keys
 	 * @throws Exception
 	 */
 	Properties createLTPAKeysFile(String keyFile, byte[] keyPasswordBytes) throws Exception;

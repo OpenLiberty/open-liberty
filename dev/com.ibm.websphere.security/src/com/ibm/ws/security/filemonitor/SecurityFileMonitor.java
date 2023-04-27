@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,17 +39,33 @@ public class SecurityFileMonitor implements FileMonitor {
     }
 
     /**
-     * Registers this file monitor to start monitoring the specified files at the specified interval.
+     * Registers this file monitor to start monitoring the specified directory and/or files at the specified interval.
      *
-     * @param paths the paths of the files to monitor.
+     * @param paths           the paths of the files to monitor.
      * @param monitorInterval the rate to monitor the files.
      *
      * @return the <code>FileMonitor</code> service registration.
      */
     public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> paths, long monitorInterval) {
+        return monitorFiles(null, paths, monitorInterval);
+    }
+
+    /**
+     * Registers this file monitor to start monitoring the specified directory and/or files at the specified interval.
+     *
+     * @param dirs            the dirs to monitor.
+     * @param paths           the paths of the files to monitor.
+     * @param monitorInterval the rate to monitor the files.
+     *
+     * @return the <code>FileMonitor</code> service registration.
+     */
+    public ServiceRegistration<FileMonitor> monitorFiles(Collection<String> dirs, Collection<String> paths, long monitorInterval) {
         BundleContext bundleContext = actionable.getBundleContext();
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
+        if (dirs != null && !dirs.isEmpty()) {
+            fileMonitorProps.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
+        }
         fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, monitorInterval);
         return bundleContext.registerService(FileMonitor.class, this, fileMonitorProps);
     }
@@ -57,11 +73,11 @@ public class SecurityFileMonitor implements FileMonitor {
     /**
      * Registers this file monitor to start monitoring the specified files either by mbean
      * notification or polling rate.
-     * 
-     * @param id of the config element
-     * @param paths the paths of the files to monitor.
+     *
+     * @param id          of the config element
+     * @param paths       the paths of the files to monitor.
      * @param pollingRate the rate to pole he file for a change.
-     * @param trigger what trigger the file update notification mbean or poll
+     * @param trigger     what trigger the file update notification mbean or poll
      * @return The <code>FileMonitor</code> service registration.
      */
     public ServiceRegistration<FileMonitor> monitorFiles(String ID, Collection<String> paths, long pollingRate, String trigger) {
@@ -69,7 +85,8 @@ public class SecurityFileMonitor implements FileMonitor {
         final Hashtable<String, Object> fileMonitorProps = new Hashtable<String, Object>();
         fileMonitorProps.put(FileMonitor.MONITOR_FILES, paths);
         //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
-        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_MONITOR_IDENTIFICATION_VALUE);
+        fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME,
+                             com.ibm.ws.kernel.filemonitor.FileMonitor.SECURITY_MONITOR_IDENTIFICATION_VALUE);
         //Adding parameter MONITOR_IDENTIFICATION_CONFIG_ID to identify this monitor by the ID.
         fileMonitorProps.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_KEYSTORE_CONFIG_ID, ID);
         if (!(trigger.equalsIgnoreCase("disabled"))) {
@@ -90,7 +107,8 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void onBaseline(Collection<File> baseline) {}
+    public void onBaseline(Collection<File> baseline) {
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -102,7 +120,7 @@ public class SecurityFileMonitor implements FileMonitor {
             allFiles.addAll(deletedFiles);
         }
 
-        if (isActionNeeded(createdFiles, modifiedFiles)) {
+        if (isActionNeeded(createdFiles, modifiedFiles, deletedFiles)) {
             if (createdFiles.isEmpty() == false) {
                 allFiles.addAll(createdFiles);
             }
@@ -120,17 +138,22 @@ public class SecurityFileMonitor implements FileMonitor {
      *
      * @param modifiedFiles
      */
-    private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles) {
+    private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         boolean actionNeeded = false;
 
         for (File createdFile : createdFiles) {
             if (currentlyDeletedFiles.contains(createdFile)) {
                 currentlyDeletedFiles.remove(createdFile);
                 actionNeeded = true;
+            } else { // new file
+                actionNeeded = true;
             }
         }
 
         if (modifiedFiles.isEmpty() == false) {
+            actionNeeded = true;
+        }
+        if (!deletedFiles.isEmpty()) {
             actionNeeded = true;
         }
         return actionNeeded;
