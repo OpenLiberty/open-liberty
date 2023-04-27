@@ -94,6 +94,12 @@ public class CheckpointSPITest {
     }
 
     @Test
+    public void testRestoreWithDropinConfig() throws Exception {
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        findLogMessage("No restore config", "TESTING - modified config: ", "a=override b=override c=override", 500);
+    }
+
+    @Test
     public void testAddImmutableEnvKey() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Unexpected value for mutable key", "TESTING - in restore envs -", " v1 - v2 - v3 - v4", 500);
@@ -215,6 +221,10 @@ public class CheckpointSPITest {
                     // environment value overrides defaultValue in restore
                     server.copyFileToLibertyServerRoot("envConfigChange/server.env");
                     break;
+                case testRestoreWithDropinConfig:
+                    // dropin configs value overrides defaultValue in restore
+                    server.addDropinOverrideConfiguration("dropinConfigChange/override.xml");
+                    break;
                 case testStaticHook:
                     findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
                     findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
@@ -234,15 +244,20 @@ public class CheckpointSPITest {
 
     @After
     public void afterEachTest() throws Exception {
-        server.stopServer();
-        server.restoreServerConfiguration();
-        server.deleteFileFromLibertyInstallRoot("server.env");
-        server.unsetCheckpoint();
+        try {
+            server.stopServer();
+            server.restoreServerConfiguration();
+            server.deleteFileFromLibertyServerRoot("server.env");
+            server.deleteDropinOverrideConfiguration("override.xml");
+        } finally {
+            server.unsetCheckpoint();
+        }
     }
 
     static enum TestMethod {
         testRestoreWithDefaults,
         testRestoreWithEnvSet,
+        testRestoreWithDropinConfig,
         testAddImmutableEnvKey,
         testRunningConditionLaunch,
         testFailedCheckpoint,
