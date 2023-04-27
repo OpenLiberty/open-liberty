@@ -612,7 +612,7 @@ task buildandrun {
   dependsOn runfat
 }
 
-task buildFatAndRelease {
+task releasefat {
   dependsOn buildfat
   dependsOn release
 }
