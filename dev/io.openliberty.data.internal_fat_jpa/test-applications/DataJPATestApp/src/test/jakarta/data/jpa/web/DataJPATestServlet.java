@@ -293,7 +293,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
-                             taxpayers.findAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
+                             taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
                                              .map(AccountId::toString)
                                              .sorted()
                                              .collect(Collectors.toList()));
@@ -1623,7 +1623,7 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         // find multiple collection attributes as List
-        List<Set<CityId>> cityLists = counties.findCityListByNameStartsWith("W");
+        List<Set<CityId>> cityLists = counties.findCitiesByNameStartsWith("W");
         assertEquals(cityLists.toString(), 2, cityLists.size());
 
         assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),

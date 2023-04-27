@@ -190,7 +190,7 @@ class QueryInfo {
                         : Set.of(attribute);
 
         for (String name : names) {
-            name = entityInfo.getAttributeName(name);
+            name = entityInfo.getAttributeName(name, true);
 
             sorts.add(ignoreCase ? //
                             descending ? //
@@ -223,7 +223,7 @@ class QueryInfo {
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name), sort));
+                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else
                 combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
         }
@@ -249,7 +249,7 @@ class QueryInfo {
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name), sort));
+                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else
                 combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
         }
@@ -491,7 +491,7 @@ class QueryInfo {
                                         " entity type that is expected for this repository.");
             int p = 0;
             for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
-                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr));
+                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr, true));
                 Object param = arg;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
@@ -513,7 +513,7 @@ class QueryInfo {
      * @return entity id or list of entity ids.
      */
     private Object toEntityId(Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        List<Member> keyAccessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id"));
+        List<Member> keyAccessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id", true));
 
         if (value instanceof Iterable) {
             List<Object> list = new ArrayList<>();

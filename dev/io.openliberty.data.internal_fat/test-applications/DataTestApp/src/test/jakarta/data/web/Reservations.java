@@ -93,8 +93,7 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
 
     // Use a record as the return type
-    @Select({ "start", "stop" })
-    ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    ReservedTimeSlot[] findStartAndStopByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
