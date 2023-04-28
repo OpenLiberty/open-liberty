@@ -313,7 +313,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
-                String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
+                String name = entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+                String attrName = entityInfo.getAttributeName(name, true);
                 q = new StringBuilder(15 + 2 * o.length() + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT ").append(o).append('.').append(attrName) //
                                 .append(" FROM ").append(entityInfo.name).append(' ').append(o);
@@ -321,7 +322,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(whereClause);
             } else if (whereClause != null) {
                 queryInfo.type = QueryInfo.Type.SELECT;
-                q = generateSelectClause(queryInfo).append(whereClause);
+                Select select = queryInfo.method.getAnnotation(Select.class);
+                q = generateSelectClause(queryInfo, select).append(whereClause);
                 if (countPages && queryInfo.type == QueryInfo.Type.SELECT)
                     generateCount(queryInfo, whereClause.toString());
             } else if (queryInfo.method.getName().startsWith("save")) {
@@ -339,7 +341,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     Select select = queryInfo.method.getAnnotation(Select.class);
                     if (select != null) {
                         queryInfo.type = QueryInfo.Type.SELECT;
-                        q = generateSelectClause(queryInfo);
+                        q = generateSelectClause(queryInfo, select);
                         if (countPages)
                             generateCount(queryInfo, null);
                     }
@@ -425,7 +427,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
             if (q == null)
                 if (queryInfo.jpql == null) {
-                    q = generateSelectClause(queryInfo);
+                    Select select = queryInfo.method.getAnnotation(Select.class); // TODO can this ever be present here and not already handled by other code path?
+                    q = generateSelectClause(queryInfo, select);
                     if (countPages)
                         generateCount(queryInfo, null);
                 } else {
@@ -716,7 +719,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (attribute.length() == 0)
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
-        String name = queryInfo.entityInfo.getAttributeName(attribute);
+        String name = queryInfo.entityInfo.getAttributeName(attribute, true);
         if (name == null) {
             if (attribute.length() == 3) {
                 // Special case for CrudRepository.deleteAll and CrudRepository.findAll
@@ -813,7 +816,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (++count != 1)
                 q.append(" AND ");
 
-            String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
+            String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
             if (ignoreCase)
                 q.append("LOWER(").append(o).append('.').append(name).append(')');
             else
@@ -940,16 +943,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         String methodName = queryInfo.method.getName();
         StringBuilder q = null;
         if (methodName.startsWith("find")) {
+            Select select = queryInfo.method.getAnnotation(Select.class);
+            List<String> selections = select == null ? new ArrayList<>() : null;
             int by = methodName.indexOf("By", 4);
             int c = by < 0 ? 4 : by + 2;
             if (by > 4) {
                 if ("findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
                     methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
                 else
-                    parseFindBy(queryInfo, methodName.substring(4, by));
+                    parseFindBy(queryInfo, methodName.substring(4, by), selections);
             }
             int orderBy = methodName.lastIndexOf("OrderBy");
-            q = generateSelectClause(queryInfo);
+            q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 int where = q.length();
                 generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
@@ -1005,7 +1010,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
-            String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
+            String name = entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
@@ -1047,14 +1053,31 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
     }
 
-    private StringBuilder generateSelectClause(QueryInfo queryInfo) {
+    /**
+     * Generates the SELECT clause of the JPQL.
+     *
+     * @param queryInfo  query information
+     * @param select     Select annotation if present on the method.
+     * @param selections selections from find...By if present and there is no Select annotation.
+     * @return the SELECT clause.
+     */
+    private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select, String... selections) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
 
-        Select select = queryInfo.method.getAnnotation(Select.class);
-        String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
         String function = select == null ? null : toFunctionName(select.function());
+        String[] cols;
+        if (select == null) {
+            cols = selections;
+        } else {
+            selections = select.value();
+            cols = new String[selections == null ? 0 : selections.length];
+            for (int i = 0; i < cols.length; i++) {
+                String name = queryInfo.entityInfo.getAttributeName(selections[i], true);
+                cols[i] = name == null ? selections[i] : name;
+            }
+        }
 
         Class<?> singleType = queryInfo.getSingleResultType();
 
@@ -1092,7 +1115,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     boolean first = true;
                     if (singleType.equals(queryInfo.entityInfo.idClass))
                         for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
-                            String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
+                            String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName, true);
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
@@ -1116,7 +1139,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                       || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
                                       || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType);
             if (!selectAsColumns && cols.length == 1) {
-                String singleAttributeName = queryInfo.entityInfo.getAttributeName(cols[0]);
+                String singleAttributeName = cols[0];
                 Class<?> attributeType = queryInfo.entityInfo.collectionElementTypes.get(singleAttributeName);
                 if (attributeType == null)
                     attributeType = queryInfo.entityInfo.attributeTypes.get(singleAttributeName);
@@ -1126,14 +1149,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (selectAsColumns) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, o, queryInfo.entityInfo.getAttributeName(cols[i]));
+                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
                 }
             } else {
                 // Construct new instance from defined columns
                 q.append("NEW ").append(singleType.getName()).append('(');
                 for (int i = 0; i < cols.length; i++) {
-                    String name = queryInfo.entityInfo.getAttributeName(cols[i]);
-                    generateSelectExpression(q, i == 0, function, distinct, o, name == null ? cols[i] : name);
+                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
                 }
                 q.append(')');
             }
@@ -1212,7 +1234,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 next = div;
 
             String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
 
             if (name == null) {
                 if (op == '=') {
@@ -1263,7 +1285,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         for (Update update : updates) {
             String attribute = update.attr();
             Operation op = update.op();
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
 
             if (name == null) {
                 if (op == Operation.Assign)
@@ -1348,7 +1370,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
             count++;
-            String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
+            String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
 
             q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name);
             if (paramName == null) { // positional parameter
@@ -1416,7 +1438,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (attribute.length() == 0)
                 throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
             if (name == null) {
                 generateConditionsForIdClass(queryInfo, filter, Condition.forIdClass(comparison), ignoreCase, negated, q);
                 continue;
@@ -1924,33 +1946,72 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Parses and handles the text between find___By of a repository method.
      * Currently this is only "First" or "First#".
+     * "Distinct" is reserved for future use.
+     * Entity property names can be included (delimited by "And" when there are multiple) to select only those results.
      *
-     * @param queryInfo partially complete query information to populate with a maxResults value for findFirst(#)By...
-     * @param s         the portion of the method name between find and By to parse.
+     * @param queryInfo  partially complete query information to populate with a maxResults value for findFirst(#)By...
+     * @param s          the portion of the method name between find and By to parse.
+     * @param selections order list to which to add selections int the find...By. If null, do not look for selections.
      */
-    private void parseFindBy(QueryInfo queryInfo, String s) {
-        int first = s.indexOf("First");
-        if (first >= 0) {
-            int length = s.length();
-            int num = first + 5 == length ? 1 : 0;
-            if (num == 0)
-                for (int c = first + 5; c < length; c++) {
-                    char ch = s.charAt(c);
-                    if (ch >= '0' && ch <= '9') {
-                        if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
-                            num = num * 10 + (ch - '0');
-                        else
-                            throw new UnsupportedOperationException(s + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
-                    } else {
-                        if (c == first + 5)
-                            num = 1;
-                        break;
+    private void parseFindBy(QueryInfo queryInfo, String s, List<String> selections) {
+        int start = 0;
+        int length = s.length();
+        for (boolean first = s.startsWith("First", start), distinct = !first && s.startsWith("Distinct", start); first || distinct;)
+            if (first) {
+                start += 5;
+                int num = start == length ? 1 : 0;
+                if (num == 0)
+                    for (int c = start; c < length; c++) {
+                        char ch = s.charAt(c);
+                        if (ch >= '0' && ch <= '9') {
+                            start++;
+                            if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
+                                num = num * 10 + (ch - '0');
+                            else
+                                throw new UnsupportedOperationException(s + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+                        } else {
+                            if (c == start)
+                                num = 1;
+                            break;
+                        }
                     }
+                if (num == 0)
+                    throw new DataException("The number of results to retrieve must not be 0 on the " + queryInfo.method.getName() + " method."); // TODO NLS
+                else
+                    queryInfo.maxResults = num;
+
+                first = false;
+                distinct = s.startsWith("Distinct", start);
+            } else if (distinct) {
+                throw new DataException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
+            }
+
+        if (selections != null) {
+            List<String> notFound = new ArrayList<>();
+            do {
+                int and = s.indexOf("And", start);
+                if (and == -1)
+                    and = s.length();
+
+                if (start < and) {
+                    String name = s.substring(start, and);
+                    String attrName = queryInfo.entityInfo.getAttributeName(name, false);
+                    if (attrName == null)
+                        notFound.add(name);
+                    else
+                        selections.add(attrName);
                 }
-            if (num == 0)
-                throw new DataException(s); // First0
-            else
-                queryInfo.maxResults = num;
+
+                start = and + 3;
+            } while (start < length);
+
+            // Enforcement of missing names should only be done if the user is trying to specify
+            // property selections vs including descriptive text in the method name.
+            if (!selections.isEmpty() && !notFound.isEmpty())
+                throw new MappingException("Entity class " + queryInfo.entityInfo.type.getName() +
+                                           " does not have properties named " + notFound +
+                                           ". The following are valid property names for the entity: " +
+                                           queryInfo.entityInfo.attributeTypes.keySet()); // TODO NLS
         }
     }
 

@@ -21,8 +21,6 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 
-import io.openliberty.data.repository.Select;
-
 /**
  * Repository for the County entity.
  */
@@ -38,30 +36,23 @@ public interface Counties {
 
     Optional<County> findByZipCodes(int... zipcodes);
 
-    @Select("cities")
     @OrderBy("name")
-    List<Set<CityId>> findCityListByNameStartsWith(String beginning);
+    List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
-    @Select("zipcodes")
     int[] findZipCodesById(String name);
 
-    @Select("zipcodes")
     Optional<int[]> findZipCodesByName(String name);
 
-    @Select("zipcodes")
     @OrderBy("population")
     Stream<int[]> findZipCodesByNameEndsWith(String ending);
 
-    @Select("zipcodes")
     @OrderBy("name")
     List<int[]> findZipCodesByNameNotStartsWith(String beginning);
 
-    @Select("zipcodes")
     @OrderBy("population")
     @OrderBy("name")
     Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
 
-    @Select("zipcodes")
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopuluation);
 

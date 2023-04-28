@@ -78,14 +78,14 @@ class EntityInfo {
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
     }
 
-    String getAttributeName(String name) {
+    String getAttributeName(String name, boolean failIfNotFound) {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
             if ("All".equals(name))
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             else if ("id".equals(lowerName))
-                if (idClass == null)
+                if (idClass == null && failIfNotFound)
                     throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
                                                " or which is designated as the @Id."); // TODO NLS
                 else
@@ -100,7 +100,7 @@ class EntityInfo {
                     // tolerate possible mixture of . and _ separators with lack of separators:
                     lowerName = lowerName.replace("_", "");
                     attributeName = attributeNames.get(lowerName);
-                    if (attributeName == null)
+                    if (attributeName == null && failIfNotFound)
                         throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
                                                    ". The following are valid property names for the entity: " +
                                                    attributeTypes.keySet()); // TODO NLS
@@ -124,7 +124,7 @@ class EntityInfo {
      */
     @Trivial
     Sort getWithAttributeName(String name, Sort sort) {
-        name = getAttributeName(name);
+        name = getAttributeName(name, true);
         if (name == sort.property())
             return sort;
         else

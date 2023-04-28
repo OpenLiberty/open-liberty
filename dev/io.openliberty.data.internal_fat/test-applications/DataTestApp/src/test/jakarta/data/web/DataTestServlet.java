@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -814,7 +815,28 @@ public class DataTestServlet extends FATServlet {
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
 
+        // Find a single attribute type
+
+        assertArrayEquals(new int[] { 180, 200, 220, 220 },
+                          houses.findGarageAreaByGarageNotNull());
+
+        // Removal by an embeddable attribute
+
         assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Find a subset of attributes
+
+        Object[] tuple = houses.findGarageDoorAndKitchenLengthAndKitchenWidthById("TestEmbeddable-304-3655-30").orElseThrow();
+        GarageDoor door = (GarageDoor) tuple[0];
+        assertEquals(8, door.getHeight());
+        assertEquals(9, door.getWidth());
+        assertEquals(Integer.valueOf(14), tuple[1]); // kitchen length
+        assertEquals(Integer.valueOf(12), tuple[2]); // kitchen width
+
+        assertIterableEquals(List.of("[14, 12, 180, 1700]", "[15, 12, 200, 1800]"),
+                             houses.findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(2000)
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
 
         // Update embeddable attributes
 
@@ -3351,9 +3373,9 @@ public class DataTestServlet extends FATServlet {
 
         reservations.saveAll(Set.of(r1, r2, r3, r4));
 
-        ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
-                                                                                             OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
-                                                                                             OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        ReservedTimeSlot[] reserved = reservations.findStartAndStopByLocationAndStartBetweenOrderByStart("30-2 C206",
+                                                                                                         OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                                                         OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
         assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
                                                    new ReservedTimeSlot(r1.start, r1.stop),
                                                    new ReservedTimeSlot(r3.start, r3.stop) },

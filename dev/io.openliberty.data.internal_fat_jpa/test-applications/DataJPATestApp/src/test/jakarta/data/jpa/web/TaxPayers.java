@@ -31,8 +31,7 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @Select("bankAccounts")
     Set<AccountId> findAccountsBySSN(long ssn);
 
-    @Select("bankAccounts")
-    Stream<AccountId> findAccountsByFilingStatus(TaxPayer.FilingStatus status);
+    Stream<AccountId> findBankAccountsByFilingStatus(TaxPayer.FilingStatus status);
 
     @OrderBy("income")
     @OrderBy("ssn")
