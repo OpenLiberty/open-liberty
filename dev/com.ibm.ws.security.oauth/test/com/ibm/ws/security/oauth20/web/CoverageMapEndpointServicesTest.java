@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.web;
 
@@ -32,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import com.ibm.oauth.core.api.error.OidcServerException;
@@ -39,7 +37,6 @@ import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
-import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
 
 import test.common.SharedOutputManager;
 
@@ -136,7 +133,7 @@ public class CoverageMapEndpointServicesTest {
 
         final String cacheCtrHdr = "public, max-age=3600";
 
-        final String expectedJSON = JsonTokenUtil.toJsonFromObj(members);
+        final String expectedJSON = new Gson().toJson(members);
         try {
             mock.checking(new Expectations() {
                 {

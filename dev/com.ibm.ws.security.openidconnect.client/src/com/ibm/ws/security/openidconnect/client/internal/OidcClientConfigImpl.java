@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
@@ -106,6 +106,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_REALM_NAME = "realmName";
     public static final String CFG_KEY_UNIQUE_USER_IDENTIFIER = "uniqueUserIdentifier";
     public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD = "tokenEndpointAuthMethod";
+    public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
+    public static final String CFG_KEY_KEY_ALIAS_NAME = "keyAliasName";
     public static final String CFG_KEY_USER_IDENTITY_TO_CREATE_SUBJECT = "userIdentityToCreateSubject";
     public static final String CFG_KEY_MAP_IDENTITY_TO_REGISTRY_USER = "mapIdentityToRegistryUser";
     public static final String CFG_KEY_OidcclientRequestParameterSupported = "oidcclientRequestParameterSupported";
@@ -212,6 +214,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String realmName;
     private String uniqueUserIdentifier;
     private String tokenEndpointAuthMethod;
+    private String tokenEndpointAuthSigningAlgorithm;
+    private String keyAliasName;
     private String userIdentityToCreateSubject;
     private boolean mapIdentityToRegistryUser;
     private boolean oidcclientRequestParameterSupported;
@@ -431,6 +435,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         realmName = trimIt((String) props.get(CFG_KEY_REALM_NAME));
         uniqueUserIdentifier = trimIt((String) props.get(CFG_KEY_UNIQUE_USER_IDENTIFIER));
         tokenEndpointAuthMethod = trimIt((String) props.get(CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD));
+        tokenEndpointAuthSigningAlgorithm = trimIt((String) props.get(CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM));
+        keyAliasName = trimIt((String) props.get(CFG_KEY_KEY_ALIAS_NAME));
 
         userIdentityToCreateSubject = trimIt((String) props.get(CFG_KEY_USER_IDENTITY_TO_CREATE_SUBJECT));
         checkForValidValue(userIdentityToCreateSubject);
@@ -577,6 +583,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "realmName: " + realmName);
             Tr.debug(tc, "uniqueUserIdentifier: " + uniqueUserIdentifier);
             Tr.debug(tc, "tokenEndpointAuthMethod: " + tokenEndpointAuthMethod);
+            Tr.debug(tc, "tokenEndpointAuthSigningAlgorithm: " + tokenEndpointAuthSigningAlgorithm);
+            Tr.debug(tc, "keyAliasName: " + keyAliasName);
             Tr.debug(tc, "userIdentityToCreateSubject: " + userIdentityToCreateSubject);
             Tr.debug(tc, "mapIdentityToRegistryUser: " + mapIdentityToRegistryUser);
             Tr.debug(tc, "oidcclientRequestParameterSupported: " + oidcclientRequestParameterSupported);
@@ -770,6 +778,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         }
     }
 
+    void adjustTokenEndpointAuthSigningAlgorithm() {
+        this.tokenEndpointAuthSigningAlgorithm = discoveryUtils.adjustTokenEndpointAuthSigningAlgorithm();
+    }
+
     void adjustSignatureAlgorithm() {
 
         ArrayList<String> discoverySigAlgorithm = discoveryUtils.discoverOPConfig(discoveryjson.get(OPDISCOVERY_IDTOKEN_SIGN_ALG));
@@ -952,6 +964,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     boolean discoverEndpointUrls(JSONObject json) {
 
         if (calculateDiscoveryDocumentHash(json)) {
+            discoveryUtils.discoveryDocumentResult(json);
             this.authorizationEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
             this.tokenEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
             this.jwkEndpointUrl = discoveryUtils.discoverOPConfigSingleValue(json.get(OPDISCOVERY_JWKS_EP_URL));
@@ -963,6 +976,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
             adjustSignatureAlgorithm();
             adjustTokenEndpointAuthMethod();
+            adjustTokenEndpointAuthSigningAlgorithm();
             adjustScopes();
         }
 
@@ -1223,6 +1237,18 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getTokenEndpointAuthMethod() {
         return tokenEndpointAuthMethod;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTokenEndpointAuthSigningAlgorithm() {
+        return tokenEndpointAuthSigningAlgorithm;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getKeyAliasName() {
+        return keyAliasName;
     }
 
     /** {@inheritDoc} */

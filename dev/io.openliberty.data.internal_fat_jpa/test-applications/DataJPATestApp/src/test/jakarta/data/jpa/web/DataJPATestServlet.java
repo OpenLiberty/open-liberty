@@ -22,13 +22,17 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
@@ -42,6 +46,8 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -287,7 +293,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("AccountId:10105600:560237", "AccountId:15561600:391588", "AccountId:43014400:410224"),
-                             taxpayers.findAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
+                             taxpayers.findBankAccountsByFilingStatus(TaxPayer.FilingStatus.HeadOfHousehold)
                                              .map(AccountId::toString)
                                              .sorted()
                                              .collect(Collectors.toList()));
@@ -530,7 +536,7 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        accounts.delete(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+        accounts.remove(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
 
         // JPQL with "IN", which this needs, is not supported by EclipseLink for embeddables
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
@@ -1580,14 +1586,18 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
-    @Test
-    public void testUnannotatedCollection() {
+    public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
-        County olmsted = new County("Olmsted", "Minnesota", 162847, "Rochester", "Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Stewartville");
-        County winona = new County("Winona", "Minnesota", 49671, "Winona", "Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton", "Utica");
-        County wabasha = new County("Wabasha", "Minnesota", 21387, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
-        County fillmore = new County("Fillmore", "Minnesota", 21228, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
+        int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905, 55906, 55920, 55923, 55929, 55932, 55934, 55940, 55960, 55963, 55964, 55972, 55976 };
+        int[] winonaZipCodes = new int[] { 55910, 55925, 55942, 55943, 55947, 55952, 55959, 55964, 55969, 55971, 55972, 55979, 55987, 55988 };
+        int[] wabashaZipCodes = new int[] { 55041, 55910, 55932, 55945, 55956, 55957, 55964, 55968, 55981, 55991 };
+        int[] fillmoreZipCodes = new int[] { 55922, 55923, 55935, 55939, 55949, 55951, 55954, 55961, 55962, 55965, 55971, 55975, 55976, 55990 };
+
+        County olmsted = new County("Olmsted", "Minnesota", 162847, olmstedZipCodes, "Rochester", "Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Stewartville");
+        County winona = new County("Winona", "Minnesota", 49671, winonaZipCodes, "Winona", "Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton", "Utica");
+        County wabasha = new County("Wabasha", "Minnesota", 21387, wabashaZipCodes, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
+        County fillmore = new County("Fillmore", "Minnesota", 21228, fillmoreZipCodes, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
 
         counties.save(olmsted, winona, wabasha, fillmore);
 
@@ -1595,14 +1605,25 @@ public class DataJPATestServlet extends FATServlet {
         County c = counties.findByName("Olmsted").orElseThrow();
         assertEquals("Olmsted", c.name);
         assertEquals(162847, c.population);
+        assertEquals(Arrays.toString(olmstedZipCodes), Arrays.toString(c.zipcodes));
+
         assertIterableEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
                              c.cities.stream()
                                              .map(city -> city.name)
                                              .sorted()
                                              .collect(Collectors.toList()));
 
+        // Derby does not support comparisons of BLOB values
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        if (!jdbcJarName.startsWith("derby")) {
+            // find one entity by zipcodes as Optional
+            c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
+            assertEquals("Wabasha", c.name);
+            assertEquals(21387, c.population);
+        }
+
         // find multiple collection attributes as List
-        List<Set<CityId>> cityLists = counties.findCityListByNameStartsWith("W");
+        List<Set<CityId>> cityLists = counties.findCitiesByNameStartsWith("W");
         assertEquals(cityLists.toString(), 2, cityLists.size());
 
         assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
@@ -1636,6 +1657,69 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(city -> city.name)
                                              .sorted()
                                              .collect(Collectors.toList()));
+
+        // find single array
+        assertEquals(Arrays.toString(fillmoreZipCodes),
+                     Arrays.toString(counties.findZipCodesById("Fillmore")));
+
+        // stream of array attribute
+        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             counties.findZipCodesByNameEndsWith("a")
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // list of array attribute
+        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(olmstedZipCodes)),
+                             counties.findZipCodesByNameNotStartsWith("W")
+                                             .stream()
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // page of array attribute
+        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             counties.findZipCodesByNameStartsWith("W", Pageable.ofSize(10))
+                                             .stream()
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // optional iterator of array attribute
+        Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000).orElseThrow();
+        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                             StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
+
+        // optional for single array with none found
+        counties.findZipCodesByName("Dodge") //
+                        .ifPresent(array -> fail("Unexpected value: " + Arrays.toString(array)));
+
+        // stream of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameEndsWith("ower").count());
+
+        // list of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameNotStartsWith("_").size());
+
+        // page of array attribute with none found
+        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", Pageable.ofSize(5)).numberOfElements());
+
+        // optional for iterator over array attribute with none found
+        counties.findZipCodesByPopulationLessThanEqual(1) //
+                        .ifPresent(i -> fail("Unexpected iterator: " + (i.hasNext() ? Arrays.toString(i.next()) : "(empty)")));
+
+        // update array value to empty
+        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
+
+        // query on array value
+        assertEquals(Arrays.toString(new int[0]),
+                     Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
+
+        // update array value to non-empty
+        int[] wabashaZipCodesDescending = new int[] { 55991, 55981, 55968, 55964, 55957, 55956, 55945, 55932, 55910, 55041 };
+        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", wabashaZipCodesDescending));
+
+        // query on array value
+        assertEquals(Arrays.toString(wabashaZipCodesDescending),
+                     Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
     }

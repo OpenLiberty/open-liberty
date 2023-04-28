@@ -46,8 +46,6 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     long deleteByHostNot(String host);
 
-    int deleteByHostNotIn(Collection<String> hosts);
-
     Iterable<Reservation> findByHost(String host);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
@@ -95,12 +93,13 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
 
     // Use a record as the return type
-    @Select({ "start", "stop" })
-    ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    ReservedTimeSlot[] findStartAndStopByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
     CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
+
+    int removeByHostNotIn(Collection<String> hosts);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 

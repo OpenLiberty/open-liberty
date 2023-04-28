@@ -25,6 +25,8 @@ Export-Package: io.openliberty.data.repository
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/io.openliberty.data/pom.xml=io.openliberty.data.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

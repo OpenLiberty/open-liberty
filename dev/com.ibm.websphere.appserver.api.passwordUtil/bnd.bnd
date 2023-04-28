@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.crypto
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.passwordUtil/pom.xml=com.ibm.websphere.appserver.api.passwordUtil.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

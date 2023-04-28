@@ -10,14 +10,16 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Page;
+import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-
-import io.openliberty.data.repository.Select;
 
 /**
  * Repository for the County entity.
@@ -32,9 +34,29 @@ public interface Counties {
     @OrderBy("population")
     List<County> findByPopulationLessThanEqual(int maxPopulation);
 
-    @Select("cities")
+    Optional<County> findByZipCodes(int... zipcodes);
+
     @OrderBy("name")
-    List<Set<CityId>> findCityListByNameStartsWith(String pattern);
+    List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
+
+    int[] findZipCodesById(String name);
+
+    Optional<int[]> findZipCodesByName(String name);
+
+    @OrderBy("population")
+    Stream<int[]> findZipCodesByNameEndsWith(String ending);
+
+    @OrderBy("name")
+    List<int[]> findZipCodesByNameNotStartsWith(String beginning);
+
+    @OrderBy("population")
+    @OrderBy("name")
+    Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
+
+    @OrderBy("population")
+    Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopuluation);
 
     void save(County... c);
+
+    boolean updateByNameSetZipCodes(String name, int... zipcodes);
 }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -235,5 +232,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED = "SRVE8094W";
 
     public static final String CWWKS0005E_NO_USER_REGISTRY = "CWWKS0005E";
+
+    public static final String CWIMK0011E_MISSING_REGISTRY_DEFINITION = "CWIMK0011E";
 
 }

@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Illegal Argument Exception: Trying to write < 0 chars
 Illegal.Argument.Trying.to.write.chars.explanation=Attempting to output a buffer of size less than 0. This is an application error.

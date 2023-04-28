@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 
 import io.openliberty.build.update.Update;
@@ -123,7 +124,7 @@ public class UpdatePom extends UpdateFile {
     }
 
     protected Model readPomFromTarget() throws Exception {
-        try ( FileInputStream fileInputStream = new FileInputStream(getTargetFile()) ) {
+        try (FileInputStream fileInputStream = new FileInputStream(getTargetFile())) {
             return PomUtils.readPom(fileInputStream);
         }
     }
@@ -137,8 +138,9 @@ public class UpdatePom extends UpdateFile {
         byte[] transferBuffer = new byte[32 * 1024];
         FileUtils.write(pomInput, outputFile, transferBuffer);
 
-        Path inputPath = Paths.get(inputFile.getPath());
-        Path outputPath = Paths.get(outputFile.getPath());
+        // The target is now the original input
+        Path inputPath = Paths.get(outputFile.getPath());
+        Path outputPath = Paths.get(inputFile.getPath());
 
         // TODO: Should this include 'StandardCopyOption.ATOMIC_MOVE'?
         // We want to be sure to never leave the target in a broken state.

@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.persistence.mbean
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.persistence/pom.xml=com.ibm.websphere.appserver.api.persistence.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

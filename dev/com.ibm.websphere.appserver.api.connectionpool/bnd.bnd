@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.connectionpool.monitor
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.connectionpool/pom.xml=com.ibm.websphere.appserver.api.connectionpool.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

@@ -68,6 +68,7 @@ import componenttest.topology.impl.LibertyServer;
                 WebSocketTest.class,
                 FacesTest.class,
                 FacesBeanTest.class,
+                WebProfileJSPWithELTest.class,
                 OpenAPITest.class,
                 MPJWTTest.class,
                 MPMetricsTest.class,
@@ -87,7 +88,8 @@ import componenttest.topology.impl.LibertyServer;
                 AuditTest.class,
                 ConcurrencyTest.class,
                 MapCacheTest.class,
-                WebCacheTest.class
+                WebCacheTest.class,
+                XMLbindingsTest.class
 })
 
 public class FATSuite {

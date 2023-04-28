@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,19 +55,29 @@ public class GzipOutputHandler implements CompressionHandler {
     /** Checksum utility for this stream */
     private final CRC32 checksum = new CRC32();
     /** Output buffer used during the compression stage */
-    private final byte[] buf = new byte[32768];
+    private final byte[] buf;
 
     /**
      * Create a gzip compression method output handler.
      *
      * @param isXGzip
-     *            - boolean flag on whether this is an x-gzip handler
+     *                    - boolean flag on whether this is an x-gzip handler
      */
     public GzipOutputHandler(boolean isXGzip) {
+        buf = new byte[32768];
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
         this.bIsXGzip = isXGzip;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created " + (isXGzip ? "x-gzip" : "gzip") + " output handler; " + this);
+        }
+    }
+
+    public GzipOutputHandler(boolean isXGzip, Integer bufferSize) {
+        buf = new byte[bufferSize];
+        this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
+        this.bIsXGzip = isXGzip;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created " + (isXGzip ? "x-gzip" : "gzip") + " output handler; " + this + " with buffer size=" + bufferSize);
         }
     }
 

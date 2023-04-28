@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
+import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
@@ -25,13 +26,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.Color;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode;
@@ -55,9 +53,6 @@ public class UIBasicTest {
 
     /** Wait for "long" tasks like initial page load or making a test request to the server */
     private static final Duration LONG_WAIT = Duration.ofSeconds(30);
-
-    /** Wait for "short" tasks which shouldn't need to wait for anything, like selecting a drop down */
-    private static final Duration SHORT_WAIT = Duration.ofSeconds(5);
 
     public static final String APP_NAME = "app";
 
@@ -101,7 +96,7 @@ public class UIBasicTest {
 
         // Check the headerbar colour
         WebElement headerbar = waitForElement(driver, By.cssSelector("div.headerbar"));
-        assertEquals("Headerbar colour", "rgba(25, 28, 44, 1)", headerbar.getCssValue("background-color"));
+        assertEquals("Headerbar colour", Color.fromString("#191c2c"), Color.fromString(headerbar.getCssValue("background-color")));
 
         // Check the headerbar has a background image. It's a data URL, so it's hard to assert it's actually correct, we just assert that there is one
         WebElement headerbarWrapper = waitForElement(headerbar, By.cssSelector("div.headerbar-wrapper"));
@@ -113,33 +108,6 @@ public class UIBasicTest {
         testGetButton.click();
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));
         assertNotNull("200 response line", testGet200Response);
-    }
-
-    /**
-     * Wait for an element to appear, using the default short timeout
-     *
-     * @param searchRoot the point to start the search
-     * @param by the locating mechanism
-     * @return the located element
-     * @throws TimeoutException if the element is not found within the timeout
-     */
-    private static WebElement waitForElement(SearchContext searchRoot, By by) {
-        return waitForElement(searchRoot, by, SHORT_WAIT);
-    }
-
-    /**
-     * Wait for an element to appear, using a custom timeout
-     *
-     * @param searchRoot the point to start the search
-     * @param by the locating mechanism
-     * @param timeout the timeout
-     * @return the located element
-     * @throws TimeoutException if the element is not found within the timeout
-     */
-    private static WebElement waitForElement(SearchContext searchRoot, By by, Duration timeout) {
-        return new FluentWait<>(searchRoot).ignoring(NoSuchElementException.class)
-                                           .withTimeout(timeout)
-                                           .until(c -> c.findElement(by));
     }
 
 }

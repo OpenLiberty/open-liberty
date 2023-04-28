@@ -22,8 +22,8 @@ package org.apache.cxf.binding.soap.interceptor;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Level;  // Liberty Change
+import java.util.logging.Logger; // Liberty Change
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -33,8 +33,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.Tr;   // Liberty Change
+import com.ibm.websphere.ras.TraceComponent;  // Liberty Change
 
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -46,14 +46,11 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.staxutils.StaxUtils;
 
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.Tr;
-
 public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<SoapMessage> implements SoapInterceptor {
 
     private static final Logger LOG = Logger.getLogger(AbstractSoapInterceptor.class.getName());
     
-    private static final TraceComponent tc = Tr.register(AbstractSoapInterceptor.class);
+    private static final TraceComponent tc = Tr.register(AbstractSoapInterceptor.class);   // Liberty Change
 
     public AbstractSoapInterceptor(String p) {
         super(p);
@@ -93,7 +90,7 @@ public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<S
 
     protected void prepareStackTrace(SoapMessage message, SoapFault fault) throws Exception {
         // Liberty Change Start: Reveals only the hidden stack trace. It does not repeat stack trace shown already in the log.
-        if (fault.getCause() != null && TraceComponent.isAnyTracingEnabled()) {
+        if (fault.getCause() != null && tc.isDebugEnabled()) {
             LOG.fine("Fault occured, printing Exception cause to trace.");
             String stackTraceString = buildStackTrace(fault);
             LOG.fine(stackTraceString);

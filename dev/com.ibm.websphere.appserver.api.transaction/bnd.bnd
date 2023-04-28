@@ -22,6 +22,8 @@ Export-Package: com.ibm.tx.jta,com.ibm.websphere.jtaextensions,com.ibm.websphere
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.transaction/pom.xml=com.ibm.websphere.appserver.api.transaction.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

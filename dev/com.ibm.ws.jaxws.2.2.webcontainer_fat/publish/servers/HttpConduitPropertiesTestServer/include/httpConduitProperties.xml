@@ -1,0 +1,3 @@
+<server>
+	<webApplication id="httpConduitProperties" name="httpConduitProperties" location="httpConduitProperties.war"/>
+</server>	

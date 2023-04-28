@@ -26,6 +26,8 @@ Export-Package: \
 
 -includeresource: {META-INF/maven/io.openliberty.api/io.openliberty.grpc/pom.xml=io.openliberty.grpc.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

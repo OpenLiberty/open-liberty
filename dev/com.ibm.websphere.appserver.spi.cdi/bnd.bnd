@@ -20,6 +20,8 @@ Import-Package: io.openliberty.cdi.spi,*
 
 Export-Package: io.openliberty.cdi.spi
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

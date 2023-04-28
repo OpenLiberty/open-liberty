@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.social.fat.multiProvider;
 
@@ -335,7 +332,7 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
         updatedSocialTestSettings = updateSettingsForLocalAuthentication(updatedSocialTestSettings);
 
         List<validationData> expectations = set401LocalLoginExpectations(updatedSocialTestSettings);
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying a user registry was not found.", SocialMessageConstants.CWWKS3005E_NO_USER_REGISTRY);
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying a user registry was not found.", SocialMessageConstants.CWIMK0011E_MISSING_REGISTRY_DEFINITION);
 
         genericSocial(_testName, getAndSaveWebClient(), ACTIONS_WITH_LOCAL_AUTHENTICATION, updatedSocialTestSettings, expectations);
     }
@@ -392,6 +389,7 @@ public class CustomSelectionPageTests extends CommonMultiProviderLocalAuthentica
 
         List<validationData> expectations = set401LocalLoginExpectations(updatedSocialTestSettings);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying authentication did not succeed because of incorrect credentials.", SocialMessageConstants.CWWKS1100A_LOGIN_FAILED + ".+" + updatedSocialTestSettings.getUserName());
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_CREDENTIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Did not find message in log saying authentication did not succeed because of incorrect credentials.", SocialMessageConstants.CWIML4537E_PRINCIPAL_NOT_FOUND + ".+" + updatedSocialTestSettings.getUserName());
 
         genericSocial(_testName, getAndSaveWebClient(), ACTIONS_WITH_LOCAL_AUTHENTICATION, updatedSocialTestSettings, expectations);
     }

@@ -85,8 +85,7 @@ public class ReactiveStreamsTckTest {
      */
     private XmlSuite createSuiteForTestClasses(List<Class<?>> testClasses) {
         XmlSuite suite = new XmlSuite();
-                           // Ignore below, a new testng requires suit names
-        suite.setName("ReactiveStreamsTckTest"); // No suite name so that result files are not put in a subdirectory
+        suite.setName(""); // No suite name so that result files are not put in a subdirectory
 
         for (Class<?> testClass : testClasses) {
             XmlTest test = new XmlTest(suite);

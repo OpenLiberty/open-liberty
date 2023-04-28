@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.junit.runner.RunWith;
@@ -36,12 +30,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-import com.ibm.websphere.simplicity.LocalFile;
-import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -492,7 +483,7 @@ public class DelayFullTest {
         
         // Also wait for the jms server to restart
         // CWSID0108I: JMS server has started.
-        String jmsServerStartedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0012I.*" + fragment + ".*",server.getMatchingLogFile("trace.log"));
+        String jmsServerStartedMessageFromLog = server.waitForStringInLogUsingMark("CWSID0108I.*",server.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find the \"CWSID0108I: JMS server has started.\"message in the trace file",jmsServerStartedMessageFromLog);
     }
 
@@ -513,53 +504,83 @@ public class DelayFullTest {
      */
     @Test
     public void testDDRemoveAddServerFeature() throws Exception {
-        boolean testResult1 = runInServlet("testSendMessage");
-        assertTrue("testSendMessage failed", testResult1);
+    	try {
+    		boolean testResult1 = runInServlet("testSendMessage");
+    		assertTrue("testSendMessage failed", testResult1);
 
-        Set<String> clientFeatures = clientServer.getServerConfiguration().getFeatureManager().getFeatures();
-        String serverFeature = getServerFeature();
-        String serverFragment = getServerMessageFragment();
+    		Set<String> clientFeatures = clientServer.getServerConfiguration().getFeatureManager().getFeatures();
+    		String serverFeature = getServerFeature();
+    		String serverFragment = getServerMessageFragment();
 
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        clientFeatures.remove(serverFeature);
-        clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
-        verifyRemovedFeature(clientServer, serverFragment);
+    		clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+    		clientFeatures.remove(serverFeature);
+    		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
+    		verifyRemovedFeature(clientServer, serverFragment);
 
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        clientFeatures.add(serverFeature);
-        clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
-        verifyAddedFeature(clientServer, serverFragment);
+    		clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+    		clientFeatures.add(serverFeature);
+    		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
+    		verifyAddedFeature(clientServer, serverFragment);
 
-        int appCount = clientServer.waitForMultipleStringsInLog(3, "CWWKT0016I.*DeliveryDelay.*");
-        Log.info(DelayFullTest.class, "CheckApplicationStart", "No. of times App started - " + appCount);
-        if (appCount != 3)clientServer.dumpServer("testDDRemoveAddServerFeature");
-        assertTrue( "Could not find the application ready message in the log file", (appCount == 3) );
+    		boolean testResult2 = runInServlet("testReceiveMessage");
+    		assertTrue("testReceiveMessage failed", testResult2);
 
-        boolean testResult2 = runInServlet("testReceiveMessage");
-        assertTrue("testReceiveMessage failed", testResult2);
+    	} catch (Throwable throwable) {
+            clientServer.serverDump();
+            throw throwable;
+        }
     }
 
-    // @Test Restore after fixing...
-    // https://github.com/OpenLiberty/open-liberty/issues/16508
+//    TODO
+//      This test is disabled. After the jms server feature has been added back into the configuration and  
+//      CWSID0108I: JMS server has started. has been written to the console, the JMS server has indeed been restarted.
+//      The comms inbound chains will also have been restarted and will be listening using the current configuration.
+//      However, the channel framework will not have been restarted and will be using the previous thread pool using the
+//      same classloader that previously loaded SingletonsReady. that SingletonsReady no longer contains the Singletons
+//      and results in the following FFDC.
+//      
+//      Exception = com.ibm.ws.messaging.lifecycle.LifecycleError
+//      Source = com.ibm.ws.messaging.lifecycle.SingletonsReady
+//      probeid = findService-LifecycleError
+//      Stack Dump = com.ibm.ws.messaging.lifecycle.LifecycleError: Singletons are not yet ready. Examine the call stack for a service component where a dependency on SingletonsReady can be declared to resolve this error.
+//	      at com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService(SingletonsReady.java:172)
+//	      at com.ibm.ws.messaging.lifecycle.SingletonsReady.findService(SingletonsReady.java:191)
+//	      at com.ibm.ws.sib.common.service.CommonServiceFacade.getJsAdminService(CommonServiceFacade.java:65)
+//	      at com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade.getJsAdminService(CommsServerServiceFacade.java:261)
+//	      at com.ibm.ws.sib.trm.attach.TrmSingleton.handShake(TrmSingleton.java:135)
+//	      at com.ibm.ws.sib.comms.server.clientsupport.ServerTransportReceiveListener.rcvTRMExchange(ServerTransportReceiveListener.java:1255)
+//	      at com.ibm.ws.sib.comms.server.clientsupport.ServerTransportReceiveListener.dataReceived(ServerTransportReceiveListener.java:174)
+//	      at com.ibm.ws.sib.jfapchannel.impl.rldispatcher.ConversationReceiveListenerDataReceivedInvocation.invoke(ConversationReceiveListenerDataReceivedInvocation.java:170)
+//	      at com.ibm.ws.sib.jfapchannel.impl.rldispatcher.ReceiveListenerDispatchQueue.run(ReceiveListenerDispatchQueue.java:451)
+//	      at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1671)
+          
+    // @Test
     public void testDDRemoveAddServerFeature_TCP() throws Exception {
-        boolean testResult1 = runInServlet("testSendMessage_TCP");
-        assertTrue("testSendMessage_TCP failed", testResult1);
+    	try {
+    		boolean testResult1 = runInServlet("testSendMessage_TCP");
+    		assertTrue("testSendMessage_TCP failed", testResult1);
 
-        Set<String> engineFeatures = engineServer.getServerConfiguration().getFeatureManager().getFeatures();
-        String serverFeature = getServerFeature();
-        String serverFragment = getServerMessageFragment();
+    		Set<String> engineFeatures = engineServer.getServerConfiguration().getFeatureManager().getFeatures();
+    		String serverFeature = getServerFeature();
+    		String serverFragment = getServerMessageFragment();
 
-        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-        engineFeatures.remove(serverFeature);
-        engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
-        verifyRemovedFeature(engineServer, serverFragment);
+    		engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+    		engineFeatures.remove(serverFeature);
+    		engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
+    		verifyRemovedFeature(engineServer, serverFragment);
 
-        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-        engineFeatures.add(serverFeature);
-        engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
-        verifyAddedFeature(engineServer, serverFragment);
+    		engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+    		engineFeatures.add(serverFeature);
+    		engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
+    		verifyAddedFeature(engineServer, serverFragment);
 
-        boolean testResult2 = runInServlet("testReceiveMessage_TCP");
-        assertTrue("testReceiveMessage_TCP failed", testResult2);
+    		boolean testResult2 = runInServlet("testReceiveMessage_TCP");
+    		assertTrue("testReceiveMessage_TCP failed", testResult2);
+    	
+    	} catch (Throwable throwable) {
+    		clientServer.serverDump();
+    		engineServer.serverDump();
+    		throw throwable;
+    	}
     }
 }

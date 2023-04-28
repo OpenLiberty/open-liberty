@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.logging.hpel,com.ibm.websphere.logging.hpel.re
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.hpel/pom.xml=com.ibm.websphere.appserver.api.hpel.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

@@ -17,7 +17,9 @@ import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -59,6 +61,9 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     protected static Class<?> thisClass = ConfigurationSigningTests.class;
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;

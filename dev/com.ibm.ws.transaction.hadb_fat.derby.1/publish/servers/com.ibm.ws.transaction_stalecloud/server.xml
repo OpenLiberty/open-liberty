@@ -29,7 +29,7 @@
         enableLogRetries="true"
         recoveryIdentity="cloudstale"
         recoveryGroup="defaultGroup"
-        leaseCheckInterval="1"       
+        leaseCheckInterval="300"
     />
 
     <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">

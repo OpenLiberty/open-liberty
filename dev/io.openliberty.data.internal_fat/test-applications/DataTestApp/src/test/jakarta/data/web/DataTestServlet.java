@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -101,10 +102,13 @@ public class DataTestServlet extends FATServlet {
     Packages packages;
 
     @Inject
-    PersonRepo people;
+    People people;
 
     @Inject
     Personnel personnel;
+
+    @Inject
+    PersonRepo persons;
 
     // Only add to this repository within the Servlet.init method so that all tests can rely on its data:
     @Inject
@@ -547,6 +551,37 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository that inherits from a custom repository interface with type parameters indicating the entity and key types.
+     */
+    @Test
+    public void testCustomRepositoryInterface() {
+        people.deleteByIdBetween(400000000L, 499999999L);
+
+        Person p1 = new Person();
+        p1.firstName = "Catherine";
+        p1.lastName = "TestCustomRepositoryInterface";
+        p1.ssn_id = 456778910;
+
+        Person p2 = new Person();
+        p2.firstName = "Claire";
+        p2.lastName = "TestCustomRepositoryInterface";
+        p2.ssn_id = 468998765;
+
+        Person p3 = new Person();
+        p3.firstName = "Charles";
+        p3.lastName = "TestCustomRepositoryInterface";
+        p3.ssn_id = 432446688;
+
+        people.save(Set.of(p1, p2, p3));
+
+        assertEquals(3L, people.countByIdBetween(400000000L, 499999999L));
+
+        assertEquals(1L, people.deleteByIdBetween(400000000L, 449999999L));
+
+        assertEquals(2L, people.deleteByIdBetween(400000000L, 499999999L));
+    }
+
+    /**
      * Delete multiple entries and use a default method to atomically remove and return a removed entity.
      */
     @Test
@@ -780,7 +815,28 @@ public class DataTestServlet extends FATServlet {
         assertEquals(188000f, h.purchasePrice, 0.001f);
         assertEquals(Year.of(2020), h.sold);
 
+        // Find a single attribute type
+
+        assertArrayEquals(new int[] { 180, 200, 220, 220 },
+                          houses.findGarageAreaByGarageNotNull());
+
+        // Removal by an embeddable attribute
+
         assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
+
+        // Find a subset of attributes
+
+        Object[] tuple = houses.findGarageDoorAndKitchenLengthAndKitchenWidthById("TestEmbeddable-304-3655-30").orElseThrow();
+        GarageDoor door = (GarageDoor) tuple[0];
+        assertEquals(8, door.getHeight());
+        assertEquals(9, door.getWidth());
+        assertEquals(Integer.valueOf(14), tuple[1]); // kitchen length
+        assertEquals(Integer.valueOf(12), tuple[2]); // kitchen width
+
+        assertIterableEquals(List.of("[14, 12, 180, 1700]", "[15, 12, 200, 1800]"),
+                             houses.findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(2000)
+                                             .map(Arrays::toString)
+                                             .collect(Collectors.toList()));
 
         // Update embeddable attributes
 
@@ -986,7 +1042,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindMultiple() throws Exception {
-        assertEquals(Collections.EMPTY_LIST, people.find("TestFindMultiple"));
+        assertEquals(Collections.EMPTY_LIST, persons.find("TestFindMultiple"));
 
         Person jane = new Person();
         jane.firstName = "Jane";
@@ -1005,8 +1061,8 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            people.save(List.of(jane, joe));
-            people.save(List.of(jude));
+            persons.save(List.of(jane, joe));
+            persons.save(List.of(jude));
         } finally {
             if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
                 tran.rollback();
@@ -1014,7 +1070,7 @@ public class DataTestServlet extends FATServlet {
                 tran.commit();
         }
 
-        List<Person> found = people.find("TestFindMultiple");
+        List<Person> found = persons.find("TestFindMultiple");
         assertNotNull(found);
         assertEquals(2, found.size());
 
@@ -1034,7 +1090,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn_id, p2.ssn_id);
 
-        found = people.find("Test-FindMultiple");
+        found = persons.find("Test-FindMultiple");
         assertNotNull(found);
         assertEquals(1, found.size());
         assertEquals(jude.ssn_id, found.get(0).ssn_id);
@@ -2024,7 +2080,7 @@ public class DataTestServlet extends FATServlet {
     public void testMixedEntitiesInTransaction() throws HeuristicMixedException, HeuristicRollbackException, //
                     IllegalStateException, NotSupportedException, RollbackException, SecurityException, SystemException {
         houses.deleteAll();
-        vehicles.deleteAll();
+        vehicles.removeAll();
 
         House h1 = new House();
         h1.area = 1900;
@@ -2093,7 +2149,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(26000f, v.price, 0.001f);
 
         houses.deleteAll();
-        vehicles.deleteAll();
+        vehicles.removeAll();
     }
 
     /**
@@ -2487,7 +2543,7 @@ public class DataTestServlet extends FATServlet {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
-        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+        reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
         assertEquals(0, reservations.count());
 
@@ -3214,7 +3270,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testSaveMultipleAndUpdate() {
-        vehicles.deleteAll();
+        vehicles.removeAll();
 
         Vehicle v1 = new Vehicle();
         v1.make = "Honda";
@@ -3249,7 +3305,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, i.hasNext());
 
         // delete
-        assertEquals(true, vehicles.deleteById(v1.vinId));
+        assertEquals(true, vehicles.removeById(v1.vinId));
 
         // find none
         Optional<Vehicle> found = vehicles.findById(v1.vinId);
@@ -3263,7 +3319,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, found.isPresent());
         assertEquals(25500f, found.get().price, 0.001f);
 
-        vehicles.deleteAll();
+        vehicles.removeAll();
     }
 
     /**
@@ -3274,7 +3330,7 @@ public class DataTestServlet extends FATServlet {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
-        reservations.deleteByHostNotIn(Set.of("never-ever-used@example.org"));
+        reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
         assertEquals(0, reservations.count());
 
@@ -3317,9 +3373,9 @@ public class DataTestServlet extends FATServlet {
 
         reservations.saveAll(Set.of(r1, r2, r3, r4));
 
-        ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
-                                                                                             OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
-                                                                                             OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        ReservedTimeSlot[] reserved = reservations.findStartAndStopByLocationAndStartBetweenOrderByStart("30-2 C206",
+                                                                                                         OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                                                         OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
         assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
                                                    new ReservedTimeSlot(r1.start, r1.stop),
                                                    new ReservedTimeSlot(r3.start, r3.stop) },
@@ -3924,60 +3980,60 @@ public class DataTestServlet extends FATServlet {
         p3.lastName = "TestTransactional";
         p3.ssn_id = 300201003;
 
-        people.save(List.of(p1, p2, p3));
+        persons.save(List.of(p1, p2, p3));
 
         System.out.println("TxType.SUPPORTS in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
-            assertEquals("Ty", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id)); // read value with SUPPORTS
+            assertEquals(true, persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
+            assertEquals("Ty", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id)); // read value with SUPPORTS
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.SUPPORTS from no transaction");
 
-        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+        assertEquals("Tyler", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
 
         System.out.println("TxType.REQUIRED in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
+            assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.REQUIRED from no transaction");
 
-        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
+        assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
 
         assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.MANDATORY in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
+            assertEquals(true, persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.MANDATORY from no transaction is an error");
 
         try {
-            boolean result = people.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
+            boolean result = persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
             fail("Invoked TxType.MANDATORY operation with no transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof TransactionRequiredException))
@@ -3988,26 +4044,26 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
+            assertEquals(true, persons.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Timmy", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.REQUIRES_NEW from no transaction");
 
-        assertEquals(true, people.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
+        assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NEVER in transaction");
 
         tran.begin();
         try {
-            boolean result = people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
+            boolean result = persons.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
             fail("Invoked TxType.NEVER operation with transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof InvalidTransactionException))
@@ -4017,30 +4073,30 @@ public class DataTestServlet extends FATServlet {
         }
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NEVER from no transaction");
 
-        assertEquals(true, people.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
+        assertEquals(true, persons.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Ty"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NOT_SUPPORTED in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, people.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
+            assertEquals(true, persons.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             people.findFirstNames("TestTransactional"));
+                             persons.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NOT_SUPPORTED from no transaction");
 
-        assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+        assertEquals("Tyler", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
 
         personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }

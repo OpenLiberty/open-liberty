@@ -18,7 +18,6 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.internal.oauth20.TraceConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -36,7 +35,6 @@ public class ProofKeyForCodeExchange {
      * generator be used to create a 32-octet sequence. The octet sequence is then base64url-encoded to produce a 43-octet URL
      * safe string to use as the code verifier. Per Section 3 of RFC 7636, all trailing '=' characters are omitted.
      */
-    @Sensitive
     @FFDCIgnore(NoSuchAlgorithmException.class)
     public static String generateCodeVerifier() {
         SecureRandom random;

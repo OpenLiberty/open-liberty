@@ -748,41 +748,44 @@ public class DatabaseStoreImpl implements DatabaseStore {
      * @return the database product name.
      * @throws Exception if unable to obtain the database product name.
      */
-    private synchronized String getDatabaseProductName(WSDataSource dataSource) throws Exception {
+    private String getDatabaseProductName(WSDataSource dataSource) throws Exception {
+
         //Synchronized to avoid a race condition in tests where attempting to boot two
         //derby instances simultaneously causes tests to fail
+        synchronized (DatabaseStoreImpl.class) {
 
-        String dbProductName = dataSource.getDatabaseProductName();
-        if (dbProductName == null) {
-            // Query the metadata under a new transaction and commit right away
-            LocalTransactionCurrent localTranCurrent = this.localTranCurrent;
-            LocalTransactionCoordinator suspendedLTC = localTranCurrent.suspend();
-            EmbeddableWebSphereTransactionManager tranMgr = this.tranMgr;
-            Transaction suspendedTran = suspendedLTC == null ? tranMgr.suspend() : null;
-            boolean tranStarted = false;
-            try {
-                tranMgr.begin();
-                tranStarted = true;
-                Connection con = dataSource.getConnection();
+            String dbProductName = dataSource.getDatabaseProductName();
+            if (dbProductName == null) {
+                // Query the metadata under a new transaction and commit right away
+                LocalTransactionCurrent localTranCurrent = this.localTranCurrent;
+                LocalTransactionCoordinator suspendedLTC = localTranCurrent.suspend();
+                EmbeddableWebSphereTransactionManager tranMgr = this.tranMgr;
+                Transaction suspendedTran = suspendedLTC == null ? tranMgr.suspend() : null;
+                boolean tranStarted = false;
                 try {
-                    dbProductName = con.getMetaData().getDatabaseProductName();
+                    tranMgr.begin();
+                    tranStarted = true;
+                    Connection con = dataSource.getConnection();
+                    try {
+                        dbProductName = con.getMetaData().getDatabaseProductName();
+                    } finally {
+                        con.close();
+                    }
                 } finally {
-                    con.close();
-                }
-            } finally {
-                try {
-                    if (tranStarted)
-                        tranMgr.commit();
-                } finally {
-                    // resume
-                    if (suspendedTran != null)
-                        tranMgr.resume(suspendedTran);
-                    else if (suspendedLTC != null)
-                        localTranCurrent.resume(suspendedLTC);
+                    try {
+                        if (tranStarted)
+                            tranMgr.commit();
+                    } finally {
+                        // resume
+                        if (suspendedTran != null)
+                            tranMgr.resume(suspendedTran);
+                        else if (suspendedLTC != null)
+                            localTranCurrent.resume(suspendedLTC);
+                    }
                 }
             }
+            return dbProductName;
         }
-        return dbProductName;
     }
 
     /**

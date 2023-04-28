@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -73,6 +73,7 @@ public class H2FATDriverServlet extends FATServlet {
     private static final String SERVLET_H2PriorityWindowUpdate1 = "/H2TestModule/H2PriorityWindowUpdate1";
     private static final String SERVLET_H2Ping1 = "/H2TestModule/H2PriorityWindowUpdate1?testName=Ping1";
     private static final String SERVLET_CONTINUATION = "/H2TestModule/HeadersAndContinuation";
+    protected static final String COMPRESSION_URI = "/H2TestModule/H2Compression";
 
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
     public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 200, -1, 57344, -1, false);

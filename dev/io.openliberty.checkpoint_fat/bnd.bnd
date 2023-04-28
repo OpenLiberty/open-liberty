@@ -45,9 +45,11 @@ src: \
 	test-applications/bells/src,\
 	test-applications/virtualhost/src,\
 	test-applications/DefaultPrincipalMappingApp/src,\
+	test-applications/JSPWithEL/src,\
 	test-applications/concurrentApp/src,\
 	test-applications/mapCache/src,\
-	test-applications/webCacheApp/src
+	test-applications/webCacheApp/src,\
+	test-applications/xmlBindings/src
 
 fat.project: true
 
@@ -165,6 +167,7 @@ tested.features: \
 	io.openliberty.jakarta.concurrency.3.0;version=latest,\
 	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.appserver.api.distributedMap;version=latest
 
 -sub: *.bnd

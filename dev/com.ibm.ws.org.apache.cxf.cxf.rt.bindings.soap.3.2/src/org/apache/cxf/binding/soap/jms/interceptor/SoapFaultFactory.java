@@ -34,6 +34,7 @@ import org.apache.cxf.interceptor.Fault;
 /**
  *
  */
+ // Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
 public class SoapFaultFactory  {
 
     private SoapVersion version;
@@ -43,7 +44,7 @@ public class SoapFaultFactory  {
     }
 
     public Fault createFault(JMSFault jmsFault) {
-        Fault f = null;
+        final Fault f;
         if (version == Soap11.getInstance()) {
             f = createSoap11Fault(jmsFault);
             // so we can encode the SequenceFault as header

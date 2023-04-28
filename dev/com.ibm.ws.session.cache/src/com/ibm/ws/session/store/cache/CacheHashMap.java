@@ -475,8 +475,9 @@ public class CacheHashMap extends BackedHashMap {
             }
         } catch (Exception ex) {
             FFDCFilter.processException(ex, "com.ibm.ws.session.store.cache.CacheHashMap.getAllValues", "448", this, new Object[] { sess });
-            Tr.error(tc, "LOAD_VALUE_ERROR", ex);
-            throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
+            Tr.error(tc, "LOAD_VALUE_ERROR", id);
+            Tr.error(tc, "INTERNAL_SERVER_ERROR", ex);
+            // throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
         }
 
         if (trace && tc.isEntryEnabled())
@@ -845,8 +846,9 @@ public class CacheHashMap extends BackedHashMap {
             }
         } catch (Exception ex) {
             FFDCFilter.processException(ex, "com.ibm.ws.session.store.cache.CacheHashMap.loadOneValue", "778", this, new Object[] { sess });
-            Tr.error(tc, "LOAD_VALUE_ERROR", ex);
-            throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
+            Tr.error(tc, "LOAD_VALUE_ERROR", attrName);
+            Tr.error(tc, "INTERNAL_SERVER_ERROR", ex);
+            // throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
         }
 
         if (trace && tc.isEntryEnabled())

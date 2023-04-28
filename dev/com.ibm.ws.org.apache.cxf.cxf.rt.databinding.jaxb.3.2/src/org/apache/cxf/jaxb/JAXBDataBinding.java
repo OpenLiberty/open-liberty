@@ -22,24 +22,24 @@ package org.apache.cxf.jaxb;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.ref.SoftReference;
+import java.lang.ref.SoftReference; // Liberty Change
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.StandardCharsets; // Liberty Change
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
+import java.util.Deque; // Liberty Change
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque; // Liberty Change
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,15 +48,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
+import javax.xml.bind.PropertyException; // Liberty Change
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEvent; // Liberty Change
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import javax.xml.bind.helpers.DefaultValidationEventHandler; // Liberty Change
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
@@ -101,6 +101,7 @@ import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.ws.addressing.ObjectFactory;
 
+// Liberty Change: Ensures jaxws-2.2 matches similar performance with XLXP
 @NoJSR250Annotations
 public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     implements WrapperCapableDatabinding, InterceptorProvider {
@@ -269,7 +270,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         this();
         setContext(context);
     }
-    
+
+    protected boolean getQualifiedSchemas() {
+        return qualifiedSchemas;
+    }
+
     public JAXBContext getContext() {
         return context;
     }
@@ -370,14 +375,13 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
 
         String tns = getNamespaceToUse(service);
-        CachedContextAndSchemas cachedContextAndSchemas = null;
-        JAXBContext ctx = null;
+        final CachedContextAndSchemas cachedContextAndSchemas;
         try {
             cachedContextAndSchemas = createJAXBContextAndSchemas(contextClasses, tns);
         } catch (JAXBException e1) {
             throw new ServiceConstructionException(e1);
         }
-        ctx = cachedContextAndSchemas.getContext();
+        final JAXBContext ctx = cachedContextAndSchemas.getContext();
         if (LOG.isLoggable(Level.FINE)) {
             LOG.log(Level.FINE, "CREATED_JAXB_CONTEXT", new Object[] {ctx, contextClasses});
         }
@@ -408,7 +412,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 try {
                     for (DOMResult r : generateJaxbSchemas()) {
                         DOMSource src = new DOMSource(r.getNode(), r.getSystemId());
-                        if (BUILT_IN_SCHEMAS.containsValue(r)) {
+                        if (isInBuiltInSchemas(r)) {
                             bi.add(src);
                         } else {
                             schemas.add(src);
@@ -445,7 +449,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
     }
 
-    private void justCheckForJAXBAnnotations(ServiceInfo serviceInfo) {
+    protected void justCheckForJAXBAnnotations(ServiceInfo serviceInfo) {
         for (MessageInfo mi: serviceInfo.getMessages().values()) {
             for (MessagePartInfo mpi : mi.getMessageParts()) {
                 checkForJAXBAnnotations(mpi, serviceInfo.getXmlSchemaCollection(), serviceInfo.getTargetNamespace());
@@ -466,12 +470,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
     }
 
-    private String getNamespaceToUse(Service service) {
+    protected String getNamespaceToUse(Service service) {
         if ("true".equals(service.get("org.apache.cxf.databinding.namespace"))) {
             return null;
         }
-        String tns = null;
-        if (service.getServiceInfos().size() > 0) {
+        final String tns;
+        if (!service.getServiceInfos().isEmpty()) {
             tns = service.getServiceInfos().get(0).getInterface().getName().getNamespaceURI();
         } else {
             tns = service.getName().getNamespaceURI();
@@ -720,7 +724,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             Field elField = getElField(partName, valueClass);
             if (getMethod == null
                 && elementType != null
-                && "boolean".equals(elementType.toLowerCase())
+                && "boolean".equalsIgnoreCase(elementType)
                 && (elField == null
                     || (!Collection.class.isAssignableFrom(elField.getType())
                     && !elField.getType().isArray()))) {
@@ -832,6 +836,10 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                                  jaxbMethods.toArray(new Method[0]),
                                  fields.toArray(new Field[0]),
                                  objectFactory);
+    }
+
+    public static boolean isInBuiltInSchemas(DOMResult schema) {
+        return BUILT_IN_SCHEMAS.containsValue(schema);
     }
 
     private static Field getElField(String partName, final Class<?> wrapperType) {

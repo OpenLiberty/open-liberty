@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.session.monitor
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.sessionstats/pom.xml=com.ibm.websphere.appserver.api.sessionstats.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

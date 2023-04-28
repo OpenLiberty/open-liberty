@@ -73,7 +73,7 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptor;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 /**
  * Builds a SAAJ tree from the Document fragment inside the message which contains
  * the SOAP headers and from the XMLStreamReader.
@@ -114,7 +114,7 @@ public class SAAJInInterceptor extends AbstractSoapInterceptor {
             super(Phase.READ);
             addBefore(ReadHeadersInterceptor.class.getName());
         }
-        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             if (isGET(message)) {
                 return;
             }
@@ -145,7 +145,7 @@ public class SAAJInInterceptor extends AbstractSoapInterceptor {
                 throw new SoapFault("XML_STREAM_EXC", BUNDLE, e, message.getVersion().getSender());
             }
         }
-        public synchronized MessageFactory getFactory(@Sensitive SoapMessage message) throws SOAPException {
+        public synchronized MessageFactory getFactory(@Sensitive SoapMessage message) throws SOAPException { // Liberty Change
             if (message.getVersion() instanceof Soap11) {
                 if (factory11 == null) {
                     factory11 = SAAJFactoryResolver.createMessageFactory(message.getVersion());
@@ -165,7 +165,7 @@ public class SAAJInInterceptor extends AbstractSoapInterceptor {
 
 
     @SuppressWarnings("unchecked")
-    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
         if (isGET(message)) {
             return;
         }

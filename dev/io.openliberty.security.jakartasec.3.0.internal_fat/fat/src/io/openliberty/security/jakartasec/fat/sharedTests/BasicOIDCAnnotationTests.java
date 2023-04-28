@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -53,6 +55,9 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
     protected static Class<?> thisClass = BasicOIDCAnnotationTests.class;
 
     protected static ShrinkWrapHelpers swh = null;
+
+    @Rule
+    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
     @Server("jakartasec-3.0_fat.op")
     public static LibertyServer opServer;

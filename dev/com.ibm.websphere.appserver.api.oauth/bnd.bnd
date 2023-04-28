@@ -23,6 +23,8 @@ Export-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,
 -includeresource: \
     {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.oauth/pom.xml=com.ibm.websphere.appserver.api.oauth.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

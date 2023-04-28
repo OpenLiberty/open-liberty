@@ -103,6 +103,7 @@ com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
 com.ibm.ws.microprofile.reactive.messaging_fat
+com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.security.acme_fat
 com.ibm.ws.session.cache_fat_infinispan_container
