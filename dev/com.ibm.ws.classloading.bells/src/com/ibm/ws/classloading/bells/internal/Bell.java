@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.PrototypeServiceFactory;
@@ -72,8 +73,10 @@ import com.ibm.wsspi.library.LibraryChangeListener;
  * meta-inf/services which are specified in the library as OSGi services.
  * This allows such services to be consumed by bundles in liberty features.
  */
-@Component(name = "com.ibm.ws.classloading.bell", configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class Bell implements LibraryChangeListener {
+@Component(name = "com.ibm.ws.classloading.bell", configurationPolicy = ConfigurationPolicy.REQUIRE,
+           property = { Constants.SERVICE_RANKING + ":Integer=" + Integer.MIN_VALUE })
+ public class Bell implements LibraryChangeListener {
+
     private static final TraceComponent tc = Tr.register(Bell.class);
     private static final char COMMENT_CHAR = '#';
 
