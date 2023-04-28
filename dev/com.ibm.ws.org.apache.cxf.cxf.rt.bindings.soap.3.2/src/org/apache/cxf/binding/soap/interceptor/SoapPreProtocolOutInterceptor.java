@@ -39,7 +39,7 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 
 import static org.apache.cxf.message.Message.MIME_HEADERS;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 
 /**
  * This interceptor is responsible for setting up the SOAP version
@@ -58,7 +58,7 @@ public class SoapPreProtocolOutInterceptor extends AbstractSoapInterceptor {
      * @param message the current message
      * @throws Fault
      */
-    public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
         ensureVersion(message);
         ensureMimeHeaders(message);
         if (isRequestor(message)) {
@@ -85,7 +85,7 @@ public class SoapPreProtocolOutInterceptor extends AbstractSoapInterceptor {
             message.setVersion(soapVersion);
         }
 
-        message.put(Message.CONTENT_TYPE, (String) soapVersion.getContentType());
+        message.put(Message.CONTENT_TYPE, (String) soapVersion.getContentType()); // Libery Change
     }
 
     /**
@@ -152,7 +152,7 @@ public class SoapPreProtocolOutInterceptor extends AbstractSoapInterceptor {
         }
 
         if (!action.startsWith("\"")) {
-            action = new StringBuilder().append("\"").append(action).append("\"").toString();
+            action = '"' + action + '"';
         }
 
         return action;

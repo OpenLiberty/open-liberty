@@ -27,11 +27,15 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
-import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 /**
  * Tibco Business Works uses SoapAction instead of the standard spelling SOAPAction.
  * So this interceptor adds a SoapAction header if SOAPAction is set in protocol header
  */
+ // Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class TibcoSoapActionInterceptor extends AbstractPhaseInterceptor<SoapMessage> {
 
     private static final String SOAPACTION_TIBCO = "SoapAction";
@@ -41,7 +45,7 @@ public class TibcoSoapActionInterceptor extends AbstractPhaseInterceptor<SoapMes
     }
 
     @SuppressWarnings("unchecked")
-    public void handleMessage(@Sensitive SoapMessage soapMessage) throws Fault {
+    public void handleMessage(@Sensitive SoapMessage soapMessage) throws Fault { // Liberty Change
         Map<String, Object> headers = (Map<String, Object>)soapMessage.get(Message.PROTOCOL_HEADERS);
         if (headers != null && headers.containsKey(SoapBindingConstants.SOAP_ACTION)) {
             //need to flip to a case sensitive map.  The default

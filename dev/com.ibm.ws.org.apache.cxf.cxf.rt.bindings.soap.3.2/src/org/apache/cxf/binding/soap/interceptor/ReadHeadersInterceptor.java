@@ -84,7 +84,7 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
     
 
     
-    public static final String ENV_SOAP_NS = "http://schemas.xmlsoap.org/soap/envelope/";
+    public static final String ENV_SOAP_NS = "http://schemas.xmlsoap.org/soap/envelope/"; // Liberty Change
     /**
      *
      */
@@ -197,7 +197,7 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
 
                 Node nd = message.getContent(Node.class);
                 W3CDOMStreamWriter writer = message.get(W3CDOMStreamWriter.class);
-                Document doc = null;
+                final Document doc;
                 if (writer != null) {
                     StaxUtils.copy(filteredReader, writer);
                     doc = writer.getDocument();
@@ -230,13 +230,19 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                     }
                 }
 
+                List<Element> soapBody = null; 
                 // Find header
                 if (doc != null) {
                     Element element = doc.getDocumentElement();
                     QName header = soapVersion.getHeader();
+                    QName body = soapVersion.getBody();
                     List<Element> elemList = DOMUtils.findAllElementsByTagNameNS(element,
                                                                                  header.getNamespaceURI(),
                                                                                  header.getLocalPart());
+                    soapBody = DOMUtils.getChildrenWithName(element,
+                                                                                 body.getNamespaceURI(),
+                                                                                 body.getLocalPart());
+                    
                     for (Element elem : elemList) {
                         Element hel = DOMUtils.getFirstElement(elem);
                         while (hel != null) {
@@ -297,6 +303,11 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
 
                 if (ServiceUtils.isSchemaValidationEnabled(SchemaValidationType.IN, message)) {
                     message.getInterceptorChain().add(new CheckClosingTagsInterceptor());
+                }
+                if (ServiceUtils.isSchemaValidationEnabled(SchemaValidationType.IN, message)
+                    && soapBody != null && soapBody.isEmpty()) {
+                    throw new SoapFault(new Message("NO_SOAP_BODY", LOG, "no soap body"),
+                                        soapVersion.getSender());
                 }
             }
         } catch (XMLStreamException e) {

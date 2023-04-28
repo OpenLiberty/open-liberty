@@ -40,7 +40,10 @@ import org.apache.cxf.staxutils.StaxUtils;
 
 
 import com.ibm.websphere.ras.annotation.Sensitive;
-
+// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class Soap11FaultOutInterceptor extends AbstractSoapInterceptor {
     private static final Logger LOG = LogUtils.getL7dLogger(Soap11FaultOutInterceptor.class);
 
