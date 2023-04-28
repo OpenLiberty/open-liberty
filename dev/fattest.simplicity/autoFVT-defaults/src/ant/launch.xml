@@ -354,6 +354,12 @@
                    else="${env.artifactory.docker.server}">
           <isset property="artifactory.docker.server" />
         </condition>
+		
+        <condition property="fat.test.artifactory.force.external.repo"
+                   value="${artifactory.force.external.repo}"
+                   else="${env.artifactory.force.external.repo}">
+          <isset property="artifactory.force.external.repo" />
+        </condition>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />

@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
     xmlns="http://maven.apache.org/SETTINGS/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!-- Note: this settings.xml is only used when connecting to artifactory -->
     <localRepository>${env.MAVEN_USER_HOME}/repository</localRepository>
-    <!--<localRepository>${user.home}/.m2/repository</localRepository>-->
     <servers>
         <server>
             <username>${env.MVNW_USERNAME}</username>
@@ -17,36 +17,18 @@
             <id>artifactory</id>
         </server>
     </servers>
-    <profiles>
-        <profile>
+    <mirrors>
+        <mirror>
+            <id>central-mirror</id>
+            <name>wasliberty-maven-remote</name>
+            <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-maven-remote</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+        <mirror>
             <id>artifactory</id>
-            <repositories>
-                <repository>
-                    <id>central-mirror</id>
-                    <name>wasliberty-maven-remote</name>
-                    <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-maven-remote</url>
-                </repository>
-                <repository>
-                    <id>artifactory</id>
-                    <name>wasliberty-open-liberty</name>
-                    <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-open-liberty</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>central-mirror</id>
-                    <name>wasliberty-maven-remote</name>
-                    <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-maven-remote</url>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>artifactory</id>
-                    <name>wasliberty-open-liberty</name>
-                    <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-open-liberty</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-    </profiles>
-    <activeProfiles>
-        <activeProfile>artifactory</activeProfile>
-    </activeProfiles>
+            <name>wasliberty-open-liberty</name>
+            <url>https://${env.ARTIFACTORY_SERVER}:443/artifactory/wasliberty-open-liberty</url>
+            <mirrorOf>!central, *</mirrorOf> <!-- Should only be the DHE olrepo -->
+        </mirror>
+    </mirrors>
 </settings>

@@ -21,43 +21,52 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ibm.websphere.simplicity.Machine;
-import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.common.apiservices.cmdline.LocalProvider;
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import junit.framework.AssertionFailedError;
 
 public class TCKUtilities {
+
     private static final Class<TCKUtilities> c = TCKUtilities.class;
 
     public static final String FAT_TEST_PREFIX = "fat.test.";
+    public static final String ARTIFACTORY_FORCE_EXTERNAL_KEY = "artifactory.force.external.repo";
     public static final String ARTIFACTORY_SERVER_KEY = "artifactory.download.server";
     public static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
     public static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
     public static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
     public static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
+    /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
+    private static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
 
     public static String generateSHA256(File file) {
         String sha256 = null;
@@ -193,7 +202,7 @@ public class TCKUtilities {
         throw new IllegalArgumentException("Unknown type: " + type);
     }
 
-    public static TCKJarInfo getTCKJarInfo(Type type, String dependencyOutput) {
+    public static TCKJarInfo getTCKJarInfo(Type type, List<String> dependencyOutput) {
         TCKJarInfo tckJar = parseTCKDependencies(type, dependencyOutput);
 
         if (tckJar != null) {
@@ -209,11 +218,10 @@ public class TCKUtilities {
         return text.split("\\r?\\n");
     }
 
-    public static TCKJarInfo parseTCKDependencies(Type type, String dependencyOutput) {
-        String lines[] = splitLines(dependencyOutput);
+    public static TCKJarInfo parseTCKDependencies(Type type, List<String> dependencyOutput) {
         Pattern tckPattern = getTCKPatternMatcher(type);
         TCKJarInfo tckJar = null;
-        for (String sCurrentLine : lines) {
+        for (String sCurrentLine : dependencyOutput) {
             if (sCurrentLine.contains("-tck:jar") || sCurrentLine.contains("-tck-tests:jar")) {
                 Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
                 if (nameMatcher.find()) {
@@ -243,20 +251,17 @@ public class TCKUtilities {
         try {
             String command = "chtag";
             String[] params = new String[] { "-tcISO8859-1", file.getCanonicalPath() };
-            ProgramOutput output = startProcess(command, params, file.getParentFile(), new Properties(), 0);
-            int exitValue = output.getReturnCode();
+            ProcessResult output = startProcess(command, params, file.getParentFile(), Collections.emptyMap(), null, 20_000);
+            int exitValue = output.getExitCode();
             Log.info(c, "zosTagASCII", "chtag RC = " + exitValue);
 
             if (exitValue != 0) {
-                String stdout = output.getStdout();
-                Log.info(c, "zosTagASCII", "SYSOUT:");
-                Log.info(c, "zosTagASCII", stdout);
+                Log.info(c, "zosTagASCII", "OUTPUT:");
+                for (String line : output.getOutput()) {
+                    Log.info(c, "zosTagASCII", line);
+                }
 
-                String stderr = output.getStderr();
-                Log.info(c, "zosTagASCII", "SYSERR:");
-                Log.info(c, "zosTagASCII", stderr);
-
-                throw new Exception("Process failure <chtag> see log for SYSOUT and SYSERR.");
+                throw new Exception("Process failure <chtag> see log for output.");
             }
         } catch (Exception e) {
             Log.error(c, "Could not tag zos file as ASCII", e);
@@ -271,56 +276,121 @@ public class TCKUtilities {
         return System.getProperty("os.name").toLowerCase().contains("z/os");
     }
 
-    public static ProgramOutput startProcess(String command, String[] params, File workingDirectory, Properties envProperties, long timeout) throws Exception {
+    public static ProcessResult startProcess(String command, String[] params, File workingDirectory, Map<String, String> envProperties, File logFile,
+                                             long timeout) throws Exception {
         if (TCKUtilities.isZos()) {
             //The _BPXK_AUTOCVT environment variable is sent to "ON" to allow ASCII tagged
             //files to be read in the correct codepage on zos
             envProperties.put("_BPXK_AUTOCVT", "ON");
         }
 
-        Machine machine = Machine.getLocalMachine();
-        ProgramOutput output = machine.execute(command, params, workingDirectory.getAbsolutePath(), envProperties, timeout);
+        List<String> commandLine = new ArrayList<>();
+        if (TCKUtilities.isWindows()) {
+            // Windows won't run a batch file directly as the command and needs "cmd /c" at the start
+            commandLine.add("cmd");
+            commandLine.add("/c");
+        }
+        commandLine.add(command);
+        commandLine.addAll(Arrays.asList(params));
 
-        return output;
+        Log.info(c, "startProcess", "Running command: " + command + " " + String.join(" ", params));
+
+        ProcessBuilder pb = new ProcessBuilder(commandLine);
+        pb.environment().putAll(envProperties);
+        pb.directory(workingDirectory);
+        pb.redirectErrorStream(true);
+
+        Process process = pb.start();
+
+        // Convert from EBCDIC on z/OS
+        Charset charset = TCKUtilities.isZos() ? Charset.forName("IBM1047") : Charset.defaultCharset();
+        Reader processReader = new InputStreamReader(process.getInputStream(), charset);
+
+        StreamMonitor monitor = new StreamMonitor(processReader);
+        monitor.logToFile(logFile);
+        monitor.logAs("process-output");
+
+        int rc = -1;
+        boolean timedout = false;
+
+        try (AutoCloseable c = monitor.start()) {
+            boolean finished = process.waitFor(timeout, TimeUnit.MILLISECONDS);
+            if (!finished) {
+                timedout = true;
+                process.destroy();
+                if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                    process.destroyForcibly();
+                    process.waitFor(10, TimeUnit.SECONDS);
+                }
+            }
+            rc = process.exitValue();
+        } finally {
+            if (process.isAlive()) {
+                // This should only occur if there was an unexpected exception before we reached destroyForcibly above
+                process.destroyForcibly();
+            }
+        }
+
+        return new ProcessResult(timedout, monitor.getLines(), rc);
     }
 
-    public static void assertNotTimedOut(ProgramOutput output, long hardTimeout, long softTimeout) {
+    public static class ProcessResult {
+        private final boolean timedOut;
+        private final List<String> output;
+        private final int exitCode;
 
-        boolean timeout = output.getReturnCode() == LocalProvider.TIMEOUT_RC;
+        private ProcessResult(boolean timedOut, List<String> output, int exitCode) {
+            this.timedOut = timedOut;
+            this.output = output;
+            this.exitCode = exitCode;
+        }
 
-        if (timeout) {
-            String stdout = output.getStdout();
-            String[] lines = TCKUtilities.splitLines(stdout);
+        /**
+         * @return whether the process was timed out
+         */
+        public boolean isTimedOut() {
+            return timedOut;
+        }
 
-            ArrayList<String> lastLines = new ArrayList<String>();
+        /**
+         * @return the merged output of stdout and stderr, split into lines
+         */
+        public List<String> getOutput() {
+            return output;
+        }
+
+        /**
+         * @return the exit code
+         */
+        public int getExitCode() {
+            return exitCode;
+        }
+    }
+
+    public static void assertNotTimedOut(ProcessResult output, long hardTimeout, long softTimeout) {
+
+        if (output.isTimedOut()) {
+            List<String> lines = output.getOutput();
+
             int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
-            int lineNum = lines.length - numOfLinesToInclude;
-            if (lineNum < 0) {
-                lineNum = 0;
-            }
-            while (lineNum < lines.length) {
-                lastLines.add(lines[lineNum]);
-                lineNum++;
-            }
+            int lastLinesStart = Math.max(0, lines.size() - numOfLinesToInclude);
+            int slowDownloadSearchStart = Math.max(0, lines.size() - 3);
 
             // Prepare the timeout message
             String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
                                 numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
-            boolean slowDownload = false;
-            while (lineNum < lines.length) {
-                String line = lines[lineNum];
+            for (String line : lines.subList(lastLinesStart, lines.size())) {
                 timeoutMsg += line + "\n";
-
-                if (lineNum > (lines.length - 3)) {
-                    if (line.toLowerCase().matches(".* downloading .*|.* downloaded .*")) {
-                        slowDownload = true;
-                    }
-                }
-
-                lineNum++;
             }
 
-            // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
+            Pattern downloadingPattern = Pattern.compile("downloading|downloaded", Pattern.CASE_INSENSITIVE);
+
+            boolean slowDownload = lines
+                            .subList(slowDownloadSearchStart, lines.size())
+                            .stream()
+                            .anyMatch(l -> downloadingPattern.matcher(l).find());
+
+            // Special Case: Check if the last three lines has the text "downloading" or "downloaded"
             if (slowDownload) {
                 timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
             }
@@ -441,7 +511,7 @@ public class TCKUtilities {
             } finally {
                 fileOutputStream.close();
                 fileChannel.close();
-                if(readableByteChannel!=null) {
+                if (readableByteChannel != null) {
                     readableByteChannel.close();
                 }
             }
@@ -450,34 +520,46 @@ public class TCKUtilities {
     }
 
     /**
-     * Export the maven wrapper scripts, jars and config to the TCK working directory
-     * Updates the maven wrapper config to use the correct artifactory host
+     * Export the maven wrapper scripts and config to the TCK working directory
      *
+     * @return             the maven wrapper properties file
      * @throws IOException
      */
-    public static Properties exportMvnWrapper(File exportDir, Authenticator auth) throws IOException {
+    public static File exportMvnWrapper(File tckWorkingDir) throws IOException {
 
         if (TCKUtilities.isWindows()) {
-            File mvnwCmdFile = TCKUtilities.exportResource(exportDir, "mvnw.cmd");
+            File mvnwCmdFile = TCKUtilities.exportResource(tckWorkingDir, "mvnw.cmd");
             mvnwCmdFile.setExecutable(true, false);
         } else {
-            File mvnwFile = TCKUtilities.exportResource(exportDir, "mvnw");
+            File mvnwFile = TCKUtilities.exportResource(tckWorkingDir, "mvnw");
             mvnwFile.setExecutable(true, false);
             if (TCKUtilities.isZos()) {
                 TCKUtilities.zosTagASCII(mvnwFile);
             }
         }
 
-        File targetFolder = new File(exportDir, ".mvn/wrapper");
+        File targetFolder = new File(tckWorkingDir, ".mvn/wrapper");
         Files.createDirectories(targetFolder.toPath());
 
         File wrapperPropertiesFile = TCKUtilities.exportResource(targetFolder, "maven-wrapper.properties");
-        Properties props = updatePropertiesFile(wrapperPropertiesFile);
+        return wrapperPropertiesFile;
+    }
 
-        String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
-        File wrapperFile = TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), auth);
+    /**
+     * Download the maven wrapper jar to the correct directory within the TCK working directory
+     *
+     * @param  tckWorkingDir the TCK working directory
+     * @param  wrapperProps  the properties from the wrapper config file
+     * @param  authenticator the authenticator to use for the download
+     * @throws IOException
+     */
+    public static void downloadMvnWrapperJar(File tckWorkingDir, Properties wrapperProps, Authenticator authenticator) throws IOException {
 
-        return props;
+        String wrapperURL = wrapperProps.getProperty(MVN_WRAPPER_URL_KEY);
+        File targetFolder = new File(tckWorkingDir, ".mvn/wrapper");
+        Files.createDirectories(targetFolder.toPath());
+
+        TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), authenticator);
     }
 
     public static void assertSHA256(File file, String expectedSha256) {
@@ -514,23 +596,23 @@ public class TCKUtilities {
      * @return
      * @throws IOException
      */
-    public static Properties updatePropertiesFile(File wrapperPropertiesFile) throws IOException {
+    public static Properties updateWrapperPropertiesFile(File wrapperPropertiesFile) throws IOException {
         Properties props = new Properties();
         //get the artifactory server
         String artifactoryServer = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
         if (artifactoryServer != null) {
+            String artifactoryRepoURL = "https://" + artifactoryServer + "/artifactory/wasliberty-maven-remote/";
+
             //load the properties file
 
-            FileInputStream fis = new FileInputStream(wrapperPropertiesFile);
-            try {
+            try (FileInputStream fis = new FileInputStream(wrapperPropertiesFile)) {
                 props.load(fis);
-            } finally {
-                fis.close();
             }
+
             //get the existing value of the distributionUrl property
             String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
             //substitute the server string
-            distributionURL = distributionURL.replace("${" + ARTIFACTORY_SERVER_KEY + "}", artifactoryServer);
+            distributionURL = distributionURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
             //set it back into the properties
             props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
             Log.info(c, "updatePropertiesFile", MVN_DISTRIBUTION_URL_KEY + "=" + distributionURL);
@@ -538,20 +620,27 @@ public class TCKUtilities {
             //get the existing value of the wrapperUrl property
             String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
             //substitute the server string
-            wrapperURL = wrapperURL.replace("${" + ARTIFACTORY_SERVER_KEY + "}", artifactoryServer);
+            wrapperURL = wrapperURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
             //set it back into the properties
             props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
             Log.info(c, "updatePropertiesFile", MVN_WRAPPER_URL_KEY + "=" + wrapperURL);
 
             //write the properties back out into the original file
-            FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile);
-            try {
+            try (FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile)) {
                 props.store(fos, "MVN Wrapper Properties");
-            } finally {
-                fos.close();
             }
         }
         return props;
+    }
+
+    public static boolean useArtifactory() {
+        Log.info(c, "useArtifactory", "Force external: " + System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY, ""));
+        boolean forceExternal = Boolean.getBoolean(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
+        if (forceExternal) {
+            return false;
+        }
+
+        return !System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY, "").isEmpty();
     }
 
     public static String getArtifactoryServer() {
@@ -566,7 +655,7 @@ public class TCKUtilities {
         return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
     }
 
-    public static File getM2Dir() throws IOException {
+    public static File getTemporaryMavenHomeDir() throws IOException {
         String userDir = System.getProperty("user.dir");
         if (userDir == null) {
             throw new IOException("Could not determine user.dir");
@@ -590,20 +679,19 @@ public class TCKUtilities {
     }
 
     /**
-     * Export the mvnw scripts.
-     * Download the maven-wrapper jar.
+     * Create a temporary maven home directory to use for the build.
+     * <p>
      * Download the maven distro.
      * Export the maven settings.xml file.
      *
      * @param  mavenUserHome
-     * @param  tckRunnerDir
-     * @param  artifactoryAuthenticator
-     * @return                          the exported maven settings.xml file
+     * @param  authenticator
+     * @return               the exported maven settings.xml file
      * @throws IOException
      */
-    public static File setupMaven(File mavenUserHome, File tckRunnerDir, Authenticator authenticator) throws IOException {
-        Properties props = TCKUtilities.exportMvnWrapper(tckRunnerDir, authenticator);
-        String distroURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
+    public static File setupMavenHome(File mavenUserHome, Properties wrapperProperties, Authenticator authenticator) throws IOException {
+
+        String distroURL = wrapperProperties.getProperty(MVN_DISTRIBUTION_URL_KEY);
 
         TCKUtilities.downloadMavenDistro(distroURL, mavenUserHome, authenticator);
 

@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -135,7 +137,7 @@ public class DependencyParserTest {
 
     @Test
     public void testGetTCKJarInfo() throws IOException {
-        String dependencyOutput = loadDependencyFile("dependency.txt");
+        List<String> dependencyOutput = loadDependencyFile("dependency.txt");
         TCKJarInfo info = TCKUtilities.parseTCKDependencies(Type.MICROPROFILE, dependencyOutput);
         assertNotNull(info);
         assertEquals("org.eclipse.microprofile.health", info.group);
@@ -146,7 +148,7 @@ public class DependencyParserTest {
 
     @Test
     public void testWindowsGetTCKJarInfo() throws IOException {
-        String dependencyOutput = loadDependencyFile("windowsDependency.txt");
+        List<String> dependencyOutput = loadDependencyFile("windowsDependency.txt");
         TCKJarInfo info = TCKUtilities.parseTCKDependencies(Type.MICROPROFILE, dependencyOutput);
         assertNotNull(info);
         assertEquals("org.eclipse.microprofile.health", info.group);
@@ -156,18 +158,17 @@ public class DependencyParserTest {
                      info.jarPath);
     }
 
-    private static final String loadDependencyFile(String name) throws IOException {
-        StringBuilder builder = new StringBuilder();
+    private static final List<String> loadDependencyFile(String name) throws IOException {
+        List<String> result = new ArrayList<>();
         try (InputStream is = DependencyParserTest.class.getResourceAsStream(name)) {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
             String line;
             while ((line = br.readLine()) != null) {
-                builder.append(line);
-                builder.append(System.lineSeparator());
+                result.add(line);
             }
         }
-        return builder.toString();
+        return result;
     }
 }
