@@ -37,7 +37,7 @@ public class GraphQLTckPackageTest {
 
 	@ClassRule
 	public static RepeatTests r = RepeatTests.withoutModification()
-	    .andWith(new FeatureReplacementAction("mpConfig-1.4", "mpConfig-2.0").withID("graplql_mpConfig-2.0"));
+	    .andWith(new FeatureReplacementAction("mpConfig-1.4", "mpConfig-2.0"));
 
     @Server("FATServer")
     public static LibertyServer server;
