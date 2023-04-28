@@ -820,7 +820,14 @@ public class DataTestServlet extends FATServlet {
         assertArrayEquals(new int[] { 180, 200, 220, 220 },
                           houses.findGarageAreaByGarageNotNull());
 
-        // Removal by an embeddable attribute
+        // Find a DoubleStream for a single attribute type
+
+        double[] prices = houses.findPurchasePriceByLotSizeGreaterThan(0.15f).toArray();
+        assertEquals(Arrays.toString(prices), 4, prices.length);
+        assertEquals(153000.0, prices[0], 0.001);
+        assertEquals(162000.0, prices[1], 0.001);
+        assertEquals(188000.0, prices[2], 0.001);
+        assertEquals(204000.0, prices[3], 0.001);
 
         assertEquals(2L, houses.deleteByKitchenWidthGreaterThan(12));
 
@@ -1262,6 +1269,17 @@ public class DataTestServlet extends FATServlet {
                              primes.findByNumberIdBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
                                              .stream()
                                              .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method that returns IntStream.
+     */
+    @Test
+    public void testIntStreamResult() {
+        assertIterableEquals(List.of(5, 4, 3, 3, 5, 4, 4),
+                             primes.findSumOfBitsByIdBetween(20, 49)
+                                             .mapToObj(i -> Integer.valueOf(i))
                                              .collect(Collectors.toList()));
     }
 
@@ -2261,6 +2279,16 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify that a repository method with return type of Set preserves the order of iteration,
+     * (in this case descending sort on id) which is possible by using LinkedHashSet.
+     */
+    @Test
+    public void testOrderedSet() {
+        assertIterableEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L),
+                             primes.findIdByIdBetween(20, 49));
     }
 
     /**

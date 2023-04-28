@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
@@ -171,6 +172,12 @@ public interface Primes {
     Prime[] findFirst5ByIdLessThanEqual(long maxNumber);
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
+
+    @OrderBy(value = "id", descending = true)
+    Set<Long> findIdByIdBetween(long min, long max);
+
+    @OrderBy(value = "id", descending = true)
+    IntStream findSumOfBitsByIdBetween(long min, long max);
 
     boolean existsByNumberId(long number);
 
