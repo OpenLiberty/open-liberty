@@ -37,6 +37,7 @@ import org.apache.cxf.phase.Phase;
 /**
  *
  */
+ // Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
 public final class JAXBAttachmentSchemaValidationHack extends AbstractPhaseInterceptor<Message> {
     public static final JAXBAttachmentSchemaValidationHack INSTANCE
         = new JAXBAttachmentSchemaValidationHack();
