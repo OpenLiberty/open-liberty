@@ -1499,7 +1499,11 @@ restoreServer()
     return $rc
   fi
   if [ $rc -ne 0 ]; then
-    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+      issueMessage --message:error.checkpoint.restore.no.recovery "${X_LOG_DIR}/checkpoint/restore.log"
+    else
+      issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    fi    
   fi
   return $rc
 }
