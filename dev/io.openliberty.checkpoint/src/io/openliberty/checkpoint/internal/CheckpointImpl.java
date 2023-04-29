@@ -493,6 +493,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     @FFDCIgnore(Exception.class)
+    @Trivial
     private void callHooks(String operation, List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
@@ -507,6 +508,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
+    @Trivial
     private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks("prepare",
                   checkpointHooks,
@@ -518,6 +520,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E", cause.getMessage()), cause);
     }
 
+    @Trivial
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         // The first thing is to set the jvmRestore flag
         jvmRestore.set(true);
