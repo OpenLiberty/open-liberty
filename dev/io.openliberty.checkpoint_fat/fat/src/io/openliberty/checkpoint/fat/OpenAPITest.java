@@ -52,22 +52,18 @@ public class OpenAPITest {
                         .addClass(Endpoints.class);
 
         ShrinkHelper.exportAppToServer(server, webappWar, DeployOptions.OVERWRITE);
+
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getVariables().getById("openAPIserver").setValue("alternateServer");
+        server.updateServerConfiguration(config);
     }
 
     @Test
     @Ignore
     public void testOpenAPI() throws Exception {
 
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
-        HttpUtils.findStringInUrl(server, "/openapi", "- url: http://localhost:" + server.getHttpDefaultPort() + "/OpenAPI");
-        server.stopServer();
-
-        server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
-        server.startServer();
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("openAPIserver").setValue("alternateServer");
-        server.updateServerConfiguration(config);
 
         server.checkpointRestore();
 
