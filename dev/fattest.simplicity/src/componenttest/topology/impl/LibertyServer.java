@@ -496,6 +496,23 @@ public class LibertyServer implements LogMonitorClient {
      */
     private CheckpointInfo checkpointInfo;
 
+    /**
+     *
+     * @return current value of {@link criuRestoreDisableRecovery}
+     */
+    public boolean isCriuRestoreDisableRecovery() {
+        return checkpointInfo.criuRestoreDisableRecovery;
+    }
+
+    /**
+     * Set the value of {@link criuRestoreDisableRecovery}.
+     *
+     * @param value to set.
+     */
+    public void setCriuRestoreDisableRecovery(boolean value) {
+        checkpointInfo.criuRestoreDisableRecovery = value;
+    }
+
     public static class CheckpointInfo {
         final Consumer<LibertyServer> defaultCheckpointLambda = (LibertyServer s) -> {
             Log.debug(c, "No beforeCheckpointLambda supplied.");
@@ -560,8 +577,6 @@ public class LibertyServer implements LogMonitorClient {
         private final boolean validateTimedExit = false;
         //Check log on serverStop for unintentional app restart after restore.
         private boolean assertNoAppRestartOnRestore = true;
-        // disable auto clean start of server on failure of restore
-        private final boolean criu_restore_disable_recovery = true;
 
         /**
          * @return the assertNoAppRestartOnRestore
@@ -576,6 +591,13 @@ public class LibertyServer implements LogMonitorClient {
         public void setAssertNoAppRestartOnRestore(boolean assertNoAppRestartOnRestore) {
             this.assertNoAppRestartOnRestore = assertNoAppRestartOnRestore;
         }
+
+        /**
+         * If true, auto-recovery is disabled. Otherwise, auto-recovery is enabled. The default is true (disabled).
+         * <p>
+         * Auto-recovery will launch a clean start of the server if a checkpoint restore fails.
+         */
+        private boolean criuRestoreDisableRecovery = true;
 
         private Properties checkpointEnv = null;
 
@@ -1631,11 +1653,8 @@ public class LibertyServer implements LogMonitorClient {
         createServerMarkerFile();
 
         if (doCheckpoint()) {
-            if (checkpointInfo.criu_restore_disable_recovery) {
-                envVars.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "TRUE");
-            }
             // save off envVars for checkpoint
-            checkpointInfo.checkpointEnv = envVars;
+            checkpointInfo.checkpointEnv = (Properties) envVars.clone();
             checkpointInfo.beforeCheckpointLambda.accept(this);
         }
 
@@ -1827,7 +1846,7 @@ public class LibertyServer implements LogMonitorClient {
         return checkpointRestore(true);
     }
 
-    private ProgramOutput checkpointRestore(boolean validate) throws Exception {
+    public ProgramOutput checkpointRestore(boolean validate) throws Exception {
         String method = "checkpointRestore";
         //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
         // polling timeout on the launch
@@ -1837,8 +1856,12 @@ public class LibertyServer implements LogMonitorClient {
             @Override
             public void run() {
                 try {
-                    Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + checkpointInfo.checkpointEnv);
-                    restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], checkpointInfo.checkpointEnv));
+                    Properties restoreEnv = (Properties) checkpointInfo.checkpointEnv.clone();
+                    if (checkpointInfo.criuRestoreDisableRecovery) {
+                        restoreEnv.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "X");
+                    }
+                    Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + restoreEnv);
+                    restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], restoreEnv));
                 } catch (Exception e) {
                     Log.info(c, method, "Exception while attempting to restore a server: " + e.getMessage());
                 }
@@ -1866,7 +1889,10 @@ public class LibertyServer implements LogMonitorClient {
                 return output;
             }
         }
-        if (failedRestore()) {
+
+        //The restore operation returned 0. Verify that running server is from a checkpoint restore and not from a
+        // failed restore recovery, unless auto-recovery is enabled
+        if (checkpointInfo.criuRestoreDisableRecovery && failedRestore()) {
             // Did not find restore message; assume it failed;
             // The return code is 0 indicating the server started, likely recovered
             // set as started but then stop the server
