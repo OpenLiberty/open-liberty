@@ -27,6 +27,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -104,12 +105,7 @@ public class LocalEJBTest extends FATServletClient {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
     }
 
-    // TODO: Re-enable these tests after deciding how the server will handle EJBs with
-    // container-managed transactional behavior at application startup -- @Singleton, @Startup,
-    // @Stateful, @Schedule (Timed task). These tests fail because the container begins a
-    // transaction, at app startup, when creating the @Singleton and when scheduling a task.
-
-    //@Test
+    @Test
     public void testAtApplicationsMultiRestore() throws Exception {
         HttpUtils.findStringInUrl(server, REMOTE_EJB_APP_NAME, "Got RemoteEJBServlet");
 
@@ -122,8 +118,7 @@ public class LocalEJBTest extends FATServletClient {
         HttpUtils.findStringInUrl(server, REMOTE_EJB_APP_NAME, "Got RemoteEJBServlet");
     }
 
-    // Temporarily disabled
-    //@Test
+    @Test
     public void testNonPersistentTimers() throws Exception {
         String result = server.waitForStringInLogUsingMark("TIMER TEST - .*");
         assertNotNull("No TIMER TEST found in log", result);
