@@ -133,7 +133,7 @@ public class ExtendedModuleInfoImpl implements ExtendedModuleInfo, MetaDataGette
             this.nestedModuleMetaDataValues = new ArrayList<ModuleMetaData>(2);
         }
         this.nestedModuleMetaDataTypes.add(moduleType);
-        this.nestedModuleMetaDataValues.add(nestedMetaData);
+        this.nestedModuleMetaDataValues.addSharedLibrary(nestedMetaData);
     }
 
     @Override

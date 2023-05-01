@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,15 @@ package com.ibm.ws.container.service.app.deploy;
 import com.ibm.wsspi.adaptable.module.Container;
 
 /**
- * Contains information about a container
+ * Class path element types. These are the types of elements
+ * which may be placed on a class path.
+ *
+ * Except for {@link ContainerInfo#SHARED_LIB}, the locations are
+ * according to usual JavaEE packaging rules.
+ *
+ * Shared libraries are libraries external to the JavaEE packaging
+ * which are added either to the application class path or to module
+ * class paths.
  */
 public interface ContainerInfo {
     public enum Type {
@@ -32,17 +40,19 @@ public interface ContainerInfo {
     }
 
     /**
-     * Returns the container type
+     * The particular type of this class path element.
+     *
+     * @return The particular type of this class path element.
      */
-    public Type getType();
+    Type getType();
 
     /**
-     * Returns the container name
+     * The name of this class path element. Usually, the relative URI
+     * of the element.
+     *
+     * @return
      */
-    public String getName();
+    String getName();
 
-    /**
-     * Returns the container object
-     */
-    public Container getContainer();
+    Container getContainer();
 }
