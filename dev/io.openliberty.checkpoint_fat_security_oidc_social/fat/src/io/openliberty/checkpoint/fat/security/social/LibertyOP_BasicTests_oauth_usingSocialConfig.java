@@ -11,10 +11,10 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.checkpoint.fat;
+package io.openliberty.checkpoint.fat.security.social;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
-import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
+import static io.openliberty.checkpoint.fat.securty.common.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.securty.common.FATSuite.updateVariableConfig;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -70,10 +70,14 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
 
     public static LibertyServer genericServer;
 
+    private static final String OP_SERVER = SocialConstants.SERVER_NAME + ".LibertyOP.op";
+
+    private static final String GENERIC_SERVER = SocialConstants.SERVER_NAME + ".LibertyOP.social";
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().fullFATOnly())
-                    .andWith(new JakartaEE10Action().fullFATOnly());
+                    .andWith(new JakartaEE9Action().forServers(OP_SERVER, GENERIC_SERVER).fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers(OP_SERVER, GENERIC_SERVER).fullFATOnly());
 
     @BeforeClass
     public static void setUpServers() throws Exception {
@@ -96,13 +100,13 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
         testSettings = socialSettings;
 
         skipServerStart = true;
-        testOPServer = commonSetUp(SocialConstants.SERVER_NAME + ".LibertyOP.op", "server.xml",
+        testOPServer = commonSetUp(OP_SERVER, "server.xml",
                                    SocialConstants.OIDC_OP, null, SocialConstants.DO_NOT_USE_DERBY, opStartMsgs, null,
                                    SocialConstants.OIDC_OP, true, true, tokenType, certType);
 
         opServer = testOPServer.getServer();
         skipServerStart = true;
-        genericTestServer = commonSetUp(SocialConstants.SERVER_NAME + ".LibertyOP.social",
+        genericTestServer = commonSetUp(GENERIC_SERVER,
                                         "server.xml", SocialConstants.GENERIC_SERVER, extraApps,
                                         SocialConstants.DO_NOT_USE_DERBY, startMsgs);
 
@@ -112,15 +116,12 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-
-        opServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         opServer.startServer(testMethod + ".log");
 
         genericServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         genericServer.startServer(testMethod + ".log");
         configureBeforeRestore();
 
-        opServer.checkpointRestore();
         genericServer.checkpointRestore();
 
         setActionsForProvider(SocialConstants.LIBERTYOP_PROVIDER, SocialConstants.OAUTH_OP);

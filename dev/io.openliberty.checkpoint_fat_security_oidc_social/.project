@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openliberty.checkpoint_fat_social_login</name>
+	<name>io.openliberty.checkpoint_fat_security_oidc_social</name>
 	<comment></comment>
 	<projects>
 	</projects>

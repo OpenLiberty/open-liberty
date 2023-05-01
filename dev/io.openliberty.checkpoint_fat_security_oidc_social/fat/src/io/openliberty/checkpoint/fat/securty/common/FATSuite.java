@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.fat;
+package io.openliberty.checkpoint.fat.securty.common;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
 import static org.junit.Assert.fail;
@@ -33,16 +33,19 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.fat.security.oidc.OidcClientBasicTests;
+import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_usingSocialConfig;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                LibertyOP_BasicTests_oauth_usingSocialConfig.class
+                LibertyOP_BasicTests_oauth_usingSocialConfig.class,
+                OidcClientBasicTests.class
 })
 
 public class FATSuite {
 
-    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+    public static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
         Properties serverEnvProperties = new Properties();
         serverEnvProperties.putAll(newEnv);
         File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
@@ -51,7 +54,7 @@ public class FATSuite {
         }
     }
 
-    static String getTestMethodNameOnly(TestName testName) {
+    public static String getTestMethodNameOnly(TestName testName) {
         String testMethodSimpleName = getTestMethodSimpleName(testName);
         // Sometimes the method name includes the class name; remove the class name.
         int dot = testMethodSimpleName.indexOf('.');
@@ -61,7 +64,7 @@ public class FATSuite {
         return testMethodSimpleName;
     }
 
-    static public <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
+    public static <T extends Enum<T>> T getTestMethod(Class<T> type, TestName testName) {
         String simpleName = getTestMethodNameOnly(testName);
         try {
             T t = Enum.valueOf(type, simpleName);
@@ -74,14 +77,14 @@ public class FATSuite {
         }
     }
 
-    static void updateVariableConfig(LibertyServer server, String name, String value) throws Exception {
+    public static void updateVariableConfig(LibertyServer server, String name, String value) throws Exception {
         // change config of variable for restore
         ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
         config.getVariables().add(new Variable(name, value));
         server.updateServerConfiguration(config);
     }
 
-    static ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
+    public static ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
         for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
             Variable var = iVars.next();
             if (var.getName().equals(key)) {
