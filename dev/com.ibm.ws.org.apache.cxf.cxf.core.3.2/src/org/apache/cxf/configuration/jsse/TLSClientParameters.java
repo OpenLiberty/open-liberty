@@ -38,6 +38,7 @@ public class TLSClientParameters extends TLSParameterBase {
     private boolean useHttpsURLConnectionDefaultHostnameVerifier;
     private HostnameVerifier hostnameVerifier;
     private SSLContext sslContext;
+    private boolean jaxrsClient; // Liberty Change
 
     /**
      * Set custom HostnameVerifier
@@ -254,4 +255,22 @@ public class TLSClientParameters extends TLSParameterBase {
     public void setSslContext(SSLContext sslContext) {
         this.sslContext = sslContext;
     }
+
+    // Liberty Start
+    /**
+     * Set whether or not this is a JAX-RS client
+     * Default is false.
+     */
+    public void setJaxRsClient(boolean jaxrsClient) {
+        this.jaxrsClient = jaxrsClient;
+    }
+
+    /**
+     * Returns whether or not this is a JAX-RS client
+     */
+    public boolean isJaxrsClient() {
+        return jaxrsClient;
+    }
+    // Liberty End
+
 }
