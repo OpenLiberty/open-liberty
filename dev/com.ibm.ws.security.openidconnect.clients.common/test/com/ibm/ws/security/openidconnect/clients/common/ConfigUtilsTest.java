@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.common;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
+import com.ibm.ws.security.openidconnect.clients.common.ConfigUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 

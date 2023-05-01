@@ -47,7 +47,7 @@ import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
-import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.server.internal.MockJWKProvider;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;

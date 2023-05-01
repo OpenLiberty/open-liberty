@@ -27,9 +27,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 // import com.ibm.websphere.security.openidconnect.token.IdToken;
 import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
-import com.ibm.ws.security.openidconnect.common.Constants;
 
 public class OidcTokenImplBase implements Serializable {
 

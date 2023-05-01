@@ -34,7 +34,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 
 public class JWT {
 

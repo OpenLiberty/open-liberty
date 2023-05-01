@@ -27,6 +27,8 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethod;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -146,14 +148,18 @@ public class AuthorizationCodeHandler {
             String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientId);
             throw new MalformedURLException(message);
         }
+
         Builder tokenRequestBuilder = new TokenRequestor.Builder(url, clientId, clientConfig.getClientSecret(), redirectUrl, authzCode);
         tokenRequestBuilder.sslSocketFactory(sslSocketFactory);
         tokenRequestBuilder.grantType(clientConfig.getGrantType());
         tokenRequestBuilder.isHostnameVerification(clientConfig.isHostNameVerificationEnabled());
-        tokenRequestBuilder.authMethod(clientConfig.getTokenEndpointAuthMethod());
         tokenRequestBuilder.resources(OIDCClientAuthenticatorUtil.getResources(clientConfig));
         tokenRequestBuilder.customParams(getTokenRequestCustomParameters(responseState));
         tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
+        String tokenEndpointAuthMethod = clientConfig.getTokenEndpointAuthMethod();
+        tokenRequestBuilder.authMethod(tokenEndpointAuthMethod);
+        setAuthMethodSpecificSettings(tokenRequestBuilder, tokenEndpointAuthMethod);
+
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
@@ -184,6 +190,14 @@ public class AuthorizationCodeHandler {
     HashMap<String, String> addPkceParameters(String state, HashMap<String, String> parameters) {
         ProofKeyForCodeExchangeHelper pkceHelper = new ProofKeyForCodeExchangeHelper();
         return pkceHelper.addCodeVerifierToTokenRequestParameters(state, parameters);
+    }
+
+    void setAuthMethodSpecificSettings(Builder tokenRequestBuilder, String tokenEndpointAuthMethod) throws TokenEndpointAuthMethodSettingsException {
+        TokenEndpointAuthMethod authMethod = TokenEndpointAuthMethod.getInstance(tokenEndpointAuthMethod, clientConfig);
+        if (authMethod == null) {
+            return;
+        }
+        authMethod.setAuthMethodSpecificSettings(tokenRequestBuilder);
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.

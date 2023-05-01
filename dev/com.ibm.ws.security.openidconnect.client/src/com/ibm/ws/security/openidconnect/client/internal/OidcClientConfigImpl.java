@@ -14,6 +14,7 @@ import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyStoreException;
+import java.security.PrivateKey;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
@@ -65,13 +66,14 @@ import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
+import com.ibm.ws.security.openidconnect.clients.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
+import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
-import com.ibm.ws.security.openidconnect.common.ConfigUtils;
-import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -1931,6 +1933,12 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getPkceCodeChallengeMethod() {
         return pkceCodeChallengeMethod;
+    }
+
+    @Sensitive
+    @Override
+    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
+        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), keyStoreServiceRef.getService());
     }
 
 }

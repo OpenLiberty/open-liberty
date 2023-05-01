@@ -62,7 +62,7 @@ import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.OidcUserClaims;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.security.openidconnect.token.JWSHeader;

@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebSSOUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;

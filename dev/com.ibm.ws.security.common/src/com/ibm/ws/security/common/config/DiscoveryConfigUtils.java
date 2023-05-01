@@ -100,7 +100,7 @@ public class DiscoveryConfigUtils {
     }
 
     public String adjustConfigAttributeValueBasedOnListOfSupportedValues(String discoveryDocKey, String configAttributeName, String originalConfigValue) {
-        String overideValue = originalConfigValue;
+        String overrideValue = originalConfigValue;
         ArrayList<String> opValuesSupported = discoverOPConfig(discoveryjson.get(discoveryDocKey));
         if (isSocialRPUsingDefault(configAttributeName) && !opHasSocialRPDefault(configAttributeName, opValuesSupported)) {
             if (tc.isDebugEnabled()) {
@@ -109,13 +109,13 @@ public class DiscoveryConfigUtils {
             String supported  = socialRPSupportsOPConfig(configAttributeName, opValuesSupported);
             if (supported != null) {
                 Tr.info(tc,  "OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT", originalConfigValue, configAttributeName, supported, getId());
-                overideValue = supported;
+                overrideValue = supported;
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The adjusted value is : " + overideValue);
+                    Tr.debug(tc, "The adjusted value is : " + overrideValue);
                 }
             }
         }
-        return overideValue;
+        return overrideValue;
     }
 
     private String getId() {

@@ -310,5 +310,17 @@ ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: The {0} OpenID Connect client en
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=See the error in the message for more information.
 
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: The [{0}] OpenID Connect client encountered an error while setting up client authentication for the token endpoint for the [{1}] authentication method. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=The OpenID Connect token endpoint requires client authentication, but the OpenID Connect client might be missing information, or the client encountered another error while setting up the authentication data.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=See the error in the message for more information.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: The [{0}] OpenID Connect client does not have a key alias name configured, so the client cannot locate the key to use to sign the JSON Web Token for client authentication.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=The OpenID Connect client must configure a key alias name to define the key to use to sign the JWT.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verify that the OpenID Connect client has a key alias name configured.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: The [{0}] OpenID Connect client does not have a keystore reference configured, so the client cannot locate the key to use to sign the JSON Web Token for client authentication.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=The OpenID Connect client must configure a keystore reference to define where to find the key to use to sign the JWT.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verify that the OpenID Connect client has a keystore reference configured.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

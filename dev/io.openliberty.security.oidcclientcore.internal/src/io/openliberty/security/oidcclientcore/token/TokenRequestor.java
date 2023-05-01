@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
+import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
@@ -49,12 +52,15 @@ public class TokenRequestor {
     private final List<NameValuePair> params;
     private final HashMap<String, String> customParams;
     private final boolean useSystemPropertiesForHttpClientConnections;
+    private final String clientAssertionSigningAlgorithm;
+    @Sensitive
+    private final Key clientAssertionSigningKey;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
     private static boolean issuedBetaMessage = false;
 
-    private TokenRequestor(Builder builder) {
+    private TokenRequestor(Builder builder) throws TokenRequestException {
         this.tokenEndpoint = builder.tokenEndpoint;
         this.clientId = builder.clientId;
         this.clientSecret = builder.clientSecret;
@@ -68,6 +74,8 @@ public class TokenRequestor {
         this.resources = builder.resources;
         this.customParams = builder.customParams;
         this.useSystemPropertiesForHttpClientConnections = builder.useSystemPropertiesForHttpClientConnections;
+        this.clientAssertionSigningAlgorithm = builder.clientAssertionSigningAlgorithm;
+        this.clientAssertionSigningKey = builder.clientAssertionSigningKey;
 
         List<NameValuePair> params = getBasicParams();
         mergeCustomParams(params, customParams);
@@ -75,7 +83,7 @@ public class TokenRequestor {
     }
 
     @Sensitive
-    private List<NameValuePair> getBasicParams() {
+    private List<NameValuePair> getBasicParams() throws TokenRequestException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(TokenConstants.GRANT_TYPE, grantType));
         if (resources != null) {
@@ -99,7 +107,7 @@ public class TokenRequestor {
         return params;
     }
 
-    void addPrivateKeyJwtParameters(List<NameValuePair> params) {
+    void addPrivateKeyJwtParameters(List<NameValuePair> params) throws TokenRequestException {
         if (!isRunningBetaMode()) {
             return;
         }
@@ -121,9 +129,13 @@ public class TokenRequestor {
         }
     }
 
-    private String buildClientAssertionJwt() {
-        PrivateKeyJwtAuthMethod pkjAuthMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpoint);
-        return pkjAuthMethod.createPrivateKeyJwt();
+    private String buildClientAssertionJwt() throws TokenRequestException {
+        PrivateKeyJwtAuthMethod pkjAuthMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpoint, clientAssertionSigningAlgorithm, clientAssertionSigningKey);
+        try {
+            return pkjAuthMethod.createPrivateKeyJwt();
+        } catch (PrivateKeyJwtAuthException e) {
+            throw new TokenRequestException(clientId, e.getMessage(), e);
+        }
     }
 
     private void mergeCustomParams(@Sensitive List<NameValuePair> params, HashMap<String, String> customParams) {
@@ -175,6 +187,9 @@ public class TokenRequestor {
         private String resources = null;
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;
+        private String clientAssertionSigningAlgorithm = "RS256";
+        @Sensitive
+        private Key clientAssertionSigningKey = null;
 
         public Builder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String redirectUri, String code) {
             this.tokenEndpoint = tokenEndpoint;
@@ -224,7 +239,17 @@ public class TokenRequestor {
             return this;
         }
 
-        public TokenRequestor build() {
+        public Builder clientAssertionSigningAlgorithm(String clientAssertionSigningAlgorithm) {
+            this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;
+            return this;
+        }
+
+        public Builder clientAssertionSigningKey(@Sensitive Key clientAssertionSigningKey) {
+            this.clientAssertionSigningKey = clientAssertionSigningKey;
+            return this;
+        }
+
+        public TokenRequestor build() throws TokenRequestException {
             return new TokenRequestor(this);
         };
     }

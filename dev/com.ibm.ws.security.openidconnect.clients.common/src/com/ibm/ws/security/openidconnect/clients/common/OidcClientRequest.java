@@ -23,8 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
