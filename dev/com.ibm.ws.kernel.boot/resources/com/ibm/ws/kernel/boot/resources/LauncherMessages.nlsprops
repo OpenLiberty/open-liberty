@@ -764,9 +764,9 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: The server checkpoint reques
 error.checkpoint.failed.selinux.netdiag.explanation=A checkpoint request for the server failed because netlink system calls were unsuccessful.
 error.checkpoint.failed.selinux.netdiag.useraction=If SELinux is enabled in enforcing mode, netlink system calls might be blocked by the SELinux "virt_sandbox_use_netlink" policy setting. Either disable SELinux or enable the netlink system calls with the "setsebool virt_sandbox_use_netlink 1" command.
 
-error.checkpoint.restore.no.recovery=CWWKE0964E: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. The server did not launch.
-error.checkpoint.restore.no.recovery.explanation=An error occurred restoring a checkpoint server process. Checkpoint restore failure recovery is disabled so the server did not launch.
-error.checkpoint.restore.no.recovery.useraction=Check the logs to determine why the checkpoint process was not restored. To enable restore failure recovery, unset the environment variable CRIU_RESTORE_DISABLE_RECOVERY.
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. The server did not launch because checkpoint restore recovery is disabled."
+error.checkpoint.restore.failed.no.recovery.explanation=An error occurred restoring a checkpoint server process. The server did not launch because checkpoint restore recovery is disabled.
+error.checkpoint.restore.failed.no.recovery.useraction=Check the logs to determine why the checkpoint process was not restored. To enable restore failure recovery, unset the environment variable CRIU_RESTORE_DISABLE_RECOVERY.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

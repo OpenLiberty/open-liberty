@@ -1858,7 +1858,7 @@ public class LibertyServer implements LogMonitorClient {
                 try {
                     Properties restoreEnv = (Properties) checkpointInfo.checkpointEnv.clone();
                     if (checkpointInfo.criuRestoreDisableRecovery) {
-                        restoreEnv.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "X");
+                        restoreEnv.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "true");
                     }
                     Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + restoreEnv);
                     restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], restoreEnv));
