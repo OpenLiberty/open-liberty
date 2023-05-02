@@ -12,20 +12,21 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
-import java.io.Writer;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URI;
@@ -151,27 +152,6 @@ public class TCKUtilities {
         }
     }
 
-    public static boolean waitForProcess(Process process, long timeoutMS) throws InterruptedException {
-        boolean timeout = false;
-        if (timeoutMS > -1) {
-            timeout = !process.waitFor(timeoutMS, TimeUnit.MILLISECONDS); // Requires Java 8+
-            if (timeout) { //timeout!
-                process.destroyForcibly(); //kill the process
-                process.waitFor();
-            }
-        }
-        return timeout;
-    }
-
-    public static void writeStringToFile(String string, File outputFile) {
-        try (Writer writer = new FileWriter(outputFile)) {
-            writer.write(string);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.error(c, "writeStringToFile", e);
-        }
-    }
-
     //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
     //jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
 
@@ -213,10 +193,6 @@ public class TCKUtilities {
         }
 
         return tckJar;
-    }
-
-    public static String[] splitLines(String text) {
-        return text.split("\\r?\\n");
     }
 
     public static TCKJarInfo parseTCKDependencies(Type type, List<String> dependencyOutput) {
@@ -277,8 +253,21 @@ public class TCKUtilities {
         return System.getProperty("os.name").toLowerCase().contains("z/os");
     }
 
+    /**
+     * Run a process and wait for it to complete.
+     *
+     * @param  command          the command to run
+     * @param  params           the parameters to the command
+     * @param  workingDirectory the working directory to use, may be {@code null} to use the working directory of the current process
+     * @param  envProperties    the environment variables to set
+     * @param  logFile          the file to log the output of the process to, may be {@code null} to not log to a file
+     * @param  timeout          the timeout in ms. If the program takes longer to this to run then it will be terminated.
+     * @return                  the result of running the process, caller should check {@link ProcessResult#isTimedOut()} and {@link ProcessResult#getExitCode()}
+     * @throws Exception        if an unexpected exception occurs while starting or waiting for the process. Note that a non-zero exit code will <b>not</b> result in an exception.
+     */
     public static ProcessResult startProcess(String command, String[] params, File workingDirectory, Map<String, String> envProperties, File logFile,
                                              long timeout) throws Exception {
+        assertThat("Process timeout", timeout, greaterThan(0L));
         if (TCKUtilities.isZos()) {
             //The _BPXK_AUTOCVT environment variable is sent to "ON" to allow ASCII tagged
             //files to be read in the correct codepage on zos
@@ -336,6 +325,9 @@ public class TCKUtilities {
         return new ProcessResult(timedout, monitor.getLines(), rc);
     }
 
+    /**
+     * Holds the result of executing a process
+     */
     public static class ProcessResult {
         private final boolean timedOut;
         private final List<String> output;
@@ -369,6 +361,13 @@ public class TCKUtilities {
         }
     }
 
+    /**
+     * Assert that a process did not time out and create a helpful message if it did
+     *
+     * @param output      the process output
+     * @param hardTimeout a hard timeout value in ms that we're trying to avoid hitting
+     * @param softTimeout the timeout value in ms that we used when running the process
+     */
     public static void assertNotTimedOut(ProcessResult output, long hardTimeout, long softTimeout) {
 
         if (output.isTimedOut()) {
@@ -459,8 +458,6 @@ public class TCKUtilities {
         return targetFile;
     }
 
-    //https://eu.artifactory.swg-devops.com:443/artifactory/wasliberty-maven-remote/org/apache/maven/apache-maven/3.9.0/apache-maven-3.9.0-bin.zip
-    //${mavenUserHome}/wrapper/dists/apache-maven-3.9.0-bin/b0cac456/apache-maven-3.9.0-bin.zip
     /**
      * Download a maven distribution and put it where the maven wrapper would expect to find it. This allows the download to be re-tried if artifactory
      * is being slow.
@@ -471,6 +468,9 @@ public class TCKUtilities {
      * @throws IOException
      */
     public static void downloadMavenDistro(String distroURL, File mavenUserHome, Authenticator auth) throws IOException {
+        // Example:
+        // URL:    https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.0/apache-maven-3.9.0-bin.zip
+        // Target: ${mavenUserHome}/wrapper/dists/apache-maven-3.9.0-bin/b0cac456/apache-maven-3.9.0-bin.zip
         URI uri = URI.create(distroURL);
         String hash = Integer.toHexString(uri.hashCode());
         String fileName = distroURL.substring(distroURL.lastIndexOf('/') + 1);
@@ -591,11 +591,10 @@ public class TCKUtilities {
     /**
      * Update the mvnw wrapper properties file to use the artifactory server defined in the
      * environment. Specifically, this looks for the "distributionUrl" and "wrapperUrl" properties
-     * and replaces "${artifactory.download.server}" with the value of the "artifactory.download.server"
-     * environment variable.
+     * and replaces the public repository URL with the artifactory URL.
      *
-     * @param  wrapperPropertiesFile
-     * @return
+     * @param  wrapperPropertiesFile the wrapper properties file to update
+     * @return                       the new set of properties
      * @throws IOException
      */
     public static Properties updateWrapperPropertiesFile(File wrapperPropertiesFile) throws IOException {
@@ -614,6 +613,7 @@ public class TCKUtilities {
             //get the existing value of the distributionUrl property
             String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
             //substitute the server string
+            assertThat("distributionURL update failed", distributionURL, containsString(MVN_WRAPPER_REPO));
             distributionURL = distributionURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
             //set it back into the properties
             props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
@@ -622,6 +622,7 @@ public class TCKUtilities {
             //get the existing value of the wrapperUrl property
             String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
             //substitute the server string
+            assertThat("wrapperURL update failed", wrapperURL, containsString(MVN_WRAPPER_REPO));
             wrapperURL = wrapperURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
             //set it back into the properties
             props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
@@ -657,7 +658,14 @@ public class TCKUtilities {
         return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
     }
 
+    /**
+     * Get the location within the dev directory to create a temporary maven home directory.
+     *
+     * @return             {@code .m2} within the dev directory
+     * @throws IOException
+     */
     public static File getTemporaryMavenHomeDir() throws IOException {
+        // user.dir is set to the test project directory when running a FAT
         String userDir = System.getProperty("user.dir");
         if (userDir == null) {
             throw new IOException("Could not determine user.dir");
@@ -683,12 +691,14 @@ public class TCKUtilities {
     /**
      * Create a temporary maven home directory to use for the build.
      * <p>
-     * Download the maven distro.
-     * Export the maven settings.xml file.
+     * Download the maven distribution as the maven wrapper would and stores it in the expected location.
+     * <p>
+     * Exports a maven settings.xml file with the artifactory mirror configuration
      *
-     * @param  mavenUserHome
-     * @param  authenticator
-     * @return               the exported maven settings.xml file
+     * @param  mavenUserHome     the directory to use
+     * @param  wrapperProperties the properties read from the maven-wrapper.properties file
+     * @param  authenticator     the authenticator to use when downloading the maven distribution.
+     * @return                   the exported maven settings.xml file
      * @throws IOException
      */
     public static File setupMavenHome(File mavenUserHome, Properties wrapperProperties, Authenticator authenticator) throws IOException {

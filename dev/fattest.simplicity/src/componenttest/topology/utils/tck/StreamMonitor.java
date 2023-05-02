@@ -130,7 +130,7 @@ public class StreamMonitor {
     /**
      * Log lines as they're read from the reader to a file with the given name
      *
-     * @param logFile the file to write to
+     * @param logFile the file to write to, or {@code null} to not log to a file
      */
     public void logToFile(File logFile) {
         this.logFile = logFile;

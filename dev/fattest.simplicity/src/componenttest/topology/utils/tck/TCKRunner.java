@@ -216,11 +216,13 @@ public class TCKRunner {
         this.specName = specName;
         this.additionalMvnProps = additionalMvnProps;
         this.isTestNG = suiteFileName != null;
-        File relativeTckRunnerDir = new File(relativeTckRunner);
-        if (relativeTckRunnerDir.exists() && relativeTckRunnerDir.isDirectory()) {
-            this.tckRunnerDir = relativeTckRunnerDir.getAbsoluteFile();
-        } else {
-            this.tckRunnerDir = new File(RELATIVE_TCK_RUNNER).getAbsoluteFile();
+        this.tckRunnerDir = new File(relativeTckRunner).getAbsoluteFile();
+
+        if (!tckRunnerDir.exists()) {
+            throw new RuntimeException("TCK runner dir does not exist: " + this.tckRunnerDir);
+        }
+        if (!tckRunnerDir.isDirectory()) {
+            throw new RuntimeException("TCK runner dir is not a directory: " + this.tckRunnerDir);
         }
 
         File wrapperPropertiesFile = TCKUtilities.exportMvnWrapper(this.tckRunnerDir);
@@ -776,16 +778,17 @@ public class TCKRunner {
     }
 
     /**
-     * Get the basic mvn command ... "mvn.cmd" on Windows, otherwise just "mvn"
+     * Get the full path to the mvnw command (or "mvnw.cmd" on Windows)
      *
-     * @return the mvn command
+     * @param  testDirectory the test directory
+     * @return               the mvnw command with the full path
      */
-    private static String getMvn(File mvnHomeDir) {
-        String mvn = "mvnw";
+    private static String getMvnw(File testDirectory) {
+        String mvnw = "mvnw";
         if (TCKUtilities.isWindows()) {
-            mvn = mvn + ".cmd";
+            mvnw = mvnw + ".cmd";
         }
-        File mvnFile = new File(mvnHomeDir, mvn);
+        File mvnFile = new File(testDirectory, mvnw);
         String mvnPath = mvnFile.getAbsolutePath();
         return mvnPath;
     }
@@ -975,7 +978,7 @@ public class TCKRunner {
         }
 
         Map<String, String> mvnEnv = getMvnEnv(mavenUserHome);
-        String mvn = getMvn(workingDirectory);
+        String mvn = getMvnw(workingDirectory);
         ProcessResult output = TCKUtilities.startProcess(mvn, mvnParams, workingDirectory, mvnEnv, logFile, softTimeout);
 
         //if the process timed out throw an Error
