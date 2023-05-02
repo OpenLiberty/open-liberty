@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,7 +58,6 @@ public class OpenAPITest {
     }
 
     @Test
-    @Ignore
     public void testOpenAPI() throws Exception {
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
