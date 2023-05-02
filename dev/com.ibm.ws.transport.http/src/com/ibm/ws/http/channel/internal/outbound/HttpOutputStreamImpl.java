@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -225,18 +225,18 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             throw new IOException("Stream is closed");
         }
         // There's an H2 timing window where the server could be working on a response, it gets interrupted,
-        // the frame that comes in has an error, and the connection gets shutdown and all resources
+        // the frame that comes in has an error or is a close frame, and the connection gets shutdown and all resources
         // including the response are cleaned up.  Then we come back here after the interruption.
         // Handle this case.
+        // WebSocket has this same timing window
 
         if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl) &&
-            ((HttpInboundServiceContextImpl) isc).isH2Connection() &&
             (null == this.isc.getResponse())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "validate response is cleaned up hc: " + this.hashCode() + " details: " + this);
             }
 
-            throw new IOException("H2 Response already destroyed on error condition");
+            throw new IOException("Response already destroyed on error condition or close request from the client");
 
         }
 
@@ -620,6 +620,15 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Closing stream: hc: " + this.hashCode() + " details: " + this);
+        }
+        // Run validate here to catch a race condition when two threads are both handling shutdown
+        try {
+            validate();
+        } catch (IOException ioe) {
+            this.closed = true;
+            this.ignoreFlush = false;
+            clear();
+            throw ioe;
         }
         this.closed = true;
         this.ignoreFlush = false;
