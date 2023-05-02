@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -19,6 +20,7 @@ import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
 
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
@@ -147,25 +151,25 @@ public class DataJPATestServlet extends FATServlet {
         Customer c6 = new Customer(9210006, "Monica@tests.openliberty.io", 5075550066L);
         Customer c7 = new Customer(9210007, "Molly@tests.openliberty.io", 5075552277L);
 
-        CreditCard card1a = new CreditCard(c1, 1000921011110001L, 101, LocalDate.of(2021, 1, 1), LocalDate.of(2025, 1, 1), Issuer.AmericanExtravagance);
-        CreditCard card1m = new CreditCard(c1, 1000921011120002L, 102, LocalDate.of(2021, 1, 2), LocalDate.of(2025, 1, 2), Issuer.MonsterCard);
-        CreditCard card1v = new CreditCard(c1, 1000921011130003L, 103, LocalDate.of(2021, 1, 3), LocalDate.of(2025, 1, 3), Issuer.Feesa);
+        CreditCard card1a = new CreditCard(c1, 1000921011110001L, 101, LocalDate.of(2021, 1, 10), LocalDate.of(2025, 1, 10), Issuer.AmericanExtravagance);
+        CreditCard card1m = new CreditCard(c1, 1000921011120002L, 102, LocalDate.of(2021, 1, 21), LocalDate.of(2025, 1, 21), Issuer.MonsterCard);
+        CreditCard card1v = new CreditCard(c1, 1000921011130003L, 103, LocalDate.of(2021, 1, 30), LocalDate.of(2025, 1, 30), Issuer.Feesa);
 
-        c2.addCard(new CreditCard(c2, 2000921021110001L, 201, LocalDate.of(2022, 2, 1), LocalDate.of(2026, 2, 1), Issuer.AmericanExtravagance));
-        c2.addCard(new CreditCard(c2, 2000921022220002L, 222, LocalDate.of(2022, 2, 2), LocalDate.of(2026, 2, 2), Issuer.Discrooger));
+        c2.addCard(new CreditCard(c2, 2000921021110001L, 201, LocalDate.of(2022, 2, 10), LocalDate.of(2026, 2, 10), Issuer.AmericanExtravagance));
+        c2.addCard(new CreditCard(c2, 2000921022220002L, 222, LocalDate.of(2022, 2, 22), LocalDate.of(2026, 2, 22), Issuer.Discrooger));
 
-        c3.addCard(new CreditCard(c3, 3000921031110001L, 301, LocalDate.of(2023, 3, 1), LocalDate.of(2027, 3, 1), Issuer.Discrooger));
-        c3.addCard(new CreditCard(c3, 3000921032220002L, 222, LocalDate.of(2023, 3, 2), LocalDate.of(2027, 3, 2), Issuer.MonsterCard));
-        c3.addCard(new CreditCard(c3, 3000921033330003L, 303, LocalDate.of(2023, 3, 3), LocalDate.of(2027, 3, 3), Issuer.Feesa));
+        c3.addCard(new CreditCard(c3, 3000921031110001L, 301, LocalDate.of(2023, 3, 10), LocalDate.of(2027, 3, 10), Issuer.Discrooger));
+        c3.addCard(new CreditCard(c3, 3000921032220002L, 222, LocalDate.of(2023, 3, 23), LocalDate.of(2027, 3, 23), Issuer.MonsterCard));
+        c3.addCard(new CreditCard(c3, 3000921033330003L, 303, LocalDate.of(2023, 3, 30), LocalDate.of(2027, 3, 30), Issuer.Feesa));
 
-        c4.addCard(new CreditCard(c4, 4000921041110001L, 401, LocalDate.of(2020, 4, 1), LocalDate.of(2024, 4, 1), Issuer.MonsterCard));
-        c4.addCard(new CreditCard(c4, 4000921042220002L, 222, LocalDate.of(2020, 4, 2), LocalDate.of(2024, 4, 2), Issuer.Feesa));
+        c4.addCard(new CreditCard(c4, 4000921041110001L, 401, LocalDate.of(2020, 4, 10), LocalDate.of(2024, 4, 10), Issuer.MonsterCard));
+        c4.addCard(new CreditCard(c4, 4000921042220002L, 222, LocalDate.of(2020, 4, 24), LocalDate.of(2024, 4, 24), Issuer.Feesa));
 
-        c5.addCard(new CreditCard(c5, 5000921051110001L, 501, LocalDate.of(2021, 5, 1), LocalDate.of(2025, 5, 1), Issuer.Discrooger));
-        c5.addCard(new CreditCard(c5, 5000921052220002L, 502, LocalDate.of(2021, 5, 2), LocalDate.of(2025, 5, 2), Issuer.MonsterCard));
+        c5.addCard(new CreditCard(c5, 5000921051110001L, 501, LocalDate.of(2021, 5, 10), LocalDate.of(2025, 5, 10), Issuer.Discrooger));
+        c5.addCard(new CreditCard(c5, 5000921052220002L, 502, LocalDate.of(2021, 5, 25), LocalDate.of(2025, 5, 25), Issuer.MonsterCard));
 
-        c6.addCard(new CreditCard(c6, 6000921061110001L, 601, LocalDate.of(2022, 6, 1), LocalDate.of(2026, 6, 1), Issuer.AmericanExtravagance));
-        c6.addCard(new CreditCard(c6, 6000921062220002L, 222, LocalDate.of(2022, 6, 2), LocalDate.of(2026, 6, 2), Issuer.Feesa));
+        c6.addCard(new CreditCard(c6, 6000921061110001L, 601, LocalDate.of(2022, 6, 10), LocalDate.of(2026, 6, 10), Issuer.AmericanExtravagance));
+        c6.addCard(new CreditCard(c6, 6000921062220002L, 222, LocalDate.of(2022, 6, 26), LocalDate.of(2026, 6, 26), Issuer.Feesa));
 
         // These are implicitly saved when the corresponding Customer entities are saved.
         new DeliveryLocation(10001L, 1001, new Street("1st Ave", "SW"), DeliveryLocation.Type.HOME, c1);
@@ -176,6 +180,17 @@ public class DataJPATestServlet extends FATServlet {
         creditCards.save(card1a, card1m, card1v);
         creditCards.save(c2, c3, c4);
         customers.save(c5, c6, c7);
+    }
+
+    /**
+     * Test the AbsoluteValue keyword by querying on value that could be positive or negative.
+     */
+    @Test
+    public void testAbsoluteValue() {
+        List<Business> found = businesses.findByLocationLongitudeAbsoluteValueBetween(92.503f, 92.504f);
+        assertNotNull(found);
+        assertEquals("Found " + found.toString(), 1, found.size());
+        assertEquals("IBM", found.get(0).name);
     }
 
     /**
@@ -542,6 +557,46 @@ public class DataJPATestServlet extends FATServlet {
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
+     * Verify WithYear, WithQuarter, WithMonth, and WithDay in query-by-method-name to compare different parts of a date.
+     */
+    @Test
+    public void testExtractFromDate() {
+        // WithYear
+        assertEquals(List.of(1000921011110001L, 1000921011120002L, 1000921011130003L, 4000921041110001L, 4000921042220002L, 5000921051110001L, 5000921052220002L),
+                     creditCards.findNumberByExpiresOnWithYearLessThanEqual(2025));
+
+        // WithQuarter
+        assertEquals(List.of(4000921041110001L, 4000921042220002L, 5000921051110001L, 5000921052220002L, 6000921061110001L, 6000921062220002L),
+                     creditCards.findByExpiresOnWithQuarterNot(1)
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+
+        // WithMonth
+        assertEquals(List.of(2000921021110001L, 2000921022220002L, 5000921051110001L, 5000921052220002L),
+                     creditCards.findByIssuedOnWithMonthIn(List.of(Month.FEBRUARY.getValue(), Month.MAY.getValue(), Month.SEPTEMBER.getValue()))
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+
+        // WithDay
+        assertEquals(List.of(1000921011120002L, 2000921022220002L, 3000921032220002L, 4000921042220002L, 5000921052220002L, 6000921062220002L),
+                     creditCards.findByIssuedOnWithDayBetween(20, 29)
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Verify WithWeek in query-by-method-name to compare the week-of-year part of a date.
+     */
+    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @Test
+    public void testExtractWeekFromDate() {
+
+        // WithWeek
+        assertEquals(List.of(4000921042220002L),
+                     creditCards.findByExpiresOnWithWeek(17));
     }
 
     /**
@@ -1505,8 +1560,8 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(cards.toString(), card1);
         assertEquals(501, card1.securityCode);
         assertEquals(Issuer.Discrooger, card1.issuer);
-        assertEquals(LocalDate.of(2021, 5, 1), card1.issuedOn);
-        assertEquals(LocalDate.of(2025, 5, 1), card1.expiresOn);
+        assertEquals(LocalDate.of(2021, 5, 10), card1.issuedOn);
+        assertEquals(LocalDate.of(2025, 5, 10), card1.expiresOn);
         assertEquals("Maximilian@tests.openliberty.io", card1.debtor.email);
         assertEquals(5075550055L, card1.debtor.phone);
         assertEquals(9210005, card1.debtor.customerId);
@@ -1514,8 +1569,8 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(cards.toString(), card2);
         assertEquals(502, card2.securityCode);
         assertEquals(Issuer.MonsterCard, card2.issuer);
-        assertEquals(LocalDate.of(2021, 5, 2), card2.issuedOn);
-        assertEquals(LocalDate.of(2025, 5, 2), card2.expiresOn);
+        assertEquals(LocalDate.of(2021, 5, 25), card2.issuedOn);
+        assertEquals(LocalDate.of(2025, 5, 25), card2.expiresOn);
         assertEquals("Maximilian@tests.openliberty.io", card2.debtor.email);
         assertEquals(5075550055L, card2.debtor.phone);
         assertEquals(9210005, card2.debtor.customerId);

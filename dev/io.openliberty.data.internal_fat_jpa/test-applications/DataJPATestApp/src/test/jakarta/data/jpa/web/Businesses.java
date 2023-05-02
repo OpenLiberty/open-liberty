@@ -37,6 +37,8 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     // embeddable 3 levels deep where @Column resolves name conflict
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
 
+    List<Business> findByLocationLongitudeAbsoluteValueBetween(float min, float max);
+
     // embeddable as result type
     @OrderBy("street")
     @OrderBy("houseNum")

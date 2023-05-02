@@ -37,11 +37,26 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @Select(distinct = true, value = "debtorEmail")
     List<String> findByExpiresOnBetween(LocalDate expiresOnOrAfter, LocalDate expiresOnOrBefore);
 
+    @OrderBy("number")
+    Stream<CreditCard> findByExpiresOnWithQuarterNot(int quarterToExclude);
+
+    @OrderBy("number")
+    List<CreditCard> findByExpiresOnWithWeek(int weekNumber);
+
+    @OrderBy("number")
+    Stream<CreditCard> findByIssuedOnWithMonthIn(Iterable<Integer> months);
+
+    @OrderBy("number")
+    Stream<CreditCard> findByIssuedOnWithDayBetween(int minDayOfMonth, int maxDayOfMonth);
+
     @OrderBy("debtor_email")
     Stream<Customer> findByIssuer(Issuer cardIssuer);
 
     @OrderBy("id")
     Stream<CardId> findBySecurityCode(int code);
+
+    @OrderBy("number")
+    List<Long> findNumberByExpiresOnWithYearLessThanEqual(int maxYearOfExpiry);
 
     void save(CreditCard... cards);
 
