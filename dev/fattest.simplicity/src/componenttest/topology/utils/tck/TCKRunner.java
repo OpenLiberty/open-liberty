@@ -354,8 +354,10 @@ public class TCKRunner {
     private String[] getMvnCommandParams(String... commands) throws Exception {
         ArrayList<String> stringArrayList = new ArrayList<>();
 
-//        stringArrayList.add("-s");
-//        stringArrayList.add(getSettingsFile().toString());
+        if (getSettingsFile() != null) {
+            stringArrayList.add("-s");
+            stringArrayList.add(getSettingsFile().toString());
+        }
 
         for (String command : commands) {
             stringArrayList.add(command);
