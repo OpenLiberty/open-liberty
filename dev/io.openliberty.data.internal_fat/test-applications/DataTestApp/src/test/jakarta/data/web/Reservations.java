@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Limit;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
@@ -47,6 +48,9 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     long deleteByHostNot(String host);
 
     Iterable<Reservation> findByHost(String host);
+
+    @OrderBy("id")
+    Stream<Reservation> findByInviteesElementCount(int size);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
 
@@ -91,6 +95,11 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
+
+    @OrderBy("host")
+    List<Long> findMeetingIdByStartWithHourBetweenAndStartWithMinute(int minHour, int maxHour, int minute);
+
+    List<Long> findMeetingIdByStopWithSecond(int second);
 
     // Use a record as the return type
     ReservedTimeSlot[] findStartAndStopByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);

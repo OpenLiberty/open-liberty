@@ -155,7 +155,8 @@ public class DataTestServlet extends FATServlet {
                     new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
                     new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
                     new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
-                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen")); // empty list of romanNumeralSymbols
+                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
+                    new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
     }
 
     /**
@@ -494,6 +495,17 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test the CharCount keyword to query based on string length.
+     */
+    @Test
+    public void testCharCount() {
+        assertIterableEquals(List.of("eleven", "nineteen", "seven", "thirteen", "three"),
+                             primes.findByNameCharCountBetween(5, 8)
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletionStage of KeysetAwarePage.
      */
     @Test
@@ -681,6 +693,79 @@ public class DataTestServlet extends FATServlet {
                                      "TestDistinctAttribute T-Shirt Size Medium",
                                      "TestDistinctAttribute T-Shirt Size Small"),
                              uniqueProductNames);
+    }
+
+    /**
+     * Test the ElementCount keyword by querying against a collection attribute with different sizes.
+     * Also covers WithMinute and WithSecond.
+     */
+    @Test
+    public void testElementCountAndExtract() throws Exception {
+        reservations.deleteAll();
+
+        final ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Reservation r1 = new Reservation();
+        r1.host = "host1@openliberty.io";
+        r1.invitees = Set.of("invitee1@openliberty.io", "invitee3@openliberty.io");
+        r1.location = "050-2 G105";
+        r1.meetingID = 113001;
+        r1.start = OffsetDateTime.of(2023, 5, 1, 10, 15, 0, 0, MDT);
+        r1.stop = OffsetDateTime.of(2023, 5, 1, 10, 45, 0, 0, MDT);
+        r1.setLengthInMinutes(30);
+
+        Reservation r2 = new Reservation();
+        r2.host = "host2.openliberty.io";
+        r2.invitees = Set.of("invitee2@openliberty.io");
+        r2.location = "050-2 B120";
+        r2.meetingID = 213002;
+        r2.start = OffsetDateTime.of(2023, 5, 1, 10, 15, 0, 0, MDT);
+        r2.stop = OffsetDateTime.of(2023, 5, 1, 11, 00, 0, 0, MDT);
+        r2.setLengthInMinutes(45);
+
+        Reservation r3 = new Reservation();
+        r3.host = "host3@openliberty.io";
+        r3.invitees = Set.of("invitee1@openliberty.io", "invitee2@openliberty.io", "invitee3@openliberty.io");
+        r3.location = "030-2 A312";
+        r3.meetingID = 313003;
+        r3.start = OffsetDateTime.of(2022, 5, 24, 9, 35, 30, 0, MDT);
+        r3.stop = OffsetDateTime.of(2022, 5, 24, 9, 59, 30, 0, MDT);
+        r3.setLengthInMinutes(24);
+
+        Reservation r4 = new Reservation();
+        r4.host = "host4@openliberty.io";
+        r4.invitees = Set.of("invitee2@openliberty.io", "invitee4@openliberty.io");
+        r4.location = "050-2 G105";
+        r4.meetingID = 413004;
+        r4.start = OffsetDateTime.of(2023, 5, 1, 9, 00, 0, 0, MDT);
+        r4.stop = OffsetDateTime.of(2023, 5, 1, 9, 30, 0, 0, MDT);
+        r4.setLengthInMinutes(30);
+
+        reservations.saveAll(Set.of(r1, r2, r3, r4));
+
+        // ElementCount
+
+        assertIterableEquals(List.of("host1@openliberty.io", "host4@openliberty.io"),
+                             reservations.findByInviteesElementCount(2)
+                                             .map(r -> r.host)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             reservations.findByInviteesElementCount(0)
+                                             .map(r -> r.host)
+                                             .collect(Collectors.toList()));
+
+        // WithHour, WithMinute. We cannot compare the hour without knowing which time zone the database stores it in.
+
+        assertIterableEquals(List.of(113001L, 213002L),
+                             reservations.findMeetingIdByStartWithHourBetweenAndStartWithMinute(0, 23, 15));
+
+        // WithSecond
+
+        assertIterableEquals(List.of(313003L),
+                             reservations.findMeetingIdByStopWithSecond(30));
+
+        reservations.deleteAll();
     }
 
     /**
@@ -3192,6 +3277,30 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods with Rounded, RoundedUp, and RoundedDown keywords.
+     */
+    @Test
+    public void testRounding() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(601, 19.2f, 5.8f, 5.4f, "package#601"),
+                                 new Package(603, 12.4f, 10.125f, 4.8f, "package#603"),
+                                 new Package(605, 18.75f, 9.75f, 3.31f, "package#605"),
+                                 new Package(607, 18.01f, 8.33f, 4.046f, "package#607")));
+
+        assertIterableEquals(List.of(605, 607),
+                             packages.findIdByLengthRoundedUp(19));
+
+        assertIterableEquals(List.of(603, 605),
+                             packages.findIdByWidthRounded(10));
+
+        assertIterableEquals(List.of(603, 607),
+                             packages.findIdByHeightRoundedDown(4));
+
+        packages.deleteAll();
+    }
+
+    /**
      * Insert, update, find, and delete entities.
      */
     @Test
@@ -4127,6 +4236,22 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Tyler", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
 
         personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Test the Trimmed keyword by querying against data that has leading and trailing blank space.
+     */
+    @Test
+    public void testTrimmed() {
+        List<Prime> found = primes.findByNameTrimmedCharCountAndIdBetween(24, 4000L, 4025L);
+        assertNotNull(found);
+        assertEquals("Found: " + found, 1, found.size());
+        assertEquals(4021L, found.get(0).numberId);
+        assertEquals(" Four thousand twenty-one ", found.get(0).name);
+
+        Prime prime = primes.findByNameTrimmedIgnoreCase("FOUR THOUSAND TWENTY-ONE").orElseThrow();
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
     }
 
     /**
