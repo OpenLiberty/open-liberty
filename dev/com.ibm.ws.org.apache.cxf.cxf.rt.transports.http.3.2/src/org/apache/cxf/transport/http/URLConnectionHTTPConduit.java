@@ -50,6 +50,7 @@ import org.apache.cxf.transport.https.HttpsURLConnectionFactory;
 import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.common.util.PropertyUtils; // Liberty Change
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -108,6 +109,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                 }
             } catch (IOException ex) {
                 //ignore
+        	LOG.fine("Ignoring unexpected exception in close(): " + ex); // Liberty Change
             }
             //defaultEndpointURL = null;
         }
@@ -124,6 +126,20 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         if (clientParameters == null) {
             clientParameters = tlsClientParameters;
         }
+
+        // Liberty start    
+	boolean isRestMessage =
+            PropertyUtils.isTrue(message.getExchange().get(org.apache.cxf.message.Message.REST_MESSAGE));
+        LOG.fine("Property org.apache.cxf.rest.message is set to: " + isRestMessage);
+	if (isRestMessage) {
+           LOG.fine("This is a REST message.");
+	   if (clientParameters == null) {
+	      clientParameters = new TLSClientParameters();
+	   }
+	   clientParameters.setJaxRsClient(true);
+	}
+        // Liberty end
+	
         return connectionFactory.createConnection(clientParameters,
                                                   proxy != null ? proxy : address.getDefaultProxy(), url);
     }
@@ -393,6 +409,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                         in = connection.getInputStream();
                     } catch (IOException ex) {
                         // ignore
+        	        LOG.fine("Ignoring unexpected exception in getInputStream(): " + ex); // Liberty Change
                     }
                 }
             } else {
