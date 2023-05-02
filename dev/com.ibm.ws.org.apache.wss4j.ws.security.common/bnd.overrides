@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2020,2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=2.3.0
+
+
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.ws.security.*;version=1.6.2, \
+ org.apache.wss4j.common.*;version=2.3.0
+  
+# these should be optional only when resolving jars from wlp/dev
+Import-Package: \
+ !com.ibm.security.jgss, \
+ !com.sun.security.jgss, \
+ !org.bouncycastle.asn1, \
+ !org.bouncycastle.asn1.x500, \
+ !org.bouncycastle.asn1.x509, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ *
+ 
+DynamicImport-Package: \
+ org.bouncycastle.jce.provider,\
+ org.apache.wss4j.common.crypto,\
+ org.apache.wss4j.common.saml
+ 
+-includeresource: \
+   @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/maven/*, \
+   messages/wss4j_errors.properties=resources/wss4j_errors.properties, \
+   org/apache/wss4j=${bin}/org/apache/wss4j
+ 
+
