@@ -41,6 +41,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -281,6 +282,7 @@ public class TCKUtilities {
         if (TCKUtilities.isZos()) {
             //The _BPXK_AUTOCVT environment variable is sent to "ON" to allow ASCII tagged
             //files to be read in the correct codepage on zos
+            envProperties = new HashMap<>(envProperties);
             envProperties.put("_BPXK_AUTOCVT", "ON");
         }
 
