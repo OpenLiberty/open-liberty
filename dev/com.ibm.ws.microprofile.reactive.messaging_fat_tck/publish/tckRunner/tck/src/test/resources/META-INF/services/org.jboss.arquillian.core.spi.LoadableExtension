@@ -1,1 +1,1 @@
-com.ibm.ws.microprofile.reactive.messaging.test.ArquillianLoadableExtension 
+com.ibm.ws.fat.util.tck.BasicArquillianLoadableExtension
