@@ -19,10 +19,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
-import com.ibm.ws.container.service.metadata.MetaDataException;
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import jakarta.enterprise.inject.spi.Extension;
@@ -33,24 +29,11 @@ import jakarta.enterprise.inject.spi.Extension;
  */
 @Component(configurationPid = "io.openliberty.data.internal.persistence.cdi.DocumentExtensionProvider",
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = { CDIExtensionMetadata.class, DocumentExtensionProvider.class, ApplicationMetaDataListener.class })
-public class DocumentExtensionProvider implements CDIExtensionMetadata, ApplicationMetaDataListener {
+           service = { CDIExtensionMetadata.class, DocumentExtensionProvider.class })
+public class DocumentExtensionProvider implements CDIExtensionMetadata {
     private static final TraceComponent tc = Tr.register(DocumentExtensionProvider.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DocumentExtension.class);
-
-    @Override
-    @Trivial
-    public void applicationMetaDataCreated(MetaDataEvent<ApplicationMetaData> event) throws MetaDataException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void applicationMetaDataDestroyed(MetaDataEvent<ApplicationMetaData> event) {
-        // TODO Auto-generated method stub
-
-    }
 
     @Override
     @Trivial

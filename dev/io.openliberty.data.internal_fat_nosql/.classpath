@@ -8,20 +8,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/io.openliberty.jakarta.data.1.0/generated/io.openliberty.jakarta.data.1.0.jar" sourcepath="/io.openliberty.jakarta.data.1.0/src">
-		<attributes>
-			<attribute name="bsn" value="io.openliberty.jakarta.data.1.0"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="io.openliberty.jakarta.data.1.0"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="jakarta/data/*"/>
-			<accessrule kind="accessible" pattern="jakarta/data/exceptions/*"/>
-			<accessrule kind="accessible" pattern="jakarta/data/provider/*"/>
-			<accessrule kind="accessible" pattern="jakarta/data/repository/*"/>
-			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
-		</accessrules>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
