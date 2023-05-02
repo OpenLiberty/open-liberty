@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,22 +51,17 @@ public class OpenAPITest {
                         .addClass(Endpoints.class);
 
         ShrinkHelper.exportAppToServer(server, webappWar, DeployOptions.OVERWRITE);
-    }
-
-    @Test
-    @Ignore
-    public void testOpenAPI() throws Exception {
-
-        server.startServer();
-        HttpUtils.findStringInUrl(server, "/openapi", "- url: http://localhost:" + server.getHttpDefaultPort() + "/OpenAPI");
-        server.stopServer();
-
-        server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
-        server.startServer();
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getVariables().getById("openAPIserver").setValue("alternateServer");
         server.updateServerConfiguration(config);
+    }
+
+    @Test
+    public void testOpenAPI() throws Exception {
+
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer();
 
         server.checkpointRestore();
 
