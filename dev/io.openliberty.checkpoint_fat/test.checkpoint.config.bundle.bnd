@@ -26,5 +26,8 @@ Private-Package: \
  test.checkpoint.config.bundle.TestCheckpointHook, \
  test.checkpoint.config.bundle.TestStaticHookRegister
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 Include-Resource:\
+ OSGI-INF=test-bundles/test.checkpoint.config.bundle/resources/OSGI-INF, \
  OSGI-INF/metatype/metatype.xml=test-bundles/test.checkpoint.config.bundle/resources/OSGI-INF/metatype/metatype.xml
