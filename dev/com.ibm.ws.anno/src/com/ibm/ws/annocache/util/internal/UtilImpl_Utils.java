@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ package com.ibm.ws.annocache.util.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -324,18 +324,9 @@ public class UtilImpl_Utils {
     }
 
     //
-
-    public static final String SIMPLE_DATE_FORMAT_TEXT = "EEE, dd-MMM-yyyy HH:mm:ss Z";
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(SIMPLE_DATE_FORMAT_TEXT);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("EEE, dd-MMM-uuuu HH:mm:ss Z");
 
     public static String getDateAndTime() {
-        Date currentDate = new Date();
-
-        // Per: https://stackoverflow.com/questions/18383251/strange-arrayindexoutofboundsexception-for-java-simpledateformat
-        // SimpleDateFormat is not thread safe.
-
-        synchronized ( SIMPLE_DATE_FORMAT ) {
-            return SIMPLE_DATE_FORMAT.format(currentDate);
-        }
+        return DATE_FORMATTER.format(ZonedDateTime.now());
     }
 }

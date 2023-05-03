@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -144,6 +146,8 @@ public class BaseTraceService implements TrService {
 
     static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
+
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSZ");
 
     /** Special trace component for system streams: this one "remembers" the original system out */
     protected final SystemLogHolder systemOut;
@@ -1522,8 +1526,7 @@ public class BaseTraceService implements TrService {
     }
 
     private String getDatetime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        String datetime = dateFormat.format(System.currentTimeMillis());
+        String datetime = dateFormat.format(ZonedDateTime.now());
         return datetime;
     }
 

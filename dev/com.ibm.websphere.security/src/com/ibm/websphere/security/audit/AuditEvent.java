@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,9 @@
  *******************************************************************************/
 package com.ibm.websphere.security.audit;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -241,6 +240,8 @@ public class AuditEvent {
         STD_TARGET.put(AuditEvent.TARGET_TYPEURI, "service/application/web");
     }
 
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSZ");
+
     /**
      * Using synchronizedMap for thread safety. Be sure to synchronize on eventMap
      * whenever iterating over it.
@@ -258,13 +259,7 @@ public class AuditEvent {
      * @return current time in yyyy-MM-dd HH:mm:ss.SSS format
      */
     public String getCurrentTime() {
-
-        //TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
-        //df.setTimeZone(tz);
-        String nowAsISO = df.format(new Date());
-
-        return nowAsISO;
+        return dateFormatter.format(ZonedDateTime.now());
     }
 
     /**

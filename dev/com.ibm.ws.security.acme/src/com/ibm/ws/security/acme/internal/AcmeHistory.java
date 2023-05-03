@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -50,8 +49,7 @@ public class AcmeHistory {
 	private final int FILE_CREATED = 1;
 	private final int FILE_NOT_CREATED = 2;
 	private File acmeFile;
-	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-	private static final DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuuMMddHHmmss").withZone(ZoneId.systemDefault());
 	private ArrayList<String> headers;
 	
 	/**
@@ -185,7 +183,7 @@ public class AcmeHistory {
 			cert = acmeCertificate.getCertificate();
 		}
 		serial = cert.getSerialNumber().toString(16);
-		expirationDate = df.format(cert.getNotAfter());
+		expirationDate = FORMATTER.format(cert.getNotAfter().toInstant());
 
 		ArrayList<AcmeHistoryEntry> acmeHistoryEntries = getAcmeHistoryEntries(acmeFile);
 		if (acmeHistoryEntries == null) {

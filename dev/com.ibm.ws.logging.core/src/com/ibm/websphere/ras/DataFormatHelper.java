@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,21 +16,57 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Utilities which provide formatting for date strings (NCSA compliant dates
  * used in trace records), and padded thread ids, etc.
  */
 public class DataFormatHelper {
-    /** Thread specific date format objects */
-    private static ThreadLocal<DateFormat> dateformats = new ThreadLocal<DateFormat>();
-
     /** Formatted thread ids */
     private static ThreadLocal<String> threadids = new ThreadLocal<String>();
 
-    /** Locale date and time format pattern */
-    private static final ThreadLocal<String> localeDatePattern = new ThreadLocal<String>();
+    private static final DateTimeFormatter localeDateFormatter;
+
+    private static final DateTimeFormatter isoDateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
+
+    /**
+     * Computes a format string that will produce a reasonable standard way for
+     * formatting time (but still using the current locale)
+     */
+    static {
+        String pattern;
+        int patternLength;
+        int endOfSecsIndex;
+        // Retrieve a standard Java DateFormat object with desired format.
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+        if (formatter instanceof SimpleDateFormat) {
+            // Retrieve the pattern from the formatter, since we will need to
+            // modify it.
+            SimpleDateFormat sdFormatter = (SimpleDateFormat) formatter;
+            pattern = sdFormatter.toPattern();
+            // Append milliseconds and timezone after seconds
+            patternLength = pattern.length();
+            endOfSecsIndex = pattern.lastIndexOf('s') + 1;
+            String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
+            if (endOfSecsIndex < patternLength)
+                newPattern += pattern.substring(endOfSecsIndex, patternLength);
+            newPattern = newPattern.replace('y', 'u');
+            // 0-23 hour clock (get rid of any other clock formats and am/pm)
+            newPattern = newPattern.replace('h', 'H');
+            newPattern = newPattern.replace('K', 'H');
+            newPattern = newPattern.replace('k', 'H');
+            newPattern = newPattern.replace('a', ' ');
+            newPattern = newPattern.trim();
+            pattern = newPattern;
+        } else {
+            pattern = "dd/MMM/uuuu HH:mm:ss:SSS z";
+        }
+        localeDateFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault());
+    }
 
     /**
      * Returns a string containing a concise, human-readable description of the
@@ -63,12 +99,7 @@ public class DataFormatHelper {
      * @return formated date string
      */
     public static final String formatCurrentTime() {
-        DateFormat sdf = dateformats.get();
-        if (sdf == null) {
-            sdf = getDateFormat();
-            dateformats.set(sdf);
-        }
-        return "[" + sdf.format(new Date()) + "] ";
+        return '[' + localeDateFormatter.format(ZonedDateTime.now()) + ']';
     }
 
     /**
@@ -80,12 +111,7 @@ public class DataFormatHelper {
      * @return formated date string
      */
     public static final String formatTime(long timestamp) {
-        DateFormat sdf = dateformats.get();
-        if (sdf == null) {
-            sdf = getDateFormat();
-            dateformats.set(sdf);
-        }
-        return sdf.format(timestamp);
+        return localeDateFormatter.format(Instant.ofEpochMilli(timestamp));
     }
     
     /**
@@ -103,68 +129,8 @@ public class DataFormatHelper {
      * @return formated date string
      */
     public static final String formatTime(long timestamp, boolean useIsoDateFormat) {
-        DateFormat df = dateformats.get();
-        if (df == null) {
-            df = getDateFormat();
-            dateformats.set(df);
-        }
-
-        try {
-            // Get and store the locale Date pattern that was retrieved from getDateTimeInstance, to be used later.
-            // This is to prevent creating multiple new instances of SimpleDateFormat, which is expensive.
-            String ddp = localeDatePattern.get();
-            if (ddp == null) {
-                ddp = ((SimpleDateFormat) df).toPattern();
-                localeDatePattern.set(ddp);
-            }
-
-            if (useIsoDateFormat) {
-                ((SimpleDateFormat) df).applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            } else {
-                ((SimpleDateFormat) df).applyPattern(ddp);
-            }
-        } catch (Exception e) {
-            // Use the default pattern, instead.
-        }
-
-        return df.format(timestamp);
-    }
-
-    /**
-     * Return a format string that will produce a reasonable standard way for
-     * formatting time (but still using the current locale)
-     *
-     * @return The format string
-     */
-    private static DateFormat getDateFormat() {
-        String pattern;
-        int patternLength;
-        int endOfSecsIndex;
-        // Retrieve a standard Java DateFormat object with desired format.
-        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-        if (formatter instanceof SimpleDateFormat) {
-            // Retrieve the pattern from the formatter, since we will need to
-            // modify it.
-            SimpleDateFormat sdFormatter = (SimpleDateFormat) formatter;
-            pattern = sdFormatter.toPattern();
-            // Append milliseconds and timezone after seconds
-            patternLength = pattern.length();
-            endOfSecsIndex = pattern.lastIndexOf('s') + 1;
-            String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
-            if (endOfSecsIndex < patternLength)
-                newPattern += pattern.substring(endOfSecsIndex, patternLength);
-            // 0-23 hour clock (get rid of any other clock formats and am/pm)
-            newPattern = newPattern.replace('h', 'H');
-            newPattern = newPattern.replace('K', 'H');
-            newPattern = newPattern.replace('k', 'H');
-            newPattern = newPattern.replace('a', ' ');
-            newPattern = newPattern.trim();
-            sdFormatter.applyPattern(newPattern);
-            formatter = sdFormatter;
-        } else {
-            formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss:SSS z");
-        }
-        return formatter;
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        return useIsoDateFormat ? isoDateFormatter.format(instant) : localeDateFormatter.format(instant);
     }
 
     /**

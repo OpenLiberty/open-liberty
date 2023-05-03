@@ -18,13 +18,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.cxf.jaxrs.interceptor.CachedTimeAccessor;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.junit.Test;
 
-/**
- *
- */
+import junit.framework.Assert;
+
 public class JAXRSOutInterceptorTest {
+
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM uuuu HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
 
     /**
      * This test validated that the HttpUtils.getHttpDateFormat previously used in CachedTime
@@ -39,9 +41,33 @@ public class JAXRSOutInterceptorTest {
         long now = System.currentTimeMillis();
         String expected = sdf.format(new Date(now));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
-
         assertEquals(expected, dateFormatter.format(Instant.ofEpochMilli(now)));
+    }
+
+    /**
+     * Validate that CachedTime works correctly to return a cached formatted String if the seconds is the same as the previous
+     * time, i.e. the CachedTime function is working and not formatting the time over and over.  This is single threaded.  In a
+     * multi-threaded scenario there is a window where a cached String may not be returned if two threads come in at the same time
+     * and both try to update the cached String.
+     */
+    @Test
+    public void testCachedTime() {
+        long start = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
+        String previousCachedString = CachedTimeAccessor.getTimeString(now);
+        long previousNow = now;
+        while (now - start < 5000) {
+            String cachedString = CachedTimeAccessor.getTimeString(now);
+            String newString = dateFormatter.format(Instant.ofEpochMilli(now));
+            Assert.assertEquals("Strings are different than expected ", newString, cachedString);
+            if ((now - (now % 1000)) == (previousNow - (previousNow % 1000))) {
+                Assert.assertSame(previousCachedString, cachedString);
+            }
+            previousCachedString = cachedString;
+            previousNow = now;
+            now = System.currentTimeMillis();
+        }
+
     }
 
 }
