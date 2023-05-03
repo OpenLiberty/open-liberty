@@ -406,6 +406,7 @@ org.apache.wss4j:wss4j-ws-security-policy-stax:2.3.0
 org.apache.wss4j:wss4j-ws-security-stax:2.3.0
 org.apache.wss4j:wss4j-ws-security-web:2.3.0
 org.apache.xbean:xbean-asm8-shaded:4.17
+org.bitbucket.b_c:jose4j:0.9.3
 org.bouncycastle:bcpg-jdk15on:1.69
 org.bouncycastle:bcpkix-jdk15on:1.69
 org.bouncycastle:bcprov-jdk15on:1.69
