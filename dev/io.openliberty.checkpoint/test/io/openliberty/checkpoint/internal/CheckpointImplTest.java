@@ -215,6 +215,7 @@ public class CheckpointImplTest {
 
         volatile boolean prepareCalled = false;
         volatile boolean prepareCalledSingleThreaded = false;
+        volatile boolean checkpointFailed = false;
         volatile boolean restoreCalled = false;
         volatile boolean restoreCalledSingleThreaded = false;
 
@@ -225,6 +226,11 @@ public class CheckpointImplTest {
             if (prepareException != null) {
                 throw prepareException;
             }
+        }
+
+        @Override
+        public void checkpointFailed() {
+            checkpointFailed = true;
         }
 
         @Override
@@ -276,6 +282,7 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Restore not called.", true, hook.restoreCalled);
         }
     }
@@ -296,6 +303,7 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> singleThreadedHooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : singleThreadedHooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Prepare called while not single threaded.", true, hook.prepareCalledSingleThreaded);
             assertEquals("Restore not called.", true, hook.restoreCalled);
             assertEquals("Restore called while not single threaded.", true, hook.restoreCalledSingleThreaded);
@@ -303,6 +311,7 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> multiThreadedhooks = getHooks(h4, h5, h6);
         for (TestCheckpointHook hook : multiThreadedhooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Prepare called while single threaded.", false, hook.prepareCalledSingleThreaded);
             assertEquals("Restore not called.", true, hook.restoreCalled);
             assertEquals("Restore called while single threaded.", false, hook.restoreCalledSingleThreaded);
@@ -331,10 +340,12 @@ public class CheckpointImplTest {
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
         }
         assertEquals("Prepare not called.", true, h1.prepareCalled);
-
         assertEquals("Prepare not called.", true, h2.prepareCalled);
-
         assertEquals("Unexpected Prepare called.", false, h3.prepareCalled);
+        // we expect all hook prepareFailed to be called
+        assertEquals("Checkpoint Failed not called.", true, h1.checkpointFailed);
+        assertEquals("Checkpoint Failed not called.", true, h2.checkpointFailed);
+        assertEquals("Checkpoint Failed not called.", true, h3.checkpointFailed);
 
         assertNull("Unexpected call to criu", criu.imageDir);
     }
@@ -354,6 +365,7 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint Failed not called.", true, hook.checkpointFailed);
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
         }
     }
@@ -378,11 +390,10 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called.", false, hook.checkpointFailed);
         }
         assertEquals("Restore not called.", true, h3.restoreCalled);
-
         assertEquals("Restore not called.", true, h2.restoreCalled);
-
         assertEquals("Unexpected Restore called.", false, h1.restoreCalled);
 
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));

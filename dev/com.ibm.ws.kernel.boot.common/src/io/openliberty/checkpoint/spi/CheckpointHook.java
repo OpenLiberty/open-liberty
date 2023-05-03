@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,14 @@ public interface CheckpointHook {
      * an exception then the checkpoint will be aborted.
      */
     default void prepare() {
+    };
+
+    /**
+     * Called when checkpoint fails for any reason. All checkpoint hooks are called
+     * when a checkpoint fails regardless of if the hook method {@link #prepare()} was
+     * called on the hook instance.
+     */
+    default void checkpointFailed() {
     };
 
     /**
