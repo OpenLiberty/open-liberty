@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ws.security.fat.common.social;
 public class MessageConstants extends com.ibm.ws.security.fat.common.MessageConstants {
 
     public static final String CWWKS5489E_PUBLIC_FACING_ERROR = "CWWKS5489E";
+
+    public static final String CWWKS5495E_INVALID_SOCIAL_REQUEST = "CWWKS5495E";
 
     public static final String CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR = "CWWKS1706E";
     public static final String CWWKS1714E_OIDC_CLIENT_REQUEST_NONCE_FAILED = "CWWKS1714E";

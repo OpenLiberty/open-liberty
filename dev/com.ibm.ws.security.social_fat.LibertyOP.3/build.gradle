@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../com.ibm.ws.security.fat.common.SSO.clientTests/CommonPKCE.gradle'
+
+addRequiredLibraries.dependsOn copyGenericServer
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+dependencies {
+   requiredLibs project(':com.ibm.ws.security.social_fat'),
+                project(':com.ibm.ws.security.fat.common'),
+                project(':com.ibm.ws.security.fat.common.jwt'),
+                project(':com.ibm.ws.security.fat.common.social'),
+                project(':com.ibm.ws.security.fat.common.SSO.clientTests'),
+                project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+                fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
+                'jtidy:jtidy:4aug2000r7-dev',
+                'rhino:js:1.6R5'
+
+  /*
+   * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
+   * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
+   * here. The uber jar also was configured to be an OSGi bundle, but it is not necessary for this bucket.
+   */ 
+  requiredLibs project(':com.ibm.ws.org.apache.commons.io'),        // htmlunit-2.44.0 --> 2.8.0
+               project(':com.ibm.ws.org.apache.commons.lang3'),     // htmlunit-2.44.0 --> 3.11
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'org.apache.httpcomponents:httpmime:4.5.12',
+               'org.brotli:dec:0.1.2',
+               'xalan:xalan:2.7.2',
+               project(':io.openliberty.org.apache.xercesImpl'),
+               'xml-apis:xml-apis:1.4.01'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.SSO.clientTests:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
+
+autoFVT.doFirst {
+
+  def servers = [
+	"com.ibm.ws.security.social_fat.LibertyOP.social.pkce"
+  ]
+  servers.each { server ->
+    /* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').projectDir, 'publish/shared/config/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'allAlgSSLSettings.xml'
+    }    
+    copy { 
+      from new File(projectDir, "publish/files/serversettings")
+      into new File(autoFvtDir, "publish/servers/" + server + "/imports")
+      include '**.xml'
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.social_fat').projectDir, "publish/files/serversettings")
+      into new File(autoFvtDir, "publish/servers/" + server + "/imports")
+      include 'goodBasicRegistry.xml'
+      include 'misc.xml'
+      include 'socialLoginRunableFeatures.xml'
+    }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'formlogin_1.xml'
+    }  
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'formlogin.zip', 'formlogin.war'
+    }
+    
+  }
+
+
+}
