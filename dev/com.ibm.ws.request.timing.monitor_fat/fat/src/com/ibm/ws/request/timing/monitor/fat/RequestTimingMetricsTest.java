@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +38,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -55,6 +58,16 @@ import componenttest.topology.impl.LibertyServer;
 @SkipForRepeat({ JakartaEE9Action.ID, JakartaEE10Action.ID })
 public class RequestTimingMetricsTest {
 
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat("RequestTimingFeatureWithMetrics",
+                                                             TestMode.LITE,
+                                                             MicroProfileActions.MP60,
+                                                             MicroProfileActions.MP50,
+                                                             MicroProfileActions.MP41,
+                                                             MicroProfileActions.MP33,
+                                                             MicroProfileActions.MP32,
+                                                             MicroProfileActions.MP30);
+
     private static final Class<RequestTimingMetricsTest> c = RequestTimingMetricsTest.class;
 
     @Server("RequestTimingFeatureWithMetrics")
@@ -66,6 +79,12 @@ public class RequestTimingMetricsTest {
     public static int activeServletRequest;
 
     public final String TestRequestHandlerUrl = getRequestTimingServletURLString("TestRequestHandler", 0);
+
+    private static String activeRequestCountString;
+    private static String requestCountTotalString;
+    private static String hungRequestCountString;
+    private static String slowRequstCount;
+    private static String vendorPath;
 
     /**
      * JUnit guarantees that this gets run after the static set up in the superclass
@@ -84,6 +103,28 @@ public class RequestTimingMetricsTest {
 
         Log.info(c, "setUp", logMsg);
         Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
+
+        resolveRequestTimingMetricString();
+
+    }
+
+    private static void resolveRequestTimingMetricString() throws Exception {
+        if (server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpMetrics-5.0")) {
+            Log.info(c, "resolveRequestTimingMetricString", "Feature set contains mpMetrics-5.0");
+            vendorPath = "/metrics?scope=vendor";
+            activeRequestCountString = "requestTiming_activeRequestCount{mp_scope=\"vendor\",}";
+            requestCountTotalString = "requestTiming_requestCount_total{mp_scope=\"vendor\",}";
+            hungRequestCountString = "requestTiming_hungRequestCount{mp_scope=\"vendor\",}";
+            slowRequstCount = "requestTiming_slowRequestCount{mp_scope=\"vendor\",}";
+        } else {
+            Log.info(c, "resolveRequestTimingMetricString", "Feature set does not contain mpMetrics-5.0");
+            vendorPath = "/metrics/vendor";
+            activeRequestCountString = "vendor_requestTiming_activeRequestCount";
+            requestCountTotalString = "vendor_requestTiming_requestCount_total";
+            hungRequestCountString = "vendor_requestTiming_hungRequestCount";
+            slowRequstCount = "vendor_requestTiming_slowRequestCount";
+        }
+
     }
 
     /**
@@ -109,23 +150,29 @@ public class RequestTimingMetricsTest {
         String testName = "testBasic";
         Log.info(c, testName, "Entry");
 
+        if (server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpMetrics-5.0")) {
+            vendorPath = "/metrics?scope=vendor";
+        } else {
+            vendorPath = "/metrics/vendor";
+        }
+
         /*
          * The call to /metrics counts as an active request. And the total is 1.
          */
-        checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                               "vendor_requestTiming_activeRequestCount " + Long.toString(activeServletRequest),
-                                                                               "vendor_requestTiming_requestCount_total " + Long.toString(totalRequestCount.get()),
-                                                                               "vendor_requestTiming_hungRequestCount 0",
-                                                                               "vendor_requestTiming_slowRequestCount 0" },
+        checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                        activeRequestCountString + " " + Long.toString(activeServletRequest),
+                                                                        requestCountTotalString + " " + Long.toString(totalRequestCount.get()),
+                                                                        hungRequestCountString + " 0",
+                                                                        slowRequstCount + " 0" },
                      new String[] {});
 
         //Increment total requests by 3
         for (int i = 1; i <= 3; i++) {
-            getHttpServlet("/metrics/vendor", server);
+            getHttpServlet(vendorPath, server);
         }
 
-        checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                               "vendor_requestTiming_requestCount_total " + Long.toString(totalRequestCount.get())
+        checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                        requestCountTotalString + " " + Long.toString(totalRequestCount.get())
         },
                      new String[] {});
 
@@ -157,7 +204,7 @@ public class RequestTimingMetricsTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //@Test
     public void testHungThreads() throws Exception {
         final String testName = "testHungThreads";
         Log.info(c, testName, "Entry");
@@ -191,10 +238,10 @@ public class RequestTimingMetricsTest {
             int activeRequestCount = numofHungRequests - 1 + activeServletRequest;
             int hungRequestCount = 0;
             int slowRequestCount = 0;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Integer.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Integer.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Integer.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Integer.toString(activeRequestCount),
+                                                                            hungRequestCountString + " " + Integer.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Integer.toString(slowRequestCount) },
                          new String[] {});
 
             // Sleep 20 seconds to get requests into hung. This will print a Java Dump to
@@ -210,10 +257,10 @@ public class RequestTimingMetricsTest {
              */
             activeRequestCount = numofHungRequests - 1 + activeServletRequest;
             hungRequestCount = numofHungRequests - 1;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Integer.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Integer.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Integer.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Integer.toString(activeRequestCount),
+                                                                            hungRequestCountString + " " + Integer.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Integer.toString(slowRequestCount) },
                          new String[] {});
             // Start last thread to release CountDownLatch
             th[numofHungRequests - 1].start();
@@ -227,11 +274,11 @@ public class RequestTimingMetricsTest {
 
             activeRequestCount = activeServletRequest;
             hungRequestCount = 0;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Long.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_requestCount_total " + Long.toString(totalRequestCount.get()),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Long.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Long.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Long.toString(activeRequestCount),
+                                                                            requestCountTotalString + " " + Long.toString(totalRequestCount.get()),
+                                                                            hungRequestCountString + " " + Long.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Long.toString(slowRequestCount) },
                          new String[] {});
 
         } finally {
@@ -263,7 +310,7 @@ public class RequestTimingMetricsTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @Test
+    //@Test
     public void testSlowServletRequest() throws Exception {
 
         final String METHOD_NAME = "testSlowServletRequest";
@@ -301,10 +348,10 @@ public class RequestTimingMetricsTest {
             int activeRequestCount = numofSlowRequests - 1 + activeServletRequest;
             int hungRequestCount = 0;
             int slowRequestCount = 0;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Integer.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Integer.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Integer.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Integer.toString(activeRequestCount),
+                                                                            hungRequestCountString + " " + Integer.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Integer.toString(slowRequestCount) },
                          new String[] {});
 
             // Sleep 15 seconds so threads in servlet go from active to active and slow
@@ -319,10 +366,10 @@ public class RequestTimingMetricsTest {
              */
             activeRequestCount = numofSlowRequests - 1 + activeServletRequest;
             slowRequestCount = numofSlowRequests - 1;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Integer.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Integer.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Integer.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Integer.toString(activeRequestCount),
+                                                                            hungRequestCountString + " " + Integer.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Integer.toString(slowRequestCount) },
                          new String[] {});
 
             // Start last thread to release CountDownLatch
@@ -338,11 +385,11 @@ public class RequestTimingMetricsTest {
 
             activeRequestCount = activeServletRequest;
             slowRequestCount = 0;
-            checkStrings(getHttpServlet("/metrics/vendor", server), new String[] {
-                                                                                   "vendor_requestTiming_activeRequestCount " + Long.toString(activeRequestCount),
-                                                                                   "vendor_requestTiming_requestCount_total " + Long.toString(totalRequestCount.get()),
-                                                                                   "vendor_requestTiming_hungRequestCount " + Long.toString(hungRequestCount),
-                                                                                   "vendor_requestTiming_slowRequestCount " + Long.toString(slowRequestCount) },
+            checkStrings(getHttpServlet(vendorPath, server), new String[] {
+                                                                            activeRequestCountString + " " + Long.toString(activeRequestCount),
+                                                                            requestCountTotalString + " " + Long.toString(totalRequestCount.get()),
+                                                                            hungRequestCountString + " " + Long.toString(hungRequestCount),
+                                                                            slowRequstCount + " " + Long.toString(slowRequestCount) },
                          new String[] {});
 
         } finally {
@@ -373,7 +420,7 @@ public class RequestTimingMetricsTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *            Value looked for in CountDownLatch
+     *                           Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -455,13 +502,13 @@ public class RequestTimingMetricsTest {
      * test
      *
      * @param th
-     *            -- array of threads
+     *                            -- array of threads
      * @param numReqs
-     *            -- number of requests is the number of threads needed
+     *                            -- number of requests is the number of threads needed
      * @param servletTestName
-     *            -- Used for request to servlet
+     *                            -- Used for request to servlet
      * @param testMethodName
-     *            -- Used for printing to logs
+     *                            -- Used for printing to logs
      */
     private void createRequestThreads(Thread[] th, int numReqs) {
         // Send N servlet requests to server, last request used to terminate

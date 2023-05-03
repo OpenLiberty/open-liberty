@@ -113,8 +113,12 @@ public class MonitorMetrics {
 
                         SRMetricRegistryAdapter srMetricRegistry = new SRMetricRegistryAdapter(cast);
 
-                        srMetricRegistry.functionCounter(metadata, mc, x -> (x.getCount() * conversionFactor),
-                                metricTag);
+                        if (metricTag == null) {
+                            srMetricRegistry.functionCounter(metadata, mc, x -> (x.getCount() * conversionFactor));
+                        } else {
+                            srMetricRegistry.functionCounter(metadata, mc, x -> (x.getCount() * conversionFactor),
+                                    metricTag);
+                        }
 
                     } catch (ClassCastException e) {
                         // This should never actually happen.
@@ -133,8 +137,11 @@ public class MonitorMetrics {
                         ? new MonitorGauge<Number>(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE])
                         : new MonitorGauge<Number>(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE],
                                 metricData[MappingTable.MBEAN_SUBATTRIBUTE]);
-
-                metricRegistry.gauge(metadata, mg, x -> (x.getValue().doubleValue() * conversionFactor), metricTag);
+                if (metricTag == null) {
+                    metricRegistry.gauge(metadata, mg, x -> (x.getValue().doubleValue() * conversionFactor));
+                } else {
+                    metricRegistry.gauge(metadata, mg, x -> (x.getValue().doubleValue() * conversionFactor), metricTag);
+                }
 
                 metricIDSet.add(metricID);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
