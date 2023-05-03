@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.net.Authenticator;
@@ -45,6 +44,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -66,7 +66,9 @@ public class TCKUtilities {
     public static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
     public static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
     public static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
+    public static final String MVN_DISTRIBUTION_SHA_KEY = "distributionSha256Sum";
     public static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
+    public static final String MVN_WRAPPER_SHA_KEY = "wrapperSha256Sum";
     /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
     private static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
 
@@ -404,58 +406,48 @@ public class TCKUtilities {
 
     /**
      * Export a file from the fattest.simplicity jar to the local filesystem. If the local file
-     * already exists then this method does nothing, it does not overwrite.
+     * already exists then it is overwritten.
      *
      * @param  fileName     The name of the jar resource, relative to TCKRunner.class
      * @param  targetFolder The target local folder to export to
      * @return              the File of the exported file (or the existing one)
-     * @throws IOException
+     * @throws IOException  If there is a problem exporting the resource
      */
     public static File exportResource(File targetFolder, String fileName) throws IOException {
-        InputStream stream = null;
-        OutputStream resStreamOut = null;
-        File targetFile = null;
-        if (targetFolder.exists() && targetFolder.isDirectory()) {
-            targetFile = new File(targetFolder, fileName);
-            if (targetFile.exists()) {
-                Log.info(c, "exportResource", "Target File already exists: " + targetFile);
-            } else {
-                try {
-                    stream = TCKRunner.class.getResourceAsStream(fileName);
-                    if (stream == null) {
-                        throw new IOException("Cannot get resource \"" + fileName + "\" from Jar file.");
-                    }
+        try {
+            requireDirectory(targetFolder);
+            File targetFile = new File(targetFolder, fileName);
 
+            if (targetFile.exists()) {
+                Log.info(c, "exportResource", "Target File already exists, deleting it: " + targetFile);
+                targetFile.delete();
+            }
+
+            try (InputStream stream = TCKRunner.class.getResourceAsStream(fileName)) {
+                if (stream == null) {
+                    throw new IOException("Cannot get resource \"" + fileName + "\" from Jar file.");
+                }
+
+                try (FileOutputStream resStreamOut = new FileOutputStream(targetFile)) {
                     int readBytes;
                     byte[] buffer = new byte[4096];
-                    resStreamOut = new FileOutputStream(targetFile);
                     while ((readBytes = stream.read(buffer)) > 0) {
                         resStreamOut.write(buffer, 0, readBytes);
                     }
-                    resStreamOut.flush();
-                } catch (IOException e) {
-                    Log.info(c, "exportResource", "Failed to export: " + fileName + ". Exception: " + e.getMessage());
-                    throw e;
-                } finally {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                    if (resStreamOut != null) {
-                        resStreamOut.close();
-                    }
-                }
-
-                if (targetFile.exists()) {
-                    Log.info(c, "exportResource", fileName + " exported to: " + targetFile);
-                } else {
-                    Log.info(c, "exportResource", "Failed to export " + fileName + " to: " + targetFile);
                 }
             }
-        } else {
-            Log.info(c, "exportResource", "Target folder does not exist or is not a directory: " + targetFolder);
-        }
 
-        return targetFile;
+            if (targetFile.exists()) {
+                Log.info(c, "exportResource", fileName + " exported to: " + targetFile);
+            } else {
+                throw new IOException("Writing target file did not throw an exception, but the target file was not created");
+            }
+            return targetFile;
+        } catch (Exception e) {
+            String msg = "Failed to export " + fileName + " to " + targetFolder + ": " + e.getMessage();
+            Log.error(c, "exportResource", e, msg);
+            throw new IOException(msg, e);
+        }
     }
 
     /**
@@ -463,11 +455,12 @@ public class TCKUtilities {
      * is being slow.
      *
      * @param  distroURL     The URL to download from
+     * @param  distroHash    The expected SHA-256 hash of the distro file
      * @param  mavenUserHome The local .m2 folder to download to
      * @param  auth          The authenticator to use
      * @throws IOException
      */
-    public static void downloadMavenDistro(String distroURL, File mavenUserHome, Authenticator auth) throws IOException {
+    public static void downloadMavenDistro(String distroURL, String distroHash, File mavenUserHome, Authenticator auth) throws IOException {
         // Example:
         // URL:    https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.0/apache-maven-3.9.0-bin.zip
         // Target: ${mavenUserHome}/wrapper/dists/apache-maven-3.9.0-bin/b0cac456/apache-maven-3.9.0-bin.zip
@@ -476,49 +469,77 @@ public class TCKUtilities {
         String fileName = distroURL.substring(distroURL.lastIndexOf('/') + 1);
         String distName = fileName.substring(0, fileName.indexOf(".zip"));
         File targetFolder = new File(mavenUserHome, "wrapper/dists/" + distName + "/" + hash);
-        downloadFile(distroURL, new File(targetFolder, fileName), auth);
+        downloadFile(distroURL, new File(targetFolder, fileName), auth, distroHash);
     }
 
     /**
      * Download a file. If the download fails, retry up to 5 times.
+     * <p>
+     * If the file exists and has the correct SHA-256 hash, the download is skipped.
+     * <p>
+     * If the file exists but does not have the correct SHA-256 hash, it is deleted and downloaded again.
      *
      * @param  url           The url to download from
      * @param  targetFile    The file to download to
      * @param  authenticator The authenticator to use
-     * @return
-     * @throws IOException
+     * @param  sha256        The expected SHA-256 hash of the file. Used to check if download is required and to validate downloaded file.
+     * @return               {@code targetFile}
+     * @throws IOException   if there is an error downloading the file
      */
-    public static File downloadFile(String url, File targetFile, Authenticator authenticator) throws IOException {
-        Files.createDirectories(targetFile.getParentFile().toPath());
-        Authenticator.setDefault(authenticator);
-        int attempt = 0;
-        boolean completed = false;
-        while (!completed) {
-            FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
-            FileChannel fileChannel = fileOutputStream.getChannel();
-            ReadableByteChannel readableByteChannel = null;
-            try {
-                URLConnection connection = new URL(url).openConnection();
-                connection.setConnectTimeout(60000);
-                connection.setReadTimeout(60000);
-                readableByteChannel = Channels.newChannel(connection.getInputStream());
-                fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-
-                completed = true;
-            } catch (IOException e) {
-                attempt++;
-                if (attempt >= 5) {
-                    throw e;
-                }
-            } finally {
-                fileOutputStream.close();
-                fileChannel.close();
-                if (readableByteChannel != null) {
-                    readableByteChannel.close();
+    public static File downloadFile(String url, File targetFile, Authenticator authenticator, String sha256) throws IOException {
+        try {
+            Objects.requireNonNull(sha256, "sha256 hash");
+            // If target exists, check whether it's correct
+            if (targetFile.exists() && sha256 != null) {
+                String actualSha256 = generateSHA256(targetFile);
+                if (sha256.equals(actualSha256)) {
+                    Log.info(c, "downloadFile", "Target file with correct hash already exists, skipping download for " + targetFile);
+                    return targetFile;
+                } else {
+                    Log.info(c, "downloadFile", "Removing target file with incorrect hash: " + targetFile);
+                    targetFile.delete();
                 }
             }
+
+            Log.info(c, "downloadFile", "Downloading file from " + url);
+            Log.info(c, "downloadFile", "Download target: " + targetFile);
+            Files.createDirectories(targetFile.getParentFile().toPath());
+            Authenticator.setDefault(authenticator);
+            int attempt = 0;
+            boolean completed = false;
+            while (!completed) {
+                try {
+                    URLConnection connection = new URL(url).openConnection();
+                    connection.setConnectTimeout(60000);
+                    connection.setReadTimeout(60000);
+                    try (
+                                    FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
+                                    FileChannel fileChannel = fileOutputStream.getChannel();
+                                    ReadableByteChannel readableByteChannel = Channels.newChannel(connection.getInputStream())) {
+                        // Call transferFrom until we reach the end of the stream
+                        while (fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE) > 0);
+                    }
+
+                    // Download complete, check hash
+                    String actualSha256 = generateSHA256(targetFile);
+                    if (!sha256.equals(actualSha256)) {
+                        throw new IOException("Hash of downloaded file did not match. Expected: " + sha256 + ", actual: " + actualSha256);
+                    }
+
+                    completed = true;
+                } catch (IOException e) {
+                    attempt++;
+                    if (attempt >= 5) {
+                        throw e;
+                    }
+                }
+            }
+            return targetFile;
+        } catch (Exception e) {
+            String msg = "Error downloading file " + url + ": " + e.toString();
+            Log.error(c, "downloadFile", e, msg);
+            throw new IOException(msg, e);
         }
-        return targetFile;
     }
 
     /**
@@ -558,10 +579,11 @@ public class TCKUtilities {
     public static void downloadMvnWrapperJar(File tckWorkingDir, Properties wrapperProps, Authenticator authenticator) throws IOException {
 
         String wrapperURL = wrapperProps.getProperty(MVN_WRAPPER_URL_KEY);
+        String wrapperHash = wrapperProps.getProperty(MVN_WRAPPER_SHA_KEY);
         File targetFolder = new File(tckWorkingDir, ".mvn/wrapper");
         Files.createDirectories(targetFolder.toPath());
 
-        TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), authenticator);
+        TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), authenticator, wrapperHash);
     }
 
     public static void assertSHA256(File file, String expectedSha256) {
@@ -704,10 +726,36 @@ public class TCKUtilities {
     public static File setupMavenHome(File mavenUserHome, Properties wrapperProperties, Authenticator authenticator) throws IOException {
 
         String distroURL = wrapperProperties.getProperty(MVN_DISTRIBUTION_URL_KEY);
+        String distroHash = wrapperProperties.getProperty(MVN_DISTRIBUTION_SHA_KEY);
 
-        TCKUtilities.downloadMavenDistro(distroURL, mavenUserHome, authenticator);
+        TCKUtilities.downloadMavenDistro(distroURL, distroHash, mavenUserHome, authenticator);
 
         //the local maven settings.xml file to use
         return TCKUtilities.exportResource(mavenUserHome, "settings.xml");
+    }
+
+    /**
+     * Ensure that a directory exists
+     *
+     * @param  directory   the file to check
+     * @throws IOException if the file does not exist or is not a directory
+     */
+    public static void requireDirectory(File directory) throws IOException {
+        requireExists(directory);
+        if (!directory.isDirectory()) {
+            throw new IOException(directory + " is not a directory");
+        }
+    }
+
+    /**
+     * Ensure that a file exists
+     *
+     * @param  file        the file to check
+     * @throws IOException if the file does not exist
+     */
+    public static void requireExists(File file) throws IOException {
+        if (!file.exists()) {
+            throw new IOException(file + " does not exist");
+        }
     }
 }
