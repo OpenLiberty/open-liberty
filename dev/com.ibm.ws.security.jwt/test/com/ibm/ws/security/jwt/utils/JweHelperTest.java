@@ -35,6 +35,7 @@ public class JweHelperTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.jwt.*=all:com.ibm.ws.security.common.*=all");
 
+    static final String MSG_UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM = "CWWKS6056E";
     static final String MSG_CTY_NOT_JWT_FOR_NESTED_JWS = "CWWKS6057E";
 
     private JweHelper helper = null;
@@ -227,16 +228,15 @@ public class JweHelperTest extends CommonTestClass {
                 will(returnValue(testName.getMethodName()));
             }
         });
+        String expectedExceptionString = "org.jose4j.lang.InvalidAlgorithmException";
         String joseException1 = null;
         String joseException2 = null;
         try {
             String payload = JweHelper.extractPayloadFromJweToken(jweStringInvalidPkcsPadding, config, null);
             fail("Should have thrown an exception, but didn't. Got payload: " + payload);
         } catch (InvalidTokenException e) {
-            // Expected
-            //            verifyException(e, "org.jose4j.lang.JoseException" + ".*" + "javax.crypto.AEADBadTagException");
-            verifyException(e, "org.jose4j.lang.JoseException");
-            int indexOfJoseException = e.getMessage().indexOf("org.jose4j.lang.JoseException");
+            verifyException(e, MSG_UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM + ".*" + expectedExceptionString);
+            int indexOfJoseException = e.getMessage().indexOf(expectedExceptionString);
             joseException1 = e.getMessage().substring(indexOfJoseException);
         }
         String jweStringValidPkcsPaddingEncodedKeySizeIncorrect = "eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4R0NNIn0.oyVTmkyoChxFtyCtiKhv8OpBJcV6C6s_gMFSSRJBNStpdHPzq2YmroTfXGj1J1plFG4BBQwIZtdt6rIS6YkCvTLGqP1hds9CAO1a_bgRyoAVuOVvH2vmz5U2r74_SRbAzD35M7yZ_tSnnEdMFlHMFbf5uNwmgArrtPgh0V5OLn5i4XIc154FLTiQlvAEhUxiPuYBkm_1GBiYEH4JjP2RKXAUx_TxAVwPsOfIPAVrO0Ev_nvdtVLCE-uOn8WQbxh4wwOztaXOV1HIaPrl7HN-YtDOA840QUHm97ZZLAPRgLzGlkMI0ZS8QkYdb9_FT3KMbNu60nBKEniv2uhBdIhM9g.46AsIpPgnJCLH0Xm.u2rG.LyEHEGCWM8CXDEEHiaqhiQ";
@@ -252,9 +252,8 @@ public class JweHelperTest extends CommonTestClass {
             String payload = JweHelper.extractPayloadFromJweToken(jweStringValidPkcsPaddingEncodedKeySizeIncorrect, config, null);
             fail("Should have thrown an exception, but didn't. Got payload: " + payload);
         } catch (InvalidTokenException e) {
-            //            verifyException(e, "org.jose4j.lang.JoseException" + ".*" + "Invalid key for AES/GCM/NoPadding");
-            verifyException(e, "org.jose4j.lang.JoseException");
-            int indexOfJoseException = e.getMessage().indexOf("org.jose4j.lang.JoseException");
+            verifyException(e, MSG_UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM + ".*" + expectedExceptionString);
+            int indexOfJoseException = e.getMessage().indexOf(expectedExceptionString);
             joseException2 = e.getMessage().substring(indexOfJoseException);
         }
         assertEquals("Exception from scenario 1 should match the exception from scenario 2, but it didn't", joseException1, joseException2);
@@ -295,7 +294,7 @@ public class JweHelperTest extends CommonTestClass {
             fail("Should have thrown an exception, but didn't. Got payload: " + payload);
         } catch (InvalidTokenException e) {
             // Expected
-            // TODO
+            verifyException(e, MSG_UNSUPPORTED_KEY_MANAGEMENT_ALGORITHM + ".*" + "org.jose4j.lang.InvalidAlgorithmException");
         }
     }
 
