@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
-      <artifactId>cglib-nodep</artifactId>
+      <artifactId>cglib</artifactId>
       <version>3.3.0</version>
     </dependency>
     <dependency>

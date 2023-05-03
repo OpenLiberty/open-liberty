@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -524,6 +524,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue(serviceAccountToken));
                     one(outputStream).write(with(any(byte[].class)), with(any(int.class)), with(any(int.class)));
                     allowing(outputStream).close();
+                    allowing(outputStream).flush(); // In Java 17 close() calls flush()
                     one(httpUrlConnection).connect();
                 }
             });
@@ -553,6 +554,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue(serviceAccountToken));
                     one(outputStream).write(with(any(byte[].class)), with(any(int.class)), with(any(int.class)));
                     allowing(outputStream).close();
+                    allowing(outputStream).flush(); // In Java 17 close() calls flush()
                     one(httpUrlConnection).connect();
                 }
             });
