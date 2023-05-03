@@ -656,13 +656,19 @@ public class FrameworkManager {
 
                     }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
 
-                    // Update service properties while in multi-threaded to allow proper events.
                     Hashtable<String, Object> restoredHookProps = new Hashtable<>();
                     restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
                     restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
                         @Override
+                        public void prepare() {
+                            // kick equinox to force a save before checkpoint single-threaded mode
+                            saveEquinoxStateNow(fwkContext);
+                        }
+
+                        @Override
                         public void restore() {
+                            // Update service properties while in multi-threaded to allow proper events.
                             phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
                             phaseReg.setProperties(phaseRegProps);
                         }
@@ -688,6 +694,22 @@ public class FrameworkManager {
             if (!handleEquinoxRuntimeException(ex))
                 throw ex;
             return null;
+        }
+    }
+
+    @FFDCIgnore(Exception.class)
+    void saveEquinoxStateNow(BundleContext fwkContext) {
+        Bundle systemBundle = fwkContext.getBundle();
+        try {
+            Method getEquinoxContainer = systemBundle.getClass().getSuperclass().getDeclaredMethod("getEquinoxContainer");
+            getEquinoxContainer.setAccessible(true);
+            Object equinoxContainer = getEquinoxContainer.invoke(systemBundle);
+            Method getStorage = equinoxContainer.getClass().getDeclaredMethod("getStorage");
+            Object storage = getStorage.invoke(equinoxContainer);
+            Method save = storage.getClass().getDeclaredMethod("save");
+            save.invoke(storage);
+        } catch (Exception e) {
+            throw new RuntimeException("Error trying to save Equinox state.", e);
         }
     }
 
