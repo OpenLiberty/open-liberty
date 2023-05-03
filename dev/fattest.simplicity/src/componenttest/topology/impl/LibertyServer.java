@@ -52,12 +52,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
@@ -494,6 +496,23 @@ public class LibertyServer implements LogMonitorClient {
      */
     private CheckpointInfo checkpointInfo;
 
+    /**
+     *
+     * @return current value of {@link criuRestoreDisableRecovery}
+     */
+    public boolean isCriuRestoreDisableRecovery() {
+        return checkpointInfo.criuRestoreDisableRecovery;
+    }
+
+    /**
+     * Set the value of {@link criuRestoreDisableRecovery}.
+     *
+     * @param value to set.
+     */
+    public void setCriuRestoreDisableRecovery(boolean value) {
+        checkpointInfo.criuRestoreDisableRecovery = value;
+    }
+
     public static class CheckpointInfo {
         final Consumer<LibertyServer> defaultCheckpointLambda = (LibertyServer s) -> {
             Log.debug(c, "No beforeCheckpointLambda supplied.");
@@ -572,6 +591,13 @@ public class LibertyServer implements LogMonitorClient {
         public void setAssertNoAppRestartOnRestore(boolean assertNoAppRestartOnRestore) {
             this.assertNoAppRestartOnRestore = assertNoAppRestartOnRestore;
         }
+
+        /**
+         * If true, auto-recovery is disabled. Otherwise, auto-recovery is enabled. The default is true (disabled).
+         * <p>
+         * Auto-recovery will launch a clean start of the server if a checkpoint restore fails.
+         */
+        private boolean criuRestoreDisableRecovery = true;
 
         private Properties checkpointEnv = null;
 
@@ -1490,6 +1516,10 @@ public class LibertyServer implements LogMonitorClient {
         if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
+            if (doCheckpoint()) {
+                //debug intermittent issue resulting in hang of checkpoint operation (defect )
+                JVM_ARGS += " -Xdump:system:events=user";
+            }
         }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
@@ -1624,7 +1654,7 @@ public class LibertyServer implements LogMonitorClient {
 
         if (doCheckpoint()) {
             // save off envVars for checkpoint
-            checkpointInfo.checkpointEnv = envVars;
+            checkpointInfo.checkpointEnv = (Properties) envVars.clone();
             checkpointInfo.beforeCheckpointLambda.accept(this);
         }
 
@@ -1701,34 +1731,48 @@ public class LibertyServer implements LogMonitorClient {
                 }
 
                 if (output == null) {
-                    // We didn't get a return value from the start script. This is pretty rare, but it's possible for the JVM to miss the output
-                    // from the script and wait forever for a response. When this happens, we test to see if the server was actually started (it
-                    // almost always should be.) If not, we try to start the server again. The chances of both calls failing at the JVM level are
-                    // extraordinarily small.
-                    Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
+                    if (!doCheckpoint()) {
+                        // We didn't get a return value from the start script. This is pretty rare, but it's possible for the JVM to miss the output
+                        // from the script and wait forever for a response. When this happens, we test to see if the server was actually started (it
+                        // almost always should be.) If not, we try to start the server again. The chances of both calls failing at the JVM level are
+                        // extraordinarily small.
+                        Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
 
-                    // Call resetStarted() to try to determine whether the server is actually running or not.
-                    int rc = resetStarted();
-                    if (rc == 0) {
-                        // The server is running, so proceed as if nothing went wrong.
-                        output = new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
-                    } else {
-                        Log.info(c, method, "The server does not appear to be running. (rc=" + rc + "). Retrying server start now");
-                        // If at first you don't succeed...
-                        Thread tryAgain = new Thread(cmd);
-                        tryAgain.start();
-                        output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-                        if (runAsAWindowService == true) {
-                            // wait for "register" to complete first, and now wait for "start" to complete
+                        // Call resetStarted() to try to determine whether the server is actually running or not.
+                        int rc = resetStarted();
+                        if (rc == 0) {
+                            // The server is running, so proceed as if nothing went wrong.
+                            output = new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
+                        } else {
+                            Log.info(c, method, "The server does not appear to be running. (rc=" + rc + "). Retrying server start now");
+                            // If at first you don't succeed...
+                            Thread tryAgain = new Thread(cmd);
+                            tryAgain.start();
                             output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
-                        }
-                        if (output == null) {
-                            Log.warning(c, "The second attempt to start the server also timed out. The server may or may not have actually started");
-                            return new ProgramOutput(cmd, -1, "No response from script", "No response from script");
-                        }
+                            if (runAsAWindowService == true) {
+                                // wait for "register" to complete first, and now wait for "start" to complete
+                                output = outputQueue.poll(SCRIPT_TIMEOUT_IN_MINUTES, TimeUnit.MINUTES);
+                            }
+                            if (output == null) {
+                                Log.warning(c, "The second attempt to start the server also timed out. The server may or may not have actually started");
+                                return new ProgramOutput(cmd, -1, "No response from script", "No response from script");
+                            }
 
+                        }
+                    } else {
+                        // we're taking a server checkpoint and the process has not exited
+                        Log.warning(c, "The launch of bin/server to create a checkpoint did not exit within " +
+                                       SCRIPT_TIMEOUT_IN_MINUTES + " minutes.");
+                        // at this point we have limited info about what happened since the STDOUT, STDERR and rc
+                        // from the attempted fork of bin/server have not returned within the time limit.
+                        // Probe the checkpoint dir structure
+                        try {
+                            assertCheckpointDirAsExpected(true);
+                            Log.warning(c, "There are some expected checkpoint files in the checkpoint directory.");
+                        } catch (AssertionError ae) {
+                            Log.debug(c, "Got an expected assertion error: " + ae);
+                        }
                     }
-
                 }
             } else {
                 // If the machine is remote we can execute the command directly.
@@ -1802,7 +1846,7 @@ public class LibertyServer implements LogMonitorClient {
         return checkpointRestore(true);
     }
 
-    private ProgramOutput checkpointRestore(boolean validate) throws Exception {
+    public ProgramOutput checkpointRestore(boolean validate) throws Exception {
         String method = "checkpointRestore";
         //Launch restore cmd mimic the process used to launch the checkpointing operation w.r.t
         // polling timeout on the launch
@@ -1812,8 +1856,12 @@ public class LibertyServer implements LogMonitorClient {
             @Override
             public void run() {
                 try {
-                    Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + checkpointInfo.checkpointEnv);
-                    restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], checkpointInfo.checkpointEnv));
+                    Properties restoreEnv = (Properties) checkpointInfo.checkpointEnv.clone();
+                    if (checkpointInfo.criuRestoreDisableRecovery) {
+                        restoreEnv.setProperty("CRIU_RESTORE_DISABLE_RECOVERY", "true");
+                    }
+                    Log.info(c, method, "Restoring with cmd: " + cmd + " and env:" + restoreEnv);
+                    restoreProgramOutputQueue.put(machine.execute(cmd, new String[0], restoreEnv));
                 } catch (Exception e) {
                     Log.info(c, method, "Exception while attempting to restore a server: " + e.getMessage());
                 }
@@ -1841,7 +1889,10 @@ public class LibertyServer implements LogMonitorClient {
                 return output;
             }
         }
-        if (failedRestore()) {
+
+        //The restore operation returned 0. Verify that running server is from a checkpoint restore and not from a
+        // failed restore recovery, unless auto-recovery is enabled
+        if (checkpointInfo.criuRestoreDisableRecovery && failedRestore()) {
             // Did not find restore message; assume it failed;
             // The return code is 0 indicating the server started, likely recovered
             // set as started but then stop the server
@@ -1884,7 +1935,7 @@ public class LibertyServer implements LogMonitorClient {
                 Log.error(c, "Server should not be started after a checkpoint operation", fail);
                 throw fail;
             }
-            assertCheckpointDirAsExpected();
+            assertCheckpointDirAsExpected(true);
             assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
                           waitForStringInLogUsingMark("CWWKC0451I:", 0));
         } catch (AssertionError er) {
@@ -1917,12 +1968,35 @@ public class LibertyServer implements LogMonitorClient {
      *         osgi.eclipse/
      *         platform/
      * </pre>
+     *
+     * @throws Exception
      */
-    public void assertCheckpointDirAsExpected() throws Exception {
+    public void assertCheckpointDirAsExpected(boolean log) throws Exception {
+        String METHOD = "assertCheckpointDirAsExpected";
+        StringBuilder sb = new StringBuilder();
+        Formatter fm = new Formatter(sb, Locale.US);
+        String fmt = "%3$10d %2$tD-%2$tT %1$s";
+
         RemoteFile workarea = machine.getFile(serverRoot + "/workarea");
         assertTrue("Missing top level workarea dir", workarea.isDirectory());
+        if (log) {
+            Log.warning(c, "Log workarea directory contents");
+
+            for (RemoteFile rf : workarea.list(false)) {
+                fm.format(fmt, rf.getAbsolutePath(), new Long(rf.lastModified()), rf.length());
+                Log.warning(c, sb.toString());
+                sb.setLength(0);
+            }
+        }
         RemoteFile cpDir = new RemoteFile(machine, workarea, "checkpoint");
         assertTrue("Missing checkpoint dir", cpDir.isDirectory());
+        if (log) {
+            for (RemoteFile rf : cpDir.list(false)) {
+                fm.format(fmt, rf.getAbsolutePath(), new Long(rf.lastModified()), rf.length());
+                Log.warning(c, sb.toString());
+                sb.setLength(0);
+            }
+        }
         RemoteFile workareaCheckpoint = new RemoteFile(machine, cpDir, "workarea");
         assertTrue("Missing workarea backup dir", workareaCheckpoint.isDirectory());
         assertTrue("checkpoint workarea dir has no files",
@@ -1930,6 +2004,13 @@ public class LibertyServer implements LogMonitorClient {
         RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
         assertTrue("checkpoint image dir has no files",
                    imgDir.list(false).length > 2 /* a somewhat arbitrary min count */);
+        if (log) {
+            for (RemoteFile rf : imgDir.list(false)) {
+                fm.format(fmt, rf.getAbsolutePath(), new Long(rf.lastModified()), rf.length());
+                Log.warning(c, sb.toString());
+                sb.setLength(0);
+            }
+        }
     }
 
     private boolean failedRestore() throws Exception {

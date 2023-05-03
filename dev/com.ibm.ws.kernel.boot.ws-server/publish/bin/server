@@ -42,7 +42,7 @@
 #              that CRIU will fail to restore the process.  By default
 #              any failure to restore will result in the server
 #              recovering without using the checkpoint image.
-#              To disable this behavior set this to any value.
+#              To disable this behavior set this to true.
 #
 # PID_DIR    - The directory that should be used for server pid file(s).
 #              The default value is ${WLP_OUTPUT_DIR}/.pid
@@ -1499,7 +1499,11 @@ restoreServer()
     return $rc
   fi
   if [ $rc -ne 0 ]; then
-    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
+      issueMessage --message:error.checkpoint.restore.failed.no.recovery "${X_LOG_DIR}/checkpoint/restore.log"
+    else
+      issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    fi    
   fi
   return $rc
 }
@@ -1538,7 +1542,7 @@ case "$ACTION" in
       exit 0
     # 104 is the code for no image found to restore (or --clean is used)
     elif [ $rc -ne 104 ]; then
-      if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+      if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
         exit $rc
       fi
       # will try to recover with a normal launch below
@@ -1620,7 +1624,7 @@ case "$ACTION" in
           exit 0
         # 104 is the code for no image found to restore (or --clean is used)
         elif [ $rc -ne 104 ]; then
-          if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+          if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
             exit $rc
           fi
           # will try to recover with a normal launch below

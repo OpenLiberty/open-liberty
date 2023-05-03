@@ -21,6 +21,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.Before;
@@ -66,13 +68,17 @@ public class CheckpointFailTest {
                             }
                         }, //
                         // do before restore
-                        null));
+                        s -> {
+                            if (testMethod == TestMethod.testCriuRestoreFailedWithRecover) {
+                                s.setCriuRestoreDisableRecovery(false);
+                            }
+                        }));
         ProgramOutput checkpointOutput = server.startServer(getTestMethodNameOnly(testName) + ".log");
         if (testMethod.failCheckpoint()) {
             testMethod.verifyOutput(checkpointOutput);
         }
         if (testMethod.failRestore()) {
-            if (testMethod == TestMethod.testCriuRestoreFailed) {
+            if (testMethod == TestMethod.testCriuRestoreFailed || testMethod == TestMethod.testCriuRestoreFailedWithRecover) {
                 RemoteFile checkpointImage = server.getFileFromLibertyServerRoot("workarea/checkpoint/image");
                 if (checkpointImage.isDirectory()) {
                     for (RemoteFile imageFile : checkpointImage.list(false)) {
@@ -85,7 +91,8 @@ public class CheckpointFailTest {
                     fail("No image found");
                 }
             }
-            ProgramOutput restoreOutput = server.checkpointRestore();
+
+            ProgramOutput restoreOutput = server.checkpointRestore(!testMethod.failRestore());
             testMethod.verifyOutput(restoreOutput);
         }
     }
@@ -93,6 +100,8 @@ public class CheckpointFailTest {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+        // restore the default in case it was changed by the test
+        server.setCriuRestoreDisableRecovery(true);
     }
 
     @Test
@@ -145,15 +154,26 @@ public class CheckpointFailTest {
     public void testUnknownRestoreFailed() {
     }
 
+    @Test
+    public void testCriuRestoreFailed() {
+    }
+
+    @Test
+    public void testCriuRestoreFailedWithRecover() {
+    }
+
     static enum TestMethod {
         testUnsupportedInJvm("UNSUPPORTED_IN_JVM", true, 70),
         testDisabledInJvm("UNSUPPORTED_DISABLED_IN_JVM", true, 71),
         testLibertyPrepareFailed("LIBERTY_PREPARE_FAILED", true, 72),
         testJvmCheckpointFailed("JVM_CHECKPOINT_FAILED", true, 73),
-        testSystemCheckpointFailed("SYSTEM_CHECKPOINT_FAILED", true, 74, "CWWKE0962E", "TESTING CHECKPOINT.LOG"),
+        testSystemCheckpointFailed("SYSTEM_CHECKPOINT_FAILED", true, 74, ".*CWWKE0962E.*TESTING CHECKPOINT.LOG.*"),
         testUnknownCheckpointFailed("UNKNOWN_CHECKPOINT", true, 75),
         // Note that 1 is by criu when it fails to restore
-        testCriuRestoreFailed("SYSTEM_RESTORE_FAILED", false, 1, "CWWKE0961I"),
+        testCriuRestoreFailed("SYSTEM_RESTORE_FAILED", false, 1, ".*CWWKE0964E: Restoring the checkpoint server process failed.*The server did not launch.*"),
+        testCriuRestoreFailedWithRecover("SYSTEM_RESTORE_FAILED", false, 0, // expect final RC of success from auto-recovery
+                                         ".*CWWKE0961I: Restoring the checkpoint server process failed.*Launching the server without using the checkpoint image.*"
+                                                                            + "Server.*started with process ID.*"),
         testSystemRestoreFailed("SYSTEM_RESTORE_FAILED", false, 80),
         testJvmRestoreFailed("JVM_RESTORE_FAILED", false, 81),
         testLibertyRestoreFailed("LIBERTY_RESTORE_FAILED", false, 82),
@@ -180,7 +200,9 @@ public class CheckpointFailTest {
             assertEquals("Wrong return code.", returnCode, output.getReturnCode());
             String stdOut = output.getStdout();
             for (String message : messages) {
-                assertTrue("Expected message not found in output: " + message + " -- " + stdOut, stdOut.contains(message));
+                Pattern p = Pattern.compile(message, Pattern.DOTALL);
+                Matcher m = p.matcher(stdOut);
+                assertTrue("An expected regEx: [" + message + "] Could not be matched against stdOut: [" + stdOut + ']', m.matches());
             }
         }
 
