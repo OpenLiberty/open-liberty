@@ -1,7 +1,7 @@
 biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0
 biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0
 biz.aQute.bnd:biz.aQute.bnd:6.3.0
-cglib:cglib-nodep:3.3.0
+cglib:cglib:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 com.beust:jcommander:1.72
 com.cloudant:cloudant-client:2.16.0
@@ -842,6 +842,7 @@ org.testcontainers:oracle-xe:1.17.4
 org.testcontainers:postgresql:1.17.4
 org.testcontainers:selenium:1.17.4
 org.testcontainers:testcontainers:1.17.4
+org.testng:testng:7.5.1
 org.yaml:snakeyaml:1.32
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.2
