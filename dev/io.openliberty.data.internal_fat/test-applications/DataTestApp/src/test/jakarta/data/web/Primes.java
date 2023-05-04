@@ -17,10 +17,12 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
@@ -79,6 +81,9 @@ public interface Primes {
     @OrderBy(value = "romanNumeral", descending = true)
     List<Prime> findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndIdLessThan(String hexAbove, String maxNumeral, long numBelow);
 
+    @OrderBy("name")
+    Stream<Prime> findByNameCharCountBetween(int minLength, int maxLength);
+
     Prime findByNameIgnoreCase(String name);
 
     List<Prime> findByNameIgnoreCaseBetweenAndIdLessThanOrderByIdDesc(String first, String last, long max);
@@ -95,6 +100,10 @@ public interface Primes {
     @OrderBy("sumOfBits")
     @OrderBy("id")
     Iterator<Prime> findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan(String prefix, long max1, String contains, long max2, Pageable pagination);
+
+    List<Prime> findByNameTrimmedCharCountAndIdBetween(int length, long min, long max);
+
+    Optional<Prime> findByNameTrimmedIgnoreCase(String name);
 
     Prime findByNumberIdBetween(long min, long max);
 
@@ -171,6 +180,12 @@ public interface Primes {
     Prime[] findFirst5ByIdLessThanEqual(long maxNumber);
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
+
+    @OrderBy(value = "id", descending = true)
+    Set<Long> findIdByIdBetween(long min, long max);
+
+    @OrderBy(value = "id", descending = true)
+    IntStream findSumOfBitsByIdBetween(long min, long max);
 
     boolean existsByNumberId(long number);
 

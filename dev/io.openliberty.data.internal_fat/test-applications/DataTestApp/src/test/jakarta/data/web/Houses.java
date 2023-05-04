@@ -14,6 +14,7 @@ package test.jakarta.data.web;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.OrderBy;
@@ -44,6 +45,9 @@ public interface Houses {
 
     @OrderBy("lotSize")
     Stream<Object[]> findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(int maxArea);
+
+    @OrderBy("area")
+    DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
     List<House> save(House... h);
 

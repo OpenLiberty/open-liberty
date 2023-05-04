@@ -42,6 +42,15 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     KeysetAwareSlice<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable pagination);
 
+    @OrderBy(value = "id")
+    List<Integer> findIdByHeightRoundedDown(int height);
+
+    @OrderBy(value = "id")
+    List<Integer> findIdByLengthRoundedUp(int length);
+
+    @OrderBy(value = "id")
+    List<Integer> findIdByWidthRounded(int width);
+
     @Filter(by = "id")
     @Update(attr = "height", op = Operation.Divide)
     @Update(attr = "description", op = Operation.Add)

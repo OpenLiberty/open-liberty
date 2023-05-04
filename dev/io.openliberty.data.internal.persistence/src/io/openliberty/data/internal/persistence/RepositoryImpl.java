@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -710,11 +712,94 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     condition = Condition.EMPTY;
         }
 
-        boolean negated = endsWith("Not", methodName, start, endBefore - condition.length);
+        endBefore -= condition.length;
 
-        boolean ignoreCase = endsWith("IgnoreCase", methodName, start, endBefore - condition.length - (negated ? 3 : 0));
+        boolean negated = endsWith("Not", methodName, start, endBefore);
+        endBefore -= (negated ? 3 : 0);
 
-        String attribute = methodName.substring(start, endBefore - condition.length - (ignoreCase ? 10 : 0) - (negated ? 3 : 0));
+        String function = null;
+        boolean ignoreCase = false;
+        boolean rounded = false;
+
+        switch (methodName.charAt(endBefore - 1)) {
+            case 'e':
+                if (ignoreCase = endsWith("IgnoreCas", methodName, start, endBefore - 1)) {
+                    function = "LOWER(";
+                    endBefore -= 10;
+                } else if (endsWith("WithMinut", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (MINUTE FROM ";
+                    endBefore -= 10;
+                } else if (endsWith("AbsoluteValu", methodName, start, endBefore - 1)) {
+                    function = "ABS(";
+                    endBefore -= 13;
+                }
+                break;
+            case 'd':
+                if (rounded = endsWith("Rounde", methodName, start, endBefore - 1)) {
+                    function = "ROUND(";
+                    endBefore -= 7;
+                } else if (endsWith("WithSecon", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (SECOND FROM ";
+                    endBefore -= 10;
+                }
+                break;
+            case 'n':
+                if (endsWith("RoundedDow", methodName, start, endBefore - 1)) {
+                    function = "FLOOR(";
+                    endBefore -= 11;
+                }
+                break;
+            case 'p':
+                if (endsWith("RoundedU", methodName, start, endBefore - 1)) {
+                    function = "CEILING(";
+                    endBefore -= 9;
+                }
+                break;
+            case 'r':
+                if (endsWith("WithYea", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (YEAR FROM ";
+                    endBefore -= 8;
+                } else if (endsWith("WithHou", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (HOUR FROM ";
+                    endBefore -= 8;
+                } else if (endsWith("WithQuarte", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (QUARTER FROM ";
+                    endBefore -= 11;
+                }
+                break;
+            case 't':
+                if (endsWith("CharCoun", methodName, start, endBefore - 1)) {
+                    function = "LENGTH(";
+                    endBefore -= 9;
+                } else if (endsWith("ElementCoun", methodName, start, endBefore - 1)) {
+                    function = "SIZE(";
+                    endBefore -= 12;
+                }
+                break;
+            case 'y':
+                if (endsWith("WithDa", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (DAY FROM ";
+                    endBefore -= 7;
+                }
+                break;
+            case 'h':
+                if (endsWith("WithMont", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (MONTH FROM ";
+                    endBefore -= 9;
+                }
+                break;
+            case 'k':
+                if (endsWith("WithWee", methodName, start, endBefore - 1)) {
+                    function = "EXTRACT (WEEK FROM ";
+                    endBefore -= 8;
+                }
+                break;
+        }
+
+        boolean trimmed = endsWith("Trimmed", methodName, start, endBefore);
+        endBefore -= (trimmed ? 7 : 0);
+
+        String attribute = methodName.substring(start, endBefore);
 
         if (attribute.length() == 0)
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
@@ -733,12 +818,22 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return;
         }
 
-        String o = queryInfo.entityVar;
         StringBuilder attributeExpr = new StringBuilder();
-        if (ignoreCase)
-            attributeExpr.append("LOWER(").append(o).append('.').append(name).append(')');
-        else
-            attributeExpr.append(o).append('.').append(name);
+        if (function != null)
+            attributeExpr.append(function); // such as LOWER(  or  ROUND(
+        if (trimmed)
+            attributeExpr.append("TRIM(");
+
+        String o = queryInfo.entityVar;
+        attributeExpr.append(o).append('.').append(name);
+
+        if (trimmed)
+            attributeExpr.append(')');
+        if (function != null)
+            if (rounded)
+                attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
+            else
+                attributeExpr.append(')');
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -1700,7 +1795,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, queryInfo.entityInfo.type.getName());
 
-                            TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+                            // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
+                            final QueryInfo qi = queryInfo;
+                            final EntityManager eMgr = em;
+                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.type));
                             queryInfo.setParameters(query, args);
 
                             int maxResults = limit != null ? limit.maxResults() //
