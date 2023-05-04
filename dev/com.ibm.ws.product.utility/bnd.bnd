@@ -46,7 +46,8 @@ instrument.disabled: true
 	cglib:cglib;version=3.3.0, \
 	com.ibm.ws.org.objectweb.asm;version=latest, \
 	com.ibm.ws.kernel.boot.core;version=latest, \
-	com.ibm.ws.kernel.feature.core;version=latest, \
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest, \
 	com.ibm.ws.logging;version=latest, \

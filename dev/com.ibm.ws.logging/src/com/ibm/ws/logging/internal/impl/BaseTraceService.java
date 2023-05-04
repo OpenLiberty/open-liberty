@@ -1170,6 +1170,25 @@ public class BaseTraceService implements TrService {
      * @param routedMessage
      */
     protected void publishToLogSource(RoutedMessage routedMessage) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishToLogSource0(routedMessage);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    private void publishToLogSource0(RoutedMessage routedMessage) {
         try {
             if (!(counterForLogSource.incrementCount() > 2)) {
                 logSource.publish(routedMessage);
@@ -1189,6 +1208,34 @@ public class BaseTraceService implements TrService {
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishTraceLogRecord0(detailLog, logRecord, id, formattedMsg, formattedVerboseMsg);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Publish a trace log record.
+     *
+     * @param detailLog           the trace writer
+     * @param logRecord
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
+     */
+    private void publishTraceLogRecord0(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
         //check if tracefilename is stdout
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
@@ -1227,22 +1274,7 @@ public class BaseTraceService implements TrService {
                 // write to trace.log
                 if (detailLog != systemOut) {
                     String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-                    boolean beforeCheckpoint = !checkpointPhase.restored();
-                    // Before checkpoint we want to block all other threads once the checkpoint thread
-                    // has obtained the write lock. To do that we obtain the read lock here around
-                    // writeRecord.  This allows the single thread doing the checkpoint to have
-                    // exclusive access to logging to avoid deadlock once the JVM goes into
-                    // single-threaded mode during a checkpoint of the process.
-                    if (beforeCheckpoint) {
-                        checkpointLock.readLock().lock();
-                    }
-                    try {
-                        detailLog.writeRecord(traceDetail);
-                    } finally {
-                        if (beforeCheckpoint) {
-                            checkpointLock.readLock().unlock();
-                        }
-                    }
+                    detailLog.writeRecord(traceDetail);
                 }
             }
         } finally {

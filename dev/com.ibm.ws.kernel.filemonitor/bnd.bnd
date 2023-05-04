@@ -58,6 +58,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/filemonitor/internal/resources/*.c
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest
