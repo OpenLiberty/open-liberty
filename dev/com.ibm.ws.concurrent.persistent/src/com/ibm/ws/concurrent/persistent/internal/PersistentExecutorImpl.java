@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -2538,14 +2538,24 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 tranMgr.commit();
             }
 
+            ApplicationTracker appTracker = appTrackerRef.getServiceWithException();
+
             for (Object[] result : results) {
                 long taskId = (Long) result[0];
+                String owner = (String) result[1];
+
+                if (owner != null && !appTracker.isStarted(owner)) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Unable to claim task " + taskId + " because " + owner + " is unavailable.");
+                    continue; // Ignore, we are deferring the task because the application or module is unavailable
+                }
+
                 boolean claimed = false;
                 Boolean previous = inMemoryTaskIds.put(taskId, Boolean.TRUE);
                 if (previous == null)
                     try {
-                        long nextExecTime = (Long) result[2];
-                        int version = (Integer) result[4];
+                        long nextExecTime = (Long) result[3];
+                        int version = (Integer) result[5];
                         now = System.currentTimeMillis();
                         long claimUntilTime = (now > nextExecTime ? now : nextExecTime) + config.missedTaskThreshold * 1000;
 
@@ -2558,8 +2568,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         }
 
                         if (claimed = claimedPendingCommit) {
-                            short mbits = (Short) result[1];
-                            int txTimeout = (Integer) result[3];
+                            short mbits = (Short) result[2];
+                            int txTimeout = (Integer) result[4];
                             InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
                             long delay = nextExecTime - new Date().getTime();
                             if (trace && tc.isDebugEnabled())
