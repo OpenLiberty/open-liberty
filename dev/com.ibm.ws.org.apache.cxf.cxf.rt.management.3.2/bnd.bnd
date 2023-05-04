@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Import-Package: \
   !com.ctc.wstx.*, \
@@ -39,15 +40,15 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.management.*;version=${cxfVersion}, \
-  org.apache.cxf.tracing.*;version=${cxfVersion}
+  org.apache.cxf.management.*;version=${cxfExportVersion}, \
+  org.apache.cxf.tracing.*;version=${cxfExportVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-management;${cxfVersion};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-management;${cxfImportVersion};EXACT}!/!*-INF/*, \
   META-INF/cxf=resources/META-INF/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-management;strategy=exact;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-management;strategy=exact;version=${cxfImportVersion}, \
   com.ibm.websphere.javaee.annotation.1.1;version=latest, \
   javax.jws:jsr181-api;version=latest, \
   javax.xml.soap:javax.xml.soap-api;version=1.4.0, \

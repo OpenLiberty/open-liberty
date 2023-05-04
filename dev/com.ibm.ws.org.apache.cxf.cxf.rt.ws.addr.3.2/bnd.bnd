@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Import-Package: \
   !java.*,\
@@ -39,18 +40,18 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.ws.addressing.soap;version=${cxfVersion}, \
-  org.apache.cxf.ws.addressing.policy;version=${cxfVersion}, \
-  org.apache.cxf.ws.addressing.blueprint;version=${cxfVersion}, \
-  org.apache.cxf.ws.addressing.spring;version=${cxfVersion}
+  org.apache.cxf.ws.addressing.soap;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.addressing.policy;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.addressing.blueprint;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.addressing.spring;version=${cxfExportVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/!*-INF/*,\
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfImportVersion};EXACT}!/!*-INF/*,\
   META-INF/cxf=resources/META-INF/cxf,\
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion},\
+  org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfImportVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
   com.ibm.websphere.javaee.wsdl4j.1.2, \

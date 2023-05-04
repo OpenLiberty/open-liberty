@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,17 +15,18 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Export-Package: \
-  org.apache.cxf.transport.http;version=${cxfVersion}, \
-  org.apache.cxf.transport.http.auth;version=${cxfVersion}, \
-  org.apache.cxf.transport.http.osgi;version=${cxfVersion}, \
-  org.apache.cxf.transport.https;version=${cxfVersion}, \
-  org.apache.cxf.transport.servlet;version=${cxfVersion}, \
-  org.apache.cxf.transports.http;version=${cxfVersion}, \
-  org.apache.cxf.transports.http.configuration;version=${cxfVersion}, \
-  com.ibm.ws.cxf.exceptions;version=${cxfVersion}
+  org.apache.cxf.transport.http;version=${cxfExportVersion}, \
+  org.apache.cxf.transport.http.auth;version=${cxfExportVersion}, \
+  org.apache.cxf.transport.http.osgi;version=${cxfExportVersion}, \
+  org.apache.cxf.transport.https;version=${cxfExportVersion}, \
+  org.apache.cxf.transport.servlet;version=${cxfExportVersion}, \
+  org.apache.cxf.transports.http;version=${cxfExportVersion}, \
+  org.apache.cxf.transports.http.configuration;version=${cxfExportVersion}, \
+  com.ibm.ws.cxf.exceptions;version=${cxfExportVersion}
 
 Import-Package: \
   !java.*, \
@@ -47,12 +48,12 @@ Service-Component: \
     properties:="resources=META-INF/cxf/bus-extensions.txt"
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-transports-http;${cxfVersion};EXACT}!/!META-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-transports-http;${cxfImportVersion};EXACT}!/!META-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${cxfImportVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.websphere.javaee.servlet.4.0;version=latest, \
   com.ibm.ws.logging.core, \

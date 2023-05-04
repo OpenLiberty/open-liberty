@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,7 +13,8 @@
 -include=~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Bundle-Name: Apache CXF Runtime HTTP Async Transport
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2
@@ -27,14 +28,14 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.transport.http.asyncclient;version=${cxfVersion}
+  org.apache.cxf.transport.http.asyncclient;version=${cxfExportVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-transports-http-hc;${cxfVersion}}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-transports-http-hc;${cxfImportVersion}}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-transports-http-hc;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-transports-http-hc;version=${cxfImportVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest, \
   com.ibm.ws.org.apache.httpcomponents;version=latest, \

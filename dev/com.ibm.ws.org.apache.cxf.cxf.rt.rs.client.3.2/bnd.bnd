@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,7 +13,8 @@
 -include=~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Bundle-Name: Apache CXF JAX-RS Client
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2
@@ -30,9 +31,9 @@ Import-Package: \
 
 Export-Package: \
   com.ibm.ws.jaxrs21.clientconfig, \
-  org.apache.cxf.jaxrs.client;version=${cxfVersion}, \
-  org.apache.cxf.jaxrs.client.blueprint;version=${cxfVersion}, \
-  org.apache.cxf.jaxrs.client.spec;version=${cxfVersion}
+  org.apache.cxf.jaxrs.client;version=${cxfExportVersion}, \
+  org.apache.cxf.jaxrs.client.blueprint;version=${cxfExportVersion}, \
+  org.apache.cxf.jaxrs.client.spec;version=${cxfExportVersion}
 
 Service-Component: \
   com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig; \
@@ -44,13 +45,13 @@ Service-Component: \
     properties:="service.vendor=IBM"
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-client;${cxfVersion};EXACT}!/!META-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-rs-client;${cxfImportVersion};EXACT}!/!META-INF/*, \
   com/ibm/ws=${bin}/com/ibm/ws, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
   javax.activation:activation;version=1.1, \
-  org.apache.cxf:cxf-rt-rs-client;strategy=exact;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-rs-client;strategy=exact;version=${cxfImportVersion}, \
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
   com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
