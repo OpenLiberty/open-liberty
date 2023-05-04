@@ -34,7 +34,7 @@ Import-Package: \
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/!META-INF/maven/*, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVecxfImportVersionrsion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/DEPENDENCIES, \
   @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/LICENSE, \
   @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/NOTICE, \
   @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/cxf/*

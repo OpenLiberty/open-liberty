@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -26,8 +26,8 @@
 # (yes, unused rules cause failures...). So, without a co-delivery
 # (changing the OL code at the same time we change the WS-CD-Open code),
 # it is not possible to update the export version.
-exportVer=3.2.4
 importVer=3.5.5
+exportVer=3.2.4
 bVersion=1.0
 
 -sub: *.bnd
@@ -158,7 +158,7 @@ DynamicImport-Package: \
 
 # CXF's version is 3.4.3 even tho exportVer=3.2.4 see top comment
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-core;${exportVer};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
@@ -171,9 +171,9 @@ instrument.classesExcludes: \
 -buildpath: \
   javax.activation:activation;version=1.1, \
   com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
-  org.apache.cxf:cxf-core;strategy=exact;version=${exportVer}, \
+  org.apache.cxf:cxf-core;strategy=exact;version=${importVer}, \
   com.ibm.ws.logging.core, \
-  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${exportVer}, \
+  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=${importVer}, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

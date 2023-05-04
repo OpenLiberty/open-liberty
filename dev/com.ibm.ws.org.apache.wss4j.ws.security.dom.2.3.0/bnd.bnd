@@ -4,21 +4,23 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-dom;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-dom;2.4.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
+wss4jVersion=2.4.1
+
 -includeresource: \
-   @${repo;org.apache.wss4j:wss4j-ws-security-dom;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+   @${repo;org.apache.wss4j:wss4j-ws-security-dom;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
    org/apache/wss4j=${bin}/org/apache/wss4j
 instrument.classesExcludes: org/apache/wss4j/dom/util/*.class
--buildpath: org.apache.wss4j:wss4j-ws-security-dom;version=2.3.0, \
+-buildpath: org.apache.wss4j:wss4j-ws-security-dom;version=${wss4jVersion}, \
             com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0;version=latest, \
             com.ibm.ws.org.slf4j.api;version=latest, \
             com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
