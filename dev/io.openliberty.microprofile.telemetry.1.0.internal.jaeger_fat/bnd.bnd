@@ -13,8 +13,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--sub: *.bnd
-
 javac.source: 11
 javac.target: 11
 
@@ -55,5 +53,4 @@ grpcVersion=1.43.2
 	com.ibm.ws.io.reactivex.rxjava.2.2;version=latest,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0,\
 	io.openliberty.com.google.gson;version=latest,\
-	com.ibm.ws.io.opentracing:com-ibm-ws-io-opentracing-zipkintracer;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
