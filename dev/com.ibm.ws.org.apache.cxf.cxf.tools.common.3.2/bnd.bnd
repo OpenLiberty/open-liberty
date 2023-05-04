@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Import-Package: \
   !com.ctc.wstx.*, \
@@ -37,18 +38,18 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.tools.common;version=${cxfVersion}, \
-  org.apache.cxf.tools.common.dom;version=${cxfVersion}, \
-  org.apache.cxf.tools.common.model;version=${cxfVersion}, \
-  org.apache.cxf.tools.common.toolspec;version=${cxfVersion}, \
-  org.apache.cxf.tools.common.toolspec.parser;version=${cxfVersion}, \
-  org.apache.cxf.tools.util;version=${cxfVersion}
+  org.apache.cxf.tools.common;version=${cxfExportVersion}, \
+  org.apache.cxf.tools.common.dom;version=${cxfExportVersion}, \
+  org.apache.cxf.tools.common.model;version=${cxfExportVersion}, \
+  org.apache.cxf.tools.common.toolspec;version=${cxfExportVersion}, \
+  org.apache.cxf.tools.common.toolspec.parser;version=${cxfExportVersion}, \
+  org.apache.cxf.tools.util;version=${cxfExportVersion}
 
 Private-Package: \
   org.apache.cxf.tools.common.jaxb
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-common;${cxfImportVersion}}!/!META-INF/*
 
 -buildpath: \
-  org.apache.cxf:cxf-tools-common;version=${cxfVersion}
+  org.apache.cxf:cxf-tools-common;version=${cxfImportVersion}

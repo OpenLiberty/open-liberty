@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.1
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.1
 
 WS-TraceGroup: WSSECURITY
 
@@ -32,20 +33,20 @@ Import-Package:  \
   *
 
 Export-Package: \
-  org.apache.cxf.rt.security.*;version=${cxfVersion}
+  org.apache.cxf.rt.security.*;version=${cxfExportVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-security;${cxfVersion};EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF, \
-  @${repo;org.apache.cxf:cxf-rt-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
+  @${repo;org.apache.cxf:cxf-rt-security;${cxfImportVersion};EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF, \
+  @${repo;org.apache.cxf:cxf-rt-security;${cxfImportVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-security;${cxfImportVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-security;${cxfImportVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-security;${cxfImportVersion};EXACT}!/META-INF/cxf/*, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 globalize: false
 instrument.ffdc: false
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-security;strategy=exact;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-security;strategy=exact;version=${cxfImportVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.logging.core

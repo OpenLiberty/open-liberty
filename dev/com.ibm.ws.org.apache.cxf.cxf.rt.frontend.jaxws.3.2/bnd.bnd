@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.4.3
+cxfImportVersion=3.5.5
+cxfExportVersion=3.4.3
 
 Import-Package: \
   org.apache.cxf.binding.soap, \
@@ -41,9 +42,9 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.jaxws.*;version=${cxfVersion};-split-package:=merge-last, \
-  org.apache.cxf.jaxws22.*;version=${cxfVersion};-split-package:=merge-last, \
-  org.apache.cxf.jaxws30.*;version=${cxfVersion}
+  org.apache.cxf.jaxws.*;version=${cxfExportVersion};-split-package:=merge-last, \
+  org.apache.cxf.jaxws22.*;version=${cxfExportVersion};-split-package:=merge-last, \
+  org.apache.cxf.jaxws30.*;version=${cxfExportVersion}
 
 DynamicImport-Package: com.ibm.ws.jaxws.client
 
@@ -62,12 +63,12 @@ Service-Component: \
 instrument.ffdc: false
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfVersion};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-frontend-jaxws;${cxfImportVersion};EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion}, \
+  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfImportVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest, \
