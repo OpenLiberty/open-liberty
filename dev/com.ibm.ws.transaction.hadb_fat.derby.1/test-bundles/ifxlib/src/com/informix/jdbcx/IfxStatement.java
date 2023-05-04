@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -398,11 +398,14 @@ public class IfxStatement implements Statement {
         }
 
         if (IfxConnection.isQueryFailoverEnabled() && IfxConnectionPoolDataSource.isTestingFailoverAtRuntime()) {
+            int failatoperation = IfxConnection.getFailoverValue() + 1;
             System.out.println(
-                               "SIMHADB: simQueryFailover, failover Enabled, Counter -" + IfxConnection.getQueryFailoverCounter());
+                               "SIMHADB: simQueryFailover, failover Enabled, Counter -" +
+                               IfxConnection.getQueryFailoverCounter() +
+                               ", failatoperation - " + failatoperation);
             IfxConnection.incrementQueryFailoverCounter();
 
-            if (IfxConnection.getQueryFailoverCounter() == 7) {
+            if (IfxConnection.getQueryFailoverCounter() == failatoperation) {
                 failOver = true;
             }
         }

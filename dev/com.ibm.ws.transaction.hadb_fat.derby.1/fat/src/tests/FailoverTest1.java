@@ -147,9 +147,7 @@ public class FailoverTest1 extends FailoverTest {
 
     // Test we get back the actual exception that scuppered the test
     @Test
-    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.InvalidStateException", "java.lang.IllegalStateException" })
-//    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "com.ibm.ws.recoverylog.spi.InvalidStateException",
-//                            "java.lang.IllegalStateException" })
+    @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
     public void testGetDriverConnectionFailure() throws Exception {
         final String method = "testGetDriverConnectionFailure";
 
@@ -342,6 +340,32 @@ public class FailoverTest1 extends FailoverTest {
         FATUtils.startServers(runner, server);
 
         runInServletAndCheck(server, SERVLET_NAME, "setupForNonRecoverableStartupFailover");
+
+        FATUtils.stopServers(server);
+
+        Log.info(this.getClass(), method, "set timeout");
+        server.setServerStartTimeout(START_TIMEOUT);
+
+        FATUtils.startServers(runner, server);
+        StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");
+
+        assertFalse("driveTransactions unexpectedly succeeded", sb.toString().contains(SUCCESS)); // Log should be closed
+
+        // cleanup HATable
+        sb = runInServlet(server, SERVLET_NAME, "dropHATable");
+    }
+
+    @Test
+    @ExpectedFFDC(value = { "java.lang.IllegalStateException", })
+    public void testHADBEarlyNonRecoverableStartupFailover() throws Exception {
+        final String method = "testHADBEarlyNonRecoverableStartupFailover";
+
+        server = defaultServer;
+        serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
+
+        FATUtils.startServers(runner, server);
+
+        runInServletAndCheck(server, SERVLET_NAME, "setupForEarlyNonRecoverableStartupFailover");
 
         FATUtils.stopServers(server);
 

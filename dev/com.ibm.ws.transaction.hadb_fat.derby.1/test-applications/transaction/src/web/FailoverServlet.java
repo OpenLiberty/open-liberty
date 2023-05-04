@@ -92,11 +92,17 @@ public class FailoverServlet extends FATServlet {
 
     public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
-        setupTestParameters(request, response, TestType.STARTUP, -4498, 0, 1);
+        setupTestParameters(request, response, TestType.STARTUP, -4498, 6, 1);
         System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
     }
 
     public void setupForNonRecoverableStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableStartupFailover");
+        setupTestParameters(request, response, TestType.STARTUP, -3, 6, 1);
+        System.out.println("FAILOVERSERVLET: setupForNonRecoverableStartupFailover complete");
+    }
+
+    public void setupForEarlyNonRecoverableStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableStartupFailover");
         setupTestParameters(request, response, TestType.STARTUP, -3, 0, 1);
         System.out.println("FAILOVERSERVLET: setupForNonRecoverableStartupFailover complete");
