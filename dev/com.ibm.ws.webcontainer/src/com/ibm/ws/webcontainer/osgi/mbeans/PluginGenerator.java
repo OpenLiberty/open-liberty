@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.osgi.mbeans;
 
@@ -504,6 +507,7 @@ public class PluginGenerator {
                         serverElem.setAttribute("wsServerIdleTimeout", sd.wsServerIdleTimeout.toString());
                     serverElem.setAttribute("WaitForContinue", sd.waitForContinue.toString());
                     serverElem.setAttribute("MaxConnections", sd.maxConnections.toString());
+                    serverElem.setAttribute("ExtendedHandshake", sd.extendedHandshake.toString());
 
                     sgElem.appendChild(serverElem);
 
@@ -1757,6 +1761,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Long wsServerIOTimeout = null; //optional
         protected Long wsServerIdleTimeout = null; //optional
         public Long connectTimeout = null;
+        public Boolean extendedHandshake = null;
         public Boolean waitForContinue = null;
         protected String LogFileName = null;
         protected String LogDirLocation = null; //142740
@@ -1790,6 +1795,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
             wsServerIdleTimeout = (Long) config.get("wsServerIdleTimeout");
             connectTimeout = (Long) config.get("connectTimeout");
+            extendedHandshake = (Boolean) config.get("extendedHandshake");
             waitForContinue = (Boolean) config.get("waitForContinue");
             LogFileName = (String) config.get("logFileName");
             LogDirLocation = (String) config.get("logDirLocation"); //142740
@@ -2012,6 +2018,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Long wsServerIdleTimeout = null;//optional
         protected Boolean waitForContinue = Boolean.FALSE;
         protected Integer maxConnections = Integer.valueOf(-1);
+        protected Boolean extendedHandshake = Boolean.FALSE;
         protected Role roleKind = Role.PRIMARY;
         protected String sessionManagerCookieName = "JSESSIONID";
         protected String sessionURLIdentifier = "jsessionid";
@@ -2037,6 +2044,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             this.connectTimeout = pcd.connectTimeout;
             this.waitForContinue = pcd.waitForContinue;
             this.maxConnections = pcd.maxConnections;
+            this.extendedHandshake = pcd.extendedHandshake;
             this.loadBalanceWeight = pcd.loadBalanceWeight;
             this.roleKind = pcd.roleKind;
         }
@@ -2067,6 +2075,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 Tr.debug(trace, "   wsServerIdleTimeout             : " + wsServerIdleTimeout);
                 Tr.debug(trace, "   waitForContinue                 : " + waitForContinue);
                 Tr.debug(trace, "   maxConnections                  : " + maxConnections);
+                Tr.debug(trace, "   extendedHandshake               : " + extendedHandshake);
                 Tr.debug(trace, "   roleKind                        : " + roleKind);
                 Tr.debug(trace, "   sessionManagerCookieName        : " + sessionManagerCookieName);
                 Tr.debug(trace, "   sessionURLIdentifier            : " + sessionURLIdentifier);
