@@ -53,7 +53,7 @@ public final class SSLUtils {
         }
         });
         performHostNameVerification = b.booleanValue();
-        LOG.fine("TS012061109: Property com.ibm.ssl.performURLHostNameVerification is set to: " + performHostNameVerification);
+        LOG.fine("Property com.ibm.ssl.performURLHostNameVerification is set to: " + performHostNameVerification);
     }
     // Liberty Change End
 
@@ -74,7 +74,7 @@ public final class SSLUtils {
 	    LOG.fine("isDisableCNCheck is true, setting verifier to AllowAllHostnameVerifier."); // Liberty Change
             verifier = new AllowAllHostnameVerifier();
 	} else if (!performHostNameVerification) {  // Liberty Change Start
-	    LOG.fine("TS012061109: performHostNameVerification is false, setting verifier to AllowAllHostnameVerifier.");
+	    LOG.fine("performHostNameVerification is false, setting verifier to AllowAllHostnameVerifier.");
             verifier = new AllowAllHostnameVerifier();  // Liberty Change End
         } else {
 	    LOG.fine("Getting new DefaultHostnameVerifier from PublicSuffixMatcherLoader."); // Liberty Change

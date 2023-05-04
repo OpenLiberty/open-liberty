@@ -96,7 +96,7 @@ public class HttpsURLConnectionFactory {
         if (HTTPS_URL_PROTOCOL_ID.equals(url.getProtocol())) {
 
             if (tlsClientParameters == null) {
-		LOG.fine("tlsClientParameters is NULL, get new"); // Liberty Change
+		LOG.fine("tlsClientParameters is NULL, create new"); // Liberty Change
                 tlsClientParameters = new TLSClientParameters();
             }
 
@@ -157,7 +157,6 @@ public class HttpsURLConnectionFactory {
                    LOG.fine("No trustManagers set on tlsClientParameters, so use Liberty's DefaultSSLSocketFactory");
                    socketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
 		}
-		// Liberty Change End
             }
 	    if (ctx != null) { // do we have SSL context?
                 LOG.fine("Create new socketFactory from SSLContext and set Ciphersuites");
@@ -174,8 +173,9 @@ public class HttpsURLConnectionFactory {
 	    }
 
 	    if (socketFactory != null) {
-               LOG.fine("SSL socketFactory: " +  socketFactory.getClass().getCanonicalName()); // Liberty Change
+               LOG.fine("SSL socketFactory: " +  socketFactory.getClass().getCanonicalName());
 	    }
+	    // Liberty Change End
             //recalc the hashcode since some of the above MAY have changed the tlsClientParameters
             lastTlsHash = tlsClientParameters.hashCode();
         } else {
@@ -187,9 +187,8 @@ public class HttpsURLConnectionFactory {
             .getHostnameVerifier(tlsClientParameters);
 
 	// Liberty Change Start
-	if (verifier != null) {
-           LOG.fine("Hostname verifier obtained from SSLUtils.getHostnameVerifier: " +  verifier.getClass().getCanonicalName());
-	}
+        LOG.fine("Hostname verifier obtained from SSLUtils.getHostnameVerifier: " +  
+		 (verifier == null ? "null" : verifier.getClass().getCanonicalName()));
 
 	if (tlsClientParameters != null) {
            LOG.fine("isDisableCNCheck value in tlsClientParameters: " +  tlsClientParameters.isDisableCNCheck());
