@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -85,8 +86,10 @@ public class CrossFeatureZipkinTest {
         opentracingServer.addEnvVar("ZIPKIN_SAMPLER_TYPE", "const"); // Trace every call
         opentracingServer.addEnvVar("ZIPKIN_SAMPLER_PARAM", "1"); // Trace every call
         opentracingServer.addEnvVar("TESTCLIENT_MP_REST_URL", getUrl(telemetryServer));
-        opentracingServer.installUserBundle("com.ibm.ws.opentracing.zipkin");
+        
+        opentracingServer.installUserBundle("com.ibm.ws.io.opentracing.zipkintracer-0.33");
         opentracingServer.installUserFeature("opentracingZipkin-0.33");
+        
         // create apps
         WebArchive opentracingWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                               .addPackage(io.openliberty.microprofile.telemetry.internal.apps.crossfeature.opentracing.CrossFeatureResource.class.getPackage());
