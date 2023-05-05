@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.security"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.authorization"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jacc.1.5"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.authorization.jacc"/>
+	<classpathentry kind="src" path="/com.ibm.ws.classloading"/>
+	<classpathentry kind="lib" path="/Users/yammer@us.ibm.com/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar" sourcepath="/Users/yammer@us.ibm.com/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi.service.component.annotations"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.concurrent.persistent_fat_failover1serv"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/annotations/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry kind="lib" path="/Users/yammer@us.ibm.com/.m2/repository/javax/security/jacc/javax.security.jacc-api/1.5/javax.security.jacc-api-1.5.jar">
+		<attributes>
+			<attribute name="bsn" value="javax.security.jacc:javax.security.jacc-api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.jacc.1.5"/>
+			<attribute name="version" value="1.5"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="doc-files/*"/>
+			<accessrule kind="accessible" pattern="javax/security/jacc/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/yammer@us.ibm.com/.m2/repository/org/osgi/org.osgi.service.component/1.4.0/org.osgi.service.component-1.4.0.jar" sourcepath="/Users/yammer@us.ibm.com/.m2/repository/org/osgi/org.osgi.service.component/1.4.0/org.osgi.service.component-1.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi:org.osgi.service.component"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
+			<attribute name="version" value="1.4.0"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/propertytypes/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/dto/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
