@@ -98,6 +98,7 @@ instrument.classesExcludes: com/ibm/ws/jmx/connector/server/internal/resources/*
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.audit.utils;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

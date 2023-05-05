@@ -36,22 +36,22 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
 /**
  * Class with default values for server config events
  */
-public class ServerConfigEvent extends AuditEvent {
+public class FileTransferUpdateEvent extends AuditEvent {
 
-    private static final TraceComponent tc = Tr.register(ServerConfigEvent.class);
+    private static final TraceComponent tc = Tr.register(FileTransferUpdateEvent.class);
     private static AuditManager auditManager = new AuditManager();
 
     @SuppressWarnings("unchecked")
-    public ServerConfigEvent() {
+    public FileTransferUpdateEvent() {
         setInitiator((Map<String, Object>) AuditEvent.STD_INITIATOR.clone());
         setObserver((Map<String, Object>) AuditEvent.STD_OBSERVER.clone());
         setTarget((Map<String, Object>) AuditEvent.STD_TARGET.clone());
 
-        set(AuditEvent.EVENTNAME, AuditConstants.SERVER_CONFIG_CHANGE);
+        set(AuditEvent.EVENTNAME, AuditConstants.FILE_TRANSFER_UPDATE);
 
     }
 
-    public ServerConfigEvent(Object request, Object resp) {
+    public FileTransferUpdateEvent(Object request, Object resp) {
         this();
         try {
             RESTRequest req = (RESTRequest) request;

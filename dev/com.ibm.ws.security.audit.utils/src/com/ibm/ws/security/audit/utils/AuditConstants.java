@@ -15,6 +15,8 @@ package com.ibm.ws.security.audit.utils;
 import java.util.Arrays;
 import java.util.List;
 
+//import com.ibm.websphere.security.audit;
+
 /**
  *
  */
@@ -75,6 +77,11 @@ public class AuditConstants {
     static public final String APPLICATION_TOKEN_MANAGEMENT = "APPLICATION_TOKEN_MANAGEMENT";
     static public final String SECURITY_SAF_AUTHZ_DETAILS = "SECURITY_SAF_AUTHZ_DETAILS";
     static public final String CUSTOM = "CUSTOM";
+    static public final String FILE_TRANSFER_UPDATE = "FILE_TRANSFER_UPDATE";
+    static public final String FILE_TRANSFER_DELETE = "FILE_TRANSFER_DELETE";
+    static public final String FILE_TRANSFER_ADD = "FILE_TRANSFER_ADD";
+
+
     
     static public final List<String> validEventNamesList = Arrays.asList("CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT", "SECURITY_SERVICE_MGMT",
             "SECURITY_SESSION_LOGIN",
@@ -87,7 +94,8 @@ public class AuditConstants {
             "SECURITY_JMS_CLOSED_CONNECTION",
             "JMX_MBEAN", "JMX_NOTIFICATION", "JMX_MBEAN_ATTRIBUTES", 
             "JMX_MBEAN_REGISTER", "JMS", 
-            "SECURITY_SAF_AUTHZ_DETAILS", "APPLICATION_TOKEN_MANAGEMENT", "CUSTOM");
+            "SECURITY_SAF_AUTHZ_DETAILS", "APPLICATION_TOKEN_MANAGEMENT", "CUSTOM",
+            "FILE_TRANSFER_UPDATE", "FILE_TRANSFER_DELETE", "FILE_TRANSFER_ADD");
 
     static public final String SUCCESS = "success";
     static public final String FAILURE = "failure";

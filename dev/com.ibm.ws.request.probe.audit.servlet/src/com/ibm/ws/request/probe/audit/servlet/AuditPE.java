@@ -68,7 +68,9 @@ import com.ibm.ws.security.audit.event.MemberManagementEvent;
 import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
-import com.ibm.ws.security.audit.event.ServerConfigEvent;
+import com.ibm.ws.security.audit.event.FileTransferUpdateEvent;
+import com.ibm.ws.security.audit.event.FileTransferDeleteEvent;
+import com.ibm.ws.security.audit.event.FileTransferAddEvent;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -176,8 +178,10 @@ public class AuditPE implements ProbeExtension {
 	@Override
 	// @FFDCIgnore(ClassCastException.class)
 	public void processCounter(Event event) {
-		Object[] methodParams = (Object[]) event.getContextInfo();
+                Object[] methodParams = (Object[]) event.getContextInfo();
 		if (methodParams != null && methodParams.length > 0) {
+
+                        System.out.println("EFT: event: " + methodParams[0].toString());
 			if ((methodParams[0].toString()).equals("JMX_NOTIFICATION_01")) {
 				auditEventJMXNotification01(methodParams);
 			} else if ((methodParams[0].toString()).equals("JMX_MBEAN_01")) {
@@ -251,9 +255,16 @@ public class AuditPE implements ProbeExtension {
 				case SECURITY_REST_HANDLER_AUTHZ:
 					auditEventRESTAuthz(methodParams);
 					break;
-				case SERVER_CONFIG_CHANGE_01:
-					auditEventServerConfigChange01(methodParams);
+				case FILE_TRANSFER_UPDATE_01:
+					auditEventFileTransferUpdate(methodParams);
 					break;
+				case FILE_TRANSFER_DELETE_01:
+					auditEventFileTransferDelete(methodParams);
+					break;
+				case FILE_TRANSFER_ADD_01:
+					auditEventFileTransferAdd(methodParams);
+					break;
+
 				default:
 					// TODO: emit error message
 					break;
@@ -262,7 +273,39 @@ public class AuditPE implements ProbeExtension {
 		}
 	}
 
-	private void auditEventServerConfigChange01(Object[] methodParams) {
+	private void auditEventFileTransferDelete(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
+		Object req = varargs[0];
+		Object response = varargs[1];
+		int statusCode = (Integer) varargs[2];
+
+		if (auditServiceRef.getService() != null
+				&& auditServiceRef.getService().isAuditRequired(AuditConstants.FILE_TRANSFER_DELETE,
+						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
+			FileTransferDeleteEvent ftde = new FileTransferDeleteEvent(req, response);
+
+			auditServiceRef.getService().sendEvent(ftde);
+			savedOriginalFileContents = null;
+		}
+	}
+
+	private void auditEventFileTransferAdd(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
+		Object req = varargs[0];
+		Object response = varargs[1];
+		int statusCode = (Integer) varargs[2];
+
+		if (auditServiceRef.getService() != null
+				&& auditServiceRef.getService().isAuditRequired(AuditConstants.FILE_TRANSFER_ADD,
+						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
+			FileTransferAddEvent ftae = new FileTransferAddEvent(req, response);
+
+			auditServiceRef.getService().sendEvent(ftae);
+			savedOriginalFileContents = null;
+		}
+	}
+
+	private void auditEventFileTransferUpdate(Object[] methodParams) {
 		Object[] varargs = (Object[]) methodParams[1];
 		Object req = varargs[0];
 		Object response = varargs[1];
@@ -270,11 +313,11 @@ public class AuditPE implements ProbeExtension {
 
 		if (auditServiceRef.getService() != null
 				&& auditServiceRef.getService().isAuditRequired(
-						AuditConstants.SERVER_CONFIG_CHANGE,
+						AuditConstants.FILE_TRANSFER_UPDATE,
 						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
-			ServerConfigEvent sce = new ServerConfigEvent(req, response);
+			FileTransferUpdateEvent ftue = new FileTransferUpdateEvent(req, response);
 
-			auditServiceRef.getService().sendEvent(sce);
+			auditServiceRef.getService().sendEvent(ftue);
 			savedOriginalFileContents = null;
 		}
 	}

@@ -139,6 +139,8 @@ public class AuditEvent {
     public static final String TARGET_VSAM = "target.vsam";
     public static final String TARGET_ORIGINAL_FILE = "target.originalServerConfigFile";
     public static final String TARGET_UPDATED_FILE = "target.updatedServerConfigFile";
+    public static final String TARGET_ORIGINAL_HASH = "target.originalFileHash";
+    public static final String TARGET_UPDATED_HASH = "target.updatedFileHash";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";

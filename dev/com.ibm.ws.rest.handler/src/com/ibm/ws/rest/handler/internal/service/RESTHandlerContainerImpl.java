@@ -13,7 +13,6 @@
 package com.ibm.ws.rest.handler.internal.service;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -539,13 +538,13 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
             }
         }
         Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
-        try {
-            if (URLDecoder.decode(request.getContextPath() + request.getPath(), "UTF-8").equals("/IBMJMXConnectorREST/file/${server.config.dir}/server.xml")) {
-                Audit.audit(Audit.EventID.SERVER_CONFIG_CHANGE_01, request, response, response.getStatus());
-            }
-        } catch (Exception e) {
-
-        }
+        //try {
+        //    if (URLDecoder.decode(request.getContextPath() + request.getPath(), "UTF-8").equals("/IBMJMXConnectorREST/file/${server.config.dir}/server.xml")) {
+        //        Audit.audit(Audit.EventID.SERVER_CONFIG_CHANGE_01, request, response, response.getStatus());
+        //    }
+        //} catch (Exception e) {
+        //
+        //}
 
     }
 }

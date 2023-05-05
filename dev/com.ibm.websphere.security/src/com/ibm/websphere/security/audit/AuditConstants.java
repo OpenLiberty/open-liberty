@@ -77,7 +77,9 @@ public class AuditConstants {
     static public final String JMS = "JMS";
     static public final String APPLICATION_TOKEN_MANAGEMENT = "APPLICATION_TOKEN_MANAGEMENT";
     static public final String CUSTOM = "CUSTOM";
-    static public final String SERVER_CONFIG_CHANGE = "SERVER_CONFIG_CHANGE";
+    static public final String FILE_TRANSFER_UPDATE = "FILE_TRANSFER_UPDATE";
+    static public final String FILE_TRANSFER_DELETE = "FILE_TRANSFER_DELETE";
+    static public final String FILE_TRANSFER_ADD = "FILE_TRANSFER_ADD";
 
     static public final String IS_ADMIN = "isAdmin";
     static public final String USER = "user";
@@ -111,7 +113,8 @@ public class AuditConstants {
     static public final String INTERNAL_ERROR = "internal error";
     static public final String FAILURE_TO_RETURN_REQUEST = "failure to return request";
 
-    static public final List<String> validEventNamesList = Arrays.asList("SERVER_CONFIG_CHANGE", "CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT",
+    static public final List<String> validEventNamesList = Arrays.asList("FILE_TRANSFER_UPDATE", "FILE_TRANSFER_DELETE", "FILE_TRANSFER_ADD",
+                                                                         "CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT",
                                                                          "SECURITY_SERVICE_MGMT", "SECURITY_SESSION_LOGIN",
                                                                          "SECURITY_SESSION_LOGOUT", "SECURITY_SESSION_EXPIRY", "SECURITY_API_AUTHN",
                                                                          "SECURITY_API_AUTHN_TERMINATE", "SECURITY_ROLE_MAPPING", "SECURITY_AUTHN",

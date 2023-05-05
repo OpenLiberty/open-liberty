@@ -100,7 +100,7 @@ public class FileTransferHelper {
     private static String originalFileContents = null;
     private static String updatedFileContents = null;
 
-    private AuditManager auditManager = new AuditManager();
+    private final AuditManager auditManager = new AuditManager();
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -443,6 +443,7 @@ public class FileTransferHelper {
                 originalFileContents = originalFileContents.substring(0, endOfFile + 9);
             }
 
+            System.out.println("EFT: setting original file contents: " + originalFileContents);
             auditManager.setOriginalFileContents(originalFileContents);
             originalFileContents = null;
 
@@ -521,6 +522,7 @@ public class FileTransferHelper {
                 updatedFileContents = updatedFileContents.substring(0, endOfFile + 9);
             }
 
+            System.out.println("EFT: setting updated file contents: " + updatedFileContents);
             auditManager.setUpdatedFileContents(updatedFileContents);
             updatedFileContents = null;
 
