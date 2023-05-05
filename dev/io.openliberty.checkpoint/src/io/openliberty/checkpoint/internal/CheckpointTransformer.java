@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,10 +28,11 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import io.openliberty.asm.ASMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.asm.ASMHelper;
 import io.openliberty.checkpoint.internal.criu.DeployCheckpoint;
 
 /**
@@ -39,13 +40,17 @@ import io.openliberty.checkpoint.internal.criu.DeployCheckpoint;
  */
 public class CheckpointTransformer implements ClassFileTransformer {
     private static final TraceComponent tc = Tr.register(CheckpointTransformer.class);
-    private static final String CLASS_DEPLOY_CHECKPOINT = DeployCheckpoint.class.getName().replace('.', '/');
+    private static final String CLASS_DEPLOY_CHECKPOINT_NAME = DeployCheckpoint.class.getName();
+    private static final String CLASS_DEPLOY_CHECKPOINT_PATH = CLASS_DEPLOY_CHECKPOINT_NAME.replace('.', '/');
 
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
         debug(tc, () -> "transforming class" + className);
-
+        if (noClassFound(loader)) {
+            // cannot load the DeployCheckpoint class; do no transformation
+            return null;
+        }
         ClassReader cr = new ClassReader(classfileBuffer);
         ClassWriter cw = new ClassWriter(cr, ASMHelper.getCurrentASM());
         ClassVisitor cv = new ClassVisitor(ASMHelper.getCurrentASM(), cw) {
@@ -61,10 +66,9 @@ public class CheckpointTransformer implements ClassFileTransformer {
                 @Override
                 public void visitCode() {
                     super.visitCode();
-
                     mv.visitMethodInsn(
                                        INVOKESTATIC,
-                                       CLASS_DEPLOY_CHECKPOINT,
+                                       CLASS_DEPLOY_CHECKPOINT_PATH,
                                        "checkpoint",
                                        Type.getMethodDescriptor(Type.VOID_TYPE), false);
 
@@ -106,5 +110,15 @@ public class CheckpointTransformer implements ClassFileTransformer {
         cr.accept(cv, 0);
 
         return cw.toByteArray();
+    }
+
+    @FFDCIgnore(ClassNotFoundException.class)
+    private boolean noClassFound(ClassLoader loader) {
+        try {
+            loader.loadClass(CLASS_DEPLOY_CHECKPOINT_NAME);
+        } catch (ClassNotFoundException e) {
+            return true;
+        }
+        return false;
     }
 }
