@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -170,9 +171,20 @@ public class UpdatePomJar extends UpdateFile {
             ZipEntry pomEntry = zipFile.getEntry(PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml");
             if (pomEntry == null) {
                 log("readPomFromTarget", "Pom not found at: " + (PomUtils.POM_PREFIX_PATH + jarName + "/pom.xml"));
-                return null;
-            }
+                //pom not found in usual location - search jar for any maven pom
 
+                Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while ((pomEntry == null) && entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    String entryName = entry.getName();
+                    if (entryName.equals("pom.xml") || entryName.endsWith("/pom.xml")) {
+                        pomEntry = entry;
+                    }
+                }
+                //If still no pom found return null
+                if (pomEntry == null)
+                    return null;
+            }
             Model pomModel;
             try (InputStream entryStream = zipFile.getInputStream(pomEntry)) {
                 pomModel = PomUtils.readPom(entryStream);
