@@ -99,6 +99,10 @@ public class CheckpointFailTest {
 
     @After
     public void tearDown() throws Exception {
+        if (getTestMethod(TestMethod.class, testName) == TestMethod.testCriuRestoreFailedWithRecover) {
+            // In the restore recover test, alert the LibertyServer class that a recovered server process is running.
+            server.setStarted();
+        }
         server.stopServer();
         // restore the default in case it was changed by the test
         server.setCriuRestoreDisableRecovery(true);
