@@ -115,6 +115,10 @@ connected_user_database=Connect\u00e9 : {3}{4}Utilisateur : {0}{3}{4}Base de don
 
 connected_user_database_driver=Connect\u00e9 : {0}{6}Utilisateur : {1}{6}Base de donn\u00e9es : {2}  Version : {3}{6}Pilote : {4}  Version : {5}
 
+corrupt_object=objet endommag\u00e9 : {0}
+
+corrupt_object_referenced_through_mapping=L''objet endommag\u00e9 suivant est r\u00e9f\u00e9renc\u00e9 via le mappage : {0}.
+
 corrupted_session_announcement=ID session : {0}  Le gestionnaire de reconnaissance a re\u00e7u une annonce de session endommag\u00e9e - annonce ignor\u00e9e.
 
 create_default_dbms_tables_not_supported=Le param\u00e8tre CMP natif WLS "create-default-dbms-tables" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Retrait de l''objet sopObject s\u00e9rialis\u00e9 de la lign
 
 sop_object_wrong_version=Retrait de l''objet sopObject s\u00e9rialis\u00e9 de la ligne car il comporte une version incorrecte [{0}] dans [{1}] de [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=pile d''objets visit\u00e9s qui font r\u00e9f\u00e9rence \u00e0 l''objet endommag\u00e9 : {0}
+
 topLink_version=EclipseLink, version : {0}
 
 toplink=[EL] : 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery ne peut pas 
 validate_db_schema_with_not_supported=Le param\u00e8tre CMP natif WLS "validate-db-schema-with" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
 validate_ejb_jar=D\u00e9marrage de la validation de ejb-jar.xml, l''op\u00e9ration peut prendre du temps...
+
+validate_object_space=valider l''espace d''objet.
 
 verifiy_columns_read_locking_not_supported=Le param\u00e8tre optimiste "Read" sur "verify-columns" dans l\u2019entit\u00e9 ({0}) n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 

@@ -43,4 +43,4 @@ server.xml.default.variables.config.source=Source de configuration des variables
 # The following Config API error occurred: {0}.
 temporary.CWMCG9995E=CWMCG9995E: L'erreur de l'API Config suivante est survenue : {0}.
 temporary.CWMCG9995E.explanation=Une erreur li\u00e9e \u00e0 l'API Config, qui emp\u00eache tout fonctionnement normal, s'est produite.
-temporary.CWMCG9995E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+temporary.CWMCG9995E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour identifier le probl\u00e8me.

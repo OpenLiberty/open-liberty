@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: Das Benutzerfestaure {0} k
 tool.userfeature.install.location.invalid.explanation= Das Benutzerfeature ist kein Basisfeature und kann deshalb nicht in core installiert werden.
 tool.userfeature.install.location.invalid.useraction= Installieren Sie das Benutzerfeature in usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Der Server hat die {0}-Funktionen der vorhandenen Gruppe von Funktionen hinzugef\u00fcgt.
+FEATURES_ADDED_DELTA.explanation=Der Server hat zus\u00e4tzlich zu den zuvor installierten Funktionen eine Reihe neuer Funktionen installiert.
+FEATURES_ADDED_DELTA.useraction=Es ist keine Aktion erforderlich.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Der Client hat die {0}-Funktionen der Gruppe von vorhandenen Funktionen hinzugef\u00fcgt. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Der Client hat zus\u00e4tzlich zu den zuvor installierten Funktionen eine Reihe neuer Funktionen installiert.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Es ist keine Aktion erforderlich. 
+
+
+

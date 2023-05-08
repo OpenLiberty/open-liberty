@@ -1622,3 +1622,7 @@ uri.has.fragment.character=Identifik\u00e1tor URI m\u00e1 znak fragmentu [#]; k\
 uri.has.dot.character=Identifik\u00e1tor URI zak\u00f3doval znak te\u010dky [%2E].
 uri.has.forwarslash.character=Identifik\u00e1tor URI zak\u00f3doval znak dop\u0159edn\u00e9ho lom\u00edtka [%2F].
 uri.has.backslash.character=Identifik\u00e1tor URI m\u00e1 znak zp\u011btn\u00e9ho lom\u00edtka; zak\u00f3dovan\u00fd [%5C] nebo ne.
+
+multipart.file.count.max.exceeded=CWWWC0006E: Po\u017eadavek obsahoval v\u00edce soubor\u016f pro odesl\u00e1n\u00ed, ne\u017e je povoleno. Maxim\u00e1ln\u00ed po\u010det soubor\u016f je [{0}].
+multipart.file.count.max.exceeded.explanation=Po\u010det soubor\u016f odeslan\u00fdch po\u017eadavkem multipart/form-data p\u0159ekro\u010dil nastaven\u00fd limit.
+multipart.file.count.max.exceeded.useraction=Zvy\u0161te maxim\u00e1ln\u00ed po\u010det soubor\u016f, kter\u00e9 mohou b\u00fdt odesl\u00e1ny na po\u017eadavek, nastaven\u00edm p\u0159izp\u016fsoben\u00e9 vlastnosti maxFileCount webContainer v souboru server.xml. V\u00fdchoz\u00ed hodnota je 5000. Pro neomezen\u00e9 odesl\u00e1n\u00ed souboru nastavte hodnotu na -1.

@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u5bf9 {0} \u6570\u636e\u6
 DSRA4015.no.ucp.connection.pool.datasource.explanation=\u5bf9\u8be5\u6570\u636e\u6e90\u914d\u7f6e\u4e86 ConnectionPoolDataSource \u6216 Driver \u7c7b\u578b\uff0cOracle UCP \u9a71\u52a8\u7a0b\u5e8f\u672a\u5b9e\u73b0\u8be5\u7c7b\u578b\u3002
 DSRA4015.no.ucp.connection.pool.datasource.useraction=\u8bf7\u66f4\u65b0\u8be5\u6570\u636e\u6e90\u4ee5\u4f7f\u7528 XADataSource \u6216 DataSource \u7c7b\u578b\u3002
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: JDBC \u9a71\u52a8\u7a0b\u5e8f\u4e0d\u652f\u6301\u5728 {1} \u6570\u636e\u6e90\u5c5e\u6027\u4e0a\u8bbe\u7f6e {0} \u503c\u3002
+DSRA4016.enum.property.vaue.not.valid.explanation=\u4f7f\u7528 JDBC \u9a71\u52a8\u7a0b\u5e8f\u4e0d\u652f\u6301\u7684\u503c\u914d\u7f6e\u4e86\u6570\u636e\u6e90\u5c5e\u6027\u3002
+DSRA4016.enum.property.vaue.not.valid.useraction=\u8bf7\u68c0\u67e5 JDBC \u9a71\u52a8\u7a0b\u5e8f\u6587\u6863\u4ee5\u83b7\u53d6\u6b64\u5c5e\u6027\u7684\u6b63\u786e\u503c\u3002
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

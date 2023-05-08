@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=Die Validierung der Eigenschaftendatei ist feh
 MSG_VALIDATION_NUM_OF_ERRORS=Anzahl der Fehler: {0}
 MSG_VALIDATION_MESSAGES=Validierung der Eigenschaftendatei
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=Konfigurierte \u00f6ffentliche Schl\u00fcssel
+MSG_NO_CONFIG_KEY=Keine Schl\u00fcssel konfiguriert
+MSG_VERIFY_FEATURE_LABEL=Funktions\u00fcberpr\u00fcfung:
+MSG_DEFAULT_VERIFY=Erzwingen
 
 FIELD_REPO_NAME=Name: {0}
 FIELD_REPO_LOCATION=Position: {0}
@@ -60,3 +64,4 @@ FIELD_REPO=Repository-Server: {0} ({1})
 FIELD_PROXY=Proxy-Server: {0}
 FIELD_VALIDATION_RESULTS=Validierungsergebnisse: {0}
 FIELD_VALIDATION_LINE=Zeile: {0}
+FIELD_KEYID=Schl\u00fcssel-ID:

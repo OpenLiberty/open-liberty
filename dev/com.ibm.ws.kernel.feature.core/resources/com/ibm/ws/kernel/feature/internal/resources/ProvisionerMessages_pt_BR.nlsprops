@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: O recurso do usu\u00e1rio 
 tool.userfeature.install.location.invalid.explanation= O recurso do usu\u00e1rio n\u00e3o \u00e9 um recurso principal, portanto, n\u00e3o pode ser instalado dessa forma.
 tool.userfeature.install.location.invalid.useraction= Instale o recurso do usu\u00e1rio para usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: O servidor incluiu os recursos {0} no conjunto de recursos existente.
+FEATURES_ADDED_DELTA.explanation=O servidor instalou um conjunto de novos recursos al\u00e9m dos recursos instalados anteriormente.
+FEATURES_ADDED_DELTA.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: O cliente incluiu os recursos {0} no conjunto de recursos existente. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=O cliente instalou um conjunto de novos recursos al\u00e9m dos recursos instalados anteriormente.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. 
+
+
+

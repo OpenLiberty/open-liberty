@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -408,6 +408,7 @@ ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Konfigurieren Sie insta
 ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Das Asset {0} ist vom Asset {1} abh\u00e4ngig, das nicht heruntergeladen und in {2} {3} {4} installiert werden kann. Das Asset {1} in IBM WebSphere Liberty Repository gilt nur f\u00fcr die folgenden Produkteditionen und -versionen: {5}. Wenn das erforderliche Asset ein Feature ist, das Sie zuvor heruntergeladen haben, installieren Sie das fehlende Feature, indem Sie die Position der ESA-Datei des Features mit der Option featureManager install --location angeben, und versuchen Sie dann, {0} erneut zu installieren.
 ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Das Feature, das Add-on oder der vorl\u00e4ufige Fix kann nicht heruntergeladen bzw. installiert werden, weil es bzw. er von einem Asset abh\u00e4ngig ist, das nicht verf\u00fcgbar ist. Es wurde zwar eine Version des erforderlichen Assets gefunden, aber diese ist f\u00fcr die installierte Produktversion bzw. -edition nicht g\u00fcltig.
 ERROR_DEPENDENT_INVALID_VERSION_EDITION.useraction=Wenn das erforderliche Asset ein Feature ist, das Sie zuvor heruntergeladen haben, installieren Sie das fehlende Feature, indem Sie die Position der ESA-Datei des Features mit der Option featureManager install --location angeben, und versuchen Sie dann, die Installation zu wiederholen. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an. 
+
 ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1292E: Die Option uninstall --force kann jeweils nur f\u00fcr ein einziges Feature angegeben werden. F\u00fchren Sie den Befehl uninstall mit der Option --force f\u00fcr ein einziges Feature aus.
 ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Die Option --force wurde angegeben, als mehrere Features deinstalliert wurden.
 ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=F\u00fchren Sie den Befehl uninstall mit der Option --force f\u00fcr ein einziges Feature aus.
@@ -523,6 +524,10 @@ LOG_CANNOT_CLOSE_OBJECT=Tempor\u00e4re Dateien k\u00f6nnen nicht gel\u00f6scht w
 LOG_CANNOT_CLOSE_OBJECT.explanation=Das Beispiel erfordert Java 7 oder h\u00f6her, um das Verzeichnis installTmp l\u00f6schen zu k\u00f6nnen.
 LOG_CANNOT_CLOSE_OBJECT.action=Entfernen Sie das Verzeichnis installTmp manuell oder verwenden Sie Java 7 oder h\u00f6her.
 
+LOG_VERIFIED_FEATURE=Die Funktion {0} wurde erfolgreich \u00fcberpr\u00fcft.
+LOG_VERIFIED_FEATURE.explanation=Die angegebene Funktion wurde erfolgreich \u00fcberpr\u00fcft.
+LOG_VERIFIED_FEATURE.useraction=Es ist keine Aktion erforderlich.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=Das Kennwort f\u00fcr den folgenden Proxy ist nicht verschl\u00fcsselt: {0}. Sie k\u00f6nnen das Kennwort mit dem securityUtility-Befehl encode und der Option --encoding mit einem unterst\u00fctzten Verschl\u00fcsselungstyp wie xor (Standardeinstellung), aes oder hash verschl\u00fcsseln. Beispiel: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Zu deinstallierende Features:
 # Following messages for debug logging purpose
@@ -565,6 +570,8 @@ STATE_DOWNLOAD_FILES_OK=\nAlle Assets wurden erfolgreich heruntergeladen.
 STATE_CONTACTING_MAVEN_REPO=Es wird eine Verbindung zum konfigurierten Maven-Repository hergestellt...\nDie Ausf\u00fchrung dieses Prozesses kann mehrere Minuten dauern.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Die Verbindung zum konfigurierten Repository wurde erfolgreich hergestellt.
 STATE_READING_ENV_PROPS_FILE={0}/etc/featureUtility.env wird gelesen...
+STATE_STARTING_VERIFY=Signaturen werden \u00fcberpr\u00fcft...
+STATE_VERIFYING={0} wird \u00fcberpr\u00fcft...
 PROGRESS_STEP=Schritt {0} von {1}
 
 MSG_DOWNLOAD_SUCCESS=Das Feature {0} wurde erfolgreich heruntergeladen.
@@ -601,6 +608,10 @@ MSG_VALIDATION_MISSING_HOST=Der Hostname des Proxy-Servers wurde nicht angegeben
 MSG_VALIDATION_INVALID_URL=Die folgende URL ist nicht g\u00fcltig: {0}. Es werden nur URLs des Typs HTTP, HTTPS und file unterst\u00fctzt. Stellen Sie sicher, dass die URL ordnungsgem\u00e4\u00df angegeben wurde.
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Das URL-Protokoll f\u00fcr das folgende Repository wird nicht unterst\u00fctzt: {0}. Die unterst\u00fctzten Protokolle sind HTTP, HTTPS und file. Stellen Sie sicher, dass die URL ordnungsgem\u00e4\u00df angegeben wurde.
 MSG_VALIDATION_INVALID_HOST=Der folgende Proxy-Server-Host ist nicht g\u00fcltig: {0}. Geben Sie einen g\u00fcltigen Hostnamen f\u00fcr den HTTP-Proxy-Server an. Das Pr\u00e4fix http:// ist nicht erforderlich.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=Der Name des \u00f6ffentlichen Schl\u00fcssels wurde nicht angegeben. Geben Sie einen Namen f\u00fcr den \u00f6ffentlichen Schl\u00fcssel an oder entfernen Sie die Eigenschaft, wenn sie nicht verwendet wird.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=Die Eigenschaft feature.verify unterst\u00fctzt den Wert {0} nicht. Geben Sie als g\u00fcltigen Wert "enforce", "warn", "skip" oder "all" an.
+MSG_VALIDATION_INVALID_KEYID={0} hat kein 64-Bit-Format. F\u00fchren Sie den Befehl GnuPG aus, um das lange Format der Schl\u00fcssel-ID zu ermitteln. 
+MSG_VALIDATION_MISSING_KEYID=Die Schl\u00fcssel-ID wurde nicht angegeben. Geben Sie die Schl\u00fcssel-ID f\u00fcr die Schl\u00fcssel-URL an oder setzen Sie die Eigenschaften der Schl\u00fcssel-URL auf Kommentar.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Es wurden keine Features gefunden.
@@ -617,6 +628,10 @@ VALIDATION_INVALID_HOST=Ung\u00fcltiger Hostname
 VALIDATION_INVALID_URL=Nicht unterst\u00fctztes URL-Format
 VALIDATION_DUPLICATE_KEY=Doppelter Eigenschaftsname
 VALIDATION_UNSUPPORTED_PROTOCOL=Nicht unterst\u00fctztes Protokoll
+VALIDATION_MISSING_PUBKEY_NAME=Name des \u00f6ffentlichen Schl\u00fcssels fehlt
+VALIDATION_INVALID_key_URL=Nicht unterst\u00fctzte Schl\u00fcssel-URL
+VALIDATION_INVALID_KEYID=Ung\u00fcltiges Format der Schl\u00fcssel-ID
+VALIDATION_MISSING_KEYID=Fehlende Schl\u00fcssel-ID
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Ein oder mehrere Features wurden erfolgreich deinstalliert: {0}.
@@ -630,6 +645,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Die Eintr\u00e4ge stimmen nicht \u00fcberein.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Alle Features wurden erfolgreich installiert.
 TOOL_INSTALLATION_COMPLETED=Alle Assets wurden erfolgreich installiert.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Alle Funktionen wurden erfolgreich \u00fcberpr\u00fcft.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Das Kennwort f\u00fcr die mit der Option --user angegebene die Benutzer-ID wurde nicht angegeben.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Wenn die Benutzer-ID angegeben wurde, muss auch ein Kennwort angegeben werden.
@@ -744,6 +760,7 @@ ERROR_TOOL_DIRECTORY_REQUIRED.useraction=Geben Sie mit der Option --location ein
 ERROR_TOOL_DIRECTORY_INACCESSIBLE=CWWKF1378E: Das folgende Verzeichnis ist nicht zug\u00e4nglich: {0}. Stellen Sie sicher, dass der aktuelle Benutzer Lese- und Schreibberechtigungen f\u00fcr das Verzeichnis hat. 
 ERROR_TOOL_DIRECTORY_INACCESSIBLE.explanation=Der Befehl kann die Dateien nicht in das angegebene Verzeichnis herunterladen, weil der aktuelle Benutzer nicht die erforderlichen Lese- und Schreibberechtigungen hat.
 ERROR_TOOL_DIRECTORY_INACCESSIBLE.useraction=Stellen Sie sicher, dass der aktuelle Benutzer Lese- und Schreibberechtigungen f\u00fcr das Verzeichnis hat, und f\u00fchren Sie dann den Befehl erneut aus. 
+
 ERROR_TEMP_DIR_NO_SPACE=CWWKF1379E: Das Asset konnte nicht heruntergeladen werden, weil der verf\u00fcgbare Plattenspeicherplatz im folgenden tempor\u00e4ren Java-Verzeichnis nicht ausreicht: {0}. Der insgesamt erforderliche Speicherplatz ist {2}. Der insgesamt verf\u00fcgbare Speicherplatz ist {1}. L\u00f6schen Sie nicht ben\u00f6tigte Dateien im Verzeichnis oder \u00e4ndern Sie den Pfad java.io.tempdir in ein anderes Verzeichnis und f\u00fchren Sie den Befehl erneut aus.
 ERROR_TEMP_DIR_NO_SPACE.explanation=Der Befehl kann die Dateien nicht in das tempor\u00e4re Java-Verzeichnis herunterladen, weil der Speicherplatz in dem Verzeichnis nicht ausreicht.
 ERROR_TEMP_DIR_NO_SPACE.useraction=Stellen Sie sicher, dass im tempor\u00e4ren Java-Verzeichnis ausreichend Plattenspeicherplatz vorhanden ist, indem Sie nicht ben\u00f6tigte Dateien l\u00f6schen oder den Pfad java.io.tempdir in ein anderes Verzeichnis \u00e4ndern. F\u00fchren Sie dann den Befehl erneut aus.
@@ -762,7 +779,8 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Stellen Sie sicher, das
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Das Asset {0} ist vom Asset {1} abh\u00e4ngig, das aber nicht in den konfigurierten Repositorys verf\u00fcgbar ist. Mindestens ein konfiguriertes Repository ist m\u00f6glicherweise nicht zug\u00e4nglich. Konfigurieren Sie installUtility so, dass eine Verbindung zu IBM WebSphere Liberty Repository hergestellt wird, um das Asset herunterzuladen bzw. zu installieren. Wenn Sie keinen Internetzugang haben, bitten Sie Ihren Administrator, das fehlende Asset und alle Abh\u00e4ngigkeiten herunterzuladen und diese einem konfigurierten Repository hinzuzuf\u00fcgen. Alternativ k\u00f6nnen Sie die Datei wlp-featureRepo-<Version>.zip von der IBM Fix Central-Website herunterladen und den entpackten Ordner als verzeichnisbasiertes Repository konfigurieren.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Das Asset kann nicht heruntergeladen bzw. installiert werden, weil es von einem Asset abh\u00e4ngig ist, das nicht verf\u00fcgbar ist.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Konfigurieren Sie installUtility so, dass eine Verbindung zu IBM WebSphere Liberty Repository hergestellt wird, um das Asset herunterzuladen bzw. zu installieren. Mit der Aktion viewSettings k\u00f6nnen Sie die konfigurierten Repositorys \u00fcberpr\u00fcfen und mit der Aktion testConnection k\u00f6nnen Sie die Verbindung anschlie\u00dfend testen. \n\nAlternativ k\u00f6nnen Sie die Datei wlp-featureRepo-<Version>.zip von der IBM Fix Central-Website herunterladen und den entpackten Ordner als verzeichnisbasiertes Repository konfigurieren. \n\nWenn Sie keinen Internetzugang haben, bitten Sie Ihren Administrator, das fehlende Asset und alle Abh\u00e4ngigkeiten herunterzuladen und diese einem konfigurierten Repository hinzuzuf\u00fcgen. \n\nWeitere Informationen zum Installieren von Assets finden Sie in der Dokumentation zu installUtility im IBM Knowledge Center. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Konfigurieren Sie installUtility so, dass eine Verbindung zu IBM WebSphere Liberty Repository hergestellt wird, um das Asset herunterzuladen bzw. zu installieren. Mit der Aktion viewSettings k\u00f6nnen Sie die konfigurierten Repositorys \u00fcberpr\u00fcfen und mit der Aktion testConnection k\u00f6nnen Sie die Verbindung anschlie\u00dfend testen. \n\nAlternativ k\u00f6nnen Sie die Datei wlp-featureRepo-<Version>.zip von der IBM Fix Central-Website herunterladen und den entpackten Ordner als verzeichnisbasiertes Repository konfigurieren. \n\nWenn Sie keinen Internetzugang haben, bitten Sie Ihren Administrator, das fehlende Asset und alle Abh\u00e4ngigkeiten herunterzuladen und diese einem konfigurierten Repository hinzuzuf\u00fcgen. \n\nWeitere Informationen zum Installieren von Assets finden Sie in der Dokumentation zu installUtility im IBM Knowledge Center. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen z\
+    ur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Die {0}-Assets sind vom Asset {1} abh\u00e4ngig, das aber nicht in den konfigurierten Repositorys verf\u00fcgbar ist. Konfigurieren Sie installUtility so, dass eine Verbindung zu IBM WebSphere Liberty Repository hergestellt wird, um das Asset herunterzuladen bzw. zu installieren. Wenn Sie keinen Internetzugang haben, bitten Sie Ihren Administrator, das fehlende Asset und alle Abh\u00e4ngigkeiten herunterzuladen und diese einem konfigurierten Repository hinzuzuf\u00fcgen.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Die Assets k\u00f6nnen nicht heruntergeladen bzw. installiert werden, weil sie von einem Asset abh\u00e4ngig sind, das nicht verf\u00fcgbar ist.
@@ -799,6 +817,7 @@ ERROR_CHECKSUM_FAILED_MAVEN.useraction=F\u00fchren Sie den Befehl erneut aus.
 ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Es wurden falsche Berechtigungsnachweise f\u00fcr das Repository {0} bereitgestellt.
 ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Eine Authentifizierung am konfigurierten Repository war mit den Berechtigungsnachweisen FEATURE_REPO_USER und FEATURE_REPO_PASSWORD nicht m\u00f6glich.
 ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Geben Sie die richtigen Berechtigungsnachweise f\u00fcr das konfigurierte Repository an. 
+
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: Die Artefakte aus dem konfigurierten Repository konnten nicht heruntergeladen werden.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=Das angegebene Asset wurde nicht aus dem angegebenen Repository heruntergeladen, weil das Repository keine g\u00fcltige Version des Assets enth\u00e4lt.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Stellen Sie sicher, dass das Asset im Repository vorhanden ist, und f\u00fchren Sie den Befehl erneut aus.
@@ -814,12 +833,15 @@ ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Geben Sie eine g\u00fcltige Vers
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: Das Paketformat der Maven-Koordinate {0} des Features ist ung\u00fcltig. Das g\u00fcltige Paketformat ist ESA.
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=Das Feature ist mit der Liberty-Laufzeit nicht kompatibel.
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Geben Sie die ESA f\u00fcr die Paketierung in der Maven-Koordinate an.
+
 ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Die {0}-Maven-Koordinate ist ung\u00fcltig.
 ERROR_MAVEN_COORDINATE_INVALID.explanation=Die bereitgestellte Maven-Koordinate hat nicht das richtige Format.
 ERROR_MAVEN_COORDINATE_INVALID.useraction=Geben Sie eine g\u00fcltige Maven-Koordinate ein.
+
 ERROR_SERVER_NOT_EXIST=CWWKF1398E: Der Server {0} ist nicht vorhanden. Geben Sie einen g\u00fcltigen Servernamen ein und versuchen Sie es erneut.
 ERROR_SERVER_NOT_EXIST.explanation=Der Server ist nicht vorhanden.
 ERROR_SERVER_NOT_EXIST.useraction=Erstellen Sie den Server und f\u00fchren Sie den Befehl erneut aus. 
+
 ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: Die {0}-Gruppen-ID ist ung\u00fcltig. Stellen Sie sicher, dass die g\u00fcltige Gruppen-ID f\u00fcr die Featurekoordinate angegeben ist oder dass das System auf das Internet und das konfigurierte Repository zugreifen kann.
 ERROR_MAVEN_JSON_NOT_FOUND.explanation=Die JSON-Datei des Features wurde nicht im Maven-Repository gefunden.
 ERROR_MAVEN_JSON_NOT_FOUND.useraction=\u00dcberpr\u00fcfen Sie Ihre Netzverbindung und stellen Sie sicher, dass die JSON-Datei des Features im Maven-Repository gehostet wird.
@@ -887,3 +909,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Das Format der Maven-Koordinate
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Formatieren Sie die Maven-Koordinate f\u00fcr die Feature-BOM neu, damit sie dem Format Gruppen-ID:Artefakt-ID:Version entspricht.
 
 MSG_STABILIZING_FEATUREMANAGER=Diese featureManager-Aktion wurde stabiliert. Verwenden Sie stattdessen installUtility {0}. Der Befehl installUtility wird f\u00fcr installations- und Repository-bezogene Aktionen empfohlen.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: Die Pr\u00fcfoption "{0}" f\u00fcr Funktionen stimmt nicht mit "{1}" in der Befehlszeile \u00fcberein.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=Die Pr\u00fcfoption f\u00fcr Funktionen f\u00fcr die Eigenschaftendatei oder die Umgebungsvariable muss mit der Option in der Befehlszeile \u00fcbereinstimmen. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Stellen Sie sicher, dass die angegebenen Pr\u00fcfoptionen f\u00fcr Funktionen \u00fcbereinstimmen.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: Die Pr\u00fcfoption {0} ist ung\u00fcltig. Stellen Sie sicher, dass die Option g\u00fcltig ist.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=Die angegebene Option ist nicht g\u00fcltig. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Geben Sie eine der folgenden g\u00fcltigen Optionen an: "enforce", "warn", "skip", "all".
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: Der \u00f6ffentliche Schl\u00fcssel konnte nicht heruntergeladen werden: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=Der angegebene \u00f6ffentliche Schl\u00fcssel wurde nicht von der angegebenen Schl\u00fcssel-URL heruntergeladen. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=\u00dcberpr\u00fcfen Sie Ihre Schl\u00fcssel-ID, die Schl\u00fcssel-URL und den Netzzugriff und wiederholen Sie dann die Aktion. Wenn die Verbindung weiterhin fehlschl\u00e4gt, ist die Schl\u00fcssel-URL m\u00f6glicherweise vor\u00fcbergehend nicht verf\u00fcgbar.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: Die ID des \u00f6ffentlichen Schl\u00fcssels f\u00fcr die Schl\u00fcssel-URL {0} wurde nicht angegeben. 
+ERROR_KEYID_NOT_PROVIDED.explanation=Die ID des \u00f6ffentlichen Schl\u00fcssels f\u00fcr die angegebene Schl\u00fcssel-URL wurde nicht angegeben. Eine Schl\u00fcssel-ID im 64-Bit-Format ist erforderlich, um die Authentizit\u00e4t des Schl\u00fcssels herunterzuladen und zu \u00fcberpr\u00fcfen. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Geben Sie die Schl\u00fcssel-ID im 64-Bit-Format an. F\u00fchren Sie den Befehl GnuPG aus, um die Schl\u00fcssel-ID zu ermitteln. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Das URL-Protokoll f\u00fcr die folgende Schl\u00fcssel-URL wird nicht unterst\u00fctzt: {0}. Die unterst\u00fctzten Protokolle sind HTTP, HTTPS und file. Stellen Sie sicher, dass die URL ordnungsgem\u00e4\u00df angegeben wurde.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Das URL-Protokoll f\u00fcr die angegebene Schl\u00fcssel-URL wird nicht unterst\u00fctzt.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Stellen Sie sicher, dass die URL ordnungsgem\u00e4\u00df angegeben wurde. Die unterst\u00fctzten Protokolle sind HTTP, HTTPS und file. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: Die ID des \u00f6ffentlichen Schl\u00fcssels {0} wurde widerrufen. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=Der \u00f6ffentliche Schl\u00fcssel wird widerrufen. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Geben Sie die ID und die Signaturen des neuen \u00f6ffentlichen Schl\u00fcssels an. Wenn der widerrufene Schl\u00fcssel ein \u00f6ffentlicher Liberty-Schl\u00fcssel ist, wenden Sie den vorl\u00e4ufigen Fix an oder geben Sie die ID des neuen \u00f6ffentlichen Schl\u00fcssels an, die auf der OpenLiberty.io-Website verf\u00fcgbar ist.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: Die ID des \u00f6ffentlichen Schl\u00fcssels {0} ist am {1} abgelaufen.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=Der \u00f6ffentliche Schl\u00fcssel ist abgelaufen.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=F\u00fchren Sie den Befehl GnuPG aus, um das Ablaufdatum des \u00f6ffentlichen Schl\u00fcssels zu verl\u00e4ngern, und versuchen Sie es erneut. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Die folgenden Signaturen f\u00fcr Funktionen k\u00f6nnen nicht gepr\u00fcft werden: {0}  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Signatur f\u00fcr Funktion wurde nicht \u00fcberpr\u00fcft.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Verwenden Sie die Option "--verbose", um die Debug-Traces anzuzeigen.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: Die URL des \u00f6ffentlichen Schl\u00fcssels f\u00fcr die Schl\u00fcssel-ID {0} wurde nicht angegeben. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= Die URL des \u00f6ffentlichen Schl\u00fcssels f\u00fcr die Schl\u00fcssel-ID {0} wurde nicht angegeben. Die URL des \u00f6ffentlichen Schl\u00fcssels ist ein Pflichtfeld zum Herunterladen des \u00f6ffentlichen Schl\u00fcssels. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Geben Sie die URL f\u00fcr den \u00f6ffentlichen Schl\u00fcssel an. Die unterst\u00fctzten Protokolle sind HTTP, HTTPS und file. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: Die ID des \u00f6ffentlichen Schl\u00fcssels {0} stimmt nicht mit der angegebenen Schl\u00fcssel-ID {1} \u00fcberein. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Der \u00f6ffentliche Schl\u00fcssel wurde m\u00f6glicherweise ge\u00e4ndert. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Wenn der \u00f6ffentliche Schl\u00fcssel eine lokale Datei ist, stellen Sie sicher, dass Sie die richtige Datei angeben.
+

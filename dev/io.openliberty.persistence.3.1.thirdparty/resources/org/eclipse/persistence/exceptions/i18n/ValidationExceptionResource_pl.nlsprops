@@ -633,5 +633,9 @@
 
 7356=Nie mo\u017cna wykona\u0107 procedury [{1}], poniewa\u017c {0} nie obs\u0142uguje wielu parametr\u00f3w wyj\u015bciowych
 
-7357=Adres URL "[{0}]" dla zasobu "[{1}]" nie nale\u017cy do poprawnego elementu g\u0142\u00f3wnego trwa\u0142o\u015bci (zgodnie ze specyfikacj\u0105 Jakarta Persistence)
+7357=Adres URL [{0}] dla zasobu [{1}] nie nale\u017cy do poprawnego elementu g\u0142\u00f3wnego trwa\u0142o\u015bci, zgodnie z definicj\u0105 specyfikacji JPA.
+
+7358=Podano niepoprawn\u0105 nazw\u0119 us\u0142ugi ASM.
+
+7359=Brak dost\u0119pnej us\u0142ugi ASM.
 

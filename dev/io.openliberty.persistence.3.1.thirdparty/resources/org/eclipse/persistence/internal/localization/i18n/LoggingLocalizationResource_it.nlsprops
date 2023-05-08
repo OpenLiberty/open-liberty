@@ -115,6 +115,10 @@ connected_user_database=Connesso: {3}{4} Utente: {0}{3}{4} Database: {1}  Versio
 
 connected_user_database_driver=Connesso: {0}{6} Utente: {1}{6} Database: {2}  Versione: {3}{6} Driver: {4}  Versione: {5}
 
+corrupt_object=oggetto danneggiato: {0}
+
+corrupt_object_referenced_through_mapping=L''associazione fa riferimento al seguente oggetto danneggiato: {0}.
+
 corrupted_session_announcement=ID sessione: {0} il gestore rilevamento ha ricevuto un annuncio di sessione corrotto, viene ignorato.
 
 create_default_dbms_tables_not_supported=L''impostazione CMP nativa  WLS "create-default-dbms-tables" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Rimozione di sopObject serializzato dalla riga perch\u00e9 h
 
 sop_object_wrong_version=Rimozione di sopObject serializzato dalla riga perch\u00e9 ha una versione errata [{0}] in [{1}] in [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=stack di oggetti visitati che fanno riferimento all''oggetto danneggiato: {0}
+
 topLink_version=EclipseLink, versione: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery non pu\u00f2
 validate_db_schema_with_not_supported=L''impostazione CMP nativa  WLS "validate-db-schema-with" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 validate_ejb_jar=Avvio convalida ejb-jar.xml, pu\u00f2 richiedere del tempo...
+
+validate_object_space=convalidare lo spazio oggetto.
 
 verifiy_columns_read_locking_not_supported=L''impostazione ottimistica "Read" su "verify-columns" nell''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 

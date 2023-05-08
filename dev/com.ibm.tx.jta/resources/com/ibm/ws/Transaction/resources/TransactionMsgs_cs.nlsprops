@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Zkontrolujte hodnotu epochy z t\u00e9to zpr\u00
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Zotaven\u00e9 xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - xid nem\u00e1 p\u0159idru\u017eenu transakci a nebude odvol\u00e1no.
-WTRN0148_REC_XA_ROLLBACK.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed provede odvol\u00e1n\u00ed tohoto xid jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0148_REC_XA_ROLLBACK.explanation=Transak\u010dn\u00ed slu\u017eba \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz xa recover pro protokolovan\u00e9ho spr\u00e1vce prost\u0159edk\u016f a z\u00edskala xid, kter\u00e9 neodpov\u00edd\u00e1 protokolovan\u00e9 transakci. Transak\u010dn\u00ed slu\u017eba odvol\u00e1 xid zp\u011bt jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
 WTRN0148_REC_XA_ROLLBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1d
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: Zotaven\u00e9 xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - xid m\u00e1 p\u0159idru\u017eenu transakci (tid={2}) s protokolovan\u00fdm stavem {3}
-WTRN0149_REC_XA_TRAN.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 odpov\u00edd\u00e1 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed dokon\u010d\u00ed transakci jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0149_REC_XA_TRAN.explanation=Transak\u010dn\u00ed slu\u017eba \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz xa recover pro protokolovan\u00e9ho spr\u00e1vce prost\u0159edk\u016f a z\u00edskala xid, kter\u00e9 odpov\u00edd\u00e1 protokolovan\u00e9 transakci. Transak\u010dn\u00ed slu\u017eba dokon\u010d\u00ed transakci jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
 WTRN0149_REC_XA_TRAN.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Odezva z odvol\u00e1van\u00e9ho zotaven\u00e9ho xid {0} ze spr\u00e1vce prost\u0159edk\u016f {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Slu\u017eba transakc\u00ed \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz zotaven\u00ed transakc\u00ed pro protokolovan\u00fd spr\u00e1vce prost\u0159edk\u016f a obdr\u017eela xid, kter\u00e9 neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 protokolovan\u00e9 transakci. Slu\u017eba transakc\u00ed se pokusila odvolat toto xid jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Transak\u010dn\u00ed slu\u017eba \u00fasp\u011b\u0161n\u011b vydala p\u0159\u00edkaz xa recover pro protokolovan\u00e9ho spr\u00e1vce prost\u0159edk\u016f a z\u00edskala xid, kter\u00e9 neodpov\u00edd\u00e1 protokolovan\u00e9 transakci. Transak\u010dn\u00ed slu\u017eba se pokusila odvolat xid jako sou\u010d\u00e1st zpracov\u00e1n\u00ed zotaven\u00ed.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Prozkoumejte k\u00f3d chyby a ur\u010dete, zda se odvol\u00e1n\u00ed nezda\u0159ilo.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=Pokud se jedn\u00e1 o po\u017eadovanou kon
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Slu\u017eba transakc\u00ed byla ukon\u010dena, ale protokol pro zotaven\u00ed byl ozna\u010den jako nezda\u0159en\u00fd.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Protokol pro zotaven\u00ed se nezda\u0159il a p\u0159i vypnut\u00ed serveru nedo\u0161lo k p\u0159\u00edstupu k protokolu.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Opravte v\u0161echny podm\u00ednky ozna\u010den\u00e9 zpr\u00e1vami, kter\u00e9 nahl\u00e1sily zru\u0161en\u00ed platnosti protokolu. Restartujte server, aby bylo mo\u017en\u00e9 opravit protokol.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Po\u017eadavek kontroln\u00edho bodu serveru se nezda\u0159il, proto\u017ee transak\u010dn\u00ed slu\u017eba nem\u016f\u017ee zah\u00e1jit transakci.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Protokol Liberty nepodporuje aplikace, kter\u00e9 zahajuj\u00ed nebo vy\u017eaduj\u00ed transakci, zat\u00edmco se aplikace spou\u0161t\u00ed, kdy\u017e je po\u017eadov\u00e1n kontroln\u00ed bod serveru.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Pou\u017eijte volbu kontroln\u00edho bodu serveru at=deployment, nebo upravte aplikaci tak, aby zah\u00e1jila transakce po jej\u00edm spu\u0161t\u011bn\u00ed.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Aplikace zah\u00e1jila nebo vy\u017eadovala transakci b\u011bhem po\u017eadavku kontroln\u00edho bodu serveru. N\u00e1sleduj\u00edc\u00ed trasov\u00e1n\u00ed z\u00e1sobn\u00edku pro tento podproces bylo zachyceno p\u0159i vytvo\u0159en\u00ed transakce: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku bylo zachyceno p\u0159i vytvo\u0159en\u00ed transakce. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku pom\u00e1h\u00e1 u\u017eivatel\u016fm ur\u010dit, kter\u00e9 aplikace zah\u00e1j\u00ed transakce b\u011bhem spu\u0161t\u011bn\u00ed aplikace, a pak zp\u016fsob\u00ed selh\u00e1n\u00ed po\u017eadavku kontroln\u00edho bodu.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Prov\u011b\u0159te trasov\u00e1n\u00ed z\u00e1sobn\u00edku a ur\u010dete, kter\u00e1 aplikace zah\u00e1jila novou transakci b\u011bhem po\u017eadavku kontroln\u00edho bodu serveru.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

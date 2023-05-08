@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: A refer\u00eancia de servi\u00e7o de UserTransactio
 USERTRAN_IS_NULL.explanation=Foi feita uma solicita\u00e7\u00e3o para obter o servi\u00e7o UserTransaction, mas nenhum servi\u00e7o UserTransaction foi ligado a este pacote configur\u00e1vel.
 USERTRAN_IS_NULL.useraction=Se o acesso ao UserTransaction for necess\u00e1rio, use o console de OSGi para investigar a raz\u00e3o pela qual nenhum servi\u00e7o UserTransaction foi ligado a este pacote configur\u00e1vel. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Erro de transa\u00e7\u00e3o inesperado ocorrido:  {0}
 UNEXPECTED_TRAN_ERROR.explanation=Foi feita uma solicita\u00e7\u00e3o para buscar o objeto Transaction, mas ocorreu um erro inesperado. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Verifique os logs em busca de erros ou FFDCs an
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Retrocesso da transa\u00e7\u00e3o global devido ao tempo limite: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=A transa\u00e7\u00e3o global atual atingiu o tempo limite e, portanto, foi retrocedida.
-GLOBAL_TRAN_ROLLBACK.useraction=Assegure que a transa\u00e7\u00e3o global seja conclu\u00edda dentro do intervalo de tempo permitido ou aumente o tempo limite.
+GLOBAL_TRAN_ROLLBACK.useraction=Assegure-se de que a transa\u00e7\u00e3o global seja conclu\u00edda dentro do prazo permitido ou aumente o tempo limite.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque a implementa\u00e7\u00e3o do servidor cont\u00e9m arquivos de log de transa\u00e7\u00f5es no diret\u00f3rio {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=O Liberty n\u00e3o espera que os arquivos de log de transa\u00e7\u00f5es existam na implementa\u00e7\u00e3o do servidor quando um ponto de verifica\u00e7\u00e3o de servidor \u00e9 solicitado.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Remova o diret\u00f3rio do log de transa\u00e7\u00f5es da implementa\u00e7\u00e3o do servidor.

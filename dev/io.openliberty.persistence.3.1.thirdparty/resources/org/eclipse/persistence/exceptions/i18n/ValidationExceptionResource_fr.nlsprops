@@ -633,5 +633,9 @@
 
 7356=La proc\u00e9dure : [{1}] ne peut pas \u00eatre ex\u00e9cut\u00e9e car {0} ne prend actuellement pas en charge plusieurs param\u00e8tres de sortie
 
-7357=L''URL "[{0}]" de la ressource "[{1}]" n''appartient pas \u00e0 une racine de persistance valide (selon la sp\u00e9cification Jakarta Persistence)
+7357=L''URL [{0}] de la ressource [{1}] n''appartient pas \u00e0 une racine de persistance valide, telle que d\u00e9finie par la sp\u00e9cification JPA.
+
+7358=Nom de service ASM fourni incorrect.
+
+7359=Aucun service ASM disponible.
 

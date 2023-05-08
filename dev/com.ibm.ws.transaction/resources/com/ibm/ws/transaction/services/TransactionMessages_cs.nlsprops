@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: Odkaz na slu\u017ebu UserTransaction m\u00e1 hodnot
 USERTRAN_IS_NULL.explanation=Byl zad\u00e1n po\u017eadavek k z\u00edsk\u00e1n\u00ed slu\u017eby UserTransaction, ale k tomuto bal\u00edku nebyla p\u0159ipojena \u017e\u00e1dn\u00e1 slu\u017eba UserTransaction.
 USERTRAN_IS_NULL.useraction=Pokud je po\u017eadov\u00e1n p\u0159\u00edstup ke slu\u017eb\u011b UserTransaction, zjist\u011bte pomoc\u00ed konzole OSGi, pro\u010d nebyla s t\u00edmto bal\u00edkem propojena \u017e\u00e1dn\u00e1 slu\u017eba UserTransaction. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b transakce:  {0}
 UNEXPECTED_TRAN_ERROR.explanation=Byl zad\u00e1n po\u017eadavek na na\u010dten\u00ed objektu transakce, ale do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Vyhledejte v protokolech p\u0159edchoz\u00ed ch
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Glob\u00e1ln\u00ed transakce byla odvol\u00e1na z d\u016fvodu uplynut\u00ed \u010dasov\u00e9ho limitu: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=Uplynul \u010dasov\u00fd limit aktu\u00e1ln\u00ed glob\u00e1ln\u00ed transakce, proto byla odvol\u00e1na.
-GLOBAL_TRAN_ROLLBACK.useraction=Zajist\u011bte, aby byla glob\u00e1ln\u00ed transakce dokon\u010dena v r\u00e1mci povolen\u00e9ho \u010dasov\u00e9ho r\u00e1mce nebo zvy\u0161te \u010dasov\u00fd limit.
+GLOBAL_TRAN_ROLLBACK.useraction=Ujist\u011bte se, \u017ee je glob\u00e1ln\u00ed transakce dokon\u010dena v povolen\u00e9m \u010dasov\u00e9m r\u00e1mci, nebo zvy\u0161te \u010dasov\u00fd limit.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: Po\u017eadavek kontroln\u00edho bodu serveru se nezda\u0159il, proto\u017ee implementace serveru obsahuje soubory transak\u010dn\u00edho protokolu v adres\u00e1\u0159i {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Server Liberty neo\u010dek\u00e1v\u00e1, \u017ee budou soubory transak\u010dn\u00edho protokolu existovat v implementaci serveru, kdy\u017e je po\u017eadov\u00e1n kontroln\u00ed bod serveru.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Odeberte adres\u00e1\u0159 transak\u010dn\u00edho protokolu z implementace serveru.

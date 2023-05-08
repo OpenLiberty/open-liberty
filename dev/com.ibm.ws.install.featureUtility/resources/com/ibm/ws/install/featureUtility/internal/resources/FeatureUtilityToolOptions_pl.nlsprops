@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,30 +35,19 @@ help.desc=\tWy\u015bwietl informacje pomocy dla okre\u015blonego dzia\u0142ania.
 installFeature.desc=\tZainstaluj jeden sk\u0142adnik lub wymienione na li\u015bcie sk\u0142adniki rozdzielone spacjami.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ nazwa...
-installFeature.option-desc.name...=\tJeden lub wi\u0119cej sk\u0142adnik\u00f3w rozdzielonych spacjami. W przypadku sk\u0142adnik\u00f3w \n\
-\tpodaj nazw\u0119 skr\u00f3con\u0105 lub wsp\u00f3\u0142rz\u0119dn\u0105 Maven. Je\u015bli  \n\
-\tpodajesz wsp\u00f3\u0142rz\u0119dn\u0105 Maven, musi ona zawiera\u0107 co najmniej  \n\
-\tID grupy i ID artefaktu   \n\
-\t(na przyk\u0142ad io.openliberty.features:mpHealth-2.0).                 \n\
-\tWarto\u015bci\u0105 domy\u015bln\u0105 wersji jest bie\u017c\u0105ca wersja \u015brodowiska wykonawczego,  \n\
-\ttypem pakowania jest domy\u015blnie ESA, je\u015bli wersja i pakowanie \n\
-\tnie zosta\u0142y okre\u015blone.
+installFeature.option-desc.name...=\tJeden lub wi\u0119cej sk\u0142adnik\u00f3w rozdzielonych spacjami. W przypadku sk\u0142adnik\u00f3w \n\tpodaj nazw\u0119 skr\u00f3con\u0105 lub wsp\u00f3\u0142rz\u0119dn\u0105 Maven. Je\u015bli  \n\tpodajesz wsp\u00f3\u0142rz\u0119dn\u0105 Maven, musi ona zawiera\u0107 co najmniej  \n\tID grupy i ID artefaktu   \n\t(na przyk\u0142ad io.openliberty.features:mpHealth-2.0).                 \n\tWarto\u015bci\u0105 domy\u015bln\u0105 wersji jest bie\u017c\u0105ca wersja \u015brodowiska wykonawczego,  \n\ttypem pakowania jest domy\u015blnie ESA, je\u015bli wersja i pakowanie \n\tnie zosta\u0142y okre\u015blone.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
-installFeature.option-desc.--to=\tOkre\u015bl po\u0142o\u017cenie dla instalacji sk\u0142adnika. Sk\u0142adnik mo\u017ce zosta\u0107 zainstalowany\n\
-\tw dowolnym skonfigurowanym po\u0142o\u017ceniu rozszerzenia produktu lub jako sk\u0142adnik u\u017cytkownika. Je\u015bli \n\
-\tta opcja nie b\u0119dzie okre\u015blona, sk\u0142adnik zostanie zainstalowany jako sk\u0142adnik \n\
-\tu\u017cytkownika.
+installFeature.option-desc.--to=\tOkre\u015bl po\u0142o\u017cenie dla instalacji sk\u0142adnika. Sk\u0142adnik mo\u017ce zosta\u0107 zainstalowany\n\tw dowolnym skonfigurowanym po\u0142o\u017ceniu rozszerzenia produktu lub jako sk\u0142adnik u\u017cytkownika. Je\u015bli \n\tta opcja nie b\u0119dzie okre\u015blona, sk\u0142adnik zostanie zainstalowany jako sk\u0142adnik \n\tu\u017cytkownika.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=wsp\u00f3\u0142rz\u0119dna Maven
-installFeature.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\
-\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\
-\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\
-\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
+installFeature.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
-installFeature.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
-\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+installFeature.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tTa opcja s\u0142u\u017cy do okre\u015blania sposobu weryfikacji funkcji. Domy\u015bln\u0105 \nopcj\u0105 jest "enforce" (wymuszenie), kt\u00f3ra weryfikuje podpisy wszystkich funkcji Liberty \nz wyj\u0105tkiem funkcji u\u017cytkownika. Opcja "warn" (ostrzeganie) jest taka sama, \njak opcja "enforce", ale nie przerywa instalacji, je\u015bli weryfikacja si\u0119 \nnie powiedzie. Opcja "skip" (pomini\u0119cie) powoduje pomini\u0119cie weryfikacji \ni nie pobiera \u017cadnych podpis\u00f3w funkcji. Opcja "all" (wszystko) \numo\u017cliwia sprawdzenie zar\u00f3wno funkcji Liberty, jak i funkcji u\u017cytkownika.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tWy\u015bwietl dodatkowe informacje dotycz\u0105ce debugowania podczas wykonywania dzia\u0142ania.
@@ -67,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tZaakceptuj umow\u0119 licencyjn\u0105.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\
-\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.
+installFeature.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tZainstaluj sk\u0142adniki wymagane dla serwera o podanej nazwie.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -76,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ nazwa...
 installServerFeatures.option-desc.name...=\tNazwa istniej\u0105cego serwera w tym samym \u015brodowisku Liberty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=wsp\u00f3\u0142rz\u0119dna Maven
-installServerFeatures.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\
-\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\
-\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\
-\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
+installServerFeatures.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
-installServerFeatures.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
-\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+installServerFeatures.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tTa opcja s\u0142u\u017cy do okre\u015blania sposobu weryfikacji funkcji. Domy\u015bln\u0105 \nopcj\u0105 jest "enforce" (wymuszenie), kt\u00f3ra weryfikuje podpisy wszystkich funkcji Liberty \nz wyj\u0105tkiem funkcji u\u017cytkownika. Opcja "warn" (ostrzeganie) jest taka sama, \njak opcja "enforce", ale nie przerywa instalacji, je\u015bli weryfikacja si\u0119  nie powiedzie.\n\tOpcja "skip" (pomini\u0119cie) powoduje pomini\u0119cie weryfikacji \ni nie pobiera \u017cadnych podpis\u00f3w funkcji. Opcja "all" (wszystko) \numo\u017cliwia sprawdzenie zar\u00f3wno funkcji Liberty, jak i funkcji u\u017cytkownika.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tWy\u015bwietl dodatkowe informacje dotycz\u0105ce debugowania podczas wykonywania dzia\u0142ania.
@@ -92,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tZaakceptuj umow\u0119 licencyjn\u0105.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\
-\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.
+installServerFeatures.option-desc.--noCache=\tSk\u0142adniki zainstalowane z repozytorium zdalnego \n\t(na przyk\u0142ad Maven Central) nie s\u0105 buforowane lokalnie.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tZnajd\u017a sk\u0142adniki z repozytori\u00f3w.
 #--------- OPTIONS ----------------------------------------------------#
@@ -103,7 +89,4 @@ find.option-desc.[searchString]=\tU\u017cyj \u0142a\u0144cucha wyszukiwania, aby
 viewSettings.desc=\tWy\u015bwietlanie ustawie\u0144 repozytori\u00f3w i serwera proxy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty            \n\
-\tze sprawdzania poprawno\u015bci skonfigurowanego pliku featureUtility.properties.         \n\
-\tKa\u017cdy komunikat zawiera kod b\u0142\u0119du, numer wiersza, w kt\u00f3rym znaleziono \n\
-\tb\u0142\u0105d, oraz przyczyn\u0119 b\u0142\u0119du.
+viewSettings.option-desc.--viewValidationMessages=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty            \n\tze sprawdzania poprawno\u015bci skonfigurowanego pliku featureUtility.properties.         \n\tKa\u017cdy komunikat zawiera kod b\u0142\u0119du, numer wiersza, w kt\u00f3rym znaleziono \n\tb\u0142\u0105d, oraz przyczyn\u0119 b\u0142\u0119du.

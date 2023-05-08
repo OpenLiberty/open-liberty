@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: Caracteristica de utilizat
 tool.userfeature.install.location.invalid.explanation= Caracteristica de utilizator nu este o caracteristic\u0103 de nucleu \u015fi prin urmare nu poate fi instalat\u0103 la nucleu.
 tool.userfeature.install.location.invalid.useraction= Instala\u0163i caracteristica de utilizator la usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Serverul a ad\u0103ugat caracteristicile {0} la setul de caracteristici existent.
+FEATURES_ADDED_DELTA.explanation=Serverul a instalat un set de noi caracteristici, \u00een plus fa\u021b\u0103 de caracteristicile instalate anterior.
+FEATURES_ADDED_DELTA.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Clientul a ad\u0103ugat {0} caracteristici la setul de caracteristici existent. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Clientul a instalat un set de noi caracteristici, \u00een plus fa\u021b\u0103 de caracteristicile instalate anterior.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Nu este necesar\u0103 nicio ac\u0163iune. 
+
+
+

@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Examine el valor de epoch de este mensaje y com
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: EL xid recuperado {0} de {1} - xid no tiene ninguna transacci\u00f3n asociada y se retrotraer\u00e1
-WTRN0148_REC_XA_ROLLBACK.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que no corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n retrotraer\u00e1 el XID como parte del proceso de recuperaci\u00f3n.
+WTRN0148_REC_XA_ROLLBACK.explanation=El servicio de transacciones ha emitido correctamente la recuperaci\u00f3n xa en un gestor de recursos registrado y ha obtenido un xid que no corresponde a una transacci\u00f3n registrada. El servicio de transacciones retrotrae el xid como parte del proceso de recuperaci\u00f3n.
 WTRN0148_REC_XA_ROLLBACK.useraction=No se requiere ninguna acci\u00f3n del usuario.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=No se requiere ninguna acci\u00f3n del usuar
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: El xid recuperado {0} de {1} - xid tiene la transacci\u00f3n asociada (tid={2}) con el estado anotado {3}
-WTRN0149_REC_XA_TRAN.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n completar\u00e1 la transacci\u00f3n como parte del proceso de recuperaci\u00f3n.
+WTRN0149_REC_XA_TRAN.explanation=El servicio de transacciones ha emitido correctamente la recuperaci\u00f3n xa en un gestor de recursos registrado y ha obtenido un xid que corresponde a una transacci\u00f3n registrada. El servicio de transacciones completa la transacci\u00f3n como parte del proceso de recuperaci\u00f3n.
 WTRN0149_REC_XA_TRAN.useraction=No se requiere ninguna acci\u00f3n del usuario.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: La respuesta de la retrotracci\u00f3n ha recuperado el xid {0} de {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=El servicio de transacci\u00f3n ha emitido correctamente una recuperaci\u00f3n xa en un gestor de recursos anotado y ha obtenido un xid que no corresponde a una transacci\u00f3n anotada. El servicio de transacci\u00f3n ha intentado retrotraer el xid como parte del proceso de recuperaci\u00f3n.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=El servicio de transacciones ha emitido correctamente la recuperaci\u00f3n xa en un gestor de recursos registrado y ha obtenido un xid que no corresponde a una transacci\u00f3n registrada. El servicio de transacciones ha intentado retrotraer el xid como parte del proceso de recuperaci\u00f3n.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine el c\u00f3digo de error para determinar si ha fallado la retrotracci\u00f3n.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=No es necesario realizar ninguna acci\u00f
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: El servicio de transacciones se ha cerrado pero el registro de recuperaci\u00f3n se ha marcado como an\u00f3malo.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=El registro de recuperaci\u00f3n ha fallado y el acceso al registro no se ha producido al concluir el servidor.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrija las condiciones indicadas por los mensajes que indicaban la invalidaci\u00f3n del registro. Reinicie el servidor para que se pueda reparar el archivo de anotaciones cronol\u00f3gicas.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque el servicio de transacciones no puede iniciar una transacci\u00f3n.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty no admite aplicaciones que empiecen o requieran una transacci\u00f3n mientras la aplicaci\u00f3n se inicia cuando se solicita un punto de comprobaci\u00f3n de servidor.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilice la opci\u00f3n de punto de comprobaci\u00f3n del servidor at=deployment o modifique la aplicaci\u00f3n para iniciar las transacciones despu\u00e9s de que se haya iniciado.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Una aplicaci\u00f3n ha iniciado o ha requerido una transacci\u00f3n durante la solicitud de punto de comprobaci\u00f3n del servidor. Se ha capturado el siguiente rastreo de pila para esta hebra al crear la transacci\u00f3n: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=El rastreo de pila se captur\u00f3 cuando se cre\u00f3 la transacci\u00f3n. El rastreo de pila ayuda a los usuarios a determinar qu\u00e9 aplicaciones inician transacciones durante el inicio de la aplicaci\u00f3n y, a continuaci\u00f3n, hace que la solicitud de punto de comprobaci\u00f3n falle.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine el rastreo de pila para determinar qu\u00e9 aplicaci\u00f3n ha iniciado una nueva transacci\u00f3n durante la solicitud de punto de comprobaci\u00f3n del servidor.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

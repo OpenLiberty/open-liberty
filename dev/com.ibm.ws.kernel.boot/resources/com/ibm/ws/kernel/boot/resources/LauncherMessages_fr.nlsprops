@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: \u00c9chec de la d\u00e9finiti
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager n'a pas pu \u00eatre activ\u00e9 car le syst\u00e8me utilise Java 18, ce qui par d\u00e9faut ne permet pas l'utilisation d'un gestionnaire de s\u00e9curit\u00e9 Java.
 error.cannotset.securitymanager.jdk18.useraction=D\u00e9marrez le serveur avec l'argument JVM -Djava.security.manager = autoriser.
 
-error.checkpoint.delete=CWWKE0955E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e du r\u00e9pertoire {0}.
-error.checkpoint.delete.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car une image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e.
-error.checkpoint.delete.useraction=V\u00e9rifiez que l'utilisateur est autoris\u00e9 \u00e0 supprimer le r\u00e9pertoire existant. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
-
-error.checkpoint.workarea.backup=CWWKE0956E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le r\u00e9pertoire {0} ne peut pas \u00eatre sauvegard\u00e9.
-error.checkpoint.workarea.backup.explanation=Une erreur s'est produite lors de la sauvegarde du r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le.
-error.checkpoint.workarea.backup.useraction=V\u00e9rifiez que l'utilisateur dispose de droits suffisants pour sauvegarder le r\u00e9pertoire de la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Le r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le ne peut pas \u00eatre restaur\u00e9 \u00e0 partir du r\u00e9pertoire {0}.
 error.checkpoint.workarea.restore.explanation=Une erreur s'est produite lors de la restauration du r\u00e9pertoire de zone de travail de point de contr\u00f4le.
-error.checkpoint.workarea.restore.useraction=V\u00e9rifiez que l'utilisateur dispose de droits suffisants pour restaurer la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
-
-info.checkpoint.restore.failed=CWWKE0957I: La restauration du processus du serveur de point de contr\u00f4le a \u00e9chou\u00e9. Consultez le journal {0} pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n''a pas \u00e9t\u00e9 restaur\u00e9. Lancement du serveur sans utiliser l''image de point de contr\u00f4le.
-info.checkpoint.restore.failed.explanation=Une erreur s'est produite lors de la restauration d'un processus serveur de point de contr\u00f4le.  Le serveur a \u00e9t\u00e9 lanc\u00e9 sans utiliser l'image de point de contr\u00f4le.
-info.checkpoint.restore.failed.useraction=Consultez les journaux pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n'a pas \u00e9t\u00e9 restaur\u00e9.
+error.checkpoint.workarea.restore.useraction=V\u00e9rifiez que l'utilisateur dispose des droits suffisants pour restaurer la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car la propri\u00e9t\u00e9 websphere.java.security a \u00e9t\u00e9 d\u00e9finie dans le fichier bootstrap.properties. Cette propri\u00e9t\u00e9 active Java Security Manager et n'est pas valide lorsqu'un point de contr\u00f4le de serveur se produit.
 error.checkpoint.securitymanager.not.supported.explanation=Liberty ne prend pas en charge Java Security Manager lorsqu'un point de contr\u00f4le de serveur est demand\u00e9. Java Security Manager est obsol\u00e8te, comme indiqu\u00e9 par JEP 411.
 error.checkpoint.securitymanager.not.supported.useraction=Supprimez la propri\u00e9t\u00e9 websphere.java.security du fichier bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e du r\u00e9pertoire {0}.
+error.checkpoint.delete.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car une image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e.
+error.checkpoint.delete.useraction=V\u00e9rifiez que l'utilisateur est autoris\u00e9 \u00e0 supprimer le r\u00e9pertoire existant. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
+
+error.checkpoint.workarea.backup=CWWKE0960E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le r\u00e9pertoire {0} ne peut pas \u00eatre sauvegard\u00e9.
+error.checkpoint.workarea.backup.explanation=Une erreur s'est produite lors de la sauvegarde du r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le.
+error.checkpoint.workarea.backup.useraction=V\u00e9rifiez que l'utilisateur dispose des droits suffisants pour sauvegarder le r\u00e9pertoire de la zone de travail des points de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
+
+info.checkpoint.restore.failed=CWWKE0961I: La restauration du processus du serveur de point de contr\u00f4le a \u00e9chou\u00e9. Consultez le journal {0} pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n''a pas \u00e9t\u00e9 restaur\u00e9. Lancement du serveur sans utiliser l''image de point de contr\u00f4le.
+info.checkpoint.restore.failed.explanation=Une erreur s'est produite lors de la restauration d'un processus serveur de point de contr\u00f4le.  Le serveur a \u00e9t\u00e9 lanc\u00e9 sans utiliser l'image de point de contr\u00f4le.
+info.checkpoint.restore.failed.useraction=Consultez les journaux pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n'a pas \u00e9t\u00e9 restaur\u00e9.
+
+error.checkpoint.failed=CWWKE0962E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9. La sortie suivante provient du fichier CRIU {0} qui contient des d\u00e9tails sur la raison pour laquelle le point de contr\u00f4le a \u00e9chou\u00e9.
+error.checkpoint.failed.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9. Aucune image de processus de point de contr\u00f4le valide pour le serveur n'a \u00e9t\u00e9 cr\u00e9\u00e9e.
+error.checkpoint.failed.useraction=Pour d\u00e9terminer la raison de l'\u00e9chec du point de contr\u00f4le, examinez les fichiers journaux dans le r\u00e9pertoire des points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car les appels syst\u00e8me netlink ont \u00e9chou\u00e9. Si SELinux est activ\u00e9 en mode d'application, les appels syst\u00e8me netlink peuvent \u00eatre bloqu\u00e9s par le param\u00e8tre de r\u00e8gle SELinux "virt_sandbox_use_netlink". D\u00e9sactivez SELinux ou activez les appels syst\u00e8me netlink \u00e0 l'aide de la commande "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car les appels syst\u00e8me netlink ont \u00e9chou\u00e9.
+error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est activ\u00e9 en mode d'application, les appels syst\u00e8me netlink peuvent \u00eatre bloqu\u00e9s par le param\u00e8tre de r\u00e8gle SELinux "virt_sandbox_use_netlink". D\u00e9sactivez SELinux ou activez les appels syst\u00e8me netlink \u00e0 l'aide de la commande "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

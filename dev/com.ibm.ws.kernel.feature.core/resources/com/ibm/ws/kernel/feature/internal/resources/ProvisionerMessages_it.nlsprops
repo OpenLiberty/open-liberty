@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: La funzione utente {0} non
 tool.userfeature.install.location.invalid.explanation= La funzione utente non \u00e8 una funzione principale pertanto non pu\u00f2 essere installata nel componente principale.
 tool.userfeature.install.location.invalid.useraction= Installare la funzione utente in usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Il server ha aggiunto le funzioni {0} alla serie di funzioni esistenti.
+FEATURES_ADDED_DELTA.explanation=Il server ha installato una serie di nuove funzioni oltre a quelle precedentemente installate.
+FEATURES_ADDED_DELTA.useraction=Non \u00e8 richiesta alcuna azione.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Il client ha aggiunto {0} funzioni alla serie di funzioni esistente. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Il client ha installato una serie di nuove funzioni in aggiunta alle funzioni precedentemente installate.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Non \u00e8 richiesta alcuna azione. 
+
+
+

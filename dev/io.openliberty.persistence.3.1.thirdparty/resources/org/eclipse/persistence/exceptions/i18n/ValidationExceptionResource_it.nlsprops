@@ -633,5 +633,9 @@
 
 7356=Procedura: [{1}] non pu\u00f2 essere eseguito perch\u00e9 {0} attualmente non supporta pi\u00f9 parametri out.
 
-7357=L''URL "[{0}]" per la risorsa "[{1}]" non appartiene a una root di persistenza valida (come per la specifica di persistenza di Giacarta)
+7357=L''URL [{0}] per la risorsa [{1}] non appartiene a una root di persistenza valida, come definito dalla specifica JPA.
+
+7358=\u00c8 stato fornito un nome servizio ASM errato.
+
+7359=Nessun servizio ASM disponibile.
 

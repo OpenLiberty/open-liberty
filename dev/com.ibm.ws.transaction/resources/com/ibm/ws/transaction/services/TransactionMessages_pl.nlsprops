@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: Odwo\u0142anie do us\u0142ugi UserTransaction ma wa
 USERTRAN_IS_NULL.explanation=Wykonano \u017c\u0105danie uzyskania us\u0142ugi UserTransaction, ale \u017cadna us\u0142uga UserTransaction nie jest po\u0142\u0105czona z tym pakunkiem.
 USERTRAN_IS_NULL.useraction=Je\u015bli wymagany jest dost\u0119p do us\u0142ugi UserTransaction, u\u017cyj konsoli OSGi do zbadania, dlaczego \u017cadna us\u0142uga UserTransaction nie zosta\u0142a po\u0142\u0105czona z tym pakunkiem. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d transakcji: {0}
 UNEXPECTED_TRAN_ERROR.explanation=Wykonano \u017c\u0105danie pobrania obiektu Transaction, ale wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Sprawd\u017a w dziennikach informacje o poprzed
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Transakcja globalna zosta\u0142a wycofana z powodu przekroczenia limitu czasu: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=Bie\u017c\u0105ca transakcja globalna przekroczy\u0142a limit czasu i dlatego zosta\u0142a wycofana.
-GLOBAL_TRAN_ROLLBACK.useraction=Zadbaj o to, aby transakcje globalne ko\u0144czy\u0142y si\u0119 w dozwolonym przedziale czasu, lub zwi\u0119ksz limit czasu.
+GLOBAL_TRAN_ROLLBACK.useraction=Upewnij si\u0119, \u017ce transakcja globalna zosta\u0142a zako\u0144czona w dozwolonym przedziale czasu lub zwi\u0119ksz limit czasu.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o, poniewa\u017c wdro\u017cenie serwera zawiera pliki dziennika transakcji w katalogu {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty nie oczekuje, \u017ce pliki dziennika transakcji b\u0119d\u0105 istnie\u0107 we wdro\u017ceniu serwera, gdy za\u017c\u0105dano punktu kontrolnego serwera.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Usu\u0144 katalog dziennika transakcji z wdro\u017cenia serwera.

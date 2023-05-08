@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u0179r\u00f3d\u0142o dany
 DSRA4015.no.ucp.connection.pool.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem ConnectionPoolDataSource lub Driver, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik produktu Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: Sterownik JDBC nie obs\u0142uguje ustawiania warto\u015bci {0} we w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych {1}.
+DSRA4016.enum.property.vaue.not.valid.explanation=W\u0142a\u015bciwo\u015b\u0107 \u017ar\u00f3d\u0142a danych zosta\u0142a skonfigurowana z u\u017cyciem warto\u015bci, kt\u00f3ra nie jest obs\u0142ugiwana przez sterownik JDBC.
+DSRA4016.enum.property.vaue.not.valid.useraction=Sprawd\u017a, czy w dokumentacji sterownika JDBC dla tej w\u0142a\u015bciwo\u015bci podano poprawne warto\u015bci.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

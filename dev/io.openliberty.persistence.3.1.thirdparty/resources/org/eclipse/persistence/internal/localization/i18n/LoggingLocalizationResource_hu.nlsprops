@@ -115,6 +115,10 @@ connected_user_database=Csatlakoztatott: {3}{4}Felhaszn\u00e1l\u00f3: {0}{3}{4}A
 
 connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}{6}Adatb\u00e1zis: {2}  V\u00e1ltozat: {3}{6}Meghajt\u00f3: {4}  V\u00e1ltozat: {5}
 
+corrupt_object=s\u00e9r\u00fclt objektum: {0}
+
+corrupt_object_referenced_through_mapping=A k\u00f6vetkez\u0151 s\u00e9r\u00fclt objektumra lek\u00e9pez\u00e9sen kereszt\u00fcl t\u00f6rt\u00e9nik hivatkoz\u00e1s: {0}.
+
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
 
 create_default_dbms_tables_not_supported=A WLS "create-default-dbms-tables" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a sorb
 
 sop_object_wrong_version=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a sorb\u00f3l, mert rossz [{0}] els\u0151dleges verzi\u00f3val rendelkezik a k\u00f6vetkez\u0151ben: [{1}], [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=a s\u00e9r\u00fclt objektumra hivatkoz\u00f3 l\u00e1togatott objektumokat tartalmaz\u00f3 verem: {0}
+
 topLink_version=EclipseLink, verzi\u00f3: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn
 validate_db_schema_with_not_supported=A WLS "validate-db-schema-with" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
 validate_ejb_jar=Az ejb-jar.xml \u00e9rv\u00e9nyes\u00edt\u00e9se indul, eltarthat egy ideig...
+
+validate_object_space=objektumter\u00fclet \u00e9rv\u00e9nyes\u00edt\u00e9se.
 
 verifiy_columns_read_locking_not_supported=A "Read" optimista be\u00e1ll\u00edt\u00e1s a "verify-columns" elemhez a(z) ({0}) entit\u00e1sban nem k\u00f6zvetlen\u00fcl t\u00e1mogatott az EclipseLink CMP-ben. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 

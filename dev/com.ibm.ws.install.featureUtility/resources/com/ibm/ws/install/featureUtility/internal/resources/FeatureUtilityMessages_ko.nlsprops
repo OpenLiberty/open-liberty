@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=\ud2b9\uc131 \ud30c\uc77c\uc774 \uc720\ud6a8\u
 MSG_VALIDATION_NUM_OF_ERRORS=\uc624\ub958 \uc218: {0}
 MSG_VALIDATION_MESSAGES=\ud2b9\uc131 \ud30c\uc77c \uc720\ud6a8\uc131 \uac80\uc99d
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=\uad6c\uc131\ub41c \uacf5\uac1c \ud0a4
+MSG_NO_CONFIG_KEY=\uad6c\uc131\ub41c \ud0a4\uac00 \uc5c6\uc74c
+MSG_VERIFY_FEATURE_LABEL=\uae30\ub2a5 \ud655\uc778:
+MSG_DEFAULT_VERIFY=\uac15\uc81c \uc2e4\ud589
 
 FIELD_REPO_NAME=\uc774\ub984: {0}
 FIELD_REPO_LOCATION=\uc704\uce58: {0}
@@ -60,3 +64,4 @@ FIELD_REPO=\uc800\uc7a5\uc18c \uc11c\ubc84: {0}({1})
 FIELD_PROXY=\ud504\ub85d\uc2dc \uc11c\ubc84: {0}
 FIELD_VALIDATION_RESULTS=\uc720\ud6a8\uc131 \uac80\uc99d \uacb0\uacfc: {0}
 FIELD_VALIDATION_LINE=\ud589: {0}
+FIELD_KEYID=\ud0a4 ID:

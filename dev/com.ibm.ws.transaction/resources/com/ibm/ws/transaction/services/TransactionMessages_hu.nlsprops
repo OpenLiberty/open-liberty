@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: A UserTransaction szolg\u00e1ltat\u00e1s referencia
 USERTRAN_IS_NULL.explanation=Egy k\u00e9r\u00e9s lett elk\u00fcldve a UserTransaction szolg\u00e1ltat\u00e1s lek\u00e9r\u00e9s\u00e9hez, de ehhez a k\u00f6teghez nem lett csatolva UserTransaction szolg\u00e1ltat\u00e1s.
 USERTRAN_IS_NULL.useraction=Ha hozz\u00e1 szeretne f\u00e9rni a UserTransaction szolg\u00e1ltat\u00e1shoz, akkor az OSGi konzol seg\u00edts\u00e9g\u00e9vel vizsg\u00e1lja ki, hogy a k\u00f6teghez mi\u00e9rt nem lett csatolva UserTransaction szolg\u00e1ltat\u00e1s. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: V\u00e1ratlan tranzakci\u00f3 hiba t\u00f6rt\u00e9nt: {0}
 UNEXPECTED_TRAN_ERROR.explanation=Egy Transaction objektum leh\u00edv\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9r\u00e9s lett elk\u00fcldve, azonban v\u00e1ratlan hiba t\u00f6rt\u00e9nt. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Ellen\u0151rizze a napl\u00f3kban a kor\u00e1bb
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Glob\u00e1lis tranzakci\u00f3 visszag\u00f6rget\u00e9s id\u0151t\u00fall\u00e9p\u00e9s miatt: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=A jelenlegi glob\u00e1lis tranzakci\u00f3 t\u00fall\u00e9pte az id\u0151korl\u00e1tot, ez\u00e9rt vissza lett g\u00f6rgetve.
-GLOBAL_TRAN_ROLLBACK.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a glob\u00e1lis tranzakci\u00f3 az enged\u00e9lyezett id\u0151kereten bel\u00fcl befejez\u0151dik, vagy n\u00f6velje az id\u0151korl\u00e1tot.
+GLOBAL_TRAN_ROLLBACK.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a glob\u00e1lis tranzakci\u00f3 befejez\u0151dik az enged\u00e9lyezett id\u0151kereten bel\u00fcl, vagy n\u00f6velje az id\u0151korl\u00e1tot.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert a kiszolg\u00e1l\u00f3telep\u00edt\u00e9s tranzakci\u00f3s napl\u00f3f\u00e1jlokat tartalmaz a(z) {0} k\u00f6nyvt\u00e1rban.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=A Liberty nem sz\u00e1m\u00edt tranzakci\u00f3s napl\u00f3f\u00e1jlokra a kiszolg\u00e1l\u00f3telep\u00edt\u00e9sben a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=T\u00e1vol\u00edtsa el a tranzakci\u00f3s napl\u00f3k k\u00f6nyvt\u00e1r\u00e1t a kiszolg\u00e1l\u00f3telep\u00edt\u00e9sb\u0151l.

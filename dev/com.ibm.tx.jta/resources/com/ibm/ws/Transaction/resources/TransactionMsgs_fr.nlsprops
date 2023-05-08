@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Examinez la valeur de l'\u00e9poque de ce messa
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Le xid repris {0} \u00e0 partir de {1} - Le xid n''est associ\u00e9 \u00e0 aucune transaction et sera annul\u00e9
-WTRN0148_REC_XA_ROLLBACK.explanation=Le service de transaction a g\u00e9n\u00e9r\u00e9 une reprise xa sur un gestionnaire de ressources consign\u00e9 et obtenu un xid qui ne corrrespond pas \u00e0 une transaction consign\u00e9e.  Le service de transaction annulera le xid dans le cadre du traitement de reprise.
+WTRN0148_REC_XA_ROLLBACK.explanation=Le service de transaction a \u00e9mis une reprise xa sur un gestionnaire de ressources consign\u00e9 et a obtenu un xid qui ne correspond pas \u00e0 une transaction consign\u00e9e. Le service de transaction annule le xid dans le cadre du traitement de la r\u00e9cup\u00e9ration.
 WTRN0148_REC_XA_ROLLBACK.useraction=Aucune intervention de l'utilisateur n'est requise.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Aucune intervention de l'utilisateur n'est r
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: Le xid repris {0} \u00e0 partir de {1} - Le xid est associ\u00e9 \u00e0 une transaction (tid={2}) avec l''\u00e9tat consign\u00e9 {3}
-WTRN0149_REC_XA_TRAN.explanation=Le service de transaction a g\u00e9n\u00e9r\u00e9 une reprise xa sur un gestionnaire de ressources consign\u00e9 et obtenu un xid qui corrrespond \u00e0 une transaction consign\u00e9e.  Le service de transaction ex\u00e9cutera la transaction dans le cadre du traitement de reprise.
+WTRN0149_REC_XA_TRAN.explanation=Le service de transaction a \u00e9mis une reprise xa sur un gestionnaire de ressources consign\u00e9 et a obtenu un xid qui correspond \u00e0 une transaction consign\u00e9e. Le service de transaction termine la transaction dans le cadre du traitement de la r\u00e9cup\u00e9ration.
 WTRN0149_REC_XA_TRAN.useraction=Aucune intervention de l'utilisateur n'est requise.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: R\u00e9ponse de l''annulation du xid {0} repris \u00e0 partir de {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Le service de transaction a g\u00e9n\u00e9r\u00e9 une reprise xa sur un gestionnaire de ressources consign\u00e9 et obtenu un xid qui ne corrrespond pas \u00e0 une transaction consign\u00e9e.  Le service de transaction a tent\u00e9 d'annuler le xid dans le cadre du traitement de reprise.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Le service de transaction a \u00e9mis une reprise xa sur un gestionnaire de ressources consign\u00e9 et a obtenu un xid qui ne correspond pas \u00e0 une transaction consign\u00e9e. Le service de transaction a tent\u00e9 d'annuler le xid dans le cadre du traitement de la r\u00e9cup\u00e9ration.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examinez le code d'erreur pour d\u00e9terminer si l'annulation a \u00e9chou\u00e9.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=S'il s'agit de la configuration souhait\u0
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: le service de transaction s'est arr\u00eat\u00e9 mais le journal de reprise a \u00e9t\u00e9 marqu\u00e9 comme ayant \u00e9chou\u00e9.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Le journal de reprise a \u00e9chou\u00e9 et l'acc\u00e8s au journal n'a pas eu lieu lors de l'arr\u00eat du serveur.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrigez les conditions indiqu\u00e9es par les messages qui ont signal\u00e9 l'invalidation du journal. Red\u00e9marrez le serveur afin de r\u00e9parer le journal.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le service de transaction ne parvient pas \u00e0 d\u00e9marrer une transaction.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty ne prend pas en charge les applications qui se lancent ou n\u00e9cessitent une transaction alors que l'application se lance lorsqu'un point de contr\u00f4le du serveur est demand\u00e9.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilisez l'option de point de contr\u00f4le du serveur at=deployment ou modifiez l'application pour lancer les transactions apr\u00e8s son d\u00e9marrage.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Une application a d\u00e9marr\u00e9 ou a n\u00e9cessit\u00e9 une transaction lors de la demande de point de contr\u00f4le du serveur. La trace de pile suivante pour cette unit\u00e9 d''ex\u00e9cution a \u00e9t\u00e9 captur\u00e9e lors de la cr\u00e9ation de la transaction : {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=La trace de pile a \u00e9t\u00e9 captur\u00e9e lors de la cr\u00e9ation de la transaction. La trace de pile aide les utilisateurs \u00e0 d\u00e9terminer quelles applications d\u00e9marrent des transactions lors du d\u00e9marrage de l'application et qui provoquent ensuite l'\u00e9chec de la demande de point de contr\u00f4le.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examinez la trace de pile pour d\u00e9terminer quelle application a d\u00e9marr\u00e9 une nouvelle transaction lors de la demande de point de contr\u00f4le du serveur.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

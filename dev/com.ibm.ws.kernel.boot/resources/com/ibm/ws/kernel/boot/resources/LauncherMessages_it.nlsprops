@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Impossibile impostare Java Sec
 error.cannotset.securitymanager.jdk18.explanation=Non \u00e8 stato possibile abilitare Java Security Manager perch\u00e9 il sistema sta utilizzando Java 18 che, per impostazione predefinita, non consente l'utilizzo di un Java Security Manager.
 error.cannotset.securitymanager.jdk18.useraction=Avviare il server con l'argomento JVM -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eliminare l''immagine di checkpoint esistente dalla directory {0}.
-error.checkpoint.delete.explanation=Una richiesta di checkpoint per il server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eliminare un'immagine di checkpoint esistente.
-error.checkpoint.delete.useraction=Assicurarsi che l'utente disponga dell'autorizzazione per eliminare la directory esistente. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
-
-error.checkpoint.workarea.backup=CWWKE0956E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eseguire il backup della directory {0}.
-error.checkpoint.workarea.backup.explanation=Si \u00e8 verificato un errore durante il backup della directory dell'area di lavoro del server di checkpoint.
-error.checkpoint.workarea.backup.useraction=Assicurarsi che l'utente disponga delle autorizzazioni sufficienti per eseguire il backup della directory dell'area di lavoro di checkpoint. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Impossibile ripristinare la directory dell''area di lavoro del server di checkpoint dalla directory {0}.
 error.checkpoint.workarea.restore.explanation=Si \u00e8 verificato un errore durante il ripristino della directory dell'area di lavoro di checkpoint.
-error.checkpoint.workarea.restore.useraction=Assicurarsi che l'utente disponga delle autorizzazioni sufficienti per ripristinare l'area di lavoro di checkpoint. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
-
-info.checkpoint.restore.failed=CWWKE0957I: Ripristino del processo del server di checkpoint non riuscito. Controllare il log {0} per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Avvio del server senza utilizzare l''immagine di checkpoint.
-info.checkpoint.restore.failed.explanation=Si \u00e8 verificato un errore durante il ripristino di un processo del server di checkpoint.  Il server \u00e8 stato avviato senza utilizzare l'immagine di checkpoint.
-info.checkpoint.restore.failed.useraction=Controllare i log per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato.
+error.checkpoint.workarea.restore.useraction=Assicurarsi che l'utente disponga di autorizzazioni sufficienti per ripristinare l'area di lavoro del punto di controllo. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 la propriet\u00e0 websphere.java.security era impostata nel file bootstrap.properties. Questa propriet\u00e0 abilita Java Security Manager e non \u00e8 valida quando si verifica un checkpoint del server.
 error.checkpoint.securitymanager.not.supported.explanation=Liberty non supporta Java Security Manager quando viene richiesto un checkpoint del server. Java Security Manager \u00e8 obsoleto, come specificato da JEP 411.
 error.checkpoint.securitymanager.not.supported.useraction=Rimuovere la propriet\u00e0 websphere.java.security dal file bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eliminare l''immagine di checkpoint esistente dalla directory {0}.
+error.checkpoint.delete.explanation=Una richiesta di checkpoint per il server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eliminare un'immagine di checkpoint esistente.
+error.checkpoint.delete.useraction=Assicurarsi che l'utente disponga dell'autorizzazione per eliminare la directory esistente. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
+
+error.checkpoint.workarea.backup=CWWKE0960E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 non \u00e8 possibile eseguire il backup della directory {0}.
+error.checkpoint.workarea.backup.explanation=Si \u00e8 verificato un errore durante il backup della directory dell'area di lavoro del server di checkpoint.
+error.checkpoint.workarea.backup.useraction=Assicurarsi che l'utente disponga di autorizzazioni sufficienti per eseguire il backup della directory dell'area di lavoro del punto di controllo. Immettere nuovamente il comando con un utente che dispone di autorizzazioni sufficienti.
+
+info.checkpoint.restore.failed=CWWKE0961I: Ripristino del processo del server di checkpoint non riuscito. Controllare il log {0} per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Avvio del server senza utilizzare l''immagine di checkpoint.
+info.checkpoint.restore.failed.explanation=Si \u00e8 verificato un errore durante il ripristino di un processo del server di checkpoint.  Il server \u00e8 stato avviato senza utilizzare l'immagine di checkpoint.
+info.checkpoint.restore.failed.useraction=Controllare i log per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato.
+
+error.checkpoint.failed=CWWKE0962E: La richiesta del punto di controllo del server non \u00e8 riuscita. Il seguente output proviene dal file CRIU {0} che contiene i dettagli sul motivo per cui il punto di controllo ha avuto esito negativo.
+error.checkpoint.failed.explanation=Una richiesta di checkpoint per il server non \u00e8 riuscita. Non \u00e8 stata creata alcuna immagine di processo del punto di controllo valida per il server.
+error.checkpoint.failed.useraction=Per determinare il motivo per cui il punto di controllo non \u00e8 riuscito, esaminare i file di log nella directory del punto di controllo che si trova nella directory dei log del server.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 le chiamate di sistema netlink non sono riuscite. Se SELinux \u00e8 abilitato in modalit\u00e0 di applicazione, le chiamate di sistema netlink potrebbero essere bloccate dall'impostazione della politica "virt_sandbox_use_netlink" di SELinux. Disabilitare SELinux o abilitare le chiamate di sistema netlink con il comando "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Una richiesta di checkpoint per il server non \u00e8 riuscita perch\u00e9 le chiamate di sistema netlink hanno avuto esito negativo.
+error.checkpoint.failed.selinux.netdiag.useraction=Se SELinux \u00e8 abilitato in modalit\u00e0 di applicazione, le chiamate di sistema netlink potrebbero essere bloccate dall'impostazione della politica "virt_sandbox_use_netlink" di SELinux. Disabilitare SELinux o abilitare le chiamate di sistema netlink con il comando "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.

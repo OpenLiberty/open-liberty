@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -524,6 +524,10 @@ LOG_CANNOT_CLOSE_OBJECT=Fi\u015fierele temporare nu pot fi \u015fterse.
 LOG_CANNOT_CLOSE_OBJECT.explanation=Exemplul necesit\u0103 Java 7 sau o versiune superioar\u0103 pentru a \u015fterge directorul installTmp.
 LOG_CANNOT_CLOSE_OBJECT.action=\u00cenl\u0103tura\u0163i manual directorul installTmp sau utiliza\u0163i Java 7 sau o versiune superioar\u0103.
 
+LOG_VERIFIED_FEATURE=S-a verificat cu succes caracteristica {0}.
+LOG_VERIFIED_FEATURE.explanation=Caracteristica specificat\u0103 a fost verificat\u0103 cu succes.
+LOG_VERIFIED_FEATURE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=Parola pentru proxy-ul urm\u0103tor nu este codificat\u0103: {0}. Pute\u0163i codifica parola prin rularea comenzii de codificare securityUtility cu op\u0163iunea --encoding setat\u0103 la un tip de codificare suportat\u0103, care sunt xor (implicit), aes \u015fi hash. De exemplu: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Caracteristici de dezinstalat:
 # Following messages for debug logging purpose
@@ -566,6 +570,8 @@ STATE_DOWNLOAD_FILES_OK=\nToate aseturile au fost desc\u0103rcate cu succes.
 STATE_CONTACTING_MAVEN_REPO=Stabilirea unei conexiuni la o magazie Maven configurat\u0103...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=S-a f\u0103cut conexiunea la magazia configurat\u0103.
 STATE_READING_ENV_PROPS_FILE=Se cite\u015fte {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=Se verific\u0103 semn\u0103turile ...
+STATE_VERIFYING=Se verific\u0103 {0} ...
 PROGRESS_STEP=Pasul {0} din {1}
 
 MSG_DOWNLOAD_SUCCESS=S-a desc\u0103rcat cu succes caracteristica {0}.
@@ -602,6 +608,10 @@ MSG_VALIDATION_MISSING_HOST=Numele de gazd\u0103 de server proxy nu este specifi
 MSG_VALIDATION_INVALID_URL=URL-ul urm\u0103tor nu este valid: {0}. Sunt suportate numai protocoale HTTP, HTTPS \u015fi URL-uri de fi\u015fiere. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protocolul de URL pentru urm\u0103toarea magazie nu este suportat: {0}. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect.
 MSG_VALIDATION_INVALID_HOST=Urm\u0103toarea gazd\u0103 de server proxy nu este valid\u0103: {0}. pecifica\u0163i un nume valid de gazd\u0103 de server proxy HTTP. Nu este necesar prefixul http://.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=Numele de cheie public\u0103 nu este specificat. Fie specifica\u021bi un nume pentru cheia public\u0103, fie \u00eenl\u0103tura\u021bi proprietatea dac\u0103 nu este neutilizat\u0103.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=Proprietatea feature.verify nu accept\u0103 o valoare {0}. Specifica\u021bi o valoare valid\u0103, care este "enforce", "warn", "skip" sau "all".
+MSG_VALIDATION_INVALID_KEYID={0} nu este \u00een format pe 64 de bi\u021bi. Rula\u021bi comanda GnuPG pentru a g\u0103si formatul de ID de cheie lung\u0103. 
+MSG_VALIDATION_MISSING_KEYID=ID-ul de cheie nu este specificat. Specifica\u021bi ID-ul de cheie pentru URL-ul cheie sau comenta\u021bi propriet\u0103\u021bile de URL de cheie.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Nu au fost g\u0103site caracteristici.
@@ -618,6 +628,10 @@ VALIDATION_INVALID_HOST=Nume de gazd\u0103 invalid
 VALIDATION_INVALID_URL=Format de URL nesuportat
 VALIDATION_DUPLICATE_KEY=Nume de proprietate duplicat
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocol nesuportat
+VALIDATION_MISSING_PUBKEY_NAME=Lips\u0103 nume cheie public\u0103
+VALIDATION_INVALID_key_URL=URL de cheie nesuportat
+VALIDATION_INVALID_KEYID=Format ID de cheie invalid
+VALIDATION_MISSING_KEYID=Lips\u0103 ID de cheie
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Una sau mai multe caracteristici au fost dezinstalate cu succes: {0}.
@@ -631,6 +645,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Intr\u0103rile nu s-au potrivit.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Toate caracteristicile au fost dezinstalate cu succes.
 TOOL_INSTALLATION_COMPLETED=Toate caracteristicile au fost instalate cu succes.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Toate caracteristicile au fost verificate cu succes.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Parola pentru ID-ul de utilizator specificat \u00een op\u0163iunea --user nu a fost furnizat\u0103.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Este necesar\u0103 o parol\u0103 c\u00e2nd se specific\u0103 ID-ul de utilizator.
@@ -764,7 +779,8 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Asigura\u0163i-v\u0103 
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Asetul {0} depinde de {1}, care nu este disponibil \u00een magaziile configurate . E posibil ca una sau mai multe magazii configurate s\u0103 nu fie accesibile. Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. Alternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Asetul nu poate fi desc\u0103rcat sau instalat deoarece depinde de un aset care nu este disponibil.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Pute\u0163i utiliza ac\u0163iunea viewSettings pentru a verifica magaziile configurate \u015fi apoi utiliza\u0163i ac\u0163iunea testConnection pentru a testa conexiunea. \n\nAlternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. \n\nDac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. \n\nPentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Pute\u0163i utiliza ac\u0163iunea viewSettings pentru a verifica magaziile configurate \u015fi apoi utiliza\u0163i ac\u0163iunea testConnection pentru a testa conexiunea. \n\nAlternativ, desc\u0103rca\u0163i wlp-featureRepo-<version>.zip de pe site-ul web IBM Fix Central \u015fi configura\u0163i folderul extras ca magazie bazat\u0103 pe director. \n\nDac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103. \n\nPentru informa\u0163ii suplimentare despre instalarea aseturilor, consulta\u0163i documenta\u0163ia installUtility \u00een IBM Knowledge Center. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei \
+    de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Aseturile {0} depind de {1}, care nu este disponibil \u00een magaziile configurate. Configura\u0163i installUtility pentru conectarea la IBM WebSphere Liberty Repository pentru a desc\u0103rca sau instala asetul. Dac\u0103 nu ave\u0163i acces la internet, contacta\u0163i-v\u0103 administratorul pentru a desc\u0103rca asetul lips\u0103 \u015fi toate dependen\u0163ele \u015fi ad\u0103uga\u0163i-le la o magazie configurat\u0103.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Aseturile nu pot fi desc\u0103rcate sau instalate din cauz\u0103 c\u0103 depind de un aset care nu este disponibil.
@@ -893,3 +909,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Formatul coordonatei Maven BOM 
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformata\u0163i coordonata Maven BOM pentru caracteristici, astfel \u00eenc\u00e2t s\u0103 respecte formatul groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Aceast\u0103 ac\u0163iune featureManager este stabilizat\u0103. Utiliza\u0163i installUtility {0} \u00een loc. Comanda installUtility este recomandat\u0103 pentru instalare \u015fi ac\u0163iuni legate de depozit.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: Op\u021biunea de verificare caracteristic\u0103 "{0}" nu se potrive\u0219te cu "{1}" \u00een linia de comand\u0103.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=Op\u021biunea de verificare caracteristic\u0103 pentru fi\u0219ierul de propriet\u0103\u021bi sau variabila de mediu trebuie s\u0103 se potriveasc\u0103 cu cea din linia de comand\u0103. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Asigura\u021bi-v\u0103 c\u0103 op\u021biunile de verificare caracteristic\u0103 specificate se potrivesc una cu cealalt\u0103.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: Op\u021biunea de verificare {0} nu este valid\u0103. Asigura\u021bi-v\u0103 c\u0103 op\u021biunea este valid\u0103.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=Op\u0163iunea specificat\u0103 nu este valid\u0103. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Specifica\u021bi una dintre urm\u0103toarele op\u021biuni valide: enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: Cheia public\u0103 nu a putut fi desc\u0103rcat\u0103: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=Cheia public\u0103 specificat\u0103 nu a fost desc\u0103rcat\u0103 din URL-ul de cheie specificat. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verifica\u021bi ID-ul de cheie, URL-ul de cheie \u0219i accesul la re\u021bea, apoi \u00eencerca\u021bi din nou ac\u021biunea. \u00cen cazul \u00een care conexiunea \u00eenc\u0103 nu func\u021bioneaz\u0103, URL-ul de cheie ar putea fi temporar indisponibil.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: Nu a fost furnizat ID-ul de cheie public\u0103 pentru URL-ul de cheie {0}. 
+ERROR_KEYID_NOT_PROVIDED.explanation=Nu a fost furnizat ID-ul de cheie public\u0103 pentru URL-ul de cheie specificat. Este necesar ID-ul de cheie pe 64 de bi\u021bi pentru a desc\u0103rca \u0219i verifica autenticitatea cheii. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Furniza\u021bi ID-ul de cheie \u00een format pe 64 de bi\u021bi. Pentru a afla ID-ul de cheie, rula\u021bi comanda GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Protocolul de URL pentru urm\u0103torul URL de cheie nu este suportat: {0}. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Protocolul de URL pentru URL-ul de cheie specificat nu este suportat.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Asigura\u0163i-v\u0103 c\u0103 URL-ul este specificat corect. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: ID-ul de cheie public\u0103 {0} este revocat. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=Cheia public\u0103 este revocat\u0103. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Furniza\u021bi noul ID de cheie public\u0103 \u0219i semn\u0103turile. \u00cen cazul \u00een care cheia revocat\u0103 este o cheie public\u0103 Liberty, aplica\u021bi corec\u021bia interimar\u0103 sau furniza\u021bi noul ID de cheie public\u0103, care este disponibil pe situl Web OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: ID-ul de cheie public\u0103 {0} a expirat la {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=Cheia public\u0103 a expirat.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Rula\u021bi comanda GnuPG pentru a extinde data de expirare a cheii publice \u0219i \u00eencerca\u021bi din nou. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Nu se pot verifica urm\u0103toarele semn\u0103turi de caracteristic\u0103: {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Semn\u0103tura de caracteristic\u0103 nu a fost verificat\u0103.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Utiliza\u021bi op\u021biunea --verbose pentru a vedea urmele de depanare.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: Nu a fost furnizat URL-ul de cheie public\u0103 pentru ID-ul de cheie {0}. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= Nu a fost furnizat URL-ul de cheie public\u0103 pentru ID-ul de cheie {0}. URL-ul de cheie public\u0103 este un c\u00e2mp obligatoriu pentru desc\u0103rcarea cheii publice. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Furniza\u021bi URL-ul de cheie public\u0103. Protocoalele suportate sunt HTTP, HTTPS \u015fi fi\u015fier. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: ID-ul de cheie public\u0103 {0} nu se potrive\u0219te cu ID-ul de cheie public\u0103 furnizat {1}. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Este posibil s\u0103 se fi modificat cheia public\u0103. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=\u00cen cazul \u00een care cheia public\u0103 este un fi\u0219ier local, asigura\u021bi-v\u0103 c\u0103 furniza\u021bi fi\u0219ierul corect.
+

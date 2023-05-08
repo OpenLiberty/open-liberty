@@ -115,6 +115,10 @@ connected_user_database=Conectado: {3}{4}Usu\u00e1rio: {0}{3}{4}Banco de Dados: 
 
 connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dados: {2} Vers\u00e3o: {3}{6}Driver: {4} Vers\u00e3o: {5}
 
+corrupt_object=objeto corrompido: {0}
+
+corrupt_object_referenced_through_mapping=O objeto corrompido a seguir \u00e9 referenciado por mapeamento: {0}.
+
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
 
 create_default_dbms_tables_not_supported=A configura\u00e7\u00e3o do CMP \u201ccriar-tabelas-dbms-padr\u00e3o\u201d do WLS nativo n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Removendo o sopObject serializado da linha porque ela possui
 
 sop_object_wrong_version=Removendo o sopObject serializado da linha porque ele tem uma vers\u00e3o incorreta [{0}] em [{1}] em [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=pilha de objetos visitados que se referem ao objeto corrompido: {0}
+
 topLink_version=EclipseLink, vers\u00e3o: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pod
 validate_db_schema_with_not_supported=A configura\u00e7\u00e3o do CMP \u201cvalidar-esquema-db-com" do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
 validate_ejb_jar=Validando ejb-jar.xml \u00e9 iniciado, ele pode levar algum tempo...
+
+validate_object_space=validar espa\u00e7o objeto.
 
 verifiy_columns_read_locking_not_supported=A configura\u00e7\u00e3o otimista "Read" em "verify-columns" na entidade ({0}) n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 

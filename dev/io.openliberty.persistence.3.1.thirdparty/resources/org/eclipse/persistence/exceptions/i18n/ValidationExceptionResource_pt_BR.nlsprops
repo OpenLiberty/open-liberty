@@ -633,5 +633,9 @@
 
 7356=Procedimento: [{1}] n\u00e3o pode ser executado porque {0} n\u00e3o suporta atualmente v\u00e1rios par\u00e2metros de sa\u00edda
 
-7357=A URL "[{0}]" para o recurso "[{1}]" n\u00e3o pertence a uma raiz de persist\u00eancia v\u00e1lida (conforme a especifica\u00e7\u00e3o do Jakarta Persistence)
+7357=A URL [{0}] para o recurso [{1}] n\u00e3o pertence a uma raiz de persist\u00eancia v\u00e1lida, conforme definido pela especifica\u00e7\u00e3o JPA.
+
+7358=Nome do servi\u00e7o ASM incorreto fornecido.
+
+7359=Nenhum servi\u00e7o ASM dispon\u00edvel.
 

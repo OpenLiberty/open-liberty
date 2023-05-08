@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: La source de donn\u00e9es 
 DSRA4015.no.ucp.connection.pool.datasource.explanation=La source de donn\u00e9es a \u00e9t\u00e9 configur\u00e9e avec le type ConnectionPoolDataSource ou Driver, qui n'est pas impl\u00e9ment\u00e9 par le pilote du pool de connexions universelles (UCP) Oracle.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Mettez \u00e0 jour la source de donn\u00e9es pour qu'elle utilise le type XADataSource ou DataSource.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: Le pilote JDBC ne prend pas en charge la d\u00e9finition de la valeur {0} sur la propri\u00e9t\u00e9 de source de donn\u00e9es {1}.
+DSRA4016.enum.property.vaue.not.valid.explanation=Une propri\u00e9t\u00e9 de source de donn\u00e9es a \u00e9t\u00e9 configur\u00e9e avec une valeur que le pilote JDBC ne prend pas en charge.
+DSRA4016.enum.property.vaue.not.valid.useraction=Consultez la documentation du pilote JDBC pour conna\u00eetre les valeurs appropri\u00e9es pour cette propri\u00e9t\u00e9.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

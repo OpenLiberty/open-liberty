@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Pr\u00fcfen Sie den in der Nachricht angegebene
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: XID {0} \u00fcber {1} wiederhergestellt - Die XID hat keine zugeordnete Transaktion und wird r\u00fcckg\u00e4ngig gemacht.
-WTRN0148_REC_XA_ROLLBACK.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice macht die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig.
+WTRN0148_REC_XA_ROLLBACK.explanation=Der Transaktionsservice hat erfolgreich eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice macht die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig.
 WTRN0148_REC_XA_ROLLBACK.useraction=Es ist keine Benutzeraktion erforderlich. 
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Es ist keine Benutzeraktion erforderlich.
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: XID {0} \u00fcber {1} wiederhergestellt - Die XID hat eine zugeordnete Transaktion (tid={2}) mit dem protokollierten Status {3}
-WTRN0149_REC_XA_TRAN.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die einer protokollierten Transaktion entspricht. Der Transaktionsservice f\u00fchrt die Transaktion im Rahmen der Wiederherstellung aus.
+WTRN0149_REC_XA_TRAN.explanation=Der Transaktionsservice hat eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager erfolgreich ausgef\u00fchrt und eine XID erhalten, die einer protokollierten Transaktion entspricht. Der Transaktionsservice schlie\u00dft die Transaktion im Rahmen der Wiederherstellung ab.
 WTRN0149_REC_XA_TRAN.useraction=Es ist keine Benutzeraktion erforderlich. 
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Antwort der Rollback-Operation f\u00fcr wiederhergestellte XID {0} von {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice hat versucht, die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig zu machen.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Der Transaktionsservice hat erfolgreich eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice hat versucht, die XID im Rahmen der Wiederherstellung zur\u00fcckzusetzen.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Pr\u00fcfen Sie den Fehlercode, um festzustellen, ob die Rollback-Operation fehlgeschlagen ist.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=Es ist keine Aktion erforderlich, wenn die
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Der Transaktionsservice wurde beendet, aber das Wiederherstellungsprotokoll wurde als fehlgeschlagen markiert.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Das Wiederherstellungsprotokoll ist fehlgeschlagen und der Zugriff auf das Protokoll fand beim Herunterfahren des Servers nicht statt.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Korrigieren Sie alle Bedingungen, die in den Nachrichten angegeben sind, die die Invalidierung des Protokolls gemeldet haben. Starten Sie den Server erneut, damit das Protokoll repariert werden kann.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil der Transaktionsservice keine Transaktion starten kann.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty unterst\u00fctzt keine Anwendungen, die eine Transaktion starten oder erfordern, w\u00e4hrend die Anwendung bei der Anforderung eines Serverpr\u00fcfpunkts gestartet wird.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Verwenden Sie die Serverpr\u00fcfpunktoption w\u00e4hrend der Implementierung oder \u00e4ndern Sie die Anwendung so, dass Transaktionen nach ihrem Start gestartet werden.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Eine Anwendung hat w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine Transaktion gestartet oder erfordert. Der folgende Stack-Trace f\u00fcr diesen Thread wurde erfasst, als die Transaktion erstellt wurde: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Der Stack-Trace wurde erfasst, als die Transaktion erstellt wurde. Der Stack-Trace hilft Benutzern, zu ermitteln, welche Anwendungen Transaktionen w\u00e4hrend des Anwendungsstarts starten und dann das Fehlschlagen der Pr\u00fcfpunktanforderung verursachen.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=\u00dcberpr\u00fcfen Sie den Stack-Trace, um festzustellen, welche Anwendung w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine neue Transaktion gestartet hat.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+
