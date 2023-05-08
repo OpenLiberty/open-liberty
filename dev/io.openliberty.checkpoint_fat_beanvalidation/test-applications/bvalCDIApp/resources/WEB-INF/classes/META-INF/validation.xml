@@ -16,9 +16,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/validation/configuration
                       http://xmlns.jcp.org/xml/ns/validation/configuration/validation-configuration-2.0.xsd">
-                      
+
   <clock-provider>bval.v20.cdi.web.TestClockProvider</clock-provider>
-            
+
 </validation-config>
 
 

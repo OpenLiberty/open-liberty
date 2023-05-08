@@ -47,7 +47,8 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                ManagedBeanTest.class
+                ManagedBeanTest.class,
+                ClockProviderTest.class
 })
 
 public class FATSuite {

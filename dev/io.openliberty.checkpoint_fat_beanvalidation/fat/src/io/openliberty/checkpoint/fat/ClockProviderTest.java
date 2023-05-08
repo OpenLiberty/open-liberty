@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import bval.v20.cdi.web.BeanValCDIServlet;
+import bval.v20.web.BeanVal20TestServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
@@ -36,41 +36,37 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
- * Verify a restored server validates basic (built-in) Bean Validation constraints
- * within a web application that uses a CDI managed bean.
+ * Verify the clock provided by the default validation configuration tracks
+ * time as expected, and that time zone does not adjust, from checkpoint to
+ * restore.
  *
- * Temporal constraint validation uses a custom ClockProvider implementation. The
- * impl class is provided by the test and configured in validation.xml. Otherwise,
- * the ValidationFactory has the default configuration.
- *
- * This is an InstantOn bringup test for the Bean Validation feature.
+ * Verify the validation of basic temporal constraints for a java bean within
+ * checkpoint and restore.
  */
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class ManagedBeanTest extends FATServletClient {
+public class ClockProviderTest extends FATServletClient {
 
-    static final String SERVER_NAME = "checkpointBeanValidation";
+    static final String SERVER_NAME = "checkpointBeanValidationUTC";
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
-    static final String APP_NAME = "bvalCDIApp";
+    static final String APP_NAME = "bvalApp";
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = BeanValCDIServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = BeanVal20TestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "bval.v20.cdi.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "bval.v20.web");
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false,
                              server -> {
-                                 assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                                               server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
-                                 assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                                               server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                                 assertNotNull("BeanVal20TestServlet init message not found in log.",
+                                               server.waitForStringInLogUsingMark("BeanVal20TestServlet init now", 0));
                              });
         server.startServer();
         server.checkpointRestore();
