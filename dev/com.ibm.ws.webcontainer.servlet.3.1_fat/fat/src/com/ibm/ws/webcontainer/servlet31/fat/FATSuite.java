@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat;
 
@@ -129,6 +126,14 @@ public class FATSuite {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(serverConfig);
         server.waitForConfigUpdateInLogUsingMark(null);
+
+        /*
+         * Reset the log marks so waitForStringInLog continues to work.
+         * If we don't reset the marks then anything that was logged previous
+         * to this method call would be lost. For example: logs during application
+         * initialization and server startup.
+         */
+        server.resetLogMarks();
     }
 
 }
