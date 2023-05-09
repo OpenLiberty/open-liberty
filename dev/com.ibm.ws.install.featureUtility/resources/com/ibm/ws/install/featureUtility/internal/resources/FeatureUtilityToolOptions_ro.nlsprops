@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,30 +35,19 @@ help.desc=\tTip\u0103ri\u0163i informa\u0163iile de ajutor pentru ac\u0163iunea 
 installFeature.desc=\tInstala\u0163i o caracteristic\u0103 sau o list\u0103 de caracteristici separate prin spa\u0163iu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ nume ...
-installFeature.option-desc.name...=\tUna sau mai multe caracteristici care sunt separate de un spa\u0163iu. Pentru caracteristici,    \n\
-\tspecifica\u0163i numele scurt al caracteristicii sau coordonata Maven. Dac\u0103 specifica\u0163i    \n\
-\to coordonat\u0103 Maven, trebuie s\u0103 con\u0163in\u0103 cel pu\u0163in ID-ul de grup \u015fi                 \n\
-\tID-ul de artefact                                     \n\
-\t(de exemplu, io.openliberty.features:mpHealth-2.0).                 \n\
-\tVersiunea implicit\u0103 este versiunea runtime curent\u0103, iar         \n\
-\ttipul de \u00eempachetare implicit este ESA, dac\u0103 versiunea \u015fi \u00eempachetarea nu    \n\
-\tsunt specificate.
+installFeature.option-desc.name...=\tUna sau mai multe caracteristici care sunt separate de un spa\u0163iu. Pentru caracteristici,    \n\tspecifica\u0163i numele scurt al caracteristicii sau coordonata Maven. Dac\u0103 specifica\u0163i    \n\to coordonat\u0103 Maven, trebuie s\u0103 con\u0163in\u0103 cel pu\u0163in ID-ul de grup \u015fi                 \n\tID-ul de artefact                                     \n\t(de exemplu, io.openliberty.features:mpHealth-2.0).                 \n\tVersiunea implicit\u0103 este versiunea runtime curent\u0103, iar         \n\ttipul de \u00eempachetare implicit este ESA, dac\u0103 versiunea \u015fi \u00eempachetarea nu    \n\tsunt specificate.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
-installFeature.option-desc.--to=\tSpecifica\u0163i unde s\u0103 se instaleze caracteristica. Caracteristica poate fi instalat\u0103\n\
-\t\u00een orice loca\u0163ie de extensie de produs configurat\u0103 sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\
-\taceast\u0103 op\u0163iune nu este specificat\u0103, caracteristica este instalat\u0103 ca o caracteristic\u0103 de   \n\
-\tutilizator.
+installFeature.option-desc.--to=\tSpecifica\u0163i unde s\u0103 se instaleze caracteristica. Caracteristica poate fi instalat\u0103\n\t\u00een orice loca\u0163ie de extensie de produs configurat\u0103 sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\taceast\u0103 op\u0163iune nu este specificat\u0103, caracteristica este instalat\u0103 ca o caracteristic\u0103 de   \n\tutilizator.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=coordonat\u0103 Maven
-installFeature.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\
-\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\
-\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\
-\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
+installFeature.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
-installFeature.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
-\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+installFeature.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tUtiliza\u021bi aceast\u0103 op\u021biune pentru a specifica felul \u00een care sunt verificate caracteristicile. Op\u021biunea implicit\u0103      \neste "enforce", care verific\u0103 semn\u0103turile tuturor caracteristicilor     \nLiberty, cu excep\u021bia caracteristicilor de utilizator. Op\u021biunea "warn" este similar\u0103 cu  \n"enforce", dar nu termin\u0103 instalarea dac\u0103  \nverificarea e\u0219ueaz\u0103. Op\u021biunea "skip" sare peste verificare \n\u0219i nu descarc\u0103 nicio semn\u0103tur\u0103 de caracteristic\u0103. Op\u021biunea "all" verific\u0103 \nat\u00e2t caracteristicile Liberty, c\u00e2t \u0219i caracteristicile de utilizator.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
@@ -67,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tAccept\u0103 acordul de licen\u0163\u0103.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
-\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
+installFeature.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tInstala\u0163i caracteristicile necesare pentru un server numit.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -76,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ nume ...
 installServerFeatures.option-desc.name...=\tNumele unui server existent din acela\u015fi mediu Liberty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=coordonat\u0103 Maven
-installServerFeatures.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\
-\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\
-\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\
-\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
+installServerFeatures.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
-installServerFeatures.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
-\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+installServerFeatures.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\tde artefacte Maven ca surs\u0103 pentru featureUtility pentru instalarea aseturilor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tUtiliza\u021bi aceast\u0103 op\u021biune pentru a specifica felul \u00een care sunt verificate caracteristicile. Op\u021biunea implicit\u0103      \neste "enforce," care verific\u0103 semn\u0103turile tuturor caracteristicilor    \nLiberty, cu excep\u021bia caracteristicilor de utilizator. Op\u021biunea "warn" este similar\u0103 cu  \n"enforce," dar nu termin\u0103 instalarea dac\u0103 verificarea e\u0219ueaz\u0103.\n\tOp\u021biunea "skip" sare peste verificare \u0219i nu descarc\u0103 \nnicio semn\u0103tur\u0103 de caracteristic\u0103. Op\u021biunea "all" verific\u0103 at\u00e2t caracteristicile       \nLiberty, c\u00e2t \u0219i caracteristicile de utilizator.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
@@ -92,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tAccept\u0103 acordul de licen\u0163\u0103.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
-\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
+installServerFeatures.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tG\u0103sire caracteristici din magazii.
 #--------- OPTIONS ----------------------------------------------------#
@@ -103,7 +89,4 @@ find.option-desc.[searchString]=\tUtiliza\u0163i \u015firul de c\u0103utare pent
 viewSettings.desc=\tVizualizarea set\u0103rilor proxy-ului \u015fi ale magaziilor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa mesajele detaliate de la \n\
-\tvalidarea fi\u015fierului featureUtility.properties configurat.         \n\
-\tFiecare mesaj con\u0163ine un cod de eroare, num\u0103rul liniei unde a fost g\u0103sit\u0103 eroarea \n\
-\t\u015fi cauza erorii.
+viewSettings.option-desc.--viewValidationMessages=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa mesajele detaliate de la \n\tvalidarea fi\u015fierului featureUtility.properties configurat.         \n\tFiecare mesaj con\u0163ine un cod de eroare, num\u0103rul liniei unde a fost g\u0103sit\u0103 eroarea \n\t\u015fi cauza erorii.

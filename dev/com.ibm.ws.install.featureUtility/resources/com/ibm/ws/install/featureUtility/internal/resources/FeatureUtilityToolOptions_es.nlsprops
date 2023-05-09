@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,30 +35,19 @@ help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
 installFeature.desc=\tInstale una caracter\u00edstica o una lista de caracter\u00edsticas separadas por espacios.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ nombre ...
-installFeature.option-desc.name...=\tUna o m\u00e1s caracter\u00edsticas que est\u00e1n separadas por un espacio. Para caracter\u00edsticas,    \n\
-\tespecifique el nombre abreviado de la caracter\u00edstica o la coordenada Maven. Si        \n\
-\tespecifica una coordenada Maven, debe contener como m\u00ednimo el ID de                 \n\
-\tgrupo y el ID de artefacto                                     \n\
-\t(por ejemplo, io.openliberty.features:mpHealth-2.0).                 \n\
-\tLa versi\u00f3n toma el valor predeterminado de la versi\u00f3n de tiempo  \n\
-\tde ejecuci\u00f3n actual y el tipo de empaquetado toma el valor predeterminado de      \n\
-\tESA si la versi\u00f3n y el empaquetado no se especifican.
+installFeature.option-desc.name...=\tUna o m\u00e1s caracter\u00edsticas que est\u00e1n separadas por un espacio. Para caracter\u00edsticas,    \n\tespecifique el nombre abreviado de la caracter\u00edstica o la coordenada Maven. Si        \n\tespecifica una coordenada Maven, debe contener como m\u00ednimo el ID de                 \n\tgrupo y el ID de artefacto                                     \n\t(por ejemplo, io.openliberty.features:mpHealth-2.0).                 \n\tLa versi\u00f3n toma el valor predeterminado de la versi\u00f3n de tiempo  \n\tde ejecuci\u00f3n actual y el tipo de empaquetado toma el valor predeterminado de      \n\tESA si la versi\u00f3n y el empaquetado no se especifican.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[extensi\u00f3n|usr]
-installFeature.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la caracter\u00edstica. La caracter\u00edstica puede instalarse en\n\
-\tuna ubicaci\u00f3n de ampliaci\u00f3n de producto configurada, o como una caracter\u00edstica de usuario. Si  \n\
-\testa opci\u00f3n no se especifica, la caracter\u00edstica se instala como una \n\
-\tcaracter\u00edstica de usuario.
+installFeature.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la caracter\u00edstica. La caracter\u00edstica puede instalarse en\n\tuna ubicaci\u00f3n de ampliaci\u00f3n de producto configurada, o como una caracter\u00edstica de usuario. Si  \n\testa opci\u00f3n no se especifica, la caracter\u00edstica se instala como una \n\tcaracter\u00edstica de usuario.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordenada Maven
-installFeature.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\
-\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\
-\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\
-\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
+installFeature.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
-installFeature.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
-\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+installFeature.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tUtilice esta opci\u00f3n para especificar c\u00f3mo se verifican las caracter\u00edsticas. La opci\u00f3n \n predeterminada es "enforce" que verifica las firmas de todas las caracter\u00edsticas \n de Liberty, excepto las caracter\u00edsticas de usuario. La opci\u00f3n "warn" es la misma que \n "enforce", pero no termina la instalaci\u00f3n si falla la \n verificaci\u00f3n. La opci\u00f3n "skip" omite la verificaci\u00f3n \n y no descarga ninguna firma de caracter\u00edstica. La opci\u00f3n "all" verifica \n las caracter\u00edsticas de Liberty y las caracter\u00edsticas de usuario.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tVisualiza informaci\u00f3n de depuraci\u00f3n adicional mientras se ejecuta la acci\u00f3n.
@@ -67,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tAcepta el contrato de licencia.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\
-\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.
+installFeature.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tInstale las caracter\u00edsticas necesarias para un servidor indicado.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -76,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ nombre ...
 installServerFeatures.option-desc.name...=\tEl nombre de un servidor existente en el mismo entorno de Liberty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordenada Maven
-installServerFeatures.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\
-\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\
-\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\
-\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
+installServerFeatures.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
-installServerFeatures.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
-\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+installServerFeatures.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tUtilice esta opci\u00f3n para especificar c\u00f3mo se verifican las caracter\u00edsticas. La opci\u00f3n \n predeterminada es "enforce", que verifica las firmas de todas las  caracter\u00edsticas \n de Liberty, excepto las caracter\u00edsticas de usuario. La opci\u00f3n "warn" es la misma que \n "enforce", pero no termina la instalaci\u00f3n si falla la verificaci\u00f3n.\n\tLa opci\u00f3n "skip" omite la verificaci\u00f3n y no descarga ninguna \nfirma de caracter\u00edstica. La opci\u00f3n "all" verifica las caracter\u00edsticas \n de Liberty y las caracter\u00edsticas de usuario.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tVisualiza informaci\u00f3n de depuraci\u00f3n adicional mientras se ejecuta la acci\u00f3n.
@@ -92,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tAcepta el contrato de licencia.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\
-\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.
+installServerFeatures.option-desc.--noCache=\tLas caracter\u00edsticas instaladas desde un repositorio remoto     \n\t(por ejemplo, Maven Central) no est\u00e1n almacenadas en memoria cach\u00e9 localmente.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tBuscar caracter\u00edsticas en los repositorios.
 #--------- OPTIONS ----------------------------------------------------#
@@ -103,7 +89,4 @@ find.option-desc.[searchString]=\tUtilizar la serie de b\u00fasqueda para buscar
 viewSettings.desc=\tVer los valores de proxy y repositorios.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tUtilice esta opci\u00f3n para visualizar los mensajes detallados de la           \n\
-\tvalidaci\u00f3n del archivo featureUtility.properties configurado.         \n\
-\tCada mensaje contiene un c\u00f3digo de error, el n\u00famero de l\u00ednea donde se ha encontrado \n\
-\tel error y la causa del error.
+viewSettings.option-desc.--viewValidationMessages=\tUtilice esta opci\u00f3n para visualizar los mensajes detallados de la           \n\tvalidaci\u00f3n del archivo featureUtility.properties configurado.         \n\tCada mensaje contiene un c\u00f3digo de error, el n\u00famero de l\u00ednea donde se ha encontrado \n\tel error y la causa del error.

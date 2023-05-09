@@ -1622,3 +1622,7 @@ uri.has.fragment.character=Identyfikator URI ma znak fragmentu [#]; zakodowany [
 uri.has.dot.character=Identyfikator URI ma zakodowany znak kropki [%2E].
 uri.has.forwarslash.character=Identyfikator URI ma zakodowany znak uko\u015bnika [%2F].
 uri.has.backslash.character=Identyfikator URI ma znak uko\u015bnika odwrotnego; zakodowany [%5C] lub nie.
+
+multipart.file.count.max.exceeded=CWWWC0006E: \u017b\u0105danie zawiera\u0142o wi\u0119cej plik\u00f3w do przes\u0142ania ni\u017c jest to dozwolone. Maksymalna liczba plik\u00f3w: [{0}].
+multipart.file.count.max.exceeded.explanation=Liczba plik\u00f3w, kt\u00f3re zosta\u0142y przes\u0142ane z u\u017cyciem \u017c\u0105dania multipart/form-data, przekroczy\u0142a limit.
+multipart.file.count.max.exceeded.useraction=Zwi\u0119ksz maksymaln\u0105 liczb\u0119 plik\u00f3w, kt\u00f3re mog\u0105 zosta\u0107 przes\u0142ane w jednym \u017c\u0105daniu, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 maxFileCount webContainer w pliku server.xml. Warto\u015b\u0107 domy\u015blna to 5000. Aby uzyska\u0107 nieograniczon\u0105 operacj\u0119 przesy\u0142ania pliku, ustaw warto\u015b\u0107 -1.

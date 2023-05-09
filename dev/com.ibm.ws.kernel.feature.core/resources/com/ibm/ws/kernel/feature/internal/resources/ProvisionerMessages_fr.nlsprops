@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: La fonction utilisateur {0
 tool.userfeature.install.location.invalid.explanation= La fonction utilisateur n'est pas une fonction fondamentale et donc ne peut pas \u00eatre install\u00e9e sur core.
 tool.userfeature.install.location.invalid.useraction= Installez la fonction utilisateur sur usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Le serveur a ajout\u00e9 les fonctions {0} au jeu de fonctions existant.
+FEATURES_ADDED_DELTA.explanation=Le serveur a install\u00e9 un ensemble de nouvelles fonctions en plus des fonctions pr\u00e9c\u00e9demment install\u00e9es.
+FEATURES_ADDED_DELTA.useraction=Aucune action n'est\nrequise.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Le client a ajout\u00e9 les fonctions {0} au jeu de fonctions existant. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Le client a install\u00e9 un ensemble de nouvelles fonctions en plus des fonctions pr\u00e9c\u00e9demment install\u00e9es.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Aucune action n'est\nrequise. 
+
+
+

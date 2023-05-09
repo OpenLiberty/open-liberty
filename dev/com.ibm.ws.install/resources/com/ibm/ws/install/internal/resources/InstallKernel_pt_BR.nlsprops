@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -524,6 +524,10 @@ LOG_CANNOT_CLOSE_OBJECT=Os arquivos tempor\u00e1rios n\u00e3o podem ser exclu\u0
 LOG_CANNOT_CLOSE_OBJECT.explanation=A amostra requer Java 7 ou superior para excluir o diret\u00f3rio installTmp.
 LOG_CANNOT_CLOSE_OBJECT.action=Remova o diret\u00f3rio installTmp manualmente ou use Java 7 ou superior.
 
+LOG_VERIFIED_FEATURE=O recurso {0} foi verificado com sucesso.
+LOG_VERIFIED_FEATURE.explanation=O recurso especificado foi verificado com sucesso.
+LOG_VERIFIED_FEATURE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=A senha para o proxy a seguir n\u00e3o est\u00e1 codificada: {0}. \u00c9 poss\u00edvel codificar a senha executando o comando de codifica\u00e7\u00e3o securityUtility com a op\u00e7\u00e3o --encoding configurada para um tipo de codifica\u00e7\u00e3o suportado, que s\u00e3o xor (padr\u00e3o), aes e hash. Por exemplo: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Recursos a serem desinstalados:
 # Following messages for debug logging purpose
@@ -566,6 +570,8 @@ STATE_DOWNLOAD_FILES_OK=\n Todos os ativos foram transferidos por download com s
 STATE_CONTACTING_MAVEN_REPO=Estabelecendo uma conex\u00e3o com o reposit\u00f3rio Maven configurado...\nEsse processo pode levar v\u00e1rios minutos para ser conclu\u00eddo.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Conectado com \u00eaxito ao reposit\u00f3rio configurado.
 STATE_READING_ENV_PROPS_FILE=Lendo {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=Verificando assinaturas ...
+STATE_VERIFYING=Verificando {0} ...
 PROGRESS_STEP=Etapa {0} de {1}
 
 MSG_DOWNLOAD_SUCCESS=Recurso transferido por download com sucesso {0}.
@@ -602,6 +608,10 @@ MSG_VALIDATION_MISSING_HOST=O nome do host do servidor proxy n\u00e3o est\u00e1 
 MSG_VALIDATION_INVALID_URL=A URL a seguir n\u00e3o \u00e9 v\u00e1lida: {0}. Somente URLs HTTP, HTTPS e de arquivo s\u00e3o suportadas. Assegure-se de que a URL seja especificada corretamente.
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=O protocolo de URL para o reposit\u00f3rio a seguir n\u00e3o \u00e9 suportado: {0}. Os protocolos suportados s\u00e3o HTTP, HTTPS e arquivo. Assegure-se de que a URL seja especificada corretamente.
 MSG_VALIDATION_INVALID_HOST=O host do servidor proxy a seguir n\u00e3o \u00e9 v\u00e1lido: {0}. Especifique um nome do host do servidor proxy HTTP v\u00e1lido. O prefixo http:// n\u00e3o \u00e9 necess\u00e1rio.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=O nome da chave p\u00fablica n\u00e3o foi especificado. Especifique um nome para a chave p\u00fablica ou remova a propriedade, se ela n\u00e3o for usada.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=A propriedade feature.verify n\u00e3o suporta um valor de {0}. Especifique um valor v\u00e1lido que seja "enforce", "warn", "skip" ou "all".
+MSG_VALIDATION_INVALID_KEYID={0} n\u00e3o est\u00e1 no formato de 64 bits. Execute o comando GnuPG para localizar o formato de ID de chave longo. 
+MSG_VALIDATION_MISSING_KEYID=O ID da chave n\u00e3o foi especificado. Especifique o ID da chave para a URL da chave ou comente as propriedades da URL da chave.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Nenhum recurso localizado.
@@ -618,6 +628,10 @@ VALIDATION_INVALID_HOST=Nome do host inv\u00e1lido
 VALIDATION_INVALID_URL=Formato de URL n\u00e3o suportada
 VALIDATION_DUPLICATE_KEY=Nome da propriedade duplicado
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocolo n\u00e3o suportado
+VALIDATION_MISSING_PUBKEY_NAME=Nome da chave p\u00fablica ausente
+VALIDATION_INVALID_key_URL=URL da chave n\u00e3o suportada
+VALIDATION_INVALID_KEYID=Formato de ID de chave inv\u00e1lido
+VALIDATION_MISSING_KEYID=ID de chave ausente
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Um ou mais recursos desinstalados com sucesso: {0}.
@@ -631,6 +645,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Entradas n\u00e3o corresponderam.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Todos os recursos foram instalados com sucesso.
 TOOL_INSTALLATION_COMPLETED=Todos os ativos foram instalados com sucesso.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Todos os recursos foram verificados com sucesso.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: A senha para o ID do usu\u00e1rio especificado na op\u00e7\u00e3o --user n\u00e3o foi fornecida.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Uma senha \u00e9 necess\u00e1ria quando o ID do usu\u00e1rio \u00e9 especificado.
@@ -764,7 +779,8 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Certifique-se de que os
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: O ativo {0} depende do {1}, que n\u00e3o est\u00e1 dispon\u00edvel nos reposit\u00f3rios configurados. Um ou mais dos reposit\u00f3rios configurados pode n\u00e3o estar acess\u00edvel. Configure o installUtility para se conectar ao IBM WebSphere Liberty Repository para fazer download ou instalar o ativo. Caso n\u00e3o tenha acesso \u00e0 internet, entre em contato com o administrador para fazer download do ativo que falta e todas as depend\u00eancias, e os inclua no reposit\u00f3rio configurado. Como alternativa, fa\u00e7a download do wlp-featureRepo-<version>.zip do website do IBM Fix Central e configure a pasta extra\u00edda como um reposit\u00f3rio baseado em diret\u00f3rio.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=O ativo n\u00e3o pode ser transferido por download ou instalado, porque ele depende de um ativo n\u00e3o dispon\u00edvel.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configure o installUtility para se conectar ao IBM WebSphere Liberty Repository para fazer download ou instalar o ativo. \u00c9 poss\u00edvel usar a a\u00e7\u00e3o viewSettings para verificar os reposit\u00f3rios configurados e, em seguida, usar a a\u00e7\u00e3o testConnection para testar a conex\u00e3o. \n\nComo alternativa, fa\u00e7a o download do wlp-featureRepo-<version>.zip no website do IBM Fix Central e configure a pasta extra\u00edda como um reposit\u00f3rio baseado no diret\u00f3rio. \n\nCaso n\u00e3o tenha acesso \u00e0 Internet, entre em contato com o administrador para fazer download do ativo ausente e de todas as depend\u00eancias, e os inclua em um reposit\u00f3rio configurado. \n\nPara obter mais informa\u00e7\u00f5es sobre como instalar ativos, consulte a documenta\u00e7\u00e3o do installUtility no IBM Knowledge Center. Se o problema persistir, consulte as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configure o installUtility para se conectar ao IBM WebSphere Liberty Repository para fazer download ou instalar o ativo. \u00c9 poss\u00edvel usar a a\u00e7\u00e3o viewSettings para verificar os reposit\u00f3rios configurados e, em seguida, usar a a\u00e7\u00e3o testConnection para testar a conex\u00e3o. \n\nComo alternativa, fa\u00e7a o download do wlp-featureRepo-<version>.zip no website do IBM Fix Central e configure a pasta extra\u00edda como um reposit\u00f3rio baseado no diret\u00f3rio. \n\nCaso n\u00e3o tenha acesso \u00e0 Internet, entre em contato com o administrador para fazer download do ativo ausente e de todas as depend\u00eancias, e os inclua em um reposit\u00f3rio configurado. \n\nPara obter mais informa\u00e7\u00f5es sobre como instalar ativos, consulte a documenta\u00e7\u00e3o do installUtility no IBM Knowledge Center. Se o problema persistir, consulte as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problem\
+    a na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Os ativos {0} dependem de {1}, que n\u00e3o est\u00e1 dispon\u00edvel nos reposit\u00f3rios configurados. Configure o installUtility para se conectar ao IBM WebSphere Liberty Repository para fazer download ou instalar o ativo. Caso n\u00e3o tenha acesso \u00e0 internet, entre em contato com o administrador para fazer download do ativo que falta e todas as depend\u00eancias, e os inclua no reposit\u00f3rio configurado.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Os ativos n\u00e3o podem ser transferidos por download nem instalados, porque eles dependem de um ativo que n\u00e3o est\u00e1 dispon\u00edvel.
@@ -893,3 +909,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=O formato da coordenada Maven d
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformate a coordenada Maven do BOM de recursos para se ajustar ao formato groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Esta a\u00e7\u00e3o featureManager est\u00e1 estabilizada. Use installUtility {0} no lugar. O comando installUtility \u00e9 recomendado para a\u00e7\u00f5es relacionadas a instala\u00e7\u00e3o e reposit\u00f3rio.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: A op\u00e7\u00e3o de verifica\u00e7\u00e3o do recurso "{0}" n\u00e3o corresponde a "{1}" na linha de comandos.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=A op\u00e7\u00e3o de verifica\u00e7\u00e3o de recurso no arquivo de propriedades ou na vari\u00e1vel de ambiente deve corresponder \u00e0quela na linha de comandos. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Certifique-se de que as op\u00e7\u00f5es de verifica\u00e7\u00e3o de recurso especificadas correspondam entre si.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: A op\u00e7\u00e3o de verifica\u00e7\u00e3o {0} n\u00e3o \u00e9 v\u00e1lida. Certifique-se de que a op\u00e7\u00e3o seja v\u00e1lida.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=A op\u00e7\u00e3o especificada n\u00e3o \u00e9 v\u00e1lida. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Especifique uma das op\u00e7\u00f5es v\u00e1lidas a seguir: enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: A chave p\u00fablica n\u00e3o p\u00f4de ser transferida por download: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=A chave p\u00fablica especificada n\u00e3o foi transferida por download da URL da chave especificada. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verifique seu ID de chave, a URL da chave e o acesso \u00e0 rede e, em seguida, tente a a\u00e7\u00e3o novamente. Se a conex\u00e3o ainda falhar, a URL da chave poder\u00e1 estar temporariamente indispon\u00edvel.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: O ID da chave p\u00fablica da URL da chave {0} n\u00e3o foi fornecido. 
+ERROR_KEYID_NOT_PROVIDED.explanation=O ID da chave p\u00fablica para a URL da chave especificada n\u00e3o foi fornecido. O ID da chave de 64 bits \u00e9 necess\u00e1rio para fazer download e verificar a autenticidade da chave. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Forne\u00e7a o ID da chave no formato de 64 bits. Para descobrir o ID da chave, execute o comando GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: O protocolo de URL para a URL da chave a seguir n\u00e3o \u00e9 suportado: {0}. Os protocolos suportados s\u00e3o HTTP, HTTPS e arquivo. Assegure-se de que a URL seja\nespecificada corretamente.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=O protocolo de URL para a URL de chave especificada n\u00e3o \u00e9 suportado.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Assegure-se de que a URL seja\nespecificada corretamente. Os protocolos suportados s\u00e3o HTTP, HTTPS e arquivo. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: O ID da chave p\u00fablica {0} \u00e9 revogado. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=A chave p\u00fablica \u00e9 revogada. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Forne\u00e7a o novo ID de chave p\u00fablica e assinaturas. Se a chave revogada for uma chave p\u00fablica do Liberty, aplique a corre\u00e7\u00e3o tempor\u00e1ria ou forne\u00e7a o novo ID da chave p\u00fablica, que est\u00e1 dispon\u00edvel no website OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: O ID da chave p\u00fablica {0} expirou em {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=A chave p\u00fablica est\u00e1 expirada.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Execute o comando GnuPG para estender a data de expira\u00e7\u00e3o da chave p\u00fablica e tente novamente. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: N\u00e3o \u00e9 poss\u00edvel verificar as assinaturas de recurso a seguir: {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=A assinatura do recurso n\u00e3o foi verificada.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Use a op\u00e7\u00e3o --verbose para ver os rastreios de depura\u00e7\u00e3o.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: A URL da chave p\u00fablica do ID da chave {0} n\u00e3o foi fornecida. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= A URL da chave p\u00fablica do ID da chave {0} n\u00e3o foi fornecida. A URL da chave p\u00fablica \u00e9 um campo obrigat\u00f3rio para fazer download da chave p\u00fablica. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Forne\u00e7a a URL da chave p\u00fablica. Os protocolos suportados s\u00e3o HTTP, HTTPS e arquivo. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: O ID da chave p\u00fablica {0} n\u00e3o corresponde ao ID da chave {1} fornecido. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=A chave p\u00fablica pode ter mudado. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Se a chave p\u00fablica for um arquivo local, certifique-se de fornecer o arquivo correto.
+

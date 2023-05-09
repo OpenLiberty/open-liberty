@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,31 +35,19 @@ help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\
 installFeature.desc=\tEgyetlen szolg\u00e1ltat\u00e1s vagy szolg\u00e1ltat\u00e1sok vessz\u0151vel elv\u00e1lasztott list\u00e1j\u00e1nak telep\u00edt\u00e9se.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ n\u00e9v ...
-installFeature.option-desc.name...=\tEgy vagy t\u00f6bb, sz\u00f3k\u00f6zzel elv\u00e1lasztott szolg\u00e1ltat\u00e1s. Szolg\u00e1ltat\u00e1sok   \n\
-\teset\u00e9n, adja meg az \u00f6sszetev\u0151 r\u00f6vid nev\u00e9t vagy a Maven koordin\u00e1t\u00e1t. \n\
-\tHa egy Maven koordin\u00e1t\u00e1t ad meg, akkor annak tartalmaznia kell       \n\
-\tlegal\u00e1bb a csoportazonos\u00edt\u00f3t \u00e9s a m\u0171term\u00e9kazonos\u00edt\u00f3t                 \n\
-\t(p\u00e9ld\u00e1ul io.openliberty.features:mpHealth-2.0).                 \n\
-\tA verzi\u00f3sz\u00e1m alap\u00e9rtelmez\u00e9se a jelenlegi fut\u00e1si k\u00f6rnyezet v\u00e1ltozat,  \n\
-\ta csomagol\u00e1si t\u00edpus alap\u00e9rtelmez\u00e9se pedig az ESA, ha a verzi\u00f3sz\u00e1m \u00e9s \n\
-\ta csomagol\u00e1s nincs megadva.
+installFeature.option-desc.name...=\tEgy vagy t\u00f6bb, sz\u00f3k\u00f6zzel elv\u00e1lasztott szolg\u00e1ltat\u00e1s. Szolg\u00e1ltat\u00e1sok   \n\teset\u00e9n, adja meg az \u00f6sszetev\u0151 r\u00f6vid nev\u00e9t vagy a Maven koordin\u00e1t\u00e1t. \n\tHa egy Maven koordin\u00e1t\u00e1t ad meg, akkor annak tartalmaznia kell       \n\tlegal\u00e1bb a csoportazonos\u00edt\u00f3t \u00e9s a m\u0171term\u00e9kazonos\u00edt\u00f3t                 \n\t(p\u00e9ld\u00e1ul io.openliberty.features:mpHealth-2.0).                 \n\tA verzi\u00f3sz\u00e1m alap\u00e9rtelmez\u00e9se a jelenlegi fut\u00e1si k\u00f6rnyezet v\u00e1ltozat,  \n\ta csomagol\u00e1si t\u00edpus alap\u00e9rtelmez\u00e9se pedig az ESA, ha a verzi\u00f3sz\u00e1m \u00e9s \n\ta csomagol\u00e1s nincs megadva.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
-installFeature.option-desc.--to=\tMegadja a szolg\u00e1ltat\u00e1s telep\u00edt\u00e9s\u00e9nek a hely\u00e9t. A szolg\u00e1ltat\u00e1s b\u00e1rmely\n\
-\tbe\u00e1ll\u00edtott term\u00e9kb\u0151v\u00edtm\u00e9ny helyen vagy felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sk\u00e9nt \n\
-\ttelep\u00edthet\u0151.                                                         \n Ha \n\
-\tez a param\u00e9ter nincs megadva, akkor a szolg\u00e1ltat\u00e1s felhaszn\u00e1l\u00f3i      \n\
-\tszolg\u00e1ltat\u00e1sk\u00e9nt lesz telep\u00edtve.
+installFeature.option-desc.--to=\tMegadja a szolg\u00e1ltat\u00e1s telep\u00edt\u00e9s\u00e9nek a hely\u00e9t. A szolg\u00e1ltat\u00e1s b\u00e1rmely\n\tbe\u00e1ll\u00edtott term\u00e9kb\u0151v\u00edtm\u00e9ny helyen vagy felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sk\u00e9nt \n\ttelep\u00edthet\u0151.                                                         \n Ha \n\tez a param\u00e9ter nincs megadva, akkor a szolg\u00e1ltat\u00e1s felhaszn\u00e1l\u00f3i      \n\tszolg\u00e1ltat\u00e1sk\u00e9nt lesz telep\u00edtve.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven koordin\u00e1ta
-installFeature.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\
-\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\
-\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\
-\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
+installFeature.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
-installFeature.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
-\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+installFeature.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tEzzel a be\u00e1ll\u00edt\u00e1ssal adhatja meg a szolg\u00e1ltat\u00e1sok ellen\u0151rz\u00e9s\u00e9nek m\u00f3dj\u00e1t. Az \nalap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s az "enforce", amely a felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok kiv\u00e9tel\u00e9vel \naz \u00f6sszes Liberty szolg\u00e1ltat\u00e1s al\u00e1\u00edr\u00e1s\u00e1t ellen\u0151rzi. A "warn" be\u00e1ll\u00edt\u00e1s ugyanaz, \nmint az "enforce",  de nem \u00e1ll\u00edtja le a telep\u00edt\u00e9st, ha az \nellen\u0151rz\u00e9s meghi\u00fasul. A "skip" be\u00e1ll\u00edt\u00e1s kihagyja az ellen\u0151rz\u00e9st, \n\u00e9s nem t\u00f6lt le szolg\u00e1ltat\u00e1s-al\u00e1\u00edr\u00e1sokat. Az "all" be\u00e1ll\u00edt\u00e1s a Liberty \u00e9s a \nfelhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sokat egyar\u00e1nt ellen\u0151rzi.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tTov\u00e1bbi hibakeres\u00e9si inform\u00e1ci\u00f3k megjelen\u00edt\u00e9se, mik\u00f6zben a m\u0171velet fut.
@@ -68,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tElfogadja a licencszerz\u0151d\u00e9st.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\
-\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.
+installFeature.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tA sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se egy megnevezett kiszolg\u00e1l\u00f3hoz.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -77,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ n\u00e9v ...
 installServerFeatures.option-desc.name...=\tEgy megl\u00e9v\u0151 kiszolg\u00e1l\u00f3 neve ugyanabban a Liberty k\u00f6rnyezetben.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven koordin\u00e1ta
-installServerFeatures.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\
-\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\
-\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\
-\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
+installServerFeatures.option-desc.--featuresBom=\tAdja meg a szolg\u00e1ltat\u00e1s BOM f\u00e1jl Maven koordin\u00e1t\u00e1j\u00e1t. Ez a be\u00e1ll\u00edt\u00e1s\n\tlehet\u0151v\u00e9 teszi egy\u00e9ni felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9s\u00e9t a be\u00e1ll\u00edtott \n\tMaven lerakatb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a lerakat tartalmazza a kapcsol\u00f3d\u00f3\n\tszolg\u00e1ltat\u00e1s JSON f\u00e1jlt is a BOM f\u00e1jllal megegyez\u0151 csoportazonos\u00edt\u00f3ra vonatkoz\u00f3an.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
-installServerFeatures.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
-\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+installServerFeatures.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tEzzel a be\u00e1ll\u00edt\u00e1ssal adhatja meg a szolg\u00e1ltat\u00e1sok ellen\u0151rz\u00e9s\u00e9nek m\u00f3dj\u00e1t. Az \nalap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1s az "enforce", amely a felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sok kiv\u00e9tel\u00e9vel \naz \u00f6sszes Liberty szolg\u00e1ltat\u00e1s al\u00e1\u00edr\u00e1s\u00e1t ellen\u0151rzi. A "warn" be\u00e1ll\u00edt\u00e1s ugyanaz, mint az "enforce", \nde nem \u00e1ll\u00edtja le a telep\u00edt\u00e9st, ha az ellen\u0151rz\u00e9s meghi\u00fasul.\n\tA "skip" be\u00e1ll\u00edt\u00e1s kihagyja az ellen\u0151rz\u00e9st, \u00e9s nem t\u00f6lt le \nszolg\u00e1ltat\u00e1s-al\u00e1\u00edr\u00e1sokat. Az "all" be\u00e1ll\u00edt\u00e1s a Liberty \u00e9s a felhaszn\u00e1l\u00f3i \nszolg\u00e1ltat\u00e1sokat egyar\u00e1nt ellen\u0151rzi.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tTov\u00e1bbi hibakeres\u00e9si inform\u00e1ci\u00f3k megjelen\u00edt\u00e9se, mik\u00f6zben a m\u0171velet fut.
@@ -93,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tElfogadja a licencszerz\u0151d\u00e9st.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\
-\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.
+installServerFeatures.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tSzolg\u00e1ltat\u00e1sok keres\u00e9se a lerakatokb\u00f3l.
 #--------- OPTIONS ----------------------------------------------------#
@@ -104,7 +89,4 @@ find.option-desc.[searchString]=\tA szolg\u00e1ltat\u00e1sokat keres\u00e9si kar
 viewSettings.desc=\tLerakatok \u00e9s proxybe\u00e1ll\u00edt\u00e1sok megtekint\u00e9se.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tEzzel a param\u00e9terrel megjelen\u00edtheti a \n\
-\tbe\u00e1ll\u00edtott featureUtility.properties f\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 r\u00e9szletes \u00fczeneteket.         \n\
-\tMinden \u00fczenet tartalmazza a hibak\u00f3dot, annak a sornak a sz\u00e1m\u00e1t, ahol \n\
-\ta hiba tal\u00e1lhat\u00f3, valamint a hiba ok\u00e1t.
+viewSettings.option-desc.--viewValidationMessages=\tEzzel a param\u00e9terrel megjelen\u00edtheti a \n\tbe\u00e1ll\u00edtott featureUtility.properties f\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 r\u00e9szletes \u00fczeneteket.         \n\tMinden \u00fczenet tartalmazza a hibak\u00f3dot, annak a sornak a sz\u00e1m\u00e1t, ahol \n\ta hiba tal\u00e1lhat\u00f3, valamint a hiba ok\u00e1t.

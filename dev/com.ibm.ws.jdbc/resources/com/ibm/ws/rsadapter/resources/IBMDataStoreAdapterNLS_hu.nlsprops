@@ -262,6 +262,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: A(z) {0} adatforr\u00e1s {
 DSRA4015.no.ucp.connection.pool.datasource.explanation=Az adatforr\u00e1s a ConnectionPoolDataSource vagy Driver t\u00edpussal lett be\u00e1ll\u00edtva, amit az Oracle UCP illeszt\u0151program nem val\u00f3s\u00edt meg.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Friss\u00edtse az adatforr\u00e1st, hogy az XADataSource vagy a DataSource t\u00edpust haszn\u00e1lja.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: A JDBC illeszt\u0151program nem t\u00e1mogatja a(z) {0} \u00e9rt\u00e9ket a(z) {1} adatforr\u00e1s tulajdons\u00e1gban.
+DSRA4016.enum.property.vaue.not.valid.explanation=Egy adatforr\u00e1s tulajdons\u00e1g olyan \u00e9rt\u00e9kkel lett be\u00e1ll\u00edtva, amelyet a JDBC illeszt\u0151program nem t\u00e1mogat.
+DSRA4016.enum.property.vaue.not.valid.useraction=Ellen\u0151rizze a JDBC illeszt\u0151program dokument\u00e1ci\u00f3j\u00e1ban a tulajdons\u00e1g megfelel\u0151 \u00e9rt\u00e9keit.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

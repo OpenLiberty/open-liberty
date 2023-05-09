@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: A origem de dados {0} foi 
 DSRA4015.no.ucp.connection.pool.datasource.explanation=A origem de dados foi configurada com o tipo ConnectionPoolDataSource ou Driver, que n\u00e3o \u00e9 implementado pelo driver do Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Atualize a origem de dados para usar o tipo XADataSource ou DataSource.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: o driver JDBC n\u00e3o suporta a configura\u00e7\u00e3o do valor {0} na propriedade de origem de dados {1}.
+DSRA4016.enum.property.vaue.not.valid.explanation=Uma propriedade de origem de dados foi configurada com um valor que o driver JDBC n\u00e3o suporta.
+DSRA4016.enum.property.vaue.not.valid.useraction=Verifique a documenta\u00e7\u00e3o do driver JDBC para obter os valores adequados para essa propriedade
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

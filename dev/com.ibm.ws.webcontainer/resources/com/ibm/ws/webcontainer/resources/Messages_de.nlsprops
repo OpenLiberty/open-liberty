@@ -1622,3 +1622,7 @@ uri.has.fragment.character=URI hat ein Fragmentzeichen [#]; codiert [%23] oder n
 uri.has.dot.character=URI hat einen codierten Punkt [%2E].
 uri.has.forwarslash.character=Der URI enth\u00e4lt einen codierten Schr\u00e4gstrich [%2F].
 uri.has.backslash.character=URI enth\u00e4lt einen umgekehrten Schr\u00e4gstrich; codiert [%5C] oder nicht.
+
+multipart.file.count.max.exceeded=CWWWC0006E: Die Anforderung enthielt mehr Dateien zum Hochladen als zul\u00e4ssig sind. Die maximale Anzahl von Dateien ist [{0}].
+multipart.file.count.max.exceeded.explanation=Die Anzahl der Dateien, die von der Anforderung f\u00fcr mehrteilige Formulardaten hochgeladen werden, hat den festgelegten Grenzwert \u00fcberschritten.
+multipart.file.count.max.exceeded.useraction=Erh\u00f6hen Sie die maximale Anzahl Dateien, die pro Anforderung hochgeladen werden k\u00f6nnen, indem Sie die angepasste Eigenschaft maxFileCount webContainer in der Datei server.xml festlegen. Der Standardwert ist 5000. F\u00fcr einen unbegrenzten Dateiupload setzen Sie den Wert auf -1.

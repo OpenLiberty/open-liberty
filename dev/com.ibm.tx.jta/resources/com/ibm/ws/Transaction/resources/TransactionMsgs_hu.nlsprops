@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Vizsg\u00e1lja meg a korszakkezdet \u00e9rt\u00
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: A(z) {1} helyr\u0151l vissza\u00e1ll\u00edtott {0} xid nem rendelkezik t\u00e1rs\u00edtott tranzakci\u00f3val, \u00e9s a rendszer vissza fogja g\u00f6rgetni
-WTRN0148_REC_XA_ROLLBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak.  A helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s vissza fogja g\u00f6rgetni az xid azonos\u00edt\u00f3t.
+WTRN0148_REC_XA_ROLLBACK.explanation=A tranzakci\u00f3szolg\u00e1ltat\u00e1s sikeresen kiadta az xa recover parancsot egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid \u00e9rt\u00e9ket kapott, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak. A tranzakci\u00f3szolg\u00e1ltat\u00e1s visszag\u00f6rgeti az xid \u00e9rt\u00e9ket a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s r\u00e9szek\u00e9nt.
 WTRN0148_REC_XA_ROLLBACK.useraction=Semmit sem kell tennie.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Semmit sem kell tennie.
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: A(z) {1} helyr\u0151l vissza\u00e1ll\u00edtott {0} xid {3} napl\u00f3zott \u00e1llapot\u00fa t\u00e1rs\u00edtott tranzakci\u00f3val (tid={2}) rendelkezik
-WTRN0149_REC_XA_TRAN.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely egy napl\u00f3zott tranzakci\u00f3nak felel meg.  A helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt a tranzakci\u00f3s szolg\u00e1ltat\u00e1s befejezi a tranzakci\u00f3t.
+WTRN0149_REC_XA_TRAN.explanation=A tranzakci\u00f3szolg\u00e1ltat\u00e1s sikeresen kiadta az xa recover parancsot egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid \u00e9rt\u00e9ket kapott, amely megfelel egy napl\u00f3zott tranzakci\u00f3nak. A tranzakci\u00f3szolg\u00e1ltat\u00e1s befejezi a tranzakci\u00f3t a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s r\u00e9szek\u00e9nt.
 WTRN0149_REC_XA_TRAN.useraction=Semmit sem kell tennie.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: V\u00e1lasz a(z) {1} helyr\u0151l helyre\u00e1ll\u00edtott {0} xid visszag\u00f6rget\u00e9s\u00e9b\u0151l - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=A tranzakci\u00f3s szolg\u00e1ltat\u00e1s sikeresen adott ki xa vissza\u00e1ll\u00edt\u00e1st egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid azonos\u00edt\u00f3t szerzett be, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak.  A tranzakci\u00f3s szolg\u00e1ltat\u00e1s megk\u00eds\u00e9relte visszag\u00f6rgetni az xid azonos\u00edt\u00f3t a helyre\u00e1ll\u00edt\u00e1s feldolgoz\u00e1s\u00e1nak r\u00e9szek\u00e9nt.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=A tranzakci\u00f3szolg\u00e1ltat\u00e1s sikeresen kiadta az xa recover parancsot egy napl\u00f3zott er\u0151forr\u00e1s-kezel\u0151n, \u00e9s olyan xid \u00e9rt\u00e9ket kapott, amely nem felel meg egy napl\u00f3zott tranzakci\u00f3nak. A tranzakci\u00f3szolg\u00e1ltat\u00e1s megpr\u00f3b\u00e1lta visszag\u00f6rgetni az xid \u00e9rt\u00e9ket a helyre\u00e1ll\u00edt\u00e1si feldolgoz\u00e1s r\u00e9szek\u00e9nt.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Vizsg\u00e1lja meg a hibak\u00f3dot, \u00e9s hat\u00e1rozza meg, hogy a visszag\u00f6rget\u00e9s esetleg meghi\u00fasult-e.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=Ha ez a k\u00edv\u00e1nt konfigur\u00e1ci\
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: A tranzakci\u00f3s szolg\u00e1ltat\u00e1s le\u00e1llt, de a helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghi\u00fasultk\u00e9nt lett megjel\u00f6lve.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=A helyre\u00e1ll\u00edt\u00e1si napl\u00f3 meghi\u00fasult, \u00e9s a napl\u00f3hoz nem siker\u00fclt hozz\u00e1f\u00e9rni a kiszolg\u00e1l\u00f3 le\u00e1ll\u00e1sakor.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Jav\u00edtsa ki a napl\u00f3 \u00e9rv\u00e9nytelens\u00e9g\u00e9t jelent\u0151 \u00fczenetek \u00e1ltal jelzett felt\u00e9teleket. Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy a napl\u00f3t ki lehessen jav\u00edtani.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert a tranzakci\u00f3szolg\u00e1ltat\u00e1s nem tud tranzakci\u00f3t ind\u00edtani.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=A Liberty nem t\u00e1mogatja az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n tranzakci\u00f3t kezd\u0151 vagy ig\u00e9nyl\u0151 alkalmaz\u00e1sokat egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Haszn\u00e1lja a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont=telep\u00edt\u00e9skor lehet\u0151s\u00e9get, vagy m\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy az indul\u00e1sa ut\u00e1n kezdjen tranzakci\u00f3kat.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Egy alkalmaz\u00e1s a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n tranzakci\u00f3t ind\u00edtott vagy ig\u00e9nyelt. A tranzakci\u00f3 l\u00e9trehoz\u00e1sakor a sz\u00e1l k\u00f6vetkez\u0151 verem-nyomk\u00f6vet\u00e9se ker\u00fclt r\u00f6gz\u00edt\u00e9sre: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=A verem-nyomk\u00f6vet\u00e9s a tranzakci\u00f3 l\u00e9trehoz\u00e1sakor ker\u00fclt r\u00f6gz\u00edt\u00e9sre. A verem-nyomk\u00f6vet\u00e9s seg\u00edt a felhaszn\u00e1l\u00f3knak meghat\u00e1rozni, hogy mely alkalmaz\u00e1sok kezdenek tranzakci\u00f3kat az ind\u00edt\u00e1suk sor\u00e1n, ami miatt az ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasul.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Vizsg\u00e1lja meg a verem-nyomk\u00f6vet\u00e9st annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy melyik alkalmaz\u00e1s kezdett \u00faj tranzakci\u00f3t a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

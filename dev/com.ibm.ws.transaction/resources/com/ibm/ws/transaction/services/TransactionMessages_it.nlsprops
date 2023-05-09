@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: Il riferimento del servizio UserTransaction \u00e8 
 USERTRAN_IS_NULL.explanation=\u00c8 stata eseguita una richiesta per ottenere il servizio UserTransaction, ma a questo bundle non \u00e8 collegato alcun servizio UserTransaction.
 USERTRAN_IS_NULL.useraction=Se \u00e8 richiesto l'accesso a UserTransaction, utilizzare la console OSGi per determinare il motivo per cui nessun servizio UserTransaction \u00e8 stato collegato a questo bundle. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Si \u00e8 verificato un errore della transazione non previsto: {0}
 UNEXPECTED_TRAN_ERROR.explanation=\u00c8 stata eseguita una richiesta di richiamo dell'oggetto Transazione ma si \u00e8 verificato un errore non previsto. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Ricercare nei log FFDC o errori precedenti.
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Rollback della transazione globale a causa di un timeout: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=La transazione globale corrente \u00e8 scaduta e ne \u00e8 stato eseguito il rollback.
-GLOBAL_TRAN_ROLLBACK.useraction=Verificare che la transazione globale venga completata nell'intervallo di tempo consentito o incrementare il valore del timeout.
+GLOBAL_TRAN_ROLLBACK.useraction=Assicurarsi che la transazione globale termini entro il periodo di tempo consentito o aumentare il timeout.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 la distribuzione del server contiene file di log di transazione nella directory {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty non prevede che i file di log delle transazioni esistano nella distribuzione del server quando viene richiesto un punto di controllo del server.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Rimuovere la directory del log di transazioni dalla distribuzione del server.

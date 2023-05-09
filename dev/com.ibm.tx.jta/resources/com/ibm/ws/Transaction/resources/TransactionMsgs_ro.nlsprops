@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Examina\u0163i valoarea epoch din acest mesaj \
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: xid {0} recuperat din {1} - xid nu are nici o tranzac\u0163ie asociat\u0103 \u015fi va fi derulat \u00eenapoi
-WTRN0148_REC_XA_ROLLBACK.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care nu corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie va derula \u00eenapoi xid-ul ca parte a procesului de recuperare.
+WTRN0148_REC_XA_ROLLBACK.explanation=Serviciul de tranzac\u021bii a emis cu succes recuperarea xa pentru un manager de resurse jurnalizat \u0219i a ob\u021binut un xid care nu corespunde unei tranzac\u021bii jurnalizate. Serviciul de tranzac\u021bii deruleaz\u0103 \u00eenapoi xid ca parte a proces\u0103rii de recuperare.
 WTRN0148_REC_XA_ROLLBACK.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Nu este necesara nicio ac\u0163iune a utiliz
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: xid {0} recuperat din {1} - xid are tranzac\u0163ia asociat\u0103 (tid={2}) cu starea \u00eenregistrat\u0103 {3}
-WTRN0149_REC_XA_TRAN.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie va completa tranzac\u0163ia ca parte a procesului de recuperare.
+WTRN0149_REC_XA_TRAN.explanation=Serviciul de tranzac\u021bii a emis cu succes recuperarea xa pentru un manager de resurse jurnalizat \u0219i a ob\u021binut un xid care corespunde unei tranzac\u021bii jurnalizate. Serviciul de tranzac\u021bii finalizeaz\u0103 tranzac\u021bia ca parte a proces\u0103rii de recuperare.
 WTRN0149_REC_XA_TRAN.useraction=Nu este necesara nicio ac\u0163iune a utilizazorului.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: R\u0103spuns de la xid {0} recuperat de derulare \u00eenapoi din {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Serviciul tranzac\u0163ie a emis cu succes recuperarea xa pe un manager de resurse \u00eenregistrat \u015fi a ob\u0163inut un xid care nu corespunde unei tranzac\u0163ii \u00eenregistrate.  Serviciul tranzac\u0163ie a \u00eencercat s\u0103 deruleze \u00eenapoi xid-ul ca parte a proces\u0103rii recuper\u0103rii.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Serviciul de tranzac\u021bii a emis cu succes recuperarea xa pentru un manager de resurse jurnalizat \u0219i a ob\u021binut un xid care nu corespunde unei tranzac\u021bii jurnalizate. Serviciul de tranzac\u021bii a \u00eencercat s\u0103 deruleze \u00eenapoi xid ca parte a proces\u0103rii de recuperare.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examina\u0163i codul de eroare pentru a determina dac\u0103 a e\u015fuat derularea \u00eenapoi.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=Dac\u0103 aceasta este configura\u0163ia d
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Serviciul de tranzac\u021bii s-a \u00eenchis, dar istoricul de recuperare a fost marcat ca e\u0219uat.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Istoricul de recuperare a e\u0219uat \u0219i nu s-a realizat accesul la istoric la oprirea serverului.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corecta\u021bi condi\u021biile indicate de mesajele care au raportat invalidarea istoricului. Reporni\u0163i serverul astfel \u00eenc\u00e2t istoricul s\u0103 poat\u0103 fi reparat.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Cererea de punct de control al serverului nu a reu\u0219it, deoarece serviciul de tranzac\u021bii nu poate \u00eencepe o tranzac\u021bie.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty nu are inclus suport pentru aplica\u021biile care \u00eencep sau necesit\u0103 o tranzac\u021bie \u00een timp ce aplica\u021bia porne\u0219te atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utiliza\u021bi op\u021biunea at=deployment pentru punctul de control al serverului sau modifica\u021bi aplica\u021bia pentru a \u00eencepe tranzac\u021biile dup\u0103 ce a pornit.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: O aplica\u021bie a \u00eenceput sau a necesitat o tranzac\u021bie \u00een timpul solicit\u0103rii punctului de control al serverului. Urm\u0103toarea urm\u0103 de stiv\u0103 pentru acest fir a fost capturat\u0103 atunci c\u00e2nd a fost creat\u0103 tranzac\u021bia: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Urma de stiv\u0103 a fost capturat\u0103 atunci c\u00e2nd a fost creat\u0103 tranzac\u021bia. Urma de stiv\u0103 ajut\u0103 utilizatorii s\u0103 determine ce aplica\u021bii \u00eencep tranzac\u021bii \u00een timpul pornirii aplica\u021biei \u0219i apoi s\u0103 provoace e\u0219ecul cererii de punct de control.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examina\u021bi urma de stiv\u0103 pentru a determina ce aplica\u021bie a \u00eenceput o tranzac\u021bie nou\u0103 \u00een timpul cererii de punct de control al serverului.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

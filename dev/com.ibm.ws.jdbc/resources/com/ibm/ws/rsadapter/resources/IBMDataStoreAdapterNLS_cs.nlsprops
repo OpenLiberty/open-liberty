@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Zdroj dat {0} byl nakonfig
 DSRA4015.no.ucp.connection.pool.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ConnectionPoolDataSource nebo typem ovlada\u010de, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: Ovlada\u010d JDBC nepodporuje nastaven\u00ed hodnoty {0} ve vlastnosti zdroje dat {1}.
+DSRA4016.enum.property.vaue.not.valid.explanation=Vlastnost zdroje dat byla nakonfigurov\u00e1na s hodnotou, kterou ovlada\u010d JDBC nepodporuje.
+DSRA4016.enum.property.vaue.not.valid.useraction=Zkontrolujte dokumentaci ovlada\u010de JDBC a zjist\u011bte spr\u00e1vn\u00e9 hodnoty t\u00e9to vlastnosti.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

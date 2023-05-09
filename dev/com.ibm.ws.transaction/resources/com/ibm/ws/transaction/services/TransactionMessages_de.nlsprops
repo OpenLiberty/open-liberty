@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: Die UserTransaction-Servicereferenz ist null.
 USERTRAN_IS_NULL.explanation=Es wurde eine Anforderung zum Anfordern des UserTransaction-Service abgesetzt, aber ist kein UserTransaction-Service mit diesem Bundle verbunden.
 USERTRAN_IS_NULL.useraction=Wenn der Zugriff auf die UserTransaction erforderlich ist, verwenden Sie die OSGi-Konsole, um zu ermitteln, warum kein UserTransaction-Service mit diesem Bundle verbunden wurde. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Unerwarteter Transaktionsfehler: {0}
 UNEXPECTED_TRAN_ERROR.explanation=Es wurde eine Anforderung zum Abrufen des Transaction-Objekts abgesetzt, aber es ist ein unerwarteter Fehler aufgetreten. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Suchen Sie in den Protokollen nach vorherigen F
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Eine globale Transaktion wurde wegen einer \u00dcberschreitung des zul\u00e4ssigen Zeitlimits r\u00fcckg\u00e4ngig gemacht: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=Die aktuelle globale Transaktion hat das zul\u00e4ssige Zeitlimit \u00fcberschritten und wurde deshalb r\u00fcckg\u00e4ngig gemacht.
-GLOBAL_TRAN_ROLLBACK.useraction=Stellen Sie sicher, dass die globale Transaktion innerhalb des zul\u00e4ssigen Zeitrahmens abgeschlossen werden kann, oder erh\u00f6hen Sie das Zeitlimit.
+GLOBAL_TRAN_ROLLBACK.useraction=Stellen Sie sicher, dass die globale Transaktion innerhalb des zul\u00e4ssigen Zeitrahmens beendet wird, oder erh\u00f6hen Sie das Zeitlimit.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: Die Pr\u00fcfpunktanforderung des Servers ist fehlgeschlagen, da die Serverimplementierung Transaktionsprotokolldateien im Verzeichnis {0} enth\u00e4lt.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty erwartet keine Transaktionsprotokolldateien in der Serverimplementierung, wenn ein Serverpr\u00fcfpunkt angefordert wird.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Entfernen Sie das Transaktionsprotokollverzeichnis aus der Serverimplementierung.

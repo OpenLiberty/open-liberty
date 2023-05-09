@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -524,6 +524,10 @@ LOG_CANNOT_CLOSE_OBJECT=Impossibile eliminare i file temporanei.
 LOG_CANNOT_CLOSE_OBJECT.explanation=L'esempio richiede Java 7 o successive per eliminare la directory installTmp.
 LOG_CANNOT_CLOSE_OBJECT.action=Rimuovere manualmente la directory installTmp o utilizzare Java 7 o successive.
 
+LOG_VERIFIED_FEATURE=La funzione {0} \u00e8 stata verificata correttamente.
+LOG_VERIFIED_FEATURE.explanation=La funzione specificata \u00e8 stata verificata correttamente.
+LOG_VERIFIED_FEATURE.useraction=Non \u00e8 richiesta alcuna azione.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=La password per il seguente proxy non \u00e8 codificata: {0}. \u00c8 possibile codificare la password eseguendo il comando securityUtility encode con l''opzione --encoding impostata su un tipo di codifica supportato, cio\u00e8 xor (valore predefinito), aes e hash. Ad esempio: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Funzioni da disinstallare:
 # Following messages for debug logging purpose
@@ -566,6 +570,8 @@ STATE_DOWNLOAD_FILES_OK=\nTutti gli asset sono stati scaricati correttamente.
 STATE_CONTACTING_MAVEN_REPO=Viene stabilita una connessione al repository Maven configurato...\nIl completamento di questo processo potrebbe richiedere alcuni minuti.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Connessione al repository configurato stabilita correttamente.
 STATE_READING_ENV_PROPS_FILE=Lettura di {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=Verifica delle firme in corso ...
+STATE_VERIFYING=Verifica di {0} in corso ...
 PROGRESS_STEP=Passo {0} di {1}
 
 MSG_DOWNLOAD_SUCCESS=La funzione {0} \u00e8 stata scaricata.
@@ -602,6 +608,10 @@ MSG_VALIDATION_MISSING_HOST=Il nome host del server proxy non \u00e8 stato speci
 MSG_VALIDATION_INVALID_URL=Il seguente URL non \u00e8 valido: {0} Sono supportati solo HTTP, HTTPS e gli URL file. Assicurarsi che l''URL sia specificato correttamente
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Il protocollo URL per il seguente repository non \u00e8 supportato: {0}. I protocolli supportati sono HTTP, HTTPS e file. Assicurarsi che l''URL sia specificato correttamente.
 MSG_VALIDATION_INVALID_HOST=Il seguente host server proxy non \u00e8 valido: {0} Specificare un nome host server proxy HTTP valido. Il prefisso http:// non \u00e8 necessario.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=Il nome della chiave pubblica non \u00e8 specificato. Specificare un nome per la chiave pubblica oppure rimuovere la propriet\u00e0 se non \u00e8 utilizzata.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=La propriet\u00e0 feature.verify non supporta il valore {0}. Specificare un valore valido, che sia "enforce", "warn", "skip" o "all".
+MSG_VALIDATION_INVALID_KEYID={0} non \u00e8 in formato a 64 bit. Eseguire il comando GnuPG per trovare il formato ID chiave lungo. 
+MSG_VALIDATION_MISSING_KEYID=L'ID chiave non \u00e8 specificato. Specificare l'ID chiave per l'URL della chiave o impostare come commento le propriet\u00e0 dell'URL della chiave.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Non sono state trovate funzioni.
@@ -618,6 +628,10 @@ VALIDATION_INVALID_HOST=Nome host non valido
 VALIDATION_INVALID_URL=Formato URL non supportato
 VALIDATION_DUPLICATE_KEY=Nome propriet\u00e0\u00a0duplicato
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocollo non supportato
+VALIDATION_MISSING_PUBKEY_NAME=Nome chiave pubblica mancante
+VALIDATION_INVALID_key_URL=URL chiave non supportato
+VALIDATION_INVALID_KEYID=Formato ID chiave non valido
+VALIDATION_MISSING_KEYID=ID chiave mancante
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Una o pi\u00f9 funzioni sono state disinstallate correttamente: {0}.
@@ -631,6 +645,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Le voci non corrispondono.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Tutte le funzioni sono state installate correttamente.
 TOOL_INSTALLATION_COMPLETED=Tutti gli asset sono stati installati correttamente.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Tutte le funzioni sono state verificate correttamente.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: La password per l'ID utente specificato nell'opzione --user non \u00e8 stata fornita.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=La password \u00e8 obbligatoria quando si specifica l'ID utente.
@@ -764,7 +779,8 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Verificare che gli asse
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: L''asset {0} dipende da {1}, che non \u00e8 disponibile nei repository configurati. Uno o pi\u00f9 dei repository configurati potrebbe non essere accessibile. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l''asset. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare l''asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato. In alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=L'asset non pu\u00f2 essere scaricato o installato perch\u00e9 dipende da un asset che non \u00e8 disponibile.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. \u00c8 possibile utilizzare l'azione viewSettings per verificare i repository configurati e successivamente utilizzare l'azione testConnection per verificare la connessione.\n\nIn alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory.\n\nSe non si dispone di accesso a internet, contattare l'amministratore per scaricare l'asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.\n\nPer maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l'asset. \u00c8 possibile utilizzare l'azione viewSettings per verificare i repository configurati e successivamente utilizzare l'azione testConnection per verificare la connessione.\n\nIn alternativa, scaricare il file wlp-featureRepo-<version>.zip dal sito Web IBM Fix Central e configurare la cartella estratta come repository basato sulla directory.\n\nSe non si dispone di accesso a internet, contattare l'amministratore per scaricare l'asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.\n\nPer maggiori informazioni sull'installazione degli asset, consultare la documentazione di installUtility in IBM Knowledge Center. Se il problema persiste, consultare le informazioni sulla determinazione del problema sulla pagina Web di supporto di WebSphere Application Server: http://www.ibm.com/soft\
+    ware/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Gli asset {0} dipendono da {1}, che non \u00e8 disponibile nei repository configurati. Configurare installUtility per la connessione a IBM WebSphere Liberty Repository per scaricare o installare l''asset. Se non si dispone di accesso a internet, contattare l''amministratore per scaricare l''asset mancante e le relative dipendenze, quindi aggiungerli a un repository configurato.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Gli asset non possono essere scaricati o installati perch\u00e9 dipendono da un asset non disponibile.
@@ -893,3 +909,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Il formato della coordinata Mav
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Modificare la coordinata Maven del BOM delle funzioni in modo che sia conforme al formato idGruppo:idRisorsaUtente:versione.
 
 MSG_STABILIZING_FEATUREMANAGER=Questa azione featureManager \u00e8 stabilizzata. Utilizzare invece installUtility {0}. Il comando installUtility non \u00e8 consigliato per azioni correlate di installazione e correlate al repository. 
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: L''opzione di verifica funzione "{0}" non corrisponde a "{1}" nella riga comandi.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=L'opzione di verifica della funzione nel file delle propriet\u00e0 o nella variabile di ambiente deve corrispondere a quella nella riga comandi. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Assicurarsi che le opzioni di verifica della funzione specificate corrispondano tra loro.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: L''opzione di verifica {0} non \u00e8 valida. Assicurarsi che l''opzione sia valida.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=L'opzione specificata non \u00e8 valida. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Specificare una delle seguenti opzioni valide: enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: Impossibile scaricare la chiave pubblica: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=La chiave pubblica specificata non \u00e8 stata scaricata dall'URL della chiave specificato. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Verificare l'ID chiave, l'URL chiave e l'accesso alla rete, quindi provare a eseguire di nuovo l'azione. Se la connessione continua a non riuscire, l'URL della chiave potrebbe essere temporaneamente non disponibile.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: L''ID chiave pubblica per l''URL della chiave {0} non \u00e8 stato fornito. 
+ERROR_KEYID_NOT_PROVIDED.explanation=L'ID chiave pubblica per l'URL chiave specificato non \u00e8 stato fornito. L'ID chiave a 64 bit \u00e8 richiesto per scaricare e verificare l'autenticit\u00e0 della chiave. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Fornire l'ID chiave in formato a 64 bit. Per trovare l'ID chiave, eseguire il comando GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Il protocollo URL per il seguente URL chiave non \u00e8 supportato: {0}. I protocolli supportati sono HTTP, HTTPS e file. Assicurarsi che l''URL sia specificato correttamente.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Il protocollo URL per l'URL chiave specificato non \u00e8 supportato.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Assicurarsi che l'URL sia specificato correttamente. I protocolli supportati sono HTTP, HTTPS e file. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: L''ID chiave pubblica {0} \u00e8 stato revocato. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=La chiave pubblica viene revocata. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Fornire il nuovo ID chiave pubblica e le firme. Se la chiave revocata \u00e8 una chiave pubblica Liberty, applica la fix temporanea o fornisci il nuovo ID della chiave pubblica, disponibile sul sito web OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: L''ID della chiave pubblica {0} \u00e8 scaduto il {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=La chiave pubblica \u00e8 scaduta.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Eseguire il comando GnuPG per estendere la data di scadenza della chiave pubblica e riprovare. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Impossibile verificare le seguenti firme di funzione: {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=La firma della funzione non \u00e8 stata verificata.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Utilizzare l'opzione -- verbose per visualizzare le tracce di debug.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: L''URL della chiave pubblica per l''ID chiave {0} non \u00e8 stato fornito. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= L''URL della chiave pubblica per l''ID chiave {0} non \u00e8 stato fornito. L''URL della chiave pubblica \u00e8 un campo obbligatorio per scaricare la chiave pubblica. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Fornire l'URL della chiave pubblica. I protocolli supportati sono HTTP, HTTPS e file. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: L''ID chiave pubblica {0} non corrisponde all''ID chiave fornito {1}. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=La chiave pubblica potrebbe essere stata modificata. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Se la chiave pubblica \u00e8 un file locale, assicurarsi di fornire il file corretto.
+

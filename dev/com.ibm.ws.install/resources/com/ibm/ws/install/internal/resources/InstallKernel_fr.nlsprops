@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -524,6 +524,10 @@ LOG_CANNOT_CLOSE_OBJECT=Impossible de supprimer les fichiers temporaires.
 LOG_CANNOT_CLOSE_OBJECT.explanation=L'exemple requiert Java 7 (ou version ult\u00e9rieure) pour la suppression du r\u00e9pertoire installTmp.
 LOG_CANNOT_CLOSE_OBJECT.action=Supprimez manuellement le r\u00e9pertoire installTmp ou bien utilisez Java 7 (ou version ult\u00e9rieure).
 
+LOG_VERIFIED_FEATURE=La v\u00e9rification de la fonction {0} a abouti.
+LOG_VERIFIED_FEATURE.explanation=La v\u00e9rification de la fonction sp\u00e9cifi\u00e9e a abouti.
+LOG_VERIFIED_FEATURE.useraction=Aucune action n'est\nrequise.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=Le mot de passe du proxy suivant n''est pas cod\u00e9 : {0}. Vous pouvez coder le mot de passe \u00e0 l''aide de la commande securityUtility encode et de l''option --encoding d\u00e9finie sur un type de codage pris en charge : xor (par d\u00e9faut), aes et hash. Par exemple : securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Fonctions \u00e0 d\u00e9sinstaller :
 # Following messages for debug logging purpose
@@ -566,6 +570,8 @@ STATE_DOWNLOAD_FILES_OK=\nTous les actifs ont \u00e9t\u00e9 t\u00e9l\u00e9charg\
 STATE_CONTACTING_MAVEN_REPO=Etablissement d'une connexion au r\u00e9f\u00e9rentiel Maven configur\u00e9...\nCe processus peut prendre quelques minutes.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Connexion r\u00e9ussie au r\u00e9f\u00e9rentiel configur\u00e9.
 STATE_READING_ENV_PROPS_FILE=Lecture de {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=V\u00e9rification des signatures ...
+STATE_VERIFYING=V\u00e9rification de {0} ...
 PROGRESS_STEP=Etape {0} sur {1}
 
 MSG_DOWNLOAD_SUCCESS=Le t\u00e9l\u00e9chargement de la fonction {0} a abouti.
@@ -602,6 +608,10 @@ MSG_VALIDATION_MISSING_HOST=Le nom d\u2019h\u00f4te du serveur proxy n'est pas s
 MSG_VALIDATION_INVALID_URL=L''URL suivante n''est pas valide : {0}. Seules les URL HTTP, HTTPS et les URL de fichier sont prises en charge. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Le protocole d''URL pur le r\u00e9f\u00e9rentiel suivant n''est pas pris en charge : {0}. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
 MSG_VALIDATION_INVALID_HOST=Le serveur proxy suivant n''est pas valide : {0}. Indiquez un nom d''h\u00f4te de serveur proxy HTTP valide. Le pr\u00e9fixe http:// n''est pas obligatoire.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=Le nom de la cl\u00e9 publique n'est pas sp\u00e9cifi\u00e9. Indiquez un nom pour la cl\u00e9 publique ou supprimez la propri\u00e9t\u00e9 si elle n'est pas utilis\u00e9e.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=La propri\u00e9t\u00e9 feature.verify ne prend pas en charge la valeur {0}. Sp\u00e9cifiez une valeur valide, \u00e0 savoir "enforce", "warn", "skip" ou "all".
+MSG_VALIDATION_INVALID_KEYID={0} n''est pas au format 64 bits. Ex\u00e9cutez la commande GnuPG pour trouver le format d''ID de cl\u00e9 longue. 
+MSG_VALIDATION_MISSING_KEYID=L'ID de cl\u00e9 n'est pas sp\u00e9cifi\u00e9. Indiquez l'ID de cl\u00e9 pour l'URL de cl\u00e9 ou mettez en commentaire les propri\u00e9t\u00e9s de l'URL de cl\u00e9.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Aucun fonction n'a \u00e9t\u00e9 trouv\u00e9e.
@@ -618,6 +628,10 @@ VALIDATION_INVALID_HOST=Nom d'h\u00f4te non valide
 VALIDATION_INVALID_URL=Format d'URL non pris en charge
 VALIDATION_DUPLICATE_KEY=Nom de propri\u00e9t\u00e9 en double
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocole non pris en charge
+VALIDATION_MISSING_PUBKEY_NAME=Nom de cl\u00e9 publique manquant
+VALIDATION_INVALID_key_URL=URL de cl\u00e9 non prise en charge
+VALIDATION_INVALID_KEYID=Format d'ID de cl\u00e9 non valide
+VALIDATION_MISSING_KEYID=ID de cl\u00e9 manquant
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Une ou plusieurs fonctions ont \u00e9t\u00e9 d\u00e9sinstall\u00e9es avec succ\u00e8s : {0}.
@@ -631,6 +645,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Les entr\u00e9es ne concordent pas.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Toutes les fonctions ont \u00e9t\u00e9 install\u00e9es avec succ\u00e8s.
 TOOL_INSTALLATION_COMPLETED=Tous les actifs ont \u00e9t\u00e9 install\u00e9s avec succ\u00e8s.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Toutes les fonctions ont \u00e9t\u00e9 v\u00e9rifi\u00e9es.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Le mot de passe de l'ID utilisateur sp\u00e9cifi\u00e9 \u00e0 l'option --user n'a pas \u00e9t\u00e9 fourni.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Un mot de passe est requis lorsque l'ID utilisateur est sp\u00e9cifi\u00e9.
@@ -764,11 +779,13 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=V\u00e9rifiez que les a
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: L''actif {0} d\u00e9pend de {1}, qui n''est pas disponible dans les r\u00e9f\u00e9rentiels configur\u00e9s. Il se peut qu''un ou plusieurs des r\u00e9f\u00e9rentiels configur\u00e9s ne soit pas accessible. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer l''actif. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l''actif manquant et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=L'actif ne peut pas \u00eatre install\u00e9 car il d\u00e9pend d'un actif qui n'est pas disponible.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez utiliser l'action viewSettings afin de v\u00e9rifier les r\u00e9f\u00e9rentiels configur\u00e9s, puis utiliser l'action testConnection pour tester la connexion. \n\nVous pouvez \u00e9galement t\u00e9l\u00e9charger le fichier wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central et configurer le dossier d\u00e9compress\u00e9 en tant que r\u00e9f\u00e9rentiel bas\u00e9 r\u00e9pertoire. \n\nSi vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l'actif manquant et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. \n\nPour plus d'informations sur l'installation d'actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez utiliser l'action viewSettings afin de v\u00e9rifier les r\u00e9f\u00e9rentiels configur\u00e9s, puis utiliser l'action testConnection pour tester la connexion. \n\nVous pouvez \u00e9galement t\u00e9l\u00e9charger le fichier wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central et configurer le dossier d\u00e9compress\u00e9 en tant que r\u00e9f\u00e9rentiel bas\u00e9 r\u00e9pertoire. \n\nSi vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l'actif manquant et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. \n\nPour plus d'informations sur l'installation d'actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center.\
+    \ Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Les actifs {0} sont d\u00e9pendants de {1}, lequel n''est pas disponible dans les r\u00e9f\u00e9rentiels configur\u00e9s. Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d''installer l''actif. Si vous ne disposez pas d''un acc\u00e8s Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger l''actif manquant et d''\u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Les actifs ne peuvent pas \u00eatre t\u00e9l\u00e9charg\u00e9s ou install\u00e9s vu qu'ils d\u00e9pendent d'un actif qui n'est pas disponible.
-ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger les actifs manquants et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Configurez installUtility pour la connexion au r\u00e9f\u00e9rentiel IBM WebSphere Liberty afin de t\u00e9l\u00e9charger ou d'installer l'actif. Vous pouvez aussi t\u00e9l\u00e9charger wlp-featureRepo-<version>.zip depuis le site Web IBM Fix Central, et configurer le dossier extrait en tant r\u00e9f\u00e9rentiel bas\u00e9 sur un r\u00e9pertoire. Si vous ne disposez pas d'un acc\u00e8s \u00e0 Internet, contactez votre administrateur afin de t\u00e9l\u00e9charger les actifs manquants et les \u00e9ventuelles d\u00e9pendances, puis ajoutez-les \u00e0 un r\u00e9f\u00e9rentiel configur\u00e9. Pour plus d'informations sur l'installation des actifs, consultez la documentation relative \u00e0 installUtility dans IBM Knowledge Center. Si le probl\u00e8me persiste, consultez les informations de d\u00e9termination des probl\u00e8mes sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/supp\
+    ort.
 
 ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Les actifs {0} sont d\u00e9pendants de {1}, lequel n''est pas disponible dans le r\u00e9f\u00e9rentiel IBM WebSphere Liberty Repository. Si l''actif obligatoire est une fonction que vous avez pr\u00e9alablement t\u00e9l\u00e9charg\u00e9, installez la fonction manquante en indiquant l''emplacement du fichier ESA dans l''option featureManager install --location, et relancez l''installation de {0}.
 ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Les fonctions, additifs ou correctifs temporaires ne peuvent pas \u00eatre install\u00e9s car ils sont d\u00e9pendants d'un actif indisponible.
@@ -893,3 +910,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Le format de la coordonn\u00e9e
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformatez la coordonn\u00e9e Maven de la nomenclature de fonctions pour qu'elle corresponde au format groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Cette action du gestionnaire de fonctions (featureManager) est stabilis\u00e9e. Utilisez l''utilitaire d''installation {0} \u00e0 la place. La commande installUtility est recommand\u00e9e pour l''installation et les actions concernant le r\u00e9f\u00e9rentiel.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: L''option de v\u00e9rification de la fonction "{0}" ne correspond pas \u00e0 "{1}" dans la ligne de commande.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=L'option de v\u00e9rification de fonction du fichier de propri\u00e9t\u00e9s ou de la variable d'environnement doit correspondre \u00e0 celle de la ligne de commande. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Assurez-vous que les options de v\u00e9rification de fonction sp\u00e9cifi\u00e9es correspondent les unes aux autres.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: L''option de v\u00e9rification {0} n''est pas valide. V\u00e9rifiez que l''option est valide.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=L'option sp\u00e9cifi\u00e9e n'est pas valide. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Indiquez l'une des options valides suivantes : enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: La cl\u00e9 publique n''a pas pu \u00eatre t\u00e9l\u00e9charg\u00e9e : {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=La cl\u00e9 publique sp\u00e9cifi\u00e9e n'a pas \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e \u00e0 partir de l'URL de cl\u00e9 sp\u00e9cifi\u00e9e. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=V\u00e9rifiez votre ID de cl\u00e9, l'URL de cl\u00e9 et l'acc\u00e8s au r\u00e9seau, puis renouvelez l'op\u00e9ration. Si la connexion \u00e9choue toujours, il se peut que l'URL de cl\u00e9 soit temporairement indisponible.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: L''ID de cl\u00e9 publique pour l''URL de cl\u00e9 {0} n''a pas \u00e9t\u00e9 fourni. 
+ERROR_KEYID_NOT_PROVIDED.explanation=L'ID de cl\u00e9 publique pour l'URL de cl\u00e9 sp\u00e9cifi\u00e9e n'a pas \u00e9t\u00e9 fourni. L'ID de cl\u00e9 64 bits est requis pour t\u00e9l\u00e9charger et v\u00e9rifier l'authenticit\u00e9 de la cl\u00e9. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Indiquez l'ID de cl\u00e9 au format 64 bits. Pour trouver l'ID de cl\u00e9, ex\u00e9cutez la commande GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Le protocole d''URL pour l''URL de cl\u00e9 suivante n''est pas pris en charge : {0}. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. V\u00e9rifiez que l''URL est correctement indiqu\u00e9e.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Le protocole d'URL pour l'URL de cl\u00e9 sp\u00e9cifi\u00e9e n'est pas pris en charge.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=V\u00e9rifiez que l'URL est correctement indiqu\u00e9e. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: L''ID de cl\u00e9 publique {0} est r\u00e9voqu\u00e9. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=La cl\u00e9 publique est r\u00e9voqu\u00e9e. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Indiquez le nouvel ID de cl\u00e9 publique et les signatures. Si la cl\u00e9 r\u00e9voqu\u00e9e est une cl\u00e9 publique Liberty, appliquez le correctif temporaire ou fournissez le nouvel ID de cl\u00e9 publique, qui est disponible sur le site Web OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: L''ID de cl\u00e9 publique {0} a expir\u00e9 le {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=La cl\u00e9 publique est arriv\u00e9e \u00e0 expiration.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Ex\u00e9cutez la commande GnuPG pour \u00e9tendre la date d'expiration de la cl\u00e9 publique et r\u00e9essayez. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Impossible de v\u00e9rifier les signatures de fonction suivantes : {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=La signature de fonction n'a pas \u00e9t\u00e9 v\u00e9rifi\u00e9e.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Utilisez l'option --verbose pour afficher les traces de d\u00e9bogage.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: L''URL de cl\u00e9 publique pour l''ID de cl\u00e9 {0} n''a pas \u00e9t\u00e9 fournie. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= L''URL de cl\u00e9 publique pour l''ID de cl\u00e9 {0} n''a pas \u00e9t\u00e9 fournie. L''URL de la cl\u00e9 publique est une zone obligatoire pour t\u00e9l\u00e9charger la cl\u00e9 publique. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Indiquez l'URL de la cl\u00e9 publique. Les protocoles pris en charge sont : HTTP, HTTPS, et le protocole de fichier. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: L''ID de cl\u00e9 publique {0} ne correspond pas \u00e0 l''ID de cl\u00e9 fourni par {1}. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=La cl\u00e9 publique a peut-\u00eatre \u00e9t\u00e9 modifi\u00e9e. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Si la cl\u00e9 publique est un fichier local, veillez \u00e0 fournir le fichier correct.
+

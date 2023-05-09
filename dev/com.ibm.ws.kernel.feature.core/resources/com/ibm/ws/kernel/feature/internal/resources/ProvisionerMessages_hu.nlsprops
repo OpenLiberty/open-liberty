@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: A(z) {0} felhaszn\u00e1l\u
 tool.userfeature.install.location.invalid.explanation= A felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1s nem egy t\u00f6rzs szolg\u00e1ltat\u00e1s, ez\u00e9rt nem telep\u00edthet\u0151 a t\u00f6rzsbe.
 tool.userfeature.install.location.invalid.useraction= Telep\u00edtse a felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1st az usr mapp\u00e1ba. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: A kiszolg\u00e1l\u00f3 hozz\u00e1adta a(z) {0} szolg\u00e1ltat\u00e1sokat a megl\u00e9v\u0151 szolg\u00e1ltat\u00e1sk\u00e9szlethez.
+FEATURES_ADDED_DELTA.explanation=A kiszolg\u00e1l\u00f3 \u00faj szolg\u00e1ltat\u00e1sokat telep\u00edtett a kor\u00e1bban telep\u00edtett szolg\u00e1ltat\u00e1sokon fel\u00fcl.
+FEATURES_ADDED_DELTA.useraction=Nem kell semmit tennie.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Az \u00fcgyf\u00e9l hozz\u00e1adta a(z) {0} szolg\u00e1ltat\u00e1sokat a megl\u00e9v\u0151 szolg\u00e1ltat\u00e1sk\u00e9szlethez. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Az \u00fcgyf\u00e9l \u00faj szolg\u00e1ltat\u00e1sokat telep\u00edtett a kor\u00e1bban telep\u00edtett szolg\u00e1ltat\u00e1sokon fel\u00fcl.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Nem kell semmit tennie. 
+
+
+

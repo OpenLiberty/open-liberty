@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,30 +35,19 @@ help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
 installFeature.desc=\tNainstalujte jednu funkci nebo seznam funkc\u00ed odd\u011blen\u00fdch mezerou.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ name ...
-installFeature.option-desc.name...=\tJedna nebo v\u00edce funkc\u00ed, kter\u00e9 jsou odd\u011bleny mezerou. Pro funkce \n\
-\tur\u010dete kr\u00e1tk\u00fd n\u00e1zev funkce nebo sou\u0159adnice Maven. Pokud         \n\
-\tur\u010d\u00edte sou\u0159adnice Maven, mus\u00ed obsahovat alespo\u0148                \n\
-\ttID skupiny a ID artefaktu                                     \n\
-\t(nap\u0159. io.openliberty.features:mpHealth-2.0).                 \n\
-\tVerze standardn\u011b zobrazuje aktu\u00e1ln\u00ed verzi b\u011bhov\u00e9ho prost\u0159ed\u00ed a          \n\
-\ttyp balen\u00ed standardn\u011b zobrazuje ESA, pokud nejsou verze a balen\u00ed        \n\
-\tur\u010deny.
+installFeature.option-desc.name...=\tJedna nebo v\u00edce funkc\u00ed, kter\u00e9 jsou odd\u011bleny mezerou. Pro funkce \n\tur\u010dete kr\u00e1tk\u00fd n\u00e1zev funkce nebo sou\u0159adnice Maven. Pokud         \n\tur\u010d\u00edte sou\u0159adnice Maven, mus\u00ed obsahovat alespo\u0148                \n\ttID skupiny a ID artefaktu                                     \n\t(nap\u0159. io.openliberty.features:mpHealth-2.0).                 \n\tVerze standardn\u011b zobrazuje aktu\u00e1ln\u00ed verzi b\u011bhov\u00e9ho prost\u0159ed\u00ed a          \n\ttyp balen\u00ed standardn\u011b zobrazuje ESA, pokud nejsou verze a balen\u00ed        \n\tur\u010deny.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
-installFeature.option-desc.--to=\tUr\u010dete, kam m\u00e1 b\u00fdt funkce nainstalov\u00e1na. Funkci lze nainstalovat do libovoln\u00e9ho\n\
-\tum\u00edst\u011bn\u00ed roz\u0161\u00ed\u0159en\u00ed konfigurovan\u00e9ho produktu nebo jako u\u017eivatelskou funkci. Pokud \n\
-\tnen\u00ed tato volba ur\u010dena, je funkce nainstalov\u00e1na jako     \n\
-\tu\u017eivatelsk\u00e1 funkce.
+installFeature.option-desc.--to=\tUr\u010dete, kam m\u00e1 b\u00fdt funkce nainstalov\u00e1na. Funkci lze nainstalovat do libovoln\u00e9ho\n\tum\u00edst\u011bn\u00ed roz\u0161\u00ed\u0159en\u00ed konfigurovan\u00e9ho produktu nebo jako u\u017eivatelskou funkci. Pokud \n\tnen\u00ed tato volba ur\u010dena, je funkce nainstalov\u00e1na jako     \n\tu\u017eivatelsk\u00e1 funkce.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ Sou\u0159adnice --featuresBom=Maven
-installFeature.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\
-\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\
-\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\
-\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
+installFeature.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
-installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
-\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "warn" je stejn\u00e1 \njako "enforce", ale p\u0159i selh\u00e1n\u00ed \nov\u011b\u0159en\u00ed se neukon\u010duje instalaci. Volba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed \na nest\u00e1hne \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
@@ -67,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tAkceptuje licen\u010dn\u00ed smlouvu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
-\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+installFeature.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tNainstalujte po\u017eadovan\u00e9 funkce pro pojmenovan\u00fd server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -76,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tN\u00e1zev existuj\u00edc\u00edho serveru ve stejn\u00e9m prost\u0159ed\u00ed Liberty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ Sou\u0159adnice --featuresBom=Maven
-installServerFeatures.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\
-\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\
-\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\
-\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
+installServerFeatures.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
-installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
-\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "warn" je stejn\u00e1 \njako "enforce", ale p\u0159i selh\u00e1n\u00ed ov\u011b\u0159en\u00ed se neukon\u010duje instalaci.\n\tVolba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed a nest\u00e1hne\n \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
@@ -92,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tAkceptuje licen\u010dn\u00ed smlouvu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
-\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+installServerFeatures.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tVyhledejte funkce z \u00falo\u017ei\u0161\u0165.
 #--------- OPTIONS ----------------------------------------------------#
@@ -103,7 +89,4 @@ find.option-desc.[searchString]=\tPomoc\u00ed hledan\u00e9ho \u0159et\u011bzce n
 viewSettings.desc=\tZobrazte \u00falo\u017ei\u0161t\u011b a nastaven\u00ed serveru proxy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete zobrazit podrobn\u00e9 zpr\u00e1vy z \n\
-\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru featureUtility.properties.         \n\
-\tKa\u017ed\u00e1 zpr\u00e1va obsahuje k\u00f3d chyby, \u010d\u00edslo \u0159\u00e1dku, kde se tato chyba \n\
-\tvyskytla a jej\u00ed p\u0159\u00ed\u010dinu.
+viewSettings.option-desc.--viewValidationMessages=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete zobrazit podrobn\u00e9 zpr\u00e1vy z \n\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru featureUtility.properties.         \n\tKa\u017ed\u00e1 zpr\u00e1va obsahuje k\u00f3d chyby, \u010d\u00edslo \u0159\u00e1dku, kde se tato chyba \n\tvyskytla a jej\u00ed p\u0159\u00ed\u010dinu.

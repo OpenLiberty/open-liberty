@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Esaminare il valore epoch di questo messaggio e
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Lo xid {0} \u00e8 stato ripristinato da {1} - lo xid non \u00e8 associato ad alcuna transazione e sar\u00e0 sottoposto a rollback
-WTRN0148_REC_XA_ROLLBACK.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che non corrisponde a una transazione registrata.  Il servizio transazioni eseguir\u00e0 il rollback dello xid in quanto parte dell'elaborazione di ripristino.
+WTRN0148_REC_XA_ROLLBACK.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che non corrisponde a una transazione registrata. Il servizio transazioni esegue il rollback dello xid come parte dell'elaborazione del recupero.
 WTRN0148_REC_XA_ROLLBACK.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Non \u00e8 richiesta alcuna azione da parte 
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: Lo xid {0} \u00e8 stato ripristinato da {1} - lo xid \u00e8 associato a una transazione (tid={2}) con stato registrato {3}
-WTRN0149_REC_XA_TRAN.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che corrisponde a una transazione registrata.  Il servizio transazioni completer\u00e0 la transazione in quanto parte dell'elaborazione del ripristino.
+WTRN0149_REC_XA_TRAN.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che corrisponde a una transazione registrata. Il servizio transazioni completa la transazione come parte dell'elaborazione di recupero.
 WTRN0149_REC_XA_TRAN.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Risposta dal rollback dello xid {0} ripristinato da {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che non corrisponde a una transazione registrata.  Il servizio transazioni ha tentato il rollback dello xid in quanto parte dell'elaborazione di ripristino.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che non corrisponde a una transazione registrata. Il servizio transazioni ha tentato di eseguire il rollback dello xid come parte dell'elaborazione di recupero.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Esaminare il codice di errore per determinare se il rollback ha avuto esito negativo.
 
 # 0 - resource manager name
@@ -872,5 +872,16 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=Se questa \u00e8 la configurazione desider
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Il servizio transazioni \u00e8 stato arrestato ma il log di ripristino \u00e8 stato contrassegnato come non riuscito.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Il log di ripristino non \u00e8 riuscito e l'accesso al log non \u00e8 stato eseguito alla chiusura del server.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correggere le condizioni indicate dai messaggi che hanno segnalato l'invalidazione del log. Per riparare il log, \u00e8 necessario riavviare il server.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 il servizio di transazione non \u00e8 in grado di iniziare una transazione.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty non supporta le applicazioni che iniziano o richiedono una transazione mentre l'applicazione viene avviata quando viene richiesto un punto di controllo del server.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilizzare l'opzione di checkpoint del server at=deployment o modificare l'applicazione per iniziare le transazioni dopo che \u00e8 stata avviata.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Un''applicazione ha avviato o richiesto una transazione durante la richiesta del punto di controllo del server. La seguente traccia di stack per questo thread \u00e8 stata catturata quando \u00e8 stata creata la transazione: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=La traccia di stack \u00e8 stata acquisita quando \u00e8 stata creata la transazione. La traccia di stack consente agli utenti di determinare quali applicazioni avviano le transazioni durante l'avvio dell'applicazione e quindi causano l'esito negativo della richiesta del punto di controllo.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Esaminare la traccia di stack per stabilire quale applicazione ha avviato una nuova transazione durante la richiesta di checkpoint del server.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

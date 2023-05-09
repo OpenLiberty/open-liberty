@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Nezda\u0159ilo se nastavit spr
 error.cannotset.securitymanager.jdk18.explanation=Spr\u00e1vce Java Security Manager nebyl povolen, proto\u017ee syst\u00e9m pou\u017e\u00edv\u00e1 prost\u0159ed\u00ed Java 18, kter\u00e9 standardn\u011b zakazuje pou\u017eit\u00ed spr\u00e1vce Java Security Manager.
 error.cannotset.securitymanager.jdk18.useraction=Spus\u0165te server s argumentem JVM -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee existuj\u00edc\u00ed obraz kontroln\u00edho bodu nelze odstranit z adres\u00e1\u0159e {0}.
-error.checkpoint.delete.explanation=Po\u017eadavek na kontroln\u00ed bod pro server se nezda\u0159il, proto\u017ee existuj\u00edc\u00ed obraz kontroln\u00edho bodu nelze odstranit.
-error.checkpoint.delete.useraction=Ujist\u011bte se, \u017ee u\u017eivatel m\u00e1 opr\u00e1vn\u011bn\u00ed k odstran\u011bn\u00ed existuj\u00edc\u00edho adres\u00e1\u0159e. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
-
-error.checkpoint.workarea.backup=CWWKE0956E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee adres\u00e1\u0159 {0} nelze z\u00e1lohovat.
-error.checkpoint.workarea.backup.explanation=P\u0159i z\u00e1lohov\u00e1n\u00ed adres\u00e1\u0159e pracovn\u00ed oblasti serveru kontroln\u00edch bod\u016f do\u0161lo k chyb\u011b.
-error.checkpoint.workarea.backup.useraction=Ujist\u011bte se, \u017ee u\u017eivatel m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1lohov\u00e1n\u00ed adres\u00e1\u0159e pracovn\u00ed oblasti kontroln\u00edho bodu. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Adres\u00e1\u0159 pracovn\u00ed oblasti serveru kontroln\u00edch bod\u016f nelze obnovit z adres\u00e1\u0159e {0}.
 error.checkpoint.workarea.restore.explanation=P\u0159i obnovov\u00e1n\u00ed adres\u00e1\u0159e pracovn\u00ed oblasti kontroln\u00edho bodu do\u0161lo k chyb\u011b.
-error.checkpoint.workarea.restore.useraction=Ujist\u011bte se, \u017ee u\u017eivatel m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k obnoven\u00ed pracovn\u00ed oblasti kontroln\u00edho bodu. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
-
-info.checkpoint.restore.failed=CWWKE0957I: Obnova procesu serveru kontroln\u00edch bod\u016f se nezda\u0159ila. Zkontrolujte protokol {0}, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Spu\u0161t\u011bn\u00ed serveru bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
-info.checkpoint.restore.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i obnov\u011b procesu serveru kontroln\u00edch bod\u016f.  Server byl spu\u0161t\u011bn bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
-info.checkpoint.restore.failed.useraction=Zkontrolujte protokoly, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven.
+error.checkpoint.workarea.restore.useraction=Ujist\u011bte se, \u017ee m\u00e1 u\u017eivatel dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k obnoven\u00ed pracovn\u00ed oblasti kontroln\u00edho bodu. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee vlastnost websphere.java.security byla nastavena v souboru bootstrap.properties. Tato vlastnost umo\u017e\u0148uje produkt Java Security Manager a nen\u00ed platn\u00e1, kdy\u017e se vyskytne kontroln\u00ed bod serveru.
 error.checkpoint.securitymanager.not.supported.explanation=Protokol Liberty nepodporuje produkt Java Security Manager, je-li po\u017eadov\u00e1n kontroln\u00ed bod serveru. Produkt Java Security Manager je zam\u00edtnut\u00fd, jak je uvedeno v JEP 411.
 error.checkpoint.securitymanager.not.supported.useraction=Odeberte vlastnost websphere.java.security ze souboru bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee existuj\u00edc\u00ed obraz kontroln\u00edho bodu nelze odstranit z adres\u00e1\u0159e {0}.
+error.checkpoint.delete.explanation=Po\u017eadavek na kontroln\u00ed bod pro server se nezda\u0159il, proto\u017ee existuj\u00edc\u00ed obraz kontroln\u00edho bodu nelze odstranit.
+error.checkpoint.delete.useraction=Ujist\u011bte se, \u017ee u\u017eivatel m\u00e1 opr\u00e1vn\u011bn\u00ed k odstran\u011bn\u00ed existuj\u00edc\u00edho adres\u00e1\u0159e. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
+
+error.checkpoint.workarea.backup=CWWKE0960E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il, proto\u017ee adres\u00e1\u0159 {0} nelze z\u00e1lohovat.
+error.checkpoint.workarea.backup.explanation=P\u0159i z\u00e1lohov\u00e1n\u00ed adres\u00e1\u0159e pracovn\u00ed oblasti serveru kontroln\u00edch bod\u016f do\u0161lo k chyb\u011b.
+error.checkpoint.workarea.backup.useraction=Ujist\u011bte se, \u017ee m\u00e1 u\u017eivatel m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k z\u00e1lohov\u00e1n\u00ed adres\u00e1\u0159e pracovn\u00ed oblasti kontroln\u00edho bodu. Zadejte p\u0159\u00edkaz znovu s u\u017eivatelem, kter\u00fd m\u00e1 dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed.
+
+info.checkpoint.restore.failed=CWWKE0961I: Obnova procesu serveru kontroln\u00edch bod\u016f se nezda\u0159ila. Zkontrolujte protokol {0}, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Spu\u0161t\u011bn\u00ed serveru bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
+info.checkpoint.restore.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i obnov\u011b procesu serveru kontroln\u00edch bod\u016f.  Server byl spu\u0161t\u011bn bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
+info.checkpoint.restore.failed.useraction=Zkontrolujte protokoly, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven.
+
+error.checkpoint.failed=CWWKE0962E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il. N\u00e1sleduj\u00edc\u00ed v\u00fdstup poch\u00e1z\u00ed ze souboru CRU {0}, kter\u00fd obsahuje podrobnosti o p\u0159\u00ed\u010din\u011b nezdaru kontroln\u00edho bodu.
+error.checkpoint.failed.explanation=Po\u017eadavek na kontroln\u00ed bod pro server se nezda\u0159il. Nebyl vytvo\u0159en \u017e\u00e1dn\u00fd platn\u00fd obraz procesu kontroln\u00edho bodu pro server.
+error.checkpoint.failed.useraction=Chcete-li ur\u010dit p\u0159\u00ed\u010dinu nezdaru kontroln\u00edho bodu, zkontrolujte soubory protokolu v adres\u00e1\u0159i kontroln\u00edho bodu, kter\u00fd je um\u00edst\u011bn v adres\u00e1\u0159i protokol\u016f serveru.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Po\u017eadavek kontroln\u00edho bodu serveru selhal, proto\u017ee byla syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink ne\u00fasp\u011b\u0161n\u00e1. Je-li povoleno SELinux v re\u017eimu vynucen\u00ed, mohou b\u00fdt syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink blokov\u00e1na nastaven\u00edm z\u00e1sad SELinux "virt_sandbox_use_netlink". Bu\u010f zaka\u017ete SELinux, nebo povolte syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink pomoc\u00ed p\u0159\u00edkazu "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Po\u017eadavek kontroln\u00edho bodu pro server selhal, proto\u017ee byla syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink ne\u00fasp\u011b\u0161n\u00e1.
+error.checkpoint.failed.selinux.netdiag.useraction=Je-li povoleno SELinux v re\u017eimu vynucen\u00ed, mohou b\u00fdt syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink blokov\u00e1na nastaven\u00edm z\u00e1sad SELinux "virt_sandbox_use_netlink". Bu\u010f zaka\u017ete SELinux, nebo povolte syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink pomoc\u00ed p\u0159\u00edkazu "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

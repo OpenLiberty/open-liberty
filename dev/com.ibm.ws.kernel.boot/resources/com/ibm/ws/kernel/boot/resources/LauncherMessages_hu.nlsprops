@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: A Java biztons\u00e1gkezel\u01
 error.cannotset.securitymanager.jdk18.explanation=A Java biztons\u00e1gkezel\u0151 nem enged\u00e9lyezhet\u0151, mert a rendszer Java 18-at haszn\u00e1l, ami alap\u00e9rtelmez\u00e9sben nem teszi lehet\u0151v\u00e9 a Java biztons\u00e1gkezel\u0151 haszn\u00e1lat\u00e1t.
 error.cannotset.securitymanager.jdk18.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t a -Djava.security.manager=allow JVM argumentummal.
 
-error.checkpoint.delete=CWWKE0955E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9s meghi\u00fasult, mert a megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151 a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
-error.checkpoint.delete.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert egy megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151.
-error.checkpoint.delete.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 jogosult a megl\u00e9v\u0151 k\u00f6nyvt\u00e1r t\u00f6rl\u00e9s\u00e9re. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
-
-error.checkpoint.workarea.backup=CWWKE0956E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert a(z) {0} k\u00f6nyvt\u00e1rr\u00f3l nem k\u00e9sz\u00edthet\u0151 biztons\u00e1gi ment\u00e9s.
-error.checkpoint.workarea.backup.explanation=Hiba t\u00f6rt\u00e9nt az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 workarea k\u00f6nyvt\u00e1r\u00e1nak ment\u00e9sekor.
-error.checkpoint.workarea.backup.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak biztons\u00e1gi ment\u00e9s\u00e9hez. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 workarea k\u00f6nyvt\u00e1r\u00e1t nem lehet vissza\u00e1ll\u00edtani a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
 error.checkpoint.workarea.restore.explanation=Hiba t\u00f6rt\u00e9nt az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak vissza\u00e1ll\u00edt\u00e1sakor.
-error.checkpoint.workarea.restore.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u0151pont workarea k\u00f6nyvt\u00e1r\u00e1nak vissza\u00e1ll\u00edt\u00e1s\u00e1hoz. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
-
-info.checkpoint.restore.failed=CWWKE0957I: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl.
-info.checkpoint.restore.failed.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor.  A kiszolg\u00e1l\u00f3 az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl indult el.
-info.checkpoint.restore.failed.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat.
+error.checkpoint.workarea.restore.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u00e9si pont workarea k\u00f6nyvt\u00e1r\u00e1nak vissza\u00e1ll\u00edt\u00e1s\u00e1hoz. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert be van \u00e1ll\u00edtva a websphere.java.security tulajdons\u00e1g a bootstrap.properties f\u00e1jlban. Ez a tulajdons\u00e1g enged\u00e9lyezi a Java biztons\u00e1gkezel\u0151t, \u00e9s nem \u00e9rv\u00e9nyes kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont eset\u00e9n.
 error.checkpoint.securitymanager.not.supported.explanation=A Liberty nem t\u00e1mogatja a Java biztons\u00e1gkezel\u0151t egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9sekor. A Java biztons\u00e1gkezel\u0151 elavult, a JEP 411 szerint.
 error.checkpoint.securitymanager.not.supported.useraction=T\u00e1vol\u00edtsa el a websphere.java.security tulajdons\u00e1got a bootstrap.properties f\u00e1jlb\u00f3l.
+
+error.checkpoint.delete=CWWKE0959E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9s meghi\u00fasult, mert a megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151 a(z) {0} k\u00f6nyvt\u00e1rb\u00f3l.
+error.checkpoint.delete.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert egy megl\u00e9v\u0151 ellen\u0151rz\u0151pontk\u00e9p nem t\u00f6r\u00f6lhet\u0151.
+error.checkpoint.delete.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 jogosult a megl\u00e9v\u0151 k\u00f6nyvt\u00e1r t\u00f6rl\u00e9s\u00e9re. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
+
+error.checkpoint.workarea.backup=CWWKE0960E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u0151pont k\u00e9r\u00e9se meghi\u00fasult, mert a(z) {0} k\u00f6nyvt\u00e1rr\u00f3l nem k\u00e9sz\u00edthet\u0151 biztons\u00e1gi ment\u00e9s.
+error.checkpoint.workarea.backup.explanation=Hiba t\u00f6rt\u00e9nt az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 workarea k\u00f6nyvt\u00e1r\u00e1nak ment\u00e9sekor.
+error.checkpoint.workarea.backup.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3 elegend\u0151 jogosults\u00e1ggal rendelkezik az ellen\u0151rz\u00e9si pont workarea k\u00f6nyvt\u00e1r\u00e1nak biztons\u00e1gi ment\u00e9s\u00e9hez. Adja ki \u00fajra a parancsot olyan felhaszn\u00e1l\u00f3k\u00e9nt, aki elegend\u0151 jogosults\u00e1ggal rendelkezik.
+
+info.checkpoint.restore.failed=CWWKE0961I: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl.
+info.checkpoint.restore.failed.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor.  A kiszolg\u00e1l\u00f3 az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl indult el.
+info.checkpoint.restore.failed.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat.
+
+error.checkpoint.failed=CWWKE0962E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult. A k\u00f6vetkez\u0151 kimenet a CRIU {0} f\u00e1jlban tal\u00e1lhat\u00f3, amely az ellen\u0151rz\u00e9si pont meghi\u00fasul\u00e1s\u00e1nak r\u00e9szleteit tartalmazza.
+error.checkpoint.failed.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult. Nem lett l\u00e9trehozva \u00e9rv\u00e9nyes ellen\u0151rz\u0151 pont folyamatk\u00e9p a kiszolg\u00e1l\u00f3hoz.
+error.checkpoint.failed.useraction=Annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy az ellen\u0151rz\u0151 pont mi\u00e9rt nem siker\u00fclt, vizsg\u00e1lja meg a napl\u00f3f\u00e1jlokat a kiszolg\u00e1l\u00f3 napl\u00f3k\u00f6nyvt\u00e1r\u00e1ban tal\u00e1lhat\u00f3 ellen\u0151rz\u0151 pont k\u00f6nyvt\u00e1rban.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult, mert a netlink rendszerh\u00edv\u00e1sok sikertelenek voltak. Ha a SELinux k\u00e9nyszer\u00edt\u0151 m\u00f3dban van enged\u00e9lyezve, akkor a netlink rendszerh\u00edv\u00e1sokat blokkolhatja a SELinux "virt_sandbox_use_netlink" ir\u00e1nyelv-be\u00e1ll\u00edt\u00e1s. Tiltsa le a SELinux modult, vagy enged\u00e9lyezze a netlink rendszerh\u00edv\u00e1sokat a "setsebool virt_sandbox_use_netlink 1" paranccsal.
+error.checkpoint.failed.selinux.netdiag.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult, mert a netlink rendszerh\u00edv\u00e1sok sikertelenek voltak.
+error.checkpoint.failed.selinux.netdiag.useraction=Ha a SELinux k\u00e9nyszer\u00edt\u0151 m\u00f3dban van enged\u00e9lyezve, akkor a netlink rendszerh\u00edv\u00e1sokat blokkolhatja a SELinux "virt_sandbox_use_netlink" ir\u00e1nyelv-be\u00e1ll\u00edt\u00e1s. Tiltsa le a SELinux modult, vagy enged\u00e9lyezze a netlink rendszerh\u00edv\u00e1sokat a "setsebool virt_sandbox_use_netlink 1" paranccsal.
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

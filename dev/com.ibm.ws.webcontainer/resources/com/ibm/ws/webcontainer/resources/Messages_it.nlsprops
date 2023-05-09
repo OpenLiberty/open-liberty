@@ -1622,3 +1622,7 @@ uri.has.fragment.character=L'URI ha un carattere [#] di frammento; codificato [%
 uri.has.dot.character=L'URI contiene un carattere [%2E] punto codificato.
 uri.has.forwarslash.character=L'URI contiene un carattere [%2F] barra codificato.
 uri.has.backslash.character=L'URI contiene un carattere barra retroversa; codificato [%5C] o meno.
+
+multipart.file.count.max.exceeded=CWWWC0006E: La richiesta conteneva un numero di file per il caricamento superiore a quello consentito. Il numero massimo di file \u00e8 [{0}].
+multipart.file.count.max.exceeded.explanation=Il numero di file caricati dalla richiesta multipart/form-data ha superato il limite impostato.
+multipart.file.count.max.exceeded.useraction=Aumentare il numero massimo di file che possono essere caricati per richiesta impostando la propriet\u00e0 personalizzata maxFileCount webContainer nel file server.xml . Il valore predefinito \u00e8 5000. Per un caricamento file illimitato, impostare il valore su -1.

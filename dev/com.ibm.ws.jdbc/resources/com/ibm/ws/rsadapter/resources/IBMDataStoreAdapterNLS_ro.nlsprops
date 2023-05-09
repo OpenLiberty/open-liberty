@@ -261,6 +261,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Sursa de date {0} a fost c
 DSRA4015.no.ucp.connection.pool.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul ConnectionPoolDataSource sau Driver, care nu este de driver-ul Oracle UCP.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: Driver-ul JDBC nu accept\u0103 setarea valorii {0} pentru proprietatea {1} datasource.
+DSRA4016.enum.property.vaue.not.valid.explanation=O proprietate datasource a fost configurat\u0103 cu o valoare pe care driver-ul JDBC nu o accept\u0103.
+DSRA4016.enum.property.vaue.not.valid.useraction=Verifica\u021bi documenta\u021bia driver-ului JDBC pentru valorile corespunz\u0103toare pentru aceast\u0103 proprietate.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

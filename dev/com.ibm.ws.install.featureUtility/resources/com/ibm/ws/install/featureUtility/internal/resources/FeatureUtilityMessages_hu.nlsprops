@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=A tulajdons\u00e1gf\u00e1jl \u00e9rv\u00e9nyes
 MSG_VALIDATION_NUM_OF_ERRORS=Hib\u00e1k sz\u00e1ma: {0}
 MSG_VALIDATION_MESSAGES=Tulajdons\u00e1gf\u00e1jl-\u00e9rv\u00e9nyes\u00edt\u00e9s
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=Be\u00e1ll\u00edtott nyilv\u00e1nos kulcsok
+MSG_NO_CONFIG_KEY=Nincsenek be\u00e1ll\u00edtva kulcsok
+MSG_VERIFY_FEATURE_LABEL=Szolg\u00e1ltat\u00e1s ellen\u0151rz\u00e9se:
+MSG_DEFAULT_VERIFY=Kik\u00e9nyszer\u00edt\u00e9s
 
 FIELD_REPO_NAME=N\u00e9v: {0}
 FIELD_REPO_LOCATION=Hely: {0}
@@ -60,3 +64,4 @@ FIELD_REPO=Lerakatkiszolg\u00e1l\u00f3: {0} ({1})
 FIELD_PROXY=Proxykiszolg\u00e1l\u00f3: {0}
 FIELD_VALIDATION_RESULTS=\u00c9rv\u00e9nyes\u00edt\u00e9si eredm\u00e9nyek: {0}
 FIELD_VALIDATION_LINE=Sor: {0}
+FIELD_KEYID=Kulcsazonos\u00edt\u00f3:

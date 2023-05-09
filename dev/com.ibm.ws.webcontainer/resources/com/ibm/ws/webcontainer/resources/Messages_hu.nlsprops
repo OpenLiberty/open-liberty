@@ -1622,3 +1622,7 @@ uri.has.fragment.character=Az URI egy t\u00f6red\u00e9k [#] karakterrel rendelke
 uri.has.dot.character=Az URI k\u00f3dolt pont [%2E] karaktert tartalmaz.
 uri.has.forwarslash.character=Az URI k\u00f3dolt oszt\u00e1sjelet [%2F] karaktert tartalmaz.
 uri.has.backslash.character=Az URI ford\u00edtott t\u00f6rtvonal karakter; k\u00f3dolt [%5C] vagy nem.
+
+multipart.file.count.max.exceeded=CWWWC0006E: A k\u00e9r\u00e9s t\u00f6bb f\u00e1jlt tartalmazott a felt\u00f6lt\u00e9shez, mint a megengedett. A f\u00e1jlok maxim\u00e1lis sz\u00e1ma [{0}].
+multipart.file.count.max.exceeded.explanation=A multipart/form-data k\u00e9r\u00e9s \u00e1ltal felt\u00f6lt\u00f6tt f\u00e1jlok sz\u00e1ma t\u00fall\u00e9pte a be\u00e1ll\u00edtott korl\u00e1tot.
+multipart.file.count.max.exceeded.useraction=N\u00f6velje a k\u00e9r\u00e9senk\u00e9nt felt\u00f6lthet\u0151 f\u00e1jlok maxim\u00e1lis sz\u00e1m\u00e1t a maxFileCount webContainer egy\u00e9ni tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1val a server.xml f\u00e1jlban. Az\nalap\u00e9rtelmezett \u00e9rt\u00e9k 5000. A korl\u00e1tlan f\u00e1jlfelt\u00f6lt\u00e9shez \u00e1ll\u00edtsa be a -1 \u00e9rt\u00e9ket.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=\u5c5e\u6027\u6587\u4ef6\u672a\u901a\u8fc7\u9a
 MSG_VALIDATION_NUM_OF_ERRORS=\u9519\u8bef\u6570\uff1a{0}
 MSG_VALIDATION_MESSAGES=\u5c5e\u6027\u6587\u4ef6\u9a8c\u8bc1
 MSG_VALIDATION_MESSAGE_FORMAT={0}\u3002{1}
+MSG_CONFIG_KEY_LABEL=\u5df2\u914d\u7f6e\u516c\u7528\u5bc6\u94a5
+MSG_NO_CONFIG_KEY=\u672a\u914d\u7f6e\u5bc6\u94a5
+MSG_VERIFY_FEATURE_LABEL=\u529f\u80fd\u90e8\u4ef6\u9a8c\u8bc1\uff1a
+MSG_DEFAULT_VERIFY=\u5f3a\u5236\u6267\u884c
 
 FIELD_REPO_NAME=\u540d\u79f0\uff1a{0}
 FIELD_REPO_LOCATION=\u4f4d\u7f6e\uff1a{0}
@@ -60,3 +64,4 @@ FIELD_REPO=\u5b58\u50a8\u5e93\u670d\u52a1\u5668\uff1a{0} ({1})
 FIELD_PROXY=\u4ee3\u7406\u670d\u52a1\u5668\uff1a{0}
 FIELD_VALIDATION_RESULTS=\u9a8c\u8bc1\u7ed3\u679c\uff1a{0}
 FIELD_VALIDATION_LINE=\u884c\uff1a{0}
+FIELD_KEYID=\u5bc6\u94a5\u6807\u8bc6\uff1a

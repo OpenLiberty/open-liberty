@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Configurarea Java Security Man
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager nu a putut fi activat, deoarece sistemul folose\u0219te Java 18, care este setat\u0103 \u00een mod implicit pentru a nu permite utilizarea Java Security Manager.
 error.cannotset.securitymanager.jdk18.useraction=Porni\u021bi serverul cu argumentul JVM -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: Cererea de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103 din directorul {0}.
-error.checkpoint.delete.explanation=O cerere de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103.
-error.checkpoint.delete.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiunea de a \u0219terge directorul existent. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
-
-error.checkpoint.workarea.backup=CWWKE0956E: Cererea de punct de control a serverului nu a reu\u0219it deoarece directorul {0} nu poate fi copiat.
-error.checkpoint.workarea.backup.explanation=A ap\u0103rut o eroare la copierea directorului zonei de lucru al serverului de punct de control.
-error.checkpoint.workarea.backup.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a realiza copia de rezerv\u0103 a directorului de punct de control al zonei de lucru. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Directorul zonei de lucru al serverului de punct de control nu poate fi restabilit din directorul {0}.
 error.checkpoint.workarea.restore.explanation=A ap\u0103rut o eroare la restabilirea directorului de punct de control al zonei de lucru.
-error.checkpoint.workarea.restore.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a restabili zona de lucru de punct de control. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
-
-info.checkpoint.restore.failed=CWWKE0957I: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Lansarea serverului f\u0103r\u0103 a utiliza imaginea punctului de control.
-info.checkpoint.restore.failed.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control.  Serverul a fost pornit f\u0103r\u0103 a folosi imaginea punctului de control.
-info.checkpoint.restore.failed.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit.
+error.checkpoint.workarea.restore.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a restaura zona de lucru a punctului de control. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
 
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: Cererea de punct de control al serverului a e\u0219uat, deoarece a fost setat\u0103 proprietatea websphere.java.security \u00een fi\u0219ierul bootstrap.properties. Aceast\u0103 proprietate activeaz\u0103 Java Security Manager \u0219i nu este valid\u0103 atunci c\u00e2nd apare un punct de control al serverului.
 error.checkpoint.securitymanager.not.supported.explanation=Liberty nu are suport pentru Java Security Manager atunci c\u00e2nd se solicit\u0103 un punct de control al serverului. Java Security Manager este perimat, dup\u0103 cum este specificat pentru JEP 411.
 error.checkpoint.securitymanager.not.supported.useraction=\u00cenl\u0103tura\u021bi proprietatea websphere.java.security din fi\u0219ierul bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: Cererea de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103 din directorul {0}.
+error.checkpoint.delete.explanation=O cerere de punct de control a serverului nu a reu\u0219it deoarece imaginea curent\u0103 a punctului de control nu poate fi \u0219tears\u0103.
+error.checkpoint.delete.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiunea de a \u0219terge directorul existent. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
+
+error.checkpoint.workarea.backup=CWWKE0960E: Cererea de punct de control a serverului nu a reu\u0219it deoarece directorul {0} nu poate fi copiat.
+error.checkpoint.workarea.backup.explanation=A ap\u0103rut o eroare la copierea directorului zonei de lucru al serverului de punct de control.
+error.checkpoint.workarea.backup.useraction=Asigura\u021bi-v\u0103 c\u0103 utilizatorul are permisiuni suficiente pentru a face o copie de rezerv\u0103 a directorului zonei de lucru a punctului de control. Reemite\u021bi comanda cu un utilizator care are permisiuni suficiente.
+
+info.checkpoint.restore.failed=CWWKE0961I: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Lansarea serverului f\u0103r\u0103 a utiliza imaginea punctului de control.
+info.checkpoint.restore.failed.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control.  Serverul a fost pornit f\u0103r\u0103 a folosi imaginea punctului de control.
+info.checkpoint.restore.failed.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit.
+
+error.checkpoint.failed=CWWKE0962E: Cererea de punct de control server a e\u0219uat. Urm\u0103toarea ie\u0219ire este din fi\u0219ierul CRIU {0} care con\u021bine detalii cu privire la motivul pentru care punctul de control a e\u0219uat.
+error.checkpoint.failed.explanation=O cerere de punct de control server a e\u0219uat. Nu a fost creat\u0103 nicio imagine valid\u0103 de proces de punct de control server.
+error.checkpoint.failed.useraction=Pentru a determina de ce punctul de control a e\u0219uat, inspecta\u021bi fi\u0219ierele istoric din directorul punctului de control, care este situat \u00een directorul pentru istoricele serverului.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Cererea de punct de control al serverului a e\u0219uat, deoarece apelurile sistemului netlink nu au avut succes. Dac\u0103 SELinux este activat \u00een modul de impunere, apelurile sistemului netlink ar putea fi blocate de setarea de politic\u0103 SELinux "virt_sandbox_use_netlink". Fie dezactiva\u021bi SELinux, fie activa\u021bi apelurile sistemului netlink cu comanda "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=O cerere de punct de control pentru server a e\u0219uat, deoarece apelurile sistemului netlink nu au avut succes.
+error.checkpoint.failed.selinux.netdiag.useraction=Dac\u0103 SELinux este activat \u00een modul de impunere, apelurile sistemului netlink ar putea fi blocate de setarea de politic\u0103 SELinux "virt_sandbox_use_netlink". Fie dezactiva\u021bi SELinux, fie activa\u021bi apelurile sistemului netlink cu comanda "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

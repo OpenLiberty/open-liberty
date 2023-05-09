@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Nie powiod\u0142o si\u0119 ust
 error.cannotset.securitymanager.jdk18.explanation=Nie mo\u017cna w\u0142\u0105czy\u0107 mened\u017cera zabezpiecze\u0144 Java, poniewa\u017c system korzysta ze \u015brodowiska Java 18, kt\u00f3re domy\u015blnie nie zezwala na u\u017cywanie mened\u017cera zabezpiecze\u0144 Java.
 error.cannotset.securitymanager.jdk18.useraction=Uruchom serwer z argumentem JVM -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty z katalogu {0}.
-error.checkpoint.delete.explanation=\u017b\u0105danie punktu kontrolnego dla serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty.
-error.checkpoint.delete.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma uprawnienia do usuwania istniej\u0105cego katalogu. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
-
-error.checkpoint.workarea.backup=CWWKE0956E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna utworzy\u0107 kopii zapasowej katalogu {0}.
-error.checkpoint.workarea.backup.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia kopii zapasowej katalogu obszaru roboczego serwera punktu kontrolnego.
-error.checkpoint.workarea.backup.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do tworzenia kopii zapasowych katalogu obszaru roboczego punktu kontrolnego. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Katalog obszaru roboczego serwera punktu kontrolnego nie mo\u017ce zosta\u0107 odtworzony z katalogu {0}.
 error.checkpoint.workarea.restore.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania katalogu obszaru roboczego punktu kontrolnego.
 error.checkpoint.workarea.restore.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do odtworzenia obszaru roboczego punktu kontrolnego. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
 
-info.checkpoint.restore.failed=CWWKE0957I: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Uruchamianie serwera bez korzystania z obrazu punktu kontrolnego.
-info.checkpoint.restore.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego.  Serwer zosta\u0142 uruchomiony bez u\u017cycia obrazu punktu kontrolnego.
-info.checkpoint.restore.failed.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony.
-
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 websphere.java.security by\u0142a ustawiona w pliku bootstrap.properties. Ta w\u0142a\u015bciwo\u015b\u0107 w\u0142\u0105cza program Java Security Manager i nie jest poprawna, gdy wyst\u0105pi punkt kontrolny serwera.
 error.checkpoint.securitymanager.not.supported.explanation=Aplikacja Liberty nie obs\u0142uguje programu Java Security Manager, je\u015bli za\u017c\u0105dano punktu kontrolnego serwera. Zgodnie z JEP 411 program Java Security Manager jest nieaktualny.
 error.checkpoint.securitymanager.not.supported.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 websphere.java.security z pliku bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty z katalogu {0}.
+error.checkpoint.delete.explanation=\u017b\u0105danie punktu kontrolnego dla serwera nie powiod\u0142o si\u0119, poniewa\u017c istniej\u0105cy obraz punktu kontrolnego nie mo\u017ce zosta\u0107 usuni\u0119ty.
+error.checkpoint.delete.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma uprawnienia do usuwania istniej\u0105cego katalogu. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
+
+error.checkpoint.workarea.backup=CWWKE0960E: \u017b\u0105danie punktu kontrolnego serwera nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna utworzy\u0107 kopii zapasowej katalogu {0}.
+error.checkpoint.workarea.backup.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia kopii zapasowej katalogu obszaru roboczego serwera punktu kontrolnego.
+error.checkpoint.workarea.backup.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik ma wystarczaj\u0105ce uprawnienia do utworzenia kopii zapasowej katalogu obszaru roboczego punktu kontrolnego. Ponownie uruchom komend\u0119 jako u\u017cytkownik, kt\u00f3ry ma wystarczaj\u0105ce uprawnienia.
+
+info.checkpoint.restore.failed=CWWKE0961I: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Uruchamianie serwera bez korzystania z obrazu punktu kontrolnego.
+info.checkpoint.restore.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego.  Serwer zosta\u0142 uruchomiony bez u\u017cycia obrazu punktu kontrolnego.
+info.checkpoint.restore.failed.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony.
+
+error.checkpoint.failed=CWWKE0962E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o. Nast\u0119puj\u0105ce dane wyj\u015bciowe pochodz\u0105 z pliku CRIU {0}, kt\u00f3ry zawiera szczeg\u00f3\u0142owe informacje o przyczynie niepowodzenia punktu kontrolnego.
+error.checkpoint.failed.explanation=\u017b\u0105danie punktu kontrolnego dla serwera si\u0119 nie powiod\u0142o. Poprawny obraz procesu punktu kontrolnego dla serwera nie zosta\u0142 utworzony.
+error.checkpoint.failed.useraction=Aby okre\u015bli\u0107, dlaczego punkt kontrolny si\u0119 nie powi\u00f3d\u0142, sprawd\u017a pliki dziennik\u00f3w w katalogu punktu kontrolnego, kt\u00f3ry znajduje si\u0119 w katalogu dziennik\u00f3w serwera.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o, poniewa\u017c wywo\u0142ania systemowe netlink si\u0119 nie powiod\u0142y. Je\u015bli mechanizm SELinux jest w\u0142\u0105czony w trybie wymuszania, wywo\u0142ania systemowe netlink mog\u0105 by\u0107 blokowane przez ustawienie strategii SELinux "virt_sandbox_use_netlink". Wy\u0142\u0105cz system SELinux lub w\u0142\u0105cz wywo\u0142ania systemowe netlink za pomoc\u0105 komendy "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=\u017b\u0105danie punktu kontrolnego dla serwera si\u0119 nie powiod\u0142o, poniewa\u017c wywo\u0142ania systemowe netlink si\u0119 nie powiod\u0142y.
+error.checkpoint.failed.selinux.netdiag.useraction=Je\u015bli mechanizm SELinux jest w\u0142\u0105czony w trybie wymuszania, wywo\u0142ania systemowe netlink mog\u0105 by\u0107 blokowane przez ustawienie strategii SELinux "virt_sandbox_use_netlink". Wy\u0142\u0105cz system SELinux lub w\u0142\u0105cz wywo\u0142ania systemowe netlink za pomoc\u0105 komendy "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

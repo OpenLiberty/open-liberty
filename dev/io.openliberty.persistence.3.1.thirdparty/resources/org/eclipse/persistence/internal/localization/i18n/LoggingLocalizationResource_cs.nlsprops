@@ -115,6 +115,10 @@ connected_user_database=P\u0159ipojeno: {3}{4}U\u017eivatel: {0}{3}{4}Datab\u00e
 
 connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\u00e1ze: {2}  Verze: {3}{6}Ovlada\u010d: {4}  Verze: {5}
 
+corrupt_object=po\u0161kozen\u00fd objekt: {0}
+
+corrupt_object_referenced_through_mapping=Mapov\u00e1n\u00ed odkazuje na n\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt: {0}.
+
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
 create_default_dbms_tables_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "create-default-dbms-tables" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z 
 
 sop_object_wrong_version=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patnou verzi [{0}] v [{1}] v [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=z\u00e1sobn\u00edk nav\u0161t\u00edven\u00fdch objekt\u016f, kter\u00e9 odkazuj\u00ed na po\u0161kozen\u00fd objekt: {0}
+
 topLink_version=EclipseLink, verze: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u0
 validate_db_schema_with_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "validate-db-schema-with" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 validate_ejb_jar=Ov\u011b\u0159ov\u00e1n\u00ed ejb-jar.xml za\u010dalo, m\u016f\u017ee to trvat ur\u010ditou dobu...
+
+validate_object_space=Ov\u011b\u0159te m\u00edsto objekt\u016f.
 
 verifiy_columns_read_locking_not_supported=Optimistick\u00e9 nastaven\u00ed "Read" parametru "verify-columns" v entit\u011b ({0}) EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 

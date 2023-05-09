@@ -264,6 +264,10 @@ DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: {0} \ub370\uc774\ud130 \uc
 DSRA4015.no.ucp.connection.pool.datasource.explanation=\ub370\uc774\ud130 \uc18c\uc2a4\uac00 Oracle UCP \ub4dc\ub77c\uc774\ubc84\uc5d0 \uc758\ud574 \uad6c\ud604\ub418\uc9c0 \uc54a\ub294 ConnectionPoolDataSource \ub610\ub294 Driver \uc720\ud615\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 DSRA4015.no.ucp.connection.pool.datasource.useraction=XADataSource \ub610\ub294 DataSource \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
 
+# {0} property value  {1} property name
+DSRA4016.enum.property.vaue.not.valid=DSRA4016E: JDBC \ub4dc\ub77c\uc774\ubc84\ub294 {1} \ub370\uc774\ud130 \uc6d0\ubcf8 \ud2b9\uc131\uc5d0\uc11c {0} \uac12 \uc124\uc815\uc744 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DSRA4016.enum.property.vaue.not.valid.explanation=\ub370\uc774\ud130 \uc6d0\ubcf8 \ud2b9\uc131\uc774 JDBC \ub4dc\ub77c\uc774\ubc84\uac00 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \uac12\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DSRA4016.enum.property.vaue.not.valid.useraction=\uc774 \ud2b9\uc131\uc5d0 \ub300\ud55c \uc62c\ubc14\ub978 \uac12\uc740 JDBC \ub4dc\ub77c\uc774\ubc84 \uc124\uba85\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

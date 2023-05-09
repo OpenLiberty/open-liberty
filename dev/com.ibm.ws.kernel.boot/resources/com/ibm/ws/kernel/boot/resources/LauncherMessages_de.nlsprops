@@ -722,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Der Java Security Manager konn
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager konnte nicht aktiviert werden, da das System Java 18 verwendet, was die Verwendung eines Java Security Manager standardm\u00e4\u00dfig nicht zul\u00e4sst.
 error.cannotset.securitymanager.jdk18.useraction=Starten Sie den Server mit dem JVM-Argument -Djava.security.manager = allow.
 
-error.checkpoint.delete=CWWKE0955E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil das vorhandene Pr\u00fcfpunktimage nicht aus dem Verzeichnis {0} gel\u00f6scht werden kann.
-error.checkpoint.delete.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da ein vorhandenes Pr\u00fcfpunkt-Image nicht gel\u00f6scht werden kann.
-error.checkpoint.delete.useraction=Stellen Sie sicher, dass der Benutzer berechtigt ist, das vorhandene Verzeichnis zu l\u00f6schen. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
-
-error.checkpoint.workarea.backup=CWWKE0956E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, da das Verzeichnis {0} nicht gesichert werden kann.
-error.checkpoint.workarea.backup.explanation=Beim Sichern des Arbeitsbereichsverzeichnisses des Pr\u00fcfpunktservers ist ein Fehler aufgetreten.
-error.checkpoint.workarea.backup.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Sichern des Verzeichnisses des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Das Arbeitsbereichsverzeichnis des Pr\u00fcfpunktservers kann nicht aus dem Verzeichnis {0} wiederhergestellt werden.
 error.checkpoint.workarea.restore.explanation=Beim Wiederherstellen des Arbeitsbereichsverzeichnisses f\u00fcr den Pr\u00fcfpunkt ist ein Fehler aufgetreten.
 error.checkpoint.workarea.restore.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Wiederherstellen des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
 
-info.checkpoint.restore.failed=CWWKE0957I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
-info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
-info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
-
 error.checkpoint.securitymanager.not.supported=CWWKE0958E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil die Eigenschaft websphere.java.security in der Datei bootstrap.properties definiert wurde. Diese Eigenschaft aktiviert den Java Security Manager und ist nicht g\u00fcltig, wenn ein Serverpr\u00fcfpunkt auftritt.
 error.checkpoint.securitymanager.not.supported.explanation=Liberty unterst\u00fctzt Java Security Manager nicht, wenn ein Serverpr\u00fcfpunkt angefordert wird. Der Java Security Manager ist veraltet, wie in JEP 411 angegeben.
 error.checkpoint.securitymanager.not.supported.useraction=Entfernen Sie die Eigenschaft websphere.java.security aus der Datei bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil das vorhandene Pr\u00fcfpunktimage nicht aus dem Verzeichnis {0} gel\u00f6scht werden kann.
+error.checkpoint.delete.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da ein vorhandenes Pr\u00fcfpunkt-Image nicht gel\u00f6scht werden kann.
+error.checkpoint.delete.useraction=Stellen Sie sicher, dass der Benutzer berechtigt ist, das vorhandene Verzeichnis zu l\u00f6schen. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+error.checkpoint.workarea.backup=CWWKE0960E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, da das Verzeichnis {0} nicht gesichert werden kann.
+error.checkpoint.workarea.backup.explanation=Beim Sichern des Arbeitsbereichsverzeichnisses des Pr\u00fcfpunktservers ist ein Fehler aufgetreten.
+error.checkpoint.workarea.backup.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Sichern des Verzeichnisses des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+info.checkpoint.restore.failed=CWWKE0961I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
+info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
+info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
+
+error.checkpoint.failed=CWWKE0962E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen. Die folgende Ausgabe stammt aus der CRIU-Datei {0}, die Details dazu enth\u00e4lt, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
+error.checkpoint.failed.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen. Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\u00fcr den Server erstellt.
+error.checkpoint.failed.useraction=Um festzustellen, warum der Pr\u00fcfpunkt fehlgeschlagen ist, \u00fcberpr\u00fcfen Sie die Protokolldateien im Pr\u00fcfpunktverzeichnis, das sich im Serverprotokollverzeichnis befindet.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Die Pr\u00fcfpunktanforderung des Servers ist fehlgeschlagen, da Netlink-Systemaufrufe nicht erfolgreich waren. Wenn SELinux im restriktiven Modus aktiviert ist, werden Netlink-Systemaufrufe m\u00f6glicherweise durch die SELinux-Richtlinieneinstellung "virt_sandbox_use_netlink" blockiert. Inaktivieren Sie SELinux oder aktivieren Sie die Netlink-Systemaufrufe mit dem Befehl "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da Netlink-Systemaufrufe nicht erfolgreich waren.
+error.checkpoint.failed.selinux.netdiag.useraction=Wenn SELinux im restriktiven Modus aktiviert ist, werden Netlink-Systemaufrufe m\u00f6glicherweise durch die SELinux-Richtlinieneinstellung "virt_sandbox_use_netlink" blockiert. Inaktivieren Sie SELinux oder aktivieren Sie die Netlink-Systemaufrufe mit dem Befehl "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
