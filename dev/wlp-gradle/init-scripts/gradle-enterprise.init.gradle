@@ -12,54 +12,47 @@
  *******************************************************************************/
 
 /**
- * Apply Gradle Build Scan plugin.
+ * Apply Gradle Enterprise plugin.
  * See: https://docs.gradle.com/build-scan-plugin/
  */
-import com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin
-import com.gradle.scan.plugin.BuildScanPlugin
 import org.gradle.util.GradleVersion
+import org.gradle.api.initialization.Settings
 
-initscript {
-    def pluginVersion = "3.3.4"
-
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
-    }
-}
-
+def pluginVersion = "3.13.2"
 def isTopLevelBuild = gradle.getParent() == null
 
 if (isTopLevelBuild) {
     def gradleVersion = GradleVersion.current().baseVersion
-    def atLeastGradle5 = gradleVersion >= GradleVersion.version("5.0")
     def atLeastGradle6 = gradleVersion >= GradleVersion.version("6.0")
 
     if (atLeastGradle6) {
-        beforeSettings {
+        beforeSettings { settings ->
+            configureBuildScript(settings, pluginVersion)
+        }
+        settingsEvaluated {
             if (!it.pluginManager.hasPlugin("com.gradle.enterprise")) {
-                it.pluginManager.apply(GradleEnterprisePlugin)
+                it.pluginManager.apply("com.gradle.enterprise")
             }
             configureExtension(it.extensions["gradleEnterprise"])
         }
-    } else if (atLeastGradle5) {
-        rootProject {
-            pluginManager.apply(BuildScanPlugin)
-            configureExtension(extensions["gradleEnterprise"])
-        }
     }
+}
+
+void configureBuildScript(Settings settings, String pluginVersion) {
+    settings.buildscript.repositories { gradlePluginPortal() }
+    settings.buildscript.dependencies.classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
 }
 
 void configureExtension(extension) {
     def acceptFile = new File(gradle.gradleUserHomeDir, "build-scans/open-liberty/gradle-scans-license-agree.txt")
     boolean isCiServer = System.getenv().containsKey("CI")
     boolean hasAccepted = isCiServer || acceptFile.exists() && acceptFile.text.trim() == 'yes'
-    extension.buildScan.with {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        if (hasAccepted) {
-            termsOfServiceAgree = "yes"
+    extension.with {
+        buildScan {
+            termsOfServiceUrl = "https://gradle.com/terms-of-service"
+            if (hasAccepted) {
+                termsOfServiceAgree = "yes"
+            }
         }
     }
 }
