@@ -237,6 +237,16 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
       !new File(buildDir, "javadoc").exists()
     }
 
+    int javaVersionNumVal = Integer.parseInt(JavaVersion.current().getMajorVersion())
+    def release = bnd.get('javac.source')
+    if ('1.7'.equals(release) && javaVersionNumVal >= 20) {
+      release = "8"
+    }
+
+    if(release.startsWith('1.')) {
+      release = release.substring(2);
+    }
+
     def sp = files()
     def cp = files()
     bndWorkspace.getProject(project.name)?.getBuildpath().each {
@@ -262,10 +272,13 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
     }
     exclude "**/internal/**"
     title = bnd.get('Bundle-Name')
-    options.source bnd.get('javac.source')
     options.memberLevel = 'PUBLIC'
     options.noIndex true
     options.use true
+    options.addStringOption('-release', release)
+    if (javaVersionNumVal > 11) {
+      options.addStringOption('-legal-notices', 'none')
+    }
     options.addBooleanOption('Xdoclint:none', true)
   }
 
