@@ -1516,10 +1516,6 @@ public class LibertyServer implements LogMonitorClient {
         if (info.VENDOR == Vendor.IBM) {
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#ServiceFactoryUse.<init>*\"";
             JVM_ARGS += " -Xdump:system+java+snap:events=throw+systhrow,filter=\"java/lang/ClassCastException#org/eclipse/osgi/internal/serviceregistry/ServiceFactoryUse.<init>*\"";
-            if (doCheckpoint()) {
-                //debug intermittent issue resulting in hang of checkpoint operation (defect )
-                JVM_ARGS += " -Xdump:system:events=user";
-            }
         }
 
         // Add JaCoCo java agent to generate code coverage for FAT test run
