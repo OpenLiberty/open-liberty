@@ -43,7 +43,7 @@ public class WCServletContextUnsupportedOperationExceptionTest {
     private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_JAR_NAME = "TestProgrammaticListenerAddition";
     private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME = "TestProgrammaticListenerAddition";
 
-    @Server("servlet31_ServletContext_UnsupportedOperationExceptionr")
+    @Server("servlet31_ServletContext_UnsupportedOperationException")
     public static LibertyServer server;
 
     @BeforeClass
@@ -132,7 +132,6 @@ public class WCServletContextUnsupportedOperationExceptionTest {
     @Test
     @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES })
     public void test_ProgrammaticListenerAddition_No_UnsupportedOperationException() throws Exception {
-
         String logMessage = server
                         .waitForStringInLog("UnsupportedOperationException was not thrown.");
         Assert.assertNotNull("An UnsupportedOperationException was thrown and should not have been.", logMessage);
