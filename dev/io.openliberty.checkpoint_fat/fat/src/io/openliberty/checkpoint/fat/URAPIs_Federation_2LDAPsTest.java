@@ -133,6 +133,7 @@ public class URAPIs_Federation_2LDAPsTest {
                 throw failed;
             }
         }));
+        server.addCheckpointRegexIgnoreMessage("CWWKG0075E");
         server.startServer(c.getName() + ".log");
         server.checkpointRestore();
 
