@@ -162,7 +162,7 @@ public class ArtifactoryRegistry {
                 int splitAt = contents.indexOf('{');
                 String firstHalf = contents.substring(0, splitAt + 1);
                 String secondHalf = contents.substring(splitAt + 1);
-                String delimiter = secondHalf.contains("{") ? "," : "";
+                String delimiter = secondHalf.contains(":") ? "," : "";
                 contents = firstHalf + "\n\t\"auths\": {\n" + privateAuth + "\n\t}" + delimiter + secondHalf;
             }
         } else {

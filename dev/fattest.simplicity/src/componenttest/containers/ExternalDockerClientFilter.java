@@ -61,6 +61,13 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         return FORCE_DOCKER_HOST != null;
     }
 
+    /**
+     * Determines if this docker host is healthy.
+     *
+     * Note: Testcontainers will re-test this host using their own API.
+     * At that time if testcontainers cannot complete testing we may
+     * request a new docker host from this filter.
+     */
     @Override
     public boolean isMatched(ExternalTestService dockerService) {
         String m = "isMatched";
@@ -112,9 +119,16 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         return true;
     }
 
+    /**
+     * Fail fast here! Never repeat this test!
+     *
+     * You might be tempted to add a repeat here when our Fyre systems are being flaky,
+     * but the point of this test is to filter out bad systems fast and go onto the next.
+     *
+     * @throws InvalidConfigurationException
+     */
     private void test() throws InvalidConfigurationException {
         final String m = "test";
-        final int THIRTY_SECONDS = 30000;
 
         config = DefaultDockerClientConfig.createDefaultConfigBuilder() //
                         .withRegistryUsername(null) //
@@ -128,7 +142,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             Log.info(c, m, "Pinging URL: " + dockerHost);
             SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
             String resp = new HttpsRequest(dockerHost + "/_ping") //
-                            .timeout(THIRTY_SECONDS)
+                            .timeout(10_000) //
                             .sslSocketFactory(sslSf) //
                             .run(String.class);
             Log.info(c, m, "Ping successful. Response: " + resp);
