@@ -810,12 +810,15 @@ public class OidcClientWasReqURLTests extends CommonTest {
             break;
         case EXCEPTION:
             expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            // have been getting an exception with "timed out" in it, now we have a jdk that is returning "timeout"
-            // the exception checking code can't handle matches (to use ".*time.*out.*") so, we'll use 2 checks
-                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time outexception",
-                                                    null, "time");
-                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time out exception",
-                                                    null, "out");
+            // timeout/time out is no longer appearing in the connection refused message - just looking for Connection refused now
+            //            // have been getting an exception with "timed out" in it, now we have a jdk that is returning "timeout"
+            //            // the exception checking code can't handle matches (to use ".*time.*out.*") so, we'll use 2 checks
+            //                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time out exception",
+            //                                                    null, "time");
+            //                 expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected time out exception",
+            //                                                    null, "out");
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected \"Connection refused\" exception",
+                    null, "Connection refused");
             break;
         case MISSING_COOKIE:
             expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
