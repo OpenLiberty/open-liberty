@@ -43,7 +43,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class DefaultOverallStartupStatusUpAppStartupTest {
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMMH0052W", "CWMMH0054W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMMH0052W", "CWMMH0054W", "SRVE0302E" };
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
     private static final String MESSAGE_LOG = "logs/messages.log";

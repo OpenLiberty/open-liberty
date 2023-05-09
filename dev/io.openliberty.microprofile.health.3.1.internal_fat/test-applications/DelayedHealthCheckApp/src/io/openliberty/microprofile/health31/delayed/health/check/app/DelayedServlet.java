@@ -37,7 +37,7 @@ public class DelayedServlet extends HttpServlet {
     public void init() {
         System.out.println("Entering init function - Starting Thread.sleep for 95 seconds.");
         try {
-            Thread.sleep(65000); // 95 seconds = 95000 ms
+            Thread.sleep(95000); // 95 seconds = 95000 ms
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
