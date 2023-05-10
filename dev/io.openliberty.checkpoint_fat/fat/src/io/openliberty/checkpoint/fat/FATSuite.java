@@ -125,7 +125,7 @@ public class FATSuite {
             return t;
         } catch (IllegalArgumentException e) {
             Log.info(type, simpleName, "No configuration enum: " + testName);
-            fail("Unknown test name: " + testName);
+            fail("Unknown test name: " + testName.getMethodName());
             return null;
         }
     }
