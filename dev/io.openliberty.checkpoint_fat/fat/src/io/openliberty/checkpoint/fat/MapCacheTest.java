@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
@@ -33,6 +31,12 @@ import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import mapCacheApp.MapCache;
 
+//Verify correct function of distributed map w.r.t timing out of map entries.
+// The behavior of the distributed map across a checkpoint/restore is not well defined and
+// so we are only testing the correct function after a restore.
+//
+// The configuration of the distributed map is set in the application, mapCacheApp.MapCache
+
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class MapCacheTest {
@@ -50,61 +54,51 @@ public class MapCacheTest {
     }
 
     @Test
-    public void testMapCacheOneSecWait() throws Exception {
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("useInactivityParm").setValue("false");
-        server.updateServerConfiguration(config);
-
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
-            String result = server.waitForStringInLog("on start");
-            assertNotNull("cache not populated at startup", result);
-        });
-        server.startServer();
-        Thread.sleep(1000);
-        server.checkpointRestore();
-        Thread.sleep(1000);
-        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
-
-    }
-
-    @Test
-    public void testMapCacheSevenSecWait() throws Exception {
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("useInactivityParm").setValue("false");
-        server.updateServerConfiguration(config);
-
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
-            String result = server.waitForStringInLog("on start");
-            assertNotNull("cache not populated at startup", result);
-        });
-        server.startServer();
-        Thread.sleep(7000);
-        server.checkpointRestore();
-        Thread.sleep(1000);
-        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
-
-    }
-
-    @Test
-    public void testMapCacheOneSecWaitInactivity() throws Exception {
+    public void testInactivityTimeout() throws Exception {
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getVariables().getById("useInactivityParm").setValue("true");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
-            String result = server.waitForStringInLog("on start");
-            assertNotNull("cache not populated at startup", result);
-        });
-
-        server.startServer();
-        Thread.sleep(7000);
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer(); // take a checkpoint
         server.checkpointRestore();
-        Thread.sleep(1000);
+
+        //load servlet and verify mapCache entry is present.
         HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
-        Thread.sleep(7000);
+
+        //keep inactivity timeout from occurring for 8 secs
+        for (int x = 0; x < 8; x++) {
+            HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
+            Thread.sleep(1 * 1000);
+        }
+
+        //Allow (4 sec) inactivity timeout to occur and verify entry is gone from cache
+        Thread.sleep(8 * 1000);
+        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
+
+    }
+
+    @Test
+    public void testIimeout() throws Exception {
+
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getVariables().getById("useInactivityParm").setValue("false");
+        server.updateServerConfiguration(config);
+
+        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.startServer(); // take a checkpoint
+        server.checkpointRestore();
+
+        //servlet init(). Load mapCache. Timeout count start here.
+        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
+
+        //Wait a time less than the timeout
+        Thread.sleep(5 * 1000);
+        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "value");
+
+        //Allow item to timeout from cache
+        Thread.sleep(10 * 1000);
         HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
 
     }

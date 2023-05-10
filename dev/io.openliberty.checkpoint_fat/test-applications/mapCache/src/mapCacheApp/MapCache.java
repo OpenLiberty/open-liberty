@@ -16,9 +16,8 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,9 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.ibm.websphere.cache.DistributedMap;
+import com.ibm.websphere.cache.EntryInfo;
 
-@WebServlet(urlPatterns = "/servlet")
 @ApplicationScoped
+@WebServlet(urlPatterns = "/servlet")
 public class MapCache extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -54,13 +54,22 @@ public class MapCache extends HttpServlet {
         }
     }
 
-    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
-        System.out.println("on start");
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         if (useInactivityParm) {
-            dmap.put("key", "value", 1, 5, 5, 1, null);
+            dmap.put("key", "value",
+                     1, // priority
+                     20, // timeToLive (seconds)
+                     4, // inactivityTime (seconds)
+                     EntryInfo.NOT_SHARED, null);
         } else {
-            dmap.put("key", "value", 1, 10, 1, null);
+            dmap.put("key", "value",
+                     1, //priority
+                     8, // timeToLive
+                     EntryInfo.NOT_SHARED, null);
         }
+        System.out.println("MapCache init() called. useInactivityParm: " + useInactivityParm);
     }
 
 }
