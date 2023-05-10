@@ -1,0 +1,75 @@
+<div>
+<!--
+    Copyright (c) 2016, 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ 	-->
+<div data-dojo-type="dojox/mobile/FixedSplitter">
+
+<div data-dojo-type="dojox/mobile/Container" style="top:85px" class="profile-left-panel">
+    <ul class="vmenu-container" style="height:80%;">
+        <li class="user-profile-section menu-section">
+            <div class="user-profile">
+                <span class="avatar"><img src="images/person-T.png" alt="" /></span>
+                <h2 class="username"><span aria-label="${userName}" dir="${textDirection}">${userName}</span></h2>
+                <h2 class="role"><span aria-label="${userRole}" dir="${textDirection}">${userRole}</span></h2>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div data-dojo-type="dojox/mobile/Container" class="profile-right-panel">
+    <h2 class="title" style="text-align:center;">${identityTitle}</h2>
+    <div class="section-container">
+   
+        <div class="section">
+
+            <label for="acIdentity" title="Admin Center identity">${identityDesc}</label>
+            <!--div>${identityDesc}</div-->
+            <div>
+                <select id="selectIdentityOption" name="selectIdentityOption" value="none" style="width: 150px;" data-dojo-type="dijit/form/Select" data-dojo-attach-event="onChange:changeSelectedOption" title="Use alt down arrow to select admin center identity">
+                    <option value="none" selected="selected">none</option>
+                    <option value="custom">custom</option>            
+                </select>
+            </div>
+            <br>
+            <div>
+                <label for="identity_custom" title="custom string">${identityCustomStr}</label>
+                <br>
+                <input id="custom_input" type="text" style="width: 150px;" value="" dir="${textDirection}" name="custom_input" disabled="" data-dojo-attach-point="changeInputCustom" "data-dojo-props="intermediateChanges:true"></input>
+            </div>
+            <br>
+            <div>
+                <label for="identity_custom_input_max" title="truncate">${identityCustomStrMaxChars}</label>
+                <br>
+                <input id="custom_input_max_char" type="text" size="2" value="27" maxlength="2" name="custom_input_max_char" disabled=""></input>
+            </div>
+            <br>
+            <div>
+                <label for="identity_custom_color" title="Provide a 6 digit hexidecimal code preceded with the # sign (for example #ff0000 for red).  The login page with identity custom string will be displayed in this color.">
+                ${identityColor}
+                </label>         
+                <br>
+                <input id="custom_color" type="text" size="7" value="#FFFFFF" name="custom_color" disabled=""></input>
+            </div>
+            <br>
+            <div>
+                <button id="identitySaveButton" type="button"></button>
+                <button id="identityCancelButton" type="button"></button>
+            <!--button id="identitySaveButton"  data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'dijitEditorIcon'" type="button">Save</button-->
+            <!--button id="identityCancelButton"  data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'dijitEditorIcon'" type="button">Cancel</button-->
+            </div>                  
+        </div>
+
+    </div>
+</div>
+
+</div>
+</div>

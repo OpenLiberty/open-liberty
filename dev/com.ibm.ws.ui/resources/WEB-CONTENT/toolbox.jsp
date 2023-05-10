@@ -249,7 +249,12 @@ BIDI_PREFS_STRING = '<%=line%>';
     <div id='prefsContainer' data-dojo-type="dojox.mobile.View" data-dojo-props="style: 'width: 100%; height: 100%; margin: auto;'">
       <div data-dojo-type="js/widgets/LibertyHeader" id="prefs_headerWidget" containerId="prefsContainer" userName="<%=userId%>" aria-label="Preferences"></div>
       <div data-dojo-type="js/widgets/LibertyPrefs" class="profile-container" id="prefsContentContainer" role="main" userName="<%=userId%>" userRole="<%=userRole%>" style="width: 100%; height: 100%;"></div>
-    </div>            
+    </div>
+
+    <div id='identityContainer' data-dojo-type="dojox.mobile.View" data-dojo-props="style: 'width: 100%; height: 100%; margin: auto;'">
+      <div data-dojo-type="js/widgets/LibertyHeader" id="identity_headerWidget" containerId="identityContainer" userName="<%=userId%>" aria-label="Preferences"></div>
+      <div data-dojo-type="js/widgets/LibertyIdentity" class="profile-container" id="identityContentContainer" role="main" userName="<%=userId%>" userRole="<%=userRole%>" style="width: 100%; height: 100%;"></div>
+    </div>
 
   </div>
 </body>
