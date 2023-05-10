@@ -25,6 +25,7 @@ import jakarta.data.repository.Sort;
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Update;
 
 /**
@@ -92,7 +93,7 @@ public interface Cities {
     boolean isBiggerThan(@Param("size") int minPopulation, @Param("name") CityId id);
 
     @Filter(by = "population", op = Compare.GreaterThan)
-    @Filter(by = "id", ignoreCase = true, op = Compare.Not)
+    @Filter(by = "id", fn = Function.IgnoreCase, op = Compare.Not)
     @Filter(by = "stateName", op = Compare.StartsWith)
     @OrderBy("stateName")
     @OrderBy("name")
