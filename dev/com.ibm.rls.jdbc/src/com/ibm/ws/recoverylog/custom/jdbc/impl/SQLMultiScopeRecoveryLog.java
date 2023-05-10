@@ -3673,7 +3673,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @see com.ibm.ws.recoverylog.spi.LivingRecoveryLog#heartBeat()
      */
     @Override
-    @FFDCIgnore({ LogClosedException.class })
+    @FFDCIgnore({ LogClosedException.class, SQLException.class, SQLRecoverableException.class })
     public void heartBeat() throws LogClosedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "heartBeat", new Object[] { Integer.valueOf(_closesRequired), this });
@@ -3706,12 +3706,18 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 sqlSuccess = true;
 
             } catch (SQLException sqlex) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "heartbeat failed with SQL exception: " + sqlex);
+                if (_serverStopping || failed()) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Peer locking heartbeat failed, the server is stopping or the log is marked failed, got: " + sqlex);
+                } else {
+                    Tr.audit(tc, "WTRN0107W: " +
+                                 "Peer locking heartbeat failed with SQL exception: " + sqlex);
+                }
                 currentSqlEx = sqlex;
             } catch (Exception ex) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "heartbeat failed with general Exception: " + ex);
+                    Tr.debug(tc, "Peer locking heartbeat failed, the server is stopping or the log is marked failed, got: " + ex);
+
                 nonTransientException = ex;
             }
 
@@ -3719,10 +3725,23 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Close the connection and reset autocommit
                 try {
                     closeConnectionAfterBatch(conn, initialIsolation);
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat success, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Caught SQLException when closing connection after heartbeat success, exc: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Close Failed, after heartbeat success, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat success, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Caught general exception when closing connection after heartbeat success, exc: " + exc);
+                    }
                 }
             } else { // !sqlSuccess
                 // Tidy up current connection before dropping into retry code
@@ -3730,27 +3749,53 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 try {
                     if (conn != null)
                         conn.rollback();
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Rollback Failed, after heartbeat failure, SQLException: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Rollback Failed, after heartbeat failure, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Rollback Failed, after heartbeat failure, exc: " + exc);
+                    }
                 }
 
                 // Attempt a close. If it fails, trace the failure but allow processing to continue
                 try {
                     if (conn != null)
                         closeConnectionAfterBatch(conn, initialIsolation);
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Close Failed, after heartbeat failure, SQLException: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Close Failed, after heartbeat failure, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Close Failed, after heartbeat failure, exc: " + exc);
+                    }
                 }
 
                 // Is this an environment in which a retry should be attempted
                 if (_sqlTransientErrorHandlingEnabled) {
                     if (nonTransientException == null) {
-                        // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping
-                        if (_serverStopping) {
+                        // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping or the log has failed
+                        if (_serverStopping || failed()) {
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
                             throw new LogClosedException();
@@ -3775,17 +3820,19 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
             }
         } else {
-            // Alert the HeartbeatLogManager that the log is closing/closed
+            // Alert the HeartbeatLogManager that the log is closing/closed or failed
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
             throw new LogClosedException();
         }
 
         if (!sqlSuccess) {
-            // Audit the failure but allow processing to continue
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught Exception when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName +
-                         " Exception: " + nonTransientException);
+            // Audit the failure (if not closed/failed log) but allow processing to continue
+            if (!_serverStopping && !failed()) {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught Exception when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName +
+                             " Exception: " + nonTransientException);
+            }
         }
 
         if (tc.isEntryEnabled())
