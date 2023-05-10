@@ -156,7 +156,7 @@ public class ArtifactoryRegistry {
                 int splitAt = contents.indexOf('{', authsIndex);
                 String firstHalf = contents.substring(0, splitAt + 1);
                 String secondHalf = contents.substring(splitAt + 1);
-                contents = firstHalf + '\n' + privateAuth + ",\n" + secondHalf;
+                contents = firstHalf + '\n' + privateAuth + "," + secondHalf;
             } else if (!replacedAuth) {
                 Log.info(c, m, "No auths exist. Adding auth block");
                 int splitAt = contents.indexOf('{');
@@ -179,7 +179,7 @@ public class ArtifactoryRegistry {
 
     //   UTILITY METHODS
 
-    private static void writeFile(File outFile, String content) {
+    static void writeFile(File outFile, String content) {
         try {
             Files.deleteIfExists(outFile.toPath());
             Files.write(outFile.toPath(), content.getBytes());
