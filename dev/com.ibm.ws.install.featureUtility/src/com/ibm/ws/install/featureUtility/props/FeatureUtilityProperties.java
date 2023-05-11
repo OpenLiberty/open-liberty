@@ -39,7 +39,7 @@ public class FeatureUtilityProperties {
     private final static String FILEPATH_EXT = "/etc/featureUtility.properties";
     private final static String FeatureVerifyQualifier = "feature.verify";
     private final static Set<String> DEFINED_OPTIONS = new HashSet<>(Arrays.asList("proxyHost", "proxyPort",
-	    "proxyUser", "proxyPassword", "featureLocalRepo", FeatureVerifyQualifier));
+	    "proxyUser", "proxyPassword", "featureLocalRepo", "noProxy", FeatureVerifyQualifier));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
     private static List<String> bomIdList = new ArrayList<>();
@@ -97,6 +97,10 @@ public class FeatureUtilityProperties {
 
     public static String getProxyPassword(){
         return definedVariables.get("proxyPassword"); // char array instead?
+    }
+
+    public static String getNoProxySetting() {
+	return definedVariables.get("noProxy");
     }
 
     public static String getFeatureLocalRepo(){

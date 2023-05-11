@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
-import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URI;
@@ -394,15 +393,9 @@ public class ArtifactDownloader implements AutoCloseable {
     }
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
-        Proxy proxy;
-        if (envMap.get("https.proxyHost") != null) {
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-        } else if (envMap.get("http.proxyHost") != null) {
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-        } else {
-            proxy = Proxy.NO_PROXY;
-        }
         URL url = address.toURL();
+        Proxy proxy = ArtifactDownloaderUtils.getProxy(url, envMap);
+
         URLConnection conn = url.openConnection(proxy);
         addBasicAuthentication(address, conn, repository);
         final String userAgentValue = calculateUserAgent();
@@ -465,9 +458,6 @@ public class ArtifactDownloader implements AutoCloseable {
         if (repository.getUserId() != null && repository.getPassword() != null) {
             return repository.getUserId() + ":" + repository.getPassword();
         }
-//        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
-//            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
-//        }
         return uri.getUserInfo();
     }
 

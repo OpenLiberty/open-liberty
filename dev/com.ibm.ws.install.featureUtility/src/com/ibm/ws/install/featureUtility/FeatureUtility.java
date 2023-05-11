@@ -283,27 +283,31 @@ public class FeatureUtility {
         String password = FeatureUtilityProperties.getProxyPassword();
 
         String protocol = null;
-		if (host != null && !host.isEmpty()) {
-			if (host.toLowerCase().startsWith("https://")) {
-				protocol = "https";
-			} else {
-				protocol = "http";
-			}
-		}
+	if (host != null && !host.isEmpty()) {
+	    if (host.toLowerCase().startsWith("https://")) {
+		protocol = "https";
+	    } else {
+		protocol = "http";
+	    }
+	}
 
-		if (protocol != null && !protocol.isEmpty()) {
-			if (port != null && !port.isEmpty()) {
-				overrideMap.put(protocol + ".proxyHost", host);
-				overrideMap.put(protocol + ".proxyPort", port);
-			} else {
-				throw new InstallException(
-						Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PORT_MISSING"),
-						InstallException.MISSING_CONTENT);
-			}
-			overrideMap.put(protocol + ".proxyUser", username);
-			overrideMap.put(protocol + ".proxyPassword", password);
+	if (protocol != null && !protocol.isEmpty()) {
+	    if (port != null && !port.isEmpty()) {
+		overrideMap.put(protocol + ".proxyHost", host);
+		overrideMap.put(protocol + ".proxyPort", port);
+	    } else {
+		throw new InstallException(
+			Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PORT_MISSING"),
+			InstallException.MISSING_CONTENT);
+	    }
+	    overrideMap.put(protocol + ".proxyUser", username);
+	    overrideMap.put(protocol + ".proxyPassword", password);
+	}
 
-		}
+	// override no_proxy settings
+	if (FeatureUtilityProperties.getNoProxySetting() != null) {
+	    overrideMap.put("NO_PROXY", FeatureUtilityProperties.getNoProxySetting());
+	}
 
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){

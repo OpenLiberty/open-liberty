@@ -1904,6 +1904,7 @@ public class InstallKernelMap implements Map {
             }
         }
 
+        envMapRet.put("NO_PROXY", System.getenv("NO_PROXY"));
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
