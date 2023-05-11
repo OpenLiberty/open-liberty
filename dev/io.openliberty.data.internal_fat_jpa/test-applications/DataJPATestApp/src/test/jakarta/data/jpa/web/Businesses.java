@@ -68,4 +68,7 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
     List<String> onSouthSide();
+
+    @Filter(by = "location.longitude", fn = Function.AbsoluteValue, op = Compare.Between)
+    List<Business> withLongitudeIgnoringSignWithin(float min, float max);
 }

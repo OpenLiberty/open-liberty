@@ -59,6 +59,7 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
@@ -88,6 +89,15 @@ import jakarta.transaction.Status;
 
 public class RepositoryImpl<R, E> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
+
+    private static final Map<Function, String> FUNCTION_CALLS = new HashMap<>();
+    static {
+        FUNCTION_CALLS.put(Function.AbsoluteValue, "ABS(");
+        FUNCTION_CALLS.put(Function.CharCount, "LENGTH(");
+        FUNCTION_CALLS.put(Function.ElementCount, "SIZE(");
+        FUNCTION_CALLS.put(Function.IgnoreCase, "LOWER(");
+        FUNCTION_CALLS.put(Function.Trimmed, "TRIM(");
+    }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
     (Limit.class, Pageable.class, Sort.class, Sort[].class));
@@ -186,8 +196,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private static StringBuilder appendParamOrValue(StringBuilder q, QueryInfo queryInfo, Filter filter) {
-        boolean lower = filter.ignoreCase();
+    private static StringBuilder appendParamOrValue(StringBuilder q, QueryInfo queryInfo, Filter filter, boolean lower) {
         String[] params = filter.param();
         String[] values = filter.value();
         int numArgs = filter.op() == Compare.Between || filter.op() == Compare.NotBetween ? 2 : 1;
@@ -1523,7 +1532,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 q.append(' ').append(filter.as().name()).append(' '); // AND / OR between conditions
 
             String attribute = filter.by();
-            boolean ignoreCase = filter.ignoreCase();
+            Function functions[] = filter.fn();
             Compare comparison = filter.op();
             Compare negatedFrom = comparison.negated();
             boolean negated = negatedFrom != null;
@@ -1533,6 +1542,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (attribute.length() == 0)
                 throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
+            boolean ignoreCase = false;
+            StringBuilder attributeExpr = new StringBuilder();
+            for (int f = functions.length - 1; f >= 0; f--) {
+                if (functions[f] == Function.IgnoreCase)
+                    ignoreCase = true;
+                String functionCall = FUNCTION_CALLS.get(functions[f]);
+                if (functionCall == null)
+                    throw new UnsupportedOperationException(functions[f].name()); // should never occur
+                attributeExpr.append(functionCall);
+            }
+
             String name = queryInfo.entityInfo.getAttributeName(attribute, true);
             if (name == null) {
                 generateConditionsForIdClass(queryInfo, filter, Condition.forIdClass(comparison), ignoreCase, negated, q);
@@ -1540,11 +1560,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             String o = queryInfo.entityVar;
-            StringBuilder attributeExpr = new StringBuilder();
-            if (ignoreCase)
-                attributeExpr.append("LOWER(").append(o).append('.').append(name).append(')');
-            else
-                attributeExpr.append(o).append('.').append(name);
+            attributeExpr.append(o).append('.').append(name);
+
+            for (int f = functions.length - 1; f >= 0; f--) {
+                attributeExpr.append(')');
+            }
 
             boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
             if (isCollection)
@@ -1553,54 +1573,55 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             switch (comparison) {
                 case Equal:
                     q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case GreaterThan:
                     q.append(attributeExpr).append(Condition.GREATER_THAN.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case GreaterThanEqual:
                     q.append(attributeExpr).append(Condition.GREATER_THAN_EQUAL.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case LessThan:
                     q.append(attributeExpr).append(Condition.LESS_THAN.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case LessThanEqual:
                     q.append(attributeExpr).append(Condition.LESS_THAN_EQUAL.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case StartsWith:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
-                    appendParamOrValue(q, queryInfo, filter).append(", '%')");
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase).append(", '%')");
                     break;
                 case EndsWith:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                    appendParamOrValue(q, queryInfo, filter).append(")");
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase).append(")");
                     break;
                 case Like:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case Between:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case Contains:
                     if (isCollection) {
                         q.append(' ');
-                        appendParamOrValue(q, queryInfo, filter).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                        appendParamOrValue(q, queryInfo, filter, ignoreCase) //
+                                        .append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                     } else {
                         q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                        appendParamOrValue(q, queryInfo, filter).append(", '%')");
+                        appendParamOrValue(q, queryInfo, filter, ignoreCase).append(", '%')");
                     }
                     break;
                 case In:
                     if (ignoreCase)
                         throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
                     q.append(attributeExpr).append(negated ? " NOT " : "").append(Condition.IN.operator);
-                    appendParamOrValue(q, queryInfo, filter);
+                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
                     break;
                 case Null:
                     q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);

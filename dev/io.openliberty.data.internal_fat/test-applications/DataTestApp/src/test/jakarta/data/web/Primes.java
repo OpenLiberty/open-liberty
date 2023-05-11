@@ -265,4 +265,15 @@ public interface Primes {
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
     KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
+
+    @Filter(by = "name", fn = Function.CharCount, op = Compare.Between)
+    @OrderBy("name")
+    Stream<Prime> whereNameLengthWithin(int minLength, int maxLength);
+
+    @Filter(by = "name", fn = { Function.Trimmed, Function.IgnoreCase })
+    Optional<Prime> withAnyCaseName(String name);
+
+    @Filter(by = "name", fn = { Function.Trimmed, Function.CharCount })
+    @Filter(by = "id", op = Compare.Between)
+    List<Prime> withNameLengthAndWithin(int length, long min, long max);
 }

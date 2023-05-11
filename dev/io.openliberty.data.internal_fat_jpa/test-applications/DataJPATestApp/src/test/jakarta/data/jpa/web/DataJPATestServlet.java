@@ -183,10 +183,21 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Test the AbsoluteValue keyword by querying on value that could be positive or negative.
+     * Test the AbsoluteValue Function by querying on values that could be positive or negative.
      */
     @Test
-    public void testAbsoluteValue() {
+    public void testAbsoluteValueFunction() {
+        List<Business> found = businesses.withLongitudeIgnoringSignWithin(92.503f, 92.504f);
+        assertNotNull(found);
+        assertEquals("Found " + found.toString(), 1, found.size());
+        assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Test the AbsoluteValue keyword by querying on values that could be positive or negative.
+     */
+    @Test
+    public void testAbsoluteValueKeyword() {
         List<Business> found = businesses.findByLocationLongitudeAbsoluteValueBetween(92.503f, 92.504f);
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());

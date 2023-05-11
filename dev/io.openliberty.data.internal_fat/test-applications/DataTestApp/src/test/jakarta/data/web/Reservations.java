@@ -36,6 +36,8 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
 
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
 
 /**
@@ -113,4 +115,8 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
+
+    @Filter(by = "invitees", fn = Function.ElementCount)
+    @OrderBy("id")
+    Stream<Reservation> withInviteeCount(int size);
 }
