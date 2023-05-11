@@ -5,4 +5,4 @@
 #-Dcom.ibm.tools.attach.enable=yes
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777
 
--Xmx2048m
+-Xmx1536m
