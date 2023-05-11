@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.checkpoint.fat.security.jaspic.JASPIBasicAuthenticationTest;
 import io.openliberty.checkpoint.fat.security.oidc.OidcClientBasicTests;
 import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_usingSocialConfig;
 
@@ -40,7 +41,8 @@ import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 LibertyOP_BasicTests_oauth_usingSocialConfig.class,
-                OidcClientBasicTests.class
+                OidcClientBasicTests.class,
+                JASPIBasicAuthenticationTest.class
 })
 
 public class FATSuite {
