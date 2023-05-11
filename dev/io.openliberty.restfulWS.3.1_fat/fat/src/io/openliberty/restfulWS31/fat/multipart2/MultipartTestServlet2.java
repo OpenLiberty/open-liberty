@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,27 +19,18 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Test;
 
-import com.ibm.websphere.jaxrs20.multipart.AttachmentBuilder;
-import com.ibm.websphere.jaxrs20.multipart.IAttachment;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
-import io.openliberty.restfulWS31.fat.multipart2.Util.CheckableInputStream;
+import io.openliberty.restfulWS31.fat.multipart2.Util2.CheckableInputStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.ws.rs.ProcessingException;
@@ -85,14 +76,11 @@ public class MultipartTestServlet2 extends FATServlet {
         List<EntityPart> parts = response.readEntity(new GenericType<List<EntityPart>>() {});
         System.out.println("testMultipartResponse - got list of parts: " + parts);
         assertEquals(4, parts.size());
-//        assertEquals(2, parts.size());
 
         EntityPart part = parts.get(3);
         assertEquals("file1", Util2.getPartName(part));
- //       assertEquals("some.xml", part.getDataHandler().getName());
         assertEquals("some.xml", Util2.getFileName(part));
         assertEquals(MediaType.APPLICATION_XML_TYPE, part.getMediaType());
-//        assertEquals(Util.toString(Util.xmlFile()), Util.toString(part.getDataHandler().getInputStream()));
 
         part = parts.get(2);
         assertEquals("file2", Util2.getPartName(part));
@@ -100,8 +88,6 @@ public class MultipartTestServlet2 extends FATServlet {
         assertEquals("mpRestClient2.0.asciidoc", Util2.getFileName(part));
         assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
         assertEquals("[myContentId]", part.getHeaders().get("Content-ID").get(0));
-//        assertEquals("myContentId", part.getHeader("Content-ID"));
-//        assertEquals(Util.toString(Util.asciidocFile()), Util.toString(part.getDataHandler().getInputStream()));
         assertEquals("[SomeValue]", part.getHeaders().get("MyCoolHeader").get(0));
 
         part = parts.get(1);
@@ -176,7 +162,7 @@ public class MultipartTestServlet2 extends FATServlet {
     public void testInputStreamIsClosedByJAXRS() throws Exception {
         List<EntityPart> parts = null;
         
-        CheckableInputStream inputStream = Util.wrapStream(Util.xmlFile());
+        CheckableInputStream inputStream = Util2.wrapStream(Util2.xmlFile());
         
         try {
             parts = List.of(
@@ -206,7 +192,7 @@ public class MultipartTestServlet2 extends FATServlet {
     public void testInputStreamIsClosedByUserBeforeSending() throws Exception {
         List<EntityPart> parts = null;
         
-        CheckableInputStream inputStream = Util.wrapStream(Util.xmlFile());
+        CheckableInputStream inputStream = Util2.wrapStream(Util2.xmlFile());
         
         try {
             parts = List.of(
@@ -278,49 +264,7 @@ public class MultipartTestServlet2 extends FATServlet {
                                   .post(Entity.entity(new GenericEntity<List<EntityPart>>(parts){}, MediaType.MULTIPART_FORM_DATA));
         assertEquals(200, response.getStatus());
         assertEquals("SUCCESS", response.readEntity(String.class));
-    }
-
-        
-    private void testMultipartRequest(String path) {
-
-        
-        List<IAttachment> attachments = new ArrayList<>();
-
-        attachments.add(AttachmentBuilder.newBuilder("file1")
-                                         .inputStream("some.xml", Util.xmlFile())
-                                         .contentType(MediaType.APPLICATION_XML)
-                                         .build());
-
-        attachments.add(AttachmentBuilder.newBuilder("file2")
-                                         .inputStream(Util.asciidocFile())
-                                         .fileName("mpRestClient2.0.asciidoc")
-                                         .contentType("text/asciidoc")
-                                         .contentId("myContentId")
-                                         .header("MyCoolHeader", "SomeValue")
-                                         .build());
-
-        MultivaluedMap<String, String> map = new MultivaluedHashMap<>();
-        map.putSingle("Header1", "Value1");
-        map.put("Header2", Arrays.asList("Value2", "Value3", "Value4"));
-        attachments.add(AttachmentBuilder.newBuilder("notAFile")
-                                         .inputStream(new ByteArrayInputStream("This is not a file...".getBytes()))
-                                         .contentType("text/asciidoc")
-                                         .headers(map)
-                                         .build());
-
-        attachments.add(AttachmentBuilder.newBuilder("noSpecifiedContentType")
-                                         .inputStream(new ByteArrayInputStream("No content type specified".getBytes()))
-                                         .build());
-
-        System.out.println("testMultipartRequest - sending  " + attachments);
-        Response response = client.target(URI_CONTEXT_ROOT)
-                                  .path(path)
-                                  .request(MediaType.TEXT_PLAIN)
-                                  .post(Entity.entity(attachments, MediaType.MULTIPART_FORM_DATA));
-        assertEquals(200, response.getStatus());
-        assertEquals("SUCCESS", response.readEntity(String.class));
-    }
-    
+    }    
     
     private void testEntityPartMultipartRequest(String path, boolean useDefault) {
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,12 +91,8 @@ public class MultipartResource2 extends Application {
         
         System.out.println("getListOfAttachments - returning  " + parts);
 
-//        return Response.ok(new GenericEntity<List<EntityPart>>(parts){}).build();
-//        return Response.ok(Entity.entity(new GenericEntity<List<EntityPart>>(parts) {
-//        }, MediaType.MULTIPART_FORM_DATA)).build();
         return Response.ok(new GenericEntity<List<EntityPart>>(parts) {
         }, MediaType.MULTIPART_FORM_DATA).build();
- //       return Entity.entity(new GenericEntity<List<EntityPart>>(parts){}, MediaType.MULTIPART_FORM_DATA);
     }
 
     @POST
@@ -139,26 +135,19 @@ public class MultipartResource2 extends Application {
             assertEquals("text", part.getMediaType().getType());
             assertEquals("asciidoc", part.getMediaType().getSubtype());
             assertEquals("[[myContentId]]", part.getHeaders().get("Content-ID").toString());
- //           System.out.println("Util2.toString(Util2.asciidocFile() = " + Util2.toString(Util2.asciidocFile()));
-//            System.out.println("Util2.toString(part.getContent()) = " + Util2.toString(part.getContent()));
             assertEquals(Util2.toString(Util2.asciidocFile()), Util2.toString(part.getContent()));
             assertEquals("[[SomeValue]]", part.getHeaders().get("MyCoolHeader").toString());
 
             part = parts.get(1);
             assertEquals("notAFile", part.getName());
-//            assertEquals("notAFile", part.getFileName().get()); // no fileName specified, should default to part name
              assertEquals("text", part.getMediaType().getType());
             assertEquals("asciidoc", part.getMediaType().getSubtype());
             String contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
             assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
                         contentDisposition.contains("filename="));
-//            assertEquals("text/asciidoc", part.getContentType().toString());
-//            assertEquals("This is not a file...",
-//                         Util.toString(part.getDataHandler().getInputStream()));
             assertEquals("[[Value1]]", part.getHeaders().get("Header1").toString());
             MultivaluedMap<String, String> headers = part.getHeaders();
             assertEquals("[Value1]", headers.getFirst("Header1").toString());
-            // there is a behavior difference between CXF and RESTEasy
             List<String> header2ValuesList = headers.get("Header2");
             assertNotNull(header2ValuesList);
             
@@ -166,19 +155,8 @@ public class MultipartResource2 extends Application {
                 // Resteasy now returns a single-entry list of one comma-separated string
                 String header2Values = headers.getFirst("Header2");
                 assertEquals("[Value2, Value3, Value4]", header2Values);
-//
-//                 assertNotNull(header2Values);
-//                 String[] header2ValuesArr = header2Values.split(",");
-//                 System.out.println("Jim.. *" + header2Values + "*");
-//                 System.out.println("Jim.. *" + (header2ValuesArr[0].toString()) + "*");
-//                 System.out.println("Jim.. *" + (header2ValuesArr[1].toString()) + "*");
-//                 System.out.println("Jim.. *" + (header2ValuesArr[2].toString()) + "*");
-//                assertEquals(3, header2ValuesArr.length);
-//                assertEquals("[Value2>", header2ValuesArr[0].toString());
-//                assertEquals(" Value3]>]", header2ValuesArr[1].toString());
-//                assertEquals(" Value4]>]", header2ValuesArr[2].toString());
-//            } else {
-//                fail("unexpected number of header values for Header2");
+            } else {
+                fail("unexpected number of header values for Header2");
            }
 
             part = parts.get(0);
@@ -191,7 +169,7 @@ public class MultipartResource2 extends Application {
             assertEquals("text", part.getMediaType().getType());
             assertEquals("plain", part.getMediaType().getSubtype());
         } catch (Throwable t) {
-            System.out.println("Jim.... test failed with exception:  " + t);
+            fail("Test failed with exception:  " + t);
             t.printStackTrace();
             return t.toString();
         }
@@ -217,11 +195,6 @@ public class MultipartResource2 extends Application {
                                          @FormParam("file2") String part2,
                                          @FormParam("notAFile") String part3,
                                          @FormParam("noSpecifiedContentType") String part4) throws IOException {
-        System.out.println("Jim... part1 = " + part1);
-        System.out.println("Jim... part2 = " + part2);
-        System.out.println("Jim... part3 = " + part3);
-        System.out.println("Jim... part4 = " + part4);
-        
         assertEquals(Util.removeLineFeeds(Util.toString(Util.xmlFile()).trim()), Util.removeLineFeeds(part1.trim()));
         assertEquals(Util.removeLineFeeds(Util.toString(Util.asciidocFile()).trim()), Util.removeLineFeeds(part2.trim()));
         assertEquals("This is not a file...", part3.trim());
@@ -230,13 +203,12 @@ public class MultipartResource2 extends Application {
     }
 
     @PUT
-    public String inputStreamClosed(List<IAttachment> parts) throws IOException {
-        IAttachment part = parts.get(0);
-        assertEquals("file1", Util.getPartName(part));
-        assertEquals("some.xml", part.getDataHandler().getName());
-        assertEquals("some.xml", Util.getFileName(part));
-        assertEquals(MediaType.APPLICATION_XML_TYPE, part.getContentType());
-        assertEquals(Util.toString(Util.xmlFile()), Util.toString(part.getDataHandler().getInputStream()));
+    public String inputStreamClosed(List<EntityPart> parts) throws IOException {
+        EntityPart part = parts.get(0);
+        assertEquals("file1", Util2.getPartName(part));
+        assertEquals("some.xml", part.getFileName().get());
+        assertEquals(MediaType.APPLICATION_XML_TYPE, part.getMediaType());
+        assertEquals(Util2.toString(Util2.xmlFile()), Util2.toString(part.getContent()));
         return "SUCCESS";
     }
     

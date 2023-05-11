@@ -73,7 +73,7 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
-       boolean debug = tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();
+       boolean debug = tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();  //Liberty Change
        List<String> list = null;
       // A @FormParam for multipart/form-data can be a String, InputStream or EntityPart. This type is handled specially.
       if (EntityPart.class.isAssignableFrom(type)) {
@@ -94,13 +94,15 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
               try {
                   Type genericType = (new ArrayList<IAttachment>() {}).getClass().getGenericSuperclass();
                   MessageBodyReader<Object> mbr = (MessageBodyReader<Object>) factory.getMessageBodyReader((Class)List.class, baseGenericType, annotations, mediaType);
-                  List<IAttachment> list2 = (List<IAttachment>) mbr.readFrom((Class)List.class, genericType, annotations, mediaType, request.getHttpHeaders().getRequestHeaders(), request.getInputStream());
-                  for (IAttachment att : list2) {
+                  List<IAttachment> attList = (List<IAttachment>) mbr.readFrom((Class)List.class, genericType, annotations, mediaType, request.getHttpHeaders().getRequestHeaders(), request.getInputStream());
+                  for (IAttachment att : attList) {
                       IAttachmentImpl impl = (IAttachmentImpl) att;
                       decodedFormParams.putSingle(impl.getFieldName(), impl.getBodyAsString());
                   }
               } catch (Exception ex) {
-                  // ignore
+                  if (debug) {
+                      Tr.debug(tc, "Unexpected exception processing multipart FormParams", ex); 
+                   }
               }
           } 
           list = decodedFormParams.get(paramName);
@@ -114,7 +116,7 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
                       list = decodedFormParams.get(paramName);
                   } catch (IOException e) {
                       if (debug) {
-                         Tr.debug(tc, "Unexpected excpeption processing multipart FormParams", e); 
+                         Tr.debug(tc, "Unexpected exception processing multipart FormParams", e); 
                       }
                    }
                   

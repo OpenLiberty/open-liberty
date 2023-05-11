@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.restfulWS31.fat.multipart2;
+package io.openliberty.restfulWS31.fat.multipart;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import jakarta.ws.rs.core.EntityPart;
 
-public class Util2 {
+public class Util {
     private static final String LS = System.lineSeparator();
 
     static InputStream xmlFile() {
