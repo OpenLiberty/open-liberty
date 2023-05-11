@@ -513,25 +513,30 @@ public class LibertyServer implements LogMonitorClient {
         checkpointInfo.criuRestoreDisableRecovery = value;
     }
 
+    public LibertyServer addCheckpointRegexIgnoreMessage(String regEx) {
+        checkpointInfo.checkpointRegexIgnoreMessages.add(regEx);
+        return this;
+    }
+
     public static class CheckpointInfo {
-        final Consumer<LibertyServer> defaultCheckpointLambda = (LibertyServer s) -> {
-            Log.debug(c, "No beforeCheckpointLambda supplied.");
+        final Consumer<LibertyServer> defaultPreCheckpointLambda = (LibertyServer s) -> {
+            Log.debug(c, "No preCheckpointLambda supplied.");
         };
-        final Consumer<LibertyServer> defaultRestoreLambda = (LibertyServer s) -> {
-            Log.debug(c, "No beforeRestoreLambda supplied.");
+        final Consumer<LibertyServer> defaultPostCheckpointLambda = (LibertyServer s) -> {
+            Log.debug(c, "No postCheckpointLambda supplied.");
         };
 
-        public CheckpointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> beforeRestoreLambda) {
-            this(phase, autorestore, false, false, beforeRestoreLambda);
+        public CheckpointInfo(CheckpointPhase phase, boolean autorestore, Consumer<LibertyServer> postCheckpointLambda) {
+            this(phase, autorestore, false, false, postCheckpointLambda);
         }
 
         public CheckpointInfo(CheckpointPhase phase, boolean autorestore, boolean expectCheckpointFailure, boolean expectRestoreFailure,
-                              Consumer<LibertyServer> beforeRestoreLambda) {
-            this(phase, autorestore, expectCheckpointFailure, expectRestoreFailure, null, beforeRestoreLambda);
+                              Consumer<LibertyServer> postCheckpointLambda) {
+            this(phase, autorestore, expectCheckpointFailure, expectRestoreFailure, null, postCheckpointLambda);
         }
 
         public CheckpointInfo(CheckpointPhase phase, boolean autorestore, boolean expectCheckpointFailure, boolean expectRestoreFailure,
-                              Consumer<LibertyServer> beforeCheckpointLambda, Consumer<LibertyServer> beforeRestoreLambda) {
+                              Consumer<LibertyServer> preCheckpointLambda, Consumer<LibertyServer> postCheckpointLambda) {
             if (phase == null) {
                 throw new IllegalArgumentException("Phase must not be null");
             }
@@ -539,22 +544,22 @@ public class LibertyServer implements LogMonitorClient {
             this.autoRestore = autorestore;
             this.expectCheckpointFailure = expectCheckpointFailure;
             this.expectRestoreFailure = expectRestoreFailure;
-            if (beforeCheckpointLambda == null) {
-                this.beforeCheckpointLambda = defaultCheckpointLambda;
+            if (preCheckpointLambda == null) {
+                this.preCheckpointLambda = defaultPreCheckpointLambda;
             } else {
-                this.beforeCheckpointLambda = (LibertyServer svr) -> {
-                    Log.debug(c, "Begin execution of supplied beforeCheckpointLambda.");
-                    beforeCheckpointLambda.accept(svr);
-                    Log.debug(c, "Excecution of supplied beforeCheckpointLambda complete.");
+                this.preCheckpointLambda = (LibertyServer svr) -> {
+                    Log.debug(c, "Begin execution of supplied preCheckpointLambda.");
+                    preCheckpointLambda.accept(svr);
+                    Log.debug(c, "Excecution of supplied preCheckpointLambda complete.");
                 };
             }
-            if (beforeRestoreLambda == null) {
-                this.beforeRestoreLambda = defaultRestoreLambda;
+            if (postCheckpointLambda == null) {
+                this.postCheckpointLambda = defaultPostCheckpointLambda;
             } else {
-                this.beforeRestoreLambda = (LibertyServer svr) -> {
-                    Log.debug(c, "Begin execution of supplied beforeRestoreLambda.");
-                    beforeRestoreLambda.accept(svr);
-                    Log.debug(c, "Excecution of supplied beforeRestoreLambda complete.");
+                this.postCheckpointLambda = (LibertyServer svr) -> {
+                    Log.debug(c, "Begin execution of supplied postCheckpointLambda.");
+                    postCheckpointLambda.accept(svr);
+                    Log.debug(c, "Excecution of supplied postCheckpointLambda complete.");
                 };
             }
         }
@@ -564,9 +569,9 @@ public class LibertyServer implements LogMonitorClient {
          */
         private final CheckpointPhase checkpointPhase; //Phase to checkpoint
         private final boolean autoRestore; // weather or not to perform restore after checkpoint
-        private final Consumer<LibertyServer> beforeCheckpointLambda;
         //AN optional function executed after checkpoint but before restore
-        private final Consumer<LibertyServer> beforeRestoreLambda;
+        private final Consumer<LibertyServer> preCheckpointLambda;
+        private final Consumer<LibertyServer> postCheckpointLambda;
         private final boolean expectCheckpointFailure;
         private final boolean expectRestoreFailure;
         /*
@@ -600,6 +605,12 @@ public class LibertyServer implements LogMonitorClient {
         private boolean criuRestoreDisableRecovery = true;
 
         private Properties checkpointEnv = null;
+
+        /**
+         * Set of regular expressions to match against lines to ignore in the post checkpoint log files. Error / Warning messages found
+         * in the post checkpoint log not matching any of these expressions will result in test failure
+         */
+        private final List<String> checkpointRegexIgnoreMessages = new ArrayList<String>();
 
     }
 
@@ -1651,7 +1662,7 @@ public class LibertyServer implements LogMonitorClient {
         if (doCheckpoint()) {
             // save off envVars for checkpoint
             checkpointInfo.checkpointEnv = (Properties) envVars.clone();
-            checkpointInfo.beforeCheckpointLambda.accept(this);
+            checkpointInfo.preCheckpointLambda.accept(this);
         }
 
         ProgramOutput output;
@@ -1790,7 +1801,7 @@ public class LibertyServer implements LogMonitorClient {
             }
             if (doCheckpoint()) {
                 checkpointValidate(output, expectStartFailure);
-                checkpointInfo.beforeRestoreLambda.accept(this);
+                checkpointInfo.postCheckpointLambda.accept(this);
                 if (checkpointInfo.autoRestore) {
                     output = checkpointRestore(false);
                 } else {
@@ -1932,6 +1943,7 @@ public class LibertyServer implements LogMonitorClient {
                 throw fail;
             }
             assertCheckpointDirAsExpected(true);
+            checkLogsForErrorsAndWarnings(checkpointInfo.checkpointRegexIgnoreMessages.toArray(new String[checkpointInfo.checkpointRegexIgnoreMessages.size()]));
             assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
                           waitForStringInLogUsingMark("CWWKC0451I:", 0));
         } catch (AssertionError er) {
@@ -3042,6 +3054,30 @@ public class LibertyServer implements LogMonitorClient {
             this.isTidy = true;
 
             checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
+
+            if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
+                checkpointInfo.checkpointPhase == CheckpointPhase.APPLICATIONS) {
+                //If server restored from an APPLICATIONS checkpoint, then we do not expect to see starting application message.
+                // It would have started pre-checkpoint.
+                // If present, it may mean a bug in how config changes are handled by checkpoint.
+                // We intentionally only make this check if the test will not otherwise fail due to unexpected error messages
+                // already found.
+                List<String> appsRestarted = this.findStringsInLogs("CWWKZ0018I: Starting application");
+                if (!appsRestarted.isEmpty()) {
+                    StringBuffer sb = new StringBuffer("Unexpected application restart messages found after restore:");
+                    sb.append(getServerName());
+                    sb.append(" logs:");
+                    for (String applicationRestarted : appsRestarted) {
+                        sb.append("\n <br>");
+                        sb.append(applicationRestarted);
+                        Log.info(c, method, "Unexpected application restart in retored server found in log " +
+                                            getDefaultLogFile() + ": " + applicationRestarted);
+                    }
+                    throw new Exception(sb.toString());
+                }
+
+            }
+
         } finally {
             // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
             // server starts again, logs will roll into the existing logs. We also don't clear
@@ -3185,35 +3221,10 @@ public class LibertyServer implements LogMonitorClient {
             ex = new Exception(sb.toString());
         }
 
-        if (ex == null) {
+        if (ex == null)
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
-
-            //In general, apps are not expected to restart in a server restored from an APPLICATIONS checkpoint
-            // If it happens it may mean a bug in how config changes are handled by checkpoint.
-            // We intentionally only make this check if the test will not otherwise fail due to unexpected error messages
-            // already found.
-            //TODO add an exception list for handling complicated scenarios where some app restarts expected.
-            if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
-                checkpointInfo.checkpointPhase == CheckpointPhase.APPLICATIONS) {
-                List<String> appsRestarted = this.findStringsInLogs("CWWKZ0018I: Starting application");
-                if (!appsRestarted.isEmpty()) {
-                    StringBuffer sb = new StringBuffer("Unexpected application restart messages found after restore:");
-                    sb.append(getServerName());
-                    sb.append(" logs:");
-                    for (String applicationRestarted : appsRestarted) {
-                        sb.append("\n <br>");
-                        sb.append(applicationRestarted);
-                        Log.info(c, method, "Unexpected application restart in retored server found in log " +
-                                            getDefaultLogFile() + ": " + applicationRestarted);
-                    }
-                    throw new Exception(sb.toString());
-                }
-
-            }
-
-        } else {
+        else
             throw ex;
-        }
     }
 
     public void restartServer() throws Exception {

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package bells;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -23,5 +24,10 @@ public class AppInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
         System.out.println("Inside Servlet Container Initializer...");
+    }
+
+    // Only here to suppress warnings messages that we have no method supporting BELL prop injection.
+    public void updateBell(Map<String, String> ubProps) {
+        System.out.println("Updated bell properties: " + ubProps);
     }
 }
