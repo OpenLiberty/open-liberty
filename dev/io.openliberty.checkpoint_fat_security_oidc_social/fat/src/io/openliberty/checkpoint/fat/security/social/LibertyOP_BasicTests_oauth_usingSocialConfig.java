@@ -13,8 +13,8 @@
 
 package io.openliberty.checkpoint.fat.security.social;
 
-import static io.openliberty.checkpoint.fat.securty.common.FATSuite.getTestMethod;
-import static io.openliberty.checkpoint.fat.securty.common.FATSuite.updateVariableConfig;
+import static io.openliberty.checkpoint.fat.security.common.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.security.common.FATSuite.updateVariableConfig;
 
 import java.net.URL;
 import java.util.ArrayList;

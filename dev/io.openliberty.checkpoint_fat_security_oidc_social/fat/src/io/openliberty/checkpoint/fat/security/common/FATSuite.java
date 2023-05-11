@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.fat.securty.common;
+package io.openliberty.checkpoint.fat.security.common;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
 import static org.junit.Assert.fail;
