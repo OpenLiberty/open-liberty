@@ -76,6 +76,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     private static RecoveryLogFactory _recoveryLogFactory;
     private static boolean _recoveryLogServiceReady;
     private static boolean _requireDataSourceActive;
+    private boolean _localRecoveryFailed;
 
     protected static BundleContext _bc;
 
@@ -274,6 +275,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             } catch (RecoveryFailedException exc) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Local recovery failed.");
+                _localRecoveryFailed = true;
             } catch (Exception e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
             }
@@ -792,6 +794,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         // If the ConfigurationProvider is a DefaultConfigurationProvider, then we are operating in a UT environment.
         if (cp != null && !cp.needToCoordinateServices()) {
             recoverNow = true;
+        } else if (_localRecoveryFailed) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Local recovery has already been marked as failed, do not attempt again");
         } else {
             if (cp != null && cp.isSQLRecoveryLog())
                 _requireDataSourceActive = true;

@@ -3654,10 +3654,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     createDBTable(conn);
                 } catch (Exception createException) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Table Creation failed with exception: " + createException);
+                        Tr.debug(tc, "Table Creation failed with exception: " + createException + " throw, the original exception" + ex);
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "assertDBTableExists", createException);
-                    throw createException;
+                        Tr.exit(tc, "assertDBTableExists", ex);
+                    throw ex;
                 } // end catch create failed
             } // end catch read failed
 
@@ -4011,6 +4011,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimLocalRetry.isClaimed();
+                    else
+                        nonTransientException = claimLocalRetry.getNonTransientException();
                 } else {
                     // Exception not able to be retried
                     Tr.debug(tc, "Cannot recover from Exception when claiming local recovery logs for server " + _serverName + " Exception: "
@@ -4027,10 +4029,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         // If the recovery logs have been successfully claimed, spin off a thread to heartbeat,
         // ie to periodically update the timestamp in the control row
-        if (isClaimed)
-
-        {
+        if (isClaimed) {
             HeartbeatLogManager.setTimeout(this, _peerLockTimeBetweenHeartbeats);
+        } else {
+            markFailed(nonTransientException, true, false);
         }
 
         if (tc.isEntryEnabled())
