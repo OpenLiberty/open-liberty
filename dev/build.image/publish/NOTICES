@@ -6,7 +6,7 @@ The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 
 TABLE OF CONTENTS
 
- 
+APACHE V1.1
 APACHE V2
 BSD
 BSD-2-CLAUSE  
@@ -26,6 +26,70 @@ UNICODE
 W3C
 OTHER KNOWN LICENSE  
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+APACHE SOFTWARE LICENSE 1.1
+
+The Program includes some or all of the following that IBM obtained
+under the Apache License Version 1.1:
+
+BCPG-JDK15ON
+
+
+Apache Software License
+Version 1.1
+
+Copyright (c) 2000 The Apache Software Foundation.  All rights reserved.
+ 
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are 
+met:
+ 
+1. Redistributions of source code must retain the above copyright 
+notice, this list of conditions and the following disclaimer.
+ 
+2. Redistributions in binary form must reproduce the above copyright 
+notice, this list of conditions and the following disclaimer in the 
+documentation and/or other materials provided with the distribution.
+
+3. The end-user documentation included with the redistribution,
+if any, must include the following acknowledgment:
+"This product includes software developed by the
+Apache Software Foundation (http://www.apache.org/)."
+Alternately, this acknowledgment may appear in the software itself,
+if and wherever such third-party acknowledgments normally appear.
+
+4. The names "Apache" and "Apache Software Foundation" must 
+not be used to endorse or promote products derived from this
+software without prior written permission. For written
+permission, please contact apache@apache.org.
+
+5. Products derived from this software may not be called "Apache",
+nor may "Apache" appear in their name, without prior written
+permission of the Apache Software Foundation.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=================================================================
+
+This software consists of voluntary contributions made by many
+individuals on behalf of the Apache Software Foundation.  For more
+information on the Apache Software Foundation, please see
+<http://www.apache.org/>.
+
+Portions of this software are based upon public domain software
+originally written at the National Center for Supercomputing 
+Applications, University of Illinois, Urbana-Champaign.
+
+END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 APACHE SOFTWARE LICENSE 2.0
@@ -97,10 +161,12 @@ SMALLRYE-METRICS, JAKARTA.ENTERPRISE.CDI.API, JAKARTA.ENTERPRISE.LANG-MODEL, APA
 SMALLRYE-OPEN-API-CORE, SMALLRYE-OPEN-API-JAXRS, ZIPKIN, ZIPKIN-REPORTER, ZIPKIN-SENDER-OKHTTP3,
 JAKARTA.ENTERPRISE.CDI-API, RESTEASY-CDI, RESTEASY-CLIENT, RESTEASY-CLIENT-API, RESTEASY-CORE, RESTEASY-CORE-SPI,
 RESTEASY-JAXB-PROVIDER, RESTEASY-MULTIPART-PROVIDER, RESTEASY-SERVLET-INITIALIZER, RESTEASY-VALIDATOR-PROVIDER,
-WELD-ENVIRONMENT-COMMON, WELD-OSGI-BUNDLE, WELD-SE-CORE,TOMCAT-JASPER-EL [JASPER EXPRESSION LANGUAGE IMPL],
+WELD-ENVIRONMENT-COMMON, WELD-OSGI-BUNDLE, WELD-SE-CORE, TOMCAT-JASPER-EL [JASPER EXPRESSION LANGUAGE IMPL],
 TOMCAT-EL-API [EXPRESSION LANGUAGE PACKAGE], MICROPROFILE CONFIG, MICROPROFILE CONTEXT PROPAGATION, MICROPROFILE FAULT TOLERANCE,
 MICROPROFILE GRAPHQL, MICROPROFILE HEALTH, MICROPROFILE JWT AUTH [JSON WEB TOKEN], MICROPROFILE METRICS, MICROPROFILE OPENAPI,
-MICROPROFILE OPENTRACING, MICROPROFILE REACTIVE STREAMS OPERATORS, MICROPROFILE REACTIVE MESSAGING, MICROPROFILE REST CLIENT
+MICROPROFILE OPENTRACING, MICROPROFILE REACTIVE STREAMS OPERATORS, MICROPROFILE REACTIVE MESSAGING, MICROPROFILE REST CLIENT,
+APIDOM-AST, APIDOM-CORE, CACHE-API, DETECT-LIBC, FIND-YARN-WORKSPACE-ROOT, GERONIMO-ATINJECT, APACHE HTTPCOMPONENTS,
+SHORT-UNIQUE-ID,TS-TOOLBELT, DOMPURIFY
 
 
 Apache License
@@ -291,9 +357,44 @@ obtained under the BSD License:
 PUREJAVACRC32 [Commons Codec] (Copyright (c) 2004-2006 Intel
 Corportation), FIREBUG-LITE [Lodash] (Copyright (c) 2007, Parakey Inc.
 All rights reserved.)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 BSD-2-CLAUSE
+The Program includes some or all of the following packages that IBM 
+obtained under the BSD-2-Clause License:
+
+JAXB-RI (Copyright (c) 2018 Oracle and/or its affiliates. All rights
+reserved.), DIJIT (Copyright (c) 2005-2013; The Dojo Foundation),
+TOUGH-COOKIE (Copyright (c) 2015 Salesforce.com Inc.), SPRINTF-JS
+(Copyright (c) 2007-2014 Alexandru Marasteanu <hello [at) alexei (dot]
+ro>), BOOM (Copyright (c) 2012-2014 Walmart and other contributors.),
+GLOB (Copyright (c) Isaac Z. Schlueter ("Author")), CHMODR (Copyright
+(c) Isaac Z. Schlueter ("Author")), JAXEN [Apache CXF] (Copyright
+2003-2006 The Werken Company.), DIJIT-THEMES (Copyright (c) 2005-2016
+The JS Foundation), JSON-SCHEMA (Required), UGLIFY-JS (Copyright
+2012-2013 (c) Mihai Bazon <mihai.bazon@gmail.com>), SEMVER (Copyright
+(c) Isaac Z. Schlueter ("Author")), CASELESS (Copyright Not Found),
+AMDEFINE (Copyright (c) 2011 The Dojo Foundation Copyright (c) 2011 The
+Dojo Foundation), ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
+Suzuki](http://github.com/Constellation)), CRYPTO-BROWSERIFY (Copyright
+Not Found), HOEK (Copyright (c) 2011-2014 Walmart and other
+contributors. Copyright (c) 2011 Yahoo Inc.), ESCODEGEN (Copyright (c)
+2009-2011 Mozilla Foundation and contributors), XSOM [JAXB-RI]
+(Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.),
+QS (Copyright (c) 2014 Nathan LaFreniere and other contributors.),
+DOJO/JSON (Copyright 2005 Michal Migurski), DOJO/_FIREBUG (Copyright (c)
+2006-2007, Joe Hewitt, All rights reserved.), RELAXNG-DATATYPE [JAXB-RI]
+(Copyright (c) 2001-2003 Thai Open Source Software Center Ltd<br />All
+rights reserved. Found), DIGDUG (? 2014 SitePen; Inc.
+http://sitepen.com), BURRITO (Copyright 2010 (c) Mihai Bazon
+<mihai.bazon@gmail.com>), IDX (Copyright (c) 2013-present; Facebook;
+Inc. All rights reserved), SWAGGER-UI/HIGHLIGHT.JS (Copyright Not
+Found), DOJO (Copyright (c) 2005-2013 The Dojo Foundation), ESPRIMA
+(Copyright (C) 2012 2011 [Ariya
+Hidayat](http://ariya.ofilabs.com/about)), JAKARTA.XML.BIND,
+@YARNPKG/LOCKFILE (Copyright (c) 2016-present, Yarn Contributors. All rights reserved.), 
+RC (Copyright (c) 2013, Dominic Tarr)
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are 
@@ -319,17 +420,51 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 END OF BSD-2-CLAUSE LICENSE NOTICES AND INFORMATION
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 BSD-3-CLAUSE
 
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-3-Clause License:
-
+LEADFOOT (? 2014 SitePen; Inc. http://sitepen.com),
+NORMALIZE-PACKAGE-DATA (Copyright (c) Meryn Stol ("Author")), CHOWNR
+(Copyright (c) Isaac Z. Schlueter), TAFFYDB (Copyright Not Found),
+RUNFORCOVER (Copyright Not Found), NPM-USER-VALIDATE (Copyright (c)
+Robert Kowalski), ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
+Suzuki](http://github.com/Constellation) Copyright (C) 2012 Ariya
+Hidayat <ariya.hidayat@gmail.com>), HOEK (Copyright (c) 2011-2013
+Walmart. Portions of this project were initially based on Postmile
+Copyright (c) 2011 Yahoo Inc.), NPM-INSTALL-CHECKS (Copyright (c) Robert
+Kowalski and Isaac Z. Schlueter ("Authors")), ESRECURSE (Copyright (C)
+2014 [Yusuke Suzuki](http://github.com/Constellation)), QS (Copyright
+(c) 2014 Nathan LaFreniere and other
+[contributors](https://github.com/ljharb/qs/graphs/contributors)), SNTP
+(Copyright (c) 2012-2013 Eran Hammer.), TAR (Copyright (c) Isaac Z.
+Schlueter), ISTANBUL (Copyright 2012 Yahoo! Inc.), DIFF (Copyright (c)
+2009-2011 Kevin Decker kpdecker@gmail.com),
+UNDERSCORE.STRING/VENDOR/QUNIT (Copyright (c) 2008 Ariel Flesler -
+aflesler(at)gmail(dot)com), NPMLOG (Copyright (c) Isaac Z. Schlueter
+("Author")), SHA (Copyright (c) 2013 Forbes Lindesay),
+PROMZARD/INIT-INPUT (Copyright Not Found), ESPREE (Copyright Not Found),
+FSTREAM (Copyright (c) Isaac Z. Schlueter ("Author")), ESUTILS
+(Copyright (C) 2013 [Yusuke Suzuki](http://github.com/Constellation)),
+GITHUB-URL-FROM-USERNAME-REPO (Copyright (c) Robert Kowalski
+("Author")), DOCTRINE (Copyright Not Found), HAWK (Copyright (c)
+2012-2013 Eran Hammer.), CRYPTILES (Copyright (c) 2012-2013 Eran
+Hammer.), ASM (Copyright (c) 2000-2011 INRIA France Telecom), SAAJ-IMPL (Copyright
+(c) 1997, 2020 Oracle and/or its affiliates.), 
+SAAJ (Copyright (c) 2011-2014 Oracle and/or its affiliates), JAKARTA-JWS
+(Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights
+reserved.), ASM (Copyright (c) 2000-2011 INRIA, France Telecom), DOJO (Copyright (c)
+[OpenJS Foundation](https://openjsf.org/)),
 JAKARTA ACTIVIATION (Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.)
 JAKARTA-XMLBINDING (Copyright (c) 2017; 2018 Oracle and/or its affiliates. All rights reserved.)
 JAKARTA.PERSISTENCE (Copyright (c) 2017; 2018 Oracle and/or its affiliates. All rights reserved.)
 JAKARTA-XMLSOAP (Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved)
 JAKARTA.RESTFULWS (Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.)
+RAMDA-ADJUNCT (Copyright 2017-2019 Vladimír Gorej and the Ramda Adjunct contributors) 
+STAX-EX (Copyright (c) 2007, Eclipse Foundation, Inc. and its licensors.)
+
 
 Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are 
@@ -358,6 +493,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 END OF BSD-3-CLAUSE LICENSE NOTICES AND INFORMATION
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 BSD-4-CLAUSE
 
@@ -390,133 +526,6 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 END OF BSD-4-CLAUSE LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-BSD-2-CLAUSE LICENSE
-
-The Program includes some or all of the following packages that IBM 
-obtained under the BSD-2-Clause License:
-
-JAXB-RI (Copyright (c) 2018 Oracle and/or its affiliates. All rights
-reserved.), DIJIT (Copyright (c) 2005-2013; The Dojo Foundation),
-TOUGH-COOKIE (Copyright (c) 2015 Salesforce.com Inc.), SPRINTF-JS
-(Copyright (c) 2007-2014 Alexandru Marasteanu <hello [at) alexei (dot]
-ro>), BOOM (Copyright (c) 2012-2014 Walmart and other contributors.),
-GLOB (Copyright (c) Isaac Z. Schlueter ("Author")), CHMODR (Copyright
-(c) Isaac Z. Schlueter ("Author")), JAXEN [Apache CXF] (Copyright
-2003-2006 The Werken Company.), DIJIT-THEMES (Copyright (c) 2005-2016
-The JS Foundation), JSON-SCHEMA (Required), UGLIFY-JS (Copyright
-2012-2013 (c) Mihai Bazon <mihai.bazon@gmail.com>), SEMVER (Copyright
-(c) Isaac Z. Schlueter ("Author")), CASELESS (Copyright Not Found),
-AMDEFINE (Copyright (c) 2011 The Dojo Foundation Copyright (c) 2011 The
-Dojo Foundation), ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
-Suzuki](http://github.com/Constellation)), CRYPTO-BROWSERIFY (Copyright
-Not Found), HOEK (Copyright (c) 2011-2014 Walmart and other
-contributors. Copyright (c) 2011 Yahoo Inc.), ESCODEGEN (Copyright (c)
-2009-2011 Mozilla Foundation and contributors), XSOM [JAXB-RI]
-(Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.),
-QS (Copyright (c) 2014 Nathan LaFreniere and other contributors.),
-DOJO/JSON (Copyright 2005 Michal Migurski), DOJO/_FIREBUG (Copyright (c)
-2006-2007, Joe Hewitt, All rights reserved.), RELAXNG-DATATYPE [JAXB-RI]
-(Copyright (c) 2001-2003 Thai Open Source Software Center Ltd<br />All
-rights reserved. Found), DIGDUG (? 2014 SitePen; Inc.
-http://sitepen.com), BURRITO (Copyright 2010 (c) Mihai Bazon
-<mihai.bazon@gmail.com>), IDX (Copyright (c) 2013-present; Facebook;
-Inc. All rights reserved), SWAGGER-UI/HIGHLIGHT.JS (Copyright Not
-Found), DOJO (Copyright (c) 2005-2013 The Dojo Foundation), ESPRIMA
-(Copyright (C) 2012 2011 [Ariya
-Hidayat](http://ariya.ofilabs.com/about)), JAKARTA.XML.BIND.API (Copyright (c) 2018 Oracle and/or its affiliates.)
-
-
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met: 
-
-* Redistributions of source code must retain the above copyright notice, 
-  this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright 
-  notice, this list of conditions and the following disclaimer in the 
-  documentation and/or other materials provided with the distribution. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED 
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-END OF BSD-2-CLAUSE LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-BSD-3-Clause LICENSE
-
-The Program includes some or all of the following packages that IBM 
-obtained under the BSD-3-Clause License:
-
-LEADFOOT (? 2014 SitePen; Inc. http://sitepen.com),
-NORMALIZE-PACKAGE-DATA (Copyright (c) Meryn Stol ("Author")), CHOWNR
-(Copyright (c) Isaac Z. Schlueter), TAFFYDB (Copyright Not Found),
-RUNFORCOVER (Copyright Not Found), NPM-USER-VALIDATE (Copyright (c)
-Robert Kowalski), ESTRAVERSE (Copyright (C) 2012-2013 [Yusuke
-Suzuki](http://github.com/Constellation) Copyright (C) 2012 Ariya
-Hidayat <ariya.hidayat@gmail.com>), HOEK (Copyright (c) 2011-2013
-Walmart. Portions of this project were initially based on Postmile
-Copyright (c) 2011 Yahoo Inc.), NPM-INSTALL-CHECKS (Copyright (c) Robert
-Kowalski and Isaac Z. Schlueter ("Authors")), ESRECURSE (Copyright (C)
-2014 [Yusuke Suzuki](http://github.com/Constellation)), QS (Copyright
-(c) 2014 Nathan LaFreniere and other
-[contributors](https://github.com/ljharb/qs/graphs/contributors)), SNTP
-(Copyright (c) 2012-2013 Eran Hammer.), TAR (Copyright (c) Isaac Z.
-Schlueter), ISTANBUL (Copyright 2012 Yahoo! Inc.), DIFF (Copyright (c)
-2009-2011 Kevin Decker kpdecker@gmail.com),
-UNDERSCORE.STRING/VENDOR/QUNIT (Copyright (c) 2008 Ariel Flesler -
-aflesler(at)gmail(dot)com), NPMLOG (Copyright (c) Isaac Z. Schlueter
-("Author")), SHA (Copyright (c) 2013 Forbes Lindesay),
-PROMZARD/INIT-INPUT (Copyright Not Found), ESPREE (Copyright Not Found),
-FSTREAM (Copyright (c) Isaac Z. Schlueter ("Author")), ESUTILS
-(Copyright (C) 2013 [Yusuke Suzuki](http://github.com/Constellation)),
-GITHUB-URL-FROM-USERNAME-REPO (Copyright (c) Robert Kowalski
-("Author")), DOCTRINE (Copyright Not Found), HAWK (Copyright (c)
-2012-2013 Eran Hammer.), CRYPTILES (Copyright (c) 2012-2013 Eran
-Hammer.), ASM (Copyright (c) 2000-2011 INRIA France Telecom), SAAJ-IMPL (Copyright
-(c) 1997, 2020 Oracle and/or its affiliates.), 
-SAAJ (Copyright (c) 2011-2014 Oracle and/or its affiliates), JAKARTA-JWS
-(Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights
-reserved.), ASM (Copyright (c) 2000-2011 INRIA, France Telecom), DOJO (Copyright (c)
-[OpenJS Foundation](https://openjsf.org/))
-
-
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met: 
-
-* Redistributions of source code must retain the above copyright notice, 
-  this list of conditions and the following disclaimer. 
-* Redistributions in binary form must reproduce the above copyright 
-  notice, this list of conditions and the following disclaimer in the 
-  documentation and/or other materials provided with the distribution. 
-* Neither the name of the <ORGANIZATION> nor the names of its 
-  contributors may be used to endorse or promote products derived from 
-  this software without specific prior written permission. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER 
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-END OF BSD 3-CLAUSE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
@@ -618,8 +627,6 @@ JAKARTA.EL-API
 (https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/4.0.0/),
 JAKARTA.SERVLET-API
 (https://repo.maven.apache.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.7), 
-ORG.ECLIPSE.OSGI
-(https://search.maven.org/remotecontent?filepath=org/eclipse/platform/org.eclipse.osgi/3.17.200/org.eclipse.osgi-3.17.200-sources.jar),
 JAKARTA.MAIL
 (https://search.maven.org/remotecontent?filepath=com/sun/mail/jakarta.mail/2.0.0-RC5/jakarta.mail-2.0.0-RC5-sources.jar),
 JAKARTA.FACES
@@ -704,7 +711,13 @@ JAKARTA.WEBSOCKET-CLIENT-API
 ECLIPSE-PARSSON
 (https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.0.jar)
 YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.jar)
+(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.jar),
+ORG.ECLIPSE.OSGI
+https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.300   
+ORG.ECLIPSE.PERSISTENCE.JPA
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
+ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -734,7 +747,28 @@ Contributors), NPM-CACHE-FILENAME (Copyright (c) npm Inc. and
 Contributors), READ-PACKAGE-JSON (Copyright (c) Isaac Z. Schlueter),
 READ-INSTALLED (Copyright (c) Isaac Z. Schlueter), YAMLISH (Copyright
 (c) Isaac Z. Schlueter and Contributors), YALLIST (Copyright (c) Isaac
-Z. Schlueter and Contributors)
+Z. Schlueter and Contributors),
+APROBA (Copyright (c) 2015, Rebecca Turner <me@re-becca.org>),
+ARE-WE-THERE-YET (Copyright (C) npm, Inc.),
+AT-LEAST-NODE (Copyright (c) 2020 Ryan Zimmerman <opensrc@ryanzim.com>),
+CHOWNR Copyright ( (c) 2012-2022 Isaac Z. Schlueter and Contributors),
+CONSOLE-CONTROL-STRINGS (Copyright (c) 2014, Rebecca Turner <me@re-becca.org>),
+FS.REALPATH (Copyright (c) 2016-2022 Isaac Z. Schlueter and Contributors),
+GAUGE (Copyright (C) npm, Inc.),
+GLOB (Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors),
+GRACEFUL-FS ( Copyright (c) 2011-2023 Isaac Z. Schlueter, Ben Noordhuis, and Contributors),
+HAS-UNICODE (Copyright (c) 2014, Rebecca Turner <me@re-becca.org>),
+INFLIGHT ( Copyright (c) Isaac Z. Schlueter),
+INI (Copyright (c) Isaac Z. Schlueter and Contributors),
+MINIMATCH (Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors),
+NPMLOG ( Copyright (C) npm, Inc.),
+ONCE (Copyright (c) 2012-2022 Isaac Z. Schlueter and Contributors),
+RIMRAF (Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors),
+SEMVER (Copyright (c) Isaac Z. Schlueter and Contributors),
+SET-BLOCKING (Copyright (c) 2016, Contributors),
+SIGNAL-EXIT (Copyright (c) 2016, Contributors),
+WIDE-ALIGN (Copyright (c) 2015, Rebecca Turner <me@re-becca.org>),
+YAML (Copyright (C) Eemeli Aro <eemeli@gmail.com>)
 
 ISC License
 
@@ -1509,7 +1543,84 @@ SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch), JSLITMUS.JS [Lodash]
 MOMENT.JS [weld] (No Copyright Found), CORE-JS (Copyright (c) 2014-2017 Denis Pushkarev), NORMALIZE.CSS
 (Copyright © Nicolas Gallagher and Jonathan Neal), 
 SLF4J-API (Copyright (c) 2004-2011 QOS.ch), SLF4J-JDK14 (Copyright (c)
-2004-2011 QOS.ch)
+2004-2011 QOS.ch), ASYNCKIT (Copyright (c) 2016 Alex Indigo),
+AXIOS (Copyright (c) 2014-present Matt Zabriskie & Collaborators),
+BRACE-EXPANSION (Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>),
+BRACES (Copyright (c) 2014-2018, Jon Schlinkert.),
+BUFFER (Copyright (c) Feross Aboukhadijeh, and other contributors.),
+CI-INFO (Copyright (c) 2016-2023 Thomas Watson Steen),
+CODE-POINT-AT (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
+COLOR-CONVERT (Copyright (c) 2011-2016 Heather Arthur <fayearthur@gmail.com> and (Copyright (c) 2016-2021 Josh Junon <josh@junon.me>)),
+COLOR-NAME (Copyright (c) 2015 Dmitry Ivanov),
+CONCAT-MAP (Copyright (c) 2012 James Halliday and contributors),
+CROSS-SPAWN (Copyright (c) 2018 Made With MOXY Lda <hello@moxy.studio>),
+DECOMPRESS-RESPONSE (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+DELEGATES (Copyright (c) 2015 TJ Holowaychuk <tj@vision-media.ca>),
+EXPAND-TEMPLATE (Copyright (c) 2018 Lars-Magnus Skog),
+FILL-RANGE (Copyright (c) 2014-present, Jon Schlinkert.),
+FOLLOW-REDIRECTS (Copyright 2014–present Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh),
+FS-CONSTANTS (Copyright (c) 2018 Mathias Buus),
+FS-EXTRA (Copyright (c) 2011-2017 JP Richardson),
+HAS-FLAG (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+IS-CI (Copyright (c) 2016-2021 Thomas Watson Steen),
+IS-DOCKER (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+IS-FULLWIDTH-CODE-POINT (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+IS-NUMBER (Copyright (c) 2014-present, Jon Schlinkert.),
+IS-WSL (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
+KLAW-SYNC (Copyright (c) 2017 Mani Maghsoudlou),
+MICROMATCH (Copyright (c) 2014-present, Jon Schlinkert.),
+MIMIC-RESPONSE (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+MINIM (Copyright (c) 2014 Stephen Mizell),
+MINIMIST  (Copyright Not Found),
+MKDIRP-CLASSIC (Copyright (c) 2020 James Halliday (mail@substack.net) and Mathias Buus),
+NAN (Copyright (c) 2018 NAN contributors),
+NAPI-BUILD-UTILS (Copyright (c) 2018 inspiredware),
+NICE-TRY (Copyright (c) Tobias Reich),
+NODE-ABI (Copyright (c) 2016 Lukas Geiger),
+NUMBER-IS-NAN (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
+OPEN (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+OS-TMPDIR (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)),
+PATCH-PACKAGE (Copyright (c) 2017-Present David Sheldrick),
+PATH-KEY (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+PICOMATCH (Copyright (c) 2017-present, Jon Schlinkert.),
+PREBUILD-INSTALL (Copyright (c) 2015 Mathias Buus),
+PROXY-FROM-ENV (Copyright (C) 2016-2018 Rob Wu <rob@robwu.nl>),
+PUMP (Copyright (c) 2014 Mathias Buus),
+RAMDA (Copyright (c) 2013-2023 Scott Sauyet and Michael Hurley),
+REACT-REDUX (Copyright (c) 2015-present Dan Abramov),
+READABLE-STREAM (Copyright Node.js contributors. All rights reserved.),
+REGENERATOR-RUNTIME (Copyright (c) 2014-present, Facebook, Inc.),
+@BABEL/RUNTIME (Copyright (c) 2014-present Sebastian McKenzie and other contributors),
+SHEBANG-COMMAND (Copyright (c) Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva)),
+SHEBANG-REGEX (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+SIMPLE-CONCAT (Copyright (c) Feross Aboukhadijeh),
+SIMPLE-GET (Copyright (c) Feross Aboukhadijeh),
+SLASH (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+STAMPIT (Copyright (c) 2013 Eric Elliott.),
+STRING-WIDTH (Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)),
+TAR-FS (Copyright (c) 2014 Mathias Buus),
+TAR-STREAM (Copyright (c) 2014 Mathias Buus),
+TMP (Copyright (c) 2014 KARASZI István),
+TO-REGEX-RANGE (Copyright (c) 2015-present, Jon Schlinkert.),
+TREE-SITTER (Copyright (c) 2014 maxbrunsfeld),
+TREE-SITTER-JSON (Copyright (c) 2014 maxbrunsfeld),
+TREE-SITTER-YAML (Copyright (c) Ika <ikatyang@gmail.com> (https://github.com/ikatyang)),
+UNIVERSALIFY (Copyright (c) 2017, Ryan Zimmerman <opensrc@ryanzim.com>),
+UNRAW (Copyright (c) 2019 Ian Sanders),
+@TYPES/USE-SYNC-EXTERNAL-STORE (Copyrights are respective of each contributor listed at the beginning of each definition file.),
+WEB-TREE-SITTER (Copyright (c) 2018-2023 Max Brunsfeld),
+CSSTYPE (Copyright (c) 2017-2018 Fredrik Nicol),
+DEEPMERGE (Copyright (c) 2012 James Halliday, Josh Duff, and other contributors),
+FORMDATA-NODE (Copyright (c) 2017-present Nick K.),
+PRISMJS (Copyright (c) 2012 Lea Verou),
+@TYPES/REACT (Copyrights are respective of each contributor listed at the beginning of each definition file.),
+REACT-COPY-TO-CLIPBOARD (Copyright (c) 2016 Nik Butenko),
+REACT-DEBOUNCE-INPUT (Copyright (c) 2016 Nik Butenko),
+REACT-INSPECTOR (Copyright (c) 2017 Xiaoyi Chen),
+REACT-IS (Copyright (c) Meta Platforms, Inc. and affiliates.),
+REDUX (Copyright (c) Meta Platforms, Inc. and affiliates.),
+RESELECT (Copyright (c) 2015-2018 Reselect Contributors),
+@BRAINTREE/SANITIZE-URL (Copyright (c) 2017 Braintree),
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
