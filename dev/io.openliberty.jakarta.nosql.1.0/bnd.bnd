@@ -18,6 +18,8 @@ Bundle-Name: Jakarta NoSQL 1.0
 Bundle-SymbolicName: io.openliberty.jakarta.nosql.1.0; singleton:=true
 Bundle-Description: Jakarta NoSQL 1.0 Communication and Mapping Layers; version=${bVersion}
 
+jnosql-version: 1.0.0.b6
+
 javac.source: 11
 javac.target: 11
 
@@ -27,25 +29,14 @@ Export-Package: \
   jakarta.nosql;version="1.0.0",\
   jakarta.nosql.column;version="1.0.0",\
   jakarta.nosql.document;version="1.0.0",\
-  jakarta.nosql.keyvalue;version="1.0.0",\
-  jakarta.nosql.mapping;version="1.0.0",\
-  jakarta.nosql.mapping.column;version="1.0.0",\
-  jakarta.nosql.mapping.document;version="1.0.0",\
-  jakarta.nosql.mapping.keyvalue;version="1.0.0",\
-  jakarta.nosql.query;version="1.0.0"
+  jakarta.nosql.keyvalue;version="1.0.0"
 
 -includeresource: \
-  @${repo;jakarta.nosql.communication:communication-core;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.communication:communication-column;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.communication:communication-document;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.communication:communication-key-value;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.communication:communication-query;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.mapping:mapping-core;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.mapping:mapping-column;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.mapping:mapping-document;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;jakarta.nosql.mapping:mapping-key-value;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql:nosql-core;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql:nosql-column;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql:nosql-document;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql:nosql-key-value;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
-
