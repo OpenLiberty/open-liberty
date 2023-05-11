@@ -149,7 +149,7 @@ public class FailoverTestLease extends FATServletClient {
 
     @AfterClass
     public static void afterSuite() {
-        FATSuite.afterSuite();
+        FATSuite.afterSuite("HATABLE", "WAS_LEASES_LOG", "WAS_PARTNER_LOGCLOUDSTALE", "WAS_TRAN_LOGCLOUDSTALE");
     }
 
     public static void setUp(LibertyServer server) throws Exception {

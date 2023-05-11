@@ -48,15 +48,11 @@ public class TxTestContainerSuite extends TestContainerSuite {
         Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 
-    public static void afterSuite() {
-        showTables();
-        
-        dropTables();
-        
-        showTables();
+    public static void afterSuite(String ...tables) {
+    	dropTables(tables);
     }
     
-    public static void showTables( ) {
+    public static void showTables() {
     	Log.info(TxTestContainerSuite.class, "showTables", "");
         try (Connection conn = testContainer.createConnection("")) {
         	
@@ -72,25 +68,42 @@ public class TxTestContainerSuite extends TestContainerSuite {
         }
     }
 
-    public static void dropTables( ) {
-    	Log.info(TxTestContainerSuite.class, "dropTables", "");
+    public static void dropTables(String ...tables) {
+    	Log.entering(TxTestContainerSuite.class, "dropTables");
         try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
-
-            DatabaseMetaData metaData = conn.getMetaData();
-            String[] types = {"TABLE"};
-            //Retrieving the columns in the database
-            ResultSet tables = metaData.getTables(null, null, "%", types);
-            while (tables.next()) {
-            	try {
-                	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE IF EXISTS " + tables.getString("TABLE_NAME"));
-					stmt.execute("DROP TABLE IF EXISTS " + tables.getString("TABLE_NAME"));
-				} catch (Exception e) {
-		        	Log.error(TxTestContainerSuite.class, "dropTables", e);
-				}
-            }
+        	if (tables.length != 0) {
+            	Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
+        		for (String table : tables) {
+        			dropTable(stmt, table);
+        		}
+        	} else {
+        		DatabaseMetaData metaData = conn.getMetaData();
+        		String[] types = {"TABLE"};
+        		//Retrieving the columns in the database
+        		ResultSet existing = metaData.getTables(null, null, "%", types);
+        		while (existing.next()) {
+        			dropTable(stmt, existing.getString("TABLE_NAME"));
+        		}
+        	}
         } catch (SQLException e) {
         	Log.error(TxTestContainerSuite.class, "dropTables", e);
         }
+    }
+    
+    private static void dropTable(Statement stmt, String table) {
+    	try {
+    		switch (databaseContainerType) {
+    		case Oracle:
+            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE " + table);
+				stmt.execute("DROP TABLE " + table);
+    			break;
+    		default:
+            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE IF EXISTS " + table);
+				stmt.execute("DROP TABLE IF EXISTS " + table);
+    		}
+		} catch (Exception e) {
+        	Log.error(TxTestContainerSuite.class, "dropTables", e);
+		}
     }
 
 	public static boolean isDerby() {

@@ -130,7 +130,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
 
     @AfterClass
     public static void afterSuite() {
-        FATSuite.afterSuite();
+        FATSuite.afterSuite("HATABLE", "WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 
     @BeforeClass
