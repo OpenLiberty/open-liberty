@@ -87,7 +87,6 @@ public class BellsTest extends FATServletClient {
             default:
                 break;
         }
-        server.addCheckpointRegexIgnoreMessage("CWWKL0062W");
         server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 

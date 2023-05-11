@@ -18,5 +18,4 @@
       <feature>checkpoint-1.0</feature>
     </featureManager>
     <variable id="timeout" name="timeout" defaultValue="true"/>
-    <webApplication id="testingApp" location="testingApp.war" name="testingApp"/>
 </server>

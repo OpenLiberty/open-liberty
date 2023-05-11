@@ -67,7 +67,6 @@ public class MPFaultToleranceTimeoutTest {
             assertNotNull("Timeout call not found at checkpoint", result);
         });
 
-        server.addCheckpointRegexIgnoreMessage("CWWKZ0014W");
         server.startServer();
         Thread.sleep(22000);
         server.checkpointRestore();
@@ -85,7 +84,6 @@ public class MPFaultToleranceTimeoutTest {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
             assertNotNull("Timeout call not found at checkpoint", result);
         });
-        server.addCheckpointRegexIgnoreMessage("CWWKZ0014W");
         server.startServer();
         Thread.sleep(22000);
         server.checkpointRestore();
