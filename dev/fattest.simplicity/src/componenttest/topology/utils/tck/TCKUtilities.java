@@ -240,10 +240,11 @@ public class TCKUtilities {
                     Log.info(c, "zosTagASCII", line);
                 }
 
-                throw new Exception("Process failure <chtag> see log for output.");
+                throw new RuntimeException("Process failure <chtag>. Output: \n" + String.join("\n", output.getOutput()));
             }
         } catch (Exception e) {
-            Log.error(c, "Could not tag zos file as ASCII", e);
+            Log.error(c, "zosTagASCII", e, "Failed to tag file " + file + " as ASCII");
+            throw new RuntimeException("Failed to tag " + file + " as ASCII: " + e, e);
         }
     }
 
@@ -386,6 +387,8 @@ public class TCKUtilities {
                 timeoutMsg += line + "\n";
             }
 
+            // Special Case: Check if the last three lines has the text "downloading" or "downloaded"
+
             Pattern downloadingPattern = Pattern.compile("downloading|downloaded", Pattern.CASE_INSENSITIVE);
 
             boolean slowDownload = lines
@@ -393,7 +396,6 @@ public class TCKUtilities {
                             .stream()
                             .anyMatch(l -> downloadingPattern.matcher(l).find());
 
-            // Special Case: Check if the last three lines has the text "downloading" or "downloaded"
             if (slowDownload) {
                 timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
             }
@@ -611,71 +613,92 @@ public class TCKUtilities {
     }
 
     /**
-     * Update the mvnw wrapper properties file to use the artifactory server defined in the
-     * environment. Specifically, this looks for the "distributionUrl" and "wrapperUrl" properties
+     * Update the mvnw wrapper properties file to use the given artifactory server.
+     * <p>
+     * Specifically, this looks for the "distributionUrl" and "wrapperUrl" properties
      * and replaces the public repository URL with the artifactory URL.
      *
      * @param  wrapperPropertiesFile the wrapper properties file to update
+     * @param  artifactoryServer     the artifactory server hostname
      * @return                       the new set of properties
      * @throws IOException
      */
-    public static Properties updateWrapperPropertiesFile(File wrapperPropertiesFile) throws IOException {
+    public static Properties updateWrapperPropertiesFile(File wrapperPropertiesFile, String artifactoryServer) throws IOException {
+        Objects.requireNonNull(artifactoryServer, "artifactoryServer");
+
         Properties props = new Properties();
-        //get the artifactory server
-        String artifactoryServer = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
-        if (artifactoryServer != null) {
-            String artifactoryRepoURL = "https://" + artifactoryServer + "/artifactory/wasliberty-maven-remote/";
+        String artifactoryRepoURL = "https://" + artifactoryServer + "/artifactory/wasliberty-maven-remote/";
 
-            //load the properties file
+        //load the properties file
+        try (FileInputStream fis = new FileInputStream(wrapperPropertiesFile)) {
+            props.load(fis);
+        }
 
-            try (FileInputStream fis = new FileInputStream(wrapperPropertiesFile)) {
-                props.load(fis);
-            }
+        //get the existing value of the distributionUrl property
+        String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
+        //substitute the server string
+        assertThat("distributionURL update failed", distributionURL, containsString(MVN_WRAPPER_REPO));
+        distributionURL = distributionURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
+        //set it back into the properties
+        props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
+        Log.info(c, "updatePropertiesFile", MVN_DISTRIBUTION_URL_KEY + "=" + distributionURL);
 
-            //get the existing value of the distributionUrl property
-            String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
-            //substitute the server string
-            assertThat("distributionURL update failed", distributionURL, containsString(MVN_WRAPPER_REPO));
-            distributionURL = distributionURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
-            //set it back into the properties
-            props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
-            Log.info(c, "updatePropertiesFile", MVN_DISTRIBUTION_URL_KEY + "=" + distributionURL);
+        //get the existing value of the wrapperUrl property
+        String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
+        //substitute the server string
+        assertThat("wrapperURL update failed", wrapperURL, containsString(MVN_WRAPPER_REPO));
+        wrapperURL = wrapperURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
+        //set it back into the properties
+        props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
+        Log.info(c, "updatePropertiesFile", MVN_WRAPPER_URL_KEY + "=" + wrapperURL);
 
-            //get the existing value of the wrapperUrl property
-            String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
-            //substitute the server string
-            assertThat("wrapperURL update failed", wrapperURL, containsString(MVN_WRAPPER_REPO));
-            wrapperURL = wrapperURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
-            //set it back into the properties
-            props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
-            Log.info(c, "updatePropertiesFile", MVN_WRAPPER_URL_KEY + "=" + wrapperURL);
-
-            //write the properties back out into the original file
-            try (FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile)) {
-                props.store(fos, "MVN Wrapper Properties");
-            }
+        //write the properties back out into the original file
+        try (FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile)) {
+            props.store(fos, "MVN Wrapper Properties");
         }
         return props;
     }
 
+    /**
+     * Checks whether we are configured to use artifactory or not
+     *
+     * @return {@code true} if we are configured to use artifactory, {@code false} if not
+     */
     public static boolean useArtifactory() {
-        Log.info(c, "useArtifactory", "Force external: " + System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY, ""));
+        Log.info(c, "useArtifactory", "Force external: " + System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
         boolean forceExternal = Boolean.getBoolean(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
-        if (forceExternal) {
-            return false;
-        }
 
-        return !System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY, "").isEmpty();
+        String artifactoryServer = getArtifactoryServer();
+        Log.info(c, "useArtifactory", "Artifactory Server: " + artifactoryServer);
+
+        boolean haveArtifactoryServer = (artifactoryServer != null && !artifactoryServer.isEmpty());
+
+        return haveArtifactoryServer && !forceExternal;
     }
 
+    /**
+     * Get the artifactory server to use
+     *
+     * @return the artifactory server or {@code null} if none is configured
+     */
     public static String getArtifactoryServer() {
         return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
     }
 
+    /**
+     * Get the username to access artifactory
+     *
+     * @return the username, or {@code null} if none is configured
+     */
     public static String getArtifactoryUser() {
         return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
     }
 
+    /**
+     * Get the token to use to access artifactory
+     *
+     * @return the token, or {@code null} if none is configured
+     */
     public static String getArtifactoryToken() {
         return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
     }
@@ -687,26 +710,25 @@ public class TCKUtilities {
      * @throws IOException
      */
     public static File getTemporaryMavenHomeDir() throws IOException {
-        // user.dir is set to the test project directory when running a FAT
-        String userDir = System.getProperty("user.dir");
-        if (userDir == null) {
-            throw new IOException("Could not determine user.dir");
-        }
-        File devFolder = new File(userDir);
-        if (!devFolder.exists() || !devFolder.isDirectory()) {
-            throw new IOException("user.dir does not exist or is not a directory: " + userDir);
-        }
+        File workingDir = new File("").getAbsoluteFile();
 
-        //walk back from the user.dir until we reach the dev folder
+        //walk back from the working directory until we reach the dev folder
+        File devFolder = workingDir;
         while (!devFolder.getName().equals("dev")) {
             devFolder = devFolder.getParentFile();
             if (devFolder == null) {
-                throw new IOException("Could not determine dev folder from user.dir: " + userDir);
+                throw new IOException("Could not find dev folder above working directory: " + workingDir);
             }
         }
 
+        if (!devFolder.isDirectory()) {
+            throw new IOException("Located dev directory does not exist or is not a directory: " + devFolder);
+        }
+
         File m2Dir = new File(devFolder, ".m2");
-        Files.createDirectories(m2Dir.toPath());
+        if (!m2Dir.exists()) {
+            Files.createDirectory(m2Dir.toPath());
+        }
         return m2Dir;
     }
 

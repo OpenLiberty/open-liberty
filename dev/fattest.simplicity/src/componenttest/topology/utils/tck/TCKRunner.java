@@ -147,7 +147,6 @@ public class TCKRunner {
      * @param  type          the type of TCK (either MICROPROFILE or JAKARTA)
      * @param  specName      the formal name for the specification being tested
      * @param  suiteFileName the name of the suite xml file
-     * @return               the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception     occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
@@ -165,7 +164,6 @@ public class TCKRunner {
      * @param  specName        the formal name for the specification being tested
      * @param  suiteFileName   the name of the suite xml file
      * @param  additionalProps java properties to set when running the mvn command
-     * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
@@ -185,7 +183,6 @@ public class TCKRunner {
      * @param  suiteFileName     the name of the suite xml file
      * @param  relativeTckRunner the relative path to the TCK runner when multiple exist
      * @param  additionalProps   java properties to set when running the mvn command
-     * @return                   the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception         occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
@@ -197,13 +194,14 @@ public class TCKRunner {
     /**
      * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
      *
-     * @param  server          the liberty server which should be used to run the TCK
-     * @param  bucketName      the name of the test project
-     * @param  testName        the name of the method that's being used to launch the TCK
-     * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName        the formal name for the specification being tested
-     * @param  suiteFileName   the name of the suite xml file
-     * @param  additionalProps java properties to set when running the mvn command
+     * @param  server             the liberty server which should be used to run the TCK
+     * @param  bucketName         the name of the test project
+     * @param  testName           the name of the method that's being used to launch the TCK
+     * @param  type               the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param  specName           the formal name for the specification being tested
+     * @param  suiteFileName      the name of the suite xml file
+     * @param  relativeTckRunner  the relative path to the TCK runner
+     * @param  additionalMvnProps java properties to set when running the mvn command
      * @throws IOException
      */
     private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
@@ -218,17 +216,12 @@ public class TCKRunner {
         this.isTestNG = suiteFileName != null;
         this.tckRunnerDir = new File(relativeTckRunner).getAbsoluteFile();
 
-        if (!tckRunnerDir.exists()) {
-            throw new RuntimeException("TCK runner dir does not exist: " + this.tckRunnerDir);
-        }
-        if (!tckRunnerDir.isDirectory()) {
-            throw new RuntimeException("TCK runner dir is not a directory: " + this.tckRunnerDir);
-        }
+        TCKUtilities.requireDirectory(tckRunnerDir);
 
         File wrapperPropertiesFile = TCKUtilities.exportMvnWrapper(this.tckRunnerDir);
 
         if (TCKUtilities.useArtifactory()) {
-            Properties wrapperProperties = TCKUtilities.updateWrapperPropertiesFile(wrapperPropertiesFile);
+            Properties wrapperProperties = TCKUtilities.updateWrapperPropertiesFile(wrapperPropertiesFile, TCKUtilities.getArtifactoryServer());
 
             // Pre-download wrapper jar and set up a temporary maven home directory (if not already created
             this.artifactoryAuthenticator = new ArtifactoryAuthenticator();
