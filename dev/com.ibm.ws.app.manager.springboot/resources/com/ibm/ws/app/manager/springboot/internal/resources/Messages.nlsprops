@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
 error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: The application failed to start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-3.0 feature to be configured.
+error.need.springboot.version.30.explanation=The application requires the springBoot-3.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+error.need.springboot.version.30.useraction=Configure the springBoot-3.0 feature in the server.xml file. Remove any other Spring Boot features.
