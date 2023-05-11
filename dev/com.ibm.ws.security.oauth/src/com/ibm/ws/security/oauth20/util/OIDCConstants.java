@@ -88,6 +88,7 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_LOGOUT_ID_TOKEN_HINT = OIDC_AUTHZ_PARAM_ID_TOKEN_HINT;
     public static final String OIDC_LOGOUT_REDIRECT_URI = "post_logout_redirect_uri";
     public static final String OIDC_LOGOUT_CLIENT_ID = "client_id";
+    public static final String OIDC_LOGOUT_STATE = "state";
 
     /* parameters for oidc discovery response */
     public static final String OIDC_DISC_ISSUER = "issuer";

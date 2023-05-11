@@ -10,7 +10,8 @@
 package com.ibm.ws.security.openidconnect.web;
 
 import java.io.IOException;
-import java.security.Principal;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
@@ -22,11 +23,13 @@ import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
+import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.OAuthClientTracker;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -78,12 +81,12 @@ public class OidcRpInitiatedLogout {
             removeRefreshTokenFromCache(tokenAndRequestData.getCachedIdToken());
         }
 
-        String redirectUri = getPostLogoutRedirectUri(isDataValidForLogout, tokenAndRequestData.getPostLogoutRedirectUriParameter(), tokenAndRequestData.getClientId());
+        String redirectUri = getPostLogoutRedirectUri(tokenAndRequestData);
 
         //@AV999-092821
         request.setAttribute("OIDC_END_SESSION_REDIRECT", redirectUri);
         if (isDataValidForLogout) {
-            logOutUser(tokenAndRequestData.getUserPrincipal(), redirectUri, tokenAndRequestData.getUserPrincipalName(), tokenAndRequestData.getIdTokenHintParameter());
+            logOutUser(tokenAndRequestData, redirectUri);
         }
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             sendPostEndSessionRedirect(redirectUri);
@@ -107,9 +110,9 @@ public class OidcRpInitiatedLogout {
         }
     }
 
-    String getPostLogoutRedirectUri(boolean isDataValidForLogout, String redirectUriReqParameter, String clientId) {
-        String redirectUri = redirectUriReqParameter;
-        if (!isDataValidForLogout) {
+    String getPostLogoutRedirectUri(OidcRpInitiatedLogoutTokenAndRequestData requestData) {
+        String redirectUri = requestData.getPostLogoutRedirectUriParameter();
+        if (!requestData.isDataValidForLogout()) {
             // this is an error condition. display an error page.
             redirectUri = request.getContextPath() + "/end_session_error.html";
         } else {
@@ -117,9 +120,10 @@ public class OidcRpInitiatedLogout {
                 // no redirectUri is set, use default.
                 redirectUri = request.getContextPath() + "/end_session_logout.html";
             } else {
-                redirectUri = verifyPostLogoutRedirectUriMatchesConfiguration(clientId, redirectUri);
+                redirectUri = verifyPostLogoutRedirectUriMatchesConfiguration(requestData.getClientId(), redirectUri);
             }
         }
+        redirectUri = updateRedirectUriWithState(redirectUri, requestData.getState());
         if (oauth20Provider.isTrackOAuthClients()) {
             redirectUri = updateRedirectUriWithTrackedOAuthClients(redirectUri);
         }
@@ -179,13 +183,30 @@ public class OidcRpInitiatedLogout {
         return contain;
     }
 
+    /**
+     * State is optional, but if it's passed in the logout request, the OP passes the value back when redirecting to the RP.
+     */
+    @FFDCIgnore(UnsupportedEncodingException.class)
+    String updateRedirectUriWithState(String redirectUri, String state) {
+        if (state == null) {
+            return redirectUri;
+        }
+        redirectUri = (redirectUri.contains("?")) ? (redirectUri + "&") : (redirectUri + "?");
+        try {
+            redirectUri += URLEncoder.encode(OIDCConstants.STATE, "UTF-8") + "=" + URLEncoder.encode(state, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // Do nothing
+        }
+        return redirectUri;
+    }
+
     String updateRedirectUriWithTrackedOAuthClients(String redirectUri) {
         OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, oauth20Provider);
         return clientTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
     }
 
-    void logOutUser(Principal user, String redirectUri, String userName, String idTokenString) throws ServletException {
-        if (user != null) {
+    void logOutUser(OidcRpInitiatedLogoutTokenAndRequestData requestData, String redirectUri) throws ServletException {
+        if (requestData.getUserPrincipal() != null) {
             // logout deletes ltpatoken cookie and oidc_bsc cookie.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "save  OIDC_END_SESSION_REDIRECT uri in op end_session : " + redirectUri);
@@ -196,7 +217,7 @@ public class OidcRpInitiatedLogout {
             // request.logout() will send back-channel logout requests via the LogoutService OSGi service. Since request.logout()
             // is only called in the above block if user != null, we need to make sure back-channel logout requests are still sent
             // based on the id_token_hint if a user Principal isn't available
-            sendBackchannelLogoutRequests(userName, idTokenString);
+            sendBackchannelLogoutRequests(requestData.getUserPrincipalName(), requestData.getIdTokenHintParameter());
         }
     }
 

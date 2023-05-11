@@ -43,6 +43,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
     private String postLogoutRedirectUriParameter = null;
     private String subjectFromIdToken = null;
     private String clientId = null;
+    private String state = null;
     private OAuth20Token cachedIdToken = null;
 
     private boolean isDataValidForLogout = false;
@@ -56,8 +57,6 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
     }
 
     public void populate() {
-        isDataValidForLogout = true;
-
         initializeUserPrincipalData();
         initializeValuesFromRequestParameters();
 
@@ -66,7 +65,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         subjectFromIdToken = ((cachedIdToken == null) ? null : cachedIdToken.getUsername());
         clientId = ((cachedIdToken == null) ? clientId : cachedIdToken.getClientId());
 
-        if (idTokenHintParameter != null && cachedIdToken == null && isDataValidForLogout) {
+        if (idTokenHintParameter != null && cachedIdToken == null) {
             parseAndPopulateDataFromIdTokenHint();
         }
 
@@ -77,7 +76,8 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         if (userPrincipalName != null && subjectFromIdToken != null && !userPrincipalName.equals(subjectFromIdToken)) {
             // user mismatch, abort
             Tr.error(tc, "OIDC_SERVER_USERNAME_MISMATCH_ERR", new Object[] { userPrincipalName, subjectFromIdToken });
-            isDataValidForLogout = false;
+        } else {
+            isDataValidForLogout = true;
         }
     }
 
@@ -99,8 +99,13 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         if (clientId != null && clientId.isEmpty()) {
             clientId = null;
         }
+        state = request.getParameter(OIDCConstants.STATE);
+        if (state != null && state.isEmpty()) {
+            state = null;
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "id_token_hint : " + idTokenHintParameter + ", post_logout_redirect_uri : " + postLogoutRedirectUriParameter + ", client_id : " + clientId);
+            Tr.debug(tc, "id_token_hint : " + idTokenHintParameter + ", post_logout_redirect_uri : " + postLogoutRedirectUriParameter + ", client_id : " + clientId + ", state : "
+                         + state);
         }
     }
 
@@ -118,7 +123,6 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                     }
                 } else {
                     Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
-                    isDataValidForLogout = false;
                 }
             }
         }
@@ -138,19 +142,16 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                     JWTPayload payload = JsonTokenUtil.getPayload(idTokenHintParameter);
                     if (payload != null) {
                         subjectFromIdToken = JsonTokenUtil.getSub(payload);
-                        clientId = JsonTokenUtil.getAud(payload);
+                        clientId = getVerifiedClientId(payload);
                     }
                 } catch (Exception e) {
                     Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
-                    isDataValidForLogout = false;
                 }
             } else {
                 Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
-                isDataValidForLogout = false;
             }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
-            isDataValidForLogout = false;
         }
     }
 
@@ -162,11 +163,22 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         if (jwt.verifySignatureOnly()) {
             verifyIdTokenHintIssuer(jwt);
             subjectFromIdToken = JsonTokenUtil.getSub(jwt.getPayload());
-            clientId = JsonTokenUtil.getAud(jwt.getPayload());
+            clientId = getVerifiedClientId(jwt.getPayload());
         } else {
             Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
-            isDataValidForLogout = false;
         }
+    }
+
+    /**
+     * Per https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout: When both client_id and id_token_hint are
+     * present, the OP MUST verify that the Client Identifier matches the one used when issuing the ID Token.
+     */
+    String getVerifiedClientId(JWTPayload payload) throws IDTokenValidationFailedException {
+        String clientIdFromPayload = JsonTokenUtil.getAud(payload);
+        if (clientId != null && !clientId.equals(clientIdFromPayload)) {
+            throw IDTokenValidationFailedException.format(tc, "ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER", clientIdFromPayload, clientId);
+        }
+        return clientIdFromPayload;
     }
 
     void verifyIdTokenHintIssuer(JWT jwt) throws IDTokenValidationFailedException {
@@ -202,6 +214,10 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
 
     public String getClientId() {
         return clientId;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public OAuth20Token getCachedIdToken() {
