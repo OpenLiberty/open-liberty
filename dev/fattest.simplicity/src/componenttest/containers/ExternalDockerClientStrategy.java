@@ -38,7 +38,9 @@ public class ExternalDockerClientStrategy extends DockerClientProviderStrategy {
 
     private TransportConfig transportConfig;
 
-    private static final int PRIORITY = useRemoteDocker() ? 900 : 0;
+    private static final boolean usingRemoteDocker = useRemoteDocker();
+
+    private static final int PRIORITY = usingRemoteDocker ? 900 : 0;
 
     @Override
     public TransportConfig getTransportConfig() throws InvalidConfigurationException {
@@ -52,11 +54,39 @@ public class ExternalDockerClientStrategy extends DockerClientProviderStrategy {
                             .sslConfig(ExternalDockerClientFilter.instance().getConfig().getSSLConfig()) //
                             .build();
         } catch (Exception e) {
-            Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
+            Log.error(c, "getTransportConfig", e, "Unable to locate any healthy docker-engine instances");
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
 
         return transportConfig;
+    }
+
+    /**
+     * Each unsuccessful test will generate a new transport config
+     * Test multiple times when running against our remote docker hosts.
+     *
+     * Fyre networking is flaky, if we get a positive result here, then there
+     * is a good change the Fyre network is healthy enough to test against.
+     */
+    @Override
+    protected boolean test() {
+        int retry = usingRemoteDocker ? 3 : 1;
+
+        while (retry > 0) {
+            Log.info(c, "test", "Verifying strategy, retry countdown: " + retry);
+
+            if (super.test()) {
+                Log.info(c, "test", "Verified strategy, using transport config for host " + transportConfig.getDockerHost());
+                return true;
+            } else {
+                Log.info(c, "test", "Unverified strategy, throwing away transport config for host " + transportConfig.getDockerHost());
+                transportConfig = null;
+                retry--;
+            }
+        }
+
+        Log.warning(c, "Verification failed for any transport config obtained from consul");
+        return false;
     }
 
     @Override
