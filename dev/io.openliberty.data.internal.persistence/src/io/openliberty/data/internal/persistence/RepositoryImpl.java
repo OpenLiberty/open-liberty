@@ -96,6 +96,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         FUNCTION_CALLS.put(Function.CharCount, "LENGTH(");
         FUNCTION_CALLS.put(Function.ElementCount, "SIZE(");
         FUNCTION_CALLS.put(Function.IgnoreCase, "LOWER(");
+        FUNCTION_CALLS.put(Function.Rounded, "ROUND(");
+        FUNCTION_CALLS.put(Function.RoundedDown, "FLOOR(");
+        FUNCTION_CALLS.put(Function.RoundedUp, "CEILING(");
         FUNCTION_CALLS.put(Function.Trimmed, "TRIM(");
     }
 
@@ -1563,7 +1566,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             attributeExpr.append(o).append('.').append(name);
 
             for (int f = functions.length - 1; f >= 0; f--) {
-                attributeExpr.append(')');
+                if (functions[f] == Function.Rounded)
+                    attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
+                else
+                    attributeExpr.append(')');
             }
 
             boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);

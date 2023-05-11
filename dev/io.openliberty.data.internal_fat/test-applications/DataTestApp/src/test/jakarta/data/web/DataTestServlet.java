@@ -3315,6 +3315,15 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(603, 607),
                              packages.findIdByHeightRoundedDown(4));
 
+        assertIterableEquals(List.of(605, 607),
+                             packages.withLengthFloored(18.0f));
+
+        assertIterableEquals(List.of(607),
+                             packages.withWidthCeiling(9.0f));
+
+        assertIterableEquals(List.of(601, 603),
+                             packages.withHeightAbout(5.0f));
+
         packages.deleteAll();
     }
 
