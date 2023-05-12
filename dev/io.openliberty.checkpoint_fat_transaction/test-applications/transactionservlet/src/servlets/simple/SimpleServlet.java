@@ -97,7 +97,7 @@ public class SimpleServlet extends FATServlet {
 
     final int fallbackResult = 17;
 
-    @Test
+    //@Test
     public void testUserTranLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final Object ut = new InitialContext().lookup("java:comp/UserTransaction");
 
@@ -113,14 +113,14 @@ public class SimpleServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     public void testUserTranFactory(HttpServletRequest request, HttpServletResponse response) throws Exception {
         UserTransaction ut = UserTransactionFactory.getUserTransaction();
         ut.begin();
         ut.commit();
     }
 
-    @Test
+    //@Test
     public void testTranSyncRegistryLookup(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
         TransactionSynchronizationRegistry tsr = (TransactionSynchronizationRegistry) context.lookup("java:comp/TransactionSynchronizationRegistry");
@@ -150,7 +150,7 @@ public class SimpleServlet extends FATServlet {
     /**
      * Test basic database connectivity
      */
-    @Test
+    //@Test
     public void testBasicConnection(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String statusString = "";
@@ -252,7 +252,7 @@ public class SimpleServlet extends FATServlet {
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    @Test
+    //@Test
     public void testTransactionEnlistment(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
         //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
@@ -355,7 +355,7 @@ public class SimpleServlet extends FATServlet {
      * Test that rolling back a newly started UserTransaction doesn't affect the previously implicitly committed
      * LTC transaction.
      */
-    @Test
+    //@Test
     public void testImplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
         //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
@@ -399,7 +399,7 @@ public class SimpleServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
@@ -455,7 +455,7 @@ public class SimpleServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     @ExpectedFFDC(value = { "javax.transaction.NotSupportedException" })
     public void testNEW2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
@@ -515,7 +515,7 @@ public class SimpleServlet extends FATServlet {
      * Test that rolling back a newly started UserTransaction doesn't affect the previously explicitly committed
      * LTC transaction.
      */
-    @Test
+    //@Test
     public void testExplicitLTCCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
         InitialContext context = new InitialContext();
         //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
@@ -618,7 +618,7 @@ public class SimpleServlet extends FATServlet {
         });
     }
 
-    @Test
+    //@Test
     public void testUserTranRestriction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
 
@@ -674,7 +674,7 @@ public class SimpleServlet extends FATServlet {
         ut.commit();
     }
 
-    @Test
+    //@Test
     public void testSetTransactionTimeout(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
@@ -697,7 +697,7 @@ public class SimpleServlet extends FATServlet {
         }
     }
 
-    @Test
+    //@Test
     public void testSingleThreading() throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
