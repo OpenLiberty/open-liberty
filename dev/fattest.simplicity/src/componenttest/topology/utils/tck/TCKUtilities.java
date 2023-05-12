@@ -665,15 +665,19 @@ public class TCKUtilities {
      * @return {@code true} if we are configured to use artifactory, {@code false} if not
      */
     public static boolean useArtifactory() {
-        Log.info(c, "useArtifactory", "Force external: " + System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
-        boolean forceExternal = Boolean.getBoolean(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
+        String forceExternalString = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
+        boolean forceExternal = Boolean.parseBoolean(forceExternalString);
 
         String artifactoryServer = getArtifactoryServer();
-        Log.info(c, "useArtifactory", "Artifactory Server: " + artifactoryServer);
-
         boolean haveArtifactoryServer = (artifactoryServer != null && !artifactoryServer.isEmpty());
 
-        return haveArtifactoryServer && !forceExternal;
+        boolean useArtifactory = haveArtifactoryServer && !forceExternal;
+
+        Log.info(c, "useArtifactory", "Use artifactory = " + useArtifactory + " ("
+                                      + ARTIFACTORY_SERVER_KEY + "=" + artifactoryServer + ", "
+                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternalString
+                                      + ")");
+        return useArtifactory;
     }
 
     /**

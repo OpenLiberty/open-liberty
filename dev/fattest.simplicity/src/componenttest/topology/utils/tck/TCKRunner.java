@@ -918,6 +918,8 @@ public class TCKRunner {
                                  " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
 
         if (mavenUserHome != null) {
+            // If we have created a custom user home dir, we need to set some environment variables
+            // to correspond with the placeholders in the settings.xml
             String artifactoryServer = TCKUtilities.getArtifactoryServer();
             if (artifactoryServer == null) {
                 Log.info(c, "getMvnEnv", "Artifactory Download Server not found");
