@@ -56,6 +56,7 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.kernel.boot.logging;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.ras.instrument;version=latest,\

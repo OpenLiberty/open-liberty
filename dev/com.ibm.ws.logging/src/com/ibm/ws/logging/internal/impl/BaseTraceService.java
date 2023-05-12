@@ -39,6 +39,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -84,6 +86,9 @@ import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 import com.ibm.wsspi.logprovider.TrService;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * This is the default delegate used by Tr when another hasn't been specified.
@@ -265,6 +270,9 @@ public class BaseTraceService implements TrService {
     private boolean isLogRolloverScheduled = false;
     private boolean isFfdcCleanupScheduled = false;
 
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+    private final ReadWriteLock checkpointLock = new ReentrantReadWriteLock();
+
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     /** Flags for suppressing traceback output to the console */
@@ -292,6 +300,42 @@ public class BaseTraceService implements TrService {
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
         earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
+        checkpointPhase.addMultiThreadedHook(new CheckpointHook() {
+            @Override
+            public void prepare() {
+                // Get exclusive write lock for the thread preparing to checkpoint.
+                // This is done as a multi-thread hook so we can ensure this lock
+                // is obtained before the JVM enters into single-threaded mode.
+                checkpointLock.writeLock().lock();
+            }
+
+            @Override
+            public void checkpointFailed() {
+                try {
+                    // If checkpoint fails for any reason then we must release the write lock.
+                    // because the JVM will have entered back into multi-thread mode
+                    // this is required because our single-thread prepare hook may never get
+                    // called if a failure happens before the JVM entered single-threaded mode
+                    // and our single-threaded prepare hooks get called.
+                    checkpointLock.writeLock().unlock();
+                } catch (Exception e) {
+                    // We ignore the fact that we may have already released the lock from the single thread hook
+                }
+            }
+        });
+        checkpointPhase.addSingleThreadedHook(new CheckpointHook() {
+            @Override
+            public void prepare() {
+                try {
+                    // This prepare gets called once we enter single-threaded mode in the JVM.
+                    // We no longer need the exclusive write lock access so we can release the
+                    // write lock now.
+                    checkpointLock.writeLock().unlock();
+                } catch (Exception e) {
+                    // ignore;
+                }
+            }
+        });
     }
 
     /**
@@ -1126,6 +1170,25 @@ public class BaseTraceService implements TrService {
      * @param routedMessage
      */
     protected void publishToLogSource(RoutedMessage routedMessage) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishToLogSource0(routedMessage);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    private void publishToLogSource0(RoutedMessage routedMessage) {
         try {
             if (!(counterForLogSource.incrementCount() > 2)) {
                 logSource.publish(routedMessage);
@@ -1145,6 +1208,34 @@ public class BaseTraceService implements TrService {
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishTraceLogRecord0(detailLog, logRecord, id, formattedMsg, formattedVerboseMsg);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Publish a trace log record.
+     *
+     * @param detailLog           the trace writer
+     * @param logRecord
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
+     */
+    private void publishTraceLogRecord0(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
         //check if tracefilename is stdout
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);

@@ -59,6 +59,7 @@ Include-Resource: \
     com.ibm.ws.app.manager.lifecycle;version=latest,\
     com.ibm.ws.resource;version=latest,\
     com.ibm.ws.jbatch.rest;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.kernel.boot.logging;version=latest,\
     com.ibm.ws.kernel.security.thread;version=latest,\

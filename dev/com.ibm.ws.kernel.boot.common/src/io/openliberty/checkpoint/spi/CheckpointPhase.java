@@ -257,6 +257,18 @@ public enum CheckpointPhase {
         }
 
         @Override
+        public void checkpointFailed() {
+            for (CheckpointHook hook : hooks) {
+                debug(() -> "checkpointFailed operation on static hook: " + hook);
+                try {
+                    hook.checkpointFailed();
+                } catch (Throwable t) {
+                    // ignore
+                }
+            }
+        }
+
+        @Override
         public void restore() {
             for (CheckpointHook hook : hooks) {
                 debug(() -> "prepare operation on static hook: " + hook);

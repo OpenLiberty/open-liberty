@@ -614,6 +614,7 @@ public class FrameworkManager {
                 if (phase != CheckpointPhase.INACTIVE) {
                     fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
                         Field restoredField = null;
+                        boolean calledLogProviderStop = false;
 
                         @Override
                         public void prepare() {
@@ -629,7 +630,21 @@ public class FrameworkManager {
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
+                            calledLogProviderStop = true;
                             logProvider.stop();
+                        }
+
+                        @Override
+                        public void checkpointFailed() {
+                            if (calledLogProviderStop) {
+                                // restore the logging when checkpoint failed
+                                restoreLogging();
+                            }
+                        }
+
+                        private void restoreLogging() {
+                            Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                            TrConfigurator.update(configMap);
                         }
 
                         @Override
@@ -644,8 +659,7 @@ public class FrameworkManager {
                             } catch (IllegalArgumentException | IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }
-                            Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
-                            TrConfigurator.update(configMap);
+                            restoreLogging();
                             String consoleLogHeader = config.remove(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER);
                             if (consoleLogHeader != null) {
                                 // log the initial console log header;

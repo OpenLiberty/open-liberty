@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -54,11 +53,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -276,7 +273,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    @FFDCIgnore({ IllegalStateException.class, Exception.class, CheckpointFailedException.class })
+    @FFDCIgnore({ IllegalStateException.class, Throwable.class, CheckpointFailedException.class })
     void checkpoint() throws CheckpointFailedException {
         debug(tc, () -> "Checkpoint for : " + checkpointAt);
 
@@ -315,8 +312,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             // only done for tests
             throw (CheckpointFailedException) forceFail.fillInStackTrace();
         }
-        prepare(multiThreadPrepareHooks);
+
         try {
+            prepare(multiThreadPrepareHooks);
             try {
                 criu.checkpointSupported();
             } catch (CheckpointFailedException cpfe) {
@@ -339,36 +337,41 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 // only done for tests
                 throw (CheckpointFailedException) forceFail.fillInStackTrace();
             }
-        } catch (Exception e) {
-            if (e instanceof CheckpointFailedException) {
-                if (!((CheckpointFailedException) e).isRestore()) {
-                    // TODO this should be handled by the hook in
-                    // com.ibm.ws.kernel.launch.internal.FrameworkManager.initFramework(BootstrapConfig, LogProvider)
-                    // that stops and restores the log provider.  There currently is no recovery notification
-                    // to hooks if they need to undo what they did in prepare.
-                    // Here we do this specifically to allow the logging to get re-enabled when an error occurs
-                    Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
-                    TrConfigurator.update(configMap);
+            if (pauseRestore > 0) {
+                try {
+                    Thread.sleep(pauseRestore);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().isInterrupted();
                 }
-                throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
+            restore(multiThreadRestoreHooks);
+        } catch (Throwable e) {
+            CheckpointFailedException rethrow;
+            if (e instanceof CheckpointFailedException) {
+                rethrow = (CheckpointFailedException) e;
+            } else {
+                rethrow = new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
+            }
+            // tell all the hooks about a checkpoint failure
+            if (!rethrow.isRestore()) {
+                // The restore hook order is used so we call the checkpointFailed methods in the reverse order
+                // of the calls to the prepare methods.
+                callHooksOnFailure(singleThreadRestoreHooks, multiThreadRestoreHooks);
+            }
+            throw rethrow;
         }
 
-        if (pauseRestore > 0) {
-            try {
-                Thread.sleep(pauseRestore);
-            } catch (InterruptedException e) {
-                Thread.currentThread().isInterrupted();
-            }
-        }
-        restore(multiThreadRestoreHooks);
         registerRunningCondition();
 
         waitForConfig();
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
+    }
+
+    private void callHooksOnFailure(List<CheckpointHook> singleThreadRestoreHooks, List<CheckpointHook> multiThreadRestoreHooks) {
+        callHooks("checkpointFailed", singleThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
+        callHooks("checkpointFailed", multiThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
     }
 
     /**
@@ -492,18 +495,21 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return hookList;
     }
 
-    @FFDCIgnore(Exception.class)
+    @FFDCIgnore(Throwable.class)
     @Trivial
-    private void callHooks(String operation, List<CheckpointHook> checkpointHooks,
+    private void callHooks(String operation,
+                           List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
-                           Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
+                           Function<Throwable, CheckpointFailedException> failed) throws CheckpointFailedException {
         for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
                 debug(tc, () -> operation + " operation on hook: " + checkpointHook);
                 perform.accept(checkpointHook);
-            } catch (Exception abortCause) {
+            } catch (Throwable abortCause) {
                 debug(tc, () -> operation + " failed on hook: " + checkpointHook);
-                throw failed.apply(abortCause);
+                if (failed != null) {
+                    throw failed.apply(abortCause);
+                }
             }
         }
     }
@@ -516,7 +522,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                   CheckpointImpl::failedPrepare);
     }
 
-    private static CheckpointFailedException failedPrepare(Exception cause) {
+    private static CheckpointFailedException failedPrepare(Throwable cause) {
         return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E", cause.getMessage()), cause);
     }
 
@@ -530,7 +536,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                   CheckpointImpl::failedRestore);
     }
 
-    private static CheckpointFailedException failedRestore(Exception cause) {
+    private static CheckpointFailedException failedRestore(Throwable cause) {
         return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, Tr.formatMessage(tc, "RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E", cause.getMessage()), cause);
     }
 

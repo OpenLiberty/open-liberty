@@ -59,4 +59,5 @@ Import-Package: \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest, \
+	com.ibm.ws.kernel.boot.common, \
 	com.ibm.ws.kernel.boot.logging

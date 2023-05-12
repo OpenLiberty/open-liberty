@@ -73,6 +73,7 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/security/internal/resources/
 
 -testpath: \
 	com.ibm.ws.logging,\
+	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.security.thread;version=latest, \

@@ -86,6 +86,7 @@ com.ibm.ws.security.spnego.internal.SpnegoHelperProxy
         com.ibm.ws.org.objenesis:objenesis;version=1.0, \
         cglib:cglib;version=3.3.0,\
         com.ibm.ws.org.objectweb.asm;version=latest,\
+        com.ibm.ws.kernel.boot.common;version=latest,\
         com.ibm.ws.kernel.boot.logging;version=latest,\
         com.ibm.ws.kernel.security.thread;version=latest,\
         org.mockito:mockito-all;version=1.9.5, \
