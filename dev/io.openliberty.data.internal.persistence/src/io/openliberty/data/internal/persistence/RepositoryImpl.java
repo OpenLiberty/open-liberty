@@ -100,6 +100,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         FUNCTION_CALLS.put(Function.RoundedDown, "FLOOR(");
         FUNCTION_CALLS.put(Function.RoundedUp, "CEILING(");
         FUNCTION_CALLS.put(Function.Trimmed, "TRIM(");
+        FUNCTION_CALLS.put(Function.WithDay, "EXTRACT (DAY FROM ");
+        FUNCTION_CALLS.put(Function.WithHour, "EXTRACT (HOUR FROM ");
+        FUNCTION_CALLS.put(Function.WithMinute, "EXTRACT (MINUTE FROM ");
+        FUNCTION_CALLS.put(Function.WithMonth, "EXTRACT (MONTH FROM ");
+        FUNCTION_CALLS.put(Function.WithQuarter, "EXTRACT (QUARTER FROM ");
+        FUNCTION_CALLS.put(Function.WithSecond, "EXTRACT (SECOND FROM ");
+        FUNCTION_CALLS.put(Function.WithWeek, "EXTRACT (WEEK FROM ");
+        FUNCTION_CALLS.put(Function.WithYear, "EXTRACT (YEAR FROM ");
     }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //

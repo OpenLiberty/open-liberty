@@ -778,10 +778,16 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(113001L, 213002L),
                              reservations.findMeetingIdByStartWithHourBetweenAndStartWithMinute(0, 23, 15));
 
+        assertIterableEquals(List.of(313003L),
+                             reservations.startsWithinHoursWithMinute(0, 23, 35));
+
         // WithSecond
 
         assertIterableEquals(List.of(313003L),
                              reservations.findMeetingIdByStopWithSecond(30));
+
+        assertIterableEquals(List.of(113001L, 213002L, 413004L),
+                             reservations.endsAtSecond(0));
 
         reservations.deleteAll();
     }

@@ -193,5 +193,188 @@ public enum Function {
      * fiveLetterNames = people.namesOfLength(5);
      * </pre>
      */
-    Trimmed()
+    Trimmed(),
+
+    /**
+     * <p>The {@code WithDay} {@link Filter#fn() function}
+     * extracts the day of month field of date/time values from
+     * the database. Note that the database might store values
+     * in a different time zone than the application uses.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "birthdate", fn = Function.Month)
+     * {@literal @Filter}(by = "birthdate", fn = Function.Day)
+     * List{@literal <Person>} bornOn(int month, int day);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * bornOnFeb29 = people.bornOn(Month.FEBRUARY.getValue(), 29);
+     * </pre>
+     */
+    WithDay(),
+
+    /**
+     * <p>The {@code WithHour} {@link Filter#fn() function}
+     * extracts the hour of the day of date/time values from
+     * the database. Note that the database might store values
+     * in a different time zone than the application uses.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "startTime", fn = Function.Hour)
+     * List{@literal <Meeting>} startsAt(int hourOfDay);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * earlyMeetings = meetings.startsAt(8);
+     * </pre>
+     */
+    WithHour(),
+
+    /**
+     * <p>The {@code WithMinute} {@link Filter#fn() function}
+     * extracts the minute of date/time values from
+     * the database. Note that the database might store values
+     * in a different time zone than the application uses.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "startTime", fn = Function.Minute, value = "15")
+     * List{@literal <Meeting>} startingAtQuarterAfter();
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * m = meetings.startingAtQuarterAfter();
+     * </pre>
+     */
+    WithMinute(),
+
+    /**
+     * <p>The {@code WithMonth} {@link Filter#fn() function}
+     * extracts the month of date/time values.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Count}
+     * {@literal @Filter}(by = "birthdate", fn = Function.Month)
+     * long numBirthdaysIn(int month);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * numMayBirthdays = people.numBirthdaysIn(Month.MAY.getValue());
+     * </pre>
+     */
+    WithMonth(),
+
+    /**
+     * <p>The {@code WithQuarter} {@link Filter#fn() function}
+     * extracts the quarter of the year of date/time values from
+     * the database. Note that the database might store values
+     * in a different time zone than the application uses.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "date", fn = Function.Quarter)
+     * {@literal @OrderBy}("year")
+     * List{@literal <Result>} forQuarter(int quarter);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * fourthQuarterResults = businessResults.forQuarter(4);
+     * </pre>
+     */
+    WithQuarter(),
+
+    /**
+     * <p>The {@code WithSecond} {@link Filter#fn() function}
+     * extracts the seconds field of date/time values.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "time", fn = Function.Seconds, op = Compare.Not, value = "0")
+     * List{@literal <Result>} needsRounding();
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * entriesToUpdate = results.needsRounding();
+     * </pre>
+     */
+    WithSecond(),
+
+    /**
+     * <p>The {@code WithWeek} {@link Filter#fn() function}
+     * extracts the week of the year of date/time values.
+     * The values are database-specific. Some databases might use
+     * {@code 0} for the first day(s) of the year if not a full week.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "endingDate", fn = Function.Week, op = Compare.Between)
+     * List{@literal <SalesResult>} forWeeks(int firstWeek, int lastWeek);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * totals = salesTotals.forWeeks(6, 10);
+     * </pre>
+     */
+    WithWeek(),
+
+    /**
+     * <p>The {@code WithYear} {@link Filter#fn() function}
+     * extracts the year field of date/time values from
+     * the database. Note that the database might store values
+     * in a different time zone than the application uses.</p>
+     *
+     * <p>Applies to: time.</p>
+     *
+     * <p>Example query:</p>
+     *
+     * <pre>
+     * {@literal @Filter}(by = "yearHired", fn = Function.Year)
+     * List{@literal <Employee>} hiredIn(int year);
+     * </pre>
+     *
+     * <p>Example usage:</p>
+     *
+     * <pre>
+     * recentHires = employees.hiredIn(Year.now().getValue());
+     * </pre>
+     */
+    WithYear();
 }

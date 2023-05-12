@@ -36,6 +36,7 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
 
+import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
@@ -48,6 +49,11 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);
+
+    @Select("meetingId")
+    @Filter(by = "stop", fn = Function.WithSecond)
+    @OrderBy("id")
+    List<Long> endsAtSecond(int second);
 
     Iterable<Reservation> findByHost(String host);
 
@@ -111,6 +117,12 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
 
     int removeByHostNotIn(Collection<String> hosts);
+
+    @Select("meetingId")
+    @Filter(by = "start", fn = Function.WithHour, op = Compare.Between)
+    @Filter(by = "start", fn = Function.WithMinute)
+    @OrderBy("host")
+    List<Long> startsWithinHoursWithMinute(int minHour, int maxHour, int minute);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 

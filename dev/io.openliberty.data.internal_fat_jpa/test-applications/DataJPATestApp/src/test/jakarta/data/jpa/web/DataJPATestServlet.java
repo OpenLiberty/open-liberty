@@ -571,10 +571,40 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Verify WithYear, WithQuarter, WithMonth, and WithDay Functions to compare different parts of a date.
+     */
+    @Test
+    public void testExtractFromDateFunctions() {
+        // WithYear
+        assertEquals(List.of(4000921041110001L, 4000921042220002L),
+                     creditCards.expiringInOrBefore(2024));
+
+        // WithQuarter
+        assertEquals(List.of(1000921011110001L, 1000921011120002L, 1000921011130003L,
+                             2000921021110001L, 2000921022220002L,
+                             3000921031110001L, 3000921032220002L, 3000921033330003L),
+                     creditCards.expiresInQuarterOtherThan(2)
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+
+        // WithMonth
+        assertEquals(List.of(1000921011110001L, 1000921011120002L, 1000921011130003L, 4000921041110001L, 4000921042220002L),
+                     creditCards.issuedInMonth(List.of(Month.APRIL.getValue(), Month.AUGUST.getValue(), Month.JANUARY.getValue()))
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+
+        // WithDay
+        assertEquals(List.of(1000921011110001L, 2000921021110001L, 3000921031110001L, 4000921041110001L, 5000921051110001L, 6000921061110001L),
+                     creditCards.issuedBetween(5, 15)
+                                     .map(cc -> cc.number)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Verify WithYear, WithQuarter, WithMonth, and WithDay in query-by-method-name to compare different parts of a date.
      */
     @Test
-    public void testExtractFromDate() {
+    public void testExtractFromDateKeywords() {
         // WithYear
         assertEquals(List.of(1000921011110001L, 1000921011120002L, 1000921011130003L, 4000921041110001L, 4000921042220002L, 5000921051110001L, 5000921052220002L),
                      creditCards.findNumberByExpiresOnWithYearLessThanEqual(2025));
@@ -599,11 +629,23 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Verify WithWeek Function to compare the week-of-year part of a date.
+     */
+    @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
+    @Test
+    public void testExtractWeekFromDateFunction() {
+
+        // WithWeek
+        assertEquals(List.of(4000921041110001L),
+                     creditCards.expiringInWeek(15));
+    }
+
+    /**
      * Verify WithWeek in query-by-method-name to compare the week-of-year part of a date.
      */
     @SkipIfDataSourceProperties(DERBY_EMBEDDED) // Derby doesn't support a WEEK function in SQL
     @Test
-    public void testExtractWeekFromDate() {
+    public void testExtractWeekFromDateKeyword() {
 
         // WithWeek
         assertEquals(List.of(4000921042220002L),
