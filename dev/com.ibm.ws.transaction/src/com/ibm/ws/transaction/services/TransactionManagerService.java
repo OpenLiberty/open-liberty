@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,10 +49,10 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -61,7 +61,6 @@ import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.tx.UOWEventListener;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Component(service = { TransactionManager.class, EmbeddableWebSphereTransactionManager.class, UOWCurrent.class, ServerQuiesceListener.class }, immediate = true)
@@ -113,20 +112,16 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         if (tc.isEntryEnabled())
             Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
-        if (CheckpointPhase.getPhase().restored()) {
-            // normal (non-checkpoint) case; start TM now
-            doStartup0(cp, isSQLRecoveryLog);
-        } else {
-            // for checkpoint case start TM after restore
-            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-                @Override
-                public void restore() {
-                    doStartup0(cp, isSQLRecoveryLog);
-                }
-            });
-        }
+        System.out.println("CHECKPOINT PHASE: " + CheckpointPhase.getPhase());
+        System.out.println("CHECKPOINT RESTORED: " + CheckpointPhase.getPhase().restored());
 
-	if (tc.isEntryEnabled())
+        // EXERIMENT
+        // Startup during server checkpoint using default logging, recovery on start,
+        // and no peer recovery. During server restore startup using the actual server xml
+        // and new env configs after the server processes all config updates.
+        doStartup0(cp, isSQLRecoveryLog);
+
+        if (tc.isEntryEnabled())
             Tr.exit(tc, "doStartup");
     }
 

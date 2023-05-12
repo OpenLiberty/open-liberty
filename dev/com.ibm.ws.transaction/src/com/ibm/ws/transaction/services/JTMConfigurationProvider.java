@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.osgi.framework.Bundle;
@@ -30,6 +31,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -88,6 +90,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
 
+    private volatile ServiceReference<Condition> _runningCondition = null;
+
+    // PROTO
+    private Map<String, Object> _propsAtCheckpoint;
+
     public JTMConfigurationProvider() {
     }
 
@@ -106,20 +113,39 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         // Dictionary (Hashtable), it becomes a bottleneck to read a property
         // with each thread getting a Hashtable lock to do a get operation.
         Dictionary<String, Object> props = cc.getProperties();
+
         Map<String, Object> properties = new HashMap<>();
+        Map<String, Object> cpProperties = new HashMap<>();
         Enumeration<String> keys = props.keys();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
+            cpProperties.put(key, props.get(key));
+
+            // For checkpoint log to default dir, disable DB logging and peer recovery
+//            if (!CheckpointPhase.getPhase().restored()) {
+//                if ("transactionLogDirectory".equals(key)) {
+//                    properties.put(key, "${server.output.dir}/tranlog");
+//                } else if ("dataSourceRef".equals(key)) {
+//                    properties.put(key, null);
+//                } else if ("recoveryGroup".equals(key)) {
+//                    properties.put(key, null);
+//                } else if ("recoveryIdentity".equals(key)) {
+//                    properties.put(key, null);
+//                } else {
+//                    properties.put(key, props.get(key));
+//                }
+//            } else {
             properties.put(key, props.get(key));
+//            }
         }
         properties = Collections.unmodifiableMap(properties);
+        cpProperties = Collections.unmodifiableMap(cpProperties);
         synchronized (this) {
             _props = properties;
+            _propsAtCheckpoint = cpProperties;
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
-
-        addTransactionLogDirCheckpointHook();
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -150,12 +176,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 // The DataSource is available, which means that we are able to drive recovery
                 // processing. This is driven through the reference to the TransactionManagerService,
                 // assuming that it is available
-                if (tmsRef != null)
+                if (startupEnabled())
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
             }
         } else {
             getTransactionLogDirectory();
-            if (tmsRef != null)
+            if (startupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
 
@@ -165,10 +191,26 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         // Configuration has changed, may need to reset the lists of sqlcodes
         _setRetriableSqlcodes = false;
         _setNonRetriableSqlcodes = false;
+
+        addTransactionLogDirCheckpointHook();
+    }
+
+    private boolean startupEnabled() {
+        if (_cc == null || tmsRef == null)
+            return false; // not activated or tms is unavailable
+        if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE)
+            return true; // normal server process
+        if (!CheckpointPhase.getPhase().restored())
+            return true; // checkpoint server process
+        if (_runningCondition == null)
+            return false; // restored server process, before config updates
+        return true; // restored, after config updates
     }
 
     protected void deactivate(int reason, ComponentContext cc, Map<String, Object> properties) {
+        activateHasBeenCalled = false;
         _transactionSettingsProviders.deactivate(cc);
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "deactivate");
     }
@@ -228,7 +270,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory and activate have been called, initiate recovery");
 
-            if (tmsRef != null)
+            if (startupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
     }
@@ -244,6 +286,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tmsRef != null)
             tmsRef.doShutdown(_isSQLRecoveryLog);
         dataSourceFactoryRef.unsetReference(ref);
+    }
+
+    protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
+        _runningCondition = runningCondition;
+    }
+
+    protected void unsetRunningCondition(ServiceReference<Condition> runningCondition) {
+        _runningCondition = null;
     }
 
     // methods to handle dependency injection in osgi environment
@@ -504,7 +554,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             Tr.debug(tc, "setTMRecoveryService " + tmrec);
         if (tmsRef != null) {
             if (!_isSQLRecoveryLog) {
-                if (_cc != null) {
+                if (startupEnabled()) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             } else {
@@ -513,7 +563,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
-                if (_cc != null && serviceRef != null) {
+                if (startupEnabled()) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             }
@@ -868,29 +918,28 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return _dataSourceFactorySet;
     }
 
+    private final AtomicBoolean shouldAddHook = new AtomicBoolean(true);
+
     /**
-     * Fail checkpoint whenever the default or configured transaction log
-     * directory exists and cannot be deleted, including the case where
-     * the directory path is unexpectedly a file.
+     * Fail checkpoint iff the transaction log directory exists and cannot be deleted.
      */
     protected void addTransactionLogDirCheckpointHook() {
         if (!CheckpointPhase.getPhase().restored()) {
-            final String logDir = (String) _props.get("transactionLogDirectory");
+            final String tranlogDir = logDir;
 
-            if (logDir == null)
+            if (tranlogDir == null)
                 return;
 
-            // logDir is correctly formatted path string, but may contain unresolved
-            // variables or may be a file rather than directory.
-
-            CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
-                @Override
-                public void prepare() {
-                    if (!recursiveDelete(new File(logDir))) {
-                        throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
+            if (shouldAddHook.compareAndSet(true, false)) {
+                CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
+                    @Override
+                    public void prepare() {
+                        if (!recursiveDelete(new File(tranlogDir))) {
+                            throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", tranlogDir));
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 

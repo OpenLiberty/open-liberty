@@ -31,7 +31,7 @@
              includes="derby.jar" />
 
     <transaction
-        recoverOnStartup="true"
+        recoverOnStartup="false"
         waitForRecovery="false"
         heuristicRetryInterval="10"
     />
