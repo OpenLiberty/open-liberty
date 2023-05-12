@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.request.timing.hung.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +86,7 @@ public class HungRequestEnableThreadDumps {
      * Tests when the boolean "enableThreadDumps" attribute is not specified, the thread dumps should be created when the hung request is detected.
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void testEnableThreadDumpsNotSpecified() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "***** Begining testEnableThreadDumpsNotSpecified! *****");
 
@@ -96,7 +97,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(true); // thread dumps are expected.
@@ -118,7 +119,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(false); // thread dumps are NOT expected.
@@ -131,7 +132,7 @@ public class HungRequestEnableThreadDumps {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void testDynamicThreadDumpsDisable() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "***** Begining testDynamicThreadDumpsDisable! *****");
 
@@ -142,7 +143,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(180000); // We must wait this long to see 3 java cores are generated (we expect only 3)
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(180000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(true); // thread dumps are expected.
@@ -182,7 +183,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(180000); // We must wait this long to see 3 java cores are generated (we expect only 3)
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(180000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(false); // thread dumps are NOT expected.
@@ -212,7 +213,7 @@ public class HungRequestEnableThreadDumps {
      * The sub-element configuration should override the root element configuration, hence when a hung request is detected, thread dumps will be created.
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void testGlobalThreadDumpsDisableLocalThreadDumpsEnable() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "***** Begining testGlobalThreadDumpsDisableLocalThreadDumpsEnable! *****");
 
@@ -223,7 +224,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(true); // thread dumps are expected.
@@ -246,7 +247,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(false); // thread dumps are NOT expected.
@@ -259,7 +260,7 @@ public class HungRequestEnableThreadDumps {
      * The default configuration will be used ("enableThreadDumps=true"), where thread dumps will be created.
      */
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
     public void testInvalidEnableThreadDumpsAttributeValue() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "***** Begining testInvalidEnableThreadDumpsAttributeValue! *****");
 
@@ -279,7 +280,7 @@ public class HungRequestEnableThreadDumps {
         createHungRequest(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Verifying if the hung detection warnings appeared...");
-        verifyHungRequestWarnings();
+        verifyHungRequestWarnings(5000);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Checking if any thread dumps are created...");
         checkThreadDumpsCreated(true); // thread dumps are expected.
@@ -311,10 +312,20 @@ public class HungRequestEnableThreadDumps {
         }
     }
 
-    private void verifyHungRequestWarnings() throws Exception {
+    private void verifyHungRequestWarnings(int reqDuration) throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "------> Waiting for hung detection warning...");
         server.waitForStringInLog("TRAS0114W", 30000);
         int numOfhungRequestsWarnMsgs = fetchHungRequestWarningsCount("TRAS0114W");
+
+        // Retry the request again, since sometimes in the SOE builds, the feature update takes
+        // some time, and the request is created before the feature is properly updated,
+        // and the requestTiming warning does not get registered in time.
+        if (numOfhungRequestsWarnMsgs == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry the request because no hung request warning found!");
+            createHungRequest(reqDuration);
+            server.waitForStringInLog("TRAS0114W", 30000);
+            numOfhungRequestsWarnMsgs = fetchHungRequestWarningsCount("TRAS0114W");
+        }
         assertTrue("No hung request warning message was found !", numOfhungRequestsWarnMsgs > 0);
 
         CommonTasks.writeLogMsg(Level.INFO, "------> Waiting for hung request complete message...");
