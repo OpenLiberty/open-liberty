@@ -11,7 +11,7 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-    <applicationManager startTimeout="10s"/> <!-- Keeping startTimeout as 10 sec because the application will delayed start after 30 sec -->
+    <applicationManager startTimeout="90s"/>
     <featureManager>
     	<feature>mpHealth-3.1</feature>
     	<feature>checkpoint-1.0</feature>

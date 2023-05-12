@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -82,12 +83,48 @@ public class MPHealthTest extends FATServletClient {
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-        server.setCheckpoint(CheckpointPhase.DEPLOYMENT, true,
+        configureBeforeCheckpoint();
+        server.setCheckpoint(getCheckpointPhase(), true,
                              server -> {
                                  configureBeforeRestore();
                              });
         server.setConsoleLogName(getTestMethod(TestMethod.class, testName) + ".log");
         server.startServer(true, false); // Do not validate apps since we have a delayed startup.
+    }
+
+    private CheckpointPhase getCheckpointPhase() {
+        CheckpointPhase phase = CheckpointPhase.APPLICATIONS;
+        switch (testMethod) {
+            case testUpdateHealthChecks:
+                // We don't want the application to start hence doing the checkpoint in DEPLOYMENT phase.
+                phase = CheckpointPhase.DEPLOYMENT;
+                break;
+            default:
+                break;
+        }
+        return phase;
+    }
+
+    private void configureBeforeCheckpoint() {
+        try {
+            server.saveServerConfiguration();
+            Log.info(getClass(), testName.getMethodName(), "Configuring during checkpoint: " + testMethod);
+            switch (testMethod) {
+                case testUpdateHealthChecks:
+                    ServerConfiguration config = server.getServerConfiguration();
+                    //Keeping startTimeout as 10 sec because the application will delayed start after 30 sec.
+                    //This is to ensure the application doesn't start and the health/ready and health/started endpoints are configured using the config inside server.xml - "UP"
+                    //After the application starts the endpoints are configured using application logic - "DOWN"
+                    config.getApplicationManager().setStartTimeout("10s");
+                    server.updateServerConfiguration(config);
+                    break;
+                default:
+                    Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new AssertionError("Unexpected error configuring test.", e);
+        }
     }
 
     @Test
@@ -113,11 +150,7 @@ public class MPHealthTest extends FATServletClient {
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The status of the health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWMMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMMH0053W warning did not appear in messages.log", 1, lines.size());
-
-        Thread.sleep(30000);
-        lines = server.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
         // /health- It will return 503 since /health/ready is down
@@ -180,8 +213,7 @@ public class MPHealthTest extends FATServletClient {
 
     private void configureBeforeRestore() {
         try {
-            server.saveServerConfiguration();
-            Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+            Log.info(getClass(), testName.getMethodName(), "Configuring during restore: " + testMethod);
             switch (testMethod) {
                 case testUpdateHealthChecks:
                     Map<String, String> checks = new HashMap<>();
@@ -208,7 +240,7 @@ public class MPHealthTest extends FATServletClient {
 
     @After
     public void tearDown() throws Exception {
-        server.stopServer("CWMMH0052W", "CWMMH0053W");
+        server.stopServer("CWMMH0052W");
         server.restoreServerConfiguration();
     }
 
