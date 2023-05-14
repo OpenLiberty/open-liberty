@@ -17,7 +17,6 @@
         <feature>passwordUtilities-1.1</feature>
         <feature>appSecurity-3.0</feature> <!-- This is needed to use the WSMappingCallbackHandler API from the application -->
         <feature>componenttest-1.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
 
     <application type="war" id="DefaultPrincipalMappingApp" name="DefaultPrincipalMappingApp" location="${server.config.dir}/apps/DefaultPrincipalMappingApp.war"/>

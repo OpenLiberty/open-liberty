@@ -183,19 +183,19 @@ public class ValidFeaturesTest {
                                                  "webCache-1.0" };
 
     static enum TestMethod {
-        testWebProfile8_0("webProfile-8.0", "checkpoint-1.0"),
-        testWebProfile9_1("webProfile-9.1", "checkpoint-1.0"),
-        testWebProfile10_0("webProfile-10.0", "checkpoint-1.0"),
-        testMicroProfile4_1("microProfile-4.1", "checkpoint-1.0"),
-        testMicroProfile5_0("microProfile-5.0", "checkpoint-1.0"),
-        testMicroProfile6_0("microProfile-6.0", "checkpoint-1.0"),
-        testWebProfile8_0_testMicroProfile4_1("webProfile-8.0", "microProfile-4.1", "checkpoint-1.0"),
-        testWebProfile9_1_testMicroProfile5_0("webProfile-9.1", "microProfile-5.0", "checkpoint-1.0"),
-        testWebProfile10_0_testMicroProfile6_0("webProfile-10.0", "microProfile-6.0", "checkpoint-1.0"),
-        testWebProfile8_0_ValueAdd(false, true, "webProfile-8.0", "checkpoint-1.0"),
-        testWebProfile9_1_ValueAdd(false, true, "webProfile-9.1", "checkpoint-1.0"),
-        testWebProfile10_0_ValueAdd(false, true, "webProfile-10.0", "checkpoint-1.0"),
-        testEjb3_2(true, "ejb-3.2", "checkpoint-1.0"),
+        testWebProfile8_0("webProfile-8.0"),
+        testWebProfile9_1("webProfile-9.1"),
+        testWebProfile10_0("webProfile-10.0"),
+        testMicroProfile4_1("microProfile-4.1"),
+        testMicroProfile5_0("microProfile-5.0"),
+        testMicroProfile6_0("microProfile-6.0"),
+        testWebProfile8_0_testMicroProfile4_1("webProfile-8.0", "microProfile-4.1"),
+        testWebProfile9_1_testMicroProfile5_0("webProfile-9.1", "microProfile-5.0"),
+        testWebProfile10_0_testMicroProfile6_0("webProfile-10.0", "microProfile-6.0"),
+        testWebProfile8_0_ValueAdd(false, true, "webProfile-8.0"),
+        testWebProfile9_1_ValueAdd(false, true, "webProfile-9.1"),
+        testWebProfile10_0_ValueAdd(false, true, "webProfile-10.0"),
+        testEjb3_2(true, "ejb-3.2"),
         unknown();
 
         private final List<String> features;

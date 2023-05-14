@@ -14,7 +14,6 @@
     <applicationManager startTimeout="10s"/> <!-- Keeping startTimeout as 10 sec because the application will delayed start after 30 sec -->
     <featureManager>
     	<feature>mpHealth-3.1</feature>
-    	<feature>checkpoint-1.0</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
     

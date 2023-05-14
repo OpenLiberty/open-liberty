@@ -17,7 +17,6 @@
         <feature>ejbLite-3.2</feature>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

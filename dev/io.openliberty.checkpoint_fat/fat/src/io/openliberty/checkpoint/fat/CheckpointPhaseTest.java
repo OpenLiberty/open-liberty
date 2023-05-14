@@ -16,8 +16,6 @@ import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.Set;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,9 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -106,22 +102,6 @@ public class CheckpointPhaseTest {
                                       LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );
         restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
-    }
-
-    @Test
-    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testCheckpointFeatureMissingError() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
-        ServerConfiguration svrCfg = server.getServerConfiguration();
-        Set<String> features = svrCfg.getFeatureManager().getFeatures();
-        features.remove("checkpoint-1.0");
-        server.updateServerConfiguration(svrCfg);
-
-        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART,
-                                      LibertyServer.DEFAULT_VALIDATE_APPS, true /* expectStartFailure */ );
-
-        assertNotNull("'CWWKC0460E:",
-                      server.waitForStringInLogUsingMark(".* CWWKC0460E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
     }
 
     private void restoreServerCheckConsoleLogHeader(LibertyServer server) throws Exception {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -191,24 +191,15 @@ public class TransformerTest {
 
     @Test
     public void testTransformerReturnsTransformedBytesClassCached() throws Exception {
-        doTestTransformerReturnsTransformedBytesClassCached(false, false);
+        doTestTransformerReturnsTransformedBytesClassCached(false);
     }
 
     @Test
     public void testSystemTransformerReturnsTransformedBytesClassCached() throws Exception {
-        doTestTransformerReturnsTransformedBytesClassCached(true, true);
+        doTestTransformerReturnsTransformedBytesClassCached(true);
     }
 
-    @Test
-    public void testSystemTransformerReturnsTransformedBytesClassCachedNotBeta() throws Exception {
-        doTestTransformerReturnsTransformedBytesClassCached(true, false);
-    }
-
-    private void doTestTransformerReturnsTransformedBytesClassCached(boolean systemTransformer, boolean isBeta) throws Exception {
-        if (isBeta) {
-            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, Boolean.TRUE.toString());
-        }
-
+    private void doTestTransformerReturnsTransformedBytesClassCached(boolean systemTransformer) throws Exception {
         final AtomicBoolean transformerInvoked = new AtomicBoolean(false);
         ClassFileTransformer transformer = new ClassFileTransformer() {
 
@@ -228,7 +219,7 @@ public class TransformerTest {
         ByteResourceInformation toTransform = new ByteResourceInformation(originalBytes, null, null, null, fromCached, () -> originalBytes);
         byte[] transformedBytes = loader.transformClassBytes("greetings", toTransform);
 
-        if (systemTransformer && isBeta) {
+        if (systemTransformer) {
             // System transformers invoke in beta-editions, only
             assertTrue(transformerInvoked.get());
             assertFalse(Arrays.equals(originalBytes, transformedBytes));

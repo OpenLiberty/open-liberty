@@ -167,7 +167,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     List<ClassFileTransformer> unitTestOnlyGetSystemTransformers() {
         return systemTransformers;
     }
-    private final boolean isBeta;
 
     /**
      * Mapping from META-INF services file names to the corresponding service provider implementation class name.
@@ -202,12 +201,9 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         }      
     }
 
-    public ClassLoadingServiceImpl() {
-        this.isBeta = ProductInfo.getBetaEdition();
-    }
 
     List<ClassFileTransformer> getSystemTransformers() {
-        return isBeta ? systemTransformers : Collections.emptyList();
+        return systemTransformers;
     }
 
     @Activate

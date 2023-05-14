@@ -19,7 +19,6 @@
         <feature>jaxrs-2.1</feature>
         <feature>cdi-2.0</feature>
         <feature>webCache-1.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
