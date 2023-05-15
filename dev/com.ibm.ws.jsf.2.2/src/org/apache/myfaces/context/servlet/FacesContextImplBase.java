@@ -40,6 +40,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * Provides a base implementation of the FacesContext for the use
@@ -48,7 +49,7 @@ import org.apache.myfaces.el.unified.FacesELContext;
  * @author Jakob Korherr (latest modification by $Author: lu4242 $)
  * @version $Revision: 1645094 $ $Date: 2014-12-12 23:37:31 +0000 (Fri, 12 Dec 2014) $
  */
-public abstract class FacesContextImplBase extends FacesContext
+public abstract class FacesContextImplBase extends FacesContext implements Purgeable
 {
     public final static String SKIP_CLEAR_VIEW_MAP_HINT = "oam.fc.skipClearViewMapHint";
 
@@ -178,7 +179,8 @@ public abstract class FacesContextImplBase extends FacesContext
     /**
      * 
      */
-    public void purgeFacesContext()
+    @Override
+    public void purge()
     {
         _application = null;
         _renderKitFactory = null;
