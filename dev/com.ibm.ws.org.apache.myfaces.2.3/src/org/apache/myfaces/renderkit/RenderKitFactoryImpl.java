@@ -28,6 +28,7 @@ import javax.faces.FacesException;
 import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3
@@ -35,7 +36,7 @@ import javax.faces.render.RenderKitFactory;
  * @author Manfred Geiler (latest modification by $Author$)
  * @version $Revision$ $Date$
  */
-public class RenderKitFactoryImpl extends RenderKitFactory
+public class RenderKitFactoryImpl extends RenderKitFactory implements Purgeable
 {
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
@@ -45,7 +46,8 @@ public class RenderKitFactoryImpl extends RenderKitFactory
     {
     }
 
-    public void purgeRenderKit()
+    @Override
+    public void purge()
     {
         _renderkits.clear();
     }
