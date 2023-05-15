@@ -27,6 +27,7 @@ define([
         "dojox/mobile/View",
         "dijit/registry",
         "dijit/form/Button",
+        "dojo/store/Memory",
         "dijit/_TemplatedMixin",
         "dijit/_WidgetsInTemplateMixin",
         "dojo/text!./templates/LibertyIdentity.html",
@@ -46,6 +47,7 @@ define([
                 _WidgetBase,
                 registry,
                 Button,
+                Memory,
                 _TemplatedMixin,
                 _WidgetsInTemplateMixin,
                 template,
@@ -53,7 +55,9 @@ define([
 
     return declare("LibertyIdentity", [ _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin ], {
         constructor : function() {
-            console.log("identityString");         
+            console.log("identityString");
+            //var data = this.getStore();//.get(1);
+            //console.log("AAA data " + data);   
         },
 
         templateString:template,
@@ -68,16 +72,19 @@ define([
         userName: '',
         userRole: '',
         identityString: '',
-        originalIdentity: '',
-        identityColorString: '',
+        identityStringColor: '#FFFFFF',
         identityMaxChars: 27,
-        changed: false,
+        store: {},
 
         postCreate : function() {
+            console.log("postCreate is called");
             var me = this;
             this.inherited(arguments);
             this.set("aria-label", i18n.IDENTITY_TITLE);
             registry.byId("identity_headerWidget").set("secondaryTitle", i18n.IDENTITY_TITLE);
+            var test = json.fromJson(BIDI_PREFS_STRING);
+            console.log("AAA test " + test);
+            console.log("direction " + toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION);
             var textDir = json.fromJson(BIDI_PREFS_STRING)[toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION];
             this.textDirection = textDir;
             //if (textDir === toolbox.getToolbox().PREFERENCE_BIDI_TEXT_DIRECTION_RTL){
@@ -89,6 +96,14 @@ define([
             //    var textColorE = platform.isPhone()? "#ffffff" : "#413d3d";
                 // enable the radio buttons and set color for text
             //    this.setRadioButtonCSS(false, textColorE);
+            //}
+            
+            //var data = this.store; //getStore()//.get(1);
+            //console.log("AAA data " + data);
+            //if (data) {
+                //data.query({id:1});
+            //    console.log("custom string " + data.input);
+            //    console.log("color " + data.color);
             //}
 
             // create Save, Cancel button
@@ -119,6 +134,10 @@ define([
             //this.removeAriaChecked();
         },
 
+        getStore: function() {
+            return this.store;
+        },
+
         changeSelectedOption: function(evt) {
             console.log("changeSelectedOption " + evt);
             //var keyPushed = evt.charOrCode;
@@ -128,26 +147,6 @@ define([
             //if (keyPushed === keys.ENTER) {
             this.setSelectedOption(evt);
             //}
-        },
-
-        onClickSaveButton: function() {
-            console.log("onClickSaveButton ");
-            var customInput = dom.byId("custom_input");
-            if (customInput !== undefined) {
-                console.log("custom_input " + customInput.value);
-            }               
-            var customInputMaxChars = dom.byId("custom_input_max_char");
-            if (customInputMaxChars !== undefined) {
-                console.log("customInputMaxChars " + customInputMaxChars.value);
-            }
-            var customColor = dom.byId("custom_color");
-            if (customColor !== undefined) {
-                console.log("customColor " + customColor.value)
-            }
-        },
-        
-        onClickCancelButton: function() {
-            console.log("onClickCancelButton ");
         },
 
         setSelectedOption: function(evt) {
@@ -190,24 +189,32 @@ define([
             }
         },
 
-        changeInputCustom: function(evt) {
-            console.log("changeInputCustom " + evt);
-            this.identityString = dom.byId("custom_input").set('value', evt);//.getAttribute("value");
+        onClickSaveButton: function() {
+            console.log("onClickSaveButton ");
+            var customInput = dom.byId("custom_input");
+            if (customInput !== undefined && this.identityString !== customInput) {
+                console.log("set custom_input " + customInput.value);
+                this.identityString = customInput;
+            }               
+            var customInputMaxChars = dom.byId("custom_input_max_char");
+            if (customInputMaxChars !== undefined && this.identityMaxChars !== customInputMaxChars) {
+                console.log("set customInputMaxChars " + customInputMaxChars.value);
+                this.identityMaxChars = customInputMaxChars;
+            }
+            var customColor = dom.byId("custom_color");
+            if (customColor !== undefined && this.identityStringColor != customColor) {
+                console.log("set customColor " + customColor.value);
+                this.identityStringColor = customColor;
+            }
+            // persisted data?
+            //var identityData = [
+            //    {id:1, input: this.identityString, color: this.identityStringColor, maxchar: this.identityMaxChars}
+            //];
+            //this.store = new Memory({data: identityData});
         },
-
-        changeColor : function(evt){
-            // evt is true or false
-            if (evt) {
-                console.log("change color");
-                this.setColor(evt);
-;                //this.userPrefs[toolbox.getToolbox().PREFERENCE_BIDI_ENABLED] = true;
-                // enable the radio buttons and set color for text
-                //var textColor = platform.isPhone()? "#ffffff" : "#413d3d";
-                //this.setRadioButtonCSS(false, textColor);
-                // set adminCenter-bidi in config though this does not seem to work
-                //has.add("adminCenter-bidi", true);
-                //console.log("has bidi should be true:" + has("adminCenter-bidi"));
-            } 
+        
+        onClickCancelButton: function() {
+            console.log("onClickCancelButton ");
         },
 
         setColor: function(textColor) {
@@ -221,7 +228,8 @@ define([
         },
 
         setMaxCharIdentityInput: function(max_char) {
-
+            console.log("max char:" + max_char);
+            this.identityCustomStrMaxChars = max_char;
         },
 
         setTransitionBackTo : function(viewId) {

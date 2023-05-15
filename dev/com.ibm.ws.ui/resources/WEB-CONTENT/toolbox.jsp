@@ -38,6 +38,7 @@
 
 <script>
 	var BIDI_PREFS_STRING = '{"bidiEnabled":false,"bidiTextDirection":"ltr"}';
+    var IDENTITY_STRING = '{"identityInput": "none", "identityColor": "#FFFFFF", "identityMaxChar": "27"}'
 </script>
 
 <%
@@ -252,7 +253,7 @@ BIDI_PREFS_STRING = '<%=line%>';
     </div>
 
     <div id='identityContainer' data-dojo-type="dojox.mobile.View" data-dojo-props="style: 'width: 100%; height: 100%; margin: auto;'">
-      <div data-dojo-type="js/widgets/LibertyHeader" id="identity_headerWidget" containerId="identityContainer" userName="<%=userId%>" aria-label="Preferences"></div>
+      <div data-dojo-type="js/widgets/LibertyHeader" id="identity_headerWidget" containerId="identityContainer" userName="<%=userId%>" aria-label="Identity"></div>
       <div data-dojo-type="js/widgets/LibertyIdentity" class="profile-container" id="identityContentContainer" role="main" userName="<%=userId%>" userRole="<%=userRole%>" style="width: 100%; height: 100%;"></div>
     </div>
 
