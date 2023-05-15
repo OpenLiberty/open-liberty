@@ -23,6 +23,7 @@ import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
 
 /**
@@ -63,8 +64,11 @@ public interface Businesses extends CrudRepository<Business, Integer> {
 
     @Filter(by = "locationAddressCity", value = "Rochester")
     @Filter(by = "locationAddressState", value = "MN")
-    @Filter(by = "locationAddress.street_direction", ignoreCase = true, op = Compare.StartsWith, value = "s")
+    @Filter(by = "locationAddress.street_direction", fn = Function.IgnoreCase, op = Compare.StartsWith, value = "s")
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
     List<String> onSouthSide();
+
+    @Filter(by = "location.longitude", fn = Function.AbsoluteValue, op = Compare.Between)
+    List<Business> withLongitudeIgnoringSignWithin(float min, float max);
 }

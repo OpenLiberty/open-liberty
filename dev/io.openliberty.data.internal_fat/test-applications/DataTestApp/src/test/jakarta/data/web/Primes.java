@@ -43,6 +43,7 @@ import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 
 /**
  * Repository with data that is pre-populated.
@@ -202,7 +203,7 @@ public interface Primes {
     Long howManyLessThan20StartingAfter(long min);
 
     @Filter(by = "id", op = Compare.Between)
-    @Filter(by = "romanNumeral", ignoreCase = true, op = Compare.Like, value = "%v%")
+    @Filter(by = "romanNumeral", fn = Function.IgnoreCase, op = Compare.Like, value = "%v%")
     @Filter(by = "name", op = Compare.Contains)
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
@@ -264,4 +265,15 @@ public interface Primes {
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
     KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
+
+    @Filter(by = "name", fn = Function.CharCount, op = Compare.Between)
+    @OrderBy("name")
+    Stream<Prime> whereNameLengthWithin(int minLength, int maxLength);
+
+    @Filter(by = "name", fn = { Function.Trimmed, Function.IgnoreCase })
+    Optional<Prime> withAnyCaseName(String name);
+
+    @Filter(by = "name", fn = { Function.Trimmed, Function.CharCount })
+    @Filter(by = "id", op = Compare.Between)
+    List<Prime> withNameLengthAndWithin(int length, long min, long max);
 }

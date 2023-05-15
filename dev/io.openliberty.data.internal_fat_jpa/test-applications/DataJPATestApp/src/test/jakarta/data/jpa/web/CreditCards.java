@@ -20,6 +20,9 @@ import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Select;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
@@ -36,6 +39,19 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("debtorEmail")
     @Select(distinct = true, value = "debtorEmail")
     List<String> findByExpiresOnBetween(LocalDate expiresOnOrAfter, LocalDate expiresOnOrBefore);
+
+    @Filter(by = "expiresOn", fn = Function.WithQuarter, op = Compare.Not)
+    @OrderBy("number")
+    Stream<CreditCard> expiresInQuarterOtherThan(int quarterToExclude);
+
+    @Select("number")
+    @Filter(by = "expiresOn", fn = Function.WithYear, op = Compare.LessThanEqual)
+    @OrderBy("number")
+    List<Long> expiringInOrBefore(int maxYearOfExpiry);
+
+    @Filter(by = "expiresOn", fn = Function.WithWeek)
+    @OrderBy("number")
+    List<CreditCard> expiringInWeek(int weekNumber);
 
     @OrderBy("number")
     Stream<CreditCard> findByExpiresOnWithQuarterNot(int quarterToExclude);
@@ -57,6 +73,14 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
 
     @OrderBy("number")
     List<Long> findNumberByExpiresOnWithYearLessThanEqual(int maxYearOfExpiry);
+
+    @Filter(by = "issuedOn", fn = Function.WithDay, op = Compare.Between)
+    @OrderBy("number")
+    Stream<CreditCard> issuedBetween(int minDayOfMonth, int maxDayOfMonth);
+
+    @Filter(by = "issuedOn", fn = Function.WithMonth, op = Compare.In)
+    @OrderBy("number")
+    Stream<CreditCard> issuedInMonth(Iterable<Integer> months);
 
     void save(CreditCard... cards);
 

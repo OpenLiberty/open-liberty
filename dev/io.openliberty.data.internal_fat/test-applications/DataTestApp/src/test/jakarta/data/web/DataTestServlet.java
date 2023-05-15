@@ -495,10 +495,21 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test the CharCount Function to query based on string length.
+     */
+    @Test
+    public void testCharCountFunction() {
+        assertIterableEquals(List.of("eleven", "five", "seven", "three"),
+                             primes.whereNameLengthWithin(4, 6)
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Test the CharCount keyword to query based on string length.
      */
     @Test
-    public void testCharCount() {
+    public void testCharCountKeyword() {
         assertIterableEquals(List.of("eleven", "nineteen", "seven", "thirteen", "three"),
                              primes.findByNameCharCountBetween(5, 8)
                                              .map(p -> p.name)
@@ -743,7 +754,7 @@ public class DataTestServlet extends FATServlet {
 
         reservations.saveAll(Set.of(r1, r2, r3, r4));
 
-        // ElementCount
+        // ElementCount keyword
 
         assertIterableEquals(List.of("host1@openliberty.io", "host4@openliberty.io"),
                              reservations.findByInviteesElementCount(2)
@@ -755,15 +766,28 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.host)
                                              .collect(Collectors.toList()));
 
+        // ElementCount Function
+
+        assertIterableEquals(List.of("host3@openliberty.io"),
+                             reservations.withInviteeCount(3)
+                                             .map(r -> r.host)
+                                             .collect(Collectors.toList()));
+
         // WithHour, WithMinute. We cannot compare the hour without knowing which time zone the database stores it in.
 
         assertIterableEquals(List.of(113001L, 213002L),
                              reservations.findMeetingIdByStartWithHourBetweenAndStartWithMinute(0, 23, 15));
 
+        assertIterableEquals(List.of(313003L),
+                             reservations.startsWithinHoursWithMinute(0, 23, 35));
+
         // WithSecond
 
         assertIterableEquals(List.of(313003L),
                              reservations.findMeetingIdByStopWithSecond(30));
+
+        assertIterableEquals(List.of(113001L, 213002L, 413004L),
+                             reservations.endsAtSecond(0));
 
         reservations.deleteAll();
     }
@@ -3297,6 +3321,15 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(603, 607),
                              packages.findIdByHeightRoundedDown(4));
 
+        assertIterableEquals(List.of(605, 607),
+                             packages.withLengthFloored(18.0f));
+
+        assertIterableEquals(List.of(607),
+                             packages.withWidthCeiling(9.0f));
+
+        assertIterableEquals(List.of(601, 603),
+                             packages.withHeightAbout(5.0f));
+
         packages.deleteAll();
     }
 
@@ -4239,10 +4272,26 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test the Trimmed Function by querying against data that has leading and trailing blank space.
+     */
+    @Test
+    public void testTrimmedFunction() {
+        List<Prime> found = primes.withNameLengthAndWithin(24, 4000L, 4025L);
+        assertNotNull(found);
+        assertEquals("Found: " + found, 1, found.size());
+        assertEquals(4021L, found.get(0).numberId);
+        assertEquals(" Four thousand twenty-one ", found.get(0).name);
+
+        Prime prime = primes.withAnyCaseName("FOUR THOUSAND TWENTY-ONE").orElseThrow();
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
+    }
+
+    /**
      * Test the Trimmed keyword by querying against data that has leading and trailing blank space.
      */
     @Test
-    public void testTrimmed() {
+    public void testTrimmedKeyword() {
         List<Prime> found = primes.findByNameTrimmedCharCountAndIdBetween(24, 4000L, 4025L);
         assertNotNull(found);
         assertEquals("Found: " + found, 1, found.size());

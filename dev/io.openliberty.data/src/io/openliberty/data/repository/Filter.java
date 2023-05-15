@@ -82,13 +82,20 @@ public @interface Filter {
     String by();
 
     /**
-     * <p>Indicates whether to request case insensitive ordering from a database
-     * with case sensitive collation. A database with case insensitive collation
-     * performs case insensitive ordering regardless of <code>ignoreCase</code>.</p>
+     * <p>Optionally specifies one or more functions to apply to the
+     * value in the database when comparing. The first function
+     * in the list is applied to the value found in the database.
+     * If a second function is listed, that function is applied to the
+     * result of the first function. For example, if applying both
+     * {@link Function#Trimmed} and {@link Function#CharCount},
+     * list the {@link Function#Trimmed} function first so that the
+     * value is trimmed before counting the number of characters.
+     * The opposite order would mean attempting to trim a numeric value,
+     * which is not valid.</p>
      *
-     * @return whether to request case insensitive ordering.
+     * @return functions to apply.
      */
-    boolean ignoreCase() default false;
+    Function[] fn() default {};
 
     /**
      * <p>Specifies the filter {@link Compare comparison operation}.</p>

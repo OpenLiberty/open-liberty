@@ -25,6 +25,7 @@ import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;
 import io.openliberty.data.repository.Update;
 
@@ -86,4 +87,16 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "length")
     @OrderBy(value = "id")
     KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable pagination);
+
+    @Filter(by = "height", fn = Function.Rounded)
+    @OrderBy(value = "id")
+    List<Integer> withHeightAbout(float height);
+
+    @Filter(by = "length", fn = Function.RoundedDown)
+    @OrderBy(value = "id")
+    List<Integer> withLengthFloored(float length);
+
+    @Filter(by = "width", fn = Function.RoundedUp)
+    @OrderBy(value = "id")
+    List<Integer> withWidthCeiling(float width);
 }
