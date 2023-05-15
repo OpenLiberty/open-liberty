@@ -322,5 +322,7 @@ PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: The [{0}] OpenID Connect client
 PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=The OpenID Connect client must configure a keystore reference to define where to find the key to use to sign the JWT.
 PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verify that the OpenID Connect client has a keystore reference configured.
 
+#CWWKS1557 used in client bundle, do not use here.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 
