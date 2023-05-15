@@ -25,13 +25,14 @@ import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Thomas Spiegl
  * @version $Revision$ $Date$
  */
-public class ApplicationFactoryImpl extends ApplicationFactory
+public class ApplicationFactoryImpl extends ApplicationFactory implements Purgeable
 {
     private static final Logger log = Logger.getLogger(ApplicationFactoryImpl.class.getName());
 
@@ -59,7 +60,8 @@ public class ApplicationFactoryImpl extends ApplicationFactory
         }
     }
 
-    public void purgeApplication()
+    @Override
+    public void purge()
     {
         createAndLogNewApplication();
     }

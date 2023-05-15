@@ -25,13 +25,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import jakarta.faces.FacesException;
 import jakarta.faces.lifecycle.Lifecycle;
 import jakarta.faces.lifecycle.LifecycleFactory;
+import org.apache.myfaces.util.Purgeable;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
  * @version $Revision$ $Date$
  */
-public class LifecycleFactoryImpl extends LifecycleFactory
+public class LifecycleFactoryImpl extends LifecycleFactory implements Purgeable
 {
     /**
      * At start we used synchronized blocks for addLifecycle and getLifecycle. But thinking about it,
@@ -46,7 +47,8 @@ public class LifecycleFactoryImpl extends LifecycleFactory
         addLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE, new LifecycleImpl());
     }
 
-    public void purgeLifecycle()
+    @Override
+    public void purge()
     {
         // Note this is not safe, because if by some coincidence one thread call getLifecycle between
         // the two lines below it will throw IllegalArgumentException, but this method is not supposed 
