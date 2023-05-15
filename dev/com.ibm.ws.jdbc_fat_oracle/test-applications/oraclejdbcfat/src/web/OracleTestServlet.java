@@ -43,6 +43,7 @@ import componenttest.app.FATServlet;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OraclePreparedStatement;
+import oracle.jdbc.OracleStatement;
 import oracle.jdbc.OracleTypes;
 import oracle.jdbc.datasource.OracleCommonDataSource;
 import oracle.jdbc.datasource.OracleConnectionPoolDataSource;
@@ -106,6 +107,53 @@ public class OracleTestServlet extends FATServlet {
         } finally {
             con.close();
         }
+    }
+
+    // Verify that statements are not castable to OracleStatement, but can be unwrapped
+    @Test
+    public void testStatementCasting() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
+        Connection con = ds.getConnection();
+        Statement stmt;
+        OracleStatement ostmt;
+
+        //Test statement
+        stmt = con.createStatement();
+        try {
+            ostmt = (OracleStatement) stmt;
+            fail("Should not be able to cast to OracleStatement");
+        } catch (Exception e) {
+            assertTrue(e instanceof ClassCastException);
+        }
+
+        assertTrue(stmt.isWrapperFor(OracleStatement.class));
+        ostmt = stmt.unwrap(OracleStatement.class);
+
+        //Test prepared statement
+        stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
+        try {
+            ostmt = (OraclePreparedStatement) stmt;
+            fail("Should not be able to cast to OraclePreparedStatement");
+        } catch (Exception e) {
+            assertTrue(e instanceof ClassCastException);
+        }
+
+        assertTrue(stmt.isWrapperFor(OraclePreparedStatement.class));
+        ostmt = stmt.unwrap(OraclePreparedStatement.class);
+
+        //Test callable statement
+        stmt = con.prepareCall("INSERT INTO MYTABLE VALUES(?,?)");
+        try {
+            ostmt = (OracleCallableStatement) stmt;
+            fail("Should not be able to cast to OracleCallableStatement");
+        } catch (Exception e) {
+            assertTrue(e instanceof ClassCastException);
+        }
+
+        assertTrue(stmt.isWrapperFor(OracleCallableStatement.class));
+        ostmt = stmt.unwrap(OracleCallableStatement.class);
     }
 
     // Test for oracle.jdbc.OracleCallableStatement.getCursor.  Should be able to execute a procedure that returns a cursor
