@@ -94,7 +94,7 @@ public class EndToEndClientServlet extends HttpServlet {
 				boolean result = enlistXAResourse("commit", XAResourceImpl.DIRECTION_COMMIT);
 				if (result == true) {
 					System.out.println("Reply from server: "
-							+ proxy.sayHello("commit", XAResourceImpl.DIRECTION_COMMIT));
+							+ proxy.sayHello("commitclear", XAResourceImpl.DIRECTION_COMMIT));
 					userTransaction.commit();
 					System.out.println("client user transaction commit");
 					finalOutput = "Finish Twoway message";

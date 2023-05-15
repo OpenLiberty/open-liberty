@@ -33,6 +33,7 @@ import web.endtoend.client.endtoend.HelloImplTwowayService;
 @WebService(wsdlLocation="WEB-INF/wsdl/HelloImplTwowayService.wsdl")
 public class HelloImplTwoway{
 	public String sayHello(String vote, int expectedDirection){
+		System.out.println("sayHello("+vote+", "+expectedDirection+")");
 		if (expectedDirection < 0) {
 			return "Hello, this is HelloImplTwowayService";
 		} else {
@@ -71,6 +72,7 @@ public class HelloImplTwoway{
 	}
 	
 	public String callAnother(String URL, String vote1, String vote2, int expectedDirection){
+		System.out.println("callAnother("+URL+", "+vote1+", "+vote2+", "+expectedDirection+")");
 		boolean result = false;
 		try {
 			XAResourceImpl.clear();
