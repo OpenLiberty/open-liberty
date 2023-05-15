@@ -20,7 +20,7 @@
         <AD id="clientId" name="%clientId" description="%clientId.desc"
             required="true" type="String" />
         <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
-            required="true" type="String" ibm:type="password" />
+            type="String" ibm:type="password" />
         <!-- AD id="userApi" required="false" type="String" not defined -->
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
             required="false" type="String" default="https://accounts.google.com/o/oauth2/v2/auth"/>
@@ -370,7 +370,7 @@
         <AD id="clientId" name="%clientId" description="%clientId.desc"
             required="true" type="String" />
         <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
-            required="true" type="String" ibm:type="password" />
+            type="String" ibm:type="password" />
         <!-- AD id="userApi" required="false" type="String" not defined -->
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
             required="false" type="String" />

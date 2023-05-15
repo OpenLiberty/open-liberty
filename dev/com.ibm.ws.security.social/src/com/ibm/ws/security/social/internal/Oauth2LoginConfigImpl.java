@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
@@ -41,6 +38,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.structures.Cache;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.SslRefInfo;
@@ -261,9 +259,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             checkForRequiredConfigAttributesForKubernetes(props);
         } else {
             getRequiredConfigAttribute(props, KEY_clientId);
-            getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
             getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            //getRequiredConfigAttribute(props, KEY_scope);  // removing as not all providers require it. 
+            if (isClientSecretRequired(props)) {
+                getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+            }
         }
     }
 
@@ -285,12 +284,22 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     protected void checkForRequiredConfigAttributesForIntrospect(Map<String, Object> props) {
         getRequiredConfigAttribute(props, KEY_clientId);
-        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+        if (isClientSecretRequired(props)) {
+            getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+        }
     }
 
     boolean isKubeConfiguration(Map<String, Object> props) {
         String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
         if (userApiType != null && USER_API_TYPE_KUBE.equals(userApiType)) {
+            return true;
+        }
+        return false;
+    }
+
+    boolean isClientSecretRequired(Map<String, Object> props) {
+        String tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, DEFAULT_TOKEN_ENDPOINT_AUTH_METHOD);
+        if (tokenEndpointAuthMethod != null && !PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(tokenEndpointAuthMethod)) {
             return true;
         }
         return false;
