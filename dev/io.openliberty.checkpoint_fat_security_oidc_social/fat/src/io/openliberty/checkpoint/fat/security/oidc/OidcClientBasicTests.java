@@ -13,7 +13,7 @@
 
 package io.openliberty.checkpoint.fat.security.oidc;
 
-import static io.openliberty.checkpoint.fat.securty.common.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.security.common.FATSuite.getTestMethod;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;

@@ -10,6 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply plugin: 'war'
+
+war { enabled false } // We aren't making a war for the entire project
 
 repositories {
   if (isUsingArtifactory) {
@@ -26,7 +29,7 @@ repositories {
 }
 
 dependencies {
-   requiredLibs project(':com.ibm.ws.security.social_fat'),
+	requiredLibs project(':com.ibm.ws.security.social_fat'),
                 project(':com.ibm.ws.security.fat.common'),
                 project(':com.ibm.ws.security.fat.common.jwt'),
                 project(':com.ibm.ws.security.oauth.oidc_fat.common'),
@@ -35,7 +38,7 @@ dependencies {
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.6R5'
                  
-  requiredLibs project(':com.ibm.ws.org.apache.commons.io'),    
+	requiredLibs project(':com.ibm.ws.org.apache.commons.io'),    
                project(':com.ibm.ws.org.apache.commons.lang3'),
                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
@@ -46,14 +49,80 @@ dependencies {
                project(':io.openliberty.org.apache.xercesImpl'),
                'xml-apis:xml-apis:1.4.01',
                'httpunit:httpunit:1.7'
+               
+	requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':com.ibm.websphere.javaee.servlet.3.0'),
+               project(':com.ibm.ws.security.audit_fat.common.tooling')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JASPIBase.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task JASPIBase_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "JASPIBase.jar"
+
+  from ('build/classes/java/main') { 
+    include 'web/FlexibleBaseServlet*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JASPIBasicAuthServlet.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task JASPIBasicAuthServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "JASPIBasicAuthServlet.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/JASPIBasicAuthServlet.war/resources') { 
+  	include 'META-INF/**'
+  	include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/JASPIBasicAuthServlet.class'
+    into 'WEB-INF/classes'
+  }
+  from ("${appBuildDir}") { 
+    include "JASPIBase.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn JASPIBasicAuthServlet_WAR
 
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
+
 autoFVT.doLast {
 
   def servers = [
@@ -150,5 +219,38 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
     into new File(autoFvtDir, 'testFiles')
     include '**'
+  }
+  
+  /*
+   * Copy the JASPI user test feature bundle jars.
+   */
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jar', 'com.ibm.ws.security.jaspic.test_1.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_2.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_3.0.jar'
+  }
+  
+  /*
+   * Copy the JASPIBasicAuthServlet WAR into test server.
+   */
+  servers = [
+    'com.ibm.ws.security.jaspic11.fat',
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project.buildDir, 'test-application')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      include 'JASPIBasicAuthServlet.war'
+    }
   }
 }
