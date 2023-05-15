@@ -57,6 +57,8 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
     }
 
     public void populate() {
+        isDataValidForLogout = true;
+
         initializeUserPrincipalData();
         initializeValuesFromRequestParameters();
 
@@ -65,7 +67,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         subjectFromIdToken = ((cachedIdToken == null) ? null : cachedIdToken.getUsername());
         clientId = ((cachedIdToken == null) ? clientId : cachedIdToken.getClientId());
 
-        if (idTokenHintParameter != null && cachedIdToken == null) {
+        if (idTokenHintParameter != null && cachedIdToken == null && isDataValidForLogout) {
             parseAndPopulateDataFromIdTokenHint();
         }
 
@@ -76,8 +78,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
         if (userPrincipalName != null && subjectFromIdToken != null && !userPrincipalName.equals(subjectFromIdToken)) {
             // user mismatch, abort
             Tr.error(tc, "OIDC_SERVER_USERNAME_MISMATCH_ERR", new Object[] { userPrincipalName, subjectFromIdToken });
-        } else {
-            isDataValidForLogout = true;
+            isDataValidForLogout = false;
         }
     }
 
@@ -123,6 +124,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                     }
                 } else {
                     Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
+                    isDataValidForLogout = false;
                 }
             }
         }
@@ -146,12 +148,15 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                     }
                 } catch (Exception e) {
                     Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+                    isDataValidForLogout = false;
                 }
             } else {
                 Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
+                isDataValidForLogout = false;
             }
         } catch (Exception e) {
             Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+            isDataValidForLogout = false;
         }
     }
 
@@ -166,6 +171,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
             clientId = getVerifiedClientId(jwt.getPayload());
         } else {
             Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
+            isDataValidForLogout = false;
         }
     }
 
