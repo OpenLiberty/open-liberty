@@ -624,15 +624,8 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         // Run validate here to catch a race condition when two threads are both handling shutdown
         try {
             validate();
-        } catch (IOException ioe) {
             this.closed = true;
             this.ignoreFlush = false;
-            clear();
-            throw ioe;
-        }
-        this.closed = true;
-        this.ignoreFlush = false;
-        try {
             flushBuffers();
         } finally {
             // must release the buffers even if the flush fails
