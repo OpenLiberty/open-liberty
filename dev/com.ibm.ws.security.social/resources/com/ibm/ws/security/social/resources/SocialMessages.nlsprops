@@ -652,6 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: The back-channel logout req
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=The social media login configuration is not an OpenID Connect client, so it does not support back-channel logout.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Use the logout endpoint that is appropriate for the social media login configuration.
 
-CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: The {0} OpenID Connect client uses the {1} token endpoint authentication method which requires a client secret, but a client secret is not configured.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: The {0} OpenID Connect client uses the {1} token endpoint authentication method. This authentication method requires a client secret, but a client secret is not configured.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=The token endpoint authentication method that is specified in the message requires a client secret to authenticate with the token endpoint of the OpenID Connect provider.
-CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Either configure a client secret for the OpenID Connect client, or change the token endpoint authentication method used by the client to one that does not require a client secret.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configure a client secret for the OpenID Connect client, or switch the token endpoint authentication method of the client to one that does not require a client secret.

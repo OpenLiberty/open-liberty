@@ -231,9 +231,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         performMiscellaneousConfigurationChecks();
     }
 
-    void performMiscellaneousConfigurationChecks() throws SocialLoginException {
+    void performMiscellaneousConfigurationChecks() {
         if (!PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
-            throw new SocialLoginException("CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD", null, new Object[] { clientId, tokenEndpointAuthMethod });
+            Tr.error(tc, "CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD", uniqueId, tokenEndpointAuthMethod);
         }
     }
 

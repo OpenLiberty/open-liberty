@@ -102,9 +102,9 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
 
         try {
             configImpl.initProps(cc, minimumProps);
-            fail("Should have thrown an exception but didn't.");
-        } catch (SocialLoginException e) {
-            verifyException(e, CWWKS2351E_CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD);
+            verifyLogMessage(outputMgr, CWWKS2351E_CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
