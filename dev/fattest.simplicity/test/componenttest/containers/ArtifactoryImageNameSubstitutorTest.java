@@ -128,7 +128,7 @@ public class ArtifactoryImageNameSubstitutorTest {
         expected = DockerImageName.parse("openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
 
-        //True system property should not append registry
+        //True system property should append registry
         setDockerClientStrategy(new UnixSocketClientProviderStrategy());
         setArtifactoryRegistryAvailable(true);
         System.setProperty("fat.test.use.artifactory.substitution", "true");
