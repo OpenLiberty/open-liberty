@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpMessage;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -50,6 +51,7 @@ public abstract class ServletClientImpl implements ServletClient {
     public static final String DEFAULT_LTPA_COOKIE_NAME = "LtpaToken2";
 
     protected final String contextRoot;
+    protected String cookiePath;
     protected final String host;
     protected final int port;
     protected final String servletURL;
@@ -97,6 +99,13 @@ public abstract class ServletClientImpl implements ServletClient {
     @Override
     public String getContextRoot() {
         return contextRoot;
+    }
+
+    /**
+     * @return
+     */
+    public String getCookiePath() {
+        return cookiePath;
     }
 
     /**
@@ -577,9 +586,16 @@ public abstract class ServletClientImpl implements ServletClient {
         }
         for (Header header : setCookieHeaders) {
             logger.info("header: " + header);
-            for (HeaderElement e : header.getElements()) {
-                if (e.getName().equals(cookieName)) {
-                    return e.getValue();
+            HeaderElement[] elements = header.getElements();
+            for (HeaderElement element : elements) {
+                if (element.getName().equals(cookieName)) {
+                    NameValuePair[] parameters = element.getParameters();
+                    for (NameValuePair parameter : parameters) {
+                        if (parameter.getName().equalsIgnoreCase("path")) {
+                            this.cookiePath = parameter.getValue();
+                        }
+                    }
+                    return element.getValue();
                 }
             }
         }
