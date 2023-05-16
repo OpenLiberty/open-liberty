@@ -41,6 +41,10 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         this(IMAGE_NAME, configFile);
     }
 
+    public OtelCollectorContainer(File configFile, File tlsCert, File tlsKey) {
+        this(IMAGE_NAME, configFile, tlsCert, tlsKey);
+    }
+
     public OtelCollectorContainer(DockerImageName imageName, File configFile) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                         ImageNameSubstitutor.instance()
@@ -49,6 +53,22 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
                                                                         .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
                                                                         .build())
                                                                         .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644));
+        withExposedPorts(OTLP_GRPC_PORT);
+        withCommand("--config=/etc/otel-collector-config.yaml");
+    }
+
+    public OtelCollectorContainer(DockerImageName imageName, File configFile, File tlsCert, File tlsKey) {
+        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
+                                                                        ImageNameSubstitutor.instance()
+                                                                        .apply(DockerImageName.parse("otel/opentelemetry-collector:0.74.0"))
+                                                                        .asCanonicalNameString())
+                                                                        .copy("/etc/certificate.crt", "/etc/certificate.crt")
+                                                                        .copy("/etc/private.key", "/etc/private.key")
+                                                                        .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
+                                                                        .build())
+                                                                        .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644)
+                                                                        .withFileFromFile("/etc/certificate.crt", tlsCert,0644)
+                                                                        .withFileFromFile("/etc/private.key", tlsKey, 0644));
         withExposedPorts(OTLP_GRPC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
@@ -73,5 +93,16 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
      */
     public String getOtlpGrpcUrl() {
         return "http://" + getHost() + ":" + getOtlpGrpcPort();
+    }
+
+        /**
+     * Get the URL to use to send OLTP spans via gRPC over tls
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the OLTP gRPC URL
+     */
+    public String getSecureOtlpGrpcUrl() {
+        return "https://" + getHost() + ":" + getOtlpGrpcPort();
     }
 }
