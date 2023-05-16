@@ -1,0 +1,7 @@
+Application-Name: OSGIAppEBA
+Application-SymbolicName: OSGIAppEBA
+Application-ManifestVersion: 1.0
+Application-Version: 1.0.0.qualifier
+Application-Content: BasicAuthWAB;version="1.0.0",FormLoginWAB;version="1.0.0"
+Manifest-Version: 1.0 
+

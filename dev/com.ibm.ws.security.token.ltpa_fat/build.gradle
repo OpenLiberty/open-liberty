@@ -1,0 +1,61 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':com.ibm.websphere.javaee.servlet.3.0'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.doLast {
+    
+  /*
+   * Copy basicauth.war into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.token.ltpa.fat.basicauth'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauth.zip', 'basicauth.war'
+    }
+  }
+  
+  /*
+   * Copy select server.xml files.
+   */
+  copy { 
+    from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauth/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'basicauth.server.orig.xml'
+  }
+}
