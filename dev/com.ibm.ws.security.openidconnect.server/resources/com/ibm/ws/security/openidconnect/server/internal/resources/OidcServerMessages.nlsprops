@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=For more information, s
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: A back-channel logout token that is based on a cached ID token with claims [{0}] for the {1} client cannot be created due to the following error: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=An error occurred in building the logout token string. Alternatively, the issuer of the cached ID token might not match this OpenID Connect provider, or the cached ID token might be missing some claims that are required.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=For more information, see the error included in the message.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: The [{0}] aud claim within the id_token_hint parameter does not match the [{1}] value for the client_id request parameter.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=When both the client_id and id_token_hint parameters are present, the client identifier within the ID token must match the value that is provided for the client_id parameter.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Ensure that the client_id parameter value matches the aud claim in the ID token.

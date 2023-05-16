@@ -43,6 +43,7 @@ public class OidcRpInitiatedLogoutTokenAndRequestDataTest extends CommonTestClas
 
     private static final String CWWKS1625E_OIDC_SERVER_IDTOKEN_VERIFY_ERR = "CWWKS1625E";
     private static final String CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP = "CWWKS1646E";
+    private static final String CWWKS1954E_ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER = "CWWKS1954E";
     private static final String CWWKS2520E_SIG_ALG_IN_HEADER_NOT_ALLOWED = "CWWKS2520E";
 
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
@@ -93,6 +94,8 @@ public class OidcRpInitiatedLogoutTokenAndRequestDataTest extends CommonTestClas
                 one(request).getParameter(OIDCConstants.OIDC_LOGOUT_REDIRECT_URI);
                 will(returnValue(null));
                 one(request).getParameter(OIDCConstants.OIDC_LOGOUT_CLIENT_ID);
+                will(returnValue(null));
+                one(request).getParameter(OIDCConstants.OIDC_LOGOUT_STATE);
                 will(returnValue(null));
             }
         });
@@ -377,6 +380,42 @@ public class OidcRpInitiatedLogoutTokenAndRequestDataTest extends CommonTestClas
     }
 
     @Test
+    public void test_parseAndValidateIdTokenHint_clientMismatch() throws Exception {
+        OidcEndpointServices oidcEndpointServices = new OidcEndpointServices();
+        data = new OidcRpInitiatedLogoutTokenAndRequestData(request, oidcEndpointServices, oauth20Provider, oidcServerConfig);
+
+        String clientIdParameter = "client parameter value";
+        JSONObject claims = new JSONObject();
+        claims.put("aud", clientId);
+        claims.put("iss", issuer);
+        String idTokenHint = JwtUnitTestUtils.getHS256Jws(claims, clientSecret);
+        initializeMemberVariables(data, idTokenHint, clientIdParameter);
+
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
+                will(returnValue("HS256"));
+                one(oidcServerConfig).getSignatureAlgorithm();
+                will(returnValue("HS256"));
+                one(oauth20Provider).getClientProvider();
+                will(returnValue(clientProvider));
+                one(clientProvider).get(clientId);
+                will(returnValue(baseClient));
+                one(baseClient).getClientSecret();
+                will(returnValue(clientSecret));
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuer));
+            }
+        });
+        try {
+            data.parseAndValidateIdTokenHint();
+            fail("Should have thrown an exception but didn't.");
+        } catch (IDTokenValidationFailedException e) {
+            verifyException(e, CWWKS1954E_ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER);
+        }
+    }
+
+    @Test
     public void test_parseAndValidateIdTokenHint() throws Exception {
         OidcEndpointServices oidcEndpointServices = new OidcEndpointServices();
         data = new OidcRpInitiatedLogoutTokenAndRequestData(request, oidcEndpointServices, oauth20Provider, oidcServerConfig);
@@ -409,6 +448,10 @@ public class OidcRpInitiatedLogoutTokenAndRequestDataTest extends CommonTestClas
     }
 
     private void initializeMemberVariables(OidcRpInitiatedLogoutTokenAndRequestData data, String idTokenHint) {
+        initializeMemberVariables(data, idTokenHint, null);
+    }
+
+    private void initializeMemberVariables(OidcRpInitiatedLogoutTokenAndRequestData data, String idTokenHint, String clientId) {
         mockery.checking(new Expectations() {
             {
                 one(request).getUserPrincipal();
@@ -418,6 +461,8 @@ public class OidcRpInitiatedLogoutTokenAndRequestDataTest extends CommonTestClas
                 one(request).getParameter(OIDCConstants.OIDC_LOGOUT_REDIRECT_URI);
                 will(returnValue(null));
                 one(request).getParameter(OIDCConstants.OIDC_LOGOUT_CLIENT_ID);
+                will(returnValue(clientId));
+                one(request).getParameter(OIDCConstants.OIDC_LOGOUT_STATE);
                 will(returnValue(null));
             }
         });

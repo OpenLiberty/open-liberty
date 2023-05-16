@@ -157,7 +157,7 @@ public class LogoutTokenBuilder {
             clientIdsBeingLoggedOut.add(client.getClientId());
         }
         for (OAuth20Token token : allCachedUserTokens) {
-            if (OAuth20Constants.ACCESS_TOKEN.equals(token.getType())) {
+            if (isAccessTokenCreatedForUser(token)) {
                 String clientIdForAccessToken = token.getClientId();
                 if (clientIdsBeingLoggedOut.contains(clientIdForAccessToken)) {
                     // Only remove access tokens for this user for the clients that are being logged out
@@ -165,6 +165,20 @@ public class LogoutTokenBuilder {
                 }
             }
         }
+    }
+
+    /**
+     * Checks the grant type of the token to ensure it wasn't created via an app password or app token.
+     */
+    boolean isAccessTokenCreatedForUser(OAuth20Token token) {
+        if (!OAuth20Constants.ACCESS_TOKEN.equals(token.getType())) {
+            return false;
+        }
+        String grantType = token.getGrantType();
+        if (grantType != null && (grantType.equals(OAuth20Constants.GRANT_TYPE_APP_PASSWORD) || grantType.equals(OAuth20Constants.GRANT_TYPE_APP_TOKEN))) {
+            return false;
+        }
+        return true;
     }
 
     void removeAccessTokenAndAssociatedRefreshTokenFromCache(OAuth20Token accessToken) {

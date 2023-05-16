@@ -128,10 +128,14 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(client3Id));
                 allowing(accessToken1).getType();
                 will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                allowing(accessToken1).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE));
                 allowing(accessToken1).getTokenString();
                 will(returnValue("accessToken1String"));
                 allowing(accessToken2).getType();
                 will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                allowing(accessToken2).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE));
                 allowing(accessToken2).getTokenString();
                 will(returnValue("accessToken2String"));
                 allowing(idToken1).getType();
@@ -527,7 +531,74 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_removeUserAccessTokensFromCache_singleAccessToken() throws Exception {
+    public void test_removeUserAccessTokensFromCache_singleAccessToken_appPasswordGrantType() throws Exception {
+        OAuth20TokenImpl accessToken1 = mockery.mock(OAuth20TokenImpl.class, "accesstoken1-impl");
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1);
+
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken1).getType();
+                will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                one(accessToken1).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_APP_PASSWORD));
+            }
+        });
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_singleAccessToken_appTokenGrantType() throws Exception {
+        OAuth20TokenImpl accessToken1 = mockery.mock(OAuth20TokenImpl.class, "accesstoken1-impl");
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1);
+
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken1).getType();
+                will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                one(accessToken1).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_APP_TOKEN));
+            }
+        });
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_singleAccessToken_implicitGrantType() throws Exception {
+        OAuth20TokenImpl accessToken1 = mockery.mock(OAuth20TokenImpl.class, "accesstoken1-impl");
+        Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1);
+
+        Map<OidcBaseClient, List<OAuth20Token>> clientsToCachedIdTokens = new HashMap<OidcBaseClient, List<OAuth20Token>>();
+        clientsToCachedIdTokens.put(client1, Arrays.asList(idToken1));
+
+        String accessTokenString = "someaccesstokenstring1";
+        String refreshTokenString = "myrefreshtoken1";
+        OAuth20Token refreshToken = getRefreshTokenExpectations(accessToken1, OIDCConstants.TOKENTYPE_ACCESS_TOKEN);
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken1).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_IMPLICIT));
+                one(accessToken1).getClientId();
+                will(returnValue(client1Id));
+                one(accessToken1).getTokenString();
+                will(returnValue(accessTokenString));
+                one(tokenCache).remove(accessTokenString);
+                one(refreshToken).getTokenString();
+                will(returnValue(refreshTokenString));
+                one(tokenCache).remove(refreshTokenString);
+            }
+        });
+        builder.removeUserAccessTokensFromCache(allCachedUserTokens, clientsToCachedIdTokens);
+    }
+
+    @Test
+    public void test_removeUserAccessTokensFromCache_multipleAccessTokens_oneValid() throws Exception {
         OAuth20TokenImpl accessToken1 = mockery.mock(OAuth20TokenImpl.class, "accesstoken1-impl");
         OAuth20TokenImpl accessToken2 = mockery.mock(OAuth20TokenImpl.class, "accesstoken2-impl");
         Collection<OAuth20Token> allCachedUserTokens = Arrays.asList(accessToken1, accessToken2);
@@ -542,6 +613,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
         mockery.checking(new Expectations() {
             {
+                one(accessToken1).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE));
                 one(accessToken1).getClientId();
                 will(returnValue(client1Id));
                 one(accessToken1).getTokenString();
@@ -553,6 +626,8 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 // Second access token is associated with some other client not being logged out
                 one(accessToken2).getType();
                 will(returnValue(OAuth20Constants.ACCESS_TOKEN));
+                one(accessToken2).getGrantType();
+                will(returnValue(OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE));
                 one(accessToken2).getClientId();
                 will(returnValue(client3Id));
             }
