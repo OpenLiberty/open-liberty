@@ -627,8 +627,11 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             this.closed = true;
             this.ignoreFlush = false;
             flushBuffers();
+        } catch (IOException ioe) {
+            this.closed = true;
+            this.ignoreFlush = false;
+            throw ioe;
         } finally {
-            // must release the buffers even if the flush fails
             clear();
         }
     }
