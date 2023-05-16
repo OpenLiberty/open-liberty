@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.pkce;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -18,7 +17,6 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.internal.oauth20.TraceConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Class to contain Proof Key for Code Exchange values consistent with RFC 7636.
@@ -35,14 +33,8 @@ public class ProofKeyForCodeExchange {
      * generator be used to create a 32-octet sequence. The octet sequence is then base64url-encoded to produce a 43-octet URL
      * safe string to use as the code verifier. Per Section 3 of RFC 7636, all trailing '=' characters are omitted.
      */
-    @FFDCIgnore(NoSuchAlgorithmException.class)
     public static String generateCodeVerifier() {
-        SecureRandom random;
-        try {
-            random = SecureRandom.getInstanceStrong();
-        } catch (NoSuchAlgorithmException e) {
-            random = new SecureRandom();
-        }
+        SecureRandom random = new SecureRandom();
         byte verifierBytes[] = new byte[32];
         random.nextBytes(verifierBytes);
         String codeVerifier = new String(Base64.getUrlEncoder().encode(verifierBytes));
