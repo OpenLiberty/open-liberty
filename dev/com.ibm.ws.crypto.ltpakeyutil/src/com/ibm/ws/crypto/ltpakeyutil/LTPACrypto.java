@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,9 +44,12 @@ import javax.crypto.spec.SecretKeySpec;
 final class LTPACrypto {
 
 	private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
+	private static final String SIGNATURE_ALGORITHM_SHA256withRSA = "SHA256withRSA";
 	private static final String CRYPTO_ALGORITHM = "RSA";
 	private static final String ENCRYPT_ALGORITHM = "DESede";
+	private static final String ENCRYPT_ALGORITHM_RSA = "RSA";
 	private static final String IBMJCE_NAME = "IBMJCE";
+	private static final String IBMJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
 
 	private static int MAX_CACHE = 500;
 
@@ -235,7 +238,9 @@ final class LTPACrypto {
 		BigInteger q = new BigInteger(key[4]);
 		BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
 		KeyFactory kFact = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCEPlusFIPS_NAME);
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
 		} else {
 			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
@@ -248,7 +253,10 @@ final class LTPACrypto {
 		PrivateKey privKey = kFact.generatePrivate(privCrtKeySpec);
 
 		Signature rsaSig = null;
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+
+		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256withRSA, IBMJCEPlusFIPS_NAME);
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
 		} else {
 			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
@@ -515,18 +523,25 @@ final class LTPACrypto {
 		KeyFactory kFact = null;
 		Signature rsaSig = null;
 
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCEPlusFIPS_NAME);
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
 		} else {
 			kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
 		}
+
 		RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
 		PublicKey pubKey = kFact.generatePublic(pubKeySpec);
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+
+		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256withRSA, IBMJCEPlusFIPS_NAME);
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM, IBMJCE_NAME);
 		} else {
 			rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM);
 		}
+
 		rsaSig.initVerify(pubKey);
 		rsaSig.update(data, off, len);
 		verified = rsaSig.verify(sig);
@@ -600,11 +615,15 @@ final class LTPACrypto {
 		} else {
 			DESedeKeySpec kSpec = new DESedeKeySpec(key);
 			SecretKeyFactory kFact = null;
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
+
+			if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM_RSA, IBMJCEPlusFIPS_NAME);
+			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM, IBMJCE_NAME);
 			} else {
 				kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
 			}
+
 			sKey = kFact.generateSecret(kSpec);
 		}
 		return sKey;
@@ -625,12 +644,14 @@ final class LTPACrypto {
 			InvalidAlgorithmParameterException, NoSuchProviderException {
 
 		Cipher ci = null;
-
-		if (LTPAKeyUtil.isIBMJCEAvailable()) {
+		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			ci = Cipher.getInstance(cipher, IBMJCEPlusFIPS_NAME);
+		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			ci = Cipher.getInstance(cipher, IBMJCE_NAME);
 		} else {
 			ci = Cipher.getInstance(cipher);
 		}
+
 		if (cipher.indexOf("ECB") == -1) {
 			if (cipher.indexOf("AES") != -1) {
 				if (ivs16 == null) {
@@ -1044,12 +1065,15 @@ final class LTPACrypto {
 		KeyPairGenerator keyGen = null;
 		try {
 
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
+                        if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+                           keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCEPlusFIPS_NAME);
+                       	} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 				// IBMJCE_NAME needed for hardware crypto
 				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM, IBMJCE_NAME);
 			} else {
 				keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
 			}
+
 			keyGen.initialize(len * 8, new SecureRandom());
 			pair = keyGen.generateKeyPair();
 			RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
