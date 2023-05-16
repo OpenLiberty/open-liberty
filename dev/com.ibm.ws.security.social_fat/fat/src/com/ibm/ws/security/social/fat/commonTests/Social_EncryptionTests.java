@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.fat.commonTests;
 
@@ -667,7 +664,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS256;
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
-        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "ClassCastException");
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "InvalidKeyException");
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(socialClientEncryptAlg), socialClientDecryptAlg, "InvalidKeyManagementKeyAlias", expectations);
     }
 
