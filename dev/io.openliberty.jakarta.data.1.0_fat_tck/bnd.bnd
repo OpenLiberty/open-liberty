@@ -21,9 +21,4 @@ fat.project: true
 tested.features:\
 	data-1.0
 
-runtime.minimum.java.level: 17
-
-javac.source: 17
-javac.target: 17
-
 -buildpath: \
