@@ -14,10 +14,12 @@ package com.ibm.wsspi.persistence.internal;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -281,26 +283,34 @@ public class DatabaseStoreImpl implements DatabaseStore {
         // TODO: replace temporary code specific to persistentExecutor with general solution that applies the
         // table prefix, schema, and keyGenerationStrategy to all entities
 
-        InMemoryMappingFile ormFile = null;
+        List<InMemoryMappingFile> inMemoryFiles;
         SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
             String ormFileContents = createOrmFileContentsForPersistentExecutor();
-            ormFile = new InMemoryMappingFile(ormFileContents.getBytes("UTF-8"));
+            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
         } else if (entitySet.equals(SpecialEntitySet.BATCH)) {
             String ormFileContents = createOrmFileContentsForBatch(entityClassNames);
-            ormFile = new InMemoryMappingFile(ormFileContents.getBytes("UTF-8"));
+            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
         } else {
             // hidden internal non-ship property for experimenting with Jakarta Data
             String[] entityClassEntries = (String[]) properties.get("io.openliberty.persistence.internal.entityClassInfo");
-            ormFile = createOrmFile(schema, tablePrefix, entityClassNames, entityClassEntries);
+            InMemoryMappingFile ormFile = createOrmFile(schema, tablePrefix, entityClassNames, entityClassEntries);
+            inMemoryFiles = (List<InMemoryMappingFile>) properties.get("io.openliberty.persistence.internal.generatedEntities");
+            if (ormFile != null)
+                if (inMemoryFiles == null) {
+                    inMemoryFiles = Collections.singletonList(ormFile);
+                } else {
+                    inMemoryFiles = new ArrayList<>(inMemoryFiles);
+                    inMemoryFiles.add(ormFile);
+                }
         }
 
         PersistenceServiceUnitConfig config = new PersistenceServiceUnitConfig();
         config.setClasses(Arrays.asList(entityClassNames));
         config.setConsumerLoader(loader);
         config.setProperties(puProps);
-        if (ormFile != null)
-            config.setInMemoryMappingFiles(Collections.singletonList(ormFile));
+        if (inMemoryFiles != null)
+            config.setInMemoryMappingFiles(inMemoryFiles);
         config.setJtaDataSource(dataSource);
         if (nonJTADataSource != null)
             config.setNonJtaDataSource(nonJTADataSource);
