@@ -203,8 +203,9 @@ public class OidcRedirectServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, errorMsg);
             return;
         }
-
-        Tr.error(tc, "REDIRECT_URI_CONTAINED_ERROR", error, request.getParameter(Constants.ERROR_DESCRIPTION));
+        if (error != null) {
+            Tr.error(tc, "REDIRECT_URI_CONTAINED_ERROR", error, request.getParameter(Constants.ERROR_DESCRIPTION));
+        }
         StringBuilder query = new StringBuilder();
         if (error != null && OAuth20Exception.INVALID_SCOPE.equals(error)) {
             query.append(Constants.ERROR + "=" + OAuth20Exception.INVALID_SCOPE);

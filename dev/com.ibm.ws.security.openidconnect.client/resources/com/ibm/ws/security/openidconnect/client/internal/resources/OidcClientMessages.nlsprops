@@ -290,7 +290,7 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verify the OpenID Con
 # 1533-1556 used in clients.common bundle, do not use here.
 
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: An authentication request failed because the OpenID Connect provider returned the following {0} error: {1}
-REDIRECT_URI_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description provided in the message contain additional information.
-REDIRECT_URI_CONTAINED_ERROR.useraction=See the error in the message for more information.
+REDIRECT_URI_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description that are provided in the message contain additional information.
+REDIRECT_URI_CONTAINED_ERROR.useraction=For more information, see the error in the message.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

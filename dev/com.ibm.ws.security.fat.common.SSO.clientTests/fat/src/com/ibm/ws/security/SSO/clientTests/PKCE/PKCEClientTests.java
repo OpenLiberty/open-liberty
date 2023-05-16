@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.SSO.clientTests.PKCE;
 
@@ -114,6 +111,7 @@ public class PKCEClientTests extends CommonTest {
         if (updatedTestSettings.getFlowType().equals(Constants.RP_FLOW)) {
             expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.FORBIDDEN_STATUS);
             expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "Response message should have contained the " + Constants.FORBIDDEN + " message.", null, Constants.FORBIDDEN);
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Message log did not contain a message stating that the code_challenge was missing.", MessageConstants.CWWKS1557E_REDIRECT_URI_CONTAINED_ERROR + ".*" + MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING + ".*code_challenge.*");
         } else {
             expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.UNAUTHORIZED_STATUS);
             expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "Response message should have contained the " + Constants.UNAUTHORIZED_MESSAGE + " message.", null, Constants.UNAUTHORIZED_MESSAGE);
