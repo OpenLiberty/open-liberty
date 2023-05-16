@@ -387,9 +387,7 @@ public class TAIAuthenticator implements WebAuthenticator {
 
     protected synchronized void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName, Hashtable hashtable) {
         
-        if (subject.isReadOnly()) return; 
-
-        Set<Object> publicCredentials = subject.getPublicCredentials();
+         Set<Object> publicCredentials = subject.getPublicCredentials();
         publicCredentials.remove(hashtable);
         hashtable.remove(propName);
         if (!hashtable.isEmpty()) {
