@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.After;
 import org.junit.Test;
@@ -93,15 +94,18 @@ public class MultipartTestServlet extends FATServlet {
         part = parts.get(1);
         assertEquals("notAFile", Util.getPartName(part));
 
-        assertEquals("notAFile", part.getName()); 
-        //assertNull(Util.getFileName(part)); // no fileName specified, so filename attr should not exist on header
-//        String contentDisposition = part.getHeaders().get("Content-Disposition"));
-//        assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
-//                    contentDisposition.contains("filename="));
-//        assertEquals("text/asciidoc", part.getContentType().toString());
- //       assertEquals("This is not a file...",
-//                     Util.toString(part.getDataHandler().getInputStream()));
-//        assertEquals("Value1", part.getHeader("Header1"));
+        assertEquals("notAFile", part.getName());
+        // no fileName specified, so filename attr should not exist on header
+        try {
+            String fileName = part.getFileName().get(); 
+            fail("There should not be a filename but was " + fileName);
+        } catch (NoSuchElementException e ){
+            // Caught expected exception
+        }
+        String contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
+        assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
+                    contentDisposition.contains("filename="));
+        assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
         MultivaluedMap<String, String> headers = part.getHeaders();
         assertEquals("[Value1]", headers.getFirst("Header1"));
         // there is a behavior difference between CXF and RESTEasy
@@ -132,7 +136,7 @@ public class MultipartTestServlet extends FATServlet {
         part = parts.get(0);
         assertEquals("noSpecifiedContentType", Util.getPartName(part));
         assertEquals("noSpecifiedContentType", part.getName());
-        String contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
+        contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
         assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
                     contentDisposition.contains("filename="));
         assertEquals("text/plain", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype()); // not specified ; should default to text/plain

@@ -72,8 +72,7 @@ public class MultipartResource extends Application {
                                     .build(),
                             EntityPart.withName("notAFile")
                                     .content(new ByteArrayInputStream("This is not a file...".getBytes()))
-                                    .fileName("mpRestClient2.0.asciidoc")
-                                    .mediaType("text/asciidoc")
+                                     .mediaType("text/asciidoc")
                                     .headers(map)
                                     .build(),
                             EntityPart.withName("noSpecifiedContentType")
