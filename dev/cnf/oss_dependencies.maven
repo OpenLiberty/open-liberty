@@ -641,7 +641,6 @@ org.jboss.resteasy:resteasy-jaxb-provider:4.7.2.Final
 org.jboss.resteasy:resteasy-jaxb-provider:6.0.0.Final
 org.jboss.resteasy:resteasy-jaxb-provider:6.2.3.Final
 org.jboss.resteasy:resteasy-multipart-provider:4.7.9.Final
-org.jboss.resteasy:resteasy-multipart-provider:6.0.0.Final
 org.jboss.resteasy:resteasy-multipart-provider:6.2.3.Final
 org.jboss.resteasy:resteasy-rxjava2:4.7.2.Final
 org.jboss.resteasy:resteasy-rxjava2:6.2.3.Final
