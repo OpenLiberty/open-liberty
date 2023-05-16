@@ -68,7 +68,7 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
 
-Design preliminaries determine whether a formal design, which will be provided by an [Upcoming Feature Overview (UFO)](https://ibm.box.com/v/UFO-Template) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.  Furthermore, each identified item places a blocking requirment on another team so it must be identified early in the process.  The Feature owner may check-off the item if they know it doeosn't apply, but otherwise they should work with the focal point to determine what work, if any, will be necessary and make them aware of it.
+Design preliminaries determine whether a formal design, which will be provided by an [Upcoming Feature Overview (UFO)](https://ibm.box.com/v/UFO-Template) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.  Furthermore, each identified item places a blocking requirement on another team so it must be identified early in the process.  The feature owner may check-off the item if they know it doesn't apply, but otherwise they should work with the focal point to determine what work, if any, will be necessary and make them aware of it.
 
 ### **Design Preliminaries**
 - [ ] UI requirements identified, or N/A. (Feature owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
