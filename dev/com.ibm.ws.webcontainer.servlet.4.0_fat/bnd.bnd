@@ -16,6 +16,7 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/FileUploadFileCountMaxTest.war/src,\
+    test-applications/Test400BadRequestURI.war/src,\
     test-applications/TestServlet40.war/src,\
     test-applications/TestServlet40.jar/src,\
     test-applications/TestGetMapping.war/src,\

@@ -335,6 +335,9 @@ public class WCCustomProperties {
     //23.0.0.6
     public static boolean DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION;
     
+    //23.0.0.8 This is an old property which was not exposed in this class; moving it here
+    public static boolean SET_400_SC_ON_TOO_MANY_PARENT_DIRS; 
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -432,6 +435,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("skipencodedcharverification", "com.ibm.ws.webcontainer.skipencodedcharverification");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("maxfilecount", "com.ibm.ws.webcontainer.maxfilecount");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -823,9 +827,12 @@ public class WCCustomProperties {
         
         //23.0.0.4
         MAX_FILE_COUNT = Integer.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.maxfilecount", "5000")).intValue();
-        
+
         //23.0.0.6
         DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror", "false")).booleanValue();
+
+        //23.0.0.8
+        SET_400_SC_ON_TOO_MANY_PARENT_DIRS = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.set400scontoomanyparentdirs"))).booleanValue();
 
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {

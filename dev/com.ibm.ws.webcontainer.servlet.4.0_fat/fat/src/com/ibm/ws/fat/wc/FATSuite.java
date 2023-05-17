@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.fat.wc;
 
@@ -19,6 +16,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.fat.wc.tests.WC400BadRequestTest;
+import com.ibm.ws.fat.wc.tests.WC500BadRequestDefaultTest;
 import com.ibm.ws.fat.wc.tests.WC5GetContextPath;
 import com.ibm.ws.fat.wc.tests.WC5JakartaServletTest;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
@@ -72,6 +71,8 @@ import componenttest.topology.impl.JavaInfo;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // WCPushBuilderSecurityTest.class,
+                WC500BadRequestDefaultTest.class,
+                WC400BadRequestTest.class,
                 WCApplicationMBeanStatusTest.class,
                 WCContextRootPrecedence.class,
                 WCPushBuilderTest.class,
