@@ -118,6 +118,9 @@ public class DataTestServlet extends FATServlet {
     Products products;
 
     @Inject
+    Receipts receipts;
+
+    @Inject
     Reservations reservations;
 
     @Inject
@@ -2536,6 +2539,23 @@ public class DataTestServlet extends FATServlet {
                              primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
                                              .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * TODO use a real record
+     */
+    @Test
+    public void testRecordAsEntity() {
+        receipts.deleteAll();
+
+        receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
+        receipts.saveAll(List.of(new Receipt(200L, "C0022-00-022", 202.40f),
+                                 new Receipt(300L, "C0013-00-031", 33.99f)));
+
+        assertEquals(true, receipts.existsById(300L));
+        assertEquals(3L, receipts.count());
+
+        receipts.deleteAll();
     }
 
     /**

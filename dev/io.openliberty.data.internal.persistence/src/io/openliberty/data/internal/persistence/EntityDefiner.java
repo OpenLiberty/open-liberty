@@ -12,14 +12,29 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.PUTFIELD;
+import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.V11; // TODO Java 17
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,16 +51,24 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.GeneratorAdapter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
+import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.exceptions.MappingException;
@@ -66,8 +89,10 @@ import jakarta.persistence.metamodel.Type;
  */
 public class EntityDefiner implements Runnable {
     private static final String EOLN = String.format("%n");
+    private static final String JAKARTA_DATA_DIR = File.separator + "jakarta" + File.separator + "data" + File.separator;
     private static final TraceComponent tc = Tr.register(EntityDefiner.class);
 
+    private final ClassDefiner classDefiner = new ClassDefiner();
     private final String databaseId;
     private final List<Class<?>> entities = new ArrayList<>();
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
@@ -89,6 +114,194 @@ public class EntityDefiner implements Runnable {
             Tr.debug(this, tc, "add: " + entityClass.getName());
 
         entities.add(entityClass);
+    }
+
+    /**
+     * Initially copied from @nmittles pull #25248
+     *
+     * Adds the default (no arg) constructor. <p>
+     *
+     * @param cw     ASM ClassWriter to add the constructor to.
+     * @param parent fully qualified name of the parent class
+     *                   with '/' as the separator character
+     *                   (i.e. internal name).
+     */
+    private static void addDefaultCtor(ClassWriter cw, String parent) {
+        MethodVisitor mv;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "    " + "adding method : <init> ()V");
+
+        // -----------------------------------------------------------------------
+        // public <Class Name>()
+        // {
+        // -----------------------------------------------------------------------
+        mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+        mv.visitCode();
+
+        // -----------------------------------------------------------------------
+        //    super();
+        // -----------------------------------------------------------------------
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+
+        // -----------------------------------------------------------------------
+        // }
+        // -----------------------------------------------------------------------
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(1, 1);
+        mv.visitEnd();
+    }
+
+    /**
+     * Initially copied from @nmittles pull #25248
+     *
+     * @param recordClass
+     * @param internalEntityClassName
+     * @param cw
+     * @param parent
+     */
+    private static void addRecordCtor(Class<?> recordClass, String internalEntityClassName, ClassWriter cw, String parent) {
+        org.objectweb.asm.commons.Method constructor = org.objectweb.asm.commons.Method.getMethod("void <init> (" + recordClass.getTypeName() + ")");
+        GeneratorAdapter mg = new GeneratorAdapter(ACC_PUBLIC, constructor, null, null, cw);
+        mg.loadThis();
+        mg.invokeConstructor(org.objectweb.asm.Type.getType(Object.class), org.objectweb.asm.commons.Method.getMethod("void <init> ()"));
+
+        // TODO enable once compiling against Java 17:
+        //for (RecordComponent component : recordClass.getRecordComponents()) {
+        //    String componentName = component.getName();
+        //    String typeDesc = component.getType().getTypeName();
+        //    String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+        //    int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(component.getType()));
+        // Temporarily hard-coding Receipt(long purchaseId, String customer, float total)
+        String[] componentNames = new String[] { "purchaseId", "customer", "total" };
+        Class<?>[] componentTypes = new Class<?>[] { long.class, String.class, float.class };
+        for (int i = 0; i < componentNames.length; i++) {
+            String componentName = componentNames[i];
+            String typeDesc = componentTypes[i].getTypeName();
+            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+            int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(componentTypes[i]));
+            // End of temporary code
+
+            mg.loadArg(0);
+            mg.invokeVirtual(org.objectweb.asm.Type.getType(recordClass),
+                             org.objectweb.asm.commons.Method.getMethod(typeDesc + " " + componentName + " ()"));
+
+            mg.storeLocal(componentValue);
+
+            mg.loadThis();
+            mg.loadLocal(componentValue);
+            mg.invokeVirtual(org.objectweb.asm.Type.getObjectType(internalEntityClassName),
+                             org.objectweb.asm.commons.Method.getMethod("void " + methodName + " (" + typeDesc + ")"));
+        }
+        mg.returnValue();
+        mg.endMethod();
+    }
+
+    /**
+     * Initially copied from @nmittles pull #25248
+     *
+     * @param recordClass
+     * @param entityClassName
+     * @return
+     */
+    private byte[] generateEntityClassBytes(Class<?> recordClass, String entityClassName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        String internal_entityClassName = entityClassName.replace('.', '/');
+
+        // Define the Entity Class object
+        cw.visit(V11, ACC_PUBLIC + ACC_SUPER,
+                 internal_entityClassName,
+                 null,
+                 "java/lang/Object",
+                 null);
+
+        // Define the source code file and debug settings
+        String sourceFileName = entityClassName.substring(entityClassName.lastIndexOf(".") + 1) + ".java";
+        cw.visitSource(sourceFileName, null);
+
+        // Add default constructor
+        addDefaultCtor(cw, null);
+
+        FieldVisitor fv;
+        // TODO enable once compiling against Java 17:
+        //for (RecordComponent component : recordClass.getRecordComponents()) {
+        //    String componentName = component.getName();
+        //    String typeDesc = org.objectweb.asm.Type.getDescriptor(component.getType());
+        // Temporarily hard-coding Receipt(long purchaseId, String customer, float total)
+        String[] componentNames = new String[] { "purchaseId", "customer", "total" };
+        Class<?>[] componentTypes = new Class<?>[] { long.class, String.class, float.class };
+        for (int i = 0; i < componentNames.length; i++) {
+            String componentName = componentNames[i];
+            Class<?> componentType = componentTypes[i];
+            String typeDesc = org.objectweb.asm.Type.getDescriptor(componentTypes[i]);
+            // End of temporary code
+
+            // --------------------------------------------------------------------
+            // public <FieldType> <FieldName>;
+            // --------------------------------------------------------------------
+            if (trace && tc.isEntryEnabled())
+                Tr.debug(tc, "     " + "adding field : " +
+                             componentName + " " +
+                             typeDesc);
+
+            fv = cw.visitField(ACC_PUBLIC, componentName,
+                               typeDesc,
+                               null, null);
+
+            fv.visitEnd();
+
+            // --------------------------------------------------------------------
+            // public setter...
+            // --------------------------------------------------------------------
+//            if (trace && tc.isEntryEnabled())
+//                Tr.debug(tc, "     " + "adding field : " +
+//                             component.getName() + " " +
+//                             component.getType().descriptorString());
+            String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", null, null);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(org.objectweb.asm.Type.getType(componentType).getOpcode(ILOAD), 1);
+            mv.visitFieldInsn(PUTFIELD, internal_entityClassName, componentName, typeDesc);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+//            mv.visitEnd();
+
+            // --------------------------------------------------------------------
+            // public getter...
+            // --------------------------------------------------------------------
+            methodName = "get" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
+            mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, null, null);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
+            mv.visitInsn(org.objectweb.asm.Type.getType(componentType).getOpcode(Opcodes.IRETURN));
+            mv.visitMaxs(1, 1);
+//            mv.visitEnd();
+        }
+
+        // Add constructor that will invoke all setters with data from a Record
+        addRecordCtor(recordClass, internal_entityClassName, cw, null);
+
+        //
+        //end
+        //
+
+        // Mark the end of the generated wrapper class
+        cw.visitEnd();
+
+        // Dump the class bytes out to a byte array.
+        byte[] classBytes = cw.toByteArray();
+//        generatedEntities.add(new InMemoryMappingFile(classBytes, entityClassName));
+
+        if (trace && tc.isEntryEnabled()) {
+            if (tc.isDebugEnabled())
+                writeToClassFile(entityClassName, classBytes);
+
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "generateClassBytes: " + classBytes.length + " bytes");
+        }
+        return classBytes;
     }
 
     /**
@@ -161,6 +374,8 @@ public class EntityDefiner implements Runnable {
             // Classes explicitly annotated with JPA @Entity:
             Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
 
+            ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
+
             // List of classes to inspect for the above
             Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
 
@@ -173,6 +388,14 @@ public class EntityDefiner implements Runnable {
                 if (c.isAnnotationPresent(Entity.class)) {
                     annotatedEntityClassQueue.add(c);
                 } else {
+                    if (c.getName().equals("test.jakarta.data.web.Receipt")) { // TODO c.isRecord()
+                        String entityClassName = c.getName() + "Record"; // TODO: come up with a more unique identifier than "Record".
+                        byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
+                        generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
+                        Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(loader, entityClassName, generatedEntityBytes);
+                        c = generatedEntity;
+                    }
+
                     StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
 
                     xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
@@ -187,6 +410,7 @@ public class EntityDefiner implements Runnable {
 
             Set<Class<?>> embeddableTypes = new HashSet<>();
             for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
+                // TODO what if the embeddable type is a record?
                 if (embeddableTypes.add(type)) { // only write each type once
                     StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
                     writeAttributes(xml, type, true, embeddableTypesQueue);
@@ -210,8 +434,13 @@ public class EntityDefiner implements Runnable {
                             annotatedEntityClassQueue.add(e);
                 }
 
-            Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
-                                                                 entityClassInfo.toArray(new String[entityClassInfo.size()]));
+            Map<String, Object> properties = new HashMap<>();
+
+            properties.put("io.openliberty.persistence.internal.entityClassInfo",
+                           entityClassInfo.toArray(new String[entityClassInfo.size()]));
+
+            if (!generatedEntities.isEmpty())
+                properties.put("io.openliberty.persistence.internal.generatedEntities", generatedEntities);
 
             DatabaseStore dbstore = bc.getService(ref);
             PersistenceServiceUnit punit = dbstore.createPersistenceServiceUnit(loader,
@@ -496,5 +725,56 @@ public class EntityDefiner implements Runnable {
         }
 
         xml.append("  </attributes>").append(EOLN);
+    }
+
+    /**
+     * Initially copied from @nmittles pull #25248
+     *
+     * Writes the in memory bytecode bytearray for a generated class
+     * out to a .class file with the correct class name and in the
+     * correct package directory structure. <p>
+     *
+     * This method is useful for debug, to determine if classes
+     * are being generated properly, and may also be useful
+     * when it is required to make the classes available on a
+     * client without using the Remote ByteCode Server. <p>
+     *
+     * @param internalClassName fully qualified name of the class
+     *                              with '/' as the separator.
+     * @param classBytes        bytearray of the class bytecodes.
+     */
+    private static void writeToClassFile(final String internalClassName,
+                                         final byte[] classBytes) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "writeToClassFile (" + internalClassName + ", " +
+                         ((classBytes == null) ? "null" : (classBytes.length + " bytes")) + ")");
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws Exception {
+                    // TODO use a location in workarea?
+                    String fileName = TrConfigurator.getLogLocation() + JAKARTA_DATA_DIR + internalClassName + ".class";
+                    File file = new File(fileName);
+                    File directory = file.getParentFile();
+                    directory.mkdirs();
+                    FileOutputStream classFile = new FileOutputStream(file);
+                    classFile.write(classBytes);
+                    classFile.flush();
+                    classFile.close();
+                    return null;
+                }
+            });
+
+        } catch (PrivilegedActionException paex) {
+            FFDCFilter.processException(paex.getCause(), EntityDefiner.class.getName() + ".writeToClassFile", "674");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "writeToClassFile failed for class " + internalClassName +
+                             " : " + paex.getCause().getMessage());
+        } catch (Throwable ex) {
+            FFDCFilter.processException(ex, EntityDefiner.class.getName() + ".writeToClassFile", "463");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "writeToClassFile failed for class " + internalClassName +
+                             " : " + ex.getMessage());
+        }
     }
 }

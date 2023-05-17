@@ -81,7 +81,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
         if (r != null)
             repository = r;
 
-        RepositoryImpl<?, ?> handler = (RepositoryImpl<?, ?>) Proxy.getInvocationHandler(repository);
+        RepositoryImpl<?> handler = (RepositoryImpl<?>) Proxy.getInvocationHandler(repository);
         handler.beanDisposed();
     }
 
@@ -121,7 +121,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        RepositoryImpl<R, ?> handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass);
+        RepositoryImpl<R> handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass);
 
         R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
                                                                      new Class<?>[] { repositoryInterface },
