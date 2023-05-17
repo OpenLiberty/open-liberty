@@ -73,8 +73,6 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
-       boolean debug = tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();  //Liberty Change
-       List<String> list = null;
       // A @FormParam for multipart/form-data can be a String, InputStream or EntityPart. This type is handled specially.
       if (EntityPart.class.isAssignableFrom(type)) {
          return request.getFormEntityPart(paramName).orElse(null);
@@ -86,6 +84,9 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
       }
 
       // Liberty change start for old IBM-specific Multipart support and @FormParam support for EnityPart.
+      boolean debug = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+      List<String> list = null;
+      
       MultivaluedMap<String, String> decodedFormParams = request.getDecodedFormParameters();
       MediaType mediaType = request.getHttpHeaders().getMediaType();
       if (String.class.equals(type) && mediaType != null && mediaType.getType().equalsIgnoreCase("multipart")) {
