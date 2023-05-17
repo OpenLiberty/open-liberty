@@ -96,11 +96,6 @@ public class CheckpointImplTest {
                     return multiThreadedHooks.toArray();
                 }
             }
-            if ("locateService".equals(method.getName())) {
-                if (CheckpointImpl.BETA_FEATURE_CONITION_REF.equals(args[0])) {
-                    return Condition.INSTANCE;
-                }
-            }
             if ("getBundleContext".equals(method.getName())) {
                 return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { BundleContext.class }, (p, m, a) -> {
                     if ("getProperty".equals(m.getName())) {

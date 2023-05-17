@@ -189,17 +189,7 @@ public class LaunchArguments {
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
                     } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
-
-                        if (isBetaEdition()) {
-                            checkpointPhase = argToLower.substring("--internal-checkpoint-at=".length());
-                        } else {
-                            // we cannot efficiently do beta guard from the server script so we hard code this check here
-                            // for the checkpoint action
-                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownArgument"),
-                                                                    "checkpoint"));
-                            System.out.println();
-                            returnValue = ReturnCode.BAD_ARGUMENT;
-                        }
+                        checkpointPhase = argToLower.substring("--internal-checkpoint-at=".length());
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
 

@@ -17,7 +17,7 @@ src: \
     fat/src
 
 fat.project: true
-#tested.features: jpa-2.2, jpaContainer-2.2, ejbLite-3.2, servlet-4.0, jdbc-4.2, jndi-1.0, checkpoint-1.0
+#tested.features: jpa-2.2, jpaContainer-2.2, ejbLite-3.2, servlet-4.0, jdbc-4.2, jndi-1.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

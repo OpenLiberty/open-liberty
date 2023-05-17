@@ -15,7 +15,6 @@
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>jndi-1.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <webApplication id="JNDIApplication" location="JNDIApplication.war" name="JNDIApplication" contextRoot="jndiApp"/>

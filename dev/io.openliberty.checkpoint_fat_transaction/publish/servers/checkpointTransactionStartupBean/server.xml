@@ -15,7 +15,6 @@
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
-        <feature>checkpoint-1.0</feature>
         <feature>servlet-4.0</feature>
         <feature>ejbLite-3.2</feature>
         <feature>jdbc-4.2</feature>

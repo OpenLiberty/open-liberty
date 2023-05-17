@@ -14,7 +14,6 @@
 
     <featureManager>
         <feature>webProfile-8.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <ssl id="defaultSSLConfig" trustDefaultCerts="true" />

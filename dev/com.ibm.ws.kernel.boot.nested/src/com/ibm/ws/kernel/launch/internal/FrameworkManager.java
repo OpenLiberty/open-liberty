@@ -72,7 +72,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.ClientRunnerException;
-import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -609,93 +608,89 @@ public class FrameworkManager {
             phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.valueOf(phase.restored()));
             phaseRegProps.put(CHECKPOINT_PROPERTY, phase);
             final ServiceRegistration<CheckpointPhase> phaseReg = fwkContext.registerService(CheckpointPhase.class, phase, phaseRegProps);
-            if (LaunchArguments.isBetaEdition()) {
-                // only register the hooks if we are not the INACTIVE phase
-                if (phase != CheckpointPhase.INACTIVE) {
-                    fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
-                        Field restoredField = null;
-                        boolean calledLogProviderStop = false;
 
-                        @Override
-                        public void prepare() {
-                            try {
-                                if (System.getProperty("io.openliberty.checkpoint.dump.threads") != null) {
-                                    // If the sys property is set then dump the threads while in single threaded mode.
-                                    // This is useful when trying to determine if unexpected async work is going on
-                                    // before the checkpoint happens.
-                                    dumpJava(Collections.singleton(JavaDumpAction.THREAD));
-                                }
-                                restoredField = CheckpointPhase.class.getDeclaredField("restored");
-                                restoredField.setAccessible(true);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
+            // only register the hooks if we are not the INACTIVE phase
+            if (phase != CheckpointPhase.INACTIVE) {
+                fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                    Field restoredField = null;
+                    boolean calledLogProviderStop = false;
+
+                    @Override
+                    public void prepare() {
+                        try {
+                            if (System.getProperty("io.openliberty.checkpoint.dump.threads") != null) {
+                                // If the sys property is set then dump the threads while in single threaded mode.
+                                // This is useful when trying to determine if unexpected async work is going on
+                                // before the checkpoint happens.
+                                dumpJava(Collections.singleton(JavaDumpAction.THREAD));
                             }
-                            calledLogProviderStop = true;
-                            logProvider.stop();
+                            restoredField = CheckpointPhase.class.getDeclaredField("restored");
+                            restoredField.setAccessible(true);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
+                        calledLogProviderStop = true;
+                        logProvider.stop();
+                    }
 
-                        @Override
-                        public void checkpointFailed() {
-                            if (calledLogProviderStop) {
-                                // restore the logging when checkpoint failed
-                                restoreLogging();
-                            }
-                        }
-
-                        private void restoreLogging() {
-                            Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
-                            TrConfigurator.update(configMap);
-                        }
-
-                        @Override
-                        public void restore() {
-                            try {
-                                // We use reflection here to set the restored state because we need this done
-                                // first and this hook is registered first and with the min ranking which
-                                // means it will be the first hook called on restore (and the last one called on checkpoint).
-                                // It is tempting to put this as a hook directly in the static hooks of the phase itself
-                                // but that would not be run as early as this hook on restore.
-                                restoredField.set(phase, Boolean.TRUE);
-                            } catch (IllegalArgumentException | IllegalAccessException e) {
-                                throw new RuntimeException(e);
-                            }
+                    @Override
+                    public void checkpointFailed() {
+                        if (calledLogProviderStop) {
+                            // restore the logging when checkpoint failed
                             restoreLogging();
-                            String consoleLogHeader = config.remove(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER);
-                            if (consoleLogHeader != null) {
-                                // log the initial console log header;
-                                // This is done with normal logging instead of System.out so that it shows up properly in messages.log
-                                Tr.audit(tc, consoleLogHeader);
-                            }
                         }
+                    }
 
-                    }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+                    private void restoreLogging() {
+                        Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
+                        TrConfigurator.update(configMap);
+                    }
 
-                    Hashtable<String, Object> restoredHookProps = new Hashtable<>();
-                    restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
-                    restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
-                    fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
-                        @Override
-                        public void prepare() {
-                            // kick equinox to force a save before checkpoint single-threaded mode
-                            saveEquinoxStateNow(fwkContext);
+                    @Override
+                    public void restore() {
+                        try {
+                            // We use reflection here to set the restored state because we need this done
+                            // first and this hook is registered first and with the min ranking which
+                            // means it will be the first hook called on restore (and the last one called on checkpoint).
+                            // It is tempting to put this as a hook directly in the static hooks of the phase itself
+                            // but that would not be run as early as this hook on restore.
+                            restoredField.set(phase, Boolean.TRUE);
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
+                            throw new RuntimeException(e);
                         }
-
-                        @Override
-                        public void restore() {
-                            // Update service properties while in multi-threaded to allow proper events.
-                            phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
-                            phaseReg.setProperties(phaseRegProps);
+                        restoreLogging();
+                        String consoleLogHeader = config.remove(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER);
+                        if (consoleLogHeader != null) {
+                            // log the initial console log header;
+                            // This is done with normal logging instead of System.out so that it shows up properly in messages.log
+                            Tr.audit(tc, consoleLogHeader);
                         }
-                    }, restoredHookProps);
+                    }
 
-                    // register the hooks from the CheckpointPhase that may be statically added
-                    registerCheckpointPhaseStaticHooks(phase, fwkContext);
-                } else {
-                    // not an active checkpoint launch; register the running condition now
-                    registerRunningCondition(fwk);
-                }
+                }, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+
+                Hashtable<String, Object> restoredHookProps = new Hashtable<>();
+                restoredHookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
+                restoredHookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+                fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                    @Override
+                    public void prepare() {
+                        // kick equinox to force a save before checkpoint single-threaded mode
+                        saveEquinoxStateNow(fwkContext);
+                    }
+
+                    @Override
+                    public void restore() {
+                        // Update service properties while in multi-threaded to allow proper events.
+                        phaseRegProps.put(CHECKPOINT_RESTORED_PROPERTY, Boolean.TRUE);
+                        phaseReg.setProperties(phaseRegProps);
+                    }
+                }, restoredHookProps);
+
+                // register the hooks from the CheckpointPhase that may be statically added
+                registerCheckpointPhaseStaticHooks(phase, fwkContext);
             } else {
-                // in non-beta always register the running condition
+                // not an active checkpoint launch; register the running condition now
                 registerRunningCondition(fwk);
             }
             return fwk;

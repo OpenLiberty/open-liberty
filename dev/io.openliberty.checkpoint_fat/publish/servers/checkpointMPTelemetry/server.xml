@@ -13,7 +13,6 @@
 <server>
     <applicationManager startTimeout="90s"/>
     <featureManager>
- 	    <feature>checkpoint-1.0</feature>
     	<feature>mpTelemetry-1.0</feature>
         <feature>servlet-6.0</feature>
         <feature>componenttest-2.0</feature>

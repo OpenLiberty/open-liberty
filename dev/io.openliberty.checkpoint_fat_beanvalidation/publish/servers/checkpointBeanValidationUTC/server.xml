@@ -12,7 +12,6 @@
  -->
 <server>
     <featureManager>
-        <feature>checkpoint-1.0</feature>
         <feature>beanValidation-2.0</feature>
         <feature>cdi-2.0</feature>
         <feature>servlet-4.0</feature>

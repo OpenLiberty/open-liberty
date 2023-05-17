@@ -2,7 +2,6 @@
 
     <featureManager>
         <feature>mpOpenTracing-2.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

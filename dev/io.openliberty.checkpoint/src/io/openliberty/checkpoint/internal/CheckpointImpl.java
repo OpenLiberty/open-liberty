@@ -82,12 +82,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                          @Reference(name = CheckpointImpl.HOOKS_REF_NAME_SINGLE_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
                                     policy = ReferencePolicy.DYNAMIC,
                                     policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))"),
-                         @Reference(name = CheckpointImpl.BETA_FEATURE_CONITION_REF, service = Condition.class,
-                                    cardinality = ReferenceCardinality.OPTIONAL,
-                                    policy = ReferencePolicy.DYNAMIC,
-                                    policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(" + Condition.CONDITION_ID + "=io.openliberty.checkpoint.feature)")
+                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
            },
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
            // use immediate component to avoid lazy instantiation and deactivate
@@ -104,7 +99,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
-    static final String BETA_FEATURE_CONITION_REF = "io.openliberty.checkpoint.beta";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String FILE_RESTORE_FAILED_MARKER = DIR_CHECKPOINT + ".restoreFailedMarker";
@@ -277,11 +271,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     void checkpoint() throws CheckpointFailedException {
         debug(tc, () -> "Checkpoint for : " + checkpointAt);
 
-        Condition betaFeature = cc.locateService(BETA_FEATURE_CONITION_REF);
-        if (betaFeature == null) {
-            // TODO this should be removed for GA.  This is why we are not defining a known type nor message ID for this exception
-            throw new CheckpointFailedException(Type.UNKNOWN_CHECKPOINT, "CWWKC0460E: The server command specified the checkpoint action. A checkpoint cannot be taken because the checkpoint-1.0 feature is not configured in the server.xml file.", null);
-        }
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
             debug(tc, () -> "Trying to checkpoint a second time" + checkpointAt);

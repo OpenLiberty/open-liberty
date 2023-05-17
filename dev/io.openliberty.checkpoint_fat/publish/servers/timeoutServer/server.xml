@@ -15,7 +15,6 @@
       <feature>cdi-2.0</feature>
       <feature>jaxrs-2.1</feature>
       <feature>mpFaultTolerance-3.0</feature>
-      <feature>checkpoint-1.0</feature>
     </featureManager>
     <variable id="timeout" name="timeout" defaultValue="true"/>
 </server>

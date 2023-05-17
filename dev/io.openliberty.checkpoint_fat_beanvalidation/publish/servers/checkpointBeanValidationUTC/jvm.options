@@ -1,3 +1,2 @@
--Dcom.ibm.ws.beta.edition=true
 -Duser.timezone=UTC
 -Xdump:java:events=throw+systhrow,filter=org/eclipse/openj9/criu/JVMCheckpointException,request=exclusive+preempt
