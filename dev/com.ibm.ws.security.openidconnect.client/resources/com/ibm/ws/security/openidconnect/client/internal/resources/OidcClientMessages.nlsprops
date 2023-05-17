@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: A request to [{0}] i
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A request was received that includes a malformed cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The malformed cookie can be caused by cookie modification at the user agent with a host name that differs from the host name of the redirect that is registered with the provider. If the host name is expected, then add it to the wasReqURLRedirectDomainNames attribute of the webAppSecurity element in server.xml.
 
-# 1533-1555 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: An authentication request failed because the OpenID Connect provider returned the following {0} error: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description that are provided in the message contain additional information.
+REDIRECT_URI_CONTAINED_ERROR.useraction=For more information, see the error in the message.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

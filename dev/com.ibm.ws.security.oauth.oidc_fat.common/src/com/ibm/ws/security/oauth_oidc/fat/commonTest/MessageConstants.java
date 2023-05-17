@@ -168,6 +168,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
     public static final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS = "CWWKS1552E";
+    public static final String CWWKS1557E_REDIRECT_URI_CONTAINED_ERROR = "CWWKS1557E";
 
     public static final String CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT = "CWWKS2300E";
 
