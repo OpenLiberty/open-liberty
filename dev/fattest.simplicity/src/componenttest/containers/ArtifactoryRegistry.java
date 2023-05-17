@@ -33,6 +33,7 @@ public class ArtifactoryRegistry {
     private static final String artifactoryRegistryKey = "fat.test.artifactory.docker.server";
 
     private String registry = ""; //Blank registry is the default setting
+    private String authToken;
     private boolean isArtifactoryAvailable;
     private Throwable setupException;
 
@@ -57,7 +58,6 @@ public class ArtifactoryRegistry {
         }
 
         // Priority 2: Are we able to get an auth token to Artifactory?
-        String authToken;
         try {
             authToken = requestAuthToken();
         } catch (Throwable t) {
@@ -68,7 +68,8 @@ public class ArtifactoryRegistry {
 
         // Finally: Attempt to generate docker configuration for Artifactory
         try {
-            generateDockerConfig(registry, authToken);
+            File configDir = new File(System.getProperty("user.home"), ".docker");
+            generateDockerConfig(registry, authToken, configDir);
             isArtifactoryAvailable = true;
         } catch (Throwable t) {
             isArtifactoryAvailable = false;
@@ -91,7 +92,7 @@ public class ArtifactoryRegistry {
 
     //  SETUP METHODS
 
-    private String findRegistry() {
+    private static String findRegistry() {
         Log.info(c, "findRegistry", "Searching system property " + artifactoryRegistryKey + " for an Artifactory registry.");
         String registry = System.getProperty(artifactoryRegistryKey);
         if (registry == null || registry.isEmpty() || registry.startsWith("${") || registry.equals("null")) {
@@ -101,7 +102,7 @@ public class ArtifactoryRegistry {
         return registry;
     }
 
-    private String requestAuthToken() throws Exception {
+    private static String requestAuthToken() throws Exception {
         Log.info(c, "requestAuthToken", "Requesting Artifactory registry auth token from consul");
         String token = ExternalTestService.getProperty("docker-hub-mirror/auth-token");
         if (token == null || token.isEmpty() || token.startsWith("${")) {
@@ -112,14 +113,13 @@ public class ArtifactoryRegistry {
     }
 
     /**
-     * Generate a config file at ~/.docker/config.json if a private docker registry will be used
+     * Generate a config file config.json in the provided config directory if a private docker registry will be used
      * Or if a config.json already exists, make sure that the private registry is listed. If not, add
      * the private registry to the existing config
      */
-    private void generateDockerConfig(String registry, String authToken) throws Exception {
+    private static File generateDockerConfig(String registry, String authToken, File configDir) throws Exception {
         final String m = "generateDockerConfig";
 
-        File configDir = new File(System.getProperty("user.home"), ".docker");
         File configFile = new File(configDir, "config.json");
         String contents = "";
 
@@ -143,7 +143,7 @@ public class ArtifactoryRegistry {
                 String authSubstring = contents.substring(authIndex, authIndexEnd);
                 if (authSubstring.contains(authToken)) {
                     Log.info(c, m, "Config already contains the correct auth token for registry: " + registry);
-                    return;
+                    return configFile;
                 } else {
                     replacedAuth = true;
                     Log.info(c, m, "Replacing auth token for registry: " + registry);
@@ -156,7 +156,7 @@ public class ArtifactoryRegistry {
                 int splitAt = contents.indexOf('{', authsIndex);
                 String firstHalf = contents.substring(0, splitAt + 1);
                 String secondHalf = contents.substring(splitAt + 1);
-                contents = firstHalf + '\n' + privateAuth + ",\n" + secondHalf;
+                contents = firstHalf + '\n' + privateAuth + "," + secondHalf;
             } else if (!replacedAuth) {
                 Log.info(c, m, "No auths exist. Adding auth block");
                 int splitAt = contents.indexOf('{');
@@ -174,11 +174,12 @@ public class ArtifactoryRegistry {
         logConfigContents(m, "New config.json contents are", contents);
         configFile.delete();
         writeFile(configFile, contents);
+        return configFile;
     }
 
     //   UTILITY METHODS
 
-    private void writeFile(File outFile, String content) {
+    static void writeFile(File outFile, String content) {
         try {
             Files.deleteIfExists(outFile.toPath());
             Files.write(outFile.toPath(), content.getBytes());
@@ -196,7 +197,7 @@ public class ArtifactoryRegistry {
      * @param msg
      * @param contents
      */
-    private void logConfigContents(String method, String msg, String contents) {
+    private static void logConfigContents(String method, String msg, String contents) {
         String sanitizedContents = contents.replaceAll("\"auth\": \".*\"", "\"auth\": \"****Token Redacted****\"");
         Log.info(c, method, msg + ":\n" + sanitizedContents);
     }
