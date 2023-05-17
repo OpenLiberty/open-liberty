@@ -224,7 +224,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-        if (jvmRestore.compareAndSet(true, false) && RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName()) && jvmRestore.compareAndSet(true, false)) {
             debug(tc, () -> "Processing config on restore.");
             final CountDownLatch localLatch = new CountDownLatch(1);
             waitForConfig.set(localLatch);
@@ -363,9 +363,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
         }
         restore(multiThreadRestoreHooks);
+        waitForConfig();
         registerRunningCondition();
 
-        waitForConfig();
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
