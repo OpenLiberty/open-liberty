@@ -12,6 +12,9 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.net.Authenticator;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,6 +99,7 @@ public class TCKRunner {
 
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
+    private static final long startNanos = System.nanoTime();
 
     private final String bucketName;
     private final String testName;
@@ -259,7 +264,7 @@ public class TCKRunner {
      */
     private List<String> runCleanTestCmd() throws Exception {
 
-        String[] testcmd = getMvnCommandParams(MVN_CLEAN, MVN_TEST);
+        List<String> testcmd = getMvnCommandParams(MVN_CLEAN, MVN_TEST);
         List<String> mvnOutput = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome(), getMvnTestOutputFile());
         return mvnOutput;
     }
@@ -268,7 +273,7 @@ public class TCKRunner {
      * runs "mvn dependency:list" in the tck folder, passing through all the required properties
      */
     private List<String> runDependencyCmd() throws Exception {
-        String[] dependencyCmd = getMvnCommandParams(MVN_DEPENDENCY);
+        List<String> dependencyCmd = getMvnCommandParams(MVN_DEPENDENCY);
         List<String> mvnOutput = runMvnCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome(), getMvnDependencyOutputFile());
         return mvnOutput;
     }
@@ -344,7 +349,7 @@ public class TCKRunner {
      * @return           an array of Strings representing the command to be run
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
-    private String[] getMvnCommandParams(String... commands) throws Exception {
+    private List<String> getMvnCommandParams(String... commands) throws Exception {
         ArrayList<String> stringArrayList = new ArrayList<>();
 
         if (getSettingsFile() != null) {
@@ -386,8 +391,7 @@ public class TCKRunner {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
         }
 
-        String[] cmd = stringArrayList.toArray(new String[0]);
-        return cmd;
+        return stringArrayList;
     }
 
     /**
@@ -963,16 +967,21 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static List<String> runMvnCmd(String[] mvnParams, File workingDirectory, File mavenUserHome, File logFile) throws Exception {
+    private static List<String> runMvnCmd(List<String> mvnParams, File workingDirectory, File mavenUserHome, File logFile) throws Exception {
 
         //calculate the timeout
-        int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
-        long softTimeout = -1;
+        long hardTimeout = Long.parseLong(System.getProperty("fat.timeout", "10800000"));
+        assertThat("FAT timeout too short to run a TCK", hardTimeout, greaterThan(120_000L));
 
-        // We need to ensure that the hard timeout is large enough to avoid future issues
-        if (hardTimeout >= 30000) {
-            softTimeout = hardTimeout - 15000; // Soft timeout is 15 seconds less than hard timeout
-        }
+        // calculate the time elapsed so far (as best we can)
+        long elapsedTime = Duration.ofNanos(System.nanoTime() - startNanos).toMillis();
+
+        // calculate a soft timeout for running the TCK bucket
+        // This is 2 minutes less than we think is left to account for activity before this class can record the start time
+        // and for the server to shut down cleanly afterwards
+        long softTimeout = hardTimeout - elapsedTime - 120_000;
+
+        assertThat("Not enough remaining time to start running a TCK. Elapsed: " + elapsedTime + "ms", softTimeout, greaterThan(0L));
 
         Map<String, String> mvnEnv = getMvnEnv(mavenUserHome);
         String mvn = getMvnw(workingDirectory);

@@ -229,7 +229,7 @@ public class TCKUtilities {
     public static void zosTagASCII(File file) {
         try {
             String command = "chtag";
-            String[] params = new String[] { "-tcISO8859-1", file.getCanonicalPath() };
+            List<String> params = Arrays.asList("-tcISO8859-1", file.getCanonicalPath());
             ProcessResult output = startProcess(command, params, file.getParentFile(), Collections.emptyMap(), null, 20_000);
             int exitValue = output.getExitCode();
             Log.info(c, "zosTagASCII", "chtag RC = " + exitValue);
@@ -268,7 +268,7 @@ public class TCKUtilities {
      * @return                  the result of running the process, caller should check {@link ProcessResult#isTimedOut()} and {@link ProcessResult#getExitCode()}
      * @throws Exception        if an unexpected exception occurs while starting or waiting for the process. Note that a non-zero exit code will <b>not</b> result in an exception.
      */
-    public static ProcessResult startProcess(String command, String[] params, File workingDirectory, Map<String, String> envProperties, File logFile,
+    public static ProcessResult startProcess(String command, List<String> params, File workingDirectory, Map<String, String> envProperties, File logFile,
                                              long timeout) throws Exception {
         assertThat("Process timeout", timeout, greaterThan(0L));
         if (TCKUtilities.isZos()) {
@@ -285,9 +285,9 @@ public class TCKUtilities {
             commandLine.add("/c");
         }
         commandLine.add(command);
-        commandLine.addAll(Arrays.asList(params));
+        commandLine.addAll(params);
 
-        Log.info(c, "startProcess", "Running command: " + command + " " + String.join(" ", params));
+        Log.info(c, "startProcess", "Running command with timeout of " + timeout + "ms: " + command + " " + String.join(" ", params));
 
         ProcessBuilder pb = new ProcessBuilder(commandLine);
         pb.environment().putAll(envProperties);
