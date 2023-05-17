@@ -340,7 +340,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
      * 
      */
     public FilterInstanceWrapper getFilterInstanceWrapper(String filterName) throws ServletException {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINER))
             logger.entering(CLASS_NAME,"getFilterInstanceWrapper", "entry for " + filterName);
 
         try {
@@ -359,7 +359,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                     }
                 }//PM01682 End
             }
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINER)) {
                 logger.exiting(CLASS_NAME,"getFilterInstanceWrapper", "exit for " + filterName);
             }
             return filterInstW;
@@ -560,7 +560,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
     private FilterInstanceWrapper _loadFilter(String filterName) throws ServletException {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && logger.isLoggable(Level.FINE))
+        if (isTraceOn && logger.isLoggable(Level.FINER))
             logger.entering(CLASS_NAME, "_loadFilter", "filter--->" + filterName);
 
         FilterInstanceWrapper fiw = null;
@@ -716,7 +716,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             }
         }
 
-        if (isTraceOn && logger.isLoggable(Level.FINE))
+        if (isTraceOn && logger.isLoggable(Level.FINER))
             logger.exiting(CLASS_NAME, "_loadFilter");
 
         return fiw;
@@ -740,7 +740,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
      */
     private FilterChainContents getFilterChainContents(String reqURI, String reqServletName, DispatcherType dispatcherType, boolean servletIsInternal) {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && logger.isLoggable(Level.FINE)) {
+        if (isTraceOn && logger.isLoggable(Level.FINER)) {
             logger.entering(CLASS_NAME, "getFilterChainContents", "reqUri->" + reqURI + ", reqServletName->" + reqServletName + ", mode->" + dispatcherType
                             + ", servletIsInternal->" + servletIsInternal);
         }
@@ -945,7 +945,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
             // 144464 part 4
         }
-        if (isTraceOn && logger.isLoggable(Level.FINE)) {
+        if (isTraceOn && logger.isLoggable(Level.FINER)) {
             logger.exiting(CLASS_NAME, "getFilterChainContents");
         }
 
@@ -1019,7 +1019,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
     public void doFilter(ServletRequest request, ServletResponse response, RequestProcessor requestProcessor,
                          WebAppDispatcherContext dispatchContext) throws ServletException, IOException {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
+        if (isTraceOn && logger.isLoggable(Level.FINER)) { // 306998.15
             logger.entering(CLASS_NAME, "doFilter");
         }
 
@@ -1066,7 +1066,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
         // invoke the first filter
         fc.doFilter(request, response);
-        if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
+        if (isTraceOn && logger.isLoggable(Level.FINER)) { // 306998.15
             logger.exiting(CLASS_NAME, "doFilter");
         }
 
@@ -1082,7 +1082,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                              RequestProcessor requestProcessor, EnumSet<CollaboratorInvocationEnum> colEnum,
                              HttpInboundConnection httpInboundConnection) throws ServletException, IOException {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && logger.isLoggable(Level.FINE)) {
+        if (isTraceOn && logger.isLoggable(Level.FINER)) {
             logger.entering(CLASS_NAME, "invokeFilters", "request->" + request + ", response->" + response + ", requestProcessor->"
                             + requestProcessor + ", context->" + context);
         }
@@ -1158,7 +1158,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 alreadyVerifiedEncodedChar = true;        //either way, skip subsequent check in filterDefined
                             }
                             catch (IOException ioe) {
-                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "servletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "servletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
                                 throw ioe;
                             }
                         }
@@ -1177,7 +1178,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 alreadyVerifiedEncodedChar = true;        //to skip check in filterDefined later on
                             }
                             catch (IOException ioe) {
-                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "genericServletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                    logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "genericServletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
                                 throw ioe;
                             }
                         }
@@ -1249,7 +1251,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                         alreadyVerifiedEncodedChar = true;      // skip checking in the DefaultExtension
                     }
                     catch (IOException ioe) {
-                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "filtersDefined. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                        if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "filtersDefined. Bad request - sending 400 [" + ioe.getMessage() + "]");
                         throw ioe;
                     }
                 }
@@ -1299,7 +1302,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                         IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                                         if (iReq != null) {
                                             httpInboundConnection = iReq.getHttpInboundConnection();
-                                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                                            if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                                logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
                                         }
                                     }
 
@@ -1356,7 +1360,8 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                             alreadyVerifiedEncodedChar = true;  //nothing after this, but just incase
                                         }
                                         catch (IOException ioe) {
-                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                            if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
                                             throw ioe;
                                         }
                                     }
@@ -1557,7 +1562,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             }
         }
 
-        if (isTraceOn && logger.isLoggable(Level.FINE)) {
+        if (isTraceOn && logger.isLoggable(Level.FINER)) {
             logger.exiting(CLASS_NAME, "invokeFilters", "result=" + result);
         }
 
@@ -1657,7 +1662,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         final String METHOD_NAME ="verifyEncodedCharacter";
 
-        if (isTraceOn && logger.isLoggable(Level.FINE))
+        if (isTraceOn && logger.isLoggable(Level.FINER))
             logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
 
         String path = uri.toLowerCase();
@@ -1686,7 +1691,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             }
         }
         finally {
-            if (isTraceOn && logger.isLoggable(Level.FINE))
+            if (isTraceOn && logger.isLoggable(Level.FINER))
                 logger.exiting(CLASS_NAME, METHOD_NAME);
         }
     }
