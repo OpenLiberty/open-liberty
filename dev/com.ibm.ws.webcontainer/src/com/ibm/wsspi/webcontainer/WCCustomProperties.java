@@ -332,7 +332,7 @@ public class WCCustomProperties {
     //23.0.0.4
     public static int MAX_FILE_COUNT;
 
-    //23.0.0.5
+    //23.0.0.6
     public static boolean DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION;
     
     static {
@@ -821,10 +821,10 @@ public class WCCustomProperties {
         //23.0.0.1 - Servlet 6.0
         SKIP_ENCODED_CHAR_VERIFICATION = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.skipencodedcharverification"))).booleanValue();
         
-        //24.0.0.4
+        //23.0.0.4
         MAX_FILE_COUNT = Integer.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.maxfilecount", "5000")).intValue();
         
-        //23.0.0.5
+        //23.0.0.6
         DO_NOT_CLOSE_OUTPUT_ON_FORWARD_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror", "false")).booleanValue();
 
         //Default for Servlet 5.0 +
