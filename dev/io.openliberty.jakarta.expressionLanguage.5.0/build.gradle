@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 copyPiiFiles {
@@ -23,7 +20,7 @@ configurations {
 }
 
 dependencies {
-     sourceJar 'org.apache.tomcat:tomcat-el-api:10.1.5:sources'
+     sourceJar 'org.apache.tomcat:tomcat-el-api:10.1.8:sources'
 }
 
 task copySource(type: Copy) {
