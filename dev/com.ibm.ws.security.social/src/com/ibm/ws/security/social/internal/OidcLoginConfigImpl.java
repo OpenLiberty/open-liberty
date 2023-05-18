@@ -166,9 +166,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, userInfoEndpointEnabled);
         signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
         tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
-        if (!"private_key_jwt".equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
-            // TODO - log new warning message letting them know a client secret is required unless they're using the private_key_jwt auth method
-        }
         tokenEndpointAuthSigningAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM);
         keyAliasName = configUtils.getConfigAttribute(props, KEY_keyAliasName);
         scope = configUtils.getConfigAttribute(props, KEY_scope);
@@ -231,6 +228,13 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
 
+        performMiscellaneousConfigurationChecks();
+    }
+
+    void performMiscellaneousConfigurationChecks() {
+        if (!PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
+            Tr.error(tc, "CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD", uniqueId, tokenEndpointAuthMethod);
+        }
     }
 
     private HashMap<String, String> populateCustomRequestParameterMap(Map<String, Object> configProps, String configAttributeName) {

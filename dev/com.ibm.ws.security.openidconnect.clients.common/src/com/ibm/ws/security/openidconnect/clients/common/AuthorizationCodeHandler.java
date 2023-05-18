@@ -46,6 +46,7 @@ public class AuthorizationCodeHandler {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final ConvergedClientConfig clientConfig;
+    private final String configId;
     private final String clientId;
 
     private OidcClientUtil oidcClientUtil = null;
@@ -59,6 +60,7 @@ public class AuthorizationCodeHandler {
         this.response = response;
         this.clientConfig = clientConfig;
         clientId = clientConfig.getClientId();
+        configId = clientConfig.getId();
 
         oidcClientUtil = getOidcClientUtil();
         authenticatorUtil = getOIDCClientAuthenticatorUtil();
@@ -113,11 +115,11 @@ public class AuthorizationCodeHandler {
         try {
             oidcResult = sendTokenRequestAndValidateResult(oidcClientRequest, sslSocketFactory, authzCode, responseState, redirectUrl);
         } catch (BadPostRequestException e) {
-            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getMessage(), clientId, clientConfig.getTokenEndpointUrl() });
+            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getMessage(), configId, clientConfig.getTokenEndpointUrl() });
             sendErrorJSON(e.getStatusCode(), "invalid_request", e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.FAILURE, e.getStatusCode());
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getLocalizedMessage(), clientId, clientConfig.getTokenEndpointUrl() });
+            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getLocalizedMessage(), configId, clientConfig.getTokenEndpointUrl() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return oidcResult;
@@ -129,10 +131,10 @@ public class AuthorizationCodeHandler {
         try {
             sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
         } catch (SSLException e) {
-            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientId });
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, configId });
             throw e;
         } catch (NoSSLSocketFactoryException e) {
-            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId });
+            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", configId });
             Tr.error(tc, nlsMessage);
             if (throwExc) {
                 throw new SSLException(nlsMessage);
@@ -145,7 +147,7 @@ public class AuthorizationCodeHandler {
     ProviderAuthenticationResult sendTokenRequestAndValidateResult(OidcClientRequest oidcClientRequest, SSLSocketFactory sslSocketFactory, String authzCode, String responseState, String redirectUrl) throws MalformedURLException, Exception {
         String url = clientConfig.getTokenEndpointUrl();
         if (url == null || url.length() == 0) {
-            String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientId);
+            String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", configId);
             throw new MalformedURLException(message);
         }
 
