@@ -498,25 +498,28 @@ public class RepositoryResolver {
         //   Look up the PFD
         //   walk the dependency tree, adding each PFD to the resolvedFeatures set
         //   If all features from a tolerated dependency are missing, log as missing
+        FeatureTreeWalker toResolveWalker = FeatureTreeWalker.walkOver(resolverRepository)
+                                                             .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
+                                                             .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
+                                                             .walkEachFeatureOnlyOnce();
         for (String name : featureNamesToResolve) {
             ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
             if (feature == null) {
                 recordMissingFeature(name);
                 continue;
             }
-            FeatureTreeWalker.walkOver(resolverRepository)
-                             .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
-                             .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                             .walkDepthFirst(feature);
+
+            toResolveWalker.walkDepthFirst(feature);
         }
 
         // Walk dependencies of all installed features as well to ensure we install all their tolerated dependencies
+        FeatureTreeWalker installedFeatureWalker = FeatureTreeWalker.walkOver(resolverRepository)
+                                                                    .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
+                                                                    .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
+                                                                    .useAutofeatureProvisionAsDependency(false)
+                                                                    .walkEachFeatureOnlyOnce();
         for (ProvisioningFeatureDefinition feature : installedFeatures) {
-            FeatureTreeWalker.walkOver(resolverRepository)
-                             .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
-                             .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                             .useAutofeatureProvisionAsDependency(false)
-                             .walkDepthFirst(feature);
+            installedFeatureWalker.walkDepthFirst(feature);
         }
     }
 
@@ -537,7 +540,8 @@ public class RepositoryResolver {
                                                                    resolvedAndInstalled.add(f);
                                                                })
                                                                .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                                                               .useAutofeatureProvisionAsDependency(false);
+                                                               .useAutofeatureProvisionAsDependency(false)
+                                                               .walkEachFeatureOnlyOnce();
 
         // Autofeatures can satisfy other autofeatures, so we loop,
         // looking for more satisfied autofeatures until we stop finding any
@@ -576,12 +580,18 @@ public class RepositoryResolver {
      * This method finds such features and works out a minimal set to use as roots for install lists to ensure that every resolved feature gets installed
      */
     private void computeAdditionalInstallListRoots() {
-        HashSet<ProvisioningFeatureDefinition> additionalRootCandidates = new HashSet<>(resolvedFeatures.values());
-        FeatureTreeWalker removeCandidateWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
-                                                                   .forEach(additionalRootCandidates::remove);
+        HashSet<ProvisioningFeatureDefinition> additionalRootCandidates = new HashSet<>();
 
-        // Remove already installed features
-        additionalRootCandidates.removeAll(installedFeatures);
+        // Start with the set of resolved but not installed features
+        for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
+            if (feature instanceof KernelResolverEsa) {
+                additionalRootCandidates.add(feature);
+            }
+        }
+
+        FeatureTreeWalker removeCandidateWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
+                                                                   .forEach(additionalRootCandidates::remove)
+                                                                   .walkEachFeatureOnlyOnce();
 
         // Remove dependencies of requested features and samples
         for (String name : featureNamesToResolve) {
@@ -599,6 +609,10 @@ public class RepositoryResolver {
             }
         }
 
+        // New walker which doesn't set walkEachFeatureOnlyOnce because we're going to remove and re-add features
+        // so we need to be able to walk things twice
+        FeatureTreeWalker repeatCandidateWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
+                                                                   .forEach(additionalRootCandidates::remove);
         // For each remaining candidate, remove all of its dependencies, but not itself
         // Candidates will still be removed if they are dependencies of another candidate
         // Note: Copy additionalRootCandidates to avoid ConcurrentModificationException
@@ -607,7 +621,7 @@ public class RepositoryResolver {
             // This avoids having two candidates remove each other if the graph contains a loop
             if (additionalRootCandidates.contains(feature)) {
                 // Remove ourself and our dependencies
-                removeCandidateWalker.walkDepthFirst(feature);
+                repeatCandidateWalker.walkDepthFirst(feature);
                 // Add ourself back in
                 additionalRootCandidates.add(feature);
             }

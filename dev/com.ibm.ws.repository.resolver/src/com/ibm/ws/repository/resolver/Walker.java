@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -24,6 +23,11 @@ import java.util.function.Function;
  */
 public class Walker {
 
+    public enum WalkDecision {
+        WALK_CHILDREN,
+        IGNORE_CHILDREN
+    }
+
     /**
      * Walk a tree of elements breadth first
      * <p>
@@ -31,11 +35,11 @@ public class Walker {
      *
      * @param <T>         the element type
      * @param root        the starting element
-     * @param forEach     a consumer called when each element is visited
+     * @param visit       a function called when each element is visited and returns whether to visit the elements children
      * @param getChildren a function to get the children of an element
      */
-    public static <T> void walkBreadthFirst(T root, Consumer<? super T> forEach, Function<T, Collection<? extends T>> getChildren) {
-        walkCollectionBreadthFirst(Collections.singleton(root), forEach, getChildren);
+    public static <T> void walkBreadthFirst(T root, Function<? super T, WalkDecision> visit, Function<T, Collection<? extends T>> getChildren) {
+        walkCollectionBreadthFirst(Collections.singleton(root), visit, getChildren);
     }
 
     /**
@@ -45,10 +49,10 @@ public class Walker {
      *
      * @param <T>         the element type
      * @param roots       the starting elements
-     * @param forEach     a consumer called when each element is visited
+     * @param visit       a function called when each element is visited and returns whether to visit the elements children
      * @param getChildren a function to get the children of an element
      */
-    public static <T> void walkCollectionBreadthFirst(Collection<? extends T> roots, Consumer<? super T> forEach, Function<T, Collection<? extends T>> getChildren) {
+    public static <T> void walkCollectionBreadthFirst(Collection<? extends T> roots, Function<? super T, WalkDecision> visit, Function<T, Collection<? extends T>> getChildren) {
         Deque<WalkElement<T>> queue = new ArrayDeque<>(); // Queue of the next things to walk
         for (T root : roots) {
             queue.add(new WalkElement<>(root, null));
@@ -56,11 +60,13 @@ public class Walker {
 
         while (!queue.isEmpty()) {
             WalkElement<T> current = queue.pollFirst();
-            forEach.accept(current.item());
+            WalkDecision decision = visit.apply(current.item());
 
-            for (T child : getChildren.apply(current.item())) {
-                if (!current.hasAncestor(child)) { // check for loops
-                    queue.addLast(new WalkElement<T>(child, current));
+            if (decision == WalkDecision.WALK_CHILDREN) {
+                for (T child : getChildren.apply(current.item())) {
+                    if (!current.hasAncestor(child)) { // check for loops
+                        queue.addLast(new WalkElement<T>(child, current));
+                    }
                 }
             }
         }
@@ -73,21 +79,23 @@ public class Walker {
      *
      * @param <T>         the element type
      * @param roots       the starting elements
-     * @param forEach     a consumer called when each element is visited
+     * @param visit       a function called when each element is visited and returns whether to visit the elements children
      * @param getChildren a function to get the children of an element
      */
-    public static <T> void walkDepthFirst(T root, Consumer<? super T> forEach, Function<T, Collection<? extends T>> getChildren) {
-        walkDepthFirst(root, forEach, getChildren, new HashSet<T>());
+    public static <T> void walkDepthFirst(T root, Function<? super T, WalkDecision> visit, Function<T, Collection<? extends T>> getChildren) {
+        walkDepthFirst(root, visit, getChildren, new HashSet<T>());
     }
 
-    private static <T> void walkDepthFirst(T item, Consumer<? super T> forEach, Function<T, Collection<? extends T>> getChildren, HashSet<T> stack) {
+    private static <T> void walkDepthFirst(T item, Function<? super T, WalkDecision> visit, Function<T, Collection<? extends T>> getChildren, HashSet<T> stack) {
         stack.add(item);
 
-        forEach.accept(item);
+        WalkDecision descision = visit.apply(item);
 
-        for (T child : getChildren.apply(item)) {
-            if (!stack.contains(child)) {
-                walkDepthFirst(child, forEach, getChildren, stack);
+        if (descision == WalkDecision.WALK_CHILDREN) {
+            for (T child : getChildren.apply(item)) {
+                if (!stack.contains(child)) {
+                    walkDepthFirst(child, visit, getChildren, stack);
+                }
             }
         }
 
