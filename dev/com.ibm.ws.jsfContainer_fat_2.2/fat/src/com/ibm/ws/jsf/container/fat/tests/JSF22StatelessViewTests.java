@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -64,9 +65,9 @@ public class JSF22StatelessViewTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces CDI support enabled"));
     }
 
     @Test
