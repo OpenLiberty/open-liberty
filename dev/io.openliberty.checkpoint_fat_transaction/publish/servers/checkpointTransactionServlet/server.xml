@@ -33,6 +33,7 @@
     <variable name="TRANLOG_DIR" defaultValue="${server.output.dir}CHECKPOINT_TRANLOG_DIR" />
     <variable name="HOSTNAME" defaultValue="CHECKPOINT_HOSTNAME" />
 
+<!--
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"
@@ -41,10 +42,10 @@
         heuristicRetryInterval="10"
         transactionLogDirectory="${TRANLOG_DIR}"
     />
+-->
 
 <!-- THIS CONFIGURATION WILL BREAK THE TM IN RESTORE DURING
-     WHENEVER ${TRANLOG_DIR} IS OVERRIDEN IN server.env.
-
+     WHENEVER ${TRANLOG_DIR} IS OVERRIDEN IN server.env. -->
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"

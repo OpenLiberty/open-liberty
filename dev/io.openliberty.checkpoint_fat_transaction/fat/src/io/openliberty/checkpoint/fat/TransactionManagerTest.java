@@ -68,8 +68,9 @@ public class TransactionManagerTest extends FATServletClient {
     TestMethod testMethod;
     Transaction tm;
 
-    static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server config
-    static final int DERBY_TXLOG_PORT = 9099; // Same as server config
+    static final String DERBY_DS_JNDINAME_OVERRIDE = "jdbc/derby"; // Differs from server config
+    static final int DERBY_TXLOG_PORT = 1861; // Same as server config
+    static final String TRANLOG_DIR_OVERRIDE = "${server.output.dir}TRANLOG_DIR";
 
     @Before
     public void setUp() throws Exception {
@@ -86,7 +87,8 @@ public class TransactionManagerTest extends FATServletClient {
                     // the jndiName to that used by SimpleServlet
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME_OVERRIDE);
+                        serverEnvWriter.println("TRANLOG_DIR=" + TRANLOG_DIR_OVERRIDE);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }

@@ -46,8 +46,12 @@
     <library id="DerbyClientLib" filesetRef="DerbyClientFileset"/>
     <fileset id="DerbyClientFileset" dir="${shared.resource.dir}derbyclient" includes="derbyclient.jar"/>
 
-    <variable name="DERBY_TXLOG_PORT" defaultValue="9099"/>
+    <variable name="DERBY_TXLOG_PORT" defaultValue="1861"/>
     <variable name="DERBY_TXLOG_DS_JNDINAME" defaultValue="jdbc/tranlogDataSource"/>
+
+	<!-- Recovery hostname will be configured (overridden) restore server.env
+    <variable name="HOSTNAME" defaultValue=""/>
+    -->
 
     <dataSource
         id="tranlogDataSource"
@@ -61,15 +65,17 @@
          password="userPassword"/>
     </dataSource>
 
-
     <transaction
         dataSourceRef="tranlogDataSource"
         recoverOnStartup="false"
-        waitForRecovery="false"
+        waitForRecovery="true"
+        recoveryGroup="PEER_GROUP_RECOVERY_NAME"
+        recoveryIdentity="${HOSTNAME}${wlp.server.name}"
         heuristicRetryInterval="10"
     />
 
     <application location="transactionservlet.war"/>
 
-    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    <!-- <logging traceSpecification="*=info:checkpoint=all:Transaction=all:com.:ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled" -->
+
 </server>

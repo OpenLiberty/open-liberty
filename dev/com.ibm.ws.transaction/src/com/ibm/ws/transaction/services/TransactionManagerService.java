@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,10 +49,10 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -113,20 +113,25 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         if (tc.isEntryEnabled())
             Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
-        if (CheckpointPhase.getPhase().restored()) {
-            // normal (non-checkpoint) case; start TM now
+        if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE) {
+            // normal server
+            doStartup0(cp, isSQLRecoveryLog);
+        } else if (CheckpointPhase.getPhase().restored()) {
+            // restore server
+            // EXPR start after config update completes
             doStartup0(cp, isSQLRecoveryLog);
         } else {
-            // for checkpoint case start TM after restore
+            // checkpoint server
             CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
                 @Override
                 public void restore() {
+                    // EXPR: don't force doStartup with a restore hook
                     doStartup0(cp, isSQLRecoveryLog);
                 }
             });
         }
 
-	if (tc.isEntryEnabled())
+        if (tc.isEntryEnabled())
             Tr.exit(tc, "doStartup");
     }
 

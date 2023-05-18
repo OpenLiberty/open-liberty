@@ -97,7 +97,8 @@ Export-Package: \
  com.ibm.ws.transaction.services.TransactionInflowManagerService,\
  com.ibm.ws.transaction.services.TransactionManagerService,\
  com.ibm.ws.transaction.services.RemoteTransactionControllerService,\
- com.ibm.ws.transaction.services.TransactionSynchronizationRegistryService
+ com.ibm.ws.transaction.services.TransactionSynchronizationRegistryService,\
+ com.ibm.ws.transaction.services.TMCheckpointService
 
 instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
 

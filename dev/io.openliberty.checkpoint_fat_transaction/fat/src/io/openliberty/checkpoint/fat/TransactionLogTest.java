@@ -62,7 +62,10 @@ public class TransactionLogTest extends FATServletClient {
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    static final int DERBY_TXLOG_PORT = 1619; // Differs from server configuration
+    static final int DERBY_TXLOG_PORT = 1861; // Port in server.xml
+    static final int DERBY_TXLOG_PORT_OVERRIDE = 1619; // Port in server.env
+
+    static final String HOSTNAME_OVERRIDE = "RECOVERY_HOSTNAME_OVERRIDE";
 
     static LibertyServer serverTranLog;
     static LibertyServer serverTranDbLog;
@@ -85,8 +88,8 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, null));
                 serverTranLog.startServer();
                 break;
-            case testTransactionDbLogBasicConnection:
-                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
+            case testTransactionDbLogBasicConnectionOverrideDsf:
+                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT_OVERRIDE);
 
                 serverTranDbLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
                 ShrinkHelper.defaultApp(serverTranDbLog, APP_NAME, "servlets.simple.*");
@@ -95,7 +98,8 @@ public class TransactionLogTest extends FATServletClient {
                     // Override the tran log datasource configuration for restore
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                        serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT);
+                        serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT_OVERRIDE);
+                        serverEnvWriter.println("HOSTNAME=" + HOSTNAME_OVERRIDE);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
@@ -106,6 +110,23 @@ public class TransactionLogTest extends FATServletClient {
                                   serverTranDbLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
                 serverTranDbLog.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+                serverTranDbLog.setServerStartTimeout(300000);
+                serverTranDbLog.startServer();
+                break;
+            case testTransactionDbLogBasicConnection:
+                DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
+
+                serverTranDbLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
+                ShrinkHelper.defaultApp(serverTranDbLog, APP_NAME, "servlets.simple.*");
+
+                serverTranDbLog.setCheckpoint(CheckpointPhase.APPLICATIONS, false, checkpointServer -> {
+                    // Verify the application starts during checkpoint
+                    assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
+                                  serverTranDbLog.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                    assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
+                                  serverTranDbLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                });
+
                 serverTranDbLog.setServerStartTimeout(300000);
                 serverTranDbLog.startServer();
                 break;
@@ -120,11 +141,18 @@ public class TransactionLogTest extends FATServletClient {
             case testCheckpointRemovesDefaultTranlogDir:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
+            case testTransactionDbLogBasicConnectionOverrideDsf:
+                try {
+                    stopServer(serverTranDbLog, "WTRN0017W");
+                } finally {
+                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT_OVERRIDE); // Port in server.env
+                }
+                break;
             case testTransactionDbLogBasicConnection:
                 try {
                     stopServer(serverTranDbLog, "WTRN0017W");
                 } finally {
-                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
+                    DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT); // Port in server.xml
                 }
                 break;
             default:
@@ -153,17 +181,29 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     /**
-     * Verify transactions log to a datasource within a restored server.
-     * The test further ensures the datasource configuration has updated
-     * with config attribute(s) declared in server.env file.
+     * Verify transactions log to an updated data source within a restored server.
+     * The test ensures the SCR reactivates the TM configuration provider using
+     * updated config properties containing resolved values for variables declared
+     * in server.env, and that the SCR injects the updated data source factory
+     * reference configured with the attribute(s) declared in the server.env file.
      */
     @Test
-    public void testTransactionDbLogBasicConnection() throws Exception {
+    public void testTransactionDbLogBasicConnectionOverrideDsf() throws Exception {
         serverTranDbLog.checkpointRestore();
 
         // Exercise a transaction to start tran logging to the datasource.
         // The server will throw an exception and fail this test if it cannot
         // establish a connection to the database.
+        runTest("testBasicConnection", serverTranDbLog);
+    }
+
+    /**
+     * Verify transactions log to an updated data source within a restored server.
+     */
+    @Test
+    public void testTransactionDbLogBasicConnection() throws Exception {
+        serverTranDbLog.checkpointRestore();
+
         runTest("testBasicConnection", serverTranDbLog);
     }
 
@@ -178,6 +218,7 @@ public class TransactionLogTest extends FATServletClient {
 
     static enum TestMethod {
         testCheckpointRemovesDefaultTranlogDir,
+        testTransactionDbLogBasicConnectionOverrideDsf,
         testTransactionDbLogBasicConnection,
         unknown;
     }

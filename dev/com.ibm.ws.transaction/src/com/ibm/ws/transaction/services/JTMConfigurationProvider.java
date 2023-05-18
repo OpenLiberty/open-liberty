@@ -30,6 +30,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -88,6 +89,46 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
 
+    private static Map<String, Object> _cpPropsOverrides = new HashMap<String, Object>() {
+        {
+            put("recoverOnStartup", false);
+            put("waitForRecovery", true);
+        }
+    };
+
+    boolean _checkpointRestore = CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored();
+    boolean _checkpoint = CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored();
+    
+
+    private boolean startupEnabled() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "_cc: " + _cc + ", tmsRef: " + tmsRef
+                         + ", CP phase: " + CheckpointPhase.getPhase()
+                         + ", CP restored: " + CheckpointPhase.getPhase().restored()
+                         + ", CP running condition: " + ((_runningCondition == null) ? "null" : _runningCondition.getProperty(Condition.CONDITION_ID) + " "
+                                                                                               + _runningCondition.getProperty(CheckpointPhase.CHECKPOINT_PROPERTY)));
+        if (_cc == null || tmsRef == null)
+            return false; // not activated or tms is unavailable
+        if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE)
+            return true; // normal server
+        if (!CheckpointPhase.getPhase().restored())
+            return true; // checkpoint server
+        if (_runningCondition == null)
+            return true; // restore server, before config updates
+        return true; // restore, after config updates
+    }
+
+    private volatile ServiceReference<Condition> _runningCondition = null;
+
+    public void setRunningCondition(ServiceReference<Condition> runningCondition) {
+        _runningCondition = runningCondition;
+
+        if (startupEnabled()) {
+            // TODO ??? RESET OVERRIDEN CONFIG PROPS TO ENABLE RECOVERY
+            tmsRef.doStartup(this, _isSQLRecoveryLog);
+        }
+    }
+
     public JTMConfigurationProvider() {
     }
 
@@ -99,6 +140,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         activateHasBeenCalled = true;
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
+
+        if (_checkpointRestore) {
+            // reset log dir if reactivated during restore
+            // TODO WHY IS logDir STATIC? SAME FOR _isSQLRecoveryLog. MAKES NO SENSE.
+            logDir = null;
+        }
+
         // Irrespective of the logtype we need to get the properties
 
         // Make a copy of the properties and store it in a unmodifiable Map.
@@ -110,7 +158,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         Enumeration<String> keys = props.keys();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
+            if (/* CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && */ _cpPropsOverrides.containsKey(key)) {
+                // override recovery behavior during restore until config updates complete
+                properties.put(key, _cpPropsOverrides.get(key));
+            } else {
             properties.put(key, props.get(key));
+            }
         }
         properties = Collections.unmodifiableMap(properties);
         synchronized (this) {
@@ -118,8 +171,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
-
-        addTransactionLogDirCheckpointHook();
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -150,17 +201,19 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 // The DataSource is available, which means that we are able to drive recovery
                 // processing. This is driven through the reference to the TransactionManagerService,
                 // assuming that it is available
-                if (tmsRef != null)
+                if (startupEnabled())
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
             }
         } else {
             getTransactionLogDirectory();
-            if (tmsRef != null)
+            if (startupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  retrieved datasourceFactory is " + _theDataSourceFactory);
+
+        addTransactionLogDirCheckpointHook();
 
         // Configuration has changed, may need to reset the lists of sqlcodes
         _setRetriableSqlcodes = false;
@@ -224,12 +277,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         // If the JTMConfigurationProvider has been activated, we can proceed to set
         // the DataSourceFactory and initiate recovery
-        if (_cc != null) {
+        if (startupEnabled()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory and activate have been called, initiate recovery");
-
-            if (tmsRef != null)
-                tmsRef.doStartup(this, _isSQLRecoveryLog);
+            tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
     }
 
@@ -502,18 +553,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public void setTMRecoveryService(TMRecoveryService tmrec) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setTMRecoveryService " + tmrec);
-        if (tmsRef != null) {
+        if (startupEnabled()) {
             if (!_isSQLRecoveryLog) {
-                if (_cc != null) {
-                    tmsRef.doStartup(this, _isSQLRecoveryLog);
-                }
+                tmsRef.doStartup(this, _isSQLRecoveryLog);
             } else {
                 // If the JTMConfigurationProvider has been activated, and if the DataSourceFactory
                 // has been provided, we can initiate recovery
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
-                if (_cc != null && serviceRef != null) {
+                if (serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             }
@@ -870,18 +919,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /**
      * Fail checkpoint whenever the default or configured transaction log
-     * directory exists and cannot be deleted, including the case where
-     * the directory path is unexpectedly a file.
+     * directory exists and cannot be deleted.
      */
     protected void addTransactionLogDirCheckpointHook() {
         if (!CheckpointPhase.getPhase().restored()) {
-            final String logDir = (String) _props.get("transactionLogDirectory");
+            final String logDir = JTMConfigurationProvider.logDir;
 
             if (logDir == null)
                 return;
-
-            // logDir is correctly formatted path string, but may contain unresolved
-            // variables or may be a file rather than directory.
 
             CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
                 @Override
