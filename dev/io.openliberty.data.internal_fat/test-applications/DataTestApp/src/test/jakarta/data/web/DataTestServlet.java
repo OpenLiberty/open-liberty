@@ -2579,6 +2579,19 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(2L, receipts.count());
 
+        receipts.delete(new Receipt(400L, "C0045-00-054", 44.49f));
+
+        assertEquals(false, receipts.existsById(400L));
+
+        receipts.saveAll(List.of(new Receipt(600L, "C0067-00-076", 266.80f),
+                                 new Receipt(700L, "C0067-00-076", 17.99f),
+                                 new Receipt(800L, "C0088-00-088", 88.98f)));
+
+        receipts.deleteAll(List.of(new Receipt(300L, "C0013-00-031", 33.99f),
+                                   new Receipt(700L, "C0067-00-076", 17.99f)));
+
+        assertEquals(2L, receipts.count());
+
         receipts.deleteAll();
 
         assertEquals(0L, receipts.count());

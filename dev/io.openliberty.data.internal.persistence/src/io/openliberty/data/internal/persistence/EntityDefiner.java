@@ -461,6 +461,7 @@ public class EntityDefiner implements Runnable {
                 Queue<Attribute<?, ?>> relationships = new LinkedList<>();
                 Queue<String> relationPrefixes = new LinkedList<>();
                 Queue<List<Member>> relationAccessors = new LinkedList<>();
+                Class<?> recordClass = generatedToRecordClass.get(entityType.getJavaType());
                 Class<?> idClass = null;
                 SortedMap<String, Member> idClassAttributeAccessors = null;
 
@@ -475,8 +476,11 @@ public class EntityDefiner implements Runnable {
                         relationPrefixes.add(attributeName);
                         relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     }
+
+                    Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
+
                     attributeNames.put(attributeName.toLowerCase(), attributeName);
-                    attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
+                    attributeAccessors.put(attributeName, Collections.singletonList(accessor));
                     attributeTypes.put(attributeName, attr.getJavaType());
                     if (attr.isCollection()) {
                         if (attr instanceof PluralAttribute)
