@@ -68,5 +68,5 @@ public class FATSuite {
     @ClassRule
     //issue 23060
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new RepeatWithEE7cbh20().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES()).andWith(FeatureReplacementAction.EE10_FEATURES());
-
+    //comment to triger personal build with global.java2.sec properties
 }
