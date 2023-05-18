@@ -11,6 +11,7 @@ package com.ibm.ws.repository.resolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -21,6 +22,7 @@ import java.util.function.Supplier;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
+import com.ibm.ws.repository.resolver.Walker.WalkDecision;
 import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 
@@ -38,6 +40,8 @@ public class FeatureTreeWalker {
     private boolean useAutofeatureProvisionAsDependency = true;
     private final Supplier<Collection<? extends ProvisioningFeatureDefinition>> allFeaturesSupplier;
     private final Function<String, ProvisioningFeatureDefinition> getFeatureByNameFunction;
+    /** If {@link #walkEachFeatureOnlyOnce()} was called, this is the set of features we have already walked. Otherwise {@code null}. */
+    private HashSet<ProvisioningFeatureDefinition> seenFeatures;
 
     /**
      * Create a FeatureTreeWalker for walking feature dependencies for features in the repository
@@ -73,7 +77,7 @@ public class FeatureTreeWalker {
      * @param roots the starting points of the walk
      */
     public void walkBreadthFirst(Collection<ProvisioningFeatureDefinition> roots) {
-        Walker.walkCollectionBreadthFirst(roots, this::processForEach, this::getChildren);
+        Walker.walkCollectionBreadthFirst(roots, this::visitFeature, this::getChildren);
     }
 
     /**
@@ -82,7 +86,7 @@ public class FeatureTreeWalker {
      * @param root the starting point of the walk
      */
     public void walkBreadthFirst(ProvisioningFeatureDefinition root) {
-        Walker.walkBreadthFirst(root, this::processForEach, this::getChildren);
+        Walker.walkBreadthFirst(root, this::visitFeature, this::getChildren);
     }
 
     /**
@@ -93,7 +97,7 @@ public class FeatureTreeWalker {
      * @param root the start point of the walk
      */
     public void walkDepthFirst(ProvisioningFeatureDefinition root) {
-        Walker.walkDepthFirst(root, this::processForEach, this::getChildren);
+        Walker.walkDepthFirst(root, this::visitFeature, this::getChildren);
     }
 
     /**
@@ -134,6 +138,19 @@ public class FeatureTreeWalker {
      */
     public FeatureTreeWalker useAutofeatureProvisionAsDependency(boolean useAutofeatureProvisionAsDependency) {
         this.useAutofeatureProvisionAsDependency = useAutofeatureProvisionAsDependency;
+        return this;
+    }
+
+    /**
+     * Whether to skip features which have already been seen
+     * <p>
+     * This is much more efficient if we just need to process all dependencies of a set of features, since there can be several routes to the same dependencies, but in other cases
+     * we care about the order in which features are visited, and want to process each feature twice if we encounter it twice.
+     *
+     * @return {@code this} for chaining
+     */
+    public FeatureTreeWalker walkEachFeatureOnlyOnce() {
+        seenFeatures = new HashSet<>();
         return this;
     }
 
@@ -193,10 +210,19 @@ public class FeatureTreeWalker {
         }
     }
 
-    private void processForEach(ProvisioningFeatureDefinition feature) {
+    private WalkDecision visitFeature(ProvisioningFeatureDefinition feature) {
+        if (seenFeatures != null) {
+            if (seenFeatures.contains(feature)) {
+                // If we're recording seen features and we've seen this one before, bail out now and don't walk its children
+                return WalkDecision.IGNORE_CHILDREN;
+            } else {
+                seenFeatures.add(feature);
+            }
+        }
         if (forEach != null) {
             forEach.accept(feature);
         }
+        return WalkDecision.WALK_CHILDREN;
     }
 
     /**
