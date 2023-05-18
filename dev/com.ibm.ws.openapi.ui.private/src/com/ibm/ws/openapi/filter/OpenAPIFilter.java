@@ -37,6 +37,7 @@ public class OpenAPIFilter implements Filter {
             HttpServletResponse httpServletResp = (HttpServletResponse) resp;
             httpServletResp.setHeader("X-Frame-Options", "DENY");
             httpServletResp.setHeader("X-Content-Type-Options", "nosniff");
+            httpServletResp.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src *; style-src 'self' 'unsafe-inline'; img-src 'self' data:");
             chain.doFilter(req, resp);
         } else {
             chain.doFilter(req, resp);
