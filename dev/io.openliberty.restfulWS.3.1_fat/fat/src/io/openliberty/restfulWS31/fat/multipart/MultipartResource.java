@@ -15,6 +15,7 @@ package io.openliberty.restfulWS31.fat.multipart;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -173,15 +174,27 @@ public class MultipartResource extends Application {
         return "SUCCESS";
     }
 
+    // This tests a mixture of @FormParam (the specification supports EntityPart, String, and InputStream.
+    // It also tests that parameters that are expected by the resource method, but not sent, will not cause a problem and will be null.
     @POST
-    @Path("/asFormParams")
+    @Path("/asMixOfFormParams")
     @Consumes("multipart/form-data")
     @Produces("text/plain")
-    public String postFormParamOfAttachments(@FormParam("file1") EntityPart part1,
-                                             @FormParam("file2") EntityPart part2,
-                                             @FormParam("notAFile") EntityPart part3,
-                                             @FormParam("noSpecifiedContentType") EntityPart part4) {
-        return postListOfAttachments(Arrays.asList(part4, part3, part2, part1));
+    public String postMixedFormParams(@FormParam("file1") EntityPart part1,
+                                      @FormParam("file2") String part2,
+                                      @FormParam("notAFile") InputStream part3,
+                                      @FormParam("missingEntityPart") EntityPart part4,
+                                      @FormParam("missingString") String part5,
+                                      @FormParam("missingStream") InputStream part6,
+                                      @FormParam("noSpecifiedContentType") EntityPart part7) throws IOException {
+         assertEquals("file1", part1.getName());
+         assertEquals(Util.removeLineFeeds(Util.toString(Util.asciidocFile()).trim()), Util.removeLineFeeds(part2.trim()));
+         assertEquals("This is not a file...", Util.toString(part3));
+         assertNull(part4);  // Expected null value
+         assertNull(part5);  // Expected null value
+         assertNull(part6);  // Expected null value
+         assertEquals("noSpecifiedContentType", part7.getName());
+         return "SUCCESS";
     }
 
     @POST

@@ -152,9 +152,14 @@ public class MultipartTestServlet extends FATServlet {
         testEntityPartMultipartRequest("/app/multi/entityPartsAsFormParams", false);
     }
 
-//    @Test skip for now
-    public void testMultipartRequestFormParams() throws Exception {
-        testMultipartRequest("/app/multi/asFormParams");
+    @Test
+    public void testMultipartRequestListOfEntityPartsWithDefaults() throws Exception {
+        testEntityPartMultipartRequest("/app/multi/entityPartsWithDefaults", true);
+    }
+
+    @Test
+    public void testMultipartRequestMixedFormParams() throws Exception {
+        testMultipartRequest("/app/multi/asMixOfFormParams");
     }
 
     @Test
