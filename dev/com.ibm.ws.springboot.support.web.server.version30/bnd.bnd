@@ -15,15 +15,12 @@
 
 bVersion=1.0
 
-#TODO update to Java 17 once available
-
-javac.args.release: current
-
 Bundle-Name: WebSphere Spring Boot 3.0 Web Server Support
 Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server.version30
 Bundle-Description: WebSphere Spring Boot 3.0 Web Server Support, version ${bVersion}
 
 Private-Package: com.ibm.ws.springboot.support.web.server.version30.osgi.*
+
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *

@@ -26,7 +26,7 @@ public class LibertyJspTemplateProvider implements TemplateAvailabilityProvider 
     @Override
     public boolean isTemplateAvailable(String view, Environment environment, ClassLoader classLoader, ResourceLoader resourceLoader) {
         try {
-            Class.forName("javax.servlet.jsp.HttpJspPage", false, classLoader);
+            Class.forName("jakarta.servlet.jsp.HttpJspPage", false, classLoader);
             String prefix = environment.getProperty("spring.mvc.view.prefix", WebMvcAutoConfiguration.DEFAULT_PREFIX);
             String suffix = environment.getProperty("spring.mvc.view.suffix", WebMvcAutoConfiguration.DEFAULT_SUFFIX);
             Resource resource = resourceLoader.getResource(prefix + view + suffix);

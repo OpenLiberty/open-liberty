@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration
+org.springframework.boot.autoconfigure.template.TemplateAvailabilityProvider=com.ibm.ws.springboot.support.web.server.version30.container.LibertyJspTemplateProvider
