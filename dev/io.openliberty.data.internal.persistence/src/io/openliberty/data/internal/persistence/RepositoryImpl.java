@@ -21,6 +21,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -87,7 +89,7 @@ import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
-public class RepositoryImpl<R, E> implements InvocationHandler {
+public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
     private static final Map<Function, String> FUNCTION_CALLS = new HashMap<>();
@@ -121,10 +123,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
 
-    public RepositoryImpl(DataExtensionProvider provider, EntityDefiner definer, Class<R> repositoryInterface, Class<E> defaultEntityClass) {
+    public RepositoryImpl(DataExtensionProvider provider, EntityDefiner definer, Class<R> repositoryInterface, Class<?> defaultEntityClass) {
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
+
+        if (defaultEntityClass.getName().equals("test.jakarta.data.web.Receipt")) // TODO with Java 17: if (defaultEntityClass.isRecord())
+            try {
+                defaultEntityClass = defaultEntityClass.getClassLoader().loadClass(defaultEntityClass.getName() + "Record");
+            } catch (ClassNotFoundException x) {
+                // TODO figure out how to best report this error to the user
+                throw new MappingException("Unable to load generated entity class for record " + defaultEntityClass, x); // TODO NLS
+            }
 
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
@@ -1739,17 +1749,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             Object a = args[0];
                             int length = Array.getLength(a);
                             for (int i = 0; i < length; i++)
-                                results.add(em.merge(Array.get(a, i)));
+                                results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
                             returnValue = results;
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
                             ArrayList<Object> results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
-                                results.add(em.merge(e));
+                                results.add(em.merge(toEntity(e)));
                             em.flush();
                             returnValue = results;
                         } else {
-                            returnValue = em.merge(args[0]);
+                            returnValue = em.merge(toEntity(args[0]));
                             em.flush();
                         }
 
@@ -1819,11 +1829,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         Class<?> multiType = queryInfo.getMultipleResultType();
 
                         if (pagination != null && Iterator.class.equals(multiType))
-                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args);
+                            returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
                         else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
-                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
+                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
-                            returnValue = new PageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
+                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
@@ -2228,6 +2238,33 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return Double.parseDouble((String) o);
         else
             throw new IllegalArgumentException("Not representable as a double value: " + o.getClass().getName());
+    }
+
+    /**
+     * Converts a record to its generated entity equivalent,
+     * or does nothing if not a record.
+     *
+     * @param o entity or a record that needs conversion to an entity.
+     * @return entity.
+     */
+    @Trivial
+    private static final Object toEntity(Object o) {
+        Object entity = o;
+        Class<?> oClass = o == null ? null : o.getClass();
+        if (o != null && oClass.getName().equals("test.jakarta.data.web.Receipt")) // TODO with Java 17: oClass.isRecord()
+            try {
+                final Object recordObj = o;
+                entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Record");
+                    Constructor<?> ctor = entityClass.getConstructor(oClass);
+                    return ctor.newInstance(recordObj);
+                });
+            } catch (PrivilegedActionException x) {
+                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", x.getCause()); // TODO NLS
+            }
+        if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
+        return entity;
     }
 
     @Trivial
