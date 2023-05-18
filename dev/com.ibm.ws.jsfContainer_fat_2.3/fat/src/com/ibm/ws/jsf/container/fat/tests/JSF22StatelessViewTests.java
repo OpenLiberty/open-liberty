@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,7 +31,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
@@ -85,16 +85,9 @@ public class JSF22StatelessViewTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-
-        String msgToSearchFor = "MyFaces CDI support enabled";
-
-        if (JakartaEE9Action.isActive()) {
-            msgToSearchFor = "MyFaces Core CDI support enabled";
-        }
-
-        server.waitForStringInLogUsingMark(msgToSearchFor);
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Core CDI support enabled"));
     }
 
     @Test
