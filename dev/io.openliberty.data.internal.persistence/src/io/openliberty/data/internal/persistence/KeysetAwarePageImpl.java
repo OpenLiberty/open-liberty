@@ -70,7 +70,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                                             queryInfo.jpqlBeforeKeyset;
 
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
             if (keysetCursor != null)

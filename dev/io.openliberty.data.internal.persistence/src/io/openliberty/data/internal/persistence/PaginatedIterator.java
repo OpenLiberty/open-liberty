@@ -62,7 +62,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
             if (keysetCursor != null)

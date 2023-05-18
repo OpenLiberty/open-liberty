@@ -41,21 +41,22 @@ class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type of collection
     final Map<String, Class<?>> collectionElementTypes;
 
+    final Class<?> entityClass; // will be a generated class for entity records
     final Class<?> idClass; // null if no IdClass
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     final String name;
     final PersistenceServiceUnit persister;
+    final Class<?> recordClass; // null if not a record
 
     // embeddable class -> fully qualified attribute names of embeddable, or
     // one-to-one entity class -> fully qualified attribute names of one-to-one entity, or
     // many-to-one entity class -> fully qualified attribute names of many-to-one entity
     final Map<Class<?>, List<String>> relationAttributeNames;
 
-    final Class<?> type;
-
     EntityInfo(String entityName,
                Class<?> entityClass,
+               Class<?> recordClass,
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedMap<String, Class<?>> attributeTypes,
@@ -65,7 +66,7 @@ class EntityInfo {
                SortedMap<String, Member> idClassAttributeAccessors,
                PersistenceServiceUnit persister) {
         this.name = entityName;
-        this.type = entityClass;
+        this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeTypes = attributeTypes;
@@ -74,6 +75,7 @@ class EntityInfo {
         this.idClass = idClass;
         this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
+        this.recordClass = recordClass;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
     }
@@ -86,7 +88,7 @@ class EntityInfo {
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             else if ("id".equals(lowerName))
                 if (idClass == null && failIfNotFound)
-                    throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                    throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                " or which is designated as the @Id."); // TODO NLS
                 else
                     attributeName = null; // Special case for IdClass
@@ -101,7 +103,7 @@ class EntityInfo {
                     lowerName = lowerName.replace("_", "");
                     attributeName = attributeNames.get(lowerName);
                     if (attributeName == null && failIfNotFound)
-                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                        throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                    ". The following are valid property names for the entity: " +
                                                    attributeTypes.keySet()); // TODO NLS
                 }
@@ -112,6 +114,16 @@ class EntityInfo {
 
     Collection<String> getAttributeNames() {
         return attributeNames.values();
+    }
+
+    /**
+     * Entity class (non-generated) or entity record class.
+     *
+     * @return the entity class (non-generated) or entity record class.
+     */
+    @Trivial
+    Class<?> getType() {
+        return recordClass == null ? entityClass : recordClass;
     }
 
     /**

@@ -127,13 +127,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
+        Class<?> recordClass = null;
 
         if (defaultEntityClass.getName().equals("test.jakarta.data.web.Receipt")) // TODO with Java 17: if (defaultEntityClass.isRecord())
             try {
-                defaultEntityClass = defaultEntityClass.getClassLoader().loadClass(defaultEntityClass.getName() + "Record");
+                recordClass = defaultEntityClass;
+                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Record");
             } catch (ClassNotFoundException x) {
                 // TODO figure out how to best report this error to the user
-                throw new MappingException("Unable to load generated entity class for record " + defaultEntityClass, x); // TODO NLS
+                throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
             }
 
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
@@ -171,14 +173,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     type = null;
                 } else {
-                    returnTypeAtDepth.add(defaultEntityClass);
+                    returnTypeAtDepth.add(recordClass == null ? defaultEntityClass : recordClass);
                     type = null;
                 }
             }
 
             Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
 
-            if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
+            if (!inheritance || entityClass == recordClass || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
                 entityClass = defaultEntityClass;
 
             CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) //
@@ -1100,7 +1102,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
             } else if (methodName.length() == 6) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.type.equals(paramTypes[0]))) {
+                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.getType().equals(paramTypes[0]))) {
                     methodName = "deleteById"; // CrudRepository.delete(entity)
                     queryInfo.paramsNeedConversionToId = true;
                     c = 8;
@@ -1189,6 +1191,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select, String... selections) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
+        EntityInfo entityInfo = queryInfo.entityInfo;
 
         boolean distinct = select != null && select.distinct();
         String function = select == null ? null : toFunctionName(select.function());
@@ -1199,7 +1202,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             selections = select.value();
             cols = new String[selections == null ? 0 : selections.length];
             for (int i = 0; i < cols.length; i++) {
-                String name = queryInfo.entityInfo.getAttributeName(selections[i], true);
+                String name = entityInfo.getAttributeName(selections[i], true);
                 cols[i] = name == null ? selections[i] : name;
             }
         }
@@ -1212,15 +1215,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
         q.append("SELECT ");
 
         if (cols == null || cols.length == 0) {
-            if (singleType.isAssignableFrom(queryInfo.entityInfo.type)
-                || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
+            if (singleType.isAssignableFrom(entityInfo.entityClass)
+                || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
                 // Whole entity
                 q.append(distinct ? "DISTINCT " : "").append(o);
             } else {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
-                for (Map.Entry<String, Class<?>> entry : queryInfo.entityInfo.attributeTypes.entrySet()) {
-                    Class<?> collectionElementType = queryInfo.entityInfo.collectionElementTypes.get(entry.getKey());
+                for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
+                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
                     Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
                     if (attributeType.isPrimitive())
                         attributeType = toWrapperClass(attributeType);
@@ -1238,36 +1241,45 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q.append("NEW ").append(singleType.getName()).append('(');
                     List<String> relAttrNames;
                     boolean first = true;
-                    if (singleType.equals(queryInfo.entityInfo.idClass))
-                        for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
-                            String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName, true);
+                    if (singleType.equals(entityInfo.idClass))
+                        for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
+                            String name = entityInfo.getAttributeName(idClassAttributeName, true);
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
-                    else if ((relAttrNames = queryInfo.entityInfo.relationAttributeNames.get(singleType)) != null)
+                    else if ((relAttrNames = entityInfo.relationAttributeNames.get(singleType)) != null)
                         for (String name : relAttrNames) {
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
-                    else
-                        for (String name : queryInfo.entityInfo.attributeTypes.keySet()) {
+                    else if (entityInfo.recordClass == null)
+                        for (String name : entityInfo.attributeTypes.keySet()) {
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
+                    else {
+                        //for (RecordComponent component : recordClass.getRecordComponents()) {
+                        //    String name = component.getName();
+                        for (String name : List.of("purchaseId", "customer", "total")) { // TODO replace with above once compiling against Java 17
+                            generateSelectExpression(q, first, function, distinct, o, name);
+                            first = false;
+                        }
+                    }
                     q.append(')');
                 }
             }
         } else { // Individual columns are requested by @Select
-            boolean selectAsColumns = singleType.isAssignableFrom(queryInfo.entityInfo.type)
+            Class<?> entityType = entityInfo.getType();
+            boolean selectAsColumns = singleType.isAssignableFrom(entityType)
                                       || singleType.isInterface() // NEW instance doesn't apply to interfaces
                                       || singleType.isPrimitive() // NEW instance should not be used on primitives
                                       || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
-                                      || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType);
+                                      || entityInfo.inheritance && entityType.isAssignableFrom(singleType);
             if (!selectAsColumns && cols.length == 1) {
                 String singleAttributeName = cols[0];
-                Class<?> attributeType = queryInfo.entityInfo.collectionElementTypes.get(singleAttributeName);
+                Class<?> attributeType = entityInfo.collectionElementTypes.get(singleAttributeName);
                 if (attributeType == null)
-                    attributeType = queryInfo.entityInfo.attributeTypes.get(singleAttributeName);
+                    attributeType = entityInfo.attributeTypes.get(singleAttributeName);
                 selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
                                                             || singleType.isAssignableFrom(attributeType));
             }
@@ -1286,7 +1298,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
 
-        q.append(" FROM ").append(queryInfo.entityInfo.name).append(' ').append(o);
+        q.append(" FROM ").append(entityInfo.name).append(' ').append(o);
         return q;
     }
 
@@ -1838,12 +1850,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "createQuery", queryInfo.jpql, queryInfo.entityInfo.type.getName());
+                                Tr.debug(this, tc, "createQuery", queryInfo.jpql, queryInfo.entityInfo.entityClass.getName());
 
                             // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
                             final QueryInfo qi = queryInfo;
                             final EntityManager eMgr = em;
-                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.type));
+                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass));
                             queryInfo.setParameters(query, args);
 
                             int maxResults = limit != null ? limit.maxResults() //
@@ -1878,7 +1890,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                                 if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
                                     returnValue = null;
-                                } else if (multiType == null && queryInfo.entityInfo.type.equals(singleType)) {
+                                } else if (multiType == null && (queryInfo.entityInfo.entityClass).equals(singleType)) {
                                     returnValue = oneResult(results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
@@ -2151,7 +2163,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // Enforcement of missing names should only be done if the user is trying to specify
             // property selections vs including descriptive text in the method name.
             if (!selections.isEmpty() && !notFound.isEmpty())
-                throw new MappingException("Entity class " + queryInfo.entityInfo.type.getName() +
+                throw new MappingException("Entity class " + queryInfo.entityInfo.getType().getName() +
                                            " does not have properties named " + notFound +
                                            ". The following are valid property names for the entity: " +
                                            queryInfo.entityInfo.attributeTypes.keySet()); // TODO NLS

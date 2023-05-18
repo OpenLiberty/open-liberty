@@ -264,11 +264,11 @@ class QueryInfo {
      */
     @Trivial
     Object[] getKeysetValues(Object entity) {
-        if (!entityInfo.type.isInstance(entity))
+        if (!entityInfo.getType().isInstance(entity))
             throw new MappingException("Unable to obtain keyset values from the " +
                                        (entity == null ? null : entity.getClass().getName()) +
                                        " type query result. Queries that use keyset pagination must return results of the same type as the entity type, which is " +
-                                       entityInfo.type.getName() + "."); // TODO NLS
+                                       entityInfo.getType().getName() + "."); // TODO NLS
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : sorts)
             try {
@@ -485,9 +485,9 @@ class QueryInfo {
             }
         } else { // Special case: CrudRepository.delete(entity) where entity has IdClass
             Object arg = args == null || args.length == 0 ? null : args[0];
-            if (arg == null || !entityInfo.type.isAssignableFrom(arg.getClass()))
+            if (arg == null || !entityInfo.entityClass.isAssignableFrom(arg.getClass()))
                 throw new DataException("The " + (arg == null ? null : arg.getClass().getName()) +
-                                        " parameter does not match the " + entityInfo.type.getClass().getName() +
+                                        " parameter does not match the " + entityInfo.getType().getName() +
                                         " entity type that is expected for this repository.");
             int p = 0;
             for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {

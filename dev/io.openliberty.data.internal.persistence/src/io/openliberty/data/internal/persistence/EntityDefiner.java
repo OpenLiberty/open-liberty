@@ -374,6 +374,8 @@ public class EntityDefiner implements Runnable {
             // Classes explicitly annotated with JPA @Entity:
             Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
 
+            Map<Class<?>, Class<?>> generatedToRecordClass = new HashMap<>();
+
             ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
 
             // List of classes to inspect for the above
@@ -393,6 +395,7 @@ public class EntityDefiner implements Runnable {
                         byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                         Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(loader, entityClassName, generatedEntityBytes);
+                        generatedToRecordClass.put(generatedEntity, c);
                         c = generatedEntity;
                     }
 
@@ -577,8 +580,10 @@ public class EntityDefiner implements Runnable {
 
                 Class<?> entityClass = entityType.getJavaType();
 
-                EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
+                EntityInfo entityInfo = new EntityInfo( //
+                                entityType.getName(), //
                                 entityClass, //
+                                generatedToRecordClass.get(entityClass), //
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
