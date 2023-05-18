@@ -48,6 +48,7 @@ Subsystem-Name: Jakarta Faces 4.0
 -bundles=io.openliberty.org.apache.myfaces.4.0, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.4.0.internal, \
+ com.ibm.ws.cdi.2.0.jsf.jakarta, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
 kind=ga
