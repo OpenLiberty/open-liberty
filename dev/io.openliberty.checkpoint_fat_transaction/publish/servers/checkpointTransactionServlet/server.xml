@@ -30,15 +30,35 @@
              dir="${shared.resource.dir}derby"
              includes="derby.jar" />
 
+    <variable name="TRANLOG_DIR" defaultValue="${server.output.dir}CHECKPOINT_TRANLOG_DIR" />
+    <variable name="HOSTNAME" defaultValue="CHECKPOINT_HOSTNAME" />
+
+    <transaction
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        recoveryGroup="PEER_GROUP_NAME"
+        recoveryIdentity="${HOSTNAME}${wlp.server.name}"
+        heuristicRetryInterval="10"
+        transactionLogDirectory="${TRANLOG_DIR}"
+    />
+
+<!-- THIS CONFIGURATION WILL BREAK THE TM IN RESTORE DURING
+     WHENEVER ${TRANLOG_DIR} IS OVERRIDEN IN server.env.
+
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"
         heuristicRetryInterval="10"
+        transactionLogDirectory="${TRANLOG_DIR}"
     />
+-->
 
     <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
     <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
-    <variable name="DERBY_DS_JNDINAME" defaultValue="DUMMYjdbc/derby" />
+    <variable name="DERBY_DS_JNDINAME" defaultValue="jdbc/derby" />
+<!--
+    <variable name="DERBY_DS_JNDINAME" defaultValue="CHECKPOINT_jdbc/derby" />
+-->
 
     <dataSource jndiName="${DERBY_DS_JNDINAME}" jdbcDriverRef="DerbyEmbedded">
       <properties

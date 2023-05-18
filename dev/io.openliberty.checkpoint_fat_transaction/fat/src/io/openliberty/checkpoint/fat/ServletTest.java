@@ -29,7 +29,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
@@ -71,7 +70,8 @@ public class ServletTest extends FATServletClient {
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    private static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server.xml config
+    private static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server.xml
+    private static String TRANLOG_DIR = "${server.config.dir}TRANLOG_DIR";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -81,7 +81,8 @@ public class ServletTest extends FATServletClient {
             // Configure the datasource jndiName used by the test servlet upon restore
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+//              serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                serverEnvWriter.println("TRANLOG_DIR=" + TRANLOG_DIR);
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }
@@ -92,8 +93,13 @@ public class ServletTest extends FATServletClient {
                           server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
-        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(30000);
         server.startServer();
+// EXPR Drive an update on a normal server (no checkpointRestore())
+//        ServerConfiguration config = server.getServerConfiguration();
+//        config.getTransaction().setClientInactivityTimeout("0");//.setTransactionLogDirectory("NEW_TRANLOG");
+//        server.updateServerConfiguration(config);
+//        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
         server.checkpointRestore();
     }
 

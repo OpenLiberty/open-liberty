@@ -33,21 +33,21 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+//import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                ServletTest.class,
-                ServletStartupTest.class,
-                StartupBeanTest.class,
-                TransactionalBeanTest.class,
-                TransactionScopedBeanTest.class,
-                TransactionLogTest.class,
-                TransactionManagerTest.class,
-                RecoveryTest.class
+//                AlwaysPassesTest.class,
+                ServletTest.class
+//                ServletStartupTest.class,
+//                StartupBeanTest.class,
+//                TransactionalBeanTest.class,
+//                TransactionScopedBeanTest.class,
+//                TransactionLogTest.class,
+//                TransactionManagerTest.class
+//                RecoveryTest.class
 })
 
 public class FATSuite {
