@@ -18,7 +18,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -94,11 +98,28 @@ public class MultiServerTest extends WSATTest {
 		DBTestBase.cleanupWSATTest(server2);
 		DBTestBase.cleanupWSATTest(server3);
 	}
+	
+	/**
+	 * Added to show resource state doesn't bleed into testTwoServerCommit
+	 * @throws URISyntaxException 
+	 * @throws IOException 
+	 * @throws MalformedURLException 
+	 * @throws ProtocolException 
+	 */
+	@Test
+	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
+	public void composite() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
+		String method = "composite";
+		Log.info(getClass(), method, "Running testThreeServerTwoCallParticipant1VotingRollback");
+		testThreeServerTwoCallParticipant1VotingRollback();
+		Log.info(getClass(), method, "Running testTwoServerCommit");
+		testTwoServerCommit();
+	}
 
 	@Test
-	public void testOneway() {
+	public void testOneway() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testOneway";
-		try {
+
 			String urlStr = BASE_URL + "/oneway/OnewayClientServlet"
 					+ "?baseurl=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -117,15 +138,12 @@ public class MultiServerTest extends WSATTest {
 			// List<String> errors = new ArrayList<String>();
 			// errors.add("WTRN0127E");
 			// server.addIgnoredErrors(errors);
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testTwoServerCommit() {
+	public void testTwoServerCommit() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerCommit";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -137,17 +155,14 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Finish Twoway message"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException"})
-	public void testTwoServerCommitClientVotingRollback() {
+	public void testTwoServerCommitClientVotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerCommitClientVotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -159,16 +174,13 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void testTwoServerCommitProviderVotingRollback() {
+	public void testTwoServerCommitProviderVotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerCommitProviderVotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -180,15 +192,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testTwoServerRollback() {
+	public void testTwoServerRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -200,15 +209,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Finish Twoway message"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testTwoServerTwoCallCommit() {
+	public void testTwoServerTwoCallCommit() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerTwoCallCommit";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL;
@@ -221,15 +227,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testTwoServerTwoCallRollback() {
+	public void testTwoServerTwoCallRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerTwoCallRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL;
@@ -242,15 +245,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testThreeServerTwoCallCommit() {
+	public void testThreeServerTwoCallCommit() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testThreeServerTwoCallCommit";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL3;
@@ -263,15 +263,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
 					result.contains("Get expected result in the second call."));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testThreeServerTwoCallRollback() {
+	public void testThreeServerTwoCallRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testThreeServerTwoCallRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2
 					+ "&baseurl2=" + BASE_URL3;
@@ -284,17 +281,14 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected reply from server",
 					result.contains("Get expected result in the second call."));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException"})
-	public void testTwoServerTwoCallCoordinatorVotingRollback() {
+	public void testTwoServerTwoCallCoordinatorVotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerTwoCallCoordinatorVotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -306,17 +300,14 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = { "javax.transaction.SystemException"})
-	public void testThreeServerTwoCallCoordinatorVotingRollback() {
+	public void testThreeServerTwoCallCoordinatorVotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testThreeServerTwoCallCoordinatorVotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -328,16 +319,13 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void testTwoServerTwoCallParticipant1VotingRollback() {
+	public void testTwoServerTwoCallParticipant1VotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerTwoCallParticipant1VotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -349,16 +337,15 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
+	
+	
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void testThreeServerTwoCallParticipant1VotingRollback() {
+	public void testThreeServerTwoCallParticipant1VotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testThreeServerTwoCallParticipant1VotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -370,18 +357,15 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	@AllowedFFDC(value = {"javax.transaction.SystemException", "java.lang.IllegalStateException"})
-	public void testTwoServerTwoCallParticipant2VotingRollback() {
+	public void testTwoServerTwoCallParticipant2VotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testTwoServerTwoCallParticipant2VotingRollback";
-		try {
-			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
+
+		String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
 			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
@@ -392,16 +376,13 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void testThreeServerTwoCallParticipant2VotingRollback() {
+	public void testThreeServerTwoCallParticipant2VotingRollback() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testThreeServerTwoCallParticipant2VotingRollback";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?baseurl=" + BASE_URL2 + "&baseurl2=" + BASE_URL3;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -413,15 +394,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result : " + result);
 			assertTrue("Cannot get expected RollbackException from server, result = '" + result + "'",
 					result.contains("Get expect RollbackException"));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testNoOptionalNoTransaction() {
+	public void testNoOptionalNoTransaction() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
 		String method = "testNoOptionalNoTransaction";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=noOptionalNoTransaction&baseurl=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -432,15 +410,12 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Result: " + result);
 			assertTrue("Expected \""+WSAT_DETECTED+"\" but got \""+result+"\"",
 					result.contains(WSAT_DETECTED));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
 	@Test
-	public void testFeatureDynamic() {
+	public void testFeatureDynamic() throws Exception {
 		String method = "testFeatureDynamic";
-		try {
+
 			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
 					+ "?type=testTwoServerCommit&baseurl=" + BASE_URL;
 			Log.info(getClass(), method, "URL: " + urlStr);
@@ -470,9 +445,6 @@ public class MultiServerTest extends WSATTest {
 			Log.info(getClass(), method, "Third result: " + result);
 			assertTrue("Expected \""+FINISH_TWOWAY_MESSAGE+"\" but got \""+result+"\"",
 					result.contains(FINISH_TWOWAY_MESSAGE));
-		} catch (Exception e) {
-			fail("Exception happens: " + e.toString());
-		}
 	}
 
     /**
