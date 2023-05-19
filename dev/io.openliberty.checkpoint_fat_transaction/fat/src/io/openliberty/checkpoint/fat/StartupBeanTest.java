@@ -76,7 +76,7 @@ public class StartupBeanTest extends FATServletClient {
                 TxStartupBeanEar.addAsModule(TxStartupBeanJar);
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
-                server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
+                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
                 break;
             case testStartupBeanRequiresNewAtApplications:
                 TxStartupBeanJar = ShrinkHelper.buildJavaArchive(APP_NAME, "com.ibm.ws.transaction.ejb.first");
@@ -85,7 +85,7 @@ public class StartupBeanTest extends FATServletClient {
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
                 // Expect checkpoint and restore to fail
-                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
                 break;
             case testStartupBeanUserTranAtApplications:
                 TxStartupBeanJar = ShrinkHelper.buildJavaArchive(APP_NAME, "com.ibm.ws.transaction.ejb.second");
@@ -93,7 +93,7 @@ public class StartupBeanTest extends FATServletClient {
                 TxStartupBeanEar.addAsModule(TxStartupBeanJar);
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
-                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
                 break;
             default:
                 break;

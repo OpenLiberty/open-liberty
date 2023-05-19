@@ -65,7 +65,7 @@ public class ManagedBeanTest extends FATServletClient {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "bval.v20.cdi.web");
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));

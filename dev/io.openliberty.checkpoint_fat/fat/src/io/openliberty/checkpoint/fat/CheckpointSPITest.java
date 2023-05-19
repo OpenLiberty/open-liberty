@@ -206,7 +206,7 @@ public class CheckpointSPITest {
             autoRestore = false;
             expectRestoreFailure = true;
         }
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, autoRestore, expectCheckpointFailure, expectRestoreFailure, server -> {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, autoRestore, expectCheckpointFailure, expectRestoreFailure, server -> {
             findLogMessage("No prepare config", "TESTING - prepare config: ", "a=test1 b=test1 c=${c_value}", 0);
             findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
             findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);

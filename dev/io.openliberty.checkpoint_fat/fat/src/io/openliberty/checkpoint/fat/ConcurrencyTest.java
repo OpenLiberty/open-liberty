@@ -91,7 +91,7 @@ public class ConcurrencyTest {
         config.getVariables().getById("repeatManagedExec").setValue("false");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, (server) -> {
             String result = server.waitForStringInLog("Thread scheduled at startup");
             assertNotNull("Scheduled executor not called at checkpoint", result);
         });
@@ -122,7 +122,7 @@ public class ConcurrencyTest {
         config.getVariables().getById("repeatManagedExec").setValue("false");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, (server) -> {
             String result = server.waitForStringInLog("Scheduled thread completed");
             assertNotNull("Repeated task not called at checkpoint", result);
         });
@@ -154,7 +154,7 @@ public class ConcurrencyTest {
         config.getVariables().getById("repeatManagedExec").setValue("true");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, (server) -> {
             String result = server.waitForStringInLog("Thread scheduled at startup");
             assertNotNull("Repeated task not scheduled at checkpoint", result);
         });

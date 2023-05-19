@@ -148,7 +148,7 @@ public class ValidFeaturesTest {
     private void setCheckpoint(TestMethod testMethod) {
         final boolean autoRestore = false;
         final boolean expectRestoreFailure = false;
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, autoRestore, testMethod.expectCheckpointFailure, expectRestoreFailure, (s) -> {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, autoRestore, testMethod.expectCheckpointFailure, expectRestoreFailure, (s) -> {
             try {
                 // make sure we don't have any "feature not found" errors
                 List<String> notFound = s.findStringsInLogs("CWWKF0001E");

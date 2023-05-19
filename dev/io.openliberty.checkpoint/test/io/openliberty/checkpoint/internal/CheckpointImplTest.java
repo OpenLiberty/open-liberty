@@ -250,7 +250,7 @@ public class CheckpointImplTest {
     public void testNullFactories() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkDirectory(checkpoint, criu, locAdmin);
         checkpoint.resetCheckpointCalled();
         checkFailDump(checkpoint, criu, locAdmin);
@@ -260,7 +260,7 @@ public class CheckpointImplTest {
     public void testNullHook() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkDirectory(checkpoint, criu, locAdmin);
     }
 
@@ -271,7 +271,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkDirectory(checkpoint, criu, locAdmin);
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
@@ -292,7 +292,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h5 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h6 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), asList(h4, h5, h6))), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), asList(h4, h5, h6))), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkDirectory(checkpoint, criu, locAdmin);
         List<TestCheckpointHook> singleThreadedHooks = getHooks(h1, h2, h3);
@@ -321,7 +321,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(prepareException, null, criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         try {
             checkpoint.checkpoint();
@@ -353,7 +353,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkFailDump(checkpoint, criu, locAdmin);
 
@@ -373,7 +373,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(null, restoreException, criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         try {
             checkpoint.checkpoint();
@@ -400,7 +400,7 @@ public class CheckpointImplTest {
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(asList(hook), emptyList());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         checkpoint.check();
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
@@ -412,7 +412,7 @@ public class CheckpointImplTest {
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(asList(hook), emptyList());
-        new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.DEPLOYMENT);
+        new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.BEFORE_APP_START);
         assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         ClassFileTransformer transformer = hooks.transformer.get();
         assertNotNull("Null transformer", transformer);
@@ -426,7 +426,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkpoint.check();
         assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
         checkpoint.check();
@@ -442,7 +442,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("notSupported1", "notSupported2")));
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         try {
             checkpoint.checkpoint();
         } catch (CheckpointFailedException e) {
@@ -458,7 +458,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("supported1", "supported2")));
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkpoint.checkpoint();
     }
 
@@ -469,7 +469,7 @@ public class CheckpointImplTest {
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "5000");
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
 
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         long startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         long totalTime = System.nanoTime() - startTime;
@@ -479,7 +479,7 @@ public class CheckpointImplTest {
         // test non-number
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "badvalue");
         // create new checkpoint object to force read of property again
-        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         totalTime = System.nanoTime() - startTime;
@@ -488,7 +488,7 @@ public class CheckpointImplTest {
         // test negative number
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "-5000");
         // create new checkpoint object to force read of property again
-        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         totalTime = System.nanoTime() - startTime;

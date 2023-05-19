@@ -58,12 +58,12 @@ public class WebAppMessageTest extends FATServletClient {
 
     @Test
     public void testApplicationsWebAppMessage() throws Exception {
-        doTest(CheckpointPhase.APPLICATIONS);
+        doTest(CheckpointPhase.AFTER_APP_START);
     }
 
     @Test
     public void testDeploymentWebAppMessage() throws Exception {
-        doTest(CheckpointPhase.DEPLOYMENT);
+        doTest(CheckpointPhase.BEFORE_APP_START);
     }
 
     private void doTest(CheckpointPhase phase) throws Exception {
@@ -71,7 +71,7 @@ public class WebAppMessageTest extends FATServletClient {
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
-                                 if (phase == CheckpointPhase.APPLICATIONS) {
+                                 if (phase == CheckpointPhase.AFTER_APP_START) {
                                      assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                                    server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
                                  }
@@ -80,7 +80,7 @@ public class WebAppMessageTest extends FATServletClient {
                                             server.waitForStringInLogUsingMark("CWWKT0016I: .*" + APP_NAME, 0));
                              });
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        if (phase == CheckpointPhase.DEPLOYMENT) {
+        if (phase == CheckpointPhase.BEFORE_APP_START) {
             assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                           server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
         }

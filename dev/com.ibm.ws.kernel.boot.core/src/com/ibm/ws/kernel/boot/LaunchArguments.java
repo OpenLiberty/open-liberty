@@ -309,13 +309,36 @@ public class LaunchArguments {
     }
 
     /**
+     * Map the external phase name used on the the launch command line to an internal Phase
+     * enumeration name. Trim surrounding white space.
+     *
+     * @param phaseName
+     * @return Matching internal enumeration name.
+     */
+    private static String commandLineToInternalPhaseName(String phaseName) {
+        phaseName = (phaseName == null) ? "null" : phaseName.trim();
+        switch (phaseName) {
+            case "afterappstart":
+                return CheckpointPhase.AFTER_APP_START.toString();
+            case "beforeappstart":
+                return CheckpointPhase.BEFORE_APP_START.toString();
+
+            //INACTIVE is not a valid command line option. It and any non-valid phase name passed in
+            // map to themselves and are coded as errors by follow on argument handling.
+            // NOTE: any other valid internal Phase name will pass thru and actually work.
+            default:
+                return phaseName;
+        }
+    }
+
+    /**
      * @param checkpointPhase
      */
     private ReturnCode setCheckpointPhase(String checkpointPhase, ReturnCode returnValue) {
         try {
             Method setPhase = CheckpointPhase.class.getDeclaredMethod("setPhase", String.class);
             setPhase.setAccessible(true);
-            setPhase.invoke(setPhase, checkpointPhase);
+            setPhase.invoke(setPhase, commandLineToInternalPhaseName(checkpointPhase));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

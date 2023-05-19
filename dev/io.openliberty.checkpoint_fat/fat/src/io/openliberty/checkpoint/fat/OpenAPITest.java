@@ -60,7 +60,7 @@ public class OpenAPITest {
     @Test
     public void testOpenAPI() throws Exception {
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
 
         server.checkpointRestore();

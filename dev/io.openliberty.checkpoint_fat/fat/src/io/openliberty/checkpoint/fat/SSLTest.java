@@ -94,7 +94,7 @@ public class SSLTest {
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
         testMethod = getTestMethod(TestMethod.class, testName);
         configureBeforeCheckpoint();
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));

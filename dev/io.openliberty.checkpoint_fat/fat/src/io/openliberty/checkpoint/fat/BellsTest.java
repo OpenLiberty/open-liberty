@@ -76,13 +76,13 @@ public class BellsTest extends FATServletClient {
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
             case testBellsCheckpointAtDeployment:
-                server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
+                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
                 break;
             case testBellsCheckpointAtApplication:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
                 break;
             case testUpdatedBellPropertiesBeforeRestore:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
                 break;
             default:
                 break;

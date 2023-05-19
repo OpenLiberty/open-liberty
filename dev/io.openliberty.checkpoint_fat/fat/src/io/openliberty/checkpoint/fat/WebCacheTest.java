@@ -59,7 +59,7 @@ public class WebCacheTest {
 
     @Before
     public void checkpointRestoreServer() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
     }
 

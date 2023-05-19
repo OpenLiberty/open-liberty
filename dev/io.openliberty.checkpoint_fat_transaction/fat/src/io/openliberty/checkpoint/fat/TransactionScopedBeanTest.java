@@ -83,7 +83,7 @@ public class TransactionScopedBeanTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, appTwo);
         server.addInstalledAppForValidation(SECOND_APP_NAME);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));

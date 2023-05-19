@@ -71,7 +71,7 @@ public class WebProfileJSPtest {
 
     @Test
     public void testJSPwithUpdate() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
 
         URL url1 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp");

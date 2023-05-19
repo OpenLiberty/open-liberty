@@ -85,7 +85,7 @@ public class LocalEJBTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, ejbMisc, DeployOptions.SERVER_ONLY);
 
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
 
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + REMOTE_EJB_APP_NAME + "' message not found in log before restore",

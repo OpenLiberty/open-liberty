@@ -43,7 +43,7 @@ public class CheckpointWithSecurityManager {
     @Test
     @ExpectedFFDC({ "java.lang.UnsupportedOperationException", "io.openliberty.checkpoint.internal.criu.CheckpointFailedException" })
     public void testAtApplicationsMultRestore() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
         ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);

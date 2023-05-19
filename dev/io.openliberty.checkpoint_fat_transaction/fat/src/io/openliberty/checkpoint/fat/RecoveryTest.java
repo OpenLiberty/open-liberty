@@ -52,7 +52,7 @@ public class RecoveryTest extends RecoveryTestBase {
             assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                           server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
         server.setServerStartTimeout(RecoveryUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
 

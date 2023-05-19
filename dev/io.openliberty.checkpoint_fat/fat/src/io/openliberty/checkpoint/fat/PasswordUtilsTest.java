@@ -59,7 +59,7 @@ public class PasswordUtilsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, APP_PACKAGE);
         server.addInstalledAppForValidation(APP_NAME);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (s) -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, (s) -> {
             // ACTION before restore
             // set the env for AUTO_USER_NAME and AUTO_USER_PASSWORD
             Map<String, String> envMap = new HashMap<>();

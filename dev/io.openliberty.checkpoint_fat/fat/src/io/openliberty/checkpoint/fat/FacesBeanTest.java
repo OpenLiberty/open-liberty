@@ -82,7 +82,7 @@ public class FacesBeanTest extends FATServletClient {
 
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
 
-        facesBeanServer.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        facesBeanServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                                       server -> {
                                           assertNotNull("'SRVE0169I: Loading Web Module: " + FACES_APP_NAME + "' message not found in log before restore",
                                                         server.waitForStringInLogUsingMark("SRVE0169I: .*" + FACES_APP_NAME, 0));

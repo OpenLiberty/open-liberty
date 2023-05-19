@@ -97,7 +97,7 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
         JASPIFatUtils.installJaspiUserFeature(server);
         JASPIFatUtils.transformApps(server, "JASPIBasicAuthServlet.war");
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
         assertNotNull("Expected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
         server.addInstalledAppForValidation(DEFAULT_APP);

@@ -53,12 +53,12 @@ public class SkipIfCheckpointNotSupportedAnnotationTest extends FATServletClient
     public void testFailedCheckpointIfRunningOnNonCRIUJVM() throws Exception {
         int returnCode = 0;
         if (JavaInfo.forCurrentVM().isCriuSupported()) {
-            server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, false, false, null));
+            server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, false, false, null));
             ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
             returnCode = output.getReturnCode();
             assertEquals("Return code 0 expected", 0, returnCode);
         } else {
-            server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, false, null));
+            server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, false, null));
             ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
             returnCode = output.getReturnCode();
             assertEquals("Return code 70 expected", 70, returnCode);
