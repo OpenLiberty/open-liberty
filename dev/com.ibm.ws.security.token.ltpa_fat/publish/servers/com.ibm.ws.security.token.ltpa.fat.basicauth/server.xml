@@ -34,8 +34,7 @@
         </group>
     </basicRegistry>
 
-<!--
-    <application type="war" id="basicauth1" name="basicauth1" location="${server.config.dir}/apps/basicauth1.war">
+    <application type="war" id="basicauth1" name="basicauth1" location="${server.config.dir}/apps/basicauth.war">
         <application-bnd>
             <security-role name="Employee">
                 <user name="user1" />
@@ -51,23 +50,7 @@
         </application-bnd>
     </application>
 
-    <application type="war" id="basicauth2" name="basicauth2" location="${server.config.dir}/apps/basicauth2.war">
-        <application-bnd>
-            <security-role name="Employee">
-                <user name="user1" />
-                <group name="group1" />
-            </security-role>        
-            <security-role name="Manager">
-                <user name="user2" />
-                <group name="group2" />
-            </security-role>
-            <security-role name="AllAuthenticated">
-                <special-subject type="ALL_AUTHENTICATED_USERS" />
-            </security-role>
-        </application-bnd>
-    </application>
--->
-	<application type="war" id="basicauth" name="basicauth" location="${server.config.dir}/apps/basicauth.war">
+	<application type="war" id="basicauth2" name="basicauth2" location="${server.config.dir}/apps/basicauth.war">
 		<application-bnd>
             <security-role name="Employee">
                 <user name="user1" />
@@ -84,6 +67,10 @@
 	</application>
 
 	<webAppSecurity useContextRootForSSOCookiePath="true" />
+
+	<webAppSecurity sameSiteCookie="Strict"/>
+
+	<authentication id="Basic" cacheEnabled="false" />
 
 	<include location="../fatTestPorts.xml" />
 	<javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
