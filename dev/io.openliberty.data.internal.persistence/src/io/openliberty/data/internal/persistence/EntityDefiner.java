@@ -374,6 +374,8 @@ public class EntityDefiner implements Runnable {
             // Classes explicitly annotated with JPA @Entity:
             Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
 
+            Map<Class<?>, Class<?>> generatedToRecordClass = new HashMap<>();
+
             ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
 
             // List of classes to inspect for the above
@@ -393,6 +395,7 @@ public class EntityDefiner implements Runnable {
                         byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                         Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(loader, entityClassName, generatedEntityBytes);
+                        generatedToRecordClass.put(generatedEntity, c);
                         c = generatedEntity;
                     }
 
@@ -458,6 +461,7 @@ public class EntityDefiner implements Runnable {
                 Queue<Attribute<?, ?>> relationships = new LinkedList<>();
                 Queue<String> relationPrefixes = new LinkedList<>();
                 Queue<List<Member>> relationAccessors = new LinkedList<>();
+                Class<?> recordClass = generatedToRecordClass.get(entityType.getJavaType());
                 Class<?> idClass = null;
                 SortedMap<String, Member> idClassAttributeAccessors = null;
 
@@ -472,8 +476,11 @@ public class EntityDefiner implements Runnable {
                         relationPrefixes.add(attributeName);
                         relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     }
+
+                    Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
+
                     attributeNames.put(attributeName.toLowerCase(), attributeName);
-                    attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
+                    attributeAccessors.put(attributeName, Collections.singletonList(accessor));
                     attributeTypes.put(attributeName, attr.getJavaType());
                     if (attr.isCollection()) {
                         if (attr instanceof PluralAttribute)
@@ -577,8 +584,10 @@ public class EntityDefiner implements Runnable {
 
                 Class<?> entityClass = entityType.getJavaType();
 
-                EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
+                EntityInfo entityInfo = new EntityInfo( //
+                                entityType.getName(), //
                                 entityClass, //
+                                generatedToRecordClass.get(entityClass), //
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //

@@ -2542,20 +2542,59 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * TODO use a real record
+     * Tests all CrudRepository methods with a record as the entity.
+     * TODO use a real record once compiling against Java 17
      */
     @Test
-    public void testRecordAsEntity() {
+    public void testRecordCrudRepositoryMethods() {
         receipts.deleteAll();
 
         receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
         receipts.saveAll(List.of(new Receipt(200L, "C0022-00-022", 202.40f),
-                                 new Receipt(300L, "C0013-00-031", 33.99f)));
+                                 new Receipt(300L, "C0013-00-031", 33.99f),
+                                 new Receipt(400L, "C0045-00-054", 44.49f),
+                                 new Receipt(500L, "C0045-00-054", 155.00f)));
 
         assertEquals(true, receipts.existsById(300L));
-        assertEquals(3L, receipts.count());
+        assertEquals(5L, receipts.count());
+
+        Receipt receipt = receipts.findById(200L).orElseThrow();
+        assertEquals(202.40f, receipt.total(), 0.001f);
+
+        assertIterableEquals(List.of("C0013-00-031:300", "C0022-00-022:200", "C0045-00-054:500"),
+                             receipts.findAllById(List.of(200L, 300L, 500L))
+                                             .map(r -> r.customer() + ":" + r.purchaseId())
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        receipts.deleteAllById(List.of(200L, 500L));
+
+        assertIterableEquals(List.of("C0013-00-031:100", "C0013-00-031:300", "C0045-00-054:400"),
+                             receipts.findAll()
+                                             .map(r -> r.customer() + ":" + r.purchaseId())
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        receipts.deleteById(100L);
+
+        assertEquals(2L, receipts.count());
+
+        receipts.delete(new Receipt(400L, "C0045-00-054", 44.49f));
+
+        assertEquals(false, receipts.existsById(400L));
+
+        receipts.saveAll(List.of(new Receipt(600L, "C0067-00-076", 266.80f),
+                                 new Receipt(700L, "C0067-00-076", 17.99f),
+                                 new Receipt(800L, "C0088-00-088", 88.98f)));
+
+        receipts.deleteAll(List.of(new Receipt(300L, "C0013-00-031", 33.99f),
+                                   new Receipt(700L, "C0067-00-076", 17.99f)));
+
+        assertEquals(2L, receipts.count());
 
         receipts.deleteAll();
+
+        assertEquals(0L, receipts.count());
     }
 
     /**

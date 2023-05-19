@@ -55,7 +55,7 @@ public class PageImpl<T> implements Page<T> {
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pagination.size();
