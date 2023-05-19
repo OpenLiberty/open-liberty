@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -56,4 +56,19 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: The system cannot create the LTPA key.
 LTPA_KEY_CREATE_ERROR.explanation=The LTPA key cannot be created.
 LTPA_KEY_CREATE_ERROR.useraction=Any FFDCs might indicate a fatal error in generating the keys.
 
+LTPA_VALIDATION_KEYS_EXPIRED=CWWKS4109W: The LTPA validation keys file {0} has expired. The LTPA validation keys will not be used.
+LTPA_VALIDATION_KEYS_EXPIRED.explanation=The LTPA validation keys need to update the notUseAfterDate attribute or remove this validation keys file.
+LTPA_VALIDATION_KEYS_EXPIRED.useraction=Ensure that all servers participating in Single-Sign-On do not use this validation keys.
+
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: The LTPA validationKeys file {0} has an invalid date format. The LTPA validationKeys will not be used.
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=The LTPA validationKeys need to fix the notUseAfterDate with the ISO date, time, and zone format. An example of ISO date format: "2023-04-18T18:08:35Z"
+LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Ensure that all servers participating in Single-Sign-On do not use this validationKeys.
+
+LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: The LTPA validationKeys element {0} specified in the server.xml file is missing one or more of these attributes {1}.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=The LTPA validationKeys element need the filename and password attributes.
+LTPA_VALIDATION_KEYS_MISSING_ATTR.useraction=Ensure that all servers participating in Single-Sign-On do not use this validationKeys.
+
+LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: The LTPA validationKeys file {0} do not exist.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=The validationKeys file do not exist.
+LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Ensure that all servers participating in Single-Sign-On do not use this validationKeys.
 

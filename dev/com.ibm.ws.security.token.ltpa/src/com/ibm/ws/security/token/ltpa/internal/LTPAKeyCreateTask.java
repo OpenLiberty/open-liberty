@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
-import com.ibm.ws.security.token.ltpa.LTPAKey;
+import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
@@ -66,7 +66,7 @@ class LTPAKeyCreateTask implements Runnable {
         LTPAPrivateKey primaryPrivateKey = new LTPAPrivateKey(keyInfoManager.getPrivateKey(config.getPrimaryKeyFile()));
         LTPAPublicKey primaryPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(config.getPrimaryKeyFile()));
         byte[] primarySharedKey = keyInfoManager.getSecretKey(config.getPrimaryKeyFile());
-        List<LTPAKey> validationKeys = keyInfoManager.getValidationLTPAKeys();
+        List<LTPAValidationKeysInfo> validationKeys = keyInfoManager.getValidationLTPAKeys();
         long expDiffAllowed = config.getExpirationDifferenceAllowed();
 
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();

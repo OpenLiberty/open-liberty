@@ -24,7 +24,7 @@ import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
-import com.ibm.ws.security.token.ltpa.LTPAKey;
+import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -34,7 +34,7 @@ public class LTPAToken2Factory implements TokenFactory {
     private byte[] primarySharedKey;
     private LTPAPublicKey primaryPublicKey;
     private LTPAPrivateKey primaryPrivateKey;
-    private List<LTPAKey> validationKeys;
+    private List<LTPAValidationKeysInfo> validationKeys;
     private long expDiffAllowed;
 
     /** {@inheritDoc} */
@@ -46,7 +46,7 @@ public class LTPAToken2Factory implements TokenFactory {
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
         primaryPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PRIVATE_KEY);
         expDiffAllowed = (Long) tokenFactoryMap.get(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED);
-        validationKeys = (List<LTPAKey>) tokenFactoryMap.get(LTPAConstants.VALIDATION_KEYS);
+        validationKeys = (List<LTPAValidationKeysInfo>) tokenFactoryMap.get(LTPAConstants.VALIDATION_KEYS);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Number of validationKeys: " + validationKeys.size());
@@ -81,7 +81,7 @@ public class LTPAToken2Factory implements TokenFactory {
     public Token validateTokenBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
         Token validatedToken = null;
 
-        // primary key validation
+        // primary key for create and validation
         if (primarySharedKey != null && primaryPrivateKey != null && primaryPublicKey != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "validateTokenBytes with primary keys");
@@ -97,7 +97,7 @@ public class LTPAToken2Factory implements TokenFactory {
                 }
 
             } catch (Exception e) {
-                //TODO: ??
+                //TODO:
             }
         }
 
@@ -105,22 +105,21 @@ public class LTPAToken2Factory implements TokenFactory {
         if (validationKeys != null) {
             Exception lastException = null;
 
-            Iterator<LTPAKey> validationKeysIterator = validationKeys.iterator();
+            Iterator<LTPAValidationKeysInfo> validationKeysIterator = validationKeys.iterator();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "go through " + validationKeys.size() + " validationKeys");
             }
             while (validationKeysIterator.hasNext()) { // go through all validation keys until successfully validated the token
-                LTPAKey ltpaKey = validationKeysIterator.next();
-                byte[] sharedKeyForValidation = ltpaKey.getSecretKey();
-                LTPAPrivateKey ltpaPrivateKeyForValidation = ltpaKey.getLTPAPrivateKey();
-                LTPAPublicKey ltpaPublicKeyForValidation = ltpaKey.getLTPAPublicKey();
-                if (ltpaKey.isNotUseAfterData()) {
-                    //TODO: Add warning or info msg?
-                    validationKeys.remove(ltpaKey);
+                LTPAValidationKeysInfo ltpaKeyInfo = validationKeysIterator.next();
+                byte[] sharedKeyForValidation = ltpaKeyInfo.getSecretKey();
+                LTPAPrivateKey ltpaPrivateKeyForValidation = ltpaKeyInfo.getLTPAPrivateKey();
+                LTPAPublicKey ltpaPublicKeyForValidation = ltpaKeyInfo.getLTPAPublicKey();
+                if (ltpaKeyInfo.isNotUseAfterDate()) {
+                    validationKeys.remove(ltpaKeyInfo);
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "validateTokenBytes with validationKeys: " + ltpaKey);
+                        Tr.debug(tc, "validateTokenBytes with validationKeys: " + ltpaKeyInfo);
                     }
                     if (sharedKeyForValidation != null && ltpaPrivateKeyForValidation != null && ltpaPublicKeyForValidation != null) {
                         try {

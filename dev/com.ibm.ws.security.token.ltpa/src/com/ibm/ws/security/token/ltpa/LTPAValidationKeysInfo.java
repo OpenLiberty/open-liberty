@@ -10,27 +10,33 @@
  *******************************************************************************/
 package com.ibm.ws.security.token.ltpa;
 
+import java.time.OffsetDateTime;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 
 /**
  *
  */
-public class LTPAKey {
+public class LTPAValidationKeysInfo {
+    private static final TraceComponent tc = Tr.register(LTPAValidationKeysInfo.class);
+
     String filename = null;
     private byte[] secretKey = null;
     private byte[] privateKey = null;
     private byte[] publicKey = null;
     private LTPAPrivateKey ltpaPrivateKey = null;
     private LTPAPublicKey ltpaPublicKey = null;
-    String notUseAfterDate = null;
+    OffsetDateTime notUseAfterDateOdt = null;
 
-    LTPAKey(String filename, byte[] secretKey, byte[] privateKey, byte[] publicKey, String notUseAfterDate) {
+    LTPAValidationKeysInfo(String filename, byte[] secretKey, byte[] privateKey, byte[] publicKey, OffsetDateTime notUseAfterDateOdt) {
         this.filename = filename;
         this.secretKey = secretKey;
         this.privateKey = privateKey;
         this.publicKey = publicKey;
-        this.notUseAfterDate = notUseAfterDate;
+        this.notUseAfterDateOdt = notUseAfterDateOdt;
         ltpaPrivateKey = new LTPAPrivateKey(privateKey);
         ltpaPublicKey = new LTPAPublicKey(publicKey);
     }
@@ -55,7 +61,17 @@ public class LTPAKey {
         return ltpaPublicKey;
     }
 
-    public boolean isNotUseAfterData() {
-        return LTPAKeyInfoManager.isNotUseAfterDate(filename, notUseAfterDate);
+    public boolean isNotUseAfterDate() {
+        if (notUseAfterDateOdt == null)
+            return false;
+
+        OffsetDateTime currentTime = OffsetDateTime.now(notUseAfterDateOdt.getOffset());
+
+        if (notUseAfterDateOdt.isBefore(currentTime)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_EXPIRED", filename);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

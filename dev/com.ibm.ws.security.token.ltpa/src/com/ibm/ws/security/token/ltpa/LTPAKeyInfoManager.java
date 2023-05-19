@@ -15,7 +15,6 @@ package com.ibm.ws.security.token.ltpa;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -80,7 +79,7 @@ public class LTPAKeyInfoManager {
     private final Map<String, byte[]> keyCache = new Hashtable<String, byte[]>();
     private final Map<String, String> realmCache = new Hashtable<String, String>();
 
-    private static List<LTPAKey> validationLTPAKeys = new ArrayList<LTPAKey>();
+    private static List<LTPAValidationKeysInfo> ltpaValidationKeysInfos = new ArrayList<LTPAValidationKeysInfo>();
 
     /**
      * Load the contents of the properties file.
@@ -120,28 +119,35 @@ public class LTPAKeyInfoManager {
      * @param validationKeys       The validationKeys properties
      * @throws IOException
      */
-    //TODO: validationKeys properties has password - how to add @Sensitive for just password property?
     @SuppressWarnings("deprecation")
     public synchronized final void prepareLTPAKeyInfo(WsLocationAdmin locService, String primaryKeyImportFile, @Sensitive byte[] primaryKeyPassword,
-                                                      List<Properties> validationKeys) throws Exception {
+                                                      @Sensitive List<Properties> validationKeys) throws Exception {
         if (!this.importFileCache.contains(primaryKeyImportFile)) {
             loadLtpaKeysFile(locService, primaryKeyImportFile, primaryKeyPassword, false, null);
         }
         if (validationKeys != null && !validationKeys.isEmpty()) {
-            validationLTPAKeys.clear(); // Empty validationLTPAKeys
+            ltpaValidationKeysInfos.clear(); // Empty validationLTPAKeys
             //load validationKeys
             Iterator<Properties> validationKeysIterator = validationKeys.iterator();
             while (validationKeysIterator.hasNext()) {
                 Properties vKeys = validationKeysIterator.next();
-                String notUseAfterDate = ((String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE));
                 String filename = (String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME);
-                if (isNotUseAfterDate(filename, notUseAfterDate)) {
+                String notUseAfterDate = ((String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE));
+                OffsetDateTime notUseAfterDateOdt = null;
+                if (notUseAfterDate != null) {
+                    try {
+                        notUseAfterDateOdt = OffsetDateTime.parse(notUseAfterDate);
+                    } catch (Exception e) {
+                        continue; //Skip this keys
+                    }
+                }
+
+                if (notUseAfterDateOdt != null && isNotUseAfterDate(filename, notUseAfterDateOdt)) {
                     continue; //Skip this keys
                 }
                 byte[] password = getKeyPasswordBytes(vKeys);
-                //TODO: check for notUseAfterDate
                 if (!this.importFileCache.contains(vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME))) {
-                    loadLtpaKeysFile(locService, filename, password, true, notUseAfterDate);
+                    loadLtpaKeysFile(locService, filename, password, true, notUseAfterDateOdt);
                 }
             }
         }
@@ -150,36 +156,19 @@ public class LTPAKeyInfoManager {
             Tr.debug(this, tc, "importFileCache: " + importFileCache.toString());
             Tr.debug(this, tc, "keyCache: " + keyCache.toString());
             Tr.debug(this, tc, "realmCache: " + realmCache.toString());
-            Tr.debug(this, tc, "total validationLTPAKeys: " + validationLTPAKeys.size());
+            Tr.debug(this, tc, "number of ltpaValidationKeysInfos: " + ltpaValidationKeysInfos.size());
         }
     }
 
-    public static boolean isNotUseAfterDate(String filename, String notUseAfterDate) {
-//        String notUseAfterDate = (String) vKeys.get(LTPAConfiguration.CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE);
-        boolean result = false;
-        if (notUseAfterDate == null) { // Not specify so it is good to use
-            return result;
-        }
-        OffsetDateTime odt = null;
-        try {
-            odt = OffsetDateTime.parse(notUseAfterDate);
-        } catch (Exception e) {
-            Tr.error(tc, "validationKeys file name " + filename
-                         + " has an invalid date format. This LTPA keys file will not be used.");
-        }
-
-        ZoneOffset zone = odt.getOffset();
-
-        OffsetDateTime now = OffsetDateTime.now(zone);
+    public boolean isNotUseAfterDate(String filename, OffsetDateTime notUseAfterDateOdt) {
+        OffsetDateTime currentTime = OffsetDateTime.now(notUseAfterDateOdt.getOffset());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "notUseAfterDate: " + odt);
-            Tr.debug(tc, "current date: " + now);
+            Tr.debug(tc, "current date: " + currentTime);
         }
 
-        if (now.compareTo(odt) < 0) {
-            //TODO NLS
-            Tr.warning(tc, "validationKeys file name " + filename + " is already passed the current date/time");
+        if (notUseAfterDateOdt.isAfter(currentTime)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_EXPIRED", filename);
             return true;
         } else {
             return false;
@@ -196,32 +185,52 @@ public class LTPAKeyInfoManager {
      * @param locService
      * @param keyImportFile
      * @param keyPassword
-     * @param notUseAfterDate
+     * @param validationKey
+     * @param notUseAfterDateOdt
      * @throws IOException
      * @throws Exception
      */
-    private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, byte[] keyPassword, boolean isValidationKey,
-                                  String notUseAfterDate) throws IOException, Exception {
+    private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, byte[] keyPassword, boolean validationKey,
+                                  OffsetDateTime notUseAfterDateOdt) throws IOException, Exception {
         // Need to load the key import file
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Loading " + (isValidationKey == true ? "validation " : "primary ") + "keyfile + [" + keyImportFile + "]");
+            Tr.event(this, tc, "Loading " + (validationKey == true ? "validation " : "primary ") + "keyfile + [" + keyImportFile + "]");
         }
         Properties props = null;
         //Check to see if the LTPA key import file exists, create the keys and file if not
         WsResource ltpaKeyFileResource = getLTPAKeyFileResource(locService, keyImportFile);
+
+//        if (ltpaKeyFileResource != null) {
+//            props = loadPropertiesFile(ltpaKeyFileResource);
+//        } else if (!isValidationKey) { //Primary keys file does not exist so create only the primary key
+//            long start = System.currentTimeMillis();
+//            Tr.info(tc, "LTPA_CREATE_KEYS_START");
+//
+//            LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+//            props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
+//
+//            Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
+//        } else {
+//            Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", ltpaKeyFileResource);
+//            return;
+//        }
+
         if (ltpaKeyFileResource != null) {
             props = loadPropertiesFile(ltpaKeyFileResource);
-        } else if (!isValidationKey) { //Primary keys file does not exist so create only the primary key
-            long start = System.currentTimeMillis();
-            Tr.info(tc, "LTPA_CREATE_KEYS_START");
-
-            LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
-            props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
-
-            Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
         } else {
-            //TODO: file does not exist error msg?
-            return;
+            if (!validationKey) { //Primary keys file does not exist so create only the primary key
+                long start = System.currentTimeMillis();
+                Tr.info(tc, "LTPA_CREATE_KEYS_START");
+
+                LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
+
+                Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
+            } else {
+                //TODO: test this scenario to see if we need the error or not
+                Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", ltpaKeyFileResource);
+                return;
+            }
         }
 
         if (props == null || props.isEmpty()) {
@@ -279,20 +288,20 @@ public class LTPAKeyInfoManager {
             this.keyCache.put(keyImportFile + PUBLICKEY, publicKey);
         }
         if (realm != null) {
-            this.realmCache.put(keyImportFile, realm); //TODO: UTLE + REALM? to support different realm name
+            this.realmCache.put(keyImportFile, realm); //TODO: REALM? to support different realm name
         }
 
         this.importFileCache.add(keyImportFile);
 
-        if (isValidationKey) {
-            validationLTPAKeys.add(new LTPAKey(keyImportFile, secretKey, privateKey, publicKey, notUseAfterDate));
+        if (validationKey) {
+            ltpaValidationKeysInfos.add(new LTPAValidationKeysInfo(keyImportFile, secretKey, privateKey, publicKey, notUseAfterDateOdt));
             if (tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Add LTPAKeys to validationLTPAKeys");
+                Tr.debug(this, tc, "Add LTPAValidationKeysInfo to ltpaValidationKeysInfos");
                 Tr.debug(this, tc, "filename: " + keyImportFile);
                 Tr.debug(this, tc, "secretKey: " + secretKey.toString());
                 Tr.debug(this, tc, "publicKey: " + publicKey.toString());
-                Tr.debug(this, tc, "notUseAfterDate: " + notUseAfterDate);
-                Tr.debug(this, tc, "validationLTPAKeys size: " + validationLTPAKeys.size());
+                Tr.debug(this, tc, "notUseAfterDate: " + notUseAfterDateOdt);
+                Tr.debug(this, tc, "LTPAValidationKeysInfo size: " + ltpaValidationKeysInfos.size());
             }
         }
     }
@@ -310,7 +319,6 @@ public class LTPAKeyInfoManager {
         if (ltpaFile != null && ltpaFile.exists()) {
             return ltpaFile;
         } else {
-            // The file does not exist so return null. TODO: warning msg?
             return null;
         }
     }
@@ -361,8 +369,8 @@ public class LTPAKeyInfoManager {
         return this.realmCache.get(keyImportFile);
     }
 
-    public final List<LTPAKey> getValidationLTPAKeys() {
-        return validationLTPAKeys;
+    public final List<LTPAValidationKeysInfo> getValidationLTPAKeys() {
+        return ltpaValidationKeysInfos;
     }
 
 }

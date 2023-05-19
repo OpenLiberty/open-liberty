@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class SecurityFileMonitor implements FileMonitor {
     }
 
     /**
-     * Registers this file monitor to start monitoring the specified directory and/or files at the specified interval.
+     * Registers this file monitor to start monitoring the specified files at the specified interval.
      *
      * @param paths           the paths of the files to monitor.
      * @param monitorInterval the rate to monitor the files.
@@ -55,7 +55,7 @@ public class SecurityFileMonitor implements FileMonitor {
      *
      * @param dirs            the dirs to monitor.
      * @param paths           the paths of the files to monitor.
-     * @param monitorInterval the rate to monitor the files.
+     * @param monitorInterval the rate to monitor the directory and/or files.
      *
      * @return the <code>FileMonitor</code> service registration.
      */
@@ -153,7 +153,7 @@ public class SecurityFileMonitor implements FileMonitor {
         if (modifiedFiles.isEmpty() == false) {
             actionNeeded = true;
         }
-        if (!deletedFiles.isEmpty()) {
+        if (deletedFiles.isEmpty() == false) {
             actionNeeded = true;
         }
         return actionNeeded;
