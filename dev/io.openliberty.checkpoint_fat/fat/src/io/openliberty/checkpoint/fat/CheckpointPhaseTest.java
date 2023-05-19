@@ -62,7 +62,7 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtApplicationsMultRestore() throws Exception {
+    public void testAfterAppStartMultRestore() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, (s) -> {
             assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
@@ -81,7 +81,7 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtDeployment() throws Exception {
+    public void testBeforeAppStart() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, true, (s) -> {
             assertEquals("Unexpected app code ran.", null, s.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));

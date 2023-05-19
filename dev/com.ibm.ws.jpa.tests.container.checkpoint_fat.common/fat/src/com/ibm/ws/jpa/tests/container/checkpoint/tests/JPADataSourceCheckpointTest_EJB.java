@@ -218,49 +218,49 @@ public class JPADataSourceCheckpointTest_EJB extends JPAFATServletClient {
     // testing for CheckpointPhase.BEFORE_APP_START
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SF_AMJTA_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SF_AMJTA_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SF_AMJTA";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SF_AMRL_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SF_AMRL_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SF_AMRL";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SF_CMTS_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SF_CMTS_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SF_CMTS";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SFEx_CMEX_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SFEx_CMEX_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SFEx_CMEX";
         testCheckpointDataSource(EJB_SFEX_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SL_AMJTA_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SL_AMJTA_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SL_AMJTA";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SL_AMRL_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SL_AMRL_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SL_AMRL";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_SL_CMTS_EJB() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_SL_CMTS_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "SL_CMTS";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);
@@ -269,49 +269,49 @@ public class JPADataSourceCheckpointTest_EJB extends JPAFATServletClient {
     // testing for CheckpointPhase.AFTER_APP_START
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SF_AMJTA_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SF_AMJTA_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SF_AMJTA";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SF_AMRL_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SF_AMRL_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SF_AMRL";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SF_CMTS_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SF_CMTS_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SF_CMTS";
         testCheckpointDataSource(EJB_SF_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SFEx_CMEX_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SFEx_CMEX_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SFEx_CMEX";
         testCheckpointDataSource(EJB_SFEX_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SL_AMJTA_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SL_AMJTA_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SL_AMJTA";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SL_AMRL_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SL_AMRL_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SL_AMRL";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_SL_CMTS_EJB() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_SL_CMTS_EJB() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "SL_CMTS";
         testCheckpointDataSource(EJB_SL_SERVLET_NAME, phase, resourceType);

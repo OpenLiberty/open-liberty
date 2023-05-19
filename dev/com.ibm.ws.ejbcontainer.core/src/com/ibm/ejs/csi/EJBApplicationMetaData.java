@@ -281,7 +281,7 @@ public class EJBApplicationMetaData {
         ivLogicalName = logicalName; // F743-26137
         ivStandaloneModule = standaloneModule; // d660700
         ivApplicationMetaData = amd;
-        isCheckpointApplications = (container != null) ? container.getEJBRuntime().isCheckpointApplications() : false;
+        isCheckpointApplications = (container != null) ? container.getEJBRuntime().isCheckpointAfterAppStart() : false;
 
         ivBlockWorkUntilStarted = blockWorkUntilStarted; // F743-15941
         if (!started) { // F743-26072

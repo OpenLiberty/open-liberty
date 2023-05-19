@@ -163,7 +163,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointDeployment() throws Exception {
+    public void testEjbStartCheckpointBeforeAppStart() throws Exception {
         setCheckpointPhase(CheckpointPhase.BEFORE_APP_START);
         try {
             server.startServer();
@@ -177,7 +177,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointApplications() throws Exception {
+    public void testEjbStartCheckpointAfterAppStart() throws Exception {
         setCheckpointPhase(CheckpointPhase.AFTER_APP_START);
         try {
             server.startServer();

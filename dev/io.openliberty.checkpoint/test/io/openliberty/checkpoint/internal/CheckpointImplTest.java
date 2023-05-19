@@ -395,7 +395,7 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testCheckpointApplications() throws CheckpointFailedException {
+    public void testCheckpointAfterAppStart() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
@@ -407,7 +407,7 @@ public class CheckpointImplTest {
         assertNotNull("Should have running condition now", hooks.runningCondition.get());
     }
 
-    public void testCheckpointDeployment() throws CheckpointFailedException, IllegalClassFormatException {
+    public void testCheckpointBeforeAppStart() throws CheckpointFailedException, IllegalClassFormatException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());

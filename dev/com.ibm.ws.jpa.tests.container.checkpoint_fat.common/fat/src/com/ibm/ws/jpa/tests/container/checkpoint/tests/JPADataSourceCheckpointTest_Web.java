@@ -183,21 +183,21 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
     // testing for CheckpointPhase.BEFORE_APP_START
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_AMJTA_Web() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_AMJTA_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "AMJTA";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_AMRL_Web() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_AMRL_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "AMRL";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_CMTS_Web() throws Exception {
+    public void jpa_BAS_testCheckpointDataSource_CMTS_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "CMTS";
         testCheckpointDataSource(phase, resourceType);
@@ -206,21 +206,21 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
     // testing for CheckpointPhase.AFTER_APP_START
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_AMJTA_Web() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_AMJTA_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "AMJTA";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_AMRL_Web() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_AMRL_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "AMRL";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_CMTS_Web() throws Exception {
+    public void jpa_AAS_testCheckpointDataSource_CMTS_Web() throws Exception {
         final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "CMTS";
         testCheckpointDataSource(phase, resourceType);

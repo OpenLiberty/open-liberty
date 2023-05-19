@@ -57,12 +57,12 @@ public class WebAppMessageTest extends FATServletClient {
     }
 
     @Test
-    public void testApplicationsWebAppMessage() throws Exception {
+    public void testAfterAppStartWebAppMessage() throws Exception {
         doTest(CheckpointPhase.AFTER_APP_START);
     }
 
     @Test
-    public void testDeploymentWebAppMessage() throws Exception {
+    public void testBeforeAppStartWebAppMessage() throws Exception {
         doTest(CheckpointPhase.BEFORE_APP_START);
     }
 

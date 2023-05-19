@@ -269,7 +269,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
             ivInitAtStartup = ias.equalsIgnoreCase("true");
         } else {
             ivInitAtStartupSet = false;
-            ivInitAtStartup = isCheckpointApplications() || isCheckpointDeployment();
+            ivInitAtStartup = isCheckpointAfterAppStart() || isCheckpointBeforeAppStart();
         }
 
         //PK15508: make uowCrtl a global variable.  Change from: UOWControl ivUOWControl = cef.getUOWControl(tx); to:
@@ -390,7 +390,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                 ivInitAtStartup = startEjbsAtAppStart;
             } else {
                 ivInitAtStartupSet = false;
-                ivInitAtStartup = isCheckpointApplications() || isCheckpointDeployment();
+                ivInitAtStartup = isCheckpointAfterAppStart() || isCheckpointBeforeAppStart();
             }
         }
     }

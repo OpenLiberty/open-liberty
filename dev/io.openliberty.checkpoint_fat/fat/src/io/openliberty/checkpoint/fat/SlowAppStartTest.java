@@ -57,7 +57,7 @@ public class SlowAppStartTest {
     }
 
     @Test
-    public void testAtDeployment() throws Exception {
+    public void testBeforeAppStart() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, false, null));
         server.startServer();
         String initSleeping = server.waitForStringInLogUsingMark(TEST_INIT_SLEEPING, 100);
@@ -71,7 +71,7 @@ public class SlowAppStartTest {
 
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testAtApplications() throws Exception {
+    public void testAfterAppStart() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
         ProgramOutput checkpointOutput = server.startServer();
         int retureCode = checkpointOutput.getReturnCode();
