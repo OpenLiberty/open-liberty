@@ -86,7 +86,7 @@ public class CheckpointSPITest {
         findLogMessage("No restore config", "TESTING - restore config: ", "a=test1 b=test1 c=${c_value}", 0);
         findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
         findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
-        findLogMessage("Bind should have non-null running condition", "TESTING - bind running condition: ", "io.openliberty.process.running APPLICATIONS", 500);
+        findLogMessage("Bind should have non-null running condition", "TESTING - bind running condition: ", "io.openliberty.process.running AFTER_APP_START", 500);
     }
 
     @Test

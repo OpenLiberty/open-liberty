@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -112,7 +112,7 @@ public class MPOpenTracingJaegerTraceTest {
         URL url = createURL(server2, "inventory/systems/localhost");
         String response = HttpUtils.getHttpResponseAsString(url);
         assertNotNull(response);
-        assertTrue(response.contains("at=APPLICATIONS"));
+        assertTrue(response.contains("at=AFTER_APP_START"));
 
         // Jaeger tracing starts after the http request
         String logMsg = server1.waitForStringInLog("INFO io.jaegertracing");
