@@ -24,6 +24,7 @@ src: \
 	test-applications/Exception2xBean.jar/src, \
 	test-applications/Exception2xWeb.war/src, \
 	test-applications/ExceptionBean.jar/src, \
+	test-applications/ExceptionOnStartBean.jar/src, \
 	test-applications/ExceptionWeb.war/src
 
 fat.project: true
