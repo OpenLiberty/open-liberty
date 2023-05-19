@@ -56,6 +56,15 @@ javaAgent.desc=\
 \tthe jar used to launch the runtime.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\
+\ \ \ \ --checkpoint
+action-desc.checkpoint=\
+\tCheckpoint the named server at the specified checkpoint phase. Use   \n\
+\tthe --at option to specify the checkpoint phase. When the checkpoint \n\
+\tcompletes, the server stops and its current state is written to      \n\
+\tdisk. This checkpoint provides InstantOn behavior when the server    \n\
+\tlaunches. When the checkpoint completes, you can launch the server   \n\
+\twith InstantOn by using the run or start action.
 action-key.create=\
 \ \ \ \ --create
 action-desc.create=\
@@ -160,6 +169,12 @@ action-key.resume=\
 action-desc.resume=\
 \tResume all paused components in the server. You can specify the      \n\
 \t--target option to resume specific paused components.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\
+\ \ \ \ --at="checkpoint phase"
+option-desc.checkpoint.at=\
+\tSpecifies the checkpoint phase. The valid values are: beforeAppStart \n\
+\tor afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\
 \ \ \ \ --clean

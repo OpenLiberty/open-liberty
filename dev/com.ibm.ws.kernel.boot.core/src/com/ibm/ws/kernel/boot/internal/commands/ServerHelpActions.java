@@ -14,6 +14,7 @@ import com.ibm.ws.kernel.boot.HelpActions;
 
 public class ServerHelpActions implements HelpActions {
     private enum Command {
+        checkpointCmd(Category.lifecycle, "at"),
         createCmd(Category.lifecycle, "template", "no-password"),
         debugCmd(Category.lifecycle, "clean"),
         dumpCmd(Category.service, "archive"),
