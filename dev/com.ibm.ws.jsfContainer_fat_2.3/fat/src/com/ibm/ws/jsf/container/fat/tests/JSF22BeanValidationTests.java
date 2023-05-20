@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
+
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -80,18 +79,18 @@ public class JSF22BeanValidationTests extends FATServletClient {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-      // Stop the server
-      if (server != null && server.isStarted()) {
-        server.stopServer();
-      }
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Core Bean Validation support enabled"));
     }
 
     @Test

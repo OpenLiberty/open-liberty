@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -71,9 +73,9 @@ public class JSF22BeanValidationTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled"));
     }
 
     @Test

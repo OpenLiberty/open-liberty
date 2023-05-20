@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -30,8 +28,6 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-
-import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * A collection of tests for the JSF 2.2 Faces Flows feature
@@ -91,9 +87,9 @@ public class CDIFlowsTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Core CDI support enabled"));
     }
 
     /**
