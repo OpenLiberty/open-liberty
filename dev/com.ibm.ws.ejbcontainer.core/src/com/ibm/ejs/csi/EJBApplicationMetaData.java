@@ -90,10 +90,10 @@ public class EJBApplicationMetaData {
     private final ApplicationMetaData ivApplicationMetaData;
 
     /**
-     * The server was started with checkpoint phase APPLICATIONS. A checkpoint is created
+     * The server was started with checkpoint phase AFTER_APP_START. A checkpoint is created
      * at the end of application start.
      */
-    private final boolean isCheckpointApplications;
+    private final boolean isCheckpointAfterAppStart;
 
     /**
      * The EJB modules associated with this application.
@@ -281,7 +281,7 @@ public class EJBApplicationMetaData {
         ivLogicalName = logicalName; // F743-26137
         ivStandaloneModule = standaloneModule; // d660700
         ivApplicationMetaData = amd;
-        isCheckpointApplications = (container != null) ? container.getEJBRuntime().isCheckpointAfterAppStart() : false;
+        isCheckpointAfterAppStart = (container != null) ? container.getEJBRuntime().isCheckpointAfterAppStart() : false;
 
         ivBlockWorkUntilStarted = blockWorkUntilStarted; // F743-15941
         if (!started) { // F743-26072
@@ -1092,10 +1092,10 @@ public class EJBApplicationMetaData {
             preloadFutures.add(preloadFuture);
         }
 
-        // If the server is starting for applications checkpoint, then wait a reasonable amount
+        // If the server is starting for an AFTER_APP_START checkpoint, then wait a reasonable amount
         // of time for the asynchronous bean pool preloads to complete. Checkpoint restore will
         // then resume processing with fully preloaded bean pools.
-        if (isCheckpointApplications) {
+        if (isCheckpointAfterAppStart) {
             long timeout = 10;
             for (ScheduledFuture<?> preloadFuture : preloadFutures) {
                 try {

@@ -77,7 +77,7 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assert_24_StatelessClassInstancesCreated();
     }
 
-    public void testEjbStartCheckpointDeployment() throws Exception {
+    public void testEjbStartCheckpointBeforeAppStart() throws Exception {
         // Only the @Startup Singleton bean classes should be initialized and some stateless with hard minimum
         assertEquals("Wrong number of classes initialized", 10, CheckpointStatistics.getInitializedClassListSize());
         assert_8_StartupSingletonClassesInitialized();
@@ -101,7 +101,7 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assert_24_StatelessClassInstancesCreated();
     }
 
-    public void testEjbStartCheckpointApplications() throws Exception {
+    public void testEjbStartCheckpointAfterAppStart() throws Exception {
         // Only the @Startup Singleton bean classes should be initialized and some stateless with hard minimum
         assertEquals("Wrong number of classes initialized", 10, CheckpointStatistics.getInitializedClassListSize());
         assert_8_StartupSingletonClassesInitialized();

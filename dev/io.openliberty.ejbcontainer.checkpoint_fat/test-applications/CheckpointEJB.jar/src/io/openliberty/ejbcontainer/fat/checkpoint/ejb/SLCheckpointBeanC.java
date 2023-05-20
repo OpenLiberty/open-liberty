@@ -30,8 +30,8 @@ import javax.ejb.Stateless;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>FEATURES : initialized on module start and constructed on first use; no pool preload</li>
- * <li>DEPLOYMENT : initialized on module start and constructed on first use; no pool preload</li>
- * <li>APPLICATIONS : initialized on module start and pool preloaded (50) on application start</li>
+ * <li>BEFORE_APP_START : initialized on module start and constructed on first use; no pool preload</li>
+ * <li>AFTER_APP_START : initialized on module start and pool preloaded (50) on application start</li>
  * </ul>
  *
  * Checkpoint causes behavior difference since poolSize not specified. <p>

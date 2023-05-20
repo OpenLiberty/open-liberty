@@ -30,8 +30,8 @@ import javax.ejb.Stateless;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>FEATURES : initialized and constructed on first use; no pool preload</li>
- * <li>DEPLOYMENT : initialized and constructed on first use; no pool preload</li>
- * <li>APPLICATIONS : initialized and constructed on first use; no pool preload</li>
+ * <li>BEFORE_APP_START : initialized and constructed on first use; no pool preload</li>
+ * <li>AFTER_APP_START : initialized and constructed on first use; no pool preload</li>
  * </ul>
  *
  * Checkpoint causes no behavior difference since StartAtAppStart is explicitly disabled. <p>
