@@ -14,13 +14,11 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.io.File;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
-
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -68,7 +66,6 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
 
-
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, certificateFile.getAbsolutePath());
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
@@ -111,7 +108,7 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
             KeyPair generatedKeyPair = SSLUtils.generateKeyPair();
 
             String dockerIP = DockerClientFactory.instance().dockerHostIpAddress();
-            String dnName = "O=Evil Inc Test Certificate, CN="+dockerIP+", L=Toronto,C=CA";
+            String dnName = "O=Evil Inc Test Certificate, CN=" + dockerIP + ", L=Toronto,C=CA";
             List<String> genericNameList = new ArrayList<String>();
             genericNameList.add(dockerIP);
 

@@ -15,11 +15,10 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import java.security.KeyPair;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,7 +36,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.security.utils.SSLUtils;
-
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
@@ -65,10 +63,12 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
                                                                          .withNetwork(network)
                                                                          .withNetworkAliases("jaeger-all-in-one");
     @ClassRule
-    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-jaeger-secure.yaml"), getCertificate(), getKey())
-                                                                                                                                                                   .withNetwork(network)
-                                                                                                                                                                   .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,"otelCol"))
-                                                                                                                                                                   .withNetworkAliases("otel-collector-jaeger");
+    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-jaeger-secure.yaml"),
+                                                                                             getCertificate(), getKey())
+                                                                                                                        .withNetwork(network)
+                                                                                                                        .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+                                                                                                                                                               "otelCol"))
+                                                                                                                        .withNetworkAliases("otel-collector-jaeger");
 
     public static JaegerQueryClient client;
 
@@ -125,7 +125,7 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
             KeyPair generatedKeyPair = SSLUtils.generateKeyPair();
 
             String dockerIP = DockerClientFactory.instance().dockerHostIpAddress();
-            String dnName = "O=Evil Inc Test Certificate, CN="+dockerIP+", L=Toronto,C=CA";
+            String dnName = "O=Evil Inc Test Certificate, CN=" + dockerIP + ", L=Toronto,C=CA";
             List<String> genericNameList = new ArrayList<String>();
             genericNameList.add(dockerIP);
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
@@ -15,48 +15,39 @@ import java.io.FileWriter;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStore.Entry;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * Util class for generating SSL certificates and keys for testing SSL or TLS connections in fat tests.
- * 
+ * <p>
  * An example of using this class to generate a certificate file and private key file for a remote docker container:
  *
+ * <pre>
  * private static boolean createdSSLFiles = false;
  *
  * private synchronized static void generateSSLFiles() {
@@ -68,7 +59,7 @@ import com.ibm.websphere.simplicity.log.Log;
  *         KeyPair generatedKeyPair = SSLUtils.generateKeyPair();
  *
  *         String dockerIP = DockerClientFactory.instance().dockerHostIpAddress();
- *         String dnName = "O=Evil Inc Test Certificate, CN="+dockerIP+", L=Toronto,C=CA";
+ *         String dnName = "O=Evil Inc Test Certificate, CN=" + dockerIP + ", L=Toronto,C=CA";
  *         List<String> genericNameList = new ArrayList<String>();
  *         genericNameList.add(dockerIP);
  *
@@ -86,6 +77,7 @@ import com.ibm.websphere.simplicity.log.Log;
  *         throw new RuntimeException("Exception doing SSLFiles", e);
  *     }
  * }
+ * </pre>
  */
 public class SSLUtils {
 
@@ -101,6 +93,7 @@ public class SSLUtils {
 
     /**
      * Creates a new KeyPair
+     *
      * @Return a KeyPair
      */
     public static KeyPair generateKeyPair() throws Exception {
@@ -115,14 +108,12 @@ public class SSLUtils {
     /**
      * Creates a new public key certificate
      *
-     * @Param keyPair the public key from this keyPair will be added to the certificate.
-     * @Param subjectDN the certificate's subjectDN
-     * @Param genericNameList a list of IPv4 addresses or hostnames that will be added to the certificate under Subject Alternative Name. This may be empty or null.
+     * @Param  keyPair the public key from this keyPair will be added to the certificate.
+     * @Param  subjectDN the certificate's subjectDN
+     * @Param  genericNameList a list of IPv4 addresses or hostnames that will be added to the certificate under Subject Alternative Name. This may be empty or null.
      * @Return a Certificate
      */
-    public static Certificate selfSign(KeyPair keyPair, String subjectDN, List<String> genericNameList)
-            throws Exception
-    {
+    public static Certificate selfSign(KeyPair keyPair, String subjectDN, List<String> genericNameList) throws Exception {
         Log.info(c, "selfSign", "entering SSLUtils.selfSign");
 
         final String DNS_PATTERN = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$";//from https://stackoverflow.com/a/106223
@@ -149,12 +140,12 @@ public class SSLUtils {
         String signatureAlgorithm = "SHA256WithRSA";
 
         SubjectPublicKeyInfo subjectPublicKeyInfo = SubjectPublicKeyInfo.getInstance(keyPair
-                .getPublic().getEncoded());
+                        .getPublic()
+                        .getEncoded());
 
-        X509v3CertificateBuilder certificateBuilder = new X509v3CertificateBuilder(dnName,
-                certSerialNumber, startDate, endDate, dnName, subjectPublicKeyInfo);
+        X509v3CertificateBuilder certificateBuilder = new X509v3CertificateBuilder(dnName, certSerialNumber, startDate, endDate, dnName, subjectPublicKeyInfo);
 
-        if (genericNameList != null && ! genericNameList.isEmpty()) {
+        if (genericNameList != null && !genericNameList.isEmpty()) {
             List<GeneralName> altNames = new ArrayList<GeneralName>();
             for (String name : genericNameList) {
                 if (name.matches(IPV4_PATTERN)) {
@@ -168,17 +159,18 @@ public class SSLUtils {
                 }
             }
 
-            GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence((GeneralName[]) altNames.toArray(new GeneralName[] {})));
+            GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence(altNames.toArray(new GeneralName[] {})));
             certificateBuilder.addExtension(Extension.subjectAlternativeName, false, subjectAltNames);
         }
 
         ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(
-                bcProvider).build(keyPair.getPrivate());
+                                                                                                  bcProvider)
+                        .build(keyPair.getPrivate());
 
         X509CertificateHolder certificateHolder = certificateBuilder.build(contentSigner);
 
         Certificate selfSignedCert = new JcaX509CertificateConverter()
-                .getCertificate(certificateHolder);
+                        .getCertificate(certificateHolder);
 
         return selfSignedCert;
     }

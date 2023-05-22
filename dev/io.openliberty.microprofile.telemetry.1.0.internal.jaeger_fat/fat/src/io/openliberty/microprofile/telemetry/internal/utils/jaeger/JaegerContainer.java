@@ -17,7 +17,6 @@ import java.io.File;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -69,15 +68,14 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     public JaegerContainer(File tlsCert, File tlsKey) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                        ImageNameSubstitutor.instance()
-                                                                        .apply(IMAGE_NAME)
-                                                                        .asCanonicalNameString())
-                                                                        .copy("/etc/certificate.crt", "/etc/certificate.crt")
-                                                                        .copy("/etc/private.key", "/etc/private.key")
-                                                                        .build())
-                                                                        .withFileFromFile("/etc/certificate.crt", tlsCert,0644)
-                                                                        .withFileFromFile("/etc/private.key", tlsKey, 0644));
-
+                                                                                          ImageNameSubstitutor.instance()
+                                                                                                              .apply(IMAGE_NAME)
+                                                                                                              .asCanonicalNameString())
+                                                                                    .copy("/etc/certificate.crt", "/etc/certificate.crt")
+                                                                                    .copy("/etc/private.key", "/etc/private.key")
+                                                                                    .build())
+                                       .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
+                                       .withFileFromFile("/etc/private.key", tlsKey, 0644));
 
         Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
@@ -93,7 +91,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/certificate.crt");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/private.key");
 
-    }   
+    }
 
     /**
      * Get the port to use to send OLTP spans via gRPC
