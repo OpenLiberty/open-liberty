@@ -57,7 +57,7 @@ public class JNDITest {
     @Test
     public void testJNDIlookupNoEntry() throws Exception {
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
         server.stopServer();
 
@@ -86,7 +86,7 @@ public class JNDITest {
         preConfig.getJndiEntryElements().add(defaultEntry);
         server.updateServerConfiguration(preConfig);
         
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
         
         server.checkpointRestore();

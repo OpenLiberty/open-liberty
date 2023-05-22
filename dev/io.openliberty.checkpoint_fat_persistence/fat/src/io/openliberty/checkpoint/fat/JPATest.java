@@ -137,7 +137,7 @@ public class JPATest {
             }
         };
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, preRestoreLogic);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, preRestoreLogic);
         server.addCheckpointRegexIgnoreMessage("CWWKG0083W");
         server.startServer();
     }

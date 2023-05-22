@@ -93,11 +93,11 @@ public class MPHealthTest extends FATServletClient {
     }
 
     private CheckpointPhase getCheckpointPhase() {
-        CheckpointPhase phase = CheckpointPhase.APPLICATIONS;
+        CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         switch (testMethod) {
             case testUpdateHealthChecks:
                 // We don't want the application to start hence doing the checkpoint in DEPLOYMENT phase.
-                phase = CheckpointPhase.DEPLOYMENT;
+                phase = CheckpointPhase.BEFORE_APP_START;
                 break;
             default:
                 break;

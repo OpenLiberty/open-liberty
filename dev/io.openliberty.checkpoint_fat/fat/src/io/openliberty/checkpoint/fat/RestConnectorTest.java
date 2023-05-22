@@ -72,7 +72,7 @@ public class RestConnectorTest extends FATServletClient {
     @Before
     public void setUp() throws Exception {
         server.saveServerConfiguration();
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
     }
 

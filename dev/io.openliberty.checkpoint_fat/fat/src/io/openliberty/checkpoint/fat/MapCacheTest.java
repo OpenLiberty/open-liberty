@@ -60,7 +60,7 @@ public class MapCacheTest {
         config.getVariables().getById("useInactivityParm").setValue("true");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(); // take a checkpoint
         server.checkpointRestore();
 
@@ -86,7 +86,7 @@ public class MapCacheTest {
         config.getVariables().getById("useInactivityParm").setValue("false");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(); // take a checkpoint
         server.checkpointRestore();
 

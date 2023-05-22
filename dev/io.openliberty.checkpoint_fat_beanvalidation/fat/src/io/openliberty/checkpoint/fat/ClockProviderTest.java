@@ -63,7 +63,7 @@ public class ClockProviderTest extends FATServletClient {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "bval.v20.web");
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false,
                              server -> {
                                  assertNotNull("BeanVal20TestServlet init message not found in log.",
                                                server.waitForStringInLogUsingMark("BeanVal20TestServlet init now", 0));

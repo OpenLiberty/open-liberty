@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -94,7 +94,7 @@ public class MPOpenTracingJaegerTraceTest {
     @Test
     public void testMultiSpans() throws Exception {
         //checkpoint system server
-        server1.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server1.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server1.startServer(testName.getMethodName() + ".log");
         assertEquals("Expected checkpoint message not found", 1, server1.findStringsInLogs("CWWKC0451I", server1.getDefaultLogFile()).size());
         server1.copyFileToLibertyServerRoot("mpOpenTracing/server.env"); //Update the server.env with JAEGER_SAMPLER_PARAM=0
@@ -102,7 +102,7 @@ public class MPOpenTracingJaegerTraceTest {
         assertEquals("Expected restore message not found", 1, server1.findStringsInLogs("CWWKC0452I", server1.getDefaultLogFile()).size());
 
         //checkpoint inventory server
-        server2.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server2.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server2.startServer(testName.getMethodName() + ".log");
         assertEquals("Expected checkpoint message not found", 1, server2.findStringsInLogs("CWWKC0451I", server2.getDefaultLogFile()).size());
         server2.checkpointRestore();
@@ -112,7 +112,7 @@ public class MPOpenTracingJaegerTraceTest {
         URL url = createURL(server2, "inventory/systems/localhost");
         String response = HttpUtils.getHttpResponseAsString(url);
         assertNotNull(response);
-        assertTrue(response.contains("at=APPLICATIONS"));
+        assertTrue(response.contains("at=AFTER_APP_START"));
 
         // Jaeger tracing starts after the http request
         String logMsg = server1.waitForStringInLog("INFO io.jaegertracing");

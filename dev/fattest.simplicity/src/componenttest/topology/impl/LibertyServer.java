@@ -3056,8 +3056,8 @@ public class LibertyServer implements LogMonitorClient {
             checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
 
             if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
-                checkpointInfo.checkpointPhase == CheckpointPhase.APPLICATIONS) {
-                //If server restored from an APPLICATIONS checkpoint, then we do not expect to see starting application message.
+                checkpointInfo.checkpointPhase == CheckpointPhase.AFTER_APP_START) {
+                //If server restored from an AFTER_APP_START checkpoint, then we do not expect to see starting application message.
                 // It would have started pre-checkpoint.
                 // If present, it may mean a bug in how config changes are handled by checkpoint.
                 // We intentionally only make this check if the test will not otherwise fail due to unexpected error messages

@@ -65,7 +65,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
@@ -105,7 +105,7 @@ public class LogsVerificationTest {
         properties.put("com.ibm.ws.logging.max.files", "4");
         FATSuite.configureBootStrapProperties(server, properties);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
@@ -141,7 +141,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
@@ -158,7 +158,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testRestoreHideMessageTRAS3001I() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
@@ -169,7 +169,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testVariableSourceDirUpdateDuringRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         configureEnvVariable(server, singletonMap("VARIABLE_SOURCE_DIRS", "testSrcDir"));
@@ -182,7 +182,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testEnvMessageFormatUpdateOnRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         RemoteFile messagesLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "/messages.log");

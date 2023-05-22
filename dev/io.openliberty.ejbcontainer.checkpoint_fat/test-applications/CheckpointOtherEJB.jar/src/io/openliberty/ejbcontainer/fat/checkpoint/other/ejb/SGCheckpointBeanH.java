@@ -40,8 +40,8 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>INACTIVE : initialized and constructed on module start; may reference other beans in module</li>
- * <li>DEPLOYMENT : initialized and constructed on module start; may reference other beans in module</li>
- * <li>APPLICATIONS : initialized and constructed on module start; may reference other beans in module</li>
+ * <li>BEFORE_APP_START : initialized and constructed on module start; may reference other beans in module</li>
+ * <li>AFTER_APP_START : initialized and constructed on module start; may reference other beans in module</li>
  * </ul>
  *
  * Checkpoint causes no behavior difference because of the use of `@Startup`. <p>

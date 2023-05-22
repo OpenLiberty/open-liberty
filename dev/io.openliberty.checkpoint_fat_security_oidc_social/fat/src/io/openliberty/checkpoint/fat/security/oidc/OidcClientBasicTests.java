@@ -109,7 +109,7 @@ public class OidcClientBasicTests extends CommonTest {
         testMethod = getTestMethod(TestMethod.class, testName);
         opServer.startServer(testMethod + ".log");
 
-        rpServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        rpServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         rpServer.startServer(testMethod + ".log");
         rpServer.checkpointRestore();
 

@@ -104,7 +104,7 @@ public class MPJWTTest extends FATServletClient {
     @Before
     public void setUp() throws Exception {
         server.saveServerConfiguration();
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));

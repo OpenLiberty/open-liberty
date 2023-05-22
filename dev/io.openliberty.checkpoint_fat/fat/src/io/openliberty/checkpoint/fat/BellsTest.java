@@ -75,14 +75,14 @@ public class BellsTest extends FATServletClient {
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
-            case testBellsCheckpointAtDeployment:
-                server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
+            case testBellsCheckpointBeforeAppStart:
+                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
                 break;
-            case testBellsCheckpointAtApplication:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+            case testBellsCheckpointAfterAppStart:
+                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
                 break;
             case testUpdatedBellPropertiesBeforeRestore:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
                 break;
             default:
                 break;
@@ -91,7 +91,7 @@ public class BellsTest extends FATServletClient {
     }
 
     @Test
-    public void testBellsCheckpointAtDeployment() throws Exception {
+    public void testBellsCheckpointBeforeAppStart() throws Exception {
         server.checkpointRestore();
         assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
 
@@ -102,7 +102,7 @@ public class BellsTest extends FATServletClient {
     }
 
     @Test
-    public void testBellsCheckpointAtApplication() throws Exception {
+    public void testBellsCheckpointAfterAppStart() throws Exception {
         assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
 
         assertTrue("Bell service for TestInterface should have been consumed and injected with original properties during checkpoint",
@@ -165,8 +165,8 @@ public class BellsTest extends FATServletClient {
     }
 
     static enum TestMethod {
-        testBellsCheckpointAtDeployment,
-        testBellsCheckpointAtApplication,
+        testBellsCheckpointBeforeAppStart,
+        testBellsCheckpointAfterAppStart,
         testUpdatedBellPropertiesBeforeRestore,
         unknown
     }

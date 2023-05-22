@@ -97,7 +97,7 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranLogRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
                 serverTranLogRecOnStart.setServerStartTimeout(300000);
                 serverTranLogRecOnStart.startServer();
                 break;
@@ -114,7 +114,7 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
                 serverTranDbLogNoRecOnStart.setServerStartTimeout(300000);
                 serverTranDbLogNoRecOnStart.startServer();
                 break;

@@ -107,7 +107,7 @@ public class URAPIs_Federation_2LDAPsTest {
         // "CWWKG0075E" is ignored here because we do not have the ldap settings configured yet
         server.stopServer(false, "CWWKG0075E");
 
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, (s) -> {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, (s) -> {
             assertNotNull("Application userRegistry does not appear to have started.",
                           s.waitForStringInLog("CWWKZ0001I:.*userRegistry"));
             // Add LDAP variables to server.env file

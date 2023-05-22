@@ -977,7 +977,7 @@ javaCmd()
   
   if [ $ACTION = "checkpoint" ]; then
     if [ -z "$CHECKPOINT_AT" ]; then
-      CHECKPOINT_AT="deployment"
+      CHECKPOINT_AT="beforeAppStart"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
 

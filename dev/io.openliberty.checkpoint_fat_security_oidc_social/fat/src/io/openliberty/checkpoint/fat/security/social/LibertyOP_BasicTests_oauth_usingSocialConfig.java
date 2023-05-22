@@ -118,7 +118,7 @@ public class LibertyOP_BasicTests_oauth_usingSocialConfig extends SocialCommonTe
         testMethod = getTestMethod(TestMethod.class, testName);
         opServer.startServer(testMethod + ".log");
 
-        genericServer.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        genericServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         genericServer.startServer(testMethod + ".log");
         configureBeforeRestore();
 

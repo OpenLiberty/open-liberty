@@ -15,7 +15,7 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.configureBootStrapProperties;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
-import static io.openliberty.checkpoint.spi.CheckpointPhase.APPLICATIONS;
+import static io.openliberty.checkpoint.spi.CheckpointPhase.AFTER_APP_START;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -56,7 +56,7 @@ public class CheckpointFailTest {
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
         Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
         configureBootStrapProperties(server, Collections.singletonMap("io.openliberty.checkpoint.fail.type", testMethod.getType()));
-        server.setCheckpoint(new CheckpointInfo(APPLICATIONS, false, testMethod.failCheckpoint(), testMethod.failRestore(), //
+        server.setCheckpoint(new CheckpointInfo(AFTER_APP_START, false, testMethod.failCheckpoint(), testMethod.failRestore(), //
                         // do before checkpoint
                         s -> {
                             if (testMethod == TestMethod.testSystemCheckpointFailed) {

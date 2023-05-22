@@ -27,12 +27,12 @@ public enum CheckpointPhase {
      * Phase of startup after all configured applications have been started
      * or have timed out starting. No ports are opened yet
      */
-    APPLICATIONS,
+    AFTER_APP_START,
     /**
      * Phase of startup after the applications have been discovered but no
      * code from the application has been executed.
      */
-    DEPLOYMENT,
+    BEFORE_APP_START,
     /**
      * Phase that indicates there is no checkpoint being done.
      */

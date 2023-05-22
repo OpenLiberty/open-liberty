@@ -131,7 +131,7 @@ class StartAction implements Action, CheckpointHook {
         _update = update;
         _configurator = configurator;
         CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
-        if (checkpointPhase == CheckpointPhase.APPLICATIONS) {
+        if (checkpointPhase == CheckpointPhase.AFTER_APP_START) {
             checkpointPhase.addMultiThreadedHook(this);
         }
     }

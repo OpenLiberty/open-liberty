@@ -1081,7 +1081,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             }
 
             // if we're checkpointing, call commonInitializationFinally before the initTaskComplete
-            if (checkpointPhase == CheckpointPhase.APPLICATIONS) {
+            if (checkpointPhase == CheckpointPhase.AFTER_APP_START) {
                 commonInitializationFinally(extensionFactories);
             }
             
@@ -1094,7 +1094,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 }
             }
             
-            if (checkpointPhase != CheckpointPhase.APPLICATIONS) {
+            if (checkpointPhase != CheckpointPhase.AFTER_APP_START) {
                 commonInitializationFinally(extensionFactories); // NEVER INVOKED BY
                 // WEBSPHERE
                 // APPLICATION

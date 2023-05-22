@@ -62,7 +62,7 @@ public class MPFaultToleranceTimeoutTest {
         config.getVariables().getById("timeout").setValue("true");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, server -> {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
             assertNotNull("Timeout call not found at checkpoint", result);
         });
@@ -80,7 +80,7 @@ public class MPFaultToleranceTimeoutTest {
 
         config.getVariables().getById("timeout").setValue("false");
         server.updateServerConfiguration(config);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, server -> {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
             assertNotNull("Timeout call not found at checkpoint", result);
         });

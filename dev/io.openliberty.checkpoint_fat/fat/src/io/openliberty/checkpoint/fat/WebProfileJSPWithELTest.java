@@ -58,7 +58,7 @@ public class WebProfileJSPWithELTest {
         CDIArchiveHelper.addBeansXML(war, DiscoveryMode.ALL);
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.OVERWRITE);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, (s) -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, (s) -> {
             assertNotNull("No Initializing application context message",
                           server.waitForStringInLogUsingMark(": Initializing application context", 0));
         });

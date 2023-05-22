@@ -77,11 +77,11 @@ public class ServletStartupTest extends FATServletClient {
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
             case testServletInitUserTranAtDeployment:
-                server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
+                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
                 break;
             case testServletInitUserTranAtApplications:
                 // Expect server checkpoint and restore to fail
-                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
                 break;
             default:
                 break;

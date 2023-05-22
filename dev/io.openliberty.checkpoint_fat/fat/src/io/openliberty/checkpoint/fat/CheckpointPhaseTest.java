@@ -62,8 +62,8 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtApplicationsMultRestore() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, (s) -> {
+    public void testAfterAppStartMultRestore() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, (s) -> {
             assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
         server.startServer();
@@ -81,8 +81,8 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtDeployment() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.DEPLOYMENT, true, (s) -> {
+    public void testBeforeAppStart() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, true, (s) -> {
             assertEquals("Unexpected app code ran.", null, s.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
         server.startServer();
@@ -92,7 +92,7 @@ public class CheckpointPhaseTest {
 
     @Test
     public void testMultCheckpointNoClean() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
         restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");

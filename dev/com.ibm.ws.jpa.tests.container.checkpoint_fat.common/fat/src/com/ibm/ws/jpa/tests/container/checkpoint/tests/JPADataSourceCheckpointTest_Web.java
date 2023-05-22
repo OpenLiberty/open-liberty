@@ -60,8 +60,8 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
     private final static String SERVLET_NAME = "TestDataSourceServlet";
 
     private static final List<String> CHECKPOINT_INACTIVE = Collections.emptyList();
-    private static final List<String> CHECKPOINT_DEPLOYMENT = Arrays.asList("--internal-checkpoint-at=deployment");
-    private static final List<String> CHECKPOINT_APPLICATIONS = Arrays.asList("--internal-checkpoint-at=applications");
+    private static final List<String> CHECKPOINT_BEFORE_APP_START = Arrays.asList("--internal-checkpoint-at=beforeAppStart");
+    private static final List<String> CHECKPOINT_AFTER_APP_START = Arrays.asList("--internal-checkpoint-at=afterAppStart");
 
     private static long timestart = 0;
 
@@ -142,13 +142,13 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
     private static void setCheckpointPhase(CheckpointPhase phase, LibertyServer server) throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
         switch (phase) {
-            case DEPLOYMENT:
+            case BEFORE_APP_START:
                 jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_DEPLOYMENT);
+                server.setExtraArgs(CHECKPOINT_BEFORE_APP_START);
                 break;
-            case APPLICATIONS:
+            case AFTER_APP_START:
                 jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_APPLICATIONS);
+                server.setExtraArgs(CHECKPOINT_AFTER_APP_START);
                 break;
             default:
                 jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
@@ -180,48 +180,48 @@ public class JPADataSourceCheckpointTest_Web extends JPAFATServletClient {
         testCheckpointDataSource(phase, resourceType);
     }
 
-    // testing for CheckpointPhase.DEPLOYMENT
+    // testing for CheckpointPhase.BEFORE_APP_START
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_AMJTA_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.DEPLOYMENT;
+    public void jpa_BAS_testCheckpointDataSource_AMJTA_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "AMJTA";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_AMRL_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.DEPLOYMENT;
+    public void jpa_BAS_testCheckpointDataSource_AMRL_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "AMRL";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_DEPLOYMENT_testCheckpointDataSource_CMTS_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.DEPLOYMENT;
+    public void jpa_BAS_testCheckpointDataSource_CMTS_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.BEFORE_APP_START;
         final String resourceType = "CMTS";
         testCheckpointDataSource(phase, resourceType);
     }
 
-    // testing for CheckpointPhase.APPLICATIONS
+    // testing for CheckpointPhase.AFTER_APP_START
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_AMJTA_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.APPLICATIONS;
+    public void jpa_AAS_testCheckpointDataSource_AMJTA_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "AMJTA";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_AMRL_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.APPLICATIONS;
+    public void jpa_AAS_testCheckpointDataSource_AMRL_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "AMRL";
         testCheckpointDataSource(phase, resourceType);
     }
 
     @Test
-    public void jpa_APPLICATIONS_testCheckpointDataSource_CMTS_Web() throws Exception {
-        final CheckpointPhase phase = CheckpointPhase.APPLICATIONS;
+    public void jpa_AAS_testCheckpointDataSource_CMTS_Web() throws Exception {
+        final CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
         final String resourceType = "CMTS";
         testCheckpointDataSource(phase, resourceType);
     }

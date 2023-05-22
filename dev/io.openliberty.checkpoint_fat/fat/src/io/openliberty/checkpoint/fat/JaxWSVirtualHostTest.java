@@ -58,7 +58,7 @@ public class JaxWSVirtualHostTest {
 
         ShrinkHelper.defaultDropinApp(server, virtualhostWar, "com.ibm.ws.jaxws.virtualhost.services");
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer("jaxwsVirtuaHostTest.log");
     }
 

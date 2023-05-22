@@ -58,7 +58,7 @@ public class SessionDatabaseTest extends FATServletClient {
             }
         };
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
         server.startServer();
         server.checkpointRestore();
     }

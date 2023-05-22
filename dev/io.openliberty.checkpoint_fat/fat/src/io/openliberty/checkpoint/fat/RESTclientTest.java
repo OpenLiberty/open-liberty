@@ -87,7 +87,7 @@ public class RESTclientTest {
         HttpUtils.findStringInUrl(server, "webappWAR/app/client/early/properties", "{\'property\':\'value\'}");
         server.stopServer();
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
 
         ServerConfiguration config = server.getServerConfiguration();

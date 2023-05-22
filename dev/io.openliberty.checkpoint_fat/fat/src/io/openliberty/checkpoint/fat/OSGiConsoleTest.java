@@ -63,7 +63,7 @@ public class OSGiConsoleTest {
 
         FATSuite.configureBootStrapProperties(server, properties);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
 
         server.checkpointRestore();

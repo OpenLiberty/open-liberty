@@ -82,7 +82,7 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.startServer();
                 stopServer(serverTranLog);
 
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, null));
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, null));
                 serverTranLog.startServer();
                 break;
             case testTransactionDbLogBasicConnection:
@@ -105,7 +105,7 @@ public class TransactionLogTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranDbLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranDbLog.setCheckpoint(CheckpointPhase.APPLICATIONS, false, preRestoreLogic);
+                serverTranDbLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
                 serverTranDbLog.setServerStartTimeout(300000);
                 serverTranDbLog.startServer();
                 break;

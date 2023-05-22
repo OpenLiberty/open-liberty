@@ -33,8 +33,8 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>INACTIVE : initialized and constructed on application start; pool preload (20) on application start</li>
- * <li>DEPLOYMENT : initialized and constructed on application start; pool preload (20) on application start</li>
- * <li>APPLICATIONS : initialized and constructed on application start; pool preload (20) on application start</li>
+ * <li>BEFORE_APP_START : initialized and constructed on application start; pool preload (20) on application start</li>
+ * <li>AFTER_APP_START : initialized and constructed on application start; pool preload (20) on application start</li>
  * </ul>
  *
  * Checkpoint causes no behavior difference since referenced by startup singleton and has a hard minimum pool size.<p>

@@ -47,8 +47,8 @@ public class EjbStartCheckpointTest extends FATServletClient {
     private static final Logger logger = Logger.getLogger(EjbStartCheckpointTest.class.getName());
 
     private static final List<String> CHECKPOINT_INACTIVE = Collections.emptyList();
-    private static final List<String> CHECKPOINT_DEPLOYMENT = Arrays.asList("--internal-checkpoint-at=deployment");
-    private static final List<String> CHECKPOINT_APPLICATIONS = Arrays.asList("--internal-checkpoint-at=applications");
+    private static final List<String> CHECKPOINT_BEFORE_APP_START = Arrays.asList("--internal-checkpoint-at=beforeAppStart");
+    private static final List<String> CHECKPOINT_AFTER_APP_START = Arrays.asList("--internal-checkpoint-at=afterAppStart");
 
     private static final String MSG_INIT_ON_START = "will be initialized at Application start";
     private static final String MSG_DEFERRED_INIT = "will be deferred until it is first used";
@@ -163,8 +163,8 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointDeployment() throws Exception {
-        setCheckpointPhase(CheckpointPhase.DEPLOYMENT);
+    public void testEjbStartCheckpointBeforeAppStart() throws Exception {
+        setCheckpointPhase(CheckpointPhase.BEFORE_APP_START);
         try {
             server.startServer();
             assert_32_BeanMetaDataInitializedAtStart();
@@ -177,8 +177,8 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointApplications() throws Exception {
-        setCheckpointPhase(CheckpointPhase.APPLICATIONS);
+    public void testEjbStartCheckpointAfterAppStart() throws Exception {
+        setCheckpointPhase(CheckpointPhase.AFTER_APP_START);
         try {
             server.startServer();
             assert_32_BeanMetaDataInitializedAtStart();
@@ -193,13 +193,13 @@ public class EjbStartCheckpointTest extends FATServletClient {
     private void setCheckpointPhase(CheckpointPhase phase) throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
         switch (phase) {
-            case DEPLOYMENT:
+            case BEFORE_APP_START:
                 jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_DEPLOYMENT);
+                server.setExtraArgs(CHECKPOINT_BEFORE_APP_START);
                 break;
-            case APPLICATIONS:
+            case AFTER_APP_START:
                 jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
-                server.setExtraArgs(CHECKPOINT_APPLICATIONS);
+                server.setExtraArgs(CHECKPOINT_AFTER_APP_START);
                 break;
             default:
                 jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");

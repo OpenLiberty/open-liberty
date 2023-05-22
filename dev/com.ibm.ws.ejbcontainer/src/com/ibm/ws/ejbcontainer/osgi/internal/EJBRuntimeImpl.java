@@ -1721,8 +1721,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      * @return true if application start should optimize for checkpoint deployment; false otherwise.
      */
     @Override
-    public boolean isCheckpointDeployment() {
-        return CheckpointPhase.DEPLOYMENT == checkpointPhase && !checkpointPhase.restored();
+    public boolean isCheckpointBeforeAppStart() {
+        return CheckpointPhase.BEFORE_APP_START == checkpointPhase && !checkpointPhase.restored();
     }
 
     /**
@@ -1732,8 +1732,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      * @return true if application start should optimize for checkpoint applications; false otherwise.
      */
     @Override
-    public boolean isCheckpointApplications() {
-        return CheckpointPhase.APPLICATIONS == checkpointPhase && !checkpointPhase.restored();
+    public boolean isCheckpointAfterAppStart() {
+        return CheckpointPhase.AFTER_APP_START == checkpointPhase && !checkpointPhase.restored();
     }
 
     @Override

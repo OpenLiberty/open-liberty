@@ -75,7 +75,7 @@ public class WebSocketTest {
 
         server.stopServer();
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
         server.stopServer();
 

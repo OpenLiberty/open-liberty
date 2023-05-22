@@ -162,7 +162,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
         // until the constructor exits here given that this is an immediate component and activated early,
         // long before applications are started.
-        if (this.checkpointAt == CheckpointPhase.DEPLOYMENT) {
+        if (this.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
                                                                         FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
                                                                                                                             true)));
@@ -540,7 +540,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     public static void deployCheckpoint() {
         CheckpointImpl current = INSTANCE;
-        if (current != null && current.checkpointAt == CheckpointPhase.DEPLOYMENT) {
+        if (current != null && current.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             current.checkpointOrExitOnFailure();
         }
     }

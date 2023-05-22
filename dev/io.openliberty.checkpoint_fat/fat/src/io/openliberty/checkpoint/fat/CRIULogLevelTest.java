@@ -63,7 +63,7 @@ public class CRIULogLevelTest {
     }
 
     private void setCheckpoint(TestMethod testMethod) {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, testMethod.expectFailure, testMethod.expectFailure, server -> {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, testMethod.expectFailure, testMethod.expectFailure, server -> {
             runBeforeRestore(testMethod);
         }));
     }
