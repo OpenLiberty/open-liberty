@@ -58,7 +58,7 @@ import com.ibm.ws.app.manager.springboot.container.config.ServerConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
 import com.ibm.ws.app.manager.springboot.container.config.SpringErrorPageData;
 import com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory;
-import com.ibm.ws.springboot.support.web.server.initializer30.WebInitializer;
+import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 
 /**
  *

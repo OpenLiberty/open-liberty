@@ -43,7 +43,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot30Server.ja
 	com.ibm.websphere.org.osgi.core, \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.app.manager.springboot, \
+	com.ibm.ws.app.manager.springboot.jakarta, \
 	io.openliberty.jakarta.servlet.6.0, \
 	com.ibm.ws.webcontainer,\
 	com.ibm.ws.org.osgi.annotation.versioning,\
@@ -51,7 +51,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot30Server.ja
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
-	com.ibm.ws.springboot.support.web.server;version=latest
+	com.ibm.ws.springboot.support.web.server.jakarta;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -15,18 +15,16 @@
 
 bVersion=1.0
 
+-sub: *.bnd
 
-
-Bundle-Name: WebSphere Spring Boot Web Server Support
-Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server
-Bundle-Description: WebSphere Spring Boot Web Server Support, version ${bVersion}
 Private-Package: com.ibm.ws.springboot.support.web.server.internal.*
 Export-Package: com.ibm.ws.springboot.support.web.server.initializer
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *
 
-instrument.classesExcludes: com/ibm/ws/springboot/support/web/server/internal/resources/*.class
+instrument.classesExcludes: com/ibm/ws/springboot/support/web/server/internal/resources/*.class, \
+		com/ibm/ws/springboot/support/web/server/initializer/*.class
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core, \

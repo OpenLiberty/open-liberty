@@ -6,7 +6,7 @@ visibility=private
   io.openliberty.jakartaeePlatform-10.0, \
   com.ibm.websphere.appserver.artifact-1.0
 -bundles=\
- com.ibm.ws.app.manager.springboot, \
+ com.ibm.ws.app.manager.springboot.jakarta, \
  com.ibm.ws.springboot.support.shutdown, \
  com.ibm.ws.springboot.utility
 -files=\

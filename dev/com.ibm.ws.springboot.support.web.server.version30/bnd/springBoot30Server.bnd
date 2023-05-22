@@ -1,4 +1,6 @@
 Bundle-SymbolicName: springBoot30Server
-Private-Package: com.ibm.ws.springboot.support.web.server.version30.container.*
+Private-Package: com.ibm.ws.springboot.support.web.server.*
 Include-Resource: resources/container
 -maven-dependencies:
+
+instrument.disabled: true
