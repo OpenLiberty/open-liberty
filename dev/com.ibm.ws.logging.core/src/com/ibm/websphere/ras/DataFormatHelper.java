@@ -14,12 +14,16 @@ package com.ibm.websphere.ras;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.Chronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DecimalStyle;
+import java.time.format.FormatStyle;
+import java.util.Locale;
+import java.util.Locale.Category;
 
 /**
  * Utilities which provide formatting for date strings (NCSA compliant dates
@@ -38,34 +42,24 @@ public class DataFormatHelper {
      * formatting time (but still using the current locale)
      */
     static {
-        String pattern;
-        int patternLength;
-        int endOfSecsIndex;
         // Retrieve a standard Java DateFormat object with desired format.
-        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-        if (formatter instanceof SimpleDateFormat) {
-            // Retrieve the pattern from the formatter, since we will need to
-            // modify it.
-            SimpleDateFormat sdFormatter = (SimpleDateFormat) formatter;
-            pattern = sdFormatter.toPattern();
-            // Append milliseconds and timezone after seconds
-            patternLength = pattern.length();
-            endOfSecsIndex = pattern.lastIndexOf('s') + 1;
-            String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
-            if (endOfSecsIndex < patternLength)
-                newPattern += pattern.substring(endOfSecsIndex, patternLength);
-            newPattern = newPattern.replace('y', 'u');
-            // 0-23 hour clock (get rid of any other clock formats and am/pm)
-            newPattern = newPattern.replace('h', 'H');
-            newPattern = newPattern.replace('K', 'H');
-            newPattern = newPattern.replace('k', 'H');
-            newPattern = newPattern.replace('a', ' ');
-            newPattern = newPattern.trim();
-            pattern = newPattern;
-        } else {
-            pattern = "dd/MMM/uuuu HH:mm:ss:SSS z";
-        }
-        localeDateFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.systemDefault());
+        Locale locale = Locale.getDefault(Category.FORMAT);
+        String pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, FormatStyle.MEDIUM, Chronology.ofLocale(locale), locale);
+        // Append milliseconds and timezone after seconds
+        int patternLength = pattern.length();
+        int endOfSecsIndex = pattern.lastIndexOf('s') + 1;
+        String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
+        if (endOfSecsIndex < patternLength)
+            newPattern += pattern.substring(endOfSecsIndex, patternLength);
+        // 0-23 hour clock (get rid of any other clock formats and am/pm)
+        newPattern = newPattern.replace('h', 'H');
+        newPattern = newPattern.replace('K', 'H');
+        newPattern = newPattern.replace('k', 'H');
+        newPattern = newPattern.replace('a', ' ');
+        newPattern = newPattern.trim();
+        pattern = newPattern;
+        DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().appendPattern(pattern);
+        localeDateFormatter = builder.toFormatter().withZone(ZoneId.systemDefault()).withLocale(locale).withChronology(Chronology.ofLocale(locale)).withDecimalStyle(DecimalStyle.of(locale));
     }
 
     /**

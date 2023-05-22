@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -84,7 +84,7 @@ public class CollectorJsonUtils_JSON {
 
         JSONObjectBuilder jsonBuilder = CollectorJsonHelpers.startFFDC(JSON_KEY);
 
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(ffdcData.getDatetime());
+        String datetime = CollectorJsonHelpers.formatTime(ffdcData.getDatetime());
         String formattedValue = CollectorJsonHelpers.formatMessage(ffdcData.getStacktrace(), maxFieldLength);
 
         //@formatter:off
@@ -152,7 +152,7 @@ public class CollectorJsonUtils_JSON {
 
         StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
 
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
+        String datetime = CollectorJsonHelpers.formatTime(logData.getDatetime());
 
         //@formatter:off
         jsonBuilder.addField(LogTraceData.getMessageKey(JSON_KEY, isMessageEvent), formattedValue.toString(), false, true)
@@ -234,7 +234,7 @@ public class CollectorJsonUtils_JSON {
                      * Parse the rest of audit GDO KVP - They are strings.
                      */
                     if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime") || AuditData.getDatetimeKey(JSON_KEY).equals(key)) {
-                        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
+                        String datetime = CollectorJsonHelpers.formatTime(kvp.getLongValue());
                         jsonBuilder.addField(AuditData.getDatetimeKey(JSON_KEY), datetime, false, true);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber") || AuditData.getSequenceKey(JSON_KEY).equals(key)) {
                         jsonBuilder.addField(AuditData.getSequenceKey(JSON_KEY), kvp.getStringValue(), false, false);
