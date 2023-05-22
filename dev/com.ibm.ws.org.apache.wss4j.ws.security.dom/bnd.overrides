@@ -18,7 +18,7 @@ bVersion=2.3.0
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.dom.*;version="2.3.0"
+ org.apache.wss4j.dom.*;version=${bVersion}
  
 Import-Package: \
  !com.sun.security.jgss,\

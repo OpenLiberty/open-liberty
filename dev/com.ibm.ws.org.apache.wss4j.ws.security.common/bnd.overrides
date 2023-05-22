@@ -19,7 +19,7 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.ws.security.*;version=1.6.2, \
- org.apache.wss4j.common.*;version=2.3.0
+ org.apache.wss4j.common.*;version=${bVersion}
   
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \

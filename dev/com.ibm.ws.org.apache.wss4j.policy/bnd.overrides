@@ -21,4 +21,4 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.policy.*;version="2.3.0"
+ org.apache.wss4j.policy.*;version=${bVersion}

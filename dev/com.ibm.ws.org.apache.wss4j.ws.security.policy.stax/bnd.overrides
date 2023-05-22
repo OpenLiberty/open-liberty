@@ -20,7 +20,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.policy.stax
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.policy.stax.*;version="2.3.0"
+ org.apache.wss4j.policy.stax.*;version=${bVersion}
 
 Import-Package: \
  javax.xml.bind.*, \
