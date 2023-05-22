@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package io.openliberty.restfulws.mpmetrics;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -62,9 +63,23 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
 
     static final ConcurrentHashMap<String, Timer> timerMap = new ConcurrentHashMap<String, Timer>();
 
-    static final Set<RestfulWsMonitorFilter> instances = new HashSet<>();
-    private static final String START_TIME = "Start_Time";
-    private static final String CMD = "CMD";
+    static final Set<RestfulWsMonitorFilter> instances = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private static final RestMonitorKeyCache monitorKeyCache = new RestMonitorKeyCache();
+    private static final String TIMER_CONTEXT = "TIMER_CONTEXT";
+
+    private static class TimerContext {
+        final String timerKey;
+        final long startTime;
+        TimerContext(String timerKey, long startTime) {
+            this.timerKey = timerKey;
+            this.startTime = startTime;
+        }
+
+        @Override
+        public String toString() {
+            return "TimerContext [timerKey=" + timerKey + ", startTime=" + startTime + "]";
+        }
+    }
 
     @PostConstruct
     public void postConstruct() {
@@ -88,13 +103,77 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
      */
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
-        /*
-         * Store the start time in the ContainerRequestContext that can be accessed in
-         * the response filter method.
-         */
-        reqCtx.setProperty(START_TIME, System.nanoTime());
-        reqCtx.setProperty(CMD, ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData());
+        Class<?> resourceClass = resourceInfo.getResourceClass();
 
+        if (resourceClass != null) {
+            Method resourceMethod = resourceInfo.getResourceMethod();
+            Timer restTimer;
+            String key = monitorKeyCache.getMonitorKey(resourceClass, resourceMethod);
+
+            if (key == null) {
+                String className = resourceClass.getName();
+                String methodName = resourceMethod.getName();
+
+                Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
+                int i = 0;
+                String parameter;
+                String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
+                for (Class<?> p : parameterClasses) {
+                    parameter = p.getCanonicalName();
+                    if (i > 0) {
+                        methodName = methodName + "_" + parameter;
+                        fullMethodName = fullMethodName + "_" + parameter;
+                    } else {
+                        methodName = methodName + "_" + parameter;
+                        fullMethodName = fullMethodName + parameter;
+                    }
+                    i++;
+                }
+                fullMethodName = fullMethodName + ")";
+
+                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                String appName = getAppName(cmd);
+                String modName = getModName(cmd);
+                String keyPrefix = createKeyPrefix(appName, modName);
+
+                // Used as our key for the map
+                key = keyPrefix + "/" + fullMethodName;
+
+                // Save key in appMetricInfos for cleanup on application stop.
+                addKeyToMetricInfo(appName, key);
+
+                if ((restTimer = timerMap.get(key)) == null) {
+                    MetricRegistry baseMetricRegistry = MonitorAppStateListener.sharedMetricRegistries
+                            .getOrCreate(MetricRegistry.BASE_SCOPE);
+                    Metadata metricMetadata = Metadata.builder().withName("REST.request")
+                            .withDescription(REST_REQUEST_DESCRIPTION).build();
+                    Tag classTag = new Tag("class", className);
+                    Tag methodTag = new Tag("method", methodName);
+                    restTimer = baseMetricRegistry.timer(metricMetadata, classTag, methodTag);
+
+                    MetricID metricID = new MetricID("REST.request", classTag, methodTag);
+                    MonitorAppStateListener.sharedMetricRegistries.associateMetricIDToApplication(metricID, keyPrefix,
+                            baseMetricRegistry);
+
+                    timerMap.put(key, restTimer);
+                
+                    /*
+                     * Need to make sure we register the unmapped exception counter as it is
+                     * expected whether an exception has occurred or not.
+                     */
+                    MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
+                            appName);
+                }
+
+                monitorKeyCache.putMonitorKey(resourceClass, resourceMethod, key);
+            }
+
+            /*
+             * Store the start time and key information in the ContainerRequestContext that can be accessed in
+             * the response filter method.
+             */
+            reqCtx.setProperty(TIMER_CONTEXT, new TimerContext(key, System.nanoTime()));
+        }
     }
 
     /**
@@ -111,100 +190,37 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-        /*
-         * Check that the ComponentMetaData has been set on the request context. This
-         * will happen when the ContainerRequestFilter.filter() method is invoked.
-         * Situations, such as an improper jwt will cause the request filter to not be
-         * called and we will therefore not record any statistics.
-         */
-        ComponentMetaData cmd = (ComponentMetaData) reqCtx.getProperty(CMD);
-        if (cmd == null) {
+        // Check that the TimerContext has been set on the request context.  This will happen when 
+        // the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
+        // request filter to not be called and we will therefore not record any statistics.
+        TimerContext timerContext = (TimerContext) reqCtx.getProperty(TIMER_CONTEXT);
+        if (timerContext == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc,
-                        "ContainerRequestContext.filter() has not been invoked for " + reqCtx.getUriInfo().getPath());
+                Tr.debug(tc, "ContainerRequestContext.filter() has not been invoked for " + reqCtx.getUriInfo().getPath());
             }
             return;
         }
 
-        long elapsedTime = 0;
         // Calculate the response time for the resource method.
-        Long startTime = (Long) reqCtx.getProperty(START_TIME);
-        if (startTime != null) {
-            elapsedTime = System.nanoTime() - startTime.longValue();
+        long elapsedTime = System.nanoTime() - timerContext.startTime;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Elapsed time for " + timerContext.timerKey + " is " + elapsedTime + " ns");
         }
 
-        Class<?> resourceClass = resourceInfo.getResourceClass();
+        /*
+         * Explicitly checking for the Metrics Header via hard-coded header string.
+         */
+        String metricsHeader = respCtx
+                .getHeaderString("io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl.Exception");
 
-        if (resourceClass != null) {
-            Method resourceMethod = resourceInfo.getResourceMethod();
-
-            String className = resourceClass.getName();
-            String methodName = resourceMethod.getName();
-
-            Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
-            int i = 0;
-            String parameter;
-            String fullMethodName = resourceClass.getName() + "/" + resourceMethod.getName() + "(";
-            for (Class<?> p : parameterClasses) {
-                parameter = p.getCanonicalName();
-                if (i > 0) {
-                    methodName = methodName + "_" + parameter;
-                    fullMethodName = fullMethodName + "_" + parameter;
-                } else {
-                    methodName = methodName + "_" + parameter;
-                    fullMethodName = fullMethodName + parameter;
-                }
-                i++;
-            }
-            fullMethodName = fullMethodName + ")";
-
-            String appName = getAppName(cmd);
-            String modName = getModName(cmd);
-            String keyPrefix = createKeyPrefix(appName, modName);
-
-            // Used as our key for the map
-            String key = keyPrefix + "/" + fullMethodName;
-
-            Timer restTimer = null;
-            if ((restTimer = timerMap.get(key)) == null) {
-                MetricRegistry baseMetricRegistry = MonitorAppStateListener.sharedMetricRegistries
-                        .getOrCreate(MetricRegistry.BASE_SCOPE);
-                Metadata metricMetadata = Metadata.builder().withName("REST.request")
-                        .withDescription(REST_REQUEST_DESCRIPTION).build();
-                Tag classTag = new Tag("class", className);
-                Tag methodTag = new Tag("method", methodName);
-                restTimer = baseMetricRegistry.timer(metricMetadata, classTag, methodTag);
-
-                MetricID metricID = new MetricID("REST.request", classTag, methodTag);
-                MonitorAppStateListener.sharedMetricRegistries.associateMetricIDToApplication(metricID, keyPrefix,
-                        baseMetricRegistry);
-
-                timerMap.put(key, restTimer);
-                
-                /*
-                 * Need to make sure we register the unmapped exception counter as it is
-                 * expected whether an exception has occurred or not.
-                 */
-                MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
-                        appName);
-            }
-
-            /*
-             * Explicitly checking for the Metrics Header via hard-coded header string.
-             */
-            String metricsHeader = respCtx
-                    .getHeaderString("io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl.Exception");
-
-            // Save key in appMetricInfos for cleanup on application stop.
-            addKeyToMetricInfo(appName, key);
-
-            /*
-             * Check if exception header was present, if not continue setting value for
-             * Timer
-             */
-            if (metricsHeader == null) {
-                restTimer.update(Duration.ofNanos(elapsedTime));
-            }
+        /*
+         * Check if exception header was present, if not continue setting value for
+         * Timer
+         */
+        if (metricsHeader == null) {
+            Timer restTimer = timerMap.get(timerContext.timerKey);
+            restTimer.update(Duration.ofNanos(elapsedTime));
         }
     }
 
