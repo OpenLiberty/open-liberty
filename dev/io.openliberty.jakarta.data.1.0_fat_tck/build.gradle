@@ -35,5 +35,6 @@ task copySigTest(type: Copy) {
   rename 'sigtest-maven-plugin-.*.jar', 'sigtest.jar'
 }
 
+addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn copyJunit5
 addRequiredLibraries.dependsOn copySigTest

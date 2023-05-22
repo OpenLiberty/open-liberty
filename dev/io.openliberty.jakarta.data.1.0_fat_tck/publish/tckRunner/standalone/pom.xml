@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-	~ Copyright (c) 2022 IBM Corporation and others. All rights reserved. 
+	~ Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved. 
 	~ This program and the accompanying materials are made available under the 
 	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	~ and is available at 
@@ -44,10 +44,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- TODO Jakarta 11 might require java 17 -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.release>11</maven.compiler.release>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 
 		<!-- Jakarta EE API -->
 		<jakarta.data.groupid>jakarta.data</jakarta.data.groupid>
@@ -55,7 +54,7 @@
 		<jakarta.data.tck.version>1.0.0-SNAPSHOT</jakarta.data.tck.version>
 
 		<!-- Test Infrastructure versions -->
-		<junit.version>5.9.0</junit.version>
+		<junit.version>5.9.2</junit.version>
 		<sigtest.version>1.6</sigtest.version>
 
 		<targetDirectory>${project.basedir}/target</targetDirectory>
@@ -106,6 +105,13 @@
 			<groupId>org.netbeans.tools</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
+		</dependency>
+		<!-- CDI for resource injection -->
+		<dependency>
+		    <groupId>org.jboss.weld.se</groupId>
+		    <artifactId>weld-se-core</artifactId>
+		    <version>5.1.0.Final</version>
+		    <scope>test</scope>
 		</dependency>
 		<!-- APIs referenced by TCK that do not require implementations for standalone tests -->
 		<dependency>
@@ -159,7 +165,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.0.0</version>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
 					<failIfNoTests>true</failIfNoTests>
@@ -169,13 +175,13 @@
 						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
 					</statelessTestsetReporter>
 					<systemPropertyVariables>
-						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
-						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta-data-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+						<jimage.dir>${project.build.directory}/jdk17-bundle</jimage.dir>
+						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta-data-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
+						<jakarta.tck.profile>${jakarta.tck.profile}</jakarta.tck.profile>
 					</systemPropertyVariables>
-					<groups>${jakarta.tck.platform}</groups> <!-- Groups to include i.e. standalone/core/web -->
-					<excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
-					<reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
+					<groups>${included.groups}</groups>
+					<reportNameSuffix>${jakarta.tck.profile}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

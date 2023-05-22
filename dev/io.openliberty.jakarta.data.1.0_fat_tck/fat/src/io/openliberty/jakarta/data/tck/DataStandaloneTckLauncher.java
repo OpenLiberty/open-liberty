@@ -1,11 +1,11 @@
 /*******************************************************************************
 
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,8 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -27,9 +29,14 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
-@SuppressWarnings("restriction")
+/**
+ * NOTE: This test class is not run since it isn't in the FATSuite.
+ * The OpenLiberty implementation of Jakarta Data doesn't support standalone mode,
+ * but this test class is nice for manually testing the TCK framework to make sure it works as intended.
+ * Keep it around until the TCK is finished beign written.
+ */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) //TODO Jakarta 11 might require java 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataStandaloneTckLauncher {
 
     @Server
@@ -43,17 +50,20 @@ public class DataStandaloneTckLauncher {
     public void launchDataTckStandalone() throws Exception {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
-        additionalProps.put("jakarta.tck.platform", "standalone");
+        additionalProps.put("jakarta.tck.profile", "none");
+        //FIXME Always skip signature tests since our implementation has experimental API
+        additionalProps.put("included.groups", "standalone & persistence & !signature");
 
-        //Additional flag to tell TCK not to deploy standalone tests to a server
-        additionalProps.put("jakarta.tck.standalone.test", "true");
-
-        //Always skip signature tests in standalone mode, instead do signature testing on core profile
-        additionalProps.put("test.excluded.groups", "signature");
+        // Skip signature testing on Windows.
+        // So far as I can tell the signature test plugin is not supported on this configuration
+        if (System.getProperty("os.name").contains("Windows")) {
+            Log.info(DataStandaloneTckLauncher.class, "launchDataTckStandalone", "Skipping Jakarta Data Signature Test on Windows");
+            additionalProps.put("included.groups", "standalone & persistence & !signature");
+        }
 
         //TODO Remove once TCK is available from stagging repo
         additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-112222");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-05112023");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandalone";
