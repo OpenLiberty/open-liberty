@@ -149,7 +149,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
         getRequiredConfigAttribute(props, KEY_clientId);
-        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     @Override
