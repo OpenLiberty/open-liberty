@@ -284,4 +284,32 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	    Log.exiting(c, METHOD_NAME);
 	}
 
+	/*
+	 * Test resolveAsSet(EE8, adminCenter-1.0), then resolve(EE9). There should be
+	 * extra private features for adminCenter-1.0 which we need to install if we
+	 * want adminCenter to work with EE9.
+	 */
+	@Test
+	public void testResolveAsSetThenResolve() throws Exception {
+	    final String METHOD_NAME = "testResolveAsSetThenResolve";
+	    Log.entering(c, METHOD_NAME);
+
+	    copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/adminCenterServerXml/server.xml");
+
+	    String[] param1s = { "installServerFeatures", "serverX" };
+	    String[] filesList = { "/lib/features/io.openliberty.adminCenter1.0.internal.ee-9.0.mf" };
+
+	    // Run isf first
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+	    checkCommandOutput(po, 0, null, null);
+
+	    // Install jakartaee-9.1 and check if private feature is installed.
+	    String[] param2s = { "installFeature", "jakartaee-9.1" };
+	    po = runFeatureUtility(METHOD_NAME, param2s);
+	    checkCommandOutput(po, 0, null, filesList);
+
+	    Log.exiting(c, METHOD_NAME);
+
+	}
+
 }
