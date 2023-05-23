@@ -16,8 +16,6 @@
 
 bVersion=1.0
 
-Implementation-Version: 2.3.10
-
 app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \

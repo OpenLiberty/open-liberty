@@ -11,7 +11,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+bVersion=2.0
 
 Fragment-Host: com.ibm.ws.org.apache.myfaces.2.3;bundle-version=1.0
 
