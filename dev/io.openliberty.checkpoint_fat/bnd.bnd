@@ -171,6 +171,7 @@ tested.features: \
 	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
 	com.ibm.ws.security.auth.data.common;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	com.ibm.websphere.appserver.api.distributedMap;version=latest
+	com.ibm.websphere.appserver.api.distributedMap;version=latest,\
+	org.testng
 
 -sub: *.bnd

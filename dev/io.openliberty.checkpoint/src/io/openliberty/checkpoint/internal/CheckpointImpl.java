@@ -295,7 +295,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
         Collections.reverse(singleThreadRestoreHooks);
 
-        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
+        //map phase back to the documented command line argument.
+        String phaseName = CheckpointPhase.getPhase() == CheckpointPhase.BEFORE_APP_START ? "beforeAppStart" : "afterAppStart";
+        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451", phaseName);
 
         if (forceFail != null && !forceFail.isRestore()) {
             // only done for tests

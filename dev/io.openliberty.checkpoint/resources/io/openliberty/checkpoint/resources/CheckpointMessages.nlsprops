@@ -23,7 +23,7 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint was requested. When the checkpoint completes, the server stops.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A server checkpoint "{0}" was requested. When the checkpoint completes, the server stops.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=A checkpoint was requested. The server is halted and its current state is written to disk.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Check the documentation for details of the checkpoint and restore operations.
 
