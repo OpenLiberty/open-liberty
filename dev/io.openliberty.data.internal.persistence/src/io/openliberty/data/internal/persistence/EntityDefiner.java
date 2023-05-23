@@ -464,6 +464,7 @@ public class EntityDefiner implements Runnable {
                 Class<?> recordClass = generatedToRecordClass.get(entityType.getJavaType());
                 Class<?> idClass = null;
                 SortedMap<String, Member> idClassAttributeAccessors = null;
+                String versionAttrName = null;
 
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
@@ -485,11 +486,15 @@ public class EntityDefiner implements Runnable {
                     if (attr.isCollection()) {
                         if (attr instanceof PluralAttribute)
                             collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
-                    } else if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId()) {
-                        attributeNames.put("id", attributeName);
-                    } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
-                        // collection attribute that is not annotated with ElementCollection
-                        collectionElementTypes.put(attributeName, Object.class);
+                    } else {
+                        SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
+                        if (singleAttr != null && singleAttr.isId())
+                            attributeNames.put("id", attributeName);
+                        else if (singleAttr != null && singleAttr.isVersion())
+                            versionAttrName = attributeName;
+                        else if (Collection.class.isAssignableFrom(attr.getJavaType()))
+                            // collection attribute that is not annotated with ElementCollection
+                            collectionElementTypes.put(attributeName, Object.class);
                     }
                 }
 
@@ -544,8 +549,12 @@ public class EntityDefiner implements Runnable {
                         if (relAttr.isCollection()) {
                             if (relAttr instanceof PluralAttribute)
                                 collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
-                        } else if (relAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) relAttr).isId()) {
-                            attributeNames.put("id", fullAttributeName);
+                        } else if (relAttr instanceof SingularAttribute) {
+                            SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
+                            if (singleAttr.isId())
+                                attributeNames.put("id", fullAttributeName);
+                            else if (singleAttr.isVersion())
+                                versionAttrName = relationAttributeName_; // to be suitable for query-by-method
                         }
                     }
                 }
@@ -572,15 +581,6 @@ public class EntityDefiner implements Runnable {
                         }
                     }
                 }
-                // This works for version Fields, and might work for version getter/setter methods
-                // but is debatable whether we should do it.
-                //Member versionMember = null;
-                //if (entityType.hasVersionAttribute())
-                //    for (SingularAttribute<?, ?> attr : entityType.getSingularAttributes())
-                //        if (attr.isVersion()) {
-                //            versionMember = attr.getJavaMember(); // Field or Method, which could be used to update a passed-in entity with the new version number
-                //            break;
-                //        }
 
                 Class<?> entityClass = entityType.getJavaType();
 
@@ -595,6 +595,7 @@ public class EntityDefiner implements Runnable {
                                 relationAttributeNames, //
                                 idClass, //
                                 idClassAttributeAccessors, //
+                                versionAttrName, //
                                 punit);
 
                 entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);

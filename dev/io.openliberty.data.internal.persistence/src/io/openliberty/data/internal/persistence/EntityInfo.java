@@ -48,6 +48,7 @@ class EntityInfo {
     final String name;
     final PersistenceServiceUnit persister;
     final Class<?> recordClass; // null if not a record
+    final String versionAttributeName; // null if unversioned
 
     // embeddable class -> fully qualified attribute names of embeddable, or
     // one-to-one entity class -> fully qualified attribute names of one-to-one entity, or
@@ -64,6 +65,7 @@ class EntityInfo {
                Map<Class<?>, List<String>> relationAttributeNames,
                Class<?> idClass,
                SortedMap<String, Member> idClassAttributeAccessors,
+               String versionAttributeName,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.entityClass = entityClass;
@@ -76,6 +78,7 @@ class EntityInfo {
         this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
         this.recordClass = recordClass;
+        this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
     }
