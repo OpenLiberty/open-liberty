@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version30.container;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+@AutoConfiguration
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnWebApplication

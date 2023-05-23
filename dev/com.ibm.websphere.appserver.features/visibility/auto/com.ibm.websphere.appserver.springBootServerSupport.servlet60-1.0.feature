@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.springBootServerSupport-servlet60-1.0
+symbolicName=com.ibm.websphere.appserver.springBootServerSupport.servlet60-1.0
 visibility=private
 -bundles=com.ibm.ws.springboot.support.web.server.jakarta
 
