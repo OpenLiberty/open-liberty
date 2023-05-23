@@ -222,7 +222,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         }
 
         String pkceCodeChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
-        if (pkceCodeChallengeMethod != null) {
+        if (pkceCodeChallengeMethod != null && !ClientConstants.PKCE_CODE_CHALLENGE_DISABLED.equals(pkceCodeChallengeMethod)) {
             addPkceParameters(pkceCodeChallengeMethod, state, authzParameters);
         }
 

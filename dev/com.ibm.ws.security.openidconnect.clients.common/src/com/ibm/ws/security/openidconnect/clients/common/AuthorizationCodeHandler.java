@@ -183,7 +183,7 @@ public class AuthorizationCodeHandler {
     HashMap<String, String> getTokenRequestCustomParameters(String state) {
         HashMap<String, String> customParams = clientConfig.getTokenRequestParams();
         String codeChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
-        if (codeChallengeMethod != null) {
+        if (codeChallengeMethod != null && !ClientConstants.PKCE_CODE_CHALLENGE_DISABLED.equals(codeChallengeMethod)) {
             customParams = addPkceParameters(state, customParams);
         }
         return customParams;
