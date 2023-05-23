@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,17 @@ package com.ibm.websphere.jaxrs.server;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Trivial
+@MultipartConfig
 public class IBMRestServlet extends HttpServlet30Dispatcher {
     private static final long serialVersionUID = -7916305366621576524L;
 
