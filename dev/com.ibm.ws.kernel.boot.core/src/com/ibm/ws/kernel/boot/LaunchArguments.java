@@ -316,7 +316,7 @@ public class LaunchArguments {
      * @return Matching internal enumeration name.
      */
     private static String commandLineToInternalPhaseName(String phaseName) {
-        phaseName = (phaseName == null) ? "null" : phaseName.trim();
+        phaseName = (phaseName == null) ? "null" : phaseName.trim().toLowerCase(Locale.ENGLISH);
         switch (phaseName) {
             case "afterappstart":
                 return CheckpointPhase.AFTER_APP_START.toString();
