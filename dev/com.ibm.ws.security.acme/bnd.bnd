@@ -51,7 +51,7 @@ Include-Resource: \
     @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
     @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
     @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class,\
-    @${repo;org.bitbucket.b_c:jose4j;0.6.5;EXACT},\
+    @${repo;org.bitbucket.b_c:jose4j;0.9.3;EXACT},\
     org=${bin}/org
 
 instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
@@ -96,7 +96,7 @@ instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class
 	org.bouncycastle:bcprov-jdk15on;version=1.69,\
 	org.bouncycastle:bcpkix-jdk15on;version=1.69,\
 	org.bouncycastle:bcutil-jdk15on;version=1.69,\
- 	org.bitbucket.b_c:jose4j;version=0.6.5,\
+ 	org.bitbucket.b_c:jose4j;version=0.9.3,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.crypto.certificateutil;version=latest,\
