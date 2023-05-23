@@ -29,15 +29,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -50,6 +54,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -100,7 +105,7 @@ public class DataJPATestServlet extends FATServlet {
     Employees employees;
 
     @Inject
-    OrderRepo orders;
+    Orders orders;
 
     @Inject
     ShippingAddresses shippingAddresses;
@@ -568,6 +573,98 @@ public class DataJPATestServlet extends FATServlet {
         // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
+     * Tests CrudRepository methods that supply entities as parameters.
+     */
+    @Test
+    public void testEntitiesAsParameters() throws Exception {
+        orders.deleteAll();
+
+        Order o1 = new Order();
+        o1.purchasedBy = "testEntitiesAsParameters-Customer1";
+        o1.purchasedOn = OffsetDateTime.now();
+        o1.total = 10.99f;
+        o1 = orders.save(o1);
+        int o1_v1 = o1.versionNum;
+
+        Order o2 = new Order();
+        o2.purchasedBy = "testEntitiesAsParameters-Customer2";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = 20.99f;
+        o2 = orders.save(o2);
+
+        Order o3 = new Order();
+        o3.purchasedBy = "testEntitiesAsParameters-Customer3";
+        o3.purchasedOn = OffsetDateTime.now();
+        o3.total = 30.99f;
+        o3 = orders.save(o3);
+
+        Order o4 = new Order();
+        o4.purchasedBy = "testEntitiesAsParameters-Customer4";
+        o4.purchasedOn = OffsetDateTime.now();
+        o4.total = 40.99f;
+        o4 = orders.save(o4);
+
+        Order o5 = new Order();
+        o5.purchasedBy = "testEntitiesAsParameters-Customer5";
+        o5.purchasedOn = OffsetDateTime.now();
+        o5.total = 50.99f;
+        o5 = orders.save(o5);
+        int o5_v1 = o5.versionNum;
+
+        // delete even though a property doesn't match
+        o4.total = 44.99f;
+        orders.delete(o4);
+
+        // cannot delete when the version number doesn't match
+        tran.begin();
+        try {
+            o1 = orders.findById(o1.id).orElseThrow();
+            Long o1id = o1.id;
+
+            // Update in separate transaction:
+            CompletableFuture.supplyAsync(() -> {
+                Order o1updated = orders.findById(o1id).orElseThrow();
+                o1updated.total = 11.99f;
+                return orders.save(o1updated);
+            }).get(30, TimeUnit.SECONDS);
+
+            try {
+                orders.delete(o1);
+                fail("Deletion must be rejected when the version doesn't match.");
+            } catch (DataException x) {
+                System.out.println("Deletion was rejected as it ought to be be when the version does not match.");
+            }
+
+            assertEquals(Status.STATUS_MARKED_ROLLBACK, tran.getStatus());
+        } finally {
+            tran.rollback();
+        }
+
+        // increment version of second entity
+        o2.total = 22.99f;
+        o2 = orders.save(o2);
+
+        orders.deleteAll(List.of(o3, o2));
+
+        Map<String, Order> map = orders.findAll()
+                        .collect(Collectors.toMap(o -> o.purchasedBy, // key
+                                                  o -> o)); // value
+
+        assertEquals(map.toString(), 2, map.size());
+
+        Order o;
+        assertNotNull(o = map.get("testEntitiesAsParameters-Customer1"));
+        assertEquals(11.99f, o.total, 0.001f);
+        assertEquals(o1_v1 + 1, o.versionNum); // updated once
+
+        assertNotNull(o = map.get("testEntitiesAsParameters-Customer5"));
+        assertEquals(50.99f, o.total, 0.001f);
+        assertEquals(o5_v1, o.versionNum); // never updated
+
+        orders.deleteAll();
     }
 
     /**
