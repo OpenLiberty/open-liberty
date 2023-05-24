@@ -101,7 +101,7 @@ public class PKCEAndPrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTool
 
         TestSettings updatedTestSettings = updateTestCaseSettings("proofKeyFalse_RS256", Constants.SIGALG_RS256, "proofKeyFalse_RS256_S256_RS256");
 
-        positiveTestWithPrivateKey(updatedTestSettings, "S256");
+        positiveTestWithPrivateKey(updatedTestSettings, S256);
 
     }
 
@@ -112,7 +112,7 @@ public class PKCEAndPrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTool
 
         TestSettings updatedTestSettings = updateTestCaseSettings("proofKeyFalse_RS256", Constants.SIGALG_ES384, "proofKeyFalse_RS256_S256_ES384");
 
-        positiveTestWithPrivateKey(updatedTestSettings, "S256");
+        positiveTestWithPrivateKey(updatedTestSettings, S256);
 
     }
 
@@ -122,7 +122,7 @@ public class PKCEAndPrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTool
 
         TestSettings updatedTestSettings = updateTestCaseSettings("proofKeyFalse_RS256", Constants.SIGALG_ES512, "proofKeyFalse_RS256_Plain_ES512");
 
-        positiveTestWithPrivateKey(updatedTestSettings, "plain");
+        positiveTestWithPrivateKey(updatedTestSettings, PLAIN);
 
     }
 
@@ -132,7 +132,7 @@ public class PKCEAndPrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTool
 
         TestSettings updatedTestSettings = updateTestCaseSettings("proofKeyTrue_RS256", Constants.SIGALG_RS512, "proofKeyTrue_RS256_S256_RS512");
 
-        positiveTestWithPrivateKey(updatedTestSettings, "S256");
+        positiveTestWithPrivateKey(updatedTestSettings, S256);
 
     }
 
@@ -142,7 +142,7 @@ public class PKCEAndPrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTool
 
         TestSettings updatedTestSettings = updateTestCaseSettings("proofKeyTrue_RS256", Constants.SIGALG_ES256, "proofKeyTrue_RS256_Plain_ES256");
 
-        positiveTestWithPrivateKey(updatedTestSettings, "plain");
+        positiveTestWithPrivateKey(updatedTestSettings, PLAIN);
 
     }
 

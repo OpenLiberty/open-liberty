@@ -54,6 +54,10 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
 
     protected ArrayList<String> used_jtis = new ArrayList<String>();
 
+    protected static final String S256 = "S256";
+    protected static final String PLAIN = "plain";
+    protected static final String DISABLED = "disabled";
+
     public enum AuthMethod {
         CLIENT_SECRET_BASIC, CLIENT_SECRET_POST, PRIVATE_KEY_JWT
     }
@@ -126,7 +130,7 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
     public List<validationData> addPKCECommonExpectations(List<validationData> expectations, String challengeMethod) throws Exception {
 
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found code_challenge in the WASReqURL cookie but didn't.", null, "WASReqURL" + ".*" + "code_challenge.*");
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found code_challenge_method=S256 in the WASReqURL cookie but didn't.", null, "WASReqURL" + ".*" + "code_challenge_method=" + challengeMethod + ".*");
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found code_challenge_method=" + challengeMethod + " in the WASReqURL cookie but didn't.", null, "WASReqURL" + ".*" + "code_challenge_method=" + challengeMethod + ".*");
         return expectations;
     }
 
