@@ -264,11 +264,11 @@ public interface ConfigurationProvider {
     public boolean needToCoordinateServices();
 
     /**
-     * Return true when the peer locking scheme is to be enabled for the Tran recovery logs that are stored in a database.
+     * Return true when the peer locking scheme is to be enabled for the Tran recovery logs that are stored in either a database or a filesystem.
      *
      * @return
      */
-    public boolean enableHADBPeerLocking();
+    public boolean enablePeerLocking();
 
     /**
      * Configures the length of time between heartbeats when the peer locking scheme is enabled for the Tran recovery logs that are stored in a database.

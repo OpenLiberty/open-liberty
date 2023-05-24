@@ -255,7 +255,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     try {
                         fsc = createFailureScopeController(fs);
                     } catch (Exception exc) {
-                        FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
+                        FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1177", this);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
                         throw new RecoveryFailedException(exc);
@@ -487,10 +487,18 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (fsc != null)
                 fsc.getRecoveryManager().waitForReplayCompletion(localRecovery);
 
+            // Replay has completed but recovery processing may have failed
+            boolean recoveryFailed = false;
+            if (fsc != null)
+                recoveryFailed = fsc.getRecoveryManager().recoveryFailed();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Replay completed but did recovery fail -  " + recoveryFailed);
+
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
             if (!localRecovery) {
                 if (!_serverStopping) {
-                    if (fsc != null)
+                    if (fsc != null && !recoveryFailed)
                         fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
                 } else {
                     if (tc.isEntryEnabled())
@@ -508,6 +516,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     throw new RecoveryFailedException("server stopping");
                 }
 
+                // Peer recovery environment
                 if (_leaseLog != null) {
                     // Release the lock on the lease log. This could be the local server or a peer.
                     try {
@@ -530,7 +539,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
                     // If Recovery Failed, then by default we shall bring down the Liberty Server
                     if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
-                        RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
+                        RecoveryFailedException rex = new RecoveryFailedException("Recovery failed in peer environment");
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
@@ -573,32 +582,43 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                         cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                         cp.getLeaseCheckInterval());
                     }
+                } else {
+                    // Not a peer recovery environment
+                    if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
+                        RecoveryFailedException rex = new RecoveryFailedException("Server recovery failed");
+
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "initiateRecovery", rex);
+
+                        // Output a message as to why we are terminating the server as in
+                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
+                        throw rex;
+                    }
                 }
             }
-
         } catch (
 
         InvalidFailureScopeException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(e); // 171598
         } catch (InvalidLogPropertiesException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(e); // 171598
         } catch (URISyntaxException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(e); // 171598
         } catch (PrivilegedActionException e) {
-            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "463", this);
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "463", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
@@ -662,7 +682,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         try {
             recoveryDirector = RecoveryDirectorFactory.recoveryDirector();
         } catch (InternalLogException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1274", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "1274", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "terminateRecovery");
             throw new TerminationFailedException(exc);
@@ -695,7 +715,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // and if this occurs then this indicates that there is a defect in the code. This exception is
             // raised by the RLS in the event that ot does not recognize this failure scope and recovery agent
             // conbindation.
-            FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.terminateRecovery", "1308", this);
+            FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.terminateRecovery", "1308", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Unable to indicate termination completion to recovery director: " + exc);
             if (tc.isEntryEnabled())
@@ -819,6 +839,22 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.entry(tc, "claimPeerLeaseForRecovery", new java.lang.Object[] { recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, this });
 
         boolean peerClaimed = _leaseLog.claimPeerLeaseForRecovery(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo);
+
+        // Release lock if the claim failed
+        if (!peerClaimed) {
+            if (_leaseLog.releasePeerLease(recoveryIdentityToRecover)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Have released peer lease lock");
+            } else {
+                // Something went wrong, this is not expected, report.
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Failed to release peer lease lock");
+                RecoveryFailedException rfex = new RecoveryFailedException("FileSystem Peer locking, failed to release peer lock");
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "claimPeerLeaseForRecovery", rfex);
+                throw rfex;
+            }
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "claimPeerLeaseForRecovery", peerClaimed);
@@ -1077,17 +1113,30 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enableHADBPeerLocking()
+     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enablePeerLocking()
      */
     @Override
-    public boolean isDBTXLogPeerLocking() {
+    public boolean isPeerLockingEnabled() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "isDBTXLogPeerLocking");
+            Tr.entry(tc, "isPeerLockingEnabled");
+
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        boolean enableLocking = cp.enableHADBPeerLocking();
+        boolean enableLocking = cp.enablePeerLocking();
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
+            Tr.exit(tc, "isPeerLockingEnabled", enableLocking);
+
         return enableLocking;
+    }
+
+    @Override
+    public boolean isSQLRecoveryLog() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isSQLRecoveryLog");
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        boolean isSQLLog = cp.isSQLRecoveryLog();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isSQLRecoveryLog", isSQLLog);
+        return isSQLLog;
     }
 
     /**
@@ -1203,4 +1252,50 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         return _serverStopping;
     }
 
+    @Override
+    public String[] logDirectories(FailureScope failureScope) throws RecoveryFailedException {
+        final boolean traceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "logDirectories", failureScope);
+
+        String recoveredServerIdentity = failureScope.serverName();
+        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+        if (cp == null) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "logDirectories", "ConfigurationProvider is null");
+            throw new RecoveryFailedException("ConfigurationProvider is null");
+        }
+
+        String logDir = cp.getTransactionLogDirectory();
+        int logSize = cp.getTransactionLogSize();
+        String[] results = null;
+        String directory = null;
+        try {
+            final TranLogConfiguration tlc = createFileTranLogConfiguration(recoveredServerIdentity,
+                                                                            failureScope,
+                                                                            logDir,
+                                                                            logSize,
+                                                                            _isPeerRecoverySupported);
+
+            if (tlc != null) {
+                directory = tlc.expandedLogDirectory();
+
+                if (directory != null) {
+                    results = new String[1];
+                    results[0] = directory;
+                }
+            }
+        } catch (URISyntaxException e) {
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxRecoveryAgentImpl.initiateRecovery", "1249", this);
+            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "logDirectories", e);
+            throw new RecoveryFailedException(e); // 171598
+        }
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "logDirectories", directory);
+        return results;
+    }
 }

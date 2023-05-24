@@ -342,10 +342,10 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enablePeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
+    public boolean enablePeerLocking() {
         // TODO Auto-generated method stub
         return false;
     }

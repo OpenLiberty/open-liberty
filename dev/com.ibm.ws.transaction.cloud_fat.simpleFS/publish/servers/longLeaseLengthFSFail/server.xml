@@ -1,5 +1,7 @@
 <server>
 
+    <include location="../fatTestPorts.xml"/>
+    
     <featureManager>
        <feature>servlet-4.0</feature>
        <feature>jdbc-4.2</feature>
@@ -7,13 +9,14 @@
        <feature>componentTest-1.0</feature>
        <feature>txtest-1.0</feature>
        <feature>cdi-2.0</feature>
+       <feature>timedexit-1.0</feature>
     </featureManager>
       
     <transaction
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="FSCLOUD001"
+      recoveryIdentity="longLeaseLengthFSFail"
       recoveryGroup="defaultGroup"
       leaseLength="600"
       leaseCheckInterval="25"

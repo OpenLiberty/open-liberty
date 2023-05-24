@@ -865,11 +865,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     * @see com.ibm.tx.config.ConfigurationProvider#enablePeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
-        return (Boolean) _props.get("enableHADBPeerLocking");
+    public boolean enablePeerLocking() {
+        return (Boolean) _props.get("enablePeerLocking");
     }
 
     /*

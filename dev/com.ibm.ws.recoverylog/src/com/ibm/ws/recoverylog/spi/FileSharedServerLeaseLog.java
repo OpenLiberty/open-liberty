@@ -268,6 +268,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 Tr.debug(tc, "Successfully modified time for {0}", leaseFile.getCanonicalPath());
                         }
                     }
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The lease lock was unexpectedly null");
                 }
             } else {
                 if (tc.isDebugEnabled())

@@ -29,7 +29,7 @@
       heuristicRetryInterval="10"
       recoveryIdentity="cloud002-1"
       recoveryGroup="defaultGroup"
-      enableHADBPeerLocking="true"
+      enablePeerLocking="true"
       timeBetweenHeartbeats="10"
       peerTimeBeforeStale="30"
       leaseLength="20"

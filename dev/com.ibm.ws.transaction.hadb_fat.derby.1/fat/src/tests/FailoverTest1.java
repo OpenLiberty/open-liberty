@@ -147,7 +147,7 @@ public class FailoverTest1 extends FailoverTest {
 
     // Test we get back the actual exception that scuppered the test
     @Test
-    @ExpectedFFDC(value = { "java.lang.IllegalStateException" })
+    @ExpectedFFDC(value = { "java.lang.IllegalStateException", "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testGetDriverConnectionFailure() throws Exception {
         final String method = "testGetDriverConnectionFailure";
 
@@ -330,7 +330,7 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     @Test
-    @ExpectedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogClosedException", })
+    @ExpectedFFDC(value = { "java.lang.IllegalStateException", "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testHADBNonRecoverableStartupFailover() throws Exception {
         final String method = "testHADBNonRecoverableStartupFailover";
 
@@ -356,7 +356,7 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     @Test
-    @ExpectedFFDC(value = { "java.lang.IllegalStateException", })
+    @ExpectedFFDC(value = { "java.lang.IllegalStateException", "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testHADBEarlyNonRecoverableStartupFailover() throws Exception {
         final String method = "testHADBEarlyNonRecoverableStartupFailover";
 
