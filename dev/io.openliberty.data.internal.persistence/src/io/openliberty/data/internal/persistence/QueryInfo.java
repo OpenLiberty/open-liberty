@@ -494,7 +494,12 @@ class QueryInfo {
                     Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
                 query.setParameter(++p, param);
             }
-            // TODO cover scenario where the entity also has a version attribute
+
+            if (args.length == 2) { // entity has a version attribute
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + args[1]);
+                query.setParameter(++p, args[1]);
+            }
         }
     }
 

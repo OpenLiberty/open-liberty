@@ -635,7 +635,7 @@ public class DataJPATestServlet extends FATServlet {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");
             } catch (DataException x) {
-                System.out.println("Deletion was rejected as it ought to be be when the version does not match.");
+                System.out.println("Deletion was rejected as it ought to be when the version does not match.");
             }
 
             assertEquals(Status.STATUS_MARKED_ROLLBACK, tran.getStatus());
@@ -815,7 +815,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassDelete() {
         City winona = new City("Winona", "Minnesota", 25948, Set.of(507));
-        cities.save(winona);
+        winona = cities.save(winona); // must use updated copy of entity now that we have added a version to it
         cities.delete(winona);
         assertEquals(true, cities.findById(CityId.of("Winona", "Minnesota")).isEmpty());
     }
@@ -1927,5 +1927,26 @@ public class DataJPATestServlet extends FATServlet {
                      Arrays.toString(counties.findZipCodesByName("Wabasha").orElseThrow()));
 
         assertEquals(4, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
+    }
+
+    /**
+     * Test that remove(entity) requires the entity to be at the same version as the database for successful removal.
+     * This tests covers an entity type with an IdClass.
+     */
+    @Test
+    public void testVersionedRemoval() {
+        City duluth = cities.save(new City("Duluth", "Minnesota", 86697, Set.of(218)));
+        long oldVersion = duluth.changeCount;
+
+        duluth.population = 86372;
+        duluth = cities.save(duluth);
+        long newVersion = duluth.changeCount;
+
+        duluth = new City("Duluth", "Minnesota", 86697, Set.of(218));
+        duluth.changeCount = oldVersion;
+        assertEquals(false, cities.remove(duluth));
+
+        duluth.changeCount = newVersion;
+        assertEquals(true, cities.remove(duluth));
     }
 }

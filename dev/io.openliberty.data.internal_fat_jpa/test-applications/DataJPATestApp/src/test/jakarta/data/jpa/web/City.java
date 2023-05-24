@@ -15,6 +15,7 @@ import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.Version;
 
 /**
  *
@@ -23,6 +24,9 @@ import jakarta.persistence.IdClass;
 @IdClass(CityId.class)
 public class City {
     public Set<Integer> areaCodes;
+
+    @Version
+    long changeCount;
 
     @Id
     public String name;
@@ -44,6 +48,6 @@ public class City {
 
     @Override
     public String toString() {
-        return "City of " + name + ", " + stateName + " pop " + population + " in " + areaCodes;
+        return "City of " + name + ", " + stateName + " pop " + population + " in " + areaCodes + " v" + changeCount;
     }
 }

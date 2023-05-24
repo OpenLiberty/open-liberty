@@ -2006,13 +2006,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         em = queryInfo.entityInfo.persister.createEntityManager();
                         TypedQuery<?> delete = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
 
+                        int updateCount = 0;
                         if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
                             for (Object e : ((Iterable<?>) args[0]))
-                                remove(e, queryInfo, delete);
+                                updateCount += remove(e, queryInfo, delete);
                         else
-                            remove(args[0], queryInfo, delete);
+                            updateCount = remove(args[0], queryInfo, delete);
 
-                        returnValue = null;
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
                     }
                     case COUNT: {
@@ -2225,9 +2226,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for deleteById.
      * @param delete    deletion query.
-     * @throws Exception if an error occurs or the entity (or correct version of the entity) was not found.
+     * @return the number of entities deleted (1 or 0).
+     * @throws Exception if an error occurs or if the repository method return type is void and
+     *                       the entity (or correct version of the entity) was not found.
      */
-    private static void remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private static int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
 
         Object v = e;
         if (queryInfo.entityInfo.versionAttributeName == null) {
@@ -2246,13 +2249,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int numDeleted = delete.executeUpdate();
 
         if (numDeleted == 0) {
-            if (queryInfo.entityInfo.versionAttributeName == null)
-                throw new DataException("Entity was not found.");
-            else
-                throw new DataException("Version " + v + " of the entity was not found.");
+            Class<?> returnType = queryInfo.method.getReturnType();
+            if (void.class.equals(returnType) || Void.class.equals(returnType)) {
+                if (queryInfo.entityInfo.versionAttributeName == null)
+                    throw new DataException("Entity was not found."); // TODO NLS
+                else
+                    throw new DataException("Version " + v + " of the entity was not found."); // TODO NLS
+            }
         } else if (numDeleted > 1) {
-            throw new DataException("Found " + numDeleted + " entities matching the delete query.");
+            throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
         }
+
+        return numDeleted;
     }
 
     /**
