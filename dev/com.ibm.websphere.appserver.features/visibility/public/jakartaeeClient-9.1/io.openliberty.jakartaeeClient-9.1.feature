@@ -5,8 +5,7 @@ singleton=true
 IBM-ShortName: jakartaeeClient-9.1
 WLP-AlsoKnownAs: jakartaeeClient-9.0
 Subsystem-Name: Jakarta EE 9.1 Application Client
--features=io.openliberty.jakartaeePlatform-9.0, \
-  io.openliberty.cdi-3.0, \
+-features=io.openliberty.cdi-3.0, \
   io.openliberty.enterpriseBeansRemoteClient-2.0, \
   io.openliberty.mail-2.0, \
   io.openliberty.messagingClient-3.0, \

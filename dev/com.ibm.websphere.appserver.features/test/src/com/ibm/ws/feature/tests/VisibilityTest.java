@@ -447,29 +447,28 @@ public class VisibilityTest {
     @Test
     public void testNonTransitiveTolerates() {
         StringBuilder errorMessage = new StringBuilder();
-        // javaeePlatform and appSecurity are special because they have dependencies on each other.
+        // appSecurity features are special because they have dependencies on each other.
         Set<String> nonSingletonToleratedFeatures = new HashSet<>();
-        nonSingletonToleratedFeatures.add("io.openliberty.jakartaeePlatform-");
-        nonSingletonToleratedFeatures.add("com.ibm.websphere.appserver.javaeePlatform-");
         nonSingletonToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.isAutoFeature()) {
+                continue;
+            }
             String feature = entry.getKey();
             int lastIndex = feature.indexOf('-');
             if (lastIndex == -1) {
                 continue;
             }
             String baseFeatureName = feature.substring(0, lastIndex + 1);
-            visibilityMap.put(baseFeatureName, entry.getValue().getVisibility());
-
+            visibilityMap.put(baseFeatureName, featureInfo.getVisibility());
         }
+
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
 
             FeatureInfo featureInfo = entry.getValue();
-            if (featureInfo.isAutoFeature()) {
-                continue;
-            }
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
             Set<String> rootDepFeatureWithoutTolerates = new HashSet<>();
@@ -487,10 +486,14 @@ public class VisibilityTest {
                 FeatureInfo depFeatureInfo = features.get(depFeatureName);
                 if (depFeatureInfo != null) {
                     for (Map.Entry<String, Attrs> depEntry2 : depFeatureInfo.getDependentFeatures().entrySet()) {
+                        boolean isTolerates = depEntry2.getValue().containsKey("ibm.tolerates:");
+                        if (!isTolerates && processedFeatures.contains(depEntry2.getKey())) {
+                            continue;
+                        }
                         Map<String, Set<String>> tolFeatures = processIncludedFeature(featureName, rootDepFeatureWithoutTolerates,
                                                                                       depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors, processedFeatures,
-                                                                                      depEntry2.getValue().containsKey("ibm.tolerates:"),
-                                                                                      depFeature.getValue().containsKey("ibm.tolerates:"));
+                                                                                      isTolerates,
+                                                                                      depFeature.getValue().containsKey("ibm.tolerates:"), false);
                         if (tolFeatures != null) {
                             for (Entry<String, Set<String>> entry2 : tolFeatures.entrySet()) {
                                 String key = entry2.getKey();
@@ -530,39 +533,37 @@ public class VisibilityTest {
         }
 
         if (errorMessage.length() != 0) {
-            Assert.fail("Found features missing feature due to tolerates not being transitive for public and protected features: " + '\n' + errorMessage.toString());
+            Assert.fail("Found features missing feature dependency due to tolerates not being transitive for public and protected features: " + '\n' + errorMessage.toString());
         }
     }
 
     /**
-     * Finds dependent features that are redundant because other dependent features already bring in those features.
+     * Finds private and protected dependent features that are redundant because other dependent features already bring them in.
+     * Public features are not included in this test since those features may be explicitly included just to show
+     * which public features are enabled by a feature.
      */
-    //@Test
+    @Test
     public void testFeatureDependenciesRedundancy() {
         StringBuilder errorMessage = new StringBuilder();
-        // javaeePlatform and appSecurity are special because they have dependencies on each other.
-        Set<String> nonSingletonToleratedFeatures = new HashSet<>();
-        nonSingletonToleratedFeatures.add("io.openliberty.jakartaeePlatform-");
-        nonSingletonToleratedFeatures.add("com.ibm.websphere.appserver.javaeePlatform-");
-        nonSingletonToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
         Map<String, String> visibilityMap = new HashMap<>();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.isAutoFeature()) {
+                continue;
+            }
             String feature = entry.getKey();
             int lastIndex = feature.indexOf('-');
             if (lastIndex == -1) {
                 continue;
             }
             String baseFeatureName = feature.substring(0, lastIndex + 1);
-            visibilityMap.put(baseFeatureName, entry.getValue().getVisibility());
+            visibilityMap.put(baseFeatureName, featureInfo.getVisibility());
 
         }
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
 
             FeatureInfo featureInfo = entry.getValue();
-            if (featureInfo.isAutoFeature()) {
-                continue;
-            }
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
             Set<String> rootDepFeatureWithoutTolerates = new HashSet<>();
@@ -580,11 +581,12 @@ public class VisibilityTest {
                 FeatureInfo depFeatureInfo = features.get(depFeatureName);
                 if (depFeatureInfo != null) {
                     for (Map.Entry<String, Attrs> depEntry2 : depFeatureInfo.getDependentFeatures().entrySet()) {
+                        boolean isApiJarFalse = "false".equals(depFeature.getValue().get("apiJar")) || "false".equals(depEntry2.getValue().get("apiJar"));
                         Map<String, Set<String>> tolFeatures = processIncludedFeatureAndChildren(featureName, rootDepFeatureWithoutTolerates,
                                                                                                  depEntry2.getKey(), featureName + " -> " + depFeatureName, featureErrors,
                                                                                                  processedFeatures,
                                                                                                  depEntry2.getValue().containsKey("ibm.tolerates:"),
-                                                                                                 depFeature.getValue().containsKey("ibm.tolerates:"));
+                                                                                                 depFeature.getValue().containsKey("ibm.tolerates:"), isApiJarFalse);
                         if (tolFeatures != null) {
                             toleratedFeatures.addAll(tolFeatures.keySet());
                         }
@@ -594,7 +596,7 @@ public class VisibilityTest {
             for (Map.Entry<String, Set<String>> errorEntry : featureErrors.entrySet()) {
                 String depFeature = errorEntry.getKey();
                 String baseFeatureName = depFeature.substring(0, depFeature.lastIndexOf('-') + 1);
-                if (toleratedFeatures.contains(baseFeatureName)) {
+                if (toleratedFeatures.contains(baseFeatureName) || visibilityMap.get(baseFeatureName).equals("public")) {
                     continue;
                 }
                 errorMessage.append(featureName).append(" contains redundant feature ").append(depFeature)
@@ -613,29 +615,28 @@ public class VisibilityTest {
 
     private Map<String, Set<String>> processIncludedFeatureAndChildren(String rootFeature, Set<String> rootDepFeatures, String feature,
                                                                        String parentFeature, Map<String, Set<String>> featureErrors, Set<String> processedFeatures,
-                                                                       boolean isTolerates, boolean hasToleratesAncestor) {
+                                                                       boolean isTolerates, boolean hasToleratesAncestor, boolean isApiJarFalse) {
         Map<String, Set<String>> toleratedFeatures = processIncludedFeature(rootFeature, rootDepFeatures, feature, parentFeature, featureErrors,
-                                                                            processedFeatures, isTolerates, hasToleratesAncestor);
-        if (toleratedFeatures != null) {
-            FeatureInfo featureInfo = features.get(feature);
-            if (featureInfo != null) {
-                for (Map.Entry<String, Attrs> depEntry : featureInfo.getDependentFeatures().entrySet()) {
-                    Map<String, Set<String>> includeTolerates = processIncludedFeatureAndChildren(rootFeature, rootDepFeatures, depEntry.getKey(),
-                                                                                                  parentFeature + " -> " + feature, featureErrors, processedFeatures,
-                                                                                                  depEntry.getValue().containsKey("ibm.tolerates:"),
-                                                                                                  isTolerates || hasToleratesAncestor);
-                    if (includeTolerates != null) {
-                        if (toleratedFeatures == null) {
-                            toleratedFeatures = new HashMap<>(includeTolerates);
-                        } else {
-                            for (Entry<String, Set<String>> entry : includeTolerates.entrySet()) {
-                                String key = entry.getKey();
-                                Set<String> existing = toleratedFeatures.get(key);
-                                if (existing == null) {
-                                    toleratedFeatures.put(key, entry.getValue());
-                                } else {
-                                    existing.addAll(entry.getValue());
-                                }
+                                                                            processedFeatures, isTolerates, hasToleratesAncestor, isApiJarFalse);
+        FeatureInfo featureInfo = features.get(feature);
+        if (featureInfo != null) {
+            for (Map.Entry<String, Attrs> depEntry : featureInfo.getDependentFeatures().entrySet()) {
+                boolean depApiJarFalse = "false".equals(depEntry.getValue().get("apiJar"));
+                Map<String, Set<String>> includeTolerates = processIncludedFeatureAndChildren(rootFeature, rootDepFeatures, depEntry.getKey(),
+                                                                                              parentFeature + " -> " + feature, featureErrors, processedFeatures,
+                                                                                              depEntry.getValue().containsKey("ibm.tolerates:"),
+                                                                                              isTolerates || hasToleratesAncestor, isApiJarFalse || depApiJarFalse);
+                if (includeTolerates != null) {
+                    if (toleratedFeatures == null) {
+                        toleratedFeatures = new HashMap<>(includeTolerates);
+                    } else {
+                        for (Entry<String, Set<String>> entry : includeTolerates.entrySet()) {
+                            String key = entry.getKey();
+                            Set<String> existing = toleratedFeatures.get(key);
+                            if (existing == null) {
+                                toleratedFeatures.put(key, entry.getValue());
+                            } else {
+                                existing.addAll(entry.getValue());
                             }
                         }
                     }
@@ -647,10 +648,7 @@ public class VisibilityTest {
 
     private Map<String, Set<String>> processIncludedFeature(String rootFeature, Set<String> rootDepFeatures, String feature,
                                                             String parentFeature, Map<String, Set<String>> featureErrors, Set<String> processedFeatures,
-                                                            boolean isTolerates, boolean hasToleratesAncestor) {
-        if (!isTolerates && processedFeatures.contains(feature)) {
-            return null;
-        }
+                                                            boolean isTolerates, boolean hasToleratesAncestor, boolean isApiJarFalse) {
         Map<String, Set<String>> toleratedFeatures = null;
         if (isTolerates) {
             toleratedFeatures = new HashMap<>();
@@ -659,13 +657,15 @@ public class VisibilityTest {
             toleratedFeatures.put(feature.substring(0, feature.lastIndexOf('-') + 1), depFeatureWithTolerate);
             processedFeatures.add(feature);
         } else if (!hasToleratesAncestor && rootDepFeatures.contains(feature) && !feature.startsWith("com.ibm.websphere.appserver.eeCompatible-")
-                   && !feature.startsWith("io.openliberty.mpCompatible-")) {
-            Set<String> errors = featureErrors.get(feature);
-            if (errors == null) {
-                errors = new HashSet<String>();
-                featureErrors.put(feature, errors);
+                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")) {
+            if (!isApiJarFalse) {
+                Set<String> errors = featureErrors.get(feature);
+                if (errors == null) {
+                    errors = new HashSet<String>();
+                    featureErrors.put(feature, errors);
+                }
+                errors.add(parentFeature);
             }
-            errors.add(parentFeature);
         } else {
             processedFeatures.add(feature);
         }

@@ -23,7 +23,6 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
   com.ibm.websphere.appserver.el-3.0, \
   com.ibm.websphere.appserver.beanValidationCore-1.0, \
-  com.ibm.websphere.appserver.javax.interceptor-1.2, \
   com.ibm.websphere.appserver.javax.validation-1.1
 -bundles=\
   com.ibm.ws.org.apache.commons.weaver.1.1, \

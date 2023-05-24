@@ -11,8 +11,7 @@ Subsystem-Category: JakartaEE10Application
   com.ibm.websphere.appserver.httptransport-1.0, \
   com.ibm.websphere.appserver.requestProbes-1.0, \
   io.openliberty.jakarta.annotation-2.1, \
-  com.ibm.websphere.appserver.eeCompatible-10.0, \
-  com.ibm.websphere.appserver.anno-2.0
+  com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=com.ibm.ws.app.manager.war.jakarta, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \

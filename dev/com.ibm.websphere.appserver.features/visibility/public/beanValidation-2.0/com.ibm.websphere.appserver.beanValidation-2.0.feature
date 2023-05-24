@@ -23,7 +23,6 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.el-3.0, \
   com.ibm.websphere.appserver.beanValidationCore-1.0, \
   com.ibm.websphere.appserver.javax.cdi-2.0, \
-  com.ibm.websphere.appserver.javax.interceptor-1.2, \
   com.ibm.websphere.appserver.javax.validation-2.0
 -bundles=\
   com.ibm.ws.beanvalidation.v20, \

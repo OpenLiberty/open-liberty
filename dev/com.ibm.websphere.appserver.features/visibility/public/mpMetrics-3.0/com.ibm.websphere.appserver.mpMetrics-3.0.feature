@@ -8,7 +8,6 @@ IBM-ShortName: mpMetrics-3.0
 Subsystem-Name: MicroProfile Metrics 3.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
   com.ibm.websphere.appserver.mpConfig-2.0, \
-  com.ibm.websphere.appserver.javax.annotation-1.3, \
   com.ibm.websphere.appserver.servlet-4.0, \
   io.openliberty.servlet.internal-4.0, \
   io.openliberty.mpCompatible-4.0, \
