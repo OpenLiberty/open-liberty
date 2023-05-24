@@ -15,12 +15,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.ws.security.SSO.clientTests.commonTools.PKCEPrivateKeyJwtCommonTooling;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
@@ -38,32 +36,22 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 @RunWith(FATRunner.class)
-public class PKCEClientTests extends CommonTest {
+public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
 
     public static Class<?> thisClass = PKCEClientTests.class;
-    public static TestServer clientServer = null;
 
-    public static RSCommonTestTools rsTools = new RSCommonTestTools();
     protected static boolean firstFFDCInstance = true;
-
-    public WebClient getAndSaveWebClientWithLongerTimeout(boolean override) throws Exception {
-
-        WebClient webClient = getAndSaveWebClient(override);
-        webClient.getOptions().setTimeout(5 * 60 * 1000);
-
-        return webClient;
-    }
 
     /**
      * Process a positive test case flow when a challenge should be included
      *
      * @param app
      *            - the app to invoke
-     * @param challenge
+     * @param challengeMethod
      *            - the type of challenge (S256 or plain)
      * @throws Exception
      */
-    public void positiveTestWithChallenge(String app, String challenge) throws Exception {
+    public void positiveTestWithChallenge(String app, String challengeMethod) throws Exception {
 
         WebClient webClient = getAndSaveWebClientWithLongerTimeout(true);
 
@@ -72,8 +60,7 @@ public class PKCEClientTests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the test app.", null, updatedTestSettings.getTestURL());
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found code_challenge in the WASReqURL cookie but didn't.", null, "WASReqURL" + ".*" + "code_challenge.*");
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found code_challenge_method=S256 in the WASReqURL cookie but didn't.", null, "WASReqURL" + ".*" + "code_challenge_method=" + challenge + ".*");
+        expectations = addPKCECommonExpectations(expectations, challengeMethod);
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
     }
@@ -133,6 +120,8 @@ public class PKCEClientTests extends CommonTest {
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
     }
+
+    /******************************* Tests *********************************/
 
     /**
      * Test with proofKeyForCodeExchange not set in the OP, so it uses the default value of false. The client sets

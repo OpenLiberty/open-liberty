@@ -26,7 +26,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysPassesTest.class,
-        LibertyOP_Social_PKCETests.class
+        LibertyOP_Social_PKCETests.class,
+        LibertyOP_Social_PrivateKeyJwtTests.class,
+        LibertyOP_Social_PKCEAndPrivateKeyJwtTests.class
 
 })
 

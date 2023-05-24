@@ -168,13 +168,20 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
     public static final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS = "CWWKS1552E";
+    public static final String CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS = "CWWKS1554E";
+    public static final String CWWKS1556E_KEYSTORE_MISSING_IN_CONFIG = "CWWKS1556E";
     public static final String CWWKS1557E_REDIRECT_URI_CONTAINED_ERROR = "CWWKS1557E";
 
     public static final String CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT = "CWWKS2300E";
 
+    public static final String CWWKS2416E_TOKEN_REQUEST_ERROR = "CWWKS2416E";
+
+    public static final String CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH = "CWWKS2430E";
+
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 
     public static final String CWWKS5453E_CANNOT_CREATE_JWT_FROM_ID_TOKEN = "CWWKS5453E";
+    public static final String CWWKS5489E_AUTH_ERROR = "CWWKS5489E";
     public static final String CWWKS5498E_CANNOT_CREATE_JWT_USING_CONFIG = "CWWKS5498E";
     public static final String CWWKS6064E_TOKEN_IS_NOT_A_JWE = "CWWKS6064E";
 
@@ -231,6 +238,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKT0016I_WEB_APP_AVAILABLE = "CWWKT0016I";
 
     public static final String SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED = "SRVE8094W";
+    public static final String SRVE8115W_CANNOT_SET_HEADER_RESPONSE_COMMITTED = "SRVE8115W";
 
     public static final String CWWKS0005E_NO_USER_REGISTRY = "CWWKS0005E";
 
