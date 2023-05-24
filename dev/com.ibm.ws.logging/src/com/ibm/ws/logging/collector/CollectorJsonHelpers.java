@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.logging.collector;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.ibm.ws.logging.data.AccessLogData;
@@ -97,12 +96,11 @@ public class CollectorJsonHelpers {
             return "";
     }
 
-    public static ThreadLocal<BurstDateFormat> dateFormatTL = new ThreadLocal<BurstDateFormat>() {
-        @Override
-        protected BurstDateFormat initialValue() {
-            return new BurstDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
-        }
-    };
+    private static BurstDateFormat dateFormat = new BurstDateFormat("uuuu-MM-dd'T'HH:mm:ss.SSSZ", '.');
+
+    public static String formatTime(long dateTime) {
+        return dateFormat.format(dateTime);
+    }
 
     protected static boolean addToJSON(StringBuilder sb, String name, String value, boolean jsonEscapeName,
                                        boolean jsonEscapeValue, boolean trim, boolean isFirstField) {

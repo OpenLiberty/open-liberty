@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.logging.collector;
 
-import java.text.DateFormat.Field;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.chrono.Chronology;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DecimalStyle;
+import java.util.Locale;
+import java.util.Locale.Category;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Formats dates that are relatively close to one another.
@@ -26,102 +31,59 @@ import java.util.Date;
  */
 public class BurstDateFormat {
 
-    private final SimpleDateFormat formatter;
+    private final DateTimeFormatter formatter;
 
-    /**
-     * Reference timestamp
-     */
-    private long refTimestamp = 0;
+    private final char millisecondSeparator;
 
-    /**
-     * Reference beginning of the date
-     */
-    private String refBeginning;
-
-    /**
-     * Reference ending of the date
-     */
-    private String refEnding;
-
-    /**
-     * Reference millisecond value
-     */
-    private long refMilli = 0;
-
-    /**
-     * Upper range for the timestamp difference before reformatting
-     */
-    private long pdiff = 0;
-
-    /**
-     * Lower range for the timestamp difference before reformatting
-     */
-    private long ndiff = 0;
-
-    /**
-     * Tracks the position of the milliseconds field
-     */
-    private final FieldPosition position = new FieldPosition(Field.MILLISECOND);
+    private final AtomicReference<CachedFormattedTime> cachedTime = new AtomicReference<>();
 
     /**
      * Tracks whether the format is not valid. If true, the underlying SimpleDateFormat is used
      */
-    boolean invalidFormat = false;
+    volatile boolean invalidFormat = false;
 
-    private StringBuffer sb;
+    private static class CachedFormattedTime {
+        /**
+         * Reference timestamp
+         */
+        final long refTimestampWithoutMillis;
+
+        /**
+         * Reference beginning of the date
+         */
+        final String refBeginning;
+
+        /**
+         * Reference ending of the date
+         */
+        final String refEnding;
+
+        CachedFormattedTime(long refTimestampWithoutMillis, String refBeginning, String refEnding) {
+            this.refTimestampWithoutMillis = refTimestampWithoutMillis;
+            this.refBeginning = refBeginning;
+            this.refEnding = refEnding;
+        }
+    }
 
     /**
      * Constructs a BurstDateFormat
      *
      * @param formatter
      */
-    public BurstDateFormat(SimpleDateFormat formatter) {
-        this(formatter, isFormatInvalid(formatter));
+    public BurstDateFormat(String formatPattern, char millisecondSeparator) {
+        this(formatPattern, millisecondSeparator, Locale.getDefault(Category.FORMAT));
     }
 
-    public BurstDateFormat(SimpleDateFormat formatter, boolean isInvalid) {
-        this.formatter = formatter;
-        this.invalidFormat = isInvalid;
-        if (!invalidFormat) {
-            sb = new StringBuffer();
-        }
-    }
-
-    static boolean isFormatInvalid(SimpleDateFormat formatter) {
-        /**
-         * Setup the date formatter, determine if the format is valid
-         */
-        FieldPosition position = new FieldPosition(Field.MILLISECOND);
-        boolean invalidFormat = false;
+    public BurstDateFormat(String formatPattern, char millisecondSeparator, Locale locale) {
+        DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().appendPattern(formatPattern);
+        this.formatter = builder.toFormatter().withZone(ZoneId.systemDefault()).withLocale(locale).withChronology(Chronology.ofLocale(locale)).withDecimalStyle(DecimalStyle.of(locale));
+        this.millisecondSeparator = millisecondSeparator;
         try {
-            StringBuffer refTime = new StringBuffer();
-
             // Get the positions of the millisecond digits
-            String pattern = formatter.toLocalizedPattern();
-            if (pattern.lastIndexOf('S') - pattern.indexOf('S') != 2) {
-                invalidFormat = true;
-            }
-            formatter.format(new Date().getTime(), refTime, position);
-
-            // Should be redundant check with above but check again
-            // just in case some locale expands the milliseconds field
-            if (position.getEndIndex() - position.getBeginIndex() != 3) {
-                invalidFormat = true;
-            }
-            String str = refTime.substring(position.getBeginIndex(), position.getEndIndex());
-
-            // Make sure we are using ascii digits (The loop could be unwrapped)
-            for (int i = str.length() - 1; i >= 0; --i) {
-                char a = str.charAt(i);
-                if (a < 48 || a > 57) {
-                    invalidFormat = true;
-                    break;
-                }
-            }
+            invalidFormat = (formatPattern.lastIndexOf('S') - formatPattern.indexOf('S') != 2);
         } catch (Exception e) {
             invalidFormat = true;
         }
-        return invalidFormat;
     }
 
     /**
@@ -134,47 +96,71 @@ public class BurstDateFormat {
 
         // If the format is unknown, use the default formatter.
         if (invalidFormat) {
-            return formatter.format(timestamp);
+            return formatter.format(Instant.ofEpochMilli(timestamp));
         }
 
         try {
-            long delta = timestamp - refTimestamp;
-            sb.setLength(0);
+
+            long milliseconds = timestamp % 1000L;
+
+            long timestampWithoutMillis = timestamp - milliseconds;
+
+            CachedFormattedTime cachedFormattedTime = cachedTime.get();
 
             // If we need to reformat
-            if (delta >= pdiff || delta < ndiff) {
-                refTimestamp = timestamp;
-                formatter.format(timestamp, sb, position);
+            if (cachedFormattedTime == null || timestampWithoutMillis != cachedFormattedTime.refTimestampWithoutMillis) {
+                String formattedDate = formatter.format(Instant.ofEpochMilli(timestamp));
 
-                refMilli = Long.parseLong(sb.substring(position.getBeginIndex(), position.getEndIndex()));
+                StringBuilder sb = new StringBuilder(4);
 
-                refBeginning = sb.substring(0, position.getBeginIndex());
-                refEnding = sb.substring(position.getEndIndex());
+                sb.append(millisecondSeparator);
+                if (milliseconds < 100) {
+                    if (milliseconds < 10) {
+                        sb.append("00");
+                    } else {
+                        sb.append('0');
+                    }
+                }
+                sb.append(milliseconds);
 
-                pdiff = 1000 - refMilli;
-                ndiff = -refMilli;
-                return sb.toString();
-            } else {
-                long newMilli = delta + refMilli;
-                if (newMilli >= 100)
-                    sb.append(refBeginning).append(newMilli).append(refEnding);
-                else if (newMilli >= 10)
-                    sb.append(refBeginning).append('0').append(newMilli).append(refEnding);
-                else
-                    sb.append(refBeginning).append("00").append(newMilli).append(refEnding);
-                return sb.toString();
+                String millisecondString = sb.toString();
 
+                int index = formattedDate.indexOf(millisecondString);
+
+                if (index == -1) {
+                    invalidFormat = true;
+                    return formattedDate;
+                }
+
+                String refBeginning = formattedDate.substring(0, index + 1);
+                String refEnding = formattedDate.substring(index + 4);
+
+                cachedTime.compareAndSet(cachedFormattedTime, new CachedFormattedTime(timestampWithoutMillis, refBeginning, refEnding));
+                return formattedDate;
             }
+
+            StringBuilder sb = new StringBuilder(cachedFormattedTime.refBeginning);
+
+            if (milliseconds < 100) {
+                if (milliseconds < 10) {
+                    sb.append("00");
+                } else {
+                    sb.append('0');
+                }
+            }
+
+            sb.append(milliseconds).append(cachedFormattedTime.refEnding);
+            return sb.toString();
+
         } catch (Exception e) {
             // Throw FFDC in case anything goes wrong
             // Still generate the date via the SimpleDateFormat
             invalidFormat = true;
-            sb = null;
-            return formatter.format(timestamp);
+            return formatter.format(Instant.ofEpochMilli(timestamp));
         }
     }
 
-    public SimpleDateFormat getSimpleDateFormat() {
+    public DateTimeFormatter getDateTimeFormatter() {
         return formatter;
     }
 }
