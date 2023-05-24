@@ -2326,8 +2326,9 @@ public class InstallKernelMap implements Map {
                         data.put(InstallConstants.ACTION_ERROR_MESSAGE, Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
                         return ERROR;
                     }
+                } else {
+                    logger.warning(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
                 }
-                logger.warning(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE", failedFeatures));
                 actionType = ActionType.install;
                 return OK;
 
