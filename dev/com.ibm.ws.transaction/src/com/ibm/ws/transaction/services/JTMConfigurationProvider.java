@@ -547,7 +547,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
             _runningCondition = runningCondition;
-            if (isRecoverOnStartup() && tmsRef != null) {
+            if (tmsRef != null) {
                 tmsRef.doDeferredRecoveryAtRestore(this);
             }
         }

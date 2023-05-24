@@ -208,9 +208,9 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
     }
 
     protected void doDeferredRecoveryAtRestore(ConfigurationProvider cp) {
-        if (deferRecoveryAtRestore.compareAndSet(true, false)) {
-            // To be here isStarted is true, checkpoint restore config updates are complete,
-            // and recoverOnStartup was overriden (disabled/skipped) during doStartup0.
+        if (deferRecoveryAtRestore.compareAndSet(true, false) && cp.isRecoverOnStartup()) {
+            // To be here means isStarted is true, checkpoint restore config updates are complete,
+            // and recoverOnStartup was overridden (disabled/skipped) during doStartup0.
             try {
                 TMHelper.start(cp.isWaitForRecovery());
             } catch (Exception e) {
