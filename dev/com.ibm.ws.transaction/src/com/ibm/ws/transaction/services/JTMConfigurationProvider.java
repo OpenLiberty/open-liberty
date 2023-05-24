@@ -30,6 +30,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -405,7 +406,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup set to " + isRoS);
+        if (isRoS && checkpointWaitForConfig()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Defer recovery until restore config updates complete");
+            return false;
+        }
         return isRoS;
+    }
+
+    boolean checkpointWaitForConfig() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && _runningCondition == null;
     }
 
     @Override
@@ -437,6 +447,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isWaitForRecovery set to " + isWfR);
+        if (!isWfR && checkpointWaitForConfig()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Defer recovery until restore config updates complete");
+            return true;
+        }
         return isWfR;
     }
 
@@ -519,7 +534,28 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         } else if (tc.isDebugEnabled())
             Tr.debug(tc, "tmsref is null");
+    }
 
+    private volatile ServiceReference<Condition> _runningCondition = null;
+
+    /*
+     * Dynamically set by DS. CheckpointImpl registers the RunningCondition service (property)
+     * immediately after completing all config updates during checkpoint restore. When 
+     * recoverOnStartup is enabled, use this condition to start recovery immediately after
+     * all resource factories and transaction services have updated.
+     */
+    protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            _runningCondition = runningCondition;
+            if (isRecoverOnStartup() && tmsRef != null) {
+                tmsRef.doDeferredRecoveryAtRestore(this);
+            }
+        }
+    }
+
+    protected void unsetRunningCondition(ServiceReference<Condition> runningCondition) {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE)
+            _runningCondition = null;
     }
 
     /**
