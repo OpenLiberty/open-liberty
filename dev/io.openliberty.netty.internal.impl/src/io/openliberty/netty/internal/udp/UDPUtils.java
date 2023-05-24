@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -62,7 +63,7 @@ public class UDPUtils {
     private static BootstrapExtended create(NettyFrameworkImpl framework, UDPConfigurationImpl config) {
         BootstrapExtended bs = new BootstrapExtended();
         bs.applyConfiguration(config);
-        bs.group(framework.getParentGroup());
+        bs.group(framework.getChildGroup());
         bs.channel(NioDatagramChannel.class);
         return bs;
     }
@@ -87,7 +88,7 @@ public class UDPUtils {
                 // add the new channel to the set of active channels, and set a close future to
                 // remove it
                 final Channel channel = bindFuture.channel();
-                framework.getActiveChannels().add(channel);
+                // framework.getActiveChannels().add(channel);
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
@@ -95,7 +96,9 @@ public class UDPUtils {
                 channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInboundChannel());
 
-                channel.closeFuture().addListener(innerFuture -> framework.stop(channel));
+                framework.getOutboundConnections().add(channel);
+
+                channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
 
                 
                 // set up a helpful log message
@@ -171,7 +174,7 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static ChannelFuture startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
             String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -190,7 +193,7 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static ChannelFuture start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener bindListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -198,10 +201,16 @@ public class UDPUtils {
         return startHelper(framework, bootstrap, inetHost, inetPort, bindListener);
     }
 
-    private static ChannelFuture startHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener bindListener) throws NettyException {
+        if(framework.isStopping()){ // Framework already started and is no longer active
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "server is stopping, channel will not be started");
+            }
+            return null;
+        }
         try {
-            framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+            return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                 @Override
                 public ChannelFuture call() throws NettyException {
                     UDPConfigurationImpl config = (UDPConfigurationImpl) bootstrap.getConfiguration();

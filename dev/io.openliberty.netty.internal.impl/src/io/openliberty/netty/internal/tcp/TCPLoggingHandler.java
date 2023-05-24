@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,15 +85,6 @@ class TCPLoggingHandler extends LoggingHandler{
 		super.connect(ctx, remoteAddress, localAddress, promise);
 	}
 
-
-	@Override
-	public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "SocketChannel closing, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
-		}
-		ctx.close(promise);
-	}
-
 	@Override
 	public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -150,6 +141,14 @@ class TCPLoggingHandler extends LoggingHandler{
 			Tr.event(ctx.channel(), tc, "userEvent triggered for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress() +" event: " + evt);
 		}
 		super.userEventTriggered(ctx, evt);
+	}
+	
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+			Tr.event(ctx.channel(), tc, "SocketChannel closed, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
+		}
+		ctx.fireChannelInactive();
 	}
 
 }

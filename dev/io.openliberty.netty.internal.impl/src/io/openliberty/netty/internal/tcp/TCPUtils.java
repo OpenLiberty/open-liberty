@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,8 +23,10 @@ import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
@@ -56,7 +59,7 @@ public class TCPUtils {
         bs.channel(NioServerSocketChannel.class);
         // apply the existing user config to the Netty TCP channel
         bs.applyConfiguration(config);
-        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config);
+        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config, framework);
         bs.setBaseInitializer(tcpInitializer);
         return bs;
     }
@@ -73,11 +76,11 @@ public class TCPUtils {
             Map<String, Object> tcpOptions) throws NettyException {
         BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, false);
         BootstrapExtended bs = new BootstrapExtended();
-        bs.group(framework.getParentGroup());
+        bs.group(framework.getChildGroup());
         bs.channel(NioSocketChannel.class);
         // apply the existing user config to the Netty TCP channel
         bs.applyConfiguration(config);
-        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config);
+        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config, framework);
         bs.setBaseInitializer(tcpInitializer);
         return bs;
     }
@@ -106,15 +109,28 @@ public class TCPUtils {
 
                 // add new channel to set of active channels, and set a close future to
                 // remove it
+            	// Get parent and increment active connections
                 final Channel channel = openFuture.channel();
-                framework.getActiveChannels().add(channel);
-                channel.closeFuture().addListener(innerFuture -> framework.stop(channel));
+
+                if(config.isInbound()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding new channel group for " + openFuture.channel());
+                    }
+                    // TODO: Should we use this or maybe the event loop of the channel?
+                    framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+                }else {
+                	framework.getOutboundConnections().add(channel);
+                }
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
                 channel.attr(ConfigConstants.HOST_KEY).set(newHost);
                 channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
+                
+                // Listener to stop channel on close
+                // This should just log that the channel stopped
+                channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
 
                 // set up a helpful log message
                 String hostLogString = newHost;
@@ -186,20 +202,27 @@ public class TCPUtils {
         return openFuture;
     }
 
-    private static ChannelFuture startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
             TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
             throws NettyException {
-        try {
-            framework.runWhenServerStarted(new Callable<ChannelFuture>() {
-                @Override
-                public ChannelFuture call() {
-                    return open(framework, bootstrap, config, inetHost, inetPort, openListener,
-                            config.getPortOpenRetries());
-                }
-            });
-        } catch (Exception e) {
+    	if(framework.isStopping()){ // Framework already started and is no longer active
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                Tr.debug(tc, "server is stopping, channel will not be started");
+            }
+            return null;
+        }else{
+            try {
+                return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                    @Override
+                    public ChannelFuture call() {
+                        return open(framework, bootstrap, config, inetHost, inetPort, openListener,
+                                config.getPortOpenRetries());
+                    }
+                });
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                }
             }
         }
         return null;
@@ -216,7 +239,7 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static ChannelFuture start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
             int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
@@ -236,7 +259,7 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static ChannelFuture startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
             String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
@@ -255,10 +278,15 @@ public class TCPUtils {
         String channelName = channel.attr(ConfigConstants.NAME_KEY).get();
         String host = channel.attr(ConfigConstants.HOST_KEY).get();
         Integer port = channel.attr(ConfigConstants.PORT_KEY).get();
-        if (channel.attr(ConfigConstants.IS_INBOUND_KEY).get()) {
+        Boolean inbound = channel.attr(ConfigConstants.IS_INBOUND_KEY).get();
+        if (inbound != null && inbound) {
             Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
+        } else if (inbound != null && !inbound) {
+        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        		Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
+        } else {
+        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        		Tr.debug(tc, "Socket channel closed, local: " + channel.localAddress() + " remote: " + channel.remoteAddress());
         }
     }
 

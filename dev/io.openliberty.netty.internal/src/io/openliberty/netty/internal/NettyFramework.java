@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@ package io.openliberty.netty.internal;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import com.ibm.websphere.channelfw.EndPointMgr;
 
@@ -76,7 +78,7 @@ public interface NettyFramework {
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet
      *         started
      */
-    ChannelFuture start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
 
     /**
@@ -89,7 +91,7 @@ public interface NettyFramework {
      * @return ChannelFuture for the ServerChannel, or null if the server is not yet
      *         started
      */
-    ChannelFuture start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
+    FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener)
             throws NettyException;
 
     /**
@@ -103,18 +105,29 @@ public interface NettyFramework {
      * @return ChannelFuture
      * @throws NettyException
      */
-    ChannelFuture startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+    FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Removes a Channel from the set of active Channels. If the Channel is not
      * already closed, then close will be invoked and its ChannelFuture will be
-     * returned, and a closure message will be logged.
+     * returned.
      * 
      * @param channel
      * @return ChannelFuture for the Channel close
      */
     ChannelFuture stop(Channel channel);
+    
+    /**
+     * Adds a handler to be notified on server stopping tp notify quiesce. This
+     * handler will call the quiesceTask to run when the event is fired. The 
+     * channel has to be an endpoint registered and started through the framework
+     * otherwise a warning will be logged and ignored.
+     * 
+     * @param channel
+     * @param quiesceTask
+     */
+    void registerEndpointQuiesce(Channel channel, Callable quiesceTask);
 
     /**
      * Removes a Channel from the set of active Channels. If the Channel is not
