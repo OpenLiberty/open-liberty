@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,7 +50,7 @@ public class CoordinationLock {
      * A static constant that defines the number of attempts that will be made to
      * aquire the lock. Set to 0 for infinate number of attempts.
      */
-    final static int LOCKRETRYCOUNT = 0;
+    final static int LOCKRETRYCOUNT = 3;
 
     /**
      * A static constant that defines the delay between lock attempts.
@@ -93,6 +93,8 @@ public class CoordinationLock {
     */
     private boolean _interrupted = false;
 
+    private int _numberLockRetries = 0;
+
     //------------------------------------------------------------------------------
     // Method: CoordinationLock.CoordinationLock
     //------------------------------------------------------------------------------
@@ -102,11 +104,23 @@ public class CoordinationLock {
      *
      * @param lockDirectory The directory in which the lock should reside.
      */
+    public CoordinationLock(String lockDirectory, int numberLockRetries) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "CoordinationLock", new java.lang.Object[] { lockDirectory, numberLockRetries });
+
+        _lockDirectory = lockDirectory;
+        _numberLockRetries = numberLockRetries;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "CoordinationLock", this);
+    }
+
     public CoordinationLock(String lockDirectory) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "CoordinationLock", lockDirectory);
 
         _lockDirectory = lockDirectory;
+        _numberLockRetries = LOCKRETRYCOUNT;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "CoordinationLock", this);
@@ -254,7 +268,11 @@ public class CoordinationLock {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "RLSHA: Unable to obtain an exclusive access lock on lock file " + handle);
 
-                    if (LOCKRETRYDELAY > 0) {
+                    if (lockAttempt >= _numberLockRetries) {
+                        halt = true;
+                    }
+
+                    if (!halt && LOCKRETRYDELAY > 0) {
                         // Output a message if we cannot get a lock - delay the message for the
                         // first pass through...
                         int l = lockAttempt - 2;
@@ -298,6 +316,20 @@ public class CoordinationLock {
             }
         }
 
+        if (result != LOCK_SUCCESS) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to obtain lock, Close file " + handle._raf);
+            if (handle._raf != null) {
+                try {
+                    handle._raf.close();
+                    handle._raf = null;
+                } catch (Exception exc) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "On file close caught exc " + exc);
+                }
+            }
+        }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "obtainLock", result);
         return result;
@@ -313,26 +345,38 @@ public class CoordinationLock {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "releaseLock", clh);
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Release filelock " + clh._fileLock);
         if (clh._fileLock != null) {
             try {
                 clh._fileLock.release();
                 clh._fileLock = null;
             } catch (Exception exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "On release caught exc " + exc);
             }
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Close channel " + clh._channel);
         if (clh._channel != null) {
             try {
                 clh._channel.close();
             } catch (Exception exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "On channel close caught exc " + exc);
             }
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Close file " + clh._raf);
         if (clh._raf != null) {
             try {
                 clh._raf.close();
                 clh._raf = null;
             } catch (Exception exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "On file close caught exc " + exc);
             }
         }
 

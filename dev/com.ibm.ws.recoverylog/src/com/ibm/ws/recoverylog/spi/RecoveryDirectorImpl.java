@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -185,6 +186,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * Set of LogFactories determined at runtime via eclipse plugin mechanism
      */
     protected HashMap<String, RecoveryLogFactory> _customLogFactories = new HashMap<String, RecoveryLogFactory>();
+
+    private boolean _enablePeerLocking;
+    private boolean _isSQLRecoveryLog;
+    private CoordinationLock _localFileLock;
+    private CoordinationLock _peerFileLock;
 
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorImpl.RecoveryDirectorImpl
@@ -610,46 +616,108 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                     // and transaction recovery logs are stored in an RDBMS.This function, while not strictly required in
                     // Liberty is included in Liberty in order to maintain compatibility and allow testing.
                     //
-                    // HADB Peer Locking is enabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
-                    boolean shouldBeRecovered = true;
-                    boolean enableHADBPeerLocking = recoveryAgent.isDBTXLogPeerLocking();
-                    if (enableHADBPeerLocking) {
-                        // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
-                        // or peer server. In each case we get a reference to the appropriate Recovery Log.
-                        HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
+                    // HADB Peer Locking is enabled by default but can be disabled through a server.xml enableHADBPeerLocking attribute in the transaction element.
+                    //
+                    // TODO: Change the name of the property. It applies to both the database and the filesystem case. In the
+                    // filesystem case we make use of a Coordination lock to manage exclusive access to recovery logs.
+                    boolean proceedWithRecovery = true;
+                    _enablePeerLocking = recoveryAgent.isHADBPeerLockingEnabled();
+                    if (Configuration.HAEnabled() && _enablePeerLocking) {
+                        // Differentiate between the RDBMS and FileSystem implementations
+                        _isSQLRecoveryLog = recoveryAgent.isSQLRecoveryLog();
+                        if (_isSQLRecoveryLog) {
+                            // We need to acquire a Heartbeat Recovery Log reference whether we are recovering a local
+                            // or peer server. In each case we get a reference to the appropriate Recovery Log.
+                            HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
 
-                        if (heartbeatLog != null) {
-                            // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
-                            recoveryAgent.setReplayThread();
-                            if (currentFailureScope.equals(failureScope)) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
-                                shouldBeRecovered = heartbeatLog.claimLocalRecoveryLogs();
-                                if (!shouldBeRecovered) {
-                                    // Cannot recover the home server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
+                            if (heartbeatLog != null) {
+                                // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
+                                recoveryAgent.setReplayThread();
+                                if (currentFailureScope.equals(failureScope)) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
+                                    proceedWithRecovery = heartbeatLog.claimLocalRecoveryLogs();
+                                    if (!proceedWithRecovery) {
+                                        // Cannot recover the home server, throw exception
+                                        RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, local recovery failed");
 
-                                    throw rfex;
+                                        throw rfex;
+                                    }
+
+                                } else {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
+                                    proceedWithRecovery = heartbeatLog.claimPeerRecoveryLogs();
+                                    if (!proceedWithRecovery) {
+                                        // Cannot recover peer server, throw exception
+                                        RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
+                                        throw rfex;
+                                    }
                                 }
-
+                            }
+                        } else {
+                            // FileSystem Case
+                            if (!currentFailureScope.equals(failureScope) && recoveryAgent != null) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "PEER RECOVERY, filesystem case");
                             } else {
                                 if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
-                                if (!shouldBeRecovered) {
-                                    // Cannot recover peer server, throw exception
-                                    RecoveryFailedException rfex = new RecoveryFailedException("HADB Peer locking, peer recovery failed");
-                                    throw rfex;
+                                    Tr.debug(tc, "LOCAL RECOVERY, filesystem case");
+                            }
+
+                            // Define a lock that will manage access to the recovery log files.
+                            String[] dirs = recoveryAgent.logDirectories(failureScope);
+                            String target = null;
+                            if (dirs != null) {
+                                target = dirs[0] + File.separator + "tranlog";
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Lock coordination directory is " + target);
+                            } else {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Attempt to obtain a file lock failed: No Log Directory Information provided by the Transaction Service");
+                                proceedWithRecovery = false;
+                            }
+
+                            // Take a lock that will manage access to the recovery log files.
+                            int lockState = 0;
+                            if (proceedWithRecovery) {
+                                if (currentFailureScope.equals(failureScope) && recoveryAgent != null) {
+                                    // Local case
+                                    _localFileLock = new CoordinationLock(target, 3); // 3 lock attempts
+                                    // Try and get the lock.
+                                    lockState = _localFileLock.lock();
+                                } else {
+                                    // Peer case
+                                    _peerFileLock = new CoordinationLock(target, 1); // 1 lock attempt
+                                    // Try and get the lock.
+                                    lockState = _peerFileLock.lock();
+                                }
+
+                                if (lockState == CoordinationLock.LOCK_FAILURE) {
+                                    Tr.error(tc, "CWRLS0016_RECOVERY_PROCESSING_FAILED", failureScope.serverName());
+                                    proceedWithRecovery = false;
+                                } else if (lockState == CoordinationLock.LOCK_INTERRUPT) {
+                                    Tr.info(tc, "CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED", failureScope.serverName());
+                                    proceedWithRecovery = false;
+                                } else {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "The file was locked sucessfully");
                                 }
                             }
                         }
                     }
 
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "now initiateRecovery if shouldBeRecovered - " + shouldBeRecovered);
-                    if (shouldBeRecovered)
+                        Tr.debug(tc, "now initiateRecovery if shouldBeRecovered - " + proceedWithRecovery);
+                    if (proceedWithRecovery) {
                         recoveryAgent.initiateRecovery(failureScope);
+                    } else {
+                        throw new RecoveryFailedException("FileSystem Peer locking, peer recovery failed");
+                    }
                 } catch (RecoveryFailedException exc) {
+                    // Clear peer coordination lock in filesystem case
+                    clearPeerCoordinationLock();
+
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "directInitialization", exc);
                     throw exc;
@@ -1740,16 +1808,10 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 }
             } catch (RecoveryFailedException rfexc) {
                 Tr.audit(tc, "WTRN0108I: " +
-                             "HADB Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity);
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "peerRecoverServers", rfexc);
-                throw rfexc;
+                             "Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity);
             } catch (Exception exc) {
                 Tr.audit(tc, "WTRN0108I: " +
-                             "HADB Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "peerRecoverServers", exc);
-                throw new RecoveryFailedException(exc);
+                             "Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
             }
 
         }
@@ -1775,5 +1837,37 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "RecoveryDirectorImpl", this);
 
+    }
+
+    @Override
+    public void clearLocalCoordinationLock() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "clearLocalCoordinationLock", new Object[] { _enablePeerLocking, _isSQLRecoveryLog, _localFileLock });
+        if (_enablePeerLocking && !_isSQLRecoveryLog) {
+            if (_localFileLock != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "release home server file lock");
+                _localFileLock.unlock();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "clearLocalCoordinationLock");
+    }
+
+    @Override
+    public void clearPeerCoordinationLock() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "clearPeerCoordinationLock", new Object[] { _enablePeerLocking, _isSQLRecoveryLog, _peerFileLock });
+        if (_enablePeerLocking && !_isSQLRecoveryLog) {
+            if (_peerFileLock != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "release peer server file lock");
+                _peerFileLock.unlock();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "clearPeerCoordinationLock");
     }
 }

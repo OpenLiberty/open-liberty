@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -2152,17 +2153,17 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
                 }
 
                 // If this is a local recovery process then direct the server to terminate
-                if (Configuration.HAEnabled()) {
+                if (Configuration.HAEnabled() && ConfigurationProviderManager.getConfigurationProvider().isShutdownOnLogFailure()) {
                     if (Configuration.localFailureScope().equals(_failureScope)) {
                         // d254326 - output a message as to why we are terminating the server as in
                         // this case we never drop back to log any messages as for peer recovery.
                         Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", t);
                         _recoveryAgent.terminateServer();
                     } else {
-                        Configuration.getRecoveryLogComponent().leaveGroup(_failureScope);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Marking logs failed for peer server with failureScope: " + _failureScope);
                     }
                 }
-
             }
         }
         if (newFailure && _associatedLog != null) {
@@ -2467,10 +2468,14 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
             Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
 
         _retainLogsInPeerRecoveryEnv = retainLogs;
-        if (_retainLogsInPeerRecoveryEnv)
-            _logHandle.retainLogsInPeerRecoveryEnv(true);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
+    }
+
+    public boolean isRetainLogsInPeerRecoveryEnv() {
+        if (tc.isDebugEnabled() && _failed)
+            Tr.debug(tc, "isRetainLogsInPeerRecoveryEnv: " + _retainLogsInPeerRecoveryEnv);
+        return _retainLogsInPeerRecoveryEnv;
     }
 }

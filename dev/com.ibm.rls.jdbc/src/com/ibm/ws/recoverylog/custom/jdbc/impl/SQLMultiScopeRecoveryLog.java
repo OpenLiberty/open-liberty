@@ -2900,11 +2900,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         // d254326 - output a message as to why we are terminating the server as in
                         // this case we never drop back to log any messages as for peer recovery.
                         Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", t);
-                        if (ConfigurationProviderManager.getConfigurationProvider().isShutdownOnLogFailure()) {
-                            _recoveryAgent.terminateServer();
-                        }
+                        _recoveryAgent.terminateServer();
                     } else {
-                        Configuration.getRecoveryLogComponent().leaveGroup(_failureScope);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Marking logs failed for peer server with failureScope: " + _failureScope);
                     }
                 }
 

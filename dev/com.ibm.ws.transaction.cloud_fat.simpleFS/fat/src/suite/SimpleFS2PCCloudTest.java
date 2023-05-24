@@ -50,10 +50,13 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
     private FileLock fLock;
     private FileChannel fChannel;
+    private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/SimpleFS2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int FScloud2ServerPort = 9992;
+    protected static final int FScloud2ServerPortA = 9993;
+    protected static final int FScloud2ServerPortB = 9994;
 
     @Server("FSCLOUD001")
     public static LibertyServer server1;
@@ -64,11 +67,29 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
     @Server("longLeaseLengthFSServer1")
     public static LibertyServer longLeaseLengthFSServer1;
 
+    @Server("longLeaseLengthFSFail")
+    public static LibertyServer longLeaseLengthFSFail;
+
+    @Server("FSCLOUD002.lease10")
+    public static LibertyServer server2lease10;
+
+    @Server("longLeaseLengthFSFailA")
+    public static LibertyServer longLeaseLengthFSFailA;
+
+    @Server("longLeaseLengthFSFailB")
+    public static LibertyServer longLeaseLengthFSFailB;
+
     public static String[] serverNames = new String[] {
                                                         "FSCLOUD001",
                                                         "FSCLOUD002",
                                                         "longLeaseLengthFSServer1",
+                                                        "longLeaseLengthFSFail",
+                                                        "FSCLOUD002.lease10",
+                                                        "longLeaseLengthFSFailA",
+                                                        "longLeaseLengthFSFailB",
     };
+    private LibertyServer[] serversToCleanup;
+    private static final String[] toleratedMsgs = new String[] { ".*" };
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -76,15 +97,29 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         TxShrinkHelper.buildDefaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.buildDefaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.buildDefaultApp(longLeaseLengthFSServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.buildDefaultApp(longLeaseLengthFSFail, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.buildDefaultApp(server2lease10, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.buildDefaultApp(longLeaseLengthFSFailA, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.buildDefaultApp(longLeaseLengthFSFailB, APP_NAME, APP_PATH, "servlets.*");
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
         longLeaseLengthFSServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseLengthFSFail.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2lease10.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseLengthFSFailA.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        longLeaseLengthFSFailB.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
 
     @After
     public void cleanup() throws Exception {
+        // If any servers have been added to the serversToCleanup array, we'll stop them now
+        // test is long gone so we don't care about messages & warnings anymore
+        if (serversToCleanup != null && serversToCleanup.length > 0) {
+            FATUtils.stopServers(toleratedMsgs, serversToCleanup);
+            serversToCleanup = null;
+        }
         // Clean up XA resource file
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
@@ -231,6 +266,175 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         } finally {
             FATUtils.stopServers(server2);
         }
+    }
+
+    @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
+    public void testPeerTakeoverFailure() throws Exception {
+        final String method = "testPeerTakeoverFailure";
+
+        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10 };
+
+        longLeaseLengthFSFail.setFFDCChecking(false);
+        server2lease10.setHttpDefaultPort(FScloud2ServerPort);
+        try {
+            FATUtils.startServers(longLeaseLengthFSFail);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(longLeaseLengthFSFail);
+            throw e;
+        }
+
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (Exception ex) {
+            Log.info(this.getClass(), method, "sleep ended early");
+        }
+
+        try {
+            FATUtils.startServers(server2lease10);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(server2lease10);
+            throw e;
+        }
+
+        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
+        // (from server1's point of view) attempt to acquire server1's log. In the filesystem case, the takeover will
+        // fail because server1 still holds its coordination lock.
+
+        //  Check for key string to see whether peer recovery has failed
+        assertNotNull("peer recovery unexpectedly succeeded",
+                      server2lease10.waitForStringInTrace("Peer Recovery failed for server with recovery identity longLeaseLengthFSFail", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(longLeaseLengthFSFail, server2lease10);
+
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
+    public void testMultiPeerTakeoverFailure() throws Exception {
+        final String method = "testMultiPeerTakeoverFailure";
+
+        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB };
+
+        longLeaseLengthFSFail.setFFDCChecking(false);
+        server2lease10.setHttpDefaultPort(FScloud2ServerPort);
+        longLeaseLengthFSFailA.setHttpDefaultPort(FScloud2ServerPortA);
+        longLeaseLengthFSFailB.setHttpDefaultPort(FScloud2ServerPortB);
+        try {
+            FATUtils.startServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
+            throw e;
+        }
+
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (Exception ex) {
+            Log.info(this.getClass(), method, "sleep ended early");
+        }
+
+        try {
+            FATUtils.startServers(server2lease10);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(server2lease10);
+            throw e;
+        }
+        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
+        // (from server1's point of view) attempt to acquire server1's log. In the filesystem case, the takeover will
+        // fail because server1 still holds its coordination lock.
+
+        //  Check for key string to see whether peer recovery has failed
+        assertNotNull("First peer recovery unexpectedly succeeded",
+                      server2lease10.waitForStringInTrace("Peer Recovery failed for server with recovery identity longLeaseLengthFSFail", LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB, server2lease10);
+
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
+    public void testMultiPeerTakeover() throws Exception {
+        final String method = "testMultiPeerTakeover";
+        StringBuilder sb = null;
+        String id = "Core";
+        serversToCleanup = new LibertyServer[] { longLeaseLengthFSFail, server2lease10, longLeaseLengthFSFailA, longLeaseLengthFSFailB };
+
+        longLeaseLengthFSFail.setFFDCChecking(false);
+        server2lease10.setHttpDefaultPort(FScloud2ServerPort);
+        longLeaseLengthFSFailA.setHttpDefaultPort(FScloud2ServerPortA);
+        longLeaseLengthFSFailB.setHttpDefaultPort(FScloud2ServerPortB);
+        try {
+            FATUtils.startServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB);
+            throw e;
+        }
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(longLeaseLengthFSFail, SERVLET_NAME, "setupRec" + id);
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "longLeaseLengthFSFail: setupRec for " + id + " returned: " + sb);
+
+        assertNotNull(longLeaseLengthFSFail.getServerName() + " did not crash properly", longLeaseLengthFSFail.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(longLeaseLengthFSFailA, SERVLET_NAME, "setupRec" + id);
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "longLeaseLengthFSFailA: setupRec for " + id + " returned: " + sb);
+
+        assertNotNull(longLeaseLengthFSFailA.getServerName() + " did not crash properly", longLeaseLengthFSFailA.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(longLeaseLengthFSFailB, SERVLET_NAME, "setupRec" + id);
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "longLeaseLengthFSFailB: setupRec for " + id + " returned: " + sb);
+
+        assertNotNull(longLeaseLengthFSFailB.getServerName() + " did not crash properly", longLeaseLengthFSFailB.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        try {
+            Thread.sleep(1000 * 20);
+        } catch (Exception ex) {
+            Log.info(this.getClass(), method, "sleep ended early");
+        }
+
+        try {
+            FATUtils.startServers(server2lease10);
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            // If we're here, the test will fail but we need to make sure the server has stopped so the next test has a chance
+            FATUtils.stopServers(server2lease10);
+            throw e;
+        }
+
+        //  Check for key strings to see whether peer recovery has succeded
+        assertNotNull(server2lease10.getServerName() + " did not recover for " + longLeaseLengthFSFail.getServerName(),
+                      server2lease10.waitForStringInTrace("Performed recovery for " + longLeaseLengthFSFail.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull(server2lease10.getServerName() + " did not recover for " + longLeaseLengthFSFailA.getServerName(),
+                      server2lease10.waitForStringInTrace("Performed recovery for " + longLeaseLengthFSFailA.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+        assertNotNull(server2lease10.getServerName() + " did not recover for " + longLeaseLengthFSFailB.getServerName(),
+                      server2lease10.waitForStringInTrace("Performed recovery for " + longLeaseLengthFSFailB.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(longLeaseLengthFSFail, longLeaseLengthFSFailA, longLeaseLengthFSFailB, server2lease10);
+
+        Log.info(this.getClass(), method, "test complete");
     }
 
     private boolean lockServerLease(String recoveryId) throws Exception {

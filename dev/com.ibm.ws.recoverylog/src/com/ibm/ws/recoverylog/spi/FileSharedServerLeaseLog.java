@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -248,6 +248,9 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                 Tr.debug(tc, "Unable to set the last modification time for " + leaseFile);
                         }
                     }
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The lease lock was unexpectedly null");
                 }
             } else {
                 if (tc.isDebugEnabled())
@@ -638,7 +641,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught an IOException on channel close");
                 }
-            _localLeaseLock = null;
+            _peerLeaseLock = null;
         }
 
         if (tc.isEntryEnabled())
@@ -720,6 +723,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         try {
             // Try acquiring the lock without blocking. This method returns
             // null or throws an exception if the file is already locked.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Try acquiring the lock without blocking using channel - " + fChannel);
             if (fChannel != null) {
                 fLock = fChannel.tryLock();
 
@@ -728,6 +733,9 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                         Tr.debug(tc, "We have claimed the lock for file - " + leaseFile);
                     claimedLock = true;
                     _localLeaseLock = new LeaseLock(recoveryIdentity, fLock, fChannel);
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "fLock is unexpectedly null");
                 }
             }
         } catch (OverlappingFileLockException e) {
@@ -742,6 +750,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
         // Tidy up if we failed to claim lock
         if (!claimedLock) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Tidy up as we failed to claim lock");
             if (fChannel != null)
                 try {
                     fChannel.close();

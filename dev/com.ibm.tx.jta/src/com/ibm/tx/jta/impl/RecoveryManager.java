@@ -723,6 +723,31 @@ public class RecoveryManager implements Runnable {
     }
 
     /**
+     * Update server lease if peer recovery is enabled
+     *
+     * @param recoveryIdentity
+     */
+    public void updateServerLease(String recoveryIdentity) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "updateServerLease", this, recoveryIdentity);
+        try {
+            if (_leaseLog != null) {
+                _leaseLog.updateServerLease(recoveryIdentity, _recoveryGroup, false);
+            }
+        } catch (Exception e) {
+            // Unless server is stopping, FFDC exception but allow processing to continue
+            if (FrameworkState.isStopping()) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Ignoring exception: ", e);
+            } else {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "updateServerLease");
+    }
+
+    /**
      * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
      * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
      */
@@ -1644,6 +1669,14 @@ public class RecoveryManager implements Runnable {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
                         deleteServerLease(_failureScopeController.serverName());
+
+                        // Clear peer coordination lock in filesystem case
+                        try {
+                            RecoveryDirectorFactory.recoveryDirector().clearPeerCoordinationLock();
+                        } catch (InternalLogException e) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Unexpected exception, null RecoveryDirector");
+                        }
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);

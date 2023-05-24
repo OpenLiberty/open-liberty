@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -384,12 +384,17 @@ public class RLSUtils {
                     Tr.exit(tc, "deleteFile", true);
                 return true;
             }
-
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Call deleteIfExists");
             boolean ret = Files.deleteIfExists(path);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Back from deleteIfExists");
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "deleteFile", ret);
             return ret;
         } catch (IOException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Caught exception - " + e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "deleteFile", false);
             return false;

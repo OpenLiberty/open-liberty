@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -202,7 +202,14 @@ public interface RecoveryAgent {
      *
      * @return boolean
      */
-    public boolean isDBTXLogPeerLocking();
+    public boolean isHADBPeerLockingEnabled();
+
+    /**
+     * Returns a flag to indicate whether recovery logs are to be written to an RDBMS or a FileSystem.
+     *
+     * @return boolean
+     */
+    public boolean isSQLRecoveryLog();
 
     /**
      * Retrieve reference to a Recovery Log that is stored in an
@@ -228,4 +235,14 @@ public interface RecoveryAgent {
      * @return the _serverStopping
      */
     public boolean isServerStopping();
+
+    /**
+     * Returns an array of strings such that each string is a fully qualified log
+     * directory that the client intends to use for logging.
+     *
+     * @param failureScope The target failure scope
+     *
+     * @return String[] The log directory set.
+     */
+    public String[] logDirectories(FailureScope failureScope) throws RecoveryFailedException;
 }

@@ -1,5 +1,5 @@
 <server>
-
+    
     <featureManager>
        <feature>servlet-4.0</feature>
        <feature>jdbc-4.2</feature>
@@ -7,13 +7,20 @@
        <feature>componentTest-1.0</feature>
        <feature>txtest-1.0</feature>
        <feature>cdi-2.0</feature>
+       <feature>timedexit-1.0</feature>
     </featureManager>
-      
+    
+   	<httpEndpoint
+		httpPort="9993"
+		httpsPort="9997"
+		id="defaultHttpEndpoint"
+	/>  
+	     
     <transaction
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="FSCLOUD001"
+      recoveryIdentity="longLeaseLengthFSFailA"
       recoveryGroup="defaultGroup"
       leaseLength="600"
       leaseCheckInterval="25"
