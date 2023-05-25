@@ -57,6 +57,7 @@ dependencies {
     myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.2',
       'org.apache.myfaces.core:myfaces-impl:3.0.2'
     mojarra40 'org.glassfish:jakarta.faces:4.0.0'
+    // Do not update since newer JS (in MyFaces 4.0.0-RC5+) is not supported 
     myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4',
       'org.apache.myfaces.core:myfaces-impl:4.0.0-RC4'
     }

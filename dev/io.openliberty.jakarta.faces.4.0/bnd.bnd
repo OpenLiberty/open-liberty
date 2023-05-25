@@ -17,7 +17,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
 Bundle-Description:  Jakarta Faces, MyFaces 4.0 API
-Implementation-Version: 4.0.0
+Implementation-Version: 4.0.1
 
 Export-Package: \
   jakarta.faces.*; version=${Implementation-Version}, \
