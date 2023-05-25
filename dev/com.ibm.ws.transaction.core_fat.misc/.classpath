@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/transaction/src"/>
+	<classpathentry kind="src" path="test-applications/misc/src"/>
 	<classpathentry kind="src" path="test-applications/ddTimeout/src"/>
 	<classpathentry kind="src" path="test-applications/eventlistener/src"/>
 	<classpathentry kind="src" path="test-bundles/com.ibm.ws.transaction.fat.eventListener/src"/>
