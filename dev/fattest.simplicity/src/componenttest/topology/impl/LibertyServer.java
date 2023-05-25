@@ -540,6 +540,7 @@ public class LibertyServer implements LogMonitorClient {
             if (phase == null) {
                 throw new IllegalArgumentException("Phase must not be null");
             }
+
             this.checkpointPhase = phase;
             this.autoRestore = autorestore;
             this.expectCheckpointFailure = expectCheckpointFailure;
@@ -564,10 +565,15 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
 
+        String phaseToCommandLineArg() {
+            return phaseArgument.length() > 0 ? phaseArgument : checkpointPhase.name();
+        }
+
         /*
          * parameters to configure a checkpoint/restore test
          */
         private final CheckpointPhase checkpointPhase; //Phase to checkpoint
+        private String phaseArgument = ""; //phase string on command line. Added strictly to allow validity testing the bin/server inputs
         private final boolean autoRestore; // weather or not to perform restore after checkpoint
         //AN optional function executed after checkpoint but before restore
         private final Consumer<LibertyServer> preCheckpointLambda;
@@ -582,6 +588,11 @@ public class LibertyServer implements LogMonitorClient {
         private final boolean validateTimedExit = false;
         //Check log on serverStop for unintentional app restart after restore.
         private boolean assertNoAppRestartOnRestore = true;
+
+        public CheckpointInfo setPhaseArgument(String pa) {
+            phaseArgument = pa;
+            return this;
+        }
 
         /**
          * @return the assertNoAppRestartOnRestore
@@ -1832,7 +1843,7 @@ public class LibertyServer implements LogMonitorClient {
             if (i == 0 && isLaunch) {
                 checkpointParams.add("checkpoint");
             } else if (i == 2 && isLaunch) {
-                checkpointParams.add("--at=" + checkpointInfo.checkpointPhase);
+                checkpointParams.add("--at=" + checkpointInfo.phaseToCommandLineArg());
                 checkpointParams.add(parametersList.get(i));
             } else {
                 checkpointParams.add(parametersList.get(i));

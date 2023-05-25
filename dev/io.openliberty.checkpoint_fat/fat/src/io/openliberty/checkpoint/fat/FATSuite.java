@@ -49,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
                 AlwaysPassesTest.class,
                 BasicServletTest.class,
                 CheckpointFailTest.class,
+                CheckpointLauncherArgsTest.class,
                 CheckpointPhaseTest.class,
                 LogsVerificationTest.class,
                 OSGiConsoleTest.class,
