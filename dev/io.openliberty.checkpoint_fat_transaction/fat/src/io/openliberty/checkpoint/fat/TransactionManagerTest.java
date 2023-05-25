@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -105,10 +106,19 @@ public class TransactionManagerTest extends FATServletClient {
                 DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
 
                 serverTranDbLogNoRecOnStart = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
+                ServerConfiguration config = serverTranDbLogNoRecOnStart.getServerConfiguration();
+                config.getTransaction().setRecoverOnStartup(false);
+                serverTranDbLogNoRecOnStart.updateServerConfiguration(config);
 
                 ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, "servlets.simple.*");
 
                 preRestoreLogic = checkpointServer -> {
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
                     assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log.",
                                   serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",

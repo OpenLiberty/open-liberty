@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,10 +49,10 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -109,24 +109,29 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         }
     }
 
+    private final AtomicBoolean addRestoreHook = new AtomicBoolean(true);
+    private final AtomicBoolean deferRecoveryAtRestore = new AtomicBoolean(false);
+
     public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
         if (CheckpointPhase.getPhase().restored()) {
-            // normal (non-checkpoint) case; start TM now
+            // normal and checkpoint restore cases: start TM now
             doStartup0(cp, isSQLRecoveryLog);
         } else {
-            // for checkpoint case start TM after restore
-            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-                @Override
-                public void restore() {
-                    doStartup0(cp, isSQLRecoveryLog);
-                }
-            });
+            // checkpoint case: start TM early in restore
+            if (addRestoreHook.compareAndSet(true, false)) {
+                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                    @Override
+                    public void restore() {
+                        doStartup0(cp, isSQLRecoveryLog);
+                    }
+                });
+            }
         }
 
-	if (tc.isEntryEnabled())
+        if (tc.isEntryEnabled())
             Tr.exit(tc, "doStartup");
     }
 
@@ -190,10 +195,28 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doStartup", "60", this);
                 }
+            } else {
+                // Set to true during checkpoint restore, false during checkpoint or normal operation.
+                // For the future we may want to call doStartup0 on the checkpoint side; set the value
+                // accordingly.
+                deferRecoveryAtRestore.set(CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored());
             }
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "doStartup0");
+    }
+
+    protected void doDeferredRecoveryAtRestore(ConfigurationProvider cp) {
+        if (deferRecoveryAtRestore.compareAndSet(true, false)) {
+            // To be here isStarted is true, checkpoint restore config updates are complete,
+            // and recoverOnStartup was overriden (disabled/skipped) during doStartup0.
+            try {
+                TMHelper.start(cp.isWaitForRecovery());
+            } catch (Exception e) {
+                FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doDeferredRecoveryAtRestore", "60", this);
+            }
+        }
     }
 
     /**

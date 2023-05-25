@@ -29,7 +29,7 @@
 
     <variable name="DERBY_DS_UID" defaultValue="dbuser1"/>
     <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu"/>
-    <variable name="DERBY_DS_JNDINAME" defaultValue="jdbc/derby"/>
+    <variable name="DERBY_DS_JNDINAME" defaultValue="DUMMYjdbc/derby"/>
 
     <dataSource
         jndiName="${DERBY_DS_JNDINAME}"
@@ -63,7 +63,7 @@
 
     <transaction
         dataSourceRef="tranlogDataSource"
-        recoverOnStartup="false"
+        recoverOnStartup="true"
         waitForRecovery="false"
         heuristicRetryInterval="10"
     />

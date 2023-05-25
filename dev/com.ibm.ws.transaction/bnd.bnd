@@ -20,15 +20,19 @@ bVersion=1.0
 WS-TraceGroup: Transaction
 
 Service-Component: com.ibm.ws.transaction; \
-	  provide:='com.ibm.tx.config.ConfigurationProvider'; \
+      provide:='com.ibm.tx.config.ConfigurationProvider'; \
       implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
-      optional:='dataSourceFactory,transactionSettingsProvider';\
-      dynamic:='dataSourceFactory,transactionSettingsProvider';\
+      runningCondition='org.osgi.service.condition.Condition';\
+      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
+      dynamic:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
       configuration-policy:=require;\
-      properties:='service.vendor=IBM,dataSourceFactory.target=(id=unbound)', \
+      properties:='\
+         service.vendor=IBM,\
+         dataSourceFactory.target=(id=unbound),\
+         runningCondition.target=(osgi.condition.id=io.openliberty.process.running)',\
    TMRecoveryService; \
       implementation:=com.ibm.ws.transaction.services.TMRecoveryService; \
       provide:='com.ibm.ws.transaction.services.TMRecoveryService'; \

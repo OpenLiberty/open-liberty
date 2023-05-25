@@ -63,6 +63,7 @@ public class TransactionLogTest extends FATServletClient {
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
     static final int DERBY_TXLOG_PORT = 1619; // Differs from server configuration
+    static final String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server configuration
 
     static LibertyServer serverTranLog;
     static LibertyServer serverTranDbLog;
@@ -96,6 +97,7 @@ public class TransactionLogTest extends FATServletClient {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT);
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
@@ -155,16 +157,17 @@ public class TransactionLogTest extends FATServletClient {
     /**
      * Verify transactions log to a datasource within a restored server.
      * The test further ensures the datasource configuration has updated
-     * with config attribute(s) declared in server.env file.
+     * with config attribute(s) declared in the server.env file.
      */
     @Test
     public void testTransactionDbLogBasicConnection() throws Exception {
         serverTranDbLog.checkpointRestore();
 
         // Exercise a transaction to start tran logging to the datasource.
-        // The server will throw an exception and fail this test if it cannot
+        // The server will throw an exception and fail this test the TM cannot
         // establish a connection to the database.
-        runTest("testBasicConnection", serverTranDbLog);
+        runTest("testLTCAfterGlobalTran", serverTranDbLog);
+
     }
 
     private void runTest(String testName, LibertyServer ls) throws Exception {
