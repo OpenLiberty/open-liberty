@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -120,14 +121,14 @@ public class ServerEnvTest {
     }
 
     /**
-     * Test - Variable expansion in server.env does NOT work when it is NOT enabled.
+     * Test - Variable expansion in server.env does NOT happen when it is NOT enabled.
      * -- Note it is ALWAYS enabled for Windows --
      * -- So this test not applicable to Windows. There is no way to disable variable expansion on Windows. --
      *
      * To enable this test for Z/OS, I believe you would need to ensure that
      * both the server script and the server.env file are generated in EBCDIC.
      *
-     * server.env contents:
+     * Example server.env contents:
      * [
      * LOG_FILE=${CONSOLE_LOG_FILE_NAME}
      * ]
@@ -191,9 +192,12 @@ public class ServerEnvTest {
         assertTrue("The server's server.env did not get invoked as expected. "
                    + HELLO_WORLD + "not found in output", output.contains(HELLO_WORLD));
 
-        testCleanUp(METHOD_NAME, serverEnvFile);
+        deleteFile(serverEnvFile);
+
         Log.exiting(c, METHOD_NAME);
     }
+
+    // End tests methods ---------- Begin Utility Methods --------
 
     /**
      * Set the LOG_FILE variable in the server.env file.
@@ -220,19 +224,19 @@ public class ServerEnvTest {
         String environmentVariableName = "LOG_FILE_NAME_VARIABLE";
 
         // Get the proper syntax !!, ${} for the environment variable to be referenced in .../server.env
-        final String consoleLogEnvVarReference = createReferenceSyntaxForVariableName(environmentVariableName);
+        final String logEnvVarReferenceSyntax = createReferenceSyntaxForVariableName(environmentVariableName);
 
         // Create file contents for server.env with or without expansion enabled.
         // Sets the LOG_FILE variable to an environment variable reference.
         // This should cause the name of the "console.log" to be something different.
-        String fileContents = createFileContentsForServerEnv(expansionEnabled, "LOG_FILE=" + consoleLogEnvVarReference);
+        String fileContents = createFileContentsForServerEnv(expansionEnabled, "LOG_FILE=" + logEnvVarReferenceSyntax);
 
         File serverEnvFile = createServerEnvFile(fileContents, envType.path);
         assertNotNull("The server.env file was not created. Null returned.", serverEnvFile);
         assertTrue("The server.env file was not created.", serverEnvFile.exists());
 
         // Set the log file name in an environment variable
-        String newLogFileName = "GiveMeLibertyOrGiveMeDeath.log";
+        String newLogFileName = "AlternativeLiberty.log";
         Properties envVars = new Properties();
         envVars.put(environmentVariableName, newLogFileName);
 
@@ -242,29 +246,23 @@ public class ServerEnvTest {
         displayDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
 
         // Finally, verify that the log file with the new name exists when expansion is enabled
-        String logFullPathName = server.getLogsRoot() + newLogFileName;
-        File logFile = new File(logFullPathName);
+        String newLogFullPathName = server.getLogsRoot() + newLogFileName;
+        File logFile = new File(newLogFullPathName);
         if (expansionEnabled) {
-            assertTrue("the log file with the new name [ " + logFullPathName + " ] does not exist", logFile.exists());
+            assertTrue("the log file with the new name [ " + newLogFullPathName + " ] does not exist", logFile.exists());
+            renameFileTo(logFile, server.getLogsRoot() + "console.log"); // cleanup
         } else {
-            assertTrue("the log file with the new name [ " + logFullPathName + " ] exists, but it should not", !logFile.exists());
+            // if expansion is not enabled, we should see a log like ${LOG_FILE_NAME_VARIABLE}
+            File logFileUnExpandedCase = new File(server.getLogsRoot() + logEnvVarReferenceSyntax);
+            assertTrue("Was expecting the log file with the unexpanded name [ " + logEnvVarReferenceSyntax + " ] to exist.  It does not.", logFileUnExpandedCase.exists());
+            // and we should not see the log name that has been de-referenced
+            assertTrue("Was not expecting the log file with the new name [ " + newLogFullPathName + " ] to exist, but it sure does.", !logFile.exists());
+            renameFileTo(logFileUnExpandedCase, server.getLogsRoot() + "console.log"); // cleanup
         }
 
-        testCleanUp(METHOD_NAME, serverEnvFile);
+        deleteFile(serverEnvFile);
 
         Log.exiting(c, METHOD_NAME);
-    }
-
-    private void testCleanUp(String methodName, File serverEnvFile) {
-        // Test is complete, but create "console.log" file.
-        // Verification of server stop depends on the default name.
-        // Otherwise, we get FileNotFoundException in the test logs.
-        String defaultLogFullPathName = server.getLogsRoot() + "console.log";
-        Log.info(c, methodName, "Creating default console log: " + defaultLogFullPathName);
-        createFile(defaultLogFullPathName);
-
-        // Cleanup - If the server.env file is not deleted, it can cause other test cases to fail.
-        deleteServerEnvFile(serverEnvFile);
     }
 
     /**
@@ -357,7 +355,7 @@ public class ServerEnvTest {
      */
     private File createServerEnvFile(String fileContents, String serverEnvRelativePath) {
         final String METHOD_NAME = "createServerEnvFile";
-        Log.info(c, METHOD_NAME, "ENTER serverEnvRelativePath [{0}]\n", serverEnvRelativePath);
+        Log.info(c, METHOD_NAME, "ENTER serverEnvRelativePath[{0}]\n", serverEnvRelativePath);
 
         String serverEnvPath = server.getInstallRoot() + "/" + serverEnvRelativePath;
         File serverEnvFile = new File(serverEnvPath);
@@ -389,20 +387,18 @@ public class ServerEnvTest {
     }
 
     /**
-     * @param dir directory containing server.env file to delete
+     * @param file to delete
      */
-    private void deleteServerEnvFile(File dir) {
+    private void deleteFile(File file) {
 
-        File serverEnvFile = new File(dir, "server.env");
-
-        if (!serverEnvFile.exists()) {
+        if (!file.exists()) {
             return;
         }
 
         try {
-            serverEnvFile.delete();
+            file.delete();
         } catch (Exception e) {
-            Log.info(c, "deleteServerEnv", "Failed to delete : " + serverEnvFile.getAbsolutePath());
+            Log.info(c, "deleteFile", "Failed to delete : " + file.getAbsolutePath());
         }
 
         return;
@@ -444,7 +440,8 @@ public class ServerEnvTest {
         File logFile = new File(logFullPathName);
         assertTrue("the log file with the new name [ " + logFullPathName + " ] does not exist", logFile.exists());
 
-        testCleanUp(METHOD_NAME, serverEnvFile);
+        renameFileTo(logFile, server.getLogsRoot() + "console.log");
+        deleteFile(serverEnvFile);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -487,6 +484,20 @@ public class ServerEnvTest {
                 }
             }
         }
+    }
+
+    public static void renameFileTo(File originalFile, String newFileName) {
+        final String METHOD_NAME = "renameFileTo";
+        Log.info(c, METHOD_NAME, "renaming:\n[{0}]\n to\n[{1}]", new String[] { originalFile.getAbsolutePath(), newFileName });
+        File newFile = new File(newFileName);
+        assertTrue("Original file [ " + originalFile.getAbsolutePath() + " ] does not exist.", originalFile.exists());
+        assertFalse("File [ " + newFileName + " ] already exists", newFile.exists());
+
+        boolean renameSucceeded = originalFile.renameTo(newFile);
+        assertFalse("Original file [ " + originalFile.getAbsolutePath() + " ] still exists after rename.", originalFile.exists());
+        assertTrue("File [ " + newFileName + " ] does not exist after rename", newFile.exists());
+
+        Log.info(c, METHOD_NAME, "renameSucceeded[{0}]", renameSucceeded);
     }
 
     /**
