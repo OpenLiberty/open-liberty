@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
+import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
+
 import java.io.File;
 
 import org.testcontainers.containers.GenericContainer;
@@ -36,8 +38,6 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     private static final Class<?> c = JaegerContainer.class;
 
-    public static final DockerImageName IMAGE_NAME = DockerImageName.parse("jaegertracing/all-in-one:1.39");
-
     public static final int OLTP_GRPC_PORT = 4317;
     public static final int OLTP_HTTP_PORT = 4318;
     public static final int JAEGER_LEGACY_PORT = 14250;
@@ -48,7 +48,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public static final int GRPC_QUERY_PORT = 16685;
 
     public JaegerContainer() {
-        this(IMAGE_NAME);
+        this(TestConstants.DOCKER_IMAGE_ALL_IN_ONE);
         Log.info(c, "JaegerContainer", "creating JaegerContainer");
     }
 
@@ -69,7 +69,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public JaegerContainer(File tlsCert, File tlsKey) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                                           ImageNameSubstitutor.instance()
-                                                                                                              .apply(IMAGE_NAME)
+                                                                                                              .apply(TestConstants.DOCKER_IMAGE_ALL_IN_ONE)
                                                                                                               .asCanonicalNameString())
                                                                                     .copy("/etc/certificate.crt", "/etc/certificate.crt")
                                                                                     .copy("/etc/private.key", "/etc/private.key")
