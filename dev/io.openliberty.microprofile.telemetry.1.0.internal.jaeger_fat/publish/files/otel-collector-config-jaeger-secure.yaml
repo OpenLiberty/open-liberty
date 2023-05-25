@@ -1,0 +1,29 @@
+receivers:
+ otlp:
+   protocols:
+     grpc:
+      tls:
+        cert_file: /etc/certificate.crt
+        key_file: /etc/private.key
+     http:
+
+exporters:
+ logging:
+ jaeger:
+   endpoint: "jaeger-all-in-one:14250"    
+   tls:
+      insecure: true
+
+processors:
+ batch:
+   timeout: 0s
+
+service:
+  telemetry:
+    logs:
+      level: "debug"
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging,jaeger]

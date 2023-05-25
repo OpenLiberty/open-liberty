@@ -12,8 +12,14 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
+import java.io.File;
+
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.ImageNameSubstitutor;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * A container for the Jaeger trace server
@@ -28,6 +34,8 @@ import org.testcontainers.utility.DockerImageName;
  */
 public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
+    private static final Class<?> c = JaegerContainer.class;
+
     public static final DockerImageName IMAGE_NAME = DockerImageName.parse("jaegertracing/all-in-one:1.39");
 
     public static final int OLTP_GRPC_PORT = 4317;
@@ -41,10 +49,12 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     public JaegerContainer() {
         this(IMAGE_NAME);
+        Log.info(c, "JaegerContainer", "creating JaegerContainer");
     }
 
     public JaegerContainer(DockerImageName imageName) {
         super(imageName);
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with imageName");
 
         withExposedPorts(OLTP_GRPC_PORT,
                          OLTP_HTTP_PORT,
@@ -54,6 +64,33 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                          HTTP_QUERY_PORT);
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
+    }
+
+    public JaegerContainer(File tlsCert, File tlsKey) {
+        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
+                                                                                          ImageNameSubstitutor.instance()
+                                                                                                              .apply(IMAGE_NAME)
+                                                                                                              .asCanonicalNameString())
+                                                                                    .copy("/etc/certificate.crt", "/etc/certificate.crt")
+                                                                                    .copy("/etc/private.key", "/etc/private.key")
+                                                                                    .build())
+                                       .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
+                                       .withFileFromFile("/etc/private.key", tlsKey, 0644));
+
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
+
+        withExposedPorts(OLTP_GRPC_PORT,
+                         OLTP_HTTP_PORT,
+                         JAEGER_LEGACY_PORT,
+                         JAEGER_THRIFT_PORT,
+                         GRPC_QUERY_PORT,
+                         HTTP_QUERY_PORT);
+
+        withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("COLLECTOR_OTLP_GRPC_TLS_ENABLED", "true");
+        withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/certificate.crt");
+        withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/private.key");
+
     }
 
     /**
@@ -76,6 +113,17 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
      */
     public String getOltpGrpcUrl() {
         return "http://" + getHost() + ":" + getOltpGrpcPort();
+    }
+
+    /**
+     * Get the URL to use to send OLTP spans via gRPC over tls
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the OLTP gRPC URL
+     */
+    public String getSecureOtlpGrpcUrl() {
+        return "https://" + getHost() + ":" + getOltpGrpcPort();
     }
 
     /**

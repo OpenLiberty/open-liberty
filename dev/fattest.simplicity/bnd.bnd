@@ -43,6 +43,7 @@ Export-Package: \
         componenttest.logging.ffdc;version=2.0,\
         componenttest.rules;version=2.0,\
         componenttest.rules.repeater;version=2.0,\
+        componenttest.security.utils;version=2.0,\
         componenttest.selenium;version=2.0,\
         componenttest.topology.database;version=2.0,\
         componenttest.topology.database.container;version=2.0,\
@@ -60,6 +61,10 @@ Private-Package: \
 	com.ibm.websphere.simplicity.configuration
 
 Include-Resource: \
+    @${repo;org.bouncycastle:bcpg-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
     init-sqlserver.sql=resources/init-sqlserver.sql, \
 	META-INF=resources/META-INF
 
@@ -109,5 +114,8 @@ fat.test.container.images: testcontainers/ryuk:0.3.4, testcontainers/sshd:1.1.0,
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.com.fasterxml.jackson;version=latest,\
 	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
-	org.seleniumhq.selenium:selenium-support;version=4.8.3
+	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+	org.bouncycastle:bcpg-jdk15on;version=1.69,\
+	org.bouncycastle:bcpkix-jdk15on;version=1.69,\
+	org.bouncycastle:bcprov-jdk15on;version=1.69
 	
