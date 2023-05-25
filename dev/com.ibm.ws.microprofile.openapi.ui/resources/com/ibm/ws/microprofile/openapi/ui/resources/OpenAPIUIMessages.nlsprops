@@ -37,8 +37,8 @@ CWWKO1753W_OPEN_API_UI_PATH_POTENTIAL_CONFLICT.explanation=The OpenAPI UI path w
 CWWKO1753W_OPEN_API_UI_PATH_POTENTIAL_CONFLICT.useraction=Specify a different path for the OpenAPI UI path.
 
 CWWKO1754W_OPEN_API_UI_PATH_INVALID=CWWKO1754W: The OpenAPI UI path is invalid or contains invalid characters. The URL must be constructed using Unicode alphanumeric characters A-Za-z0-9, the underscore (_), dash (-), forward slash (/) and period (.).
-CWWKO1754W_OPEN_API_UI_PATH_INVALID.explanation=The value assigned to the OpenAPI UI path must not include any characters that are considered invalid.
-CWWKO1754W_OPEN_API_UI_PATH_INVALID.useraction=The OpenAPI UI path cannot be set to a value that contains invalid characters.
+CWWKO1754W_OPEN_API_UI_PATH_INVALID.explanation=The OpenAPI UI Path cannot be set to a value that contains invalid characters.
+CWWKO1754W_OPEN_API_UI_PATH_INVALID.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
 
 CWWKO1755W_OPEN_API_UI_PATH_SEGMENT_INVALID=CWWKO1755W: OpenAPI UI path segments "/." or "/.." are invalid.
 CWWKO1755W_OPEN_API_UI_PATH_SEGMENT_INVALID.explanation=OpenAPI UI path segments "/." or "/.." are invalid.
