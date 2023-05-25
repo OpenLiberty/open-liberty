@@ -28,7 +28,7 @@ import tests.SimpleTest;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-    .andWith(FeatureReplacementAction.EE10_FEATURES());
+    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SimpleTest.serverNames))
+    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(SimpleTest.serverNames))
+    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(SimpleTest.serverNames));
 }

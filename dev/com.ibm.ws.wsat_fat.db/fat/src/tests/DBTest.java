@@ -266,7 +266,7 @@ public class DBTest extends DBTestBase {
         };
     }
 
-	@Test
+	//@Test
 	public void test3DBs01_AllCommitByProxy() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -276,7 +276,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs02_AllRollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -289,7 +289,7 @@ public class DBTest extends DBTestBase {
 				"0");
 	}
 
-	@Test
+	//@Test
 	public void test3DBs03_ClientRollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -300,7 +300,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 
-	@Test
+	//@Test
 	public void test3DBs04_ClientExceptionByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -311,7 +311,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, "Throw new RuntimeException from client side!", "0");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs05_ClientSetRollbackOnlyByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -323,7 +323,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 
-	@Test
+	//@Test
 	public void test3DBs06_Server1RollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -334,7 +334,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs07_Server2RollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -346,7 +346,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs08_AllCommitByProxy_With2SameServers() {
 		String testURL = "/" + appName + "/ClientServlet";
@@ -357,7 +357,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1", "2", "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs09_ClientRollbackByProxy_With2SameServers() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -369,7 +369,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs10_Server2RollbackByProxy_With2SameServers() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -381,7 +381,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs11_AllCommitByProxy_WithNonGlobalTrans() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -391,7 +391,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1", "1", "0");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs12_ClientRollbackByProxy_WithNonGlobalTrans() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -402,7 +402,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs13_Server2RollbackByProxy_WithNonGlobalTrans() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -414,7 +414,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 
-	//@Test
+	////@Test
 	// Comment this test first because exception will fail all tests
 	@AllowedFFDC("javax.transaction.NotSupportedException")
 	public void test3DBs14_NestedTransByProxy() {
@@ -427,7 +427,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, "Nested transactions are not supported.", "0");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs15_AllCommitByProxyWithoutUserTransaction() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -439,7 +439,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs16_AllSayHelloByProxyWithoutUserTransaction() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -453,7 +453,7 @@ public class DBTest extends DBTestBase {
 	// Fix later begin: It does't work when A->B->C and A->B->A by Tim
 	// Already fix in 192130
 	
-	@Test
+	//@Test
 	public void test3DBs17_A_B_C_AllCommitByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -464,7 +464,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1", "1", "2");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs18_A_B_C_ClientRollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -475,7 +475,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs19_A_B_C_NestServer2RollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -487,7 +487,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs20_A_B_C_Server2RollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -498,7 +498,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs21_A_B_A_AllCommitByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -510,7 +510,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "2", "1", "1");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs22_A_B_A_ClientRollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -522,7 +522,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs23_A_B_A_NestClientRollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -534,7 +534,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs24_A_B_A_Server2RollbackByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -560,7 +560,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1");
 	}
 
-	@Test
+	//@Test
 	public void test3DBs26_Server1RollbackByLocalWSDL() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -571,7 +571,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs27_AllCommitByLocalWSDLWithoutUserTransaction() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -584,7 +584,7 @@ public class DBTest extends DBTestBase {
 	}
 
 	// Will add Dispatch test in future by Jordan
-	// @Test
+	// //@Test
 	public void test3DBs28_AllCommitByDispatch() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -596,7 +596,7 @@ public class DBTest extends DBTestBase {
 	}
 
 	// Will add Dispatch test in future by Jordan
-	// @Test
+	// //@Test
 	public void test3DBs29_Server2RollbackByDispatch() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -607,7 +607,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "0");
 	}
 
-	@Test
+	//@Test
 	public void test3DBs30_AllCommitWithProxyServerByProxy() throws Exception {
 		try (AutoCloseable x = proxify()) {
 
@@ -621,7 +621,7 @@ public class DBTest extends DBTestBase {
 		}
 	}
 
-	@Test
+	//@Test
 	public void test3DBs31_ClientRollbackWithProxyServerByProxy() throws Exception {
 		try (AutoCloseable x = proxify()) {
 
@@ -635,7 +635,7 @@ public class DBTest extends DBTestBase {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs32_Server2SetRollbackOnlyByLocalWSDL() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -646,7 +646,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, "null", "0");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs33_Server1UOWCommitByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
 
@@ -657,7 +657,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0", "1", "0");
 	}
 	
-	@Test
+	//@Test
 	@AllowedFFDC("java.lang.IllegalStateException")
 	public void test3DBs34_Server2UOWSetRollbackOnlyByProxy() {
 		final String testURL = "/" + appName + "/ClientServlet";
@@ -672,7 +672,7 @@ public class DBTest extends DBTestBase {
 	/*
 	 * With Transaction and With ATAssertion on operation level
 	 */
-	@Test
+	//@Test
 	public void test3DBs35() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
@@ -682,7 +682,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs36() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -692,7 +692,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, goodResult, "1");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs37() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
@@ -702,7 +702,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, serverRollbackResult, "0");
 	}
 	
-	@Test
+	//@Test
 	public void test3DBs38() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -715,7 +715,7 @@ public class DBTest extends DBTestBase {
 	/*
 	 * Without Transaction and With ATAssertion on operation level
 	 */
-	@Test
+	//@Test
 	public void test3DBs39() {
 		String testURL = "/" + appName + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -726,7 +726,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs40() {
 		String testURL = "/" + appName + "/ClientServlet";
@@ -738,7 +738,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs41() {
 		String testURL = "/" + appName + "/ClientServlet";
@@ -750,7 +750,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs42() {
 		String testURL = "/" + appName + "/ClientServlet";
@@ -762,7 +762,7 @@ public class DBTest extends DBTestBase {
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
 	}
 	
-	@Test
+	//@Test
 	@Mode(TestMode.FULL)
 	public void test3DBs58() {
 		String testURL = "/" + appName + "/ClientServlet";

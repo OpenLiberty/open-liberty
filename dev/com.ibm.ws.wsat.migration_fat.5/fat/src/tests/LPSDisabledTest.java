@@ -32,12 +32,9 @@ import com.ibm.ws.wsat.fat.util.DBTestBase;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class LPSDisabledTest extends DBTestBase {
 
@@ -81,7 +78,6 @@ public class LPSDisabledTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS003FVT() {
 		callServlet("WSTXLPS003FVT");
@@ -100,7 +96,6 @@ public class LPSDisabledTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSTXLPS006FVT() {
 		callServlet("WSTXLPS006FVT");
 	}
@@ -116,7 +111,6 @@ public class LPSDisabledTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSTXLPS009FVT() {
 		callServlet("WSTXLPS009FVT");
 	}

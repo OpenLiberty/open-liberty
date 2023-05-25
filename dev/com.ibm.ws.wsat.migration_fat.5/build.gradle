@@ -20,25 +20,7 @@ dependencies {
                project(':io.openliberty.org.apache.commons.logging')
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').file('publish')
-      into new File('publish')
-    }
-  }
-}
-
 addRequiredLibraries.dependsOn addJakartaTransformer
-
-jar {
-  dependsOn copyCommonFiles
-}
-
-autoFVT.dependsOn copyCommonFiles
 
 autoFVT.doLast {
   copy {
@@ -51,9 +33,6 @@ autoFVT.doLast {
 autoFVT.dependsOn project(':com.ibm.ws.wsat.migration_fat.4').autoFVT
 
 clean.doLast {
-  if (file('publish').exists()){
-    file('publish').deleteDir()
-  }
   if (file('build').exists()){
     file('build').deleteDir()
   }
