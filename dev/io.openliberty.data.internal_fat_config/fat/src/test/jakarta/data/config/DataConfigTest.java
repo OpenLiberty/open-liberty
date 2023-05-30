@@ -34,7 +34,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.config.web.DataConfigTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) // TODO 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataConfigTest extends FATServletClient {
 
     private static final String APP_NAME = "DataConfigTestApp";

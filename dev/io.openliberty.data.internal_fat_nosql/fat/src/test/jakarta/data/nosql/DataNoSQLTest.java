@@ -33,7 +33,7 @@ import test.jakarta.data.nosql.web.DataNoSQLServlet;
  * currently nonship nosql-1.0 feature.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) // TODO 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataNoSQLTest extends FATServletClient {
 
     @Server("io.openliberty.data.internal.fat.nosql")

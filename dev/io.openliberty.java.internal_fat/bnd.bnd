@@ -17,6 +17,9 @@ src: \
 	fat/src, \
 	test-applications/illegalaccess/src
 
+javac.source: 17
+javac.target: 17
+
 fat.project: true
 
 # To define a global minimum java level for the FAT, use the following property.

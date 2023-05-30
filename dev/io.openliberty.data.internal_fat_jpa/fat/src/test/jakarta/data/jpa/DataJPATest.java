@@ -34,7 +34,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.jpa.web.DataJPATestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) // TODO 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataJPATest extends FATServletClient {
     private static String jdbcJarName;
 
