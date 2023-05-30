@@ -71,6 +71,11 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
             if (instrumenter != null) {
                 return;
             }
+            
+            if(openTelemetry.toString().equals(OpenTelemetry.noop().toString())){
+                this.instrumenter = null;
+                return;
+            }
 
             OpenTelemetry openTelemetry = CDI.current().select(OpenTelemetry.class).get();
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetry,

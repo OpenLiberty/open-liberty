@@ -72,6 +72,11 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Inject
     public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
+        //Instrumenter is null if OpenTelemetry is not enabled
+        if(openTelemetry.toString().equals(OpenTelemetry.noop().toString())){
+            this.instrumenter = null;
+            return;
+        }
 
         InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
                                                                                                               openTelemetry,
