@@ -1,0 +1,45 @@
+<!--
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Server for testing Faces and CDI with Session Persistence">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>jsf-2.2</feature>
+        <feature>cdi-1.2</feature>
+        <feature>sessionDatabase-1.0</feature>
+    </featureManager>
+
+    <fileset id="DerbyFiles" includes="*.jar" dir="${shared.resource.dir}/derby/"/>
+
+    <library id="DerbyLib" filesetRef="DerbyFiles"/>
+
+
+    <dataSource id="SessionDS" jdbcDriverRef="DerbyDriver">
+        <jdbcDriver id="DerbyDriver" libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="${server.config.dir}/resources/sessionDB" createDatabase="create" user="user" password="pass" />
+    </dataSource>
+
+    <httpSessionDatabase id="SessionDB" dataSourceRef="SessionDS" writeContents="ALL_SESSION_ATTRIBUTES" writeFrequency="END_OF_SERVLET_SERVICE"/>
+    <httpSession storageRef="SessionDB"/>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+
+</server>

@@ -47,6 +47,7 @@ import com.ibm.ws.jsf22.fat.tests.JSFHtml5Tests;
 import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
 import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
+import com.ibm.ws.jsf22.fat.tests.CDISessionPersistenceTests;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
@@ -97,7 +98,8 @@ import componenttest.topology.impl.JavaInfo;
                 JSF22InputFileTests.class,
                 JSF22LocalizationTesterTests.class,
                 JSF22AparTests.class,
-                JSF22ThirdPartyApiTests.class
+                JSF22ThirdPartyApiTests.class,
+                CDISessionPersistenceTests.class
 })
 public class FATSuite {
 

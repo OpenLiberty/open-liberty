@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+ <html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Page2</title>
+</h:head>
+<h:body>
+    <h:form id="form">  
+        Page 2
+    <h:inputText id="data" value="#{dataBean.data}" /><br/>  
+    <h:commandButton id="refresh" value="refresh" />  
+    <h:commandButton id="exit" value="exit" action="/index"/>  
+    </h:form>  
+</h:body>
+</html>
