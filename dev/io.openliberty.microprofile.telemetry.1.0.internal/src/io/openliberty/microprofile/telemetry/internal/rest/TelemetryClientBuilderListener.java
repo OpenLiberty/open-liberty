@@ -14,6 +14,7 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.restfulWS.client.ClientBuilderListener;
+import io.openliberty.microprofile.telemetry.internal.helper.EnabledHelper;
 import jakarta.ws.rs.client.ClientBuilder;
 
 /**
@@ -25,7 +26,10 @@ import jakarta.ws.rs.client.ClientBuilder;
 public class TelemetryClientBuilderListener implements ClientBuilderListener {
 
     public void building(ClientBuilder clientBuilder) {
-        TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
-        clientBuilder.register(currentFilter);
+        EnabledHelper enabledHelper = new EnabledHelper();
+        if(!enabledHelper.checkDisabled()){
+            TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
+            clientBuilder.register(currentFilter);
+        }
     }
 }
