@@ -20,26 +20,33 @@ import org.osgi.service.component.ComponentContext;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class OpenAPIWABConfigManager {
+/**
+ * Manage the service registration of Web Application Bundles that support configurable context paths
+ * 
+ * For more information about WAB Configuration, including how to enable configurable context paths for bundles, refer to:
+ * dev/com.ibm.websphere.appserver.spi.wab.configure/build/libs/javadoc/com/ibm/wsspi/wab/configure/WABConfiguration.html
+ * 
+ */
+public class WABConfigManager {
 
-    private static final TraceComponent tc = Tr.register(OpenAPIUIEndpointManager.class);
+    private static final TraceComponent tc = Tr.register(WABConfigManager.class);
 
-    final ComponentContext context;
-    final String contextName;
-    final String contextPath;
-    final String name;
+    private final ComponentContext context;
+    private final String contextName;
+    private final String contextPath;
+    private final String name;
 
-    ServiceRegistration<WABConfiguration> wabConfigReg;
+    private ServiceRegistration<WABConfiguration> wabConfigReg;
 
     /**
      * WAB Configuration Manager for OpenAPI Endpoints
      *
      * @param context Component Context for the Web bundle
-     * @param contextName Name of the property within the bnd that the Web-ContextPath is bound to
-     * @param contextPath Path for the bundle
-     * @param name Name associated with the OpenAPI bundle
+     * @param contextName Name of the property within the bnd that the Web-ContextPath is bound to e.g. "openAPIUIPATH"
+     * @param contextPath Context path for the bundle to be served from
+     * @param name Name associated with the bundle for tracing
      */
-    public OpenAPIWABConfigManager(ComponentContext context, String contextName, String contextPath, String name) {
+    public WABConfigManager(ComponentContext context, String contextName, String contextPath, String name) {
         this.context = context;
         this.contextName = contextName;
         this.contextPath = contextPath;
@@ -47,9 +54,9 @@ public class OpenAPIWABConfigManager {
     }
 
     /**
-     * Active Web Bundle
+     * Register Web Bundle
      */
-    public void activate() {
+    public void register() {
         final BundleContext bundleContext = context.getBundleContext();
         final Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(WABConfiguration.CONTEXT_NAME, contextName);
@@ -68,9 +75,9 @@ public class OpenAPIWABConfigManager {
     }
 
     /**
-     * Deactivate Web bundle
+     * Unregister Web bundle
      */
-    public void deactivate() {
+    public void unregister() {
         if (wabConfigReg != null) {
             wabConfigReg.unregister();
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

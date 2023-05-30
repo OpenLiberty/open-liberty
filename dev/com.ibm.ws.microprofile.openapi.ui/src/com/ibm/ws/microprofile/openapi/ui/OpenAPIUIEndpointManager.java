@@ -48,7 +48,7 @@ public class OpenAPIUIEndpointManager {
     private String uiPath = null;
     private String dataPath = null;
 
-    private OpenAPIWABConfigManager openAPIWABConfigManager;
+    private WABConfigManager wabConfigManager;
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
@@ -57,23 +57,18 @@ public class OpenAPIUIEndpointManager {
 
         if (ProductInfo.getBetaEdition()) {
             Config config = ConfigProvider.getConfig(OpenAPIUIEndpointManager.class.getClassLoader());
-            if (config.getOptionalValue("open_api_path_enabled", Boolean.class).orElse(false)) {
+            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
+            if (Boolean.getBoolean("open_api_path_enabled")) {
                 resolvePathFromConfig(config);
-                if (!validatePath(uiPath, dataPath)) {
-                    uiPath = dataPath + OPEN_API_UI_PATH;
-                    Tr.warning(tc,"CWWKO1751W_OPEN_API_PATH_UPDATE_FAILED");
-                } else if(!uiPath.equals(OPEN_API_ENDPOINT_PATH + OPEN_API_UI_PATH)){
-                    Tr.info(tc,"CWWKO1750I_OPEN_API_PATH_UPDATE",uiPath);
-                }
             }
         }
-        openAPIWABConfigManager = new OpenAPIWABConfigManager(context, OPEN_API_UI_VAR_NAME, uiPath, "OpenAPI UI");
-        openAPIWABConfigManager.activate();
+        wabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, uiPath, "OpenAPI UI");
+        wabConfigManager.register();
     }
 
     @Deactivate
     protected void deactivate(ComponentContext context, int reason) {
-        openAPIWABConfigManager.deactivate();
+        wabConfigManager.unregister();
     }
 
     /**
@@ -148,6 +143,12 @@ public class OpenAPIUIEndpointManager {
         //Process dataPath first as the value is used by UI Path if value does not exist
         dataPath = resolvePath(config.getOptionalValue(OPEN_API_ENDPOINT_CONFIG_NAME, String.class).orElse(OPEN_API_ENDPOINT_PATH));
         uiPath = resolvePath(config.getOptionalValue(OPEN_API_UI_CONFIG_NAME, String.class).orElse(dataPath + OPEN_API_UI_PATH));
+        if (!validatePath(uiPath, dataPath)) {
+            uiPath = dataPath + OPEN_API_UI_PATH;
+            Tr.warning(tc,"CWWKO1751W_OPEN_API_PATH_UPDATE_FAILED");
+        } else if(!uiPath.equals(OPEN_API_ENDPOINT_PATH + OPEN_API_UI_PATH)){
+            Tr.info(tc,"CWWKO1750I_OPEN_API_PATH_UPDATE",uiPath);
+        }
     }
 
 }
