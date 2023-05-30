@@ -11,6 +11,7 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener;
+import io.openliberty.microprofile.telemetry.internal.helper.EnabledHelper;
 
 /**
  * Add our client filter when a new Rest Client is created.
@@ -20,8 +21,11 @@ public class TelemetryRestClientBuilderListener implements RestClientBuilderList
     /** {@inheritDoc} */
     @Override
     public void onNewBuilder(RestClientBuilder builder) {
-        TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
-        builder.register(currentFilter);
+        EnabledHelper enabledHelper = new EnabledHelper();
+        if(!enabledHelper.checkDisabled()){
+            TelemetryClientFilter currentFilter = TelemetryClientFilter.getCurrent();
+            builder.register(currentFilter);
+        }
     }
 
 }
