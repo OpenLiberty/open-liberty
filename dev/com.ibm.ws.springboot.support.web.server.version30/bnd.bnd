@@ -32,6 +32,7 @@ Include-Resource: springBoot30Server.jar
 
 instrument.disabled: true
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot30Server.jar; version:Version=3.0
 
 -buildpath: \
