@@ -56,9 +56,9 @@ public class OpenAPIUIEndpointManager {
         uiPath = OPEN_API_ENDPOINT_PATH + OPEN_API_UI_PATH;
 
         if (ProductInfo.getBetaEdition()) {
-            Config config = ConfigProvider.getConfig(OpenAPIUIEndpointManager.class.getClassLoader());
             //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
             if (Boolean.getBoolean("open_api_path_enabled")) {
+                Config config = ConfigProvider.getConfig(OpenAPIUIEndpointManager.class.getClassLoader());
                 resolvePathFromConfig(config);
             }
         }
