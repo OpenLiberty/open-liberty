@@ -38,11 +38,14 @@ publish.wlp.jar.disabled: true
 Export-Package: \
   io.openliberty.build.update;version=1.0, \
   io.openliberty.build.update.pom;version=1.0, \
-  io.openliberty.build.update.util;version=1.0
+   io.openliberty.build.update.pom.task;version=1.0, \
+  io.openliberty.build.update.util;version=1.0, \
+  org.apache.maven.model*;version=3.6.3, \
+  org.codehaus.plexus.util*;version=5.1
 
 -buildpath: \
-	org.apache.maven:maven-model;version='3.6.3',\
-	org.codehaus.plexus:plexus-utils;version='3.2.1',\
+  org.apache.maven:maven-model;version=3.6.3, \
+  org.codehaus.plexus:plexus-utils;version=3.2.1,\
 	com.ibm.ws.org.apache.ant;version=latest
 
 -testpath: \
