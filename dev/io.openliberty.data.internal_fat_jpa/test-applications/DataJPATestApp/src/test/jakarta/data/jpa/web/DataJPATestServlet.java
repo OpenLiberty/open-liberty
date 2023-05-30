@@ -1904,9 +1904,12 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        // Derby does not support comparisons of BLOB values
+        // Derby & Oracle  does not support comparisons of BLOB values
+        // Derby JDBC Jar Nake : derby.jar 
+        // Oracle JDBC Jar Name : ojdbc8_g.jar
+        // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
-        if (!jdbcJarName.startsWith("derby")) {
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);
