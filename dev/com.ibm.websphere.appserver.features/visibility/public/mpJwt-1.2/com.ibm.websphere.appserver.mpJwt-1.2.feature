@@ -16,8 +16,7 @@ Subsystem-Name: MicroProfile JSON Web Token 1.2
   com.ibm.websphere.appserver.servlet-4.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.jwt-1.2, \
   io.openliberty.mpCompatible-4.0, \
-  com.ibm.websphere.appserver.cdi-2.0, \
-  com.ibm.websphere.appserver.authFilter-1.0
+  com.ibm.websphere.appserver.cdi-2.0
 -bundles=com.ibm.ws.security.mp.jwt,\
   com.ibm.ws.security.mp.jwt.cdi,\
   io.openliberty.security.mp.jwt.1.2.config

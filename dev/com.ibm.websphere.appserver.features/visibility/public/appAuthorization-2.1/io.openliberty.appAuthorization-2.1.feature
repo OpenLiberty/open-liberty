@@ -11,7 +11,6 @@ WLP-AlsoKnownAs: jacc-2.1
 Subsystem-Name: Jakarta Authorization 2.1
 -features=io.openliberty.servlet.api-6.0, \
   io.openliberty.appSecurity-5.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.authorization-2.1
 -bundles=\

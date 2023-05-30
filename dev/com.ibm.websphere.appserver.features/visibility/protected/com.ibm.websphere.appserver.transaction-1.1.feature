@@ -17,7 +17,6 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  javax.transaction.UserTransaction
 -features=io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1", \
   com.ibm.websphere.appserver.jta-1.1, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.anno-1.0, \
   com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0", \

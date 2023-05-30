@@ -14,8 +14,6 @@ IBM-API-Package: com.ibm.websphere.cache; type="ibm-api", \
 IBM-ShortName: distributedMap-1.0
 Subsystem-Name: Distributed Map interface for Dynamic Caching 1.0
 -features=io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
-  com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.distributedMapInternal-1.0; ibm.tolerates:="2.0"
 -jars=com.ibm.websphere.appserver.api.distributedMap; location:=dev/api/ibm/

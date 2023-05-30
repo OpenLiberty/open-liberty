@@ -21,9 +21,7 @@ IBM-API-Package:\
  jakarta.xml.ws.wsaddressing; type="spec"
 -features=io.openliberty.jakarta.xmlWS-4.0, \
   io.openliberty.xmlBinding-4.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.1, \
   com.ibm.websphere.appserver.injection-2.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7

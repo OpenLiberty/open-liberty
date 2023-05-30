@@ -40,14 +40,11 @@ IBM-ShortName: cdi-4.0
 Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
 -features=io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.servlet.api-6.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.jakarta.enterpriseBeans-4.0, \
   io.openliberty.jakarta.persistence-3.1, \
   io.openliberty.jakarta.cdi-4.0, \
   io.openliberty.jakarta.xmlWS-4.0, \
-  com.ibm.websphere.appserver.appmanager-1.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
   io.openliberty.jakarta.annotation-2.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \

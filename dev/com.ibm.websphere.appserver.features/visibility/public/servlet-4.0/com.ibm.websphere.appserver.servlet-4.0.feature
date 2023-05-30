@@ -36,13 +36,10 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
 Subsystem-Category: JavaEE8Application
 -features=io.openliberty.servlet.api-4.0, \
   com.ibm.websphere.appserver.javaeeddSchema-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.javaeePlatform-8.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.servlet-servletSpi1.0, \
   com.ibm.websphere.appserver.httptransport-1.0, \
-  com.ibm.websphere.appserver.appmanager-1.0, \
   com.ibm.websphere.appserver.requestProbes-1.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3, \
   com.ibm.websphere.appserver.injection-1.0, \
