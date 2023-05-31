@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,28 +15,30 @@ package com.ibm.ws.repository.resolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
-import com.ibm.ws.repository.common.enums.InstallPolicy;
 import com.ibm.ws.repository.common.enums.ResourceType;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
 import com.ibm.ws.repository.resolver.internal.ResolutionMode;
+import com.ibm.ws.repository.resolver.internal.kernel.CapabilityMatching;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
 import com.ibm.ws.repository.resources.ApplicableToProduct;
@@ -86,11 +88,6 @@ public class RepositoryResolver {
      * Keyset is mutually exclusive with {@link #featuresMissing} and {@link #requirementsFoundForOtherProducts}
      */
     Map<String, ProvisioningFeatureDefinition> resolvedFeatures;
-
-    /**
-     * The list of extra features for which we need to generate install lists
-     */
-    List<ProvisioningFeatureDefinition> additionalInstallListRoots;
 
     /**
      * List of requested features that were reported missing by the kernel resolver and weren't found in the repository applicable to another product.
@@ -155,8 +152,8 @@ public class RepositoryResolver {
      *
      * @param installDefinition Information about the product(s) installed such as ID and edition. Must not be <code>null</code>.
      * @param installedFeatures The features that are installed. Must not be <code>null</code>.
-     * @param installedIFixes   No longer used, parameter retained for backwards compatibility
-     * @param repoConnections   The connection to the repository
+     * @param installedIFixes No longer used, parameter retained for backwards compatibility
+     * @param repoConnections The connection to the repository
      * @throws RepositoryException If there is a connection error with the Massive repository
      * @see ProductInfo#getAllProductInfo()
      * @see IFixUtils#getInstalledIFixes(java.io.File, com.ibm.ws.product.utility.CommandConsole)
@@ -180,8 +177,8 @@ public class RepositoryResolver {
      * Allows resolution to be tested without connecting to a repository
      *
      * @param installedFeatures the features which are installed
-     * @param repoFeatures      the features available in the repository
-     * @param repoSamples       the samples available in the repository
+     * @param repoFeatures the features available in the repository
+     * @param repoSamples the samples available in the repository
      */
     RepositoryResolver(Collection<ProvisioningFeatureDefinition> installedFeatures,
                        Collection<? extends EsaResource> repoFeatures,
@@ -229,8 +226,8 @@ public class RepositoryResolver {
         }
     }
 
-    void initializeResolverRepository(Collection<ProductDefinition> installDefintion) {
-        resolverRepository = new KernelResolverRepository(installDefintion, repoConnections);
+    void initializeResolverRepository(Collection<ProductDefinition> installDefintion, ResolutionMode mode) {
+        resolverRepository = new KernelResolverRepository(installDefintion, repoConnections, mode);
         resolverRepository.addInstalledFeatures(installedFeatures);
         resolverRepository.addFeatures(repoFeatures);
     }
@@ -258,39 +255,31 @@ public class RepositoryResolver {
     }
 
     /**
-     * Takes a list of feature and sample names that the user wants to install and returns the {@link RepositoryResource}s that should be installed.
-     * <p>
-     * This method attempts to install everything that could be needed once the requested features are installed. This means:
-     * <ul>
-     * <li>If a requested feature has a dependency which tolerates multiple versions of another feature, <b>all</b> tolerated versions of that other feature which are not installed
-     * will be returned
-     * <li>If an installed feature has a dependency which tolerates multiple versions of another feature, <b>all</b> tolerated versions of that other feature which are not
-     * installed will be returned
-     * <li>All autofeatures which can have their capabilities met by the combination of features already installed and those to be installed will be returned
-     * </ul>
-     * <p>
-     * Note that the last two points mean that this method can return features which are in no-way related to the names in {@code toResolve}.
-     * <p>
-     * Note that this method will return as many features as necessary to ensure that after installing the resources returned from this method, any of the features installed which
-     * are compatible will work if listed together in the server.xml and any relevant auto-features will be present. This will likely be more features than are required for
-     * specific scenarios.
-     * <p>
-     * If you want to install just the <i>minimal</i> set of features required to start a server with a given set of features, you should use {@link #resolveAsSet(Collection)}
-     * instead.
+     * <p>Will resolve a collection of resources from Massive. This method will find the resources specified by the <code>toResolve</code> parameter and any dependencies that they
+     * require and return a list of the resources in massive that need to be installed. If any of the dependencies are already installed they will not be returned in the list.</p>
+     * <p>Note that this will use the information about what is installed and in the Massive repository as was the case when this object was created so care should be taken that
+     * this is still up to date (i.e. no features or fixes have been installed since this object was created).</p>
+     * <p>This will also return a list of resources for any auto features that have their required provision capabilities satisfied either by what is already installed, the new
+     * features being installed or a combination of the two. Note that this means auto features that are in no way related to what you have asked to resolve could be returned by
+     * this method if they are satisfied by the current installation.</p>
+     * <p>This method may return conflicting versions of singleton features (it's valid to have conflicting versions installed but they can't be started together). If you don't
+     * want that, you may want to use {@link #resolveAsSet(Collection)} instead.</p>
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
-     *         at all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
+     *         at
+     *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
      *         multiple lists. For instance if you have requested to install A and B and A requires N which requires M and O whereas B requires Z that requires O then the returned
      *         collection will be (represented in JSON):</p>
      *         <code>
      *         [[M, O, N, A],[O, Z, B]]
      *         </code>
-     *         <p>This method will not return <code>null</code> although it may return an empty collection if there isn't anything to install (i.e. it resolves to resources that
-     *         are already installed)</p>
+     *         <p>This will not return <code>null</code> although it may return an empty collection if there isn't anything to install (i.e. it resolves to resources that are
+     *         already installed)</p>
      *         <p>Every auto-feature will have it's own list in the collection, this is to stop the failure to install either an auto feature or one of it's dependencies from
      *         stopping everything from installing. Therefore if you have features A and B that are required to provision auto feature C and you ask to resolve A and B then this
      *         method will return:</p>
@@ -320,32 +309,28 @@ public class RepositoryResolver {
     }
 
     /**
-     * Takes a list of feature names that the user wants to install and returns a minimal set of the {@link RepositoryResource}s that should be installed to allow those features to
-     * start together in one server.
+     * As {@link #resolve(Collection)} except this method assumes that all the resources should start together on one server.
      * <p>
-     * This method uses the same resolution logic that is used by the kernel at server startup to decide which features to start. Therefore calling this method with a list of
-     * feature names and installing the resources returned will guarantee that a server which has the same list of feature names in its server.xml will start.
+     * The resolution result will not include more than one version of a singleton feature.
      * <p>
-     * The caller must provide the full set of features from the server.xml, including those that are already installed, so that tolerated dependencies and auto-features can be
-     * resolved correctly.
+     * This method of resolution can be used when you want to install all the features necessary to start a server.
      * <p>
-     * This method will fail if there's no valid set of dependencies for the required features that doesn't include conflicting versions of singleton features.
+     * Note that to use this method, you must provide the full set of features from the server.xml, including those that are already installed. Failure to do this may result in
+     * an incorrect set of features being installed.
+     * <p>
+     * Also note that this method will fail if there's no valid set of dependencies for the required features that doesn't include conflicting versions of singleton features.
      * <p>
      * For example, {@code resolve(Arrays.asList("javaee-7.0", "javaee-8.0"))} would work but {@code resolveAsSet(Arrays.asList("javaee-7.0", "javaee-8.0"))} would fail because
      * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
-     * <p>
-     * This method guarantees that it will return all the features required to start the requested features but will not ensure that the requested features will work with features
-     * which were already installed but were not requested in the call to this method.
-     * <p>
-     * For example, if {@code ejbLite-3.2} is already installed and {@code resolve(Arrays.asList("cdi-2.0"))} is called, it will not return the autofeature which would be required
-     * for {@code cdi-2.0} and {@code ejbLite-3.2} to work together.
      *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
-     *                      <code>{name}/{version}</code></br>
-     *                      <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
-     *                      optional. The collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is
+     *            optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
      * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
-     *         at all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
+     *         at
+     *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
      *         multiple lists. For instance if you have requested to install A and B and A requires N which requires M and O whereas B requires Z that requires O then the returned
      *         collection will be (represented in JSON):</p>
      *         <code>
@@ -368,25 +353,15 @@ public class RepositoryResolver {
 
     Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, ResolutionMode resolutionMode) throws RepositoryResolutionException {
         initResolve();
-        initializeResolverRepository(installDefinition);
+        initializeResolverRepository(installDefinition, resolutionMode);
 
         processNames(toResolve);
-
-        if (resolutionMode == ResolutionMode.DETECT_CONFLICTS) {
-            // Call the kernel resolver to determine the features needed
-            resolveFeaturesAsSet();
-        } else {
-            // Resolve all dependencies of installed features
-            resolveFeaturesBasic();
-            // Basic resolve auto-features satisfied by installed + resolved features
-            resolveAutoFeatures();
+        findAutofeatureDependencies();
+        if (resolutionMode == ResolutionMode.IGNORE_CONFLICTS) {
+            requireInstalledFeaturesWhenResolving();
         }
 
-        // Find any any features which aren't direct dependencies of a requested feature
-        // Can happen if resolveAsSet is used to install some features
-        // and then resolve is used to install more features in the same server
-        computeAdditionalInstallListRoots();
-
+        resolveFeatures(resolutionMode);
         Collection<List<RepositoryResource>> installLists = createInstallLists();
 
         reportErrors();
@@ -460,17 +435,37 @@ public class RepositoryResolver {
     }
 
     /**
+     * If any of the requested features are auto-features, find the set of features that satisfy their provisionCapability header and add those to the list of feature names to
+     * resolve.
+     * <p>
+     * This is necessary because the kernel resolver will ignore the provision capability header if the feature has been specifically requested, but that's not usually helpful at
+     * install time.
+     */
+    void findAutofeatureDependencies() {
+        // If the user has requested an autofeature to be resolved, we want to treat the features mentioned in its provisionCapability header as dependencies
+        ArrayList<String> autofeatureDependencies = new ArrayList<>();
+        for (String featureName : featureNamesToResolve) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+            if (feature != null && feature.isAutoFeature()) {
+                Collection<ProvisioningFeatureDefinition> dependencies = CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolverRepository.getAllFeatures());
+                for (ProvisioningFeatureDefinition dependency : dependencies) {
+                    autofeatureDependencies.add(dependency.getSymbolicName());
+                }
+            }
+        }
+
+        featureNamesToResolve.addAll(autofeatureDependencies);
+    }
+
+    /**
      * Uses the kernel resolver to resolve {@link #featureNamesToResolve} and populates {@link #resolvedFeatures} with the result.
      *
-     * Populates:
-     * - {@link #resolvedFeatures}
-     * - {@link #featuresMissing}
-     * - {@link #requirementsFoundForOtherProducts}
-     * - {@link #resourcesWrongProduct}
+     * @param mode the resolution mode
      */
-    void resolveFeaturesAsSet() {
+    void resolveFeatures(ResolutionMode mode) {
+        boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result result = resolver.resolveFeatures(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), false);
+        Result result = resolver.resolveFeatures(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
 
         featureConflicts.putAll(result.getConflicts());
 
@@ -480,165 +475,30 @@ public class RepositoryResolver {
         }
 
         for (String missingFeature : result.getMissing()) {
-            recordMissingFeature(missingFeature);
-        }
-    }
-
-    /**
-     * Resolves {@link #featureNamesToResolve} using a simple traversal of the dependency tree
-     *
-     * Populates:
-     * - {@link #resolvedFeatures}
-     * - {@link #featuresMissing}
-     * - {@link #requirementsFoundForOtherProducts}
-     * - {@link #resourcesWrongProduct}
-     */
-    void resolveFeaturesBasic() {
-        // For each feature to resolve
-        //   Look up the PFD
-        //   walk the dependency tree, adding each PFD to the resolvedFeatures set
-        //   If all features from a tolerated dependency are missing, log as missing
-        FeatureTreeWalker toResolveWalker = FeatureTreeWalker.walkOver(resolverRepository)
-                                                             .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
-                                                             .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                                                             .walkEachFeatureOnlyOnce();
-        for (String name : featureNamesToResolve) {
-            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
-            if (feature == null) {
-                recordMissingFeature(name);
-                continue;
-            }
-
-            toResolveWalker.walkDepthFirst(feature);
-        }
-
-        // Walk dependencies of all installed features as well to ensure we install all their tolerated dependencies
-        FeatureTreeWalker installedFeatureWalker = FeatureTreeWalker.walkOver(resolverRepository)
-                                                                    .forEach(f -> resolvedFeatures.put(f.getSymbolicName(), f))
-                                                                    .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                                                                    .useAutofeatureProvisionAsDependency(false)
-                                                                    .walkEachFeatureOnlyOnce();
-        for (ProvisioningFeatureDefinition feature : installedFeatures) {
-            installedFeatureWalker.walkDepthFirst(feature);
-        }
-    }
-
-    /**
-     * Finds any autofeatures which are satisfied by the installed and resolved features and adds them to the resolvedFeatures set
-     * <p>
-     * This is only used for basic resolve because the kernel resolver will find autofeatures for us when using resolveAsSet
-     */
-    void resolveAutoFeatures() {
-
-        HashSet<ProvisioningFeatureDefinition> resolvedAndInstalled = new HashSet<>();
-        resolvedAndInstalled.addAll(installedFeatures);
-        resolvedAndInstalled.addAll(resolvedFeatures.values());
-
-        FeatureTreeWalker autofeatureWalker = FeatureTreeWalker.walkOver(resolverRepository)
-                                                               .forEach(f -> {
-                                                                   resolvedFeatures.put(f.getSymbolicName(), f);
-                                                                   resolvedAndInstalled.add(f);
-                                                               })
-                                                               .onMissingDependency((f, dep) -> recordMissingFeature(dep.getSymbolicName()))
-                                                               .useAutofeatureProvisionAsDependency(false)
-                                                               .walkEachFeatureOnlyOnce();
-
-        // Autofeatures can satisfy other autofeatures, so we loop,
-        // looking for more satisfied autofeatures until we stop finding any
-        int oldSize = 0;
-        while (resolvedAndInstalled.size() > oldSize) {
-            oldSize = resolvedAndInstalled.size();
-            for (ProvisioningFeatureDefinition feature : resolverRepository.getAutoFeatures()) {
-                EsaResource esa = getResource(feature);
-                if (esa == null) {
-                    continue; // Ignore already installed features
-                }
-
-                if (resolvedAndInstalled.contains(feature)) {
-                    continue; // Ignore features we've already resolved
-                }
-
-                if (esa.getInstallPolicy() != InstallPolicy.WHEN_SATISFIED) {
-                    continue; // Ignore autofeatures which need manual installation
-                }
-
-                if (feature.isCapabilitySatisfied(resolvedAndInstalled)) {
-                    // Found a satisfied autofeature, add it and all its dependencies
-                    // (only its real dependencies, not features which satisfy its provision capability requirement)
-                    autofeatureWalker.walkDepthFirst(feature);
+            Collection<ApplicableToProduct> featureOtherProducts = resolverRepository.getNonApplicableResourcesForName(missingFeature);
+            if (featureOtherProducts.isEmpty()) {
+                featuresMissing.add(missingFeature);
+            } else {
+                requirementsFoundForOtherProducts.add(missingFeature);
+                for (ApplicableToProduct feature : featureOtherProducts) {
+                    resourcesWrongProduct.add(feature);
                 }
             }
         }
     }
 
     /**
-     * Situations can arise where a resolved feature is not a dependency of a requested feature or an autofeature.
+     * Require that all installed features are included in the resolution result
      * <p>
-     * This can happen when doing a basic resolve and an already installed feature has a tolerated dependency which is not installed and not required by the requested feature. This
-     * tolerated dependency still needs to be installed.
+     * This allows autofeatures which depend on an already installed feature to be resolved.
      * <p>
-     * This method finds such features and works out a minimal set to use as roots for install lists to ensure that every resolved feature gets installed
+     * This method can't be used when detecting conflicts between singleton features, as we might already have conflicting features installed (which is fine, as long as they're not
+     * started together in a running server).
      */
-    private void computeAdditionalInstallListRoots() {
-        HashSet<ProvisioningFeatureDefinition> additionalRootCandidates = new HashSet<>();
-
-        // Start with the set of resolved but not installed features
-        for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature instanceof KernelResolverEsa) {
-                additionalRootCandidates.add(feature);
-            }
-        }
-
-        FeatureTreeWalker removeCandidateWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
-                                                                   .forEach(additionalRootCandidates::remove)
-                                                                   .walkEachFeatureOnlyOnce();
-
-        // Remove dependencies of requested features and samples
-        for (String name : featureNamesToResolve) {
-            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
-            if (feature == null) {
-                continue;
-            }
-            removeCandidateWalker.walkDepthFirst(feature);
-        }
-
-        // Remove dependencies of autofeatures
-        for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature() && feature instanceof KernelResolverEsa) {
-                removeCandidateWalker.walkDepthFirst(feature);
-            }
-        }
-
-        // New walker which doesn't set walkEachFeatureOnlyOnce because we're going to remove and re-add features
-        // so we need to be able to walk things twice
-        FeatureTreeWalker repeatCandidateWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
-                                                                   .forEach(additionalRootCandidates::remove);
-        // For each remaining candidate, remove all of its dependencies, but not itself
-        // Candidates will still be removed if they are dependencies of another candidate
-        // Note: Copy additionalRootCandidates to avoid ConcurrentModificationException
-        for (ProvisioningFeatureDefinition feature : new ArrayList<>(additionalRootCandidates)) {
-            // Ignore this feature if it's already been removed as a dependency of another feature
-            // This avoids having two candidates remove each other if the graph contains a loop
-            if (additionalRootCandidates.contains(feature)) {
-                // Remove ourself and our dependencies
-                repeatCandidateWalker.walkDepthFirst(feature);
-                // Add ourself back in
-                additionalRootCandidates.add(feature);
-            }
-        }
-
-        additionalInstallListRoots = new ArrayList<>(additionalRootCandidates);
-    }
-
-    private void recordMissingFeature(String missingFeature) {
-        Collection<ApplicableToProduct> featureOtherProducts = resolverRepository.getNonApplicableResourcesForName(missingFeature);
-        if (featureOtherProducts.isEmpty()) {
-            featuresMissing.add(missingFeature);
-        } else {
-            requirementsFoundForOtherProducts.add(missingFeature);
-            for (ApplicableToProduct feature : featureOtherProducts) {
-                resourcesWrongProduct.add(feature);
-            }
+    void requireInstalledFeaturesWhenResolving() {
+        // We need to include installed features in the resolution to allow all autofeatures to resolve
+        for (ProvisioningFeatureDefinition installedFeature : installedFeatures) {
+            featureNamesToResolve.add(installedFeature.getSymbolicName());
         }
     }
 
@@ -666,13 +526,9 @@ public class RepositoryResolver {
 
         // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
-            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
+            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName())) {
                 installLists.add(createInstallList(feature.getSymbolicName()));
             }
-        }
-
-        for (ProvisioningFeatureDefinition feature : additionalInstallListRoots) {
-            installLists.add(createInstallList(feature.getSymbolicName()));
         }
 
         return installLists;
@@ -687,69 +543,42 @@ public class RepositoryResolver {
      * @return the ordered list of resources to install
      */
     List<RepositoryResource> createInstallList(SampleResource resource) {
+        Map<String, Integer> maxDistanceMap = new HashMap<>();
         List<MissingRequirement> missingRequirements = new ArrayList<>();
 
-        AtomicBoolean allDependenciesResolved = new AtomicBoolean(true);
-        ArrayList<ProvisioningFeatureDefinition> installList = new ArrayList<>();
+        boolean allDependenciesResolved = true;
         if (resource.getRequireFeature() != null) {
-
-            List<ProvisioningFeatureDefinition> rootFeatures = new ArrayList<>();
-
             for (String featureName : resource.getRequireFeature()) {
+
                 // Check that the sample actually exists
                 ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
                 if (feature == null) {
-                    allDependenciesResolved.set(false);
+                    allDependenciesResolved = false;
                     // Unless we know it exists but applies to another product, note the missing requirement as well
                     if (featuresMissing.contains(featureName)) {
                         missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
                 } else {
-                    rootFeatures.add(feature);
+                    // Build distance map and check dependencies
+                    allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
                 }
-            }
 
-            // We do a breadth first walk, adding features to the list. If we find a feature a second time, we move it to the end of the list.
-            // This creates a list ordered by their deepest occurrence in the tree which ensures that all the dependencies of a feature
-            // come after it in the list.
-            FeatureTreeWalker.walkOver(resolvedFeatures)
-                             .forEach(f -> {
-                                 // Move the feature to the end if it's already in the list
-                                 // to ensure it comes after everything that depends on it
-                                 installList.remove(f);
-                                 installList.add(f);
-                             })
-                             .onMissingDependency((f, dependency) -> {
-                                 if (featuresMissing.contains(dependency.getSymbolicName())) {
-                                     // The dependency was totally missing, add it to the list of missing requirements
-                                     missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(f)));
-                                 }
-                                 allDependenciesResolved.set(false);
-                             })
-                             .walkBreadthFirst(rootFeatures);
+            }
         }
 
-        if (!allDependenciesResolved.get()) {
+        if (!allDependenciesResolved) {
             missingTopLevelRequirements.add(resource.getShortName());
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Remove installed features from the list and convert to EsaResources
-        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>();
-        for (ProvisioningFeatureDefinition installFeature : installList) {
-            EsaResource featureResource = getResource(installFeature);
-            if (featureResource != null) {
-                resourceInstallList.add(featureResource);
-            }
-        }
+        ArrayList<RepositoryResource> installList = new ArrayList<>();
 
-        // Our walk ensures that every feature comes before its dependencies, but we actually need it to be the other way around
-        Collections.reverse(resourceInstallList);
+        installList.addAll(convertFeatureNamesToResources(maxDistanceMap.keySet()));
+        Collections.sort(installList, byMaxDistance(maxDistanceMap));
 
-        // Add the sample itself to the end of the install list
-        resourceInstallList.add(resource);
+        installList.add(resource);
 
-        return resourceInstallList;
+        return installList;
     }
 
     /**
@@ -778,47 +607,195 @@ public class RepositoryResolver {
             return Collections.emptyList();
         }
 
+        Map<String, Integer> maxDistanceMap = new HashMap<>();
         List<MissingRequirement> missingRequirements = new ArrayList<>();
-        List<ProvisioningFeatureDefinition> installList = new ArrayList<>();
-        AtomicBoolean foundAll = new AtomicBoolean(true);
+        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, feature.getSymbolicName(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
 
-        // We do a breadth first walk, adding features to the list. If we find a feature a second time, we move it to the end of the list.
-        // This creates a list ordered by their deepest occurrence in the tree which ensures that all the dependencies of a feature
-        // come after it in the list.
-        FeatureTreeWalker.walkOver(resolvedFeatures)
-                         .forEach(f -> {
-                             // Move the feature to the end if it's already in the list
-                             // to ensure it comes after everything that depends on it
-                             installList.remove(f);
-                             installList.add(f);
-                         })
-                         .onMissingDependency((f, dependency) -> {
-                             if (featuresMissing.contains(dependency.getSymbolicName())) {
-                                 // The dependency was totally missing, add it to the list of missing requirements
-                                 missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(f)));
-                             }
-                             foundAll.set(false);
-                         })
-                         .walkBreadthFirst(feature);
-
-        if (!foundAll.get()) {
+        if (!foundAllDependencies) {
             missingTopLevelRequirements.add(featureName);
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Remove installed features from the list and convert to EsaResources
-        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>();
-        for (ProvisioningFeatureDefinition installFeature : installList) {
-            EsaResource resource = getResource(installFeature);
-            if (resource != null) {
-                resourceInstallList.add(resource);
+        ArrayList<RepositoryResource> installList = new ArrayList<>();
+
+        installList.addAll(convertFeatureNamesToResources(maxDistanceMap.keySet()));
+        Collections.sort(installList, byMaxDistance(maxDistanceMap));
+
+        return installList;
+    }
+
+    /**
+     * Returns a comparator which sorts EsaResources by their values from {@code maxDistanceMap} from greatest to smallest
+     * <p>
+     * Resources whose symbolic names do not appear in the map or which are not EsaResources are assigned a value of zero meaning that they will appear last in a sorted list.
+     *
+     * @param maxDistanceMap map from symbolic name to the length of the longest dependency chain from a specific point
+     * @return compariator which sorts based on the maxDistance of resources
+     */
+    static Comparator<RepositoryResource> byMaxDistance(final Map<String, Integer> maxDistanceMap) {
+        return new Comparator<RepositoryResource>() {
+
+            @Override
+            public int compare(RepositoryResource o1, RepositoryResource o2) {
+                return Integer.compare(getDistance(o2), getDistance(o1));
+            }
+
+            private int getDistance(RepositoryResource res) {
+                if (res.getType() == ResourceType.FEATURE) {
+                    Integer distance = maxDistanceMap.get(((EsaResource) res).getProvideFeature());
+                    return distance == null ? 0 : distance;
+                } else {
+                    return 0;
+                }
+            }
+
+        };
+    }
+
+    /**
+     * Build a map which maps feature symbolic names to the length of the longest dependency chain from the starting point to that feature
+     * <p>
+     * This method adds {@code featureName} to the map with {@code currentDistance} and then recurses through its dependencies, repeating this operation. It will stop if it
+     * encounters a dependency loop.
+     * <p>
+     * This method also adds any dependencies which can't be satisfied to {@code missingRequirements}.
+     * <p>
+     * The result of this operation is useful for building install lists as the features to be installed can be sorted by the longest dependency chain in descending order to ensure
+     * that the dependencies of a feature are installed before the feature itself.
+     * <p>
+     * Example. To find the longest dependency chain for all dependent features of com.example.featureA, the following code can be used:
+     * <p>
+     * <code>
+     *
+     * <pre>
+     * Map<String, Integer> distanceMap = new HashMap<>();
+     * populateMaxDistanceMap(distanceMap, "com.example.featureA", 0, new HashSet&lt;ProvisioningFeatureDefinition&gt;());
+     * </pre>
+     *
+     * </code>
+     * <p>
+     * Having done this, {@code distanceMap.keySet()} gives the set of all the dependencies of com.example.featureA. {@code distanceMap.get("com.example.featureB")} gives
+     * the length of the longest dependency chain from featureA to featureB.
+     *
+     * @param maxDistanceMap the map to be populated
+     * @param featureName the current feature
+     * @param currentDistance the distance to use for the current feature
+     * @param currentStack the set of feature names already in the current dependency chain (used to detect loops)
+     * @param missingRequirements the list which missing requirements are to be added
+     * @return true if all requirements were found, false otherwise
+     */
+    boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
+                                   List<MissingRequirement> missingRequirements) {
+        ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureName);
+
+        if (currentStack.contains(feature)) {
+            // We've hit a dependency loop
+            return true;
+        }
+
+        boolean result = true;
+
+        currentStack.add(feature);
+
+        Integer oldDistance = maxDistanceMap.get(feature.getSymbolicName());
+        if (oldDistance == null || oldDistance < currentDistance) {
+            maxDistanceMap.put(feature.getSymbolicName(), currentDistance);
+        }
+
+        for (FeatureResource dependency : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            String resolvedFeatureName = findResolvedDependency(dependency);
+
+            if (resolvedFeatureName != null) {
+                // We found the dependency, continue populating the distance map
+                result &= populateMaxDistanceMap(maxDistanceMap, resolvedFeatureName, currentDistance + 1, currentStack, missingRequirements);
+            } else {
+                if (featuresMissing.contains(dependency.getSymbolicName())) {
+                    // The dependency was totally missing, add it to the list of missing requirements
+                    missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(feature)));
+                }
+                result = false;
             }
         }
 
-        // Our walk ensures that every feature comes before its dependencies, but we actually need it to be the other way around
-        Collections.reverse(resourceInstallList);
+        // Find autofeature dependencies
+        for (ProvisioningFeatureDefinition dependency : CapabilityMatching.findFeaturesSatisfyingCapability(feature, resolvedFeatures.values())) {
+            result &= populateMaxDistanceMap(maxDistanceMap, dependency.getSymbolicName(), currentDistance + 1, currentStack, missingRequirements);
+        }
 
-        return resourceInstallList;
+        currentStack.remove(feature);
+
+        return result;
+    }
+
+    /**
+     * Find the actual resolved feature from a dependency with tolerates
+     * <p>
+     * Tries each of the tolerated versions in order until it finds one that exists in the set of resolved features.
+     *
+     * @param featureResource the dependency definition to resolve
+     * @return the symbolic name of the resolved dependency, or {@code null} if it was not found
+     */
+    String findResolvedDependency(FeatureResource featureResource) {
+        ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureResource.getSymbolicName());
+        if (feature != null) {
+            return feature.getSymbolicName();
+        }
+
+        String baseName = getFeatureBaseName(featureResource.getSymbolicName());
+        List<String> tolerates = featureResource.getTolerates();
+        if (tolerates != null) {
+            for (String toleratedVersion : tolerates) {
+                String featureName = baseName + toleratedVersion;
+
+                feature = resolvedFeatures.get(featureName);
+                if (feature != null) {
+                    return feature.getSymbolicName();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Removes the version from the end of a feature symbolic name
+     * <p>
+     * The version is presumed to start after the last dash character in the name.
+     * <p>
+     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     *
+     * @param nameAndVersion the feature symbolic name
+     * @return the feature symbolic name with any version stripped
+     */
+    String getFeatureBaseName(String nameAndVersion) {
+        int dashPosition = nameAndVersion.lastIndexOf('-');
+        if (dashPosition != -1) {
+            return nameAndVersion.substring(0, dashPosition + 1);
+        } else {
+            return nameAndVersion;
+        }
+    }
+
+    /**
+     * Convert a collection of feature names into a list of EsaResources
+     * <p>
+     * If a feature with the given name is not found, or if it corresponds to a feature which is already installed, it is ignored. Therefore, this method can be used to convert a
+     * list of names from the kernel resolver into a list of esas which need to be installed.
+     *
+     * @param names the feature names to find
+     * @return a list comprised of the corresponding EsaResource for each name in {@code names}, if one exists
+     */
+    List<EsaResource> convertFeatureNamesToResources(Collection<String> names) {
+        List<EsaResource> results = new ArrayList<>();
+
+        for (String name : names) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+            if (feature instanceof KernelResolverEsa) {
+                results.add(((KernelResolverEsa) feature).getResource());
+            }
+        }
+
+        return results;
     }
 
     /**
