@@ -62,17 +62,17 @@ public class OpenTelemetryProducer {
     private static final String SERVICE_NAME_PROPERTY = "otel.service.name";
 
     @Inject
-    Config config;
+    private Config config;
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
     @ApplicationScoped
     @Produces
-    public OpenTelemetry getOpenTelemetry() {
+    public OpenTelemetryInfo getOpenTelemetryInfo() {
 
         if (AgentDetection.isAgentActive()) {
             // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
             // all config is handled by the agent in this case
-            return GlobalOpenTelemetry.get();
+            return new OpenTelemetryInfo(true, GlobalOpenTelemetry.get());
         }
 
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
@@ -90,11 +90,9 @@ public class OpenTelemetryProducer {
                                 .getOpenTelemetrySdk();
             });
 
-            if (openTelemetry == null) {
-                openTelemetry = OpenTelemetry.noop();
+            if (openTelemetry != null) {
+                return new OpenTelemetryInfo(true, openTelemetry);
             }
-
-            return openTelemetry;
         }
         //By default, MicroProfile Telemetry tracing is off.
         //The absence of an installed SDK is a “no-op” API
@@ -102,8 +100,8 @@ public class OpenTelemetryProducer {
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String applicationName = cData.getJ2EEName().getApplication();
         Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
-        
-        return OpenTelemetry.noop();
+
+        return new OpenTelemetryInfo(false, OpenTelemetry.noop());
 
     }
 
@@ -116,7 +114,7 @@ public class OpenTelemetryProducer {
                 appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
             }
         }
-        
+
         return appName;
     }
 
@@ -197,5 +195,11 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     public Baggage getBaggage() {
         return new BaggageProxy();
+    }
+
+    @ApplicationScoped
+    @Produces
+    public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {
+        return openTelemetryInfo.getOpenTelemetry();
     }
 }

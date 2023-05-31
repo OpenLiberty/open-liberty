@@ -19,8 +19,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
+import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
-import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -71,25 +71,28 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     }
 
     @Inject
-    public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
+    public TelemetryContainerFilter(final OpenTelemetryInfo openTelemetry) {
+        if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
+            InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
+                                                                                                                  openTelemetry.getOpenTelemetry(),
+                                                                                                                  INSTRUMENTATION_NAME,
+                                                                                                                  HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-        InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-                                                                                                              openTelemetry,
-                                                                                                              INSTRUMENTATION_NAME,
-                                                                                                              HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
+            this.instrumenter = builder
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
+                            .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
 
-        this.instrumenter = builder
-                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                        .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
-                        .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
-                        .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
+        } else {
+            this.instrumenter = null;
+        }
     }
 
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
-        // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
-        if ((!AgentDetection.isAgentActive()) && instrumenter != null && instrumenter.shouldStart(parentContext, request)) {
+        if (instrumenter != null && instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 

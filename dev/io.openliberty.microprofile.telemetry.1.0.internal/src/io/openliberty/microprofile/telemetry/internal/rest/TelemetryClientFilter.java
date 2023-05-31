@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.rest;
 
-import static io.openliberty.microprofile.telemetry.internal.helper.AgentDetection.isAgentActive;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -20,7 +19,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import io.opentelemetry.api.OpenTelemetry;
+import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
@@ -34,6 +34,7 @@ import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributes
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -43,7 +44,7 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
-    private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
+    private final Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private final String configString = "otel.span.client.";
 
@@ -64,16 +65,11 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         return CDI.current().select(TelemetryClientFilter.class).get();
     }
 
-    // RestEasy sometimes creates and injects client filters using CDI and sometimes doesn't so we need to work around that
-    // See: https://github.com/OpenLiberty/open-liberty/issues/23758
-    public void init() {
-        synchronized (this) {
-            if (instrumenter != null) {
-                return;
-            }
+    @Inject
+    TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {
 
-            OpenTelemetry openTelemetry = CDI.current().select(OpenTelemetry.class).get();
-            InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetry,
+        if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
+            InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
                                                                                                             "Client filter",
                                                                                                             HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
 
@@ -82,48 +78,64 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
                             .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
                             .addAttributesExtractor(NetClientAttributesExtractor.create(NET_CLIENT_ATTRIBUTES_GETTER))
                             .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+        } else {
+            this.instrumenter = null;
         }
+    }
+
+    /**
+     * No-args constructor for CDI
+     */
+    TelemetryClientFilter() {
+        this.instrumenter = null;
     }
 
     @Override
     public void filter(final ClientRequestContext request) {
-        init();
-
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Context parentContext = Context.current();
-                if ((!isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
-                    Context spanContext = instrumenter.start(parentContext, request);
-                    request.setProperty(configString + "context", spanContext);
-                    request.setProperty(configString + "parentContext", parentContext);
+        if (instrumenter != null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Context parentContext = Context.current();
+                    if (instrumenter.shouldStart(parentContext, request)) {
+                        Context spanContext = instrumenter.start(parentContext, request);
+                        request.setProperty(configString + "context", spanContext);
+                        request.setProperty(configString + "parentContext", parentContext);
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
-        init();
-
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Context spanContext = (Context) request.getProperty(configString + "context");
-                if (spanContext == null) {
+        if (instrumenter != null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Context spanContext = (Context) request.getProperty(configString + "context");
+                    if (spanContext == null) {
+                        return null;
+                    }
+                    try {
+                        instrumenter.end(spanContext, request, response, null);
+                    } finally {
+                        request.removeProperty(configString + "context");
+                        request.removeProperty(configString + "parentContext");
+                    }
                     return null;
                 }
+            });
+        }
+    }
 
-                try {
-                    instrumenter.end(spanContext, request, response, null);
-                } finally {
-                    request.removeProperty(configString + "context");
-                    request.removeProperty(configString + "parentContext");
-                }
-                return null;
-            }
-        });
+    /**
+     * @return false if OpenTelemetry is disabled
+     * Indicated by instrumenter being set to null
+     */
+    public boolean isEnabled() {
+        return instrumenter != null;
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {
