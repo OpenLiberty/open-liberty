@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,8 +42,8 @@ import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
 import componenttest.annotation.Server;
@@ -126,8 +126,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("opentracing-1.3");
         compatibleFeatures.remove("opentracing-2.0");
         compatibleFeatures.remove("sipServlet-1.1"); // purposely not supporting EE 9
-        compatibleFeatures.remove("springBoot-1.5"); // springBoot 3.0 will support EE 9
+        compatibleFeatures.remove("springBoot-1.5");
         compatibleFeatures.remove("springBoot-2.0");
+        compatibleFeatures.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
 
         // Test features may or may not be compatible, we don't want to assert either way
         compatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
