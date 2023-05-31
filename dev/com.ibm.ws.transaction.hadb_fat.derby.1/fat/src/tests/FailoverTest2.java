@@ -400,7 +400,7 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
-        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when claiming local recovery logs"));
+        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when opening SQL RecoveryLog"));
     }
 
     /**
@@ -430,6 +430,6 @@ public class FailoverTest2 extends FailoverTest {
 
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when opening SQL RecoveryLog
-        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when claiming local recovery logs"));
+        assertNotNull("No warning message signifying failover", server.waitForStringInTrace("Have recovered from SQLException when opening SQL RecoveryLog"));
     }
 }

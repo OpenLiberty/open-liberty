@@ -484,10 +484,18 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (fsc != null)
                 fsc.getRecoveryManager().waitForReplayCompletion(localRecovery);
 
+            // Replay has completed but recovery processing may have failed
+            boolean recoveryFailed = false;
+            if (fsc != null)
+                recoveryFailed = fsc.getRecoveryManager().recoveryFailed();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Replay completed but did recovery fail -  " + recoveryFailed);
+
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
             if (!localRecovery) {
                 if (!_serverStopping) {
-                    if (fsc != null)
+                    if (fsc != null && !recoveryFailed)
                         fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
                 } else {
                     if (tc.isEntryEnabled())
@@ -505,6 +513,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     throw new RecoveryFailedException("server stopping");
                 }
 
+                // Peer recovery environment
                 if (_leaseLog != null) {
                     // Release the lock on the lease log. This could be the local server or a peer.
                     try {
@@ -569,6 +578,18 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                         _recoveryDirector,
                                                         cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                         cp.getLeaseCheckInterval());
+                    }
+                } else {
+                    // Not a peer recovery environment
+                    if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
+                        RecoveryFailedException rex = new RecoveryFailedException("Server recovery failed");
+
+                        if (tc.isEntryEnabled())
+                            Tr.exit(tc, "initiateRecovery", rex);
+
+                        // Output a message as to why we are terminating the server as in
+                        Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
+                        throw rex;
                     }
                 }
             }
