@@ -1,0 +1,15 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.iiop.client-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content:
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbCore-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.iiopclient-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.ejb-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javaeePlatform-7.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.interceptor-1.2; type="osgi.subsystem.feature",
+ com.ibm.ws.ejbcontainer.v32; version="[1.0.0,1.0.200)",
+ com.ibm.ws.ejbcontainer.remote; version="[1.0.0,1.0.200)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: test.iiop.common; type="ibm-api"

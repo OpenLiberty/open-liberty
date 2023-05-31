@@ -35,6 +35,7 @@ tested.features: \
     com.ibm.ws.transport.iiop;version=latest,\
     com.ibm.websphere.javaee.ejb.3.1;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     io.openliberty.org.apache.bcel;version=latest,\
     fattest.simplicity;version=latest

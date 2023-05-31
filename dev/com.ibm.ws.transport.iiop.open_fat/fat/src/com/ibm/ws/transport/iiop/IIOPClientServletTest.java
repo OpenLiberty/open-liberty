@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2015-2023 IBM Corporation and others.
+/*
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,10 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop;
+
+import static com.ibm.ws.transport.iiop.FATSuite.TEST_CORBA_REMOTE_WAR;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
@@ -24,23 +26,28 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import test.corba.web.war.MyIIOPClientServlet;
+import test.corba.remote.war.IIOPClientServlet;
 
 @RunWith(FATRunner.class)
 public class IIOPClientServletTest extends FATServletClient {
+    @Server("bandyball")
+    @TestServlet(servlet = IIOPClientServlet.class, contextRoot = "test.corba.remote")
+    public static LibertyServer iiopClient;
 
-	@Server("buckyball")
-	@TestServlet(servlet = MyIIOPClientServlet.class, contextRoot = "test.corba.web")
-	public static LibertyServer server;
+    @Server("basketball")
+    public static LibertyServer iiopServer;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        for (Archive<?> app: FATSuite.SERVER_APPS) ShrinkHelper.exportDropinAppToServer(server, app);
-        server.startServer();
+        ShrinkHelper.exportDropinAppToServer(iiopServer, FATSuite.TEST_CORBA_EAR);
+        iiopServer.startServer();
+        ShrinkHelper.exportDropinAppToServer(iiopClient, TEST_CORBA_REMOTE_WAR);
+        iiopClient.startServer();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-	server.stopServer();
+        iiopClient.stopServer();
+        iiopServer.stopServer();
     }
 }

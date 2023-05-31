@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2020-2023 IBM Corporation and others.
+/*
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 @RunWith(FATRunner.class)
 public class IORTest extends FATServletClient {
 
-    @Server("com.ibm.ws.transport.iiop.open_fat.server")
+    @Server("bowlingball")
     @TestServlet(servlet = IORTestServlet.class, contextRoot = "test.corba.web")
     public static LibertyServer server;
 

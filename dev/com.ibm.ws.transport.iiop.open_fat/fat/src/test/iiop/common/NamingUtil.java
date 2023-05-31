@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2015-2023 IBM Corporation and others.
+/*
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,15 +9,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package test.iiop.common.util;
+ */
+package test.iiop.common;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.omg.CosNaming.BindingHolder;
 import org.omg.CosNaming.BindingIteratorHolder;
@@ -28,19 +27,19 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
 public class NamingUtil {
-    private static final String CNC_STRING = "CosNamingChecker";
-    private static final String NESTED_CTX_STRING = "NestedContext";
-    private static final String CNC_RESOLVABLE_STRING = "ResolvableCosNamingChecker";
-    public static final NameComponent[] CNC_NAME = NamingUtil.makeName(CNC_STRING);
-    public static final NameComponent[] NESTED_CTX_NAME = NamingUtil.makeName(NESTED_CTX_STRING);
-    public static final NameComponent[] NESTED_CNC_NAME = NamingUtil.makeName(NESTED_CTX_STRING, CNC_STRING);
-    public static final NameComponent[] CNC_RESOLVABLE_NAME = NamingUtil.makeName(CNC_RESOLVABLE_STRING);
+    public static final String CNC_STRING = "CosNamingChecker";
+    public static final String CNC_RESOLVABLE_STRING = "ResolvableCosNamingChecker";
+    public static final String NESTED_CTX_STRING = "NestedContext";
+    public static final String CNC_LOG_MSG = "### " + NamingUtil.CNC_STRING + " created and registered";
+    public static final NameComponent[] CNC_NAME = makeName(NamingUtil.CNC_STRING);
+    public static final NameComponent[] NESTED_CTX_NAME = makeName(NamingUtil.NESTED_CTX_STRING);
+    public static final NameComponent[] NESTED_CNC_NAME = makeName(NamingUtil.NESTED_CTX_STRING, NamingUtil.CNC_STRING);
+    public static final NameComponent[] CNC_RESOLVABLE_NAME = makeName(NamingUtil.CNC_RESOLVABLE_STRING);
 
     public static NameComponent[] makeName(String... names) {
-        List<NameComponent> list = new ArrayList<NameComponent>(names.length);
-        for (String name : names)
-            list.add(new NameComponent(name, ""));
-        return list.toArray(new NameComponent[names.length]);
+        return Stream.of(names)
+                .map(n -> new NameComponent(n, ""))
+                .toArray(NameComponent[]::new);
     }
 
     public static String getNameServiceListing(NamingContext nc) throws Exception {
