@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package io.openliberty.microprofile.metrics50;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Set;
 
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
@@ -54,6 +55,20 @@ public class SharedMetricRegistries {
         smallryeMetricsCDIMetadata = ref;
     }
 
+    public Set<String> getMetricRegistryScopeNames() {
+        /*
+         * Unsuccessful activation. SmallRye and Micrometer classes were not loaded
+         * properly.
+         */
+        if (!smallryeMetricsCDIMetadata.isSuccesfulActivation()) {
+            return null;
+        }
+
+        SRSharedMetricRegistriesAdapter srsma;
+        srsma = SRSharedMetricRegistriesAdapter.getInstance();
+        return srsma.getRegistryScopeNames();
+    }
+
     public void associateMetricIDToApplication(MetricID metricID, String appName, MetricRegistry registry) {
         if (Util.SR_LEGACY_METRIC_REGISTRY_CLASS.isInstance(registry)) {
             try {
@@ -71,6 +86,40 @@ public class SharedMetricRegistries {
                 }
             }
         }
+    }
+
+    public void setAppNameResolver() {
+        /*
+         * Unsuccessful activation. SmallRye and Micrometer classes were not loaded
+         * properly.
+         */
+        if (!smallryeMetricsCDIMetadata.isSuccesfulActivation()) {
+            return;
+        }
+
+        ClassLoader baoClassLoader = Util.BUNDLE_ADD_ON_CLASSLOADER;
+        Object applicationNameResolverProxy = Proxy.newProxyInstance(baoClassLoader,
+                new Class[] { Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE }, new InvocationHandler() {
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        if (method.getName().equals("getApplicationName")) {
+                            com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl
+                                    .getComponentMetaDataAccessor().getComponentMetaData();
+                            if (metaData != null) {
+                                com.ibm.websphere.csi.J2EEName appName = metaData.getJ2EEName();
+                                if (appName != null) {
+                                    return appName.getApplication();
+                                }
+                            }
+                            return null;
+                        } // end if
+                        return null;
+                    }
+                });
+        SRSharedMetricRegistriesAdapter srsma;
+        srsma = SRSharedMetricRegistriesAdapter.getInstance();
+        srsma.setAppNameResolver(applicationNameResolverProxy);
     }
 
     public MetricRegistry getOrCreate(String scope) {

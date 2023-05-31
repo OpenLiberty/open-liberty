@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package io.openliberty.smallrye.metrics.adapters;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.eclipse.microprofile.metrics.MetricRegistry;
 
@@ -30,6 +31,8 @@ public class SRSharedMetricRegistriesAdapter {
     private static SRSharedMetricRegistriesAdapter instance;
     private static Method getOrCreateMethod = null;
     private static Method getOrCreateMethodAppNameResolver = null;
+    private static Method setAppNameResolverMethod = null;
+    private static Method getRegistryScopeNamesMethod = null;
     private final Class<?> srSharedMetricRegistryClass;
 
     private SRSharedMetricRegistriesAdapter() {
@@ -48,6 +51,11 @@ public class SRSharedMetricRegistriesAdapter {
 
                 getOrCreateMethodAppNameResolver = this.srSharedMetricRegistryClass.getMethod("getOrCreate",
                         String.class, Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE);
+
+                setAppNameResolverMethod = this.srSharedMetricRegistryClass.getMethod("setAppNameResolver",
+                        Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE);
+
+                getRegistryScopeNamesMethod = this.srSharedMetricRegistryClass.getMethod("getRegistryScopeNames");
             } catch (NoSuchMethodException | SecurityException e) {
                 /*
                  * If this fails, this is due to changed API. This is the issue with using
@@ -55,6 +63,28 @@ public class SRSharedMetricRegistriesAdapter {
                  */
             }
         }
+    }
+
+    public Set<String> getRegistryScopeNames() {
+        if (srSharedMetricRegistryClass == null || getRegistryScopeNamesMethod == null) {
+            if (getRegistryScopeNamesMethod == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                            "Unable to load by reflection the expected SharedMetricRegistries.getRegistryScopeNames() method");
+                }
+            }
+            return null;
+        }
+
+        try {
+            return (Set<String>) getRegistryScopeNamesMethod.invoke(null);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            /*
+             * If this fails, this is due to changed API. This is the issue with using
+             * reflection to load.
+             */
+        }
+        return null;
     }
 
     public static synchronized SRSharedMetricRegistriesAdapter getInstance() {
@@ -102,6 +132,34 @@ public class SRSharedMetricRegistriesAdapter {
         }
 
         return metricRegistry;
+    }
+
+    public void setAppNameResolver(Object o) {
+
+        /*
+         * If the class is null, no proxy was created or if Method was unable to be
+         * resolved
+         */
+        if (srSharedMetricRegistryClass == null || setAppNameResolverMethod == null) {
+
+            if (setAppNameResolverMethod == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                            "Unable to load by reflection the expected SharedMetricRegistries.setVendorAppNameResolverMethod(AppNameResolver) method");
+                }
+            }
+        }
+
+        try {
+            setAppNameResolverMethod.invoke(null, Util.SR_APPLICATION_NAME_RESOLVER_INTERFACE.cast(o));
+
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            /*
+             * If this fails, this is due to changed API. This is the issue with using
+             * reflection to load.
+             */
+        }
+
     }
 
     public MetricRegistry getOrCreate(String scope, Object o) {
