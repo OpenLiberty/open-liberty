@@ -1,0 +1,127 @@
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  testNG { transitive = false; }
+  sigTest { transitive = false; } 
+  arquillian
+  wlp
+}
+
+dependencies {
+  testNG 'org.testng:testng:7.5.1',
+       'org.slf4j:slf4j-api:2.0.6',
+       'org.slf4j:slf4j-jdk14:2.0.6',
+       'com.beust:jcommander:1.78',
+	     'org.apache-extras.beanshell:bsh:2.0b6'
+  
+  sigTest 'org.netbeans.tools:sigtest-maven-plugin:1.6'
+
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
+
+  //TODO Configure WLP dependency if doing verification testing, Example below:
+  //wlp 'io.openliberty.beta:openliberty-runtime:22.0.0.3-beta@zip'
+}
+
+task copyTestNG(type: Copy) {
+  mustRunAfter jar
+  from configurations.testNG
+  into new File(autoFvtDir, 'publish/shared/resources/testng/7.5.1')
+  rename 'testng-.*.jar', 'testng.jar'
+  rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
+  rename 'bsh-.*.jar', 'bsh.jar'
+}
+
+task copySigTest(type: Copy) {
+  mustRunAfter jar
+  from configurations.sigTest
+  into new File(autoFvtDir, 'publish/shared/resources/sigtest/1.6')
+  rename 'sigtest-maven-plugin-.*.jar', 'sigtest.jar'
+}
+
+addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn copyTestNG
+addRequiredLibraries.dependsOn copySigTest
+
+
+// These tasks are used only for external users who do not want to build all of liberty to run TCK
+task getWLP(type: Copy) {
+  from configurations.wlp.collect{zipTree (it)}
+  into project.projectDir
+}
+
+task copyArquillianFeatureWLP(type: Copy) {
+  mustRunAfter getWLP
+  from configurations.arquillian
+  into new File(project.projectDir, 'wlp/usr/extension/')
+}
+
+task createServer(type: Exec) {
+  mustRunAfter getWLP
+  workingDir project.projectDir
+  commandLine './wlp/bin/server', 'create', 'ConcurrentTCKServer'
+}
+
+task copyTestNGWLP(type: Copy) {
+  mustRunAfter createServer
+  from configurations.testNG
+  into new File(project.projectDir, 'wlp/usr/shared/resources/7.5.1')
+  rename 'testng-.*.jar', 'testng.jar'
+  rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
+  rename 'bsh-.*.jar', 'bsh.jar'
+}
+
+task copyDerbyWLP(type: Copy) {
+  mustRunAfter createServer
+  from configurations.derby
+  into new File(project.projectDir, 'wlp/usr/shared/resources/derby/')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task copySigTestWLP(type: Copy) {
+  mustRunAfter createServer
+  from configurations.sigTest
+  into new File(project.projectDir, 'wlp/usr/shared/resources/sigtest/1.6')
+  rename 'sigtest-maven-plugin-.*.jar', 'sigtest.jar'
+}
+
+task copyConfigWLP(type: Copy) {
+  mustRunAfter createServer
+  from new File(project.projectDir, 'publish/servers/ConcurrentTCKServer')
+  into new File(project.projectDir, 'wlp/usr/servers/ConcurrentTCKServer/')
+  exclude '**/bootstrap.properties' //Specific to Open Liberty test infrastructure
+  exclude 'configDropins/*'         //Specific to Open Liberty test infrastructure
+}
+
+task copyRunnerWLP(type: Copy) {
+  mustRunAfter createServer
+  from new File(project.projectDir, 'publish/tckRunner/')
+  into new File(project.projectDir, 'wlp/')
+  exclude 'tck/pom.xml' //remove the pom we use for dev testing
+  rename 'standalone.pom.xml', 'pom.xml' //replace with the standalone pom
+}
+
+task buildWLP {
+  dependsOn 'getWLP'
+  dependsOn 'copyArquillianFeatureWLP'
+  dependsOn 'createServer'
+  dependsOn 'copyTestNGWLP'
+  dependsOn 'copyDerbyWLP'
+  dependsOn 'copyConfigWLP'
+  dependsOn 'copyRunnerWLP'
+  dependsOn 'copySigTestWLP'
+}
