@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -815,6 +815,12 @@ public class ServerStartTest {
         String method = "findServerPid";
         String pid = null;
         String[] cmd = new String[] { "jcmd" };
+
+        // jcmd sometimes hangs on MAC which adds about an hour to ServerStartTest.
+        // The problem was only observed on MAC and is intermittent.
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.MAC) {
+            cmd[0] = "ps";
+        }
 
         try {
             Process process = Runtime.getRuntime().exec(cmd);
