@@ -71,6 +71,7 @@ public class TCKUtilities {
     public static final String MVN_WRAPPER_SHA_KEY = "wrapperSha256Sum";
     /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
     private static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
+    private static final String BUILD_CACHE_DIR_PROPERTY = "fat.test.build.cache.dir";
 
     public static String generateSHA256(File file) {
         String sha256 = null;
@@ -708,32 +709,58 @@ public class TCKUtilities {
     }
 
     /**
-     * Get the location within the dev directory to create a temporary maven home directory.
+     * Get the location within the {@linkplain #getBuildCacheDir() build cache directory} to create a temporary maven home directory.
      *
-     * @return             {@code .m2} within the dev directory
+     * @return             {@code .m2} within the build cache directory
      * @throws IOException
      */
     public static File getTemporaryMavenHomeDir() throws IOException {
-        File workingDir = new File("").getAbsoluteFile();
-
-        //walk back from the working directory until we reach the dev folder
-        File devFolder = workingDir;
-        while (!devFolder.getName().equals("dev")) {
-            devFolder = devFolder.getParentFile();
-            if (devFolder == null) {
-                throw new IOException("Could not find dev folder above working directory: " + workingDir);
-            }
-        }
-
-        if (!devFolder.isDirectory()) {
-            throw new IOException("Located dev directory does not exist or is not a directory: " + devFolder);
-        }
-
-        File m2Dir = new File(devFolder, ".m2");
+        File m2Dir = new File(getBuildCacheDir(), ".m2");
         if (!m2Dir.exists()) {
             Files.createDirectory(m2Dir.toPath());
         }
         return m2Dir;
+    }
+
+    /**
+     * Get a location to store files which should be cached and shared between FAT test runs
+     * <p>
+     * If the directory does not exist it will be created
+     * <p>
+     * In the development environment, this will be the workspace {@code dev} directory
+     *
+     * @return             the build cache directory
+     * @throws IOException
+     */
+    public static File getBuildCacheDir() throws IOException {
+        String buildCacheDirPath = System.getProperty(BUILD_CACHE_DIR_PROPERTY);
+
+        File cacheDir;
+        if (buildCacheDirPath != null && !buildCacheDirPath.isEmpty()) {
+            // If we've been told to use a particular directory, use that
+            cacheDir = new File(buildCacheDirPath).getAbsoluteFile();
+            // Create it if required
+            if (!cacheDir.exists()) {
+                Files.createDirectory(cacheDir.toPath());
+            }
+        } else {
+            // Otherwise, try to walk back from the working directory to find the dev folder
+            File workingDir = new File("").getAbsoluteFile();
+
+            File devFolder = workingDir;
+            while (!devFolder.getName().equals("dev")) {
+                devFolder = devFolder.getParentFile();
+                if (devFolder == null) {
+                    throw new IOException("Could not find dev folder above working directory: " + workingDir);
+                }
+            }
+            cacheDir = devFolder;
+        }
+
+        if (!cacheDir.isDirectory()) {
+            throw new IOException("Build cache location is not a directory: " + cacheDir);
+        }
+        return cacheDir;
     }
 
     /**
