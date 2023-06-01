@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.List;
+
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -27,4 +29,6 @@ public interface Orders extends CrudRepository<Order, Long> {
     boolean addTaxAndShipping(@Param("id") long orderId,
                               @Param("rate") float taxRate,
                               @Param("shipping") float shippingCost);
+
+    List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers);
 }

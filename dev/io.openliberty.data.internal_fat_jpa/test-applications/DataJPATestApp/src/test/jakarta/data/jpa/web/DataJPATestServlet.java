@@ -643,9 +643,43 @@ public class DataJPATestServlet extends FATServlet {
             tran.rollback();
         }
 
+        Order o2old = new Order();
+        o2old.id = o2.id;
+        o2old.purchasedBy = o2.purchasedBy;
+        o2old.purchasedOn = o2.purchasedOn;
+        o2old.total = o2.total;
+        o2old.versionNum = o2.versionNum;
+
         // increment version of second entity
         o2.total = 22.99f;
         o2 = orders.save(o2);
+
+        // attempt to save second entity at an old version
+        o2old.total = 99.22f;
+        try {
+            Order unexpected = orders.save(o2old);
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // attempt to save second entity at an old version in combination with addition of another entity
+        Order o6 = new Order();
+        o6.purchasedBy = "testEntitiesAsParameters-Customer6";
+        o6.purchasedOn = OffsetDateTime.now();
+        o6.total = 60.99f;
+        try {
+            Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // verify that the second entity remains at its second version (22.99) and that the addition of the sixth entity was rolled back
+        List<Float> orderTotals = orders.findTotalByPurchasedByIn(List.of("testEntitiesAsParameters-Customer2",
+                                                                          "testEntitiesAsParameters-Customer6"));
+        assertEquals(orderTotals.toString(), 1, orderTotals.size());
+        assertEquals(22.99f, orderTotals.get(0), 0.001f);
 
         orders.deleteAll(List.of(o3, o2));
 
