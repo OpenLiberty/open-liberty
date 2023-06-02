@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -695,8 +695,17 @@ public class SpringBootThinUtil implements Closeable {
             return starterArtifactIds;
         }
 
-        // For now mvn dependencies for embedded container starters are provided here. We are only concerned with the Artifact Id of the dependencies listed below.
-        // However, the format of the dependencies (groupId:artifactId:version:configuration) listed is due to the output provided by the command "mvn dependency:resolve -f pom.xml"
+        // For now mvn dependencies for embedded container starters are provided here. Each list below is populated
+        // manually from the output of the command: "mvn dependency:resolve -f pom.xml"; where pom.xml contains one
+        // of the following starter dependencies with the appropriate version.
+        //                      <artifactId>spring-boot-starter-tomcat</artifactId>
+        //                      <artifactId>spring-boot-starter-undertow</artifactId>
+        //                      <artifactId>spring-boot-starter-jetty</artifactId>
+        //                      <artifactId>spring-boot-starter-reactor-netty</artifactId>
+        //
+        // We are only concerned with the Artifact ID of the dependencies in the lists below.  Ignore the versions, etc...
+        // The format of the dependencies (groupId:artifactId:jar:version:configuration) listed is due to the output provided by the
+        // command "mvn dependency:resolve -f pom.xml", and the desire to not introduce errors by manually removing the unneeded fields.
         private final static List<String> mvnSpringBoot15TomcatStarterDeps = Arrays.asList(
                                                                                            "org.springframework.boot:spring-boot-starter-tomcat:jar:1.5.10.RELEASE:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.27:compile",
@@ -749,13 +758,20 @@ public class SpringBootThinUtil implements Closeable {
                                                                                            "org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.60:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-el:jar:9.0.60:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.60:compile");
-        
+
         private final static List<String> mvnSpringBoot27TomcatStarterDeps = Arrays.asList(
                                                                                            "org.springframework.boot:spring-boot-starter-tomcat:jar:2.7.1:compile",
                                                                                            "jakarta.annotation:jakarta.annotation-api:jar:1.3.5:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-core:jar:9.0.64:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-el:jar:9.0.64:compile",
                                                                                            "org.apache.tomcat.embed:tomcat-embed-websocket:jar:9.0.64:compile");
+
+        private final static List<String> mvnSpringBoot30TomcatStarterDeps = Arrays.asList(
+                                                                                           "org.apache.tomcat.embed:tomcat-embed-websocket:jar:10.1.1:compile",
+                                                                                           "org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.1:compile",
+                                                                                           "org.apache.tomcat.embed:tomcat-embed-core:jar:10.1.1:compile",
+                                                                                           "jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile",
+                                                                                           "org.springframework.boot:spring-boot-starter-tomcat:jar:3.0.0:compile");
 
         private final static List<String> mvnSpringBoot15JettyStarterDeps = Arrays.asList(
                                                                                           "org.springframework.boot:spring-boot-starter-jetty:jar:1.5.10.RELEASE:compile",
@@ -1023,7 +1039,45 @@ public class SpringBootThinUtil implements Closeable {
                                                                                           "org.ow2.asm:asm-tree:jar:9.3:compile",
                                                                                           "org.ow2.asm:asm-analysis:jar:9.3:compile",
                                                                                           "org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:9.4.48.v20220622:compile");
-        
+
+        private final static List<String> mvnSpringBoot30JettyStarterDeps = Arrays.asList(
+                                                                                          "jakarta.transaction:jakarta.transaction-api:jar:2.0.0:compile",
+                                                                                          "org.eclipse.jetty:jetty-util:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-plus:jar:11.0.12:compile",
+                                                                                          "org.ow2.asm:asm-commons:jar:9.3:compile",
+                                                                                          "jakarta.websocket:jakarta.websocket-api:jar:2.1.0:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jetty-api:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-client:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-jndi:jar:11.0.12:compile",
+                                                                                          "jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile",
+                                                                                          "org.eclipse.jetty:jetty-annotations:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-core-client:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jakarta-server:jar:11.0.12:compile",
+                                                                                          "org.ow2.asm:asm:jar:9.3:compile",
+                                                                                          "org.eclipse.jetty:jetty-http:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-servlets:jar:11.0.12:compile",
+                                                                                          "org.ow2.asm:asm-analysis:jar:9.3:compile",
+                                                                                          "org.slf4j:slf4j-api:jar:2.0.0:compile",
+                                                                                          "org.eclipse.jetty:jetty-alpn-client:jar:11.0.12:compile",
+                                                                                          "org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.1:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-core-server:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-servlet:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-core-common:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jetty-server:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jakarta-common:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-io:jar:11.0.12:compile",
+                                                                                          "jakarta.websocket:jakarta.websocket-client-api:jar:2.1.0:compile",
+                                                                                          "org.eclipse.jetty:jetty-server:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-security:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty:jetty-webapp:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jetty-common:jar:11.0.12:compile",
+                                                                                          "org.eclipse.jetty.websocket:websocket-jakarta-client:jar:11.0.12:compile",
+                                                                                          "org.ow2.asm:asm-tree:jar:9.3:compile",
+                                                                                          "jakarta.servlet:jakarta.servlet-api:jar:6.0.0:compile",
+                                                                                          "org.eclipse.jetty:jetty-xml:jar:11.0.12:compile",
+                                                                                          "org.springframework.boot:spring-boot-starter-jetty:jar:3.0.0:compile",
+                                                                                          "org.eclipse.jetty:jetty-servlet:jar:11.0.12:compile");
+
         private final static List<String> mvnSpringBoot15UndertowStarterDeps = Arrays.asList(
                                                                                              "org.jboss.xnio:xnio-api:jar:3.3.8.Final:compile",
                                                                                              "org.jboss.logging:jboss-logging:jar:3.3.1.Final:compile",
@@ -1132,7 +1186,7 @@ public class SpringBootThinUtil implements Closeable {
                                                                                              "jakarta.servlet:jakarta.servlet-api:jar:4.0.4:compile",
                                                                                              "jakarta.websocket:jakarta.websocket-api:jar:1.1.2:compile",
                                                                                              "org.apache.tomcat.embed:tomcat-embed-el:jar:9.0.60:compile");
-        
+
         private final static List<String> mvnSpringBoot27UndertowStarterDeps = Arrays.asList(
                                                                                              "org.springframework.boot:spring-boot-starter-undertow:jar:2.7.1:compile",
                                                                                              "io.undertow:undertow-core:jar:2.2.18.Final:compile",
@@ -1147,8 +1201,25 @@ public class SpringBootThinUtil implements Closeable {
                                                                                              "jakarta.servlet:jakarta.servlet-api:jar:4.0.4:compile",
                                                                                              "jakarta.websocket:jakarta.websocket-api:jar:1.1.2:compile",
                                                                                              "org.apache.tomcat.embed:tomcat-embed-el:jar:9.0.64:compile");
+        private final static List<String> mvnSpringBoot30UndertowStarterDeps = Arrays.asList(
+                                                                                             "org.wildfly.client:wildfly-client-config:jar:1.0.1.Final:compile",
+                                                                                             "org.jboss.xnio:xnio-nio:jar:3.8.8.Final:runtime",
+                                                                                             "org.jboss.xnio:xnio-api:jar:3.8.8.Final:compile",
+                                                                                             "org.apache.tomcat.embed:tomcat-embed-el:jar:10.1.1:compile",
+                                                                                             "org.springframework.boot:spring-boot-starter-undertow:jar:3.0.0:compile",
+                                                                                             "jakarta.websocket:jakarta.websocket-api:jar:2.1.0:compile",
+                                                                                             "org.jboss.logging:jboss-logging:jar:3.4.3.Final:compile",
+                                                                                             "jakarta.websocket:jakarta.websocket-client-api:jar:2.1.0:compile",
+                                                                                             "jakarta.annotation:jakarta.annotation-api:jar:2.1.1:compile",
+                                                                                             "org.wildfly.common:wildfly-common:jar:1.5.4.Final:compile",
+                                                                                             "io.undertow:undertow-core:jar:2.3.0.Final:compile",
+                                                                                             "org.jboss.threads:jboss-threads:jar:3.5.0.Final:compile",
+                                                                                             "io.undertow:undertow-servlet:jar:2.3.0.Final:compile",
+                                                                                             "io.undertow:undertow-websockets-jsr:jar:2.3.0.Final:compile",
+                                                                                             "jakarta.servlet:jakarta.servlet-api:jar:6.0.0:compile");
 
         // NOTE that we leave netty itself on the classpath in order to allow WebClient to still be used.
+        // We do not filter out reator-core or reactive-streams
         private final static List<String> mvnSpringBoot20NettyStarterDeps = Arrays.asList(
                                                                                           "org.springframework.boot:spring-boot-starter-reactor-netty:jar:2.0.1.RELEASE:compile");
         private final static List<String> mvnSpringBoot21NettyStarterDeps = Arrays.asList(
@@ -1165,7 +1236,9 @@ public class SpringBootThinUtil implements Closeable {
                                                                                           "org.springframework.boot:spring-boot-starter-reactor-netty:jar:2.6.6:compile");
         private final static List<String> mvnSpringBoot27NettyStarterDeps = Arrays.asList(
                                                                                           "org.springframework.boot:spring-boot-starter-reactor-netty:jar:2.7.1:compile");
-        
+        private final static List<String> mvnSpringBoot30NettyStarterDeps = Arrays.asList(
+                                                                                          "org.springframework.boot:spring-boot-starter-reactor-netty:jar:3.0.0:compile");
+
         public static final String TOMCAT = "tomcat";
         public static final String JETTY = "jetty";
         public static final String UNDERTOW = "undertow";
@@ -1178,6 +1251,8 @@ public class SpringBootThinUtil implements Closeable {
         public static Map<String, Set<String>> getStartersToDependentArtifactIdsMap() {
             return startersToDependentArtifactIdsMap;
         }
+
+        public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
         private static final Map<String, Set<String>> startersToDependentArtifactIdsMap;
 
@@ -1192,6 +1267,9 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(TOMCAT, "2.5"), loadStarterMvnDeps(mvnSpringBoot25TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.6"), loadStarterMvnDeps(mvnSpringBoot26TomcatStarterDeps));
             theMap.put(starterJarNamePrefix(TOMCAT, "2.7"), loadStarterMvnDeps(mvnSpringBoot27TomcatStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(TOMCAT, "3.0"), loadStarterMvnDeps(mvnSpringBoot30TomcatStarterDeps));
+
             theMap.put(starterJarNamePrefix(JETTY, "1.5"), loadStarterMvnDeps(mvnSpringBoot15JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.1"), loadStarterMvnDeps(mvnSpringBoot21JettyStarterDeps));
@@ -1201,6 +1279,9 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(JETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26JettyStarterDeps));
             theMap.put(starterJarNamePrefix(JETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27JettyStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(JETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30JettyStarterDeps));
+
             theMap.put(starterJarNamePrefix(UNDERTOW, "1.5"), loadStarterMvnDeps(mvnSpringBoot15UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.0"), loadStarterMvnDeps(mvnSpringBoot20UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.1"), loadStarterMvnDeps(mvnSpringBoot21UndertowStarterDeps));
@@ -1210,6 +1291,9 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.5"), loadStarterMvnDeps(mvnSpringBoot25UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.6"), loadStarterMvnDeps(mvnSpringBoot26UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.7"), loadStarterMvnDeps(mvnSpringBoot27UndertowStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(UNDERTOW, "3.0"), loadStarterMvnDeps(mvnSpringBoot30UndertowStarterDeps));
+
             theMap.put(starterJarNamePrefix(NETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.1"), loadStarterMvnDeps(mvnSpringBoot21NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.2"), loadStarterMvnDeps(mvnSpringBoot22NettyStarterDeps));
@@ -1218,6 +1302,8 @@ public class SpringBootThinUtil implements Closeable {
             theMap.put(starterJarNamePrefix(NETTY, "2.5"), loadStarterMvnDeps(mvnSpringBoot25NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.6"), loadStarterMvnDeps(mvnSpringBoot26NettyStarterDeps));
             theMap.put(starterJarNamePrefix(NETTY, "2.7"), loadStarterMvnDeps(mvnSpringBoot27NettyStarterDeps));
+            if (isBeta)
+                theMap.put(starterJarNamePrefix(NETTY, "3.0"), loadStarterMvnDeps(mvnSpringBoot30NettyStarterDeps));
 
             startersToDependentArtifactIdsMap = Collections.unmodifiableMap(theMap);
         }
@@ -1227,7 +1313,7 @@ public class SpringBootThinUtil implements Closeable {
         }
 
         public static Set<String> loadStarterMvnDeps(List<String> mvnStarterDeps) {
-            // mvnDep :: groupId:artifactId:version:scope
+            // mvnDep :: groupId:artifactId:jar:version:scope
             Set<String> starterArtifactIds = new HashSet<String>();
             mvnStarterDeps.forEach(mvnDep -> starterArtifactIds.add(mvnDep.split(":")[1].toLowerCase()));
             return Collections.unmodifiableSet(starterArtifactIds);
