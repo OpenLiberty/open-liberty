@@ -3853,6 +3853,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>1.5.9.RELEASE</version>
     </dependency>
@@ -3865,6 +3870,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>2.7.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>3.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -3893,6 +3903,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>6.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-asm</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -3918,6 +3933,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>6.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -3925,6 +3945,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>5.3.21</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>6.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -3948,8 +3973,18 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>6.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
       <version>3.0.7.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>6.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -3960,6 +3995,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <version>5.3.21</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>6.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
