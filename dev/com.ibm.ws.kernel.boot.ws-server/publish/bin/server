@@ -1802,7 +1802,7 @@ case "$ACTION" in
   ;;
 
   version)
-    installEnv
+    serverEnv
     javaCmd '' --version
   ;;  
   

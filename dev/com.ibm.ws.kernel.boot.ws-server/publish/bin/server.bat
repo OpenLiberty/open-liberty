@@ -218,7 +218,7 @@ goto:eof
 goto:eof
 
 :version
-  call:installEnv
+  call:serverEnv
   !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --version
   set RC=%errorlevel%
   call:javaCmdResult
@@ -599,7 +599,7 @@ goto:eof
   call:readServerEnv "%WLP_INSTALL_DIR%\etc\server.env"
   call:installEnvDefaults
 
-  call:readServerEnv "%WLP_USER_DIR%/shared/server.env"
+  call:readServerEnv "%WLP_USER_DIR%\shared\server.env"
   call:readServerEnv "%SERVER_CONFIG_DIR%\server.env"
   call:serverEnvDefaults
 goto:eof
