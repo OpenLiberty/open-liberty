@@ -12,9 +12,6 @@ IBM-API-Package: \
   io.grpc.internal; type="internal"
 Subsystem-Name: gRPC internal 1.0
 -features=com.ibm.websphere.appserver.appmanager-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.artifact-1.0, \
   com.ibm.websphere.appserver.httptransport-1.0
 kind=ga
 edition=core

@@ -4,7 +4,6 @@ WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: com.ibm.ws.jca.cm.mbean; type="ibm-api"
 visibility=private
 -features=io.openliberty.connectionManager1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2,2.0", \
   com.ibm.websphere.appserver.jcaSecurity-1.0, \
   com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0, 8.0, 9.0, 10.0"

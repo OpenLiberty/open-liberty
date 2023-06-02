@@ -14,7 +14,6 @@ Subsystem-Name: MicroProfile Config 1.3
 -features=com.ibm.websphere.appserver.appmanager-1.0, \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:="1.3", \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:="2.0", \
   com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.3
 -bundles=io.openliberty.microprofile.config.internal.common, \

@@ -4,8 +4,7 @@ visibility=public
 singleton=true
 IBM-ShortName: jakartaeeClient-10.0
 Subsystem-Name: Jakarta EE 10.0 Application Client
--features=io.openliberty.jakartaeePlatform-10.0, \
-  io.openliberty.cdi-4.0, \
+-features=io.openliberty.cdi-4.0, \
   io.openliberty.enterpriseBeansRemoteClient-2.0, \
   io.openliberty.mail-2.1, \
   io.openliberty.messagingClient-3.0, \

@@ -2,8 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.persistentExecutorSubset-1.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
--features=com.ibm.websphere.appserver.appLifecycle-1.0, \
-  com.ibm.websphere.appserver.transaction-1.2, \
+-features=com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:="1.3", \
   com.ibm.ws.persistence-1.0, \
   com.ibm.websphere.appserver.contextService-1.0, \

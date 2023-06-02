@@ -27,10 +27,8 @@ IBM-API-Package: \
   javax.wsdl.factory; type="spec",\
   javax.wsdl.xml; type="spec",\
   javax.wsdl; type="spec"
--features=com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.jaxb-2.2, \
+-features=com.ibm.websphere.appserver.jaxb-2.2, \
   com.ibm.websphere.appserver.injection-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:="1.6", \
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.internal.cxf.common-3.2
