@@ -24,11 +24,15 @@
 <%
 String expectedRpOrigin = request.getHeader("referer");
 if (expectedRpOrigin != null) {
-   	URL referrerUrl = new URL(expectedRpOrigin);
-   	String path = referrerUrl.getPath();
-   	if (path != null && !path.isEmpty()) {
-   		expectedRpOrigin = expectedRpOrigin.substring(0, expectedRpOrigin.indexOf(path));
-   	}
+    URL referrerUrl = new URL(expectedRpOrigin);
+    String protocol = referrerUrl.getProtocol();
+    String host = referrerUrl.getHost();
+    int port = referrerUrl.getPort();
+
+    expectedRpOrigin = protocol + "://" + host;
+    if (port != -1) {
+        expectedRpOrigin = expectedRpOrigin + ":" + port;
+    }
 }
 %>
 <script src="scripts/sha256.js"></script>
