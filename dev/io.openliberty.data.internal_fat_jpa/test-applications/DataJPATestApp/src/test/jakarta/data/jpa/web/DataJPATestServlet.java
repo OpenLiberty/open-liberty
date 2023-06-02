@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.OffsetDateTime;
@@ -1823,8 +1824,59 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an Entity which has a version attribute of type Timestamp.
+     */
+    @Test
+    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) {
+        assertEquals(0, counties.deleteByNameIn(List.of("Dodge", "Mower")));
+
+        int[] dodgeZipCodes = new int[] { 55924, 55927, 55940, 55944, 55955, 55985 };
+        int[] mowerZipCodes = new int[] { 55912, 55917, 55918, 55926, 55933, 55936, 55950, 55951, 55961, 55953, 55967, 55970, 55973, 55975, 55982 };
+
+        County dodge = new County("Dodge", "Minnesota", 20867, dodgeZipCodes, "Mantorville", "Blooming Prairie", "Claremont", "Dodge Center", "Hayfield", "Kasson", "West Concord");
+        County mower = new County("Mower", "Minnesota", 49671, mowerZipCodes, "Austin", "Adams", "Brownsdale", "Dexter", "Elkton", "Grand Meadow", "Le Roy", "Lyle", "Mapleview", "Racine", "Rose Creek", "Sargeant", "Taopi", "Waltham");
+
+        counties.save(dodge, mower);
+
+        dodge = counties.findByName("Dodge").orElseThrow();
+
+        assertEquals(true, counties.updateByNameSetZipCodes("Dodge",
+                                                            dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 }));
+
+        // Try to update with outdated version/timestamp:
+        try {
+            dodge.population = 20873;
+            counties.save(dodge);
+            fail("Should not be able to save using old version: " + dodge.lastUpdated);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // Update the version/timestamp and retry:
+        Timestamp timestamp = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
+        dodge.population = 20981;
+        counties.save(dodge);
+
+        // Try to delete by previous version/timestamp,
+        assertEquals(false, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Should be able to delete with latest version/timestamp,
+        timestamp = counties.findLastUpdatedByName("Dodge");
+        assertEquals(true, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Try to delete with wrong version/timestamp (from other entity),
+        mower.lastUpdated = timestamp;
+        assertEquals(false, counties.remove(mower));
+
+        // Use correct version/timestamp,
+        mower = counties.findByName("Mower").orElseThrow();
+        assertEquals(true, counties.remove(mower));
+    }
+
+    /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
+    // Test annotation is present on corresponding method in DataJPATest
     public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 

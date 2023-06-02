@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,8 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Counties {
 
+    boolean deleteByNameAndLastUpdated(String name, Timestamp version);
+
     int deleteByNameIn(List<String> names);
 
     Optional<County> findByName(String name);
@@ -38,6 +41,8 @@ public interface Counties {
 
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
+
+    Timestamp findLastUpdatedByName(String name);
 
     int[] findZipCodesById(String name);
 
@@ -54,7 +59,9 @@ public interface Counties {
     Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
 
     @OrderBy("population")
-    Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopuluation);
+    Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
+
+    boolean remove(County c);
 
     void save(County... c);
 
