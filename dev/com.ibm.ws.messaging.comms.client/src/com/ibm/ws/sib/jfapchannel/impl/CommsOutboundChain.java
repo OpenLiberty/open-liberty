@@ -133,7 +133,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getTcpOptions", tcpProps);
         return tcpProps;
     }
-    
+
     private synchronized void createBasicJFAPChain() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "createBasicJFAPChain", chainName);
         try {

@@ -12,6 +12,7 @@
  */
 package com.ibm.ws.sib.jfapchannel.impl;
 
+import static com.ibm.websphere.ras.Tr.exit;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static com.ibm.ws.sib.utils.ras.SibTr.debug;
 import static com.ibm.ws.sib.utils.ras.SibTr.entry;
@@ -43,6 +44,7 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
         )
 public class OutboundSecureFacetImpl implements OutboundSecureFacet {
     private static final TraceComponent tc = Tr.register(OutboundSecureFacetImpl.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
+    private final String id;
     private final ChannelConfiguration sslOptions;
 
     @Activate
@@ -57,7 +59,10 @@ public class OutboundSecureFacetImpl implements OutboundSecureFacet {
         final String methodName = "<init>";
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, new Object[]{sslOptions, defaultSSLOptions, properties});
 
+        this.id = (String) properties.get("id");
         this.sslOptions = Optional.ofNullable(sslOptions).orElse(defaultSSLOptions);
+
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, methodName, this);
     }
 
     public Map<Object, Object> copyConfig() {
@@ -71,7 +76,12 @@ public class OutboundSecureFacetImpl implements OutboundSecureFacet {
         } else {
             result = new HashMap<>(props);
         }
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, result);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, methodName, result);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", super.toString(), id);
     }
 }
