@@ -26,6 +26,19 @@
             default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.messaging.comms.wasJmsOutbound-${id}/*)(id=defaultTCPOptions))))" />
         <AD id="sslOptions.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${servicePidOrFilter(sslOptionsRef)}" />
         <AD id="sslOptions.cardinality.minimum" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${count(sslOptionsRef)}" />
+        <!--
+        The <wasJmsOutbound> config is consumed by two DS components:
+        - CommsOutboundChain
+        - OutboundSecureFacetImpl
+        The CommsOutboundChain also has a DS reference to the
+        OutboundSecureFacetImpl, called "secureFacet".
+        To ensure the CommsOutboundChain receives the CORRECT
+        OutboundSecureFacetImpl, constrain the "secureFacet"
+        reference using the "secureFacet.target" property.
+        This LDAP filter ensures the OutboundSecureFacetImpl's "id" property
+        matches the receiving CommsOutboundChain's "id" property.
+        -->
+        <AD id="secureFacet.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="(id=${id})" />
    </OCD>
 
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">
