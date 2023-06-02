@@ -428,12 +428,25 @@ task zipGradleBootstrap(type: Zip) {
     }
 }
 
+def getBetaVersion() {
+    def (year, major, minor, month) = "${bnd.libertyRelease}".tokenize('.')
+    int new_month = month.toInteger() + 1
+    if (new_month > 12) {
+        new_month = 1
+        int new_year = year.toInteger() + 1
+        return "" + new_year + "." + major + "." + minor + "." + new_month
+    }
+    return year + "." + major + "." + minor + "." + new_month
+}
+
 task libertyReleaseVersions {
   inputs.file('resources/bnd/liberty-release.props')
   outputs.file('build/liberty-versions.props')
   doLast {
     def releaseVersion = bnd.get('libertyRelease') + '-' + rootProject.userProps.getProperty('version.qualifier')
     println 'releaseVersion = ' + releaseVersion
+    def libertyBeta = rootProject.userProps.getProperty("betaVersionOverride") == null ? (getBetaVersion() + "-beta") : (rootProject.userProps.getProperty("betaVersionOverride") + "-beta")
+    def betaVersion = libertyBeta + "-" + rootProject.userProps.getProperty("version.qualifier")
     def libertyVersionsProps = new Properties()
     libertyVersionsProps.setProperty('libertyBaseVersion', bnd.get('libertyBaseVersion'))
     libertyVersionsProps.setProperty('libertyFixpackVersion', bnd.get('libertyFixpackVersion'))
@@ -443,6 +456,7 @@ task libertyReleaseVersions {
     libertyVersionsProps.setProperty('libertyBundleMicroVersion', bnd.get('libertyBundleMicroVersion'))
     libertyVersionsProps.setProperty('buildID', bnd.get('buildID'))
     libertyVersionsProps.setProperty('releaseVersion', releaseVersion)
+    libertyVersionsProps.setProperty('betaVersion', betaVersion)
     File libertyVersionsPropsFile = file('build/liberty-versions.props')
     libertyVersionsProps.store(libertyVersionsPropsFile.newWriter(), null)
   }
