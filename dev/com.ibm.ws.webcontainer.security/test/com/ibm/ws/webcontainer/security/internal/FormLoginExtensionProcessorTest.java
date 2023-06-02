@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,8 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -56,6 +54,8 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.webapp.WebAppConfigExtended;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
+
+import test.common.SharedOutputManager;
 
 public class FormLoginExtensionProcessorTest {
 
@@ -104,9 +104,9 @@ public class FormLoginExtensionProcessorTest {
     /**
      * common set of Expectations shared by all the
      * test methods
-     * 
+     *
      * @throws Exception
-     * 
+     *
      */
     @Before
     public void setup() throws Exception {
@@ -151,7 +151,7 @@ public class FormLoginExtensionProcessorTest {
                 allowing(req).getContextPath();
                 will(returnValue(""));
 
-                // For calls to ReferrerURLCookieHandler.clearReferrerURLCookie(), 
+                // For calls to ReferrerURLCookieHandler.clearReferrerURLCookie(),
                 // which calls invalidateReferrerURLCookie()
                 invalidatedReferrerURLCookie = new Cookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, "");
                 invalidatedReferrerURLCookie.setPath("/");
@@ -202,7 +202,7 @@ public class FormLoginExtensionProcessorTest {
     /**
      * Test scenario where user can successfully authenticate and
      * user is authorized to access the resource.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -249,6 +249,7 @@ public class FormLoginExtensionProcessorTest {
                 never(resp).setStatus(with(any(int.class)));
                 allowing(webAppSecConfig).getHttpOnlyCookies();
                 will(returnValue(true));
+                will(returnValue(true));
                 one(req).isSecure();
                 will(returnValue(true));
 
@@ -256,6 +257,8 @@ public class FormLoginExtensionProcessorTest {
                 will(returnValue("HTTP/1.0"));
                 allowing(resp).isCommitted();
                 will(returnValue(false));
+                allowing(wac).getContextRoot();
+
             }
         });
 
@@ -345,6 +348,7 @@ public class FormLoginExtensionProcessorTest {
                 will(returnValue(true));
                 allowing(resp).isCommitted();
                 will(returnValue(false));
+                allowing(wac).getContextRoot();
             }
         });
 
@@ -354,7 +358,7 @@ public class FormLoginExtensionProcessorTest {
 
     /**
      * Test scenario where user ID and password are null
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -373,7 +377,7 @@ public class FormLoginExtensionProcessorTest {
                 allowing(req).getParameter("j_password");
                 will(returnValue(null));
 
-                // Flow never gets to BasicAuthAuthenticator.basicAuthenticate()  
+                // Flow never gets to BasicAuthAuthenticator.basicAuthenticate()
                 // because username and password = null.
                 // The below verifies whether the 401 status is set for unauthenticated requests
                 one(resp).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -391,7 +395,7 @@ public class FormLoginExtensionProcessorTest {
 
     /**
      * Test scenario where user is not able to authenticate.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -438,6 +442,7 @@ public class FormLoginExtensionProcessorTest {
                 allowing(resp).sendRedirect(cookieValue);
                 allowing(req).getParameter("error_page");
                 allowing(req).getCookies();
+                allowing(wac).getContextRoot();
             }
         });
 
@@ -451,7 +456,7 @@ public class FormLoginExtensionProcessorTest {
      * matches the Cookie that is instantiated in
      * ReferrerURLCookieHandler.invalidateReferrerURLCookie(), based
      * on name, value, age, and path.
-     * 
+     *
      * @param cookie
      * @return boolean if the cookie's properties match
      */

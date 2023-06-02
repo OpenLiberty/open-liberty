@@ -372,7 +372,7 @@ public class TAIAuthenticator implements WebAuthenticator {
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, subject);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
             if (addLtpaCookieToResp) {
-                ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
+                ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res, null);
                 Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
                 if (hashtable != null && !subject.isReadOnly()) {
                     removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE, hashtable);

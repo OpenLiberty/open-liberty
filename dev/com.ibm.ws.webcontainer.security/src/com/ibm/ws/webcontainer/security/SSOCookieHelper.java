@@ -25,9 +25,9 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  */
 public interface SSOCookieHelper {
 
-    void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp);
+    void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot);
 
-    boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp);
+    boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot);
 
     void createLogoutCookies(HttpServletRequest req, HttpServletResponse resp);
 

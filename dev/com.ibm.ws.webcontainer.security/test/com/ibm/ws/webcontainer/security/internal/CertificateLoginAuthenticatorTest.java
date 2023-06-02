@@ -99,7 +99,7 @@ public class CertificateLoginAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
             }
         });
         AuthenticationResult authResult = certLoginAuthenticator.authenticate(webRequest);

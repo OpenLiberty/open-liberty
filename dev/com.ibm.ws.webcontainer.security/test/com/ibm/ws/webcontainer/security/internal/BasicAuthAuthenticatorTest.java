@@ -102,7 +102,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -141,7 +141,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -261,7 +261,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(throwException(new com.ibm.ws.security.authentication.PasswordExpiredException("authn failed")));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -288,7 +288,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(throwException(new com.ibm.ws.security.authentication.UserRevokedException("authn failed")));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();

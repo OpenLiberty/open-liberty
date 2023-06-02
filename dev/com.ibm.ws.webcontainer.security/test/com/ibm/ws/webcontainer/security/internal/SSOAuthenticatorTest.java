@@ -276,7 +276,7 @@ public class SSOAuthenticatorTest {
                 one(webAppSecConfig).isUseOnlyCustomCookieName();
                 will(returnValue(false));
 
-                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp);
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp, null);
 
                 // Now authenticate, which should be successful and the result
                 // immediately returned

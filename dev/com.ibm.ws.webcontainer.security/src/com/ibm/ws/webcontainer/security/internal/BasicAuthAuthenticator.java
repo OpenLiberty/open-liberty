@@ -71,7 +71,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
         AuthenticationResult result = null;
         result = handleBasicAuth(realm, req, res);
         if (result.getStatus() == AuthResult.SUCCESS) {
-            ssoCookieHelper.addSSOCookiesToResponse(result.getSubject(), req, res);
+            ssoCookieHelper.addSSOCookiesToResponse(result.getSubject(), req, res, null);
         }
         return result;
     }
@@ -85,7 +85,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
         }
         result = handleBasicAuth(realm, req, res);
         if (result.getStatus() == AuthResult.SUCCESS) {
-            ssoCookieHelper.addSSOCookiesToResponse(result.getSubject(), req, res);
+            ssoCookieHelper.addSSOCookiesToResponse(result.getSubject(), req, res, null);
         }
         return result;
     }

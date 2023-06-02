@@ -275,12 +275,12 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     private void registerSession(final WebRequest webRequest, final Subject subject, final SSOCookieHelper ssoCh) {
         if (System.getSecurityManager() == null) {
-            ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse());
+            ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null);
         } else {
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
                 public Object run() {
-                    ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse());
+                    ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null);
                     return null;
                 }
             });
@@ -530,7 +530,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     authResult = authHelper.loginWithHashtable(request, response, authResult.getSubject());
                     if (AuthResult.SUCCESS == authResult.getStatus()) {
                         SSOCookieHelper ssoCh = webAppSecurityConfig.createSSOCookieHelper();
-                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(), request, response);
+                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(), request, response, null);
                     }
                 }
             }
@@ -658,7 +658,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     if (includeAccessTokenInLtpa) {
                         addAccessTokenToTheCookie(authResult, ssoCh);
                     }
-                    ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res);
+                    ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
                 }
             }
         }

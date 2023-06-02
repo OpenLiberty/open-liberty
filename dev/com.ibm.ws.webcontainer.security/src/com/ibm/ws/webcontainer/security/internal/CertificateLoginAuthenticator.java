@@ -88,7 +88,7 @@ public class CertificateLoginAuthenticator implements WebAuthenticator {
         }
         authResult.certdn = certChain[0].getSubjectX500Principal().getName();
         if (authResult.getStatus() == AuthResult.SUCCESS) {
-            ssoCookieHelper.addSSOCookiesToResponse(authResult.getSubject(), req, res);
+            ssoCookieHelper.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
         }
         return authResult;
 

@@ -86,7 +86,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @return true if cookies were added
      */
     @Override
-    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
         boolean result = false;
         if (JwtSSOTokenHelper.isDisableJwtCookie()) {
             return result;
@@ -96,7 +96,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
             boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
             if (!cookieAlreadySent) {
-                result = addJwtCookies(cookieByteString, req, resp);
+                result = addJwtCookies(cookieByteString, req, resp, contextRoot);
             }
         }
         return result;
@@ -106,7 +106,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * Add the cookie or cookies as needed, depending on size of token.
      * Return true if any cookies were added
      */
-    protected boolean addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp) {
+    protected boolean addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
 
         String baseName = getJwtCookieName();
         if (baseName == null) {
@@ -123,7 +123,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                 com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "132");
                 break;
             }
-            Cookie ssoCookie = createCookie(req, cookieName, chunks[i], getJwtCookieSecure()); //name
+            Cookie ssoCookie = createCookie(req, cookieName, chunks[i], getJwtCookieSecure(), contextRoot); //name
             resp.addCookie(ssoCookie);
             cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
         }
@@ -145,17 +145,19 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      *
      * @param req the HTTP servlet request.
      * @param cookieValue the value used to create the cookie from.
+     * @param contextRoot TODO
      * @return ssoCookie the SSO cookie.
      */
 
-    public Cookie createCookie(HttpServletRequest req, String cookieValue) {
-        return createCookie(req, getSSOCookiename(), cookieValue, config.getSSORequiresSSL());
+    public Cookie createCookie(HttpServletRequest req, String cookieValue, String contextRoot) {
+        return createCookie(req, getSSOCookiename(), cookieValue, config.getSSORequiresSSL(), contextRoot);
     }
 
-    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure) {
+    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure, String contextRoot) {
         Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
-        String contextRoot = getContextRoot();
+        if (contextRoot == null)
+            contextRoot = getContextRoot();
         //TODO: UTLE check below comment
         //The path has to be "/" so we will not have multiple cookies in the same domain
         ssoCookie.setPath(contextRoot);
@@ -188,7 +190,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         String ctRoot = "/";
         if (config.isUseContextRootForSSOCookiePath()) {
             WebAppConfig webapp = WebConfigUtils.getWebAppConfig();
-            if (webapp != null) // form login has no context root
+            if (webapp != null)
                 ctRoot = webapp.getContextRoot();
         }
         return ctRoot;
@@ -567,17 +569,17 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * [; path=<some_path>][; secure][; httponly]
      **/
     @Override
-    public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+    public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
         if (!allowToAddCookieToResponse(req))
             return;
-        addJwtSsoCookiesToResponse(subject, req, resp);
+        addJwtSsoCookiesToResponse(subject, req, resp, contextRoot);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
             return;
         }
 
         if (!isDisableLtpaCookie(subject)) {
-            addLtpaSsoCookiesToResponse(subject, req, resp);
+            addLtpaSsoCookiesToResponse(subject, req, resp, contextRoot);
         }
 
         if (oidcServerRef != null && oidcServerRef.getService() != null) {
@@ -602,8 +604,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @param subject
      * @param req
      * @param resp
+     * @param contextRoot
      */
-    private void addLtpaSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp) {
+    private void addLtpaSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
         SingleSignonToken ssoToken = getDefaultSSOTokenFromSubject(subject);
         if (ssoToken != null) {
             byte[] ssoTokenBytes = ssoToken.getBytes();
@@ -615,7 +618,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                     updateCookieCache(cookieBytes, cookieByteString);
                 }
 
-                Cookie ssoCookie = createCookie(req, cookieByteString);
+                Cookie ssoCookie = createCookie(req, cookieByteString, contextRoot);
                 resp.addCookie(ssoCookie);
             }
         }
