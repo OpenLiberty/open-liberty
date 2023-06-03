@@ -40,7 +40,7 @@ class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     static enum Type {
-        COUNT, DELETE, EXISTS, MERGE, SELECT, UPDATE
+        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, MERGE, SELECT, UPDATE
     }
 
     /**
@@ -112,14 +112,6 @@ class QueryInfo {
      * or there are no parameters at all.
      */
     List<String> paramNames;
-
-    /**
-     * Indicates that parameters are supplied to the repository method
-     * as entity or Iterable of entity and need conversion to entity id
-     * or list of entity id.
-     * This is currently only used for delete(entity) and delete(Iterable of entities).
-     */
-    boolean paramsNeedConversionToId;
 
     /**
      * Array element type if the repository method returns an array, such as,
@@ -451,12 +443,12 @@ class QueryInfo {
                                        " parameters, but requires " + methodParamForQueryCount +
                                        " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
 
-        if (entityInfo.idClass == null || !paramsNeedConversionToId) {
+        if (entityInfo.idClass == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
             int namedParamCount = paramNames == null ? 0 : paramNames.size();
             for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
-                Object arg = paramsNeedConversionToId ? //
-                                toEntityId(args[i]) : //
-                                args[i];
+                Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
+                                ? toEntityId(args[i]) //
+                                : args[i];
 
                 if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
                     if (p < namedParamCount) {
@@ -501,6 +493,12 @@ class QueryInfo {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
                 query.setParameter(++p, param);
+            }
+
+            if (args.length == 2) { // entity has a version attribute
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + args[1]);
+                query.setParameter(++p, args[1]);
             }
         }
     }
@@ -587,7 +585,6 @@ class QueryInfo {
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
-        q.paramsNeedConversionToId = paramsNeedConversionToId;
         q.saveParamType = saveParamType;
         q.sorts = sorts;
         q.type = type;

@@ -99,6 +99,8 @@ public interface Cities {
     @OrderBy("name")
     Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
 
+    boolean remove(City city);
+
     @Filter(by = "id")
     @Update(attr = "id")
     @Update(attr = "population")
@@ -118,7 +120,7 @@ public interface Cities {
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
-    void save(City c);
+    City save(City c);
 
     int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
                                                               CityId newId, int newPopulation, Set<Integer> newAreaCodes);

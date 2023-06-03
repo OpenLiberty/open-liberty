@@ -18,6 +18,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 
 /**
  * An entity with a generated id value.
@@ -34,4 +35,7 @@ public class Order {
     public OffsetDateTime purchasedOn;
 
     public float total;
+
+    @Version
+    public int versionNum;
 }

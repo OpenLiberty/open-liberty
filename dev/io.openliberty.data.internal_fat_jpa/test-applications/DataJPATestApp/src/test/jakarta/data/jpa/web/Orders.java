@@ -21,7 +21,7 @@ import jakarta.data.repository.Repository;
  * Experiments with auto-generated keys.
  */
 @Repository
-public interface OrderRepo extends CrudRepository<Order, Long> {
+public interface Orders extends CrudRepository<Order, Long> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
     boolean addTaxAndShipping(@Param("id") long orderId,

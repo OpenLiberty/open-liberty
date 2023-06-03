@@ -14,7 +14,9 @@ package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -1103,16 +1105,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else if (methodName.length() == 6) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
                 if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.getType().equals(paramTypes[0]))) {
-                    methodName = "deleteById"; // CrudRepository.delete(entity)
-                    queryInfo.paramsNeedConversionToId = true;
+                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
+                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.delete(entity)
                     c = 8;
                 }
             } else if (methodName.length() == 9 && methodName.endsWith("All")) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
                 if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
                     if (entityInfo.idClass == null) {
-                        methodName = "deleteByIdIn"; // CrudRepository.deleteAll(Iterable)
-                        queryInfo.paramsNeedConversionToId = true;
+                        methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
+                        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.deleteAll(Iterable), one at a time
                         c = 8;
                     } else {
                         throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
@@ -1121,7 +1123,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.DELETE;
+            queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
         } else if (methodName.startsWith("update")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
@@ -2000,6 +2002,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
                     }
+                    case DELETE_WITH_ENTITY_PARAM: {
+                        em = queryInfo.entityInfo.persister.createEntityManager();
+                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
+
+                        int updateCount = 0;
+                        if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
+                            for (Object e : ((Iterable<?>) args[0]))
+                                updateCount += remove(e, queryInfo, delete);
+                        else
+                            updateCount = remove(args[0], queryInfo, delete);
+
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
                     case COUNT: {
                         em = queryInfo.entityInfo.persister.createEntityManager();
 
@@ -2202,6 +2218,49 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (!queryInfo.hasDynamicSortCriteria())
             generateOrderBy(queryInfo, q);
+    }
+
+    /**
+     * Removes the entity (or record) from the database if its attributes match the database.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information that is prepopulated for deleteById.
+     * @param delete    deletion query.
+     * @return the number of entities deleted (1 or 0).
+     * @throws Exception if an error occurs or if the repository method return type is void and
+     *                       the entity (or correct version of the entity) was not found.
+     */
+    private static int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+
+        Object v = e;
+        if (queryInfo.entityInfo.versionAttributeName == null) {
+            queryInfo.setParameters(delete, e);
+        } else {
+            String name = queryInfo.entityInfo.attributeNames.get(queryInfo.entityInfo.versionAttributeName.toLowerCase());
+            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(name);
+            if (accessors == null || accessors.isEmpty())
+                throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
+                                           " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
+            for (Member accessor : accessors)
+                v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
+            queryInfo.setParameters(delete, e, v);
+        }
+
+        int numDeleted = delete.executeUpdate();
+
+        if (numDeleted == 0) {
+            Class<?> returnType = queryInfo.method.getReturnType();
+            if (void.class.equals(returnType) || Void.class.equals(returnType)) {
+                if (queryInfo.entityInfo.versionAttributeName == null)
+                    throw new DataException("Entity was not found."); // TODO NLS
+                else
+                    throw new DataException("Version " + v + " of the entity was not found."); // TODO NLS
+            }
+        } else if (numDeleted > 1) {
+            throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
+        }
+
+        return numDeleted;
     }
 
     /**
