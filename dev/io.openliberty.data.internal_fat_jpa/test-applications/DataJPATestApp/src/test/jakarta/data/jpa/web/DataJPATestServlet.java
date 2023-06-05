@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.OffsetDateTime;
@@ -643,9 +644,43 @@ public class DataJPATestServlet extends FATServlet {
             tran.rollback();
         }
 
+        Order o2old = new Order();
+        o2old.id = o2.id;
+        o2old.purchasedBy = o2.purchasedBy;
+        o2old.purchasedOn = o2.purchasedOn;
+        o2old.total = o2.total;
+        o2old.versionNum = o2.versionNum;
+
         // increment version of second entity
         o2.total = 22.99f;
         o2 = orders.save(o2);
+
+        // attempt to save second entity at an old version
+        o2old.total = 99.22f;
+        try {
+            Order unexpected = orders.save(o2old);
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // attempt to save second entity at an old version in combination with addition of another entity
+        Order o6 = new Order();
+        o6.purchasedBy = "testEntitiesAsParameters-Customer6";
+        o6.purchasedOn = OffsetDateTime.now();
+        o6.total = 60.99f;
+        try {
+            Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // verify that the second entity remains at its second version (22.99) and that the addition of the sixth entity was rolled back
+        List<Float> orderTotals = orders.findTotalByPurchasedByIn(List.of("testEntitiesAsParameters-Customer2",
+                                                                          "testEntitiesAsParameters-Customer6"));
+        assertEquals(orderTotals.toString(), 1, orderTotals.size());
+        assertEquals(22.99f, orderTotals.get(0), 0.001f);
 
         orders.deleteAll(List.of(o3, o2));
 
@@ -1789,8 +1824,59 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an Entity which has a version attribute of type Timestamp.
+     */
+    @Test
+    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) {
+        assertEquals(0, counties.deleteByNameIn(List.of("Dodge", "Mower")));
+
+        int[] dodgeZipCodes = new int[] { 55924, 55927, 55940, 55944, 55955, 55985 };
+        int[] mowerZipCodes = new int[] { 55912, 55917, 55918, 55926, 55933, 55936, 55950, 55951, 55961, 55953, 55967, 55970, 55973, 55975, 55982 };
+
+        County dodge = new County("Dodge", "Minnesota", 20867, dodgeZipCodes, "Mantorville", "Blooming Prairie", "Claremont", "Dodge Center", "Hayfield", "Kasson", "West Concord");
+        County mower = new County("Mower", "Minnesota", 49671, mowerZipCodes, "Austin", "Adams", "Brownsdale", "Dexter", "Elkton", "Grand Meadow", "Le Roy", "Lyle", "Mapleview", "Racine", "Rose Creek", "Sargeant", "Taopi", "Waltham");
+
+        counties.save(dodge, mower);
+
+        dodge = counties.findByName("Dodge").orElseThrow();
+
+        assertEquals(true, counties.updateByNameSetZipCodes("Dodge",
+                                                            dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 }));
+
+        // Try to update with outdated version/timestamp:
+        try {
+            dodge.population = 20873;
+            counties.save(dodge);
+            fail("Should not be able to save using old version: " + dodge.lastUpdated);
+        } catch (DataException x) {
+            // expected
+        }
+
+        // Update the version/timestamp and retry:
+        Timestamp timestamp = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
+        dodge.population = 20981;
+        counties.save(dodge);
+
+        // Try to delete by previous version/timestamp,
+        assertEquals(false, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Should be able to delete with latest version/timestamp,
+        timestamp = counties.findLastUpdatedByName("Dodge");
+        assertEquals(true, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Try to delete with wrong version/timestamp (from other entity),
+        mower.lastUpdated = timestamp;
+        assertEquals(false, counties.remove(mower));
+
+        // Use correct version/timestamp,
+        mower = counties.findByName("Mower").orElseThrow();
+        assertEquals(true, counties.remove(mower));
+    }
+
+    /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
+    // Test annotation is present on corresponding method in DataJPATest
     public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
