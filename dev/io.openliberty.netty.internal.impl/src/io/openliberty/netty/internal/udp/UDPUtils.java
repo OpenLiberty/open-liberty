@@ -238,7 +238,7 @@ public class UDPUtils {
             });
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
             }
         }
         return null;

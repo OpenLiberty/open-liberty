@@ -119,9 +119,9 @@ class TCPLoggingHandler extends LoggingHandler{
 		ctx.write(msg, promise).addListener(new ChannelFutureListener() {
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
-				if(future.isSuccess())
+				if(future.isSuccess() && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
 					Tr.event(ctx.channel(), tc, "write (async) finished sucessfully for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " wrote: " + bytesToWrite + " bytes");
-				else
+				else if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
 					Tr.event(ctx.channel(), tc, "write (async) FAILED for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+" did not write : "+ bytesToWrite + " bytes");
 			}
 		});

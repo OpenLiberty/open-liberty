@@ -112,16 +112,6 @@ public class TCPUtils {
             	// Get parent and increment active connections
                 final Channel channel = openFuture.channel();
 
-                if(config.isInbound()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Adding new channel group for " + openFuture.channel());
-                    }
-                    // TODO: Should we use this or maybe the event loop of the channel?
-                    framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
-                }else {
-                	framework.getOutboundConnections().add(channel);
-                }
-
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
                 channel.attr(ConfigConstants.HOST_KEY).set(newHost);
@@ -131,6 +121,15 @@ public class TCPUtils {
                 // Listener to stop channel on close
                 // This should just log that the channel stopped
                 channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
+
+                if(config.isInbound()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding new channel group for " + channel);
+                    }
+                    framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+                }else {
+                	framework.getOutboundConnections().add(channel);
+                }
 
                 // set up a helpful log message
                 String hostLogString = newHost;
@@ -221,7 +220,7 @@ public class TCPUtils {
                 });
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e.getMessage());
+                    Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
                 }
             }
         }

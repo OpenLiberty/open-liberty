@@ -43,7 +43,7 @@ import io.netty.handler.ssl.SslContext;
  * String, String, String, Boolean, SSLConnectionLink)}
  *
  */
-@Component(configurationPid = "io.openliberty.netty.internal.tls", immediate = true, service = NettyTlsProvider.class, property = { "service.vendor=IBM" })
+@Component(configurationPid = "io.openliberty.netty.internal.tls", immediate = true, service = NettyTlsProvider.class)
 public class NettyTlsProviderImpl implements NettyTlsProvider {
 
     private static final TraceComponent tc = Tr.register(NettyTlsProviderImpl.class);
