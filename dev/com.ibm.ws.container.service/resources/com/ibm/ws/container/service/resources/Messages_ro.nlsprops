@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: A ap\u0103rut o eroare inte
 ordered.list.already.contains.CWWKM0482E.explanation=MSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: Adnotarea {0} este ignorat\u0103 pentru clasele din modulul {1} al aplica\u021biei {2}. Aplica\u021biile Jakarta EE trebuie s\u0103 utilizeze adnotarea {3}. Clasele afectate sunt: {4}
+wrong.annotation.package.CWWKM0483I.explanation=Aplica\u021bia con\u021bine o adnotare Java EE cu numele de pachet 'javax', dar serverul de aplica\u021bii are activate caracteristicile Jakarta EE. Serverul de aplica\u021bii nu a procesat adnotarea numelui de pachet 'javax'.
+wrong.annotation.package.CWWKM0483I.useraction=Modifica\u021bi aplica\u021bia pentru a utiliza versiunea de nume de pachet 'jakarta' a adnot\u0103rii sau modifica\u021bi configura\u021bia serverului de aplica\u021bii pentru a activa caracteristicile Java EE.

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.osgi;
 
@@ -68,6 +65,7 @@ import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.ws.webcontainer.SessionRegistry;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
+import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorService;
 import com.ibm.ws.webcontainer.exception.WebAppHostNotFoundException;
 import com.ibm.ws.webcontainer.osgi.container.DeployedModule;
@@ -96,6 +94,7 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.cache.CacheManager;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
@@ -392,6 +391,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Deactivating the WebContainer bundle");
+        }
+       
+        //issue#24730
+        if (FrameworkState.isStopping() && AsyncContextImpl.executorRetrieved.get()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName, "shutting down now async servlet thread pool executor");
+            }
+            AsyncContextImpl.ExecutorFieldHolder.field.shutdownNow();
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1617,6 +1624,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         return WebContainer.loadedContainerSpecLevel;
     }
     
+    public static boolean isServletLevel60orAbove() {
+        if(WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) {
+            return true;
+        }
+        
+        return false;
+    }
     
     protected static class CompletedFuture implements Future {
 

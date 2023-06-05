@@ -26,6 +26,8 @@ Export-Package: \
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.ejbcontainer/pom.xml=com.ibm.websphere.appserver.api.ejbcontainer.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

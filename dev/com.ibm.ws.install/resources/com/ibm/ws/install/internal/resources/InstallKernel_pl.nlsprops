@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -255,7 +255,8 @@ ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=U\u017cyj dzia\u0142ania find
 
 ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
 ERROR_ASSET_MISSING_DEPENDENT.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego.
-ERROR_ASSET_MISSING_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: htt\
+    p://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nie mo\u017cna uzyska\u0107 nast\u0119puj\u0105cych zasob\u00f3w aplikacyjnych: {0}. Sprawd\u017a, czy podane zasoby aplikacyjne s\u0105 poprawne. Aby znale\u017a\u0107 identyfikatory odpowiednich zasob\u00f3w aplikacyjnych, uruchom komend\u0119 installUtility find.
 ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonych zasob\u00f3w aplikacyjnych z repozytori\u00f3w.
@@ -403,7 +404,8 @@ ERROR_UNABLE_TO_CREATE_FILE.useraction=Upewnij si\u0119, \u017ce istnieje jego k
 
 ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3rego nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 w {2} {3} {4}. Zas\u00f3b aplikacyjny {1} w aktualnie skonfigurowanych repozytoriach ma zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {5}. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania wersji zasobu aplikacyjnego, kt\u00f3ra ma zastosowanie do instalacji u\u017cytkownika. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 ten zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
 ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego. Znaleziono wersj\u0119 wymaganego zasobu aplikacyjnego, ale nie ma ona zastosowania do zainstalowanej wersji lub edycji produktu.
-ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 pakiet zip jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 ten zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 pakiet zip jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 ten zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http:/\
+    /www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3rego nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 w {2} {3} {4}. Zas\u00f3b aplikacyjny {1} w repozytorium produktu IBM WebSphere Liberty ma zastosowanie tylko do nast\u0119puj\u0105cych edycji i wersji produktu: {5}. Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik, podaj\u0105c po\u0142o\u017cenie pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119 zainstalowania zasobu aplikacyjnego {0}.
 ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Sk\u0142adnik, program dodatkowy lub poprawka tymczasowa nie mog\u0105 zosta\u0107 pobrane lub zainstalowane, poniewa\u017c s\u0105 zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego. Znaleziono wersj\u0119 wymaganego zasobu aplikacyjnego, ale nie ma ona zastosowania do zainstalowanej wersji lub edycji produktu.
@@ -524,6 +526,10 @@ LOG_CANNOT_CLOSE_OBJECT=Nie mo\u017cna usun\u0105\u0107 plik\u00f3w tymczasowych
 LOG_CANNOT_CLOSE_OBJECT.explanation=Ten przyk\u0142ad wymaga \u015brodowiska Java 7 lub nowszego w celu usuni\u0119cia katalogu installTmp.
 LOG_CANNOT_CLOSE_OBJECT.action=Usu\u0144 r\u0119cznie katalog installTmp lub u\u017cyj \u015brodowiska Java 7 lub nowszego.
 
+LOG_VERIFIED_FEATURE=Pomy\u015blnie zweryfikowano funkcj\u0119 {0}.
+LOG_VERIFIED_FEATURE.explanation=Okre\u015blona funkcja zosta\u0142a pomy\u015blnie zweryfikowana.
+LOG_VERIFIED_FEATURE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=Has\u0142o dla nast\u0119puj\u0105cego serwera proxy nie jest zakodowane: {0}. Mo\u017cna zakodowa\u0107 has\u0142o przez uruchomienie komendy securityUtility encode z opcj\u0105 --encoding ustawion\u0105 na obs\u0142ugiwany typ kodowania, kt\u00f3rymi s\u0105 xor (domy\u015blny), aes i hash. Na przyk\u0142ad: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Sk\u0142adniki do zdeinstalowania:
 # Following messages for debug logging purpose
@@ -566,6 +572,8 @@ STATE_DOWNLOAD_FILES_OK=\nWszystkie zasoby aplikacyjne zosta\u0142y pomy\u015bln
 STATE_CONTACTING_MAVEN_REPO=Nawi\u0105zywanie po\u0142\u0105czenia ze skonfigurowanym repozytorium Maven...\nTen proces mo\u017ce potrwa\u0107 kilka minut.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie ze skonfigurowanym repozytorium.
 STATE_READING_ENV_PROPS_FILE=Odczytywanie pliku {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=Weryfikowane podpis\u00f3w...
+STATE_VERIFYING=Weryfikowanie {0}...
 PROGRESS_STEP=Krok {0} z {1}
 
 MSG_DOWNLOAD_SUCCESS=Pomy\u015blnie pobrano sk\u0142adnik {0}.
@@ -602,6 +610,10 @@ MSG_VALIDATION_MISSING_HOST=Nie podano nazwy hosta serwera proxy. Podaj nazw\u01
 MSG_VALIDATION_INVALID_URL=Nast\u0119puj\u0105cy adres URL jest niepoprawny: {0}. Obs\u0142ugiwane s\u0105 tylko protoko\u0142y HTTP i HTTPS oraz adresy URL plik\u00f3w. Upewnij si\u0119, \u017ce poprawnie podano adres URL.
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Protok\u00f3\u0142 URL nie jest obs\u0142ugiwany w przypadku nast\u0119puj\u0105cego repozytorium: {0}. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). Upewnij si\u0119, \u017ce poprawnie podano adres URL.
 MSG_VALIDATION_INVALID_HOST=Nast\u0119puj\u0105cy host serwera proxy jest niepoprawny: {0}. Podaj poprawn\u0105 nazw\u0119 hosta serwera proxy HTTP. Przedrostek http:// nie jest wymagany.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=Nie okre\u015blono nazwy klucza publicznego. Podaj nazw\u0119 klucza publicznego lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107, je\u015bli nie jest ona u\u017cywana.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=W\u0142a\u015bciwo\u015b\u0107 feature.verify nie obs\u0142uguje warto\u015bci {0}. Podaj jedn\u0105 z poprawnych warto\u015bci: "enforce", "warn", "skip" lub "all".
+MSG_VALIDATION_INVALID_KEYID=Warto\u015b\u0107 {0} nie jest w 64-bitowym formacie. Uruchom komend\u0119 GnuPG, aby znale\u017a\u0107 identyfikator klucza w d\u0142ugim formacie. 
+MSG_VALIDATION_MISSING_KEYID=Nie okre\u015blono identyfikatora klucza. Okre\u015bl identyfikator klucza dla adresu URL klucza lub przekszta\u0142\u0107 w komentarz w\u0142a\u015bciwo\u015bci adresu URL klucza.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Nie znaleziono sk\u0142adnik\u00f3w.
@@ -618,6 +630,10 @@ VALIDATION_INVALID_HOST=Niepoprawna nazwa hosta
 VALIDATION_INVALID_URL=Nieobs\u0142ugiwany format adresu URL
 VALIDATION_DUPLICATE_KEY=Zduplikowana nazwa w\u0142a\u015bciwo\u015bci
 VALIDATION_UNSUPPORTED_PROTOCOL=Nieobs\u0142ugiwany protok\u00f3\u0142
+VALIDATION_MISSING_PUBKEY_NAME=Brak nazwy klucza publicznego
+VALIDATION_INVALID_key_URL=Nieobs\u0142ugiwany adres URL klucza
+VALIDATION_INVALID_KEYID=Niepoprawny format identyfikatora klucza
+VALIDATION_MISSING_KEYID=Brak identyfikatora klucza
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Jeden lub wi\u0119cej sk\u0142adnik\u00f3w zosta\u0142o pomy\u015blnie zdeinstalowanych: {0}.
@@ -631,6 +647,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Wpisy nie s\u0105 zgodne.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=Wszystkie sk\u0142adniki zosta\u0142y pomy\u015blnie zainstalowane.
 TOOL_INSTALLATION_COMPLETED=Wszystkie zasoby aplikacyjne zosta\u0142y pomy\u015blnie zainstalowane.
+TOOL_FEATURES_VERIFICATION_COMPLETED=Wszystkie funkcje zosta\u0142y pomy\u015blnie zweryfikowane.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Nie podano has\u0142a dla identyfikatora u\u017cytkownika okre\u015blonego w opcji --user.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=Je\u015bli identyfikator u\u017cytkownika zosta\u0142 okre\u015blony, wymagane jest podanie has\u0142a.
@@ -734,7 +751,7 @@ ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED=CWWKF1375E: Zaszyfrowane has\u0142o jest niepo
 ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.explanation=Algorytm szyfrowania u\u017cyty do zaszyfrowania has\u0142a nie jest obs\u0142ugiwany. Has\u0142o musi by\u0107 zaszyfrowane przy u\u017cyciu komendy securityUtility, a zalecanym algorytmem szyfrowania (ustawianym za pomoc\u0105 opcji --encoding) jest algorytm AES.
 ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnie zaszyfrowanego has\u0142a.
 
-ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E:  Element {0} nie jest ani pustym folderem ani poprawnym repozytorium katalogu.  U\u017cyj pustego folderu lub istniej\u0105cego repozytorium katalogu na potrzeby pobierania.
+ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY=CWWKF1376E: \ Element {0} nie jest ani pustym folderem ani poprawnym repozytorium katalogu.  U\u017cyj pustego folderu lub istniej\u0105cego repozytorium katalogu na potrzeby pobierania.
 ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.explanation=Podj\u0119to pr\u00f3b\u0119 pobrania do niepoprawnego katalogu pobierania.
 ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY.useraction=Uruchom komend\u0119 ponownie, podaj\u0105c poprawn\u0105 \u015bcie\u017ck\u0119 do katalogu.
 
@@ -764,11 +781,13 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Upewnij si\u0119, \u017
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Zas\u00f3b aplikacyjny {0} jest zale\u017cny od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Co najmniej jedno skonfigurowane repozytorium mo\u017ce by\u0107 niedost\u0119pne. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasobu aplikacyjnego, poniewa\u017c jest on zale\u017cny od niedost\u0119pnego zasobu aplikacyjnego.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Opcjonalnie u\u017cyj dzia\u0142ania viewSettings, aby zweryfikowa\u0107 skonfigurowane repozytoria, a nast\u0119pnie u\u017cyj dzia\u0142ania testConnection, aby przetestowa\u0107 po\u0142\u0105czenie.\n\n Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. \n\n W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. \n\n Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Opcjonalnie u\u017cyj dzia\u0142ania viewSettings, aby zweryfikowa\u0107 skonfigurowane repozytoria, a nast\u0119pnie u\u017cyj dzia\u0142ania testConnection, aby przetestowa\u0107 po\u0142\u0105czenie.\n\n Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. \n\n W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. \n\n Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowe\
+    go installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Zasoby aplikacyjne {0} s\u0105 zale\u017cne od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w skonfigurowanych repozytoriach. Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105cy zas\u00f3b aplikacyjny i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Nie mo\u017cna pobra\u0107 lub zainstalowa\u0107 zasob\u00f3w aplikacyjnych, poniewa\u017c s\u0105 one zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego.
-ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105ce zasoby aplikacyjne i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Skonfiguruj program narz\u0119dziowy installUtility tak, aby nawi\u0105zywa\u0142 po\u0142\u0105czenie z repozytorium produktu IBM WebSphere Liberty w celu pobrania lub zainstalowania zasobu aplikacyjnego. Mo\u017cna r\u00f3wnie\u017c pobra\u0107 plik wlp-featureRepo-<wersja>.zip z serwisu WWW IBM Fix Central i skonfigurowa\u0107 rozpakowany folder jako repozytorium oparte na katalogu. W razie braku dost\u0119pu do Internetu skontaktuj si\u0119 z administratorem, aby pobra\u0107 brakuj\u0105ce zasoby aplikacyjne i wszystkie zale\u017cno\u015bci oraz doda\u0107 je do skonfigurowanego repozytorium. Wi\u0119cej informacji na temat instalowania zasob\u00f3w aplikacyjnych zawiera dokumentacja programu narz\u0119dziowego installUtility w Centrum Wiedzy IBM. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server\
+    : http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Zasoby aplikacyjne {0} s\u0105 zale\u017cne od zasobu aplikacyjnego {1}, kt\u00f3ry nie jest dost\u0119pny w repozytorium produktu IBM WebSphere Liberty. Je\u015bli wymagany zas\u00f3b aplikacyjny jest sk\u0142adnikiem, kt\u00f3ry zosta\u0142 wcze\u015bniej pobrany, zainstaluj brakuj\u0105cy sk\u0142adnik poprzez okre\u015blenie po\u0142o\u017cenia pliku ESA sk\u0142adnika w opcji --location komendy featureManager install i pon\u00f3w pr\u00f3b\u0119 zainstalowania zasobu aplikacyjnego {0}.
 ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Sk\u0142adniki, programy dodatkowe lub poprawki tymczasowe nie mog\u0105 zosta\u0107 zainstalowane, poniewa\u017c s\u0105 zale\u017cne od niedost\u0119pnego zasobu aplikacyjnego.
@@ -893,3 +912,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Format wsp\u00f3\u0142rz\u0119d
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Zmie\u0144 format wsp\u00f3\u0142rz\u0119dnej Maven w BOM sk\u0142adnik\u00f3w na groupId:artifactId:wersja.
 
 MSG_STABILIZING_FEATUREMANAGER=To dzia\u0142anie featureManager jest ustabilizowane. U\u017cyj zamiast niego komendy installUtility {0}. Komenda installUtility jest zalecana w przypadku dzia\u0142a\u0144 instalacji i dzia\u0142a\u0144 dotycz\u0105cych repozytorium.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: Opcja weryfikacji funkcji "{0}" nie jest zgodna z "{1}" w wierszu komend.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=Opcja weryfikowania funkcji w pliku w\u0142a\u015bciwo\u015bci lub w zmiennej \u015brodowiskowej musi by\u0107 zgodna z opcj\u0105 podan\u0105 w wierszu komend. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Upewnij si\u0119, \u017ce okre\u015blone opcje weryfikowania funkcji s\u0105 zgodne ze sob\u0105.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: Opcja weryfikacji {0} nie jest poprawna. Upewnij si\u0119, \u017ce opcja jest poprawna.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=Podana opcja nie jest poprawna. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Podaj jedn\u0105 z nast\u0119puj\u0105cych poprawnych opcji: enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: Nie mo\u017cna pobra\u0107 klucza publicznego: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=Podany klucz publiczny nie zosta\u0142 pobrany z podanego adresu URL klucza. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Sprawd\u017a identyfikator klucza, adres URL klucza i dost\u0119p do sieci, nast\u0119pnie spr\u00f3buj ponownie wykona\u0107 dzia\u0142anie. Je\u015bli po\u0142\u0105czenie si\u0119 nie powiedzie, adres URL klucza mo\u017ce by\u0107 tymczasowo niedost\u0119pny.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: Nie podano identyfikatora klucza publicznego dla adresu URL klucza {0}. 
+ERROR_KEYID_NOT_PROVIDED.explanation=Nie podano identyfikatora klucza publicznego dla podanego adresu URL klucza. 64-bitowy Identyfikator klucza jest wymagany do pobrania i zweryfikowania autentyczno\u015bci klucza. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Podaj identyfikator klucza w formacie 64-bitowym. Aby znale\u017a\u0107 identyfikator klucza, uruchom komend\u0119 GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Protok\u00f3\u0142 w nast\u0119puj\u0105cym adresie URL klucza nie jest obs\u0142ugiwany: {0}. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). Upewnij si\u0119, \u017ce poprawnie podano adres URL.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Protok\u00f3\u0142 URL w podanym adresie URL klucza nie jest obs\u0142ugiwany.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Upewnij si\u0119, \u017ce poprawnie podano adres URL. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: Identyfikator klucza publicznego {0} zosta\u0142 uniewa\u017cniony. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=Klucz publiczny zosta\u0142 uniewa\u017cniony. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Podaj nowy identyfikator klucza publicznego oraz podpisy. Je\u015bli uniewa\u017cniony klucz jest kluczem publicznym Liberty, zastosuj poprawk\u0119 tymczasow\u0105 lub podaj nowy identyfikator klucza publicznego, kt\u00f3ry jest dost\u0119pny w serwisie OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: Identyfikator klucza publicznego {0} utraci\u0142 wa\u017cno\u015b\u0107: {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=Klucz publiczny utraci\u0142 wa\u017cno\u015b\u0107.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Uruchom komend\u0119 GnuPG, aby wyd\u0142u\u017cy\u0107 okres wa\u017cno\u015bci klucza publicznego i spr\u00f3buj ponownie. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Nie mo\u017cna zweryfikowa\u0107 nast\u0119puj\u0105cych podpis\u00f3w funkcji: {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Podpis funkcji nie zosta\u0142 zweryfikowany.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=U\u017cyj opcji --verbose, aby wy\u015bwietli\u0107 \u015bledzenie debugowania.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: Nie podano adresu URL klucza publicznego dla identyfikatora klucza {0}. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= Nie podano adresu URL klucza publicznego dla identyfikatora klucza {0}. Adres URL klucza publicznego jest polem obowi\u0105zkowym podczas pobierania klucza publicznego. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Podaj adres URL klucza publicznego. Obs\u0142ugiwane protoko\u0142y: HTTP, HTTPS i file (pliki). 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: Identyfikator klucza publicznego {0} nie jest zgodny z podanym identyfikatorem klucza {1}. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Mo\u017cliwe, \u017ce klucz publiczny uleg\u0142 zmianie. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Je\u015bli klucz publiczny jest plikiem lokalnym, upewnij si\u0119, \u017ce wybrano poprawny plik.
+

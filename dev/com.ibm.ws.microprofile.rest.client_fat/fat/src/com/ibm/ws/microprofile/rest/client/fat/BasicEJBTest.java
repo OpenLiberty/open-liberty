@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.microprofile.rest.client.fat;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,18 +37,34 @@ import mpRestClient10.basicEJB.BasicClientTestServlet;
 @RunWith(FATRunner.class)
 public class BasicEJBTest extends FATServletClient {
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     final static String SERVER_NAME = "mpRestClient10.basic.ejb";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
-                                                             MicroProfileActions.MP13, //mpRestClient-1.0
-                                                             MicroProfileActions.MP20, // 1.1
-                                                             MicroProfileActions.MP22, // 1.2
-                                                             MicroProfileActions.MP30, // 1.3
-                                                             MicroProfileActions.MP33, // 1.4
-                                                             MicroProfileActions.MP40, // 2.0
-                                                             MicroProfileActions.MP50, // 3.0
-                                                             MicroProfileActions.MP60);// 3.0+EE10
+    public static RepeatTests r;
+    
+    // To avoid bogus timeout build-breaks on slow Windows hardware only run a few versions on 
+    // Windows.
+    static {
+        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
+            r = MicroProfileActions.repeat(SERVER_NAME, 
+                                           MicroProfileActions.MP13, //mpRestClient-1.0
+                                           MicroProfileActions.MP20, //mpRestClient-1.1
+                                           MicroProfileActions.MP22, // 1.2
+                                           MicroProfileActions.MP30, // 1.3
+                                           MicroProfileActions.MP33, // 1.4
+                                           MicroProfileActions.MP40, // 2.0
+                                           MicroProfileActions.MP50, // 3.0
+                                           MicroProfileActions.MP60);// 3.0+EE10
+
+        } else {
+            r = MicroProfileActions.repeat(SERVER_NAME, 
+                                           MicroProfileActions.MP13, //mpRestClient-1.0 
+                                           MicroProfileActions.MP60);// 3.0+EE10
+
+        }
+    }
 
     private static final String appName = "basicEJBClientApp";
 

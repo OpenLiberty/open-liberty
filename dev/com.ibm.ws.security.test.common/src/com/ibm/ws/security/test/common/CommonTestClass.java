@@ -103,6 +103,13 @@ public class CommonTestClass {
         assertTrue("Exception message did not match expected expression. Expected: [" + errorMsgRegex + "]. Message was: [" + errorMsg + "]", m.find());
     }
     
+    public void verifyExceptionDoesNotContain(Throwable e, String errorMsgRegex) {
+        String errorMsg = e.toString();
+        Pattern pattern = Pattern.compile(errorMsgRegex);
+        Matcher m = pattern.matcher(errorMsg);
+        assertFalse("Exception message contained an expression that was not expected. Expression: [" + errorMsgRegex + "]. Message was: [" + errorMsg + "]", m.find());
+    }
+    
     public void verifyExceptionString(String returnedError, String errorMsgRegex) {
        
         Pattern pattern = Pattern.compile(errorMsgRegex);

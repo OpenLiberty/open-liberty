@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.config;
 
@@ -24,11 +21,12 @@ import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.security.common.crypto.HashUtils;
 
 public class DiscoveryConfigUtils {
-    
+
     public static final TraceComponent tc = Tr.register(DiscoveryConfigUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    
+
     private JSONObject discoveryjson;
     private String tokenEndpointAuthMethod;
+    private String tokenEndpointAuthSigningAlgorithm;
     private String scope;
     private String signatureAlgorithm;
     private String id;
@@ -39,7 +37,7 @@ public class DiscoveryConfigUtils {
     private String discoveryDocumentHash;
 
     private long discoveryPollingRate;
-    
+
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
     public static final String OPDISCOVERY_INTROSPECTION_EP_URL = "introspection_endpoint";
@@ -47,11 +45,13 @@ public class DiscoveryConfigUtils {
     public static final String OPDISCOVERY_USERINFO_EP_URL = "userinfo_endpoint";
     public static final String OPDISCOVERY_ISSUER = "issuer";
     public static final String OPDISCOVERY_TOKEN_EP_AUTH = "token_endpoint_auth_methods_supported";
+    public static final String OPDISCOVERY_TOKEN_EP_AUTH_SIGNING_ALGS_SUPPORTED = "token_endpoint_auth_signing_alg_values_supported";
     public static final String OPDISCOVERY_SCOPES = "scopes_supported";
     public static final String OPDISCOVERY_IDTOKEN_SIGN_ALG = "id_token_signing_alg_values_supported";
-    
+
     public static final String CFG_KEY_SCOPE = "scope";
     public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD = "tokenEndpointAuthMethod";
+    public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
     public static final String KEY_authorizationEndpoint = "authorizationEndpoint";
     public static final String KEY_tokenEndpoint = "tokenEndpoint";
@@ -59,9 +59,9 @@ public class DiscoveryConfigUtils {
     public static final String KEY_jwksUri = "jwksUri";
     public static final String KEY_ISSUER = "issuer";
     public static final String KEY_DISCOVERY_ENDPOINT = "discoveryEndpoint";
-       
+
     public DiscoveryConfigUtils() {
-        
+
     }
 
     public DiscoveryConfigUtils initialConfig(String configId, String ep, long discoveryRate) {
@@ -70,42 +70,54 @@ public class DiscoveryConfigUtils {
         this.discoveryPollingRate = discoveryRate;
         return this;
     }
-    
-    public DiscoveryConfigUtils discoveredConfig(String alg, String tokenepAuthMethod, String scope) {
+
+    public DiscoveryConfigUtils discoveredConfig(String alg, String tokenepAuthMethod, String tokenEndpointAuthSigningAlgorithm, String scope) {
         this.signatureAlgorithm = alg;
         this.tokenEndpointAuthMethod = tokenepAuthMethod;
+        this.tokenEndpointAuthSigningAlgorithm = tokenEndpointAuthSigningAlgorithm;
         this.scope = scope;
         return this;
     }
-    
-    public DiscoveryConfigUtils discoveryDocumentHash(String discoveryHash) {    
+
+    public DiscoveryConfigUtils discoveryDocumentHash(String discoveryHash) {
         this.discoveryDocumentHash = discoveryHash;
         return this;
     }
-    
-    public DiscoveryConfigUtils discoveryDocumentResult(JSONObject json) {    
+
+    public DiscoveryConfigUtils discoveryDocumentResult(JSONObject json) {
         this.discoveryjson = json;
         return this;
     }
 
     public String adjustTokenEndpointAuthMethod() {
-        ArrayList<String> discoveryTokenepAuthMethod = discoverOPConfig(discoveryjson.get(OPDISCOVERY_TOKEN_EP_AUTH));
-        if (isSocialRPUsingDefault("authMethod") && !opHasSocialRPDefault("authMethod", discoveryTokenepAuthMethod)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "See if we need to adjusted the token endpoint authmethod. The original is : " + tokenEndpointAuthMethod);
-            }
-            String supported  = socialRPSupportsOPConfig("authMethod", discoveryTokenepAuthMethod);
-            if (supported != null) {
-                Tr.info(tc,  "OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT", this.tokenEndpointAuthMethod, CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD, supported, getId());
-                this.tokenEndpointAuthMethod = supported;
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The adjusted value is : " + tokenEndpointAuthMethod);
-                }
-            }           
-        }
+        this.tokenEndpointAuthMethod = adjustConfigAttributeValueBasedOnListOfSupportedValues(OPDISCOVERY_TOKEN_EP_AUTH, CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD, tokenEndpointAuthMethod);
         return this.tokenEndpointAuthMethod;
     }
-    
+
+    public String adjustTokenEndpointAuthSigningAlgorithm() {
+        this.tokenEndpointAuthSigningAlgorithm = adjustConfigAttributeValueBasedOnListOfSupportedValues(OPDISCOVERY_TOKEN_EP_AUTH_SIGNING_ALGS_SUPPORTED, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM, tokenEndpointAuthSigningAlgorithm);
+        return this.tokenEndpointAuthSigningAlgorithm;
+    }
+
+    public String adjustConfigAttributeValueBasedOnListOfSupportedValues(String discoveryDocKey, String configAttributeName, String originalConfigValue) {
+        String overrideValue = originalConfigValue;
+        ArrayList<String> opValuesSupported = discoverOPConfig(discoveryjson.get(discoveryDocKey));
+        if (isSocialRPUsingDefault(configAttributeName) && !opHasSocialRPDefault(configAttributeName, opValuesSupported)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "See if we need to adjusted " + configAttributeName + ". The original is : " + originalConfigValue);
+            }
+            String supported  = socialRPSupportsOPConfig(configAttributeName, opValuesSupported);
+            if (supported != null) {
+                Tr.info(tc,  "OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT", originalConfigValue, configAttributeName, supported, getId());
+                overrideValue = supported;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The adjusted value is : " + overrideValue);
+                }
+            }
+        }
+        return overrideValue;
+    }
+
     private String getId() {
         return id;
     }
@@ -116,28 +128,30 @@ public class DiscoveryConfigUtils {
      */
     public String adjustScopes() {
         ArrayList<String> discoveryScopes = discoverOPConfig(discoveryjson.get(OPDISCOVERY_SCOPES));
-        if (isSocialRPUsingDefault("scope") && !opHasSocialRPDefault("scope", discoveryScopes)) {
+        if (isSocialRPUsingDefault(CFG_KEY_SCOPE) && !opHasSocialRPDefault(CFG_KEY_SCOPE, discoveryScopes)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "See if we need to adjusted the scopes. The original is : " + this.scope);
             }
-            String supported  = socialRPSupportsOPConfig("scope", discoveryScopes);
+            String supported  = socialRPSupportsOPConfig(CFG_KEY_SCOPE, discoveryScopes);
             if (supported != null) {
                 Tr.info(tc,  "OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT", this.scope, CFG_KEY_SCOPE, supported, getId());
                 this.scope = supported;
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "The adjusted value is : " + this.scope);
                 }
-            }           
+            }
         }
         return this.scope;
     }
-    
+
     private boolean isSocialRPUsingDefault(String key) {
-        if ("authMethod".equals(key)) {
+        if (CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD.equals(key)) {
             return matches("client_secret_post", this.tokenEndpointAuthMethod);
-        } else if ("alg".equals(key)) {
+        } else if (CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM.equals(key)) {
+            return matches("RS256", this.tokenEndpointAuthSigningAlgorithm);
+        } else if (CFG_KEY_SIGNATURE_ALGORITHM.equals(key)) {
             return matches("RS256", this.signatureAlgorithm);
-        } else if ("scope".equals(key)) {
+        } else if (CFG_KEY_SCOPE.equals(key)) {
             return (matchesMultipleValues("openid profile email", this.scope));
         }
         return false;
@@ -151,9 +165,10 @@ public class DiscoveryConfigUtils {
 
         String rpSupportedSignatureAlgorithms = "RS256";
         String rpSupportedTokenEndpointAuthMethods = "client_secret_post client_secret_basic";
+        String rpSupportedTokenEndpointAuthSigningAlgs = "RS256 RS384 RS512 ES256 ES384 ES512";
         String rpSupportedScopes = "openid profile email";
 
-        if ("alg".equals(key) && values != null) {
+        if (CFG_KEY_SIGNATURE_ALGORITHM.equals(key) && values != null) {
             for (String value : values) {
                 if (rpSupportedSignatureAlgorithms.contains(value)) {
                     return value;
@@ -161,7 +176,7 @@ public class DiscoveryConfigUtils {
             }
         }
 
-        if ("authMethod".equals(key) && values != null) {
+        if (CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD.equals(key) && values != null) {
             for (String value : values) {
                 if (rpSupportedTokenEndpointAuthMethods.contains(value)) {
                     return value;
@@ -169,7 +184,15 @@ public class DiscoveryConfigUtils {
             }
         }
 
-        if ("scope".equals(key) && values != null) {
+        if (CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM.equals(key) && values != null) {
+            for (String value : values) {
+                if (rpSupportedTokenEndpointAuthSigningAlgs.contains(value)) {
+                    return value;
+                }
+            }
+        }
+
+        if (CFG_KEY_SCOPE.equals(key) && values != null) {
             String scopes = null;
             for (String value : values) {
                 if (rpSupportedScopes.contains(value)) {
@@ -185,7 +208,7 @@ public class DiscoveryConfigUtils {
         }
         return null;
     }
-    
+
     /**
      * @param object
      */
@@ -227,17 +250,19 @@ public class DiscoveryConfigUtils {
                 }
             }
         }
-       
+
         return jsonString;
     }
 
     private boolean opHasSocialRPDefault(String key, ArrayList<String> opconfig) {
 
-        if ("authMethod".equals(key)) {
+        if (CFG_KEY_TOKEN_ENDPOINT_AUTH_METHOD.equals(key)) {
             return matches("client_secret_post", opconfig);
-        } else if ("alg".equals(key)) {
+        } else if (CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM.equals(key)) {
             return matches("RS256", opconfig);
-        } else if ("scope".equals(key)) {
+        } else if (CFG_KEY_SIGNATURE_ALGORITHM.equals(key)) {
+            return matches("RS256", opconfig);
+        } else if (CFG_KEY_SCOPE.equals(key)) {
             return matches("openid", opconfig) && matches("profile", opconfig) && matches("email", opconfig);
         }
         return false;
@@ -274,7 +299,7 @@ public class DiscoveryConfigUtils {
         }
         return true;
     }
-    
+
     /**
      * @param object
      * @return
@@ -304,24 +329,24 @@ public class DiscoveryConfigUtils {
         }
         if ((ep = configUtils.trim((String) props.get(KEY_jwksUri))) != null) {
             endpoints = buildDiscoveryWarning(endpoints, KEY_jwksUri);
-        } 
+        }
         if (!endpoints.isEmpty()) {
             logWarning("OIDC_CLIENT_DISCOVERY_OVERRIDE_EP", endpoints);
         }
-        
+
         if ((ep = configUtils.trim((String) props.get(KEY_ISSUER))) != null) {
             logWarning("OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER", KEY_ISSUER);
         }
-        
+
     }
 
     /**
      * @param endpoints
      */
     private void logWarning(String key, String endpoints) {
-           
+
         Tr.warning(tc, key, this.discoveryURL, endpoints, getId());
-        
+
     }
 
     /**
@@ -329,10 +354,10 @@ public class DiscoveryConfigUtils {
      * @param ep
      * @return
      */
-    private String buildDiscoveryWarning(String endpoints, String ep) { 
+    private String buildDiscoveryWarning(String endpoints, String ep) {
         return endpoints.concat(ep).concat(", ");
     }
-    
+
     /**
      * @param string
      */
@@ -343,7 +368,7 @@ public class DiscoveryConfigUtils {
             Tr.info(tc, nlsMessage);
         } else {
             Tr.info(tc, getNlsMessage(key, defaultMessage));
-        }     
+        }
     }
 
     private String getNlsMessage(String key, String defaultMessage) {
@@ -352,7 +377,7 @@ public class DiscoveryConfigUtils {
         message = TraceNLS.getFormattedMessage(getClass(),
                 bundleName, key,
                 new Object[] { getId(), this.discoveryURL }, defaultMessage);
-             
+
         return message;
     }
 
@@ -372,9 +397,9 @@ public class DiscoveryConfigUtils {
         }
         return updated;
     }
-    
+
     public String getDiscoveryDocumentHash() {
         return this.discoveryDocumentHash;
     }
-    
+
 }

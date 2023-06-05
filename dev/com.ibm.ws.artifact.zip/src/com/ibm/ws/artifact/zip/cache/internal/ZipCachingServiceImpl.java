@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,8 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -196,8 +195,7 @@ public class ZipCachingServiceImpl implements ZipCachingService {
         }
     }
 
-    private static final DateFormat INTROSPECT_STAMP_FORMAT =
-        new SimpleDateFormat("MM/dd/yyyy kk:mm:ss:SSS zzz");
+    private static final DateTimeFormatter INTROSPECT_STAMP_FORMAT = DateTimeFormatter.ofPattern("MM/dd/uuuu kk:mm:ss:SSS zzz");
 
     /**
      * Write the state of the zip caching service to a print writer.
@@ -209,10 +207,8 @@ public class ZipCachingServiceImpl implements ZipCachingService {
     public void introspect(PrintWriter output) {
         long introspectAt = System.nanoTime();
 
-        Date currentTime = new Date();
-
         output.println("Zip Caching Service:");
-        output.println("  [ " + INTROSPECT_STAMP_FORMAT.format(currentTime) + " ]");
+        output.println("  [ " + INTROSPECT_STAMP_FORMAT.format(ZonedDateTime.now()) + " ]");
 
         ZipCachingServiceImpl.introspectProperties(output);
         ZipCachingServiceImpl.introspectHandles(output);

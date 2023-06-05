@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2022 IBM Corporation and others.
+ * Copyright (c) 1998, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -526,18 +526,9 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
                                                     pmiBean,
                                                     this);
 
-            // For server checkpoint, preload stateless bean pools during application start
-            EJBApplicationMetaData ejbAMD = beanMetaData._moduleMetaData.getEJBApplicationMetaData();
-            if (statelessSessionHome &&
-                beanMetaData.ivInitialPoolSize == 0 &&
-                beanMetaData.minPoolSize > 0 &&
-                !ejbAMD.isStarted() &&
-                container.getEJBRuntime().isCheckpointApplications()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Enabling BeanPool Pre-Load for Checkpoint : " + beanMetaData.j2eeName + ", size = " + beanMetaData.minPoolSize);
-                beanMetaData.ivInitialPoolSize = beanMetaData.minPoolSize;
-            }
-
+            // Preload the bean pool for stateless beans that have been configured with a hard minimum.
+            // Note: not recommended for use with checkpoint applications since it may result in global
+            // transactions that would fail the server checkpoint.
             if (beanMetaData.ivInitialPoolSize != 0) {
                 // Preload the bean pool on a separate thread to avoid wrapper locking issues during deferred initialization.
                 Runnable preloadBeanPool = new Runnable() {
@@ -548,6 +539,8 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
                         homeRecord.getHomeAndInitialize().preLoadBeanPool();
                     }
                 };
+
+                EJBApplicationMetaData ejbAMD = beanMetaData._moduleMetaData.getEJBApplicationMetaData();
 
                 if (ejbAMD.isStarted()) {
                     // Deferred initialization - schedule the bean pool to be preloaded immediately, but
@@ -859,12 +852,12 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * eventually called. <p>
      *
      * @param threadData the <code>EJBThreadData</code> associated with the
-     *            currently running thread
-     * @param tx the <code>ContainerTx</code> to associate with the newly
-     *            created <code>BeanO</code> <p>
-     * @param activate true if the created BeanO will be used for bean
-     *            activation, false for bean creation.
-     * @param context the context for creating the bean, or null
+     *                       currently running thread
+     * @param tx         the <code>ContainerTx</code> to associate with the newly
+     *                       created <code>BeanO</code> <p>
+     * @param activate   true if the created BeanO will be used for bean
+     *                       activation, false for bean creation.
+     * @param context    the context for creating the bean, or null
      *
      * @return newly created <code>BeanO</code> associated with a newly
      *         created bean instance of type of beans managed by this
@@ -1019,11 +1012,11 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * eventually called. <p>
      *
      * @param threadData the <code>EJBThreadData</code> associated with the
-     *            currently running thread
-     * @param tx the <code>ContainerTx</code> to associate with the newly
-     *            created <code>BeanO</code> <p>
-     * @param id the <code>BeanId</code> to associate with the newly
-     *            created <code>BeanO</code> <p>
+     *                       currently running thread
+     * @param tx         the <code>ContainerTx</code> to associate with the newly
+     *                       created <code>BeanO</code> <p>
+     * @param id         the <code>BeanId</code> to associate with the newly
+     *                       created <code>BeanO</code> <p>
      *
      * @return newly created <code>BeanO</code> associated with a newly
      *         created bean instance of type of beans managed by this
@@ -1082,7 +1075,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * may be overridden with the poolSize property.
      *
      * @param tx the <code>ContainerTx</code> to associate with the newly
-     *            created <code>BeanO</code> <p>
+     *               created <code>BeanO</code> <p>
      *
      * @return <code>BeanO</code> assigned from the BeanPool, or null
      *         if a new instance needs to be created.
@@ -1326,14 +1319,14 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * with pre and postInvoke calls. <p>
      *
      * @param businessInterfaceName One of the local business interfaces or remote
-     *            business interfaces for this session bean.
-     * @param useSupporting whether or not to try to match the passed in interface
-     *            to a known sublcass (ejb-link / beanName situation)
+     *                                  business interfaces for this session bean.
+     * @param useSupporting         whether or not to try to match the passed in interface
+     *                                  to a known sublcass (ejb-link / beanName situation)
      *
      * @return The business object (wrapper) corresponding to the given
      *         business interface.
-     * @throws ClassNotFoundException if the passed in interface could not
-     *             be loaded
+     * @throws ClassNotFoundException    if the passed in interface could not
+     *                                       be loaded
      * @throws EJBConfigurationException if the bean is mis-configured
      */
     // d366807.4
@@ -1421,9 +1414,9 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * with pre and postInvoke calls. <p>
      *
      * @param interfaceName One of the local business interfaces for this
-     *            session bean
+     *                          session bean
      * @param useSupporting whether or not to try to match the passed in interface
-     *            to a known sublcass (ejb-link / beanName situation)
+     *                          to a known sublcass (ejb-link / beanName situation)
      * @return The business object (wrapper) corresponding to the given
      *         business interface.
      *
@@ -1460,7 +1453,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * for the rest of the logic.
      *
      * @param interfaceIndex the local business interface index
-     * @param context the context for creating the object, or null
+     * @param context        the context for creating the object, or null
      */
     public Object createLocalBusinessObject(int interfaceIndex, ManagedObjectContext context) throws RemoteException, CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -1498,9 +1491,9 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * with pre and postInvoke calls. <p>
      *
      * @param interfaceName One of the remote business interfaces for this
-     *            session bean
+     *                          session bean
      * @param useSupporting whether or not to try to match the passed in interface
-     *            to a known sublcass (ejb-link / beanName situation)
+     *                          to a known sublcass (ejb-link / beanName situation)
      * @return The business object (wrapper) corresponding to the given
      *         business interface.
      *
@@ -1571,7 +1564,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * for the rest of the logic.
      *
      * @param interfaceIndex the remote business interface index
-     * @param context the context for creating the object, or null
+     * @param context        the context for creating the object, or null
      */
     public Object createRemoteBusinessObject(int interfaceIndex, ManagedObjectContext context) throws RemoteException, CreateException {
 
@@ -1614,9 +1607,9 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @return The business object (wrapper) that is an aggregate of all
      *         business local interfaces.
      * @throws CreateException if an application-level failure occurs creating
-     *             an instance of the bean.
-     * @throws EJBException if a failure occurs attempting to generate the
-     *             aggregate wrapper class or create an instance of it.
+     *                             an instance of the bean.
+     * @throws EJBException    if a failure occurs attempting to generate the
+     *                             aggregate wrapper class or create an instance of it.
      */
     // F743-34304
     public Object createAggregateLocalReference(ManagedObjectContext context) throws CreateException {
@@ -1649,10 +1642,10 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @param context the context for creating the object, or null
      * @return the set of all wrappers for the created business object.
      * @throws CreateException if an application-level failure occurs creating
-     *             an instance of the bean.
+     *                             an instance of the bean.
      * @throws RemoteException if a failure occurs accessing the wrapper cache.
-     * @throws EJBException if a failure occurs attempting to generate the
-     *             aggregate wrapper class or create an instance of it.
+     * @throws EJBException    if a failure occurs attempting to generate the
+     *                             aggregate wrapper class or create an instance of it.
      */
     // F743-34304
     public EJSWrapperCommon createBusinessObjectWrappers(ManagedObjectContext context) throws CreateException, RemoteException {
@@ -1937,17 +1930,17 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * (with and without inheritance). <p>
      *
      * @param beanId the <code>BeanId</code> identifying the bean to
-     *            activate.
+     *                   activate.
      *
      * @return the EJSWrapperCollection associated with the specified
      *         beanid.
      *
-     * @exception CSIException thrown if a finder-specific
-     *                error occurs (such as no object with corresponding
-     *                primary key).
+     * @exception CSIException    thrown if a finder-specific
+     *                                error occurs (such as no object with corresponding
+     *                                primary key).
      * @exception RemoteException thrown if a system exception occurs while
-     *                trying to locate the <code>EJBObject</code> instance
-     *                corresponding to the primary key.
+     *                                trying to locate the <code>EJBObject</code> instance
+     *                                corresponding to the primary key.
      */
     // d146034.6
     public EJSWrapperCommon activateBean(BeanId beanId,
@@ -2018,17 +2011,17 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * getBean(type, key, data). <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of the <code>EJBObject</code> to return.
+     *                       key of the <code>EJBObject</code> to return.
      *
      * @return the <code>EJBObject</code> associated with the specified
      *         primary key.
      *
      * @exception FinderException thrown if a finder-specific
-     *                error occurs (such as no object with corresponding
-     *                primary key).
+     *                                error occurs (such as no object with corresponding
+     *                                primary key).
      * @exception RemoteException thrown if a system exception occurs while
-     *                trying to locate the <code>EJBObject</code> instance
-     *                corresponding to the primary key.
+     *                                trying to locate the <code>EJBObject</code> instance
+     *                                corresponding to the primary key.
      */
     @Override
     public EJBObject activateBean(Object primaryKey) throws FinderException, RemoteException {
@@ -2077,17 +2070,17 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * getBean(type, key, data). <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of the <code>EJBObject</code> to return.
+     *                       key of the <code>EJBObject</code> to return.
      *
      * @return the <code>EJBObject</code> associated with the specified
      *         primary key.
      *
      * @exception FinderException thrown if a finder-specific
-     *                error occurs (such as no object with corresponding
-     *                primary key).
+     *                                error occurs (such as no object with corresponding
+     *                                primary key).
      * @exception RemoteException thrown if a system exception occurs while
-     *                trying to locate the <code>EJBObject</code> instance
-     *                corresponding to the primary key.
+     *                                trying to locate the <code>EJBObject</code> instance
+     *                                corresponding to the primary key.
      */
     // f111627
     @Override
@@ -2136,25 +2129,25 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      *
      * Otherwise, activate the bean and hydrate it with the given data. <p>
      *
-     * @param type a <code>String</code> defining the most-specific
-     *            type of the bean being activated <p>
+     * @param type       a <code>String</code> defining the most-specific
+     *                       type of the bean being activated <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of the <code>EJBObject</code> to return <p>
+     *                       key of the <code>EJBObject</code> to return <p>
      *
-     * @param data an <code>Object</code> containing the data to use
-     *            to hydrate bean if necessary <p>
+     * @param data       an <code>Object</code> containing the data to use
+     *                       to hydrate bean if necessary <p>
      *
      * @return the <code>EJBObject</code> associated with the specified
      *         primary key <p>
      *
      * @exception FinderException thrown if a finder-specific
-     *                error occurs (such as no object with corresponding
-     *                primary key) <p>
+     *                                error occurs (such as no object with corresponding
+     *                                primary key) <p>
      *
      * @exception RemoteException thrown if a system
-     *                exception occurs while trying to activate the
-     *                <code>BeanO</code> instance corresponding
+     *                                exception occurs while trying to activate the
+     *                                <code>BeanO</code> instance corresponding
      */
     public EJBObject getBean(String type, Object primaryKey, Object data) throws FinderException, RemoteException {
         return ivEntityHelper.getBean(this, type, primaryKey, data);
@@ -2212,14 +2205,14 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * activateBean()} should be used instead. <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of the <code>EJBObject</code> to return.
+     *                       key of the <code>EJBObject</code> to return.
      *
      * @return the <code>EJBObject</code> associated with the specified
      *         primary key or null if the bean cannot be found in the cache.
      *
      * @exception RemoteException thrown if a system exception occurs while
-     *                trying to locate the <code>EJBObject</code> instance
-     *                corresponding to the primary key within the cache.
+     *                                trying to locate the <code>EJBObject</code> instance
+     *                                corresponding to the primary key within the cache.
      **/
     // d116859
     @Override
@@ -2252,14 +2245,14 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * prior to performing a database query. <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of the <code>EJBObject</code> to return.
+     *                       key of the <code>EJBObject</code> to return.
      *
      * @return the <code>EJBLocalObject</code> associated with the specified
      *         primary key or null if the bean cannot be found in the cache.
      *
      * @exception RemoteException thrown if a system exception occurs while
-     *                trying to locate the <code>EJBObject</code> instance
-     *                corresponding to the primary key within the cache.
+     *                                trying to locate the <code>EJBObject</code> instance
+     *                                corresponding to the primary key within the cache.
      **/
     // d140003.14
     public EJBLocalObject getBean_Local(Object primaryKey) throws RemoteException {
@@ -2271,22 +2264,22 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * newly created bean. The actual database store may take place in
      * <code>afterPostCreate()</code>.<p>
      *
-     * @param beanO the <code>BeanO</code> being created <p>
+     * @param beanO                           the <code>BeanO</code> being created <p>
      *
-     * @param primaryKey an <code>Object</code> containing the
-     *            primary key of the bean being created <p>
+     * @param primaryKey                      an <code>Object</code> containing the
+     *                                            primary key of the bean being created <p>
      *
      * @param inSupportOfEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                            true if database inserts in ejbPostCreate will
+     *                                            be supported. <p>
      *
      * @return <code>EJBObject</code> for newly created bean <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // d142250
     public EJBObject postCreate(BeanO beanO,
@@ -2333,10 +2326,10 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @param beanO the <code>BeanO</code> being created <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     public EJBObject postCreate(BeanO beanO) throws CreateException, RemoteException {
         homeEnabled();
@@ -2346,17 +2339,17 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
     /**
      * Complete the bean creation process. <p>
      *
-     * @param beanO the <code>BeanO</code> being created <p>
+     * @param beanO                       the <code>BeanO</code> being created <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // d142250
     public EJBObject postCreate(BeanO beanO, boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
@@ -2370,10 +2363,10 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @param beanO the <code>BeanO</code> being created <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     public EJBObject postCreate(BeanO beanO, Object primaryKey) throws CreateException, RemoteException {
         homeEnabled();
@@ -2466,13 +2459,13 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * is called with inSupportOfEJBPostCreateChanges=true and ejbPostCreate
      * returns successfully.
      *
-     * @param beanO the <code>BeanO</code> being created <p>
+     * @param beanO      the <code>BeanO</code> being created <p>
      *
      * @param primaryKey an <code>Object</code> containing the
-     *            primary key of the bean being created <p>
+     *                       primary key of the bean being created <p>
      *
      * @exception DuplicateKeyException thrown if EJB already
-     *                exists within context of this transaction <p>
+     *                                      exists within context of this transaction <p>
      **/
     // d142250
     public void afterPostCreate(BeanO beanO, Object primaryKey) throws CreateException, RemoteException {
@@ -2519,22 +2512,22 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * Complete the bean creation process and return wrapper for
      * newly created bean. <p>
      *
-     * @param beanO the <code>BeanO</code> being created <p>
+     * @param beanO                       the <code>BeanO</code> being created <p>
      *
-     * @param primaryKey an <code>Object</code> containing the
-     *            primary key of the bean being created <p>
+     * @param primaryKey                  an <code>Object</code> containing the
+     *                                        primary key of the bean being created <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
      * @return <code>EJBObject</code> for newly created bean <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO,
@@ -2580,10 +2573,10 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @param beanO the <code>BeanO</code> being created <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO) throws CreateException, ContainerException, RemoteException {
@@ -2594,17 +2587,17 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
     /**
      * Complete the bean creation process. <p>
      *
-     * @param beanO the <code>BeanO</code> being created <p>
+     * @param beanO                       the <code>BeanO</code> being created <p>
      *
      * @param supportEJBPostCreateChanges a <code>boolean</code> which is set to
-     *            true if database inserts in ejbPostCreate will
-     *            be supported. <p>
+     *                                        true if database inserts in ejbPostCreate will
+     *                                        be supported. <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO,
@@ -2619,10 +2612,10 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * @param beanO the <code>BeanO</code> being created <p>
      *
      * @exception CreateException thrown if create-specific
-     *                error occurs <p>
+     *                                error occurs <p>
      *
      * @exception RemoteException thrown if a container
-     *                error occurs <p>
+     *                                error occurs <p>
      */
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO, Object primaryKey) throws CreateException, ContainerException, RemoteException {
@@ -2634,7 +2627,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * Process a create failure for the given beanO. <p>
      *
      * @param beanO the <code>BeanO</code> instance that was
-     *            being created <p>
+     *                  being created <p>
      */
     public void createFailure(BeanO beanO) {
         //-----------------------------------------------------------
@@ -2686,7 +2679,7 @@ public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, Sess
      * Remove the EJB identitifed by the given primary key. <p>
      *
      * @param primaryKey the <code>Object</code> containing the primary
-     *            key of EJB to remove from this home <p>
+     *                       key of EJB to remove from this home <p>
      */
     public void remove(Object primaryKey) throws RemoteException, RemoveException, FinderException {
         // d141216 method rewritten to avoid calling preinvoke/postinvoke

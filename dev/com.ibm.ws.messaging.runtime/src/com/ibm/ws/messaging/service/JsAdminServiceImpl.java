@@ -24,7 +24,9 @@ import java.util.Vector;
 
 import javax.management.ObjectName;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.lifecycle.Singleton;
@@ -47,8 +49,21 @@ static {
       SibTr.debug(tc, "Source info: com/ibm/ws/messaging/service/JsAdminServiceImpl.java");
   }
 
-  private JsMainImpl jsMain = null;
+  private final JsMainImpl jsMain;
 
+  @Activate
+  public JsAdminServiceImpl(@Reference JsMainImpl jsMainImpl) {
+	    String methodName = "<init>";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
+            SibTr.entry(tc, methodName, new Object[] {this, jsMainImpl});
+        
+        this.jsMain = jsMainImpl;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.exit(tc, methodName);
+        }
+  }
+  
   public String quoteJmxPropertyValue(String s) {
     if (JsAdminService.isValidJmxPropertyValue(s) == true)
       return s;
@@ -60,25 +75,8 @@ static {
     return ObjectName.unquote(s);
   }
 
-  public synchronized void setAdminMain(JsMain newJsMain) throws IllegalStateException {
-    if (jsMain != null) 
-          throw new IllegalStateException("JsMain is already set:"+jsMain+" new JsMain:"+ newJsMain);
-    jsMain = (JsMainImpl) newJsMain;
-    return;
-  }
-
   public boolean isInitialized() {
     return jsMain != null;
-  }
-
-  public synchronized void reset() {
-	  jsMain = null;
-  }
-
-  public synchronized JsMain getAdminMain() throws IllegalStateException {
-    if (jsMain == null) 
-    	throw new IllegalStateException("Object instance for the admin service was never set");
-    return jsMain;
   }
 
   public JsBus getBus(String name) throws SIBExceptionBusNotFound {

@@ -25,11 +25,13 @@ fat.minimum.java.level: 11
 fat.project: true
 
 -buildpath: \
-  com.ibm.ws.componenttest.2.0,\
-  io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.data.1.0,\
-  io.openliberty.jakarta.interceptor.2.1,\
-  io.openliberty.jakarta.nosql.1.0,\
-  io.openliberty.jakarta.servlet.6.0,\
-  io.openliberty.jakarta.transaction.2.0
+	com.ibm.ws.componenttest.2.0,\
+	io.openliberty.jakarta.annotation.2.1,\
+	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.jakarta.data.1.0,\
+	io.openliberty.jakarta.interceptor.2.1,\
+	io.openliberty.jakarta.nosql.1.0,\
+	io.openliberty.jakarta.servlet.6.0,\
+	io.openliberty.jakarta.transaction.2.0,\
+	io.openliberty.org.eclipse.microprofile.config.3.0,\
+	io.openliberty.org.eclipse.jnosql.1.0

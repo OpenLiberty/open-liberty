@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
         IBM Corporation - initial API and implementation
  -->
 <project>
-    <condition property="illegal.access.permit" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED">
+    <condition property="illegal.access.permit.fat" value="--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.rmi/java.rmi=ALL-UNNAMED">
         <not>
             <equals arg1="1.8" arg2="${java.specification.version}" />
         </not>

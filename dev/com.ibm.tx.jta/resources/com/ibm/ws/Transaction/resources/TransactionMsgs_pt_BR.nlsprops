@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -842,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Examine o valor da \u00e9poca dessa mensagem e 
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: xid {0} recuperado de {1} - o xid n\u00e3o possui uma transa\u00e7\u00e3o associada e ser\u00e1 revertido
-WTRN0148_REC_XA_ROLLBACK.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito uma recupera\u00e7\u00e3o xa em um gerenciador de recursos registrado e obteve um xid que n\u00e3o corresponde a uma transa\u00e7\u00e3o registrada.  O servi\u00e7o de transa\u00e7\u00f5es reverter\u00e1 o xid como  parte do processamento de recupera\u00e7\u00e3o.
+WTRN0148_REC_XA_ROLLBACK.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito a recupera\u00e7\u00e3o XA em um gerenciador de recursos registrado e obteve um xid que n\u00e3o corresponde a uma transa\u00e7\u00e3o registrada. O servi\u00e7o de transa\u00e7\u00f5es recupera o xid como parte do processamento de recupera\u00e7\u00e3o.
 WTRN0148_REC_XA_ROLLBACK.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
 
 # 0 - xid
@@ -850,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: xid {0} recuperado de {1} - o xid possui uma transa\u00e7\u00e3o associada (tid={2}) com o estado registrado {3}
-WTRN0149_REC_XA_TRAN.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito uma recupera\u00e7\u00e3o xa em um gerenciador de recursos registrado e obteve um xid que corresponde a uma transa\u00e7\u00e3o registrada.  O servi\u00e7o de transa\u00e7\u00f5es concluir\u00e1 a transa\u00e7\u00e3o como parte do processamento de recupera\u00e7\u00e3o.
+WTRN0149_REC_XA_TRAN.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito a recupera\u00e7\u00e3o XA em um gerenciador de recursos registrado e obteve um xid que corresponde a uma transa\u00e7\u00e3o registrada. O servi\u00e7o de transa\u00e7\u00f5es conclui a transa\u00e7\u00e3o como parte do processamento da recupera\u00e7\u00e3o.
 WTRN0149_REC_XA_TRAN.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Resposta do retrocesso do xid recuperado {0} de {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito uma recupera\u00e7\u00e3o xa em um gerenciador de recursos registrado e obteve um xid que n\u00e3o corresponde a uma transa\u00e7\u00e3o registrada.  O servi\u00e7o de transa\u00e7\u00f5es tentou reverter o xid como parte do processamento de recupera\u00e7\u00e3o.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=O servi\u00e7o de transa\u00e7\u00f5es emitiu com \u00eaxito a recupera\u00e7\u00e3o XA em um gerenciador de recursos registrado e obteve um xid que n\u00e3o corresponde a uma transa\u00e7\u00e3o registrada. O servi\u00e7o de transa\u00e7\u00f5es tentou recuperar o xid como parte do processamento de recupera\u00e7\u00e3o.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine o c\u00f3digo de erro para determinar se o retrocesso falhou.
 
 # 0 - resource manager name
@@ -869,5 +869,19 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Configura\u00e7\u00e3o de alta disponibili
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=Alta disponibilidade est\u00e1 ativada para esse cluster, mas o gerenciador de alta disponibilidade est\u00e1 desativado.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Se essa for a configura\u00e7\u00e3o desejada, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Caso contr\u00e1rio, corrija a configura\u00e7\u00e3o de alta disponibilidade.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: O servi\u00e7o de transa\u00e7\u00f5es foi encerrado, mas o log de recupera\u00e7\u00e3o foi marcado como com falha.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=O log de recupera\u00e7\u00e3o falhou e o acesso ao log n\u00e3o ocorreu no encerramento do servidor.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Corrija quaisquer condi\u00e7\u00f5es indicadas pelas mensagens que relataram a invalida\u00e7\u00e3o do log. Reinicie o servidor para que o log possa ser corrigido.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou porque o servi\u00e7o de transa\u00e7\u00f5es n\u00e3o pode iniciar uma transa\u00e7\u00e3o.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=O Liberty n\u00e3o suporta aplicativos que iniciam ou requerem uma transa\u00e7\u00e3o enquanto o aplicativo inicia quando um ponto de verifica\u00e7\u00e3o do servidor \u00e9 solicitado.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Use a op\u00e7\u00e3o at=deployment do ponto de verifica\u00e7\u00e3o do servidor ou modifique o aplicativo para iniciar transa\u00e7\u00f5es ap\u00f3s ele ter iniciado.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: um aplicativo iniciou ou requereu uma transa\u00e7\u00e3o durante a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor. O rastreio de pilha a seguir para este encadeamento foi capturado quando a transa\u00e7\u00e3o foi criada: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=O rastreio de pilha foi capturado quando a transa\u00e7\u00e3o foi criada. O rastreio de pilha ajuda os usu\u00e1rios a determinar quais aplicativos iniciam transa\u00e7\u00f5es durante a inicializa\u00e7\u00e3o do aplicativo e, em seguida, causam a falha da solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine o rastreio de pilha para determinar qual aplicativo iniciou uma nova transa\u00e7\u00e3o durante a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

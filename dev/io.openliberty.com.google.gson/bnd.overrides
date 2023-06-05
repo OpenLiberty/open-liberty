@@ -5,6 +5,10 @@ Bundle-Name: google.collection
 Bundle-Description: google.collection; version=2.9.0
 Bundle-SymbolicName: io.openliberty.com.google.gson
 
+Bundle-SCM: url="https://github.com/google/gson/gson/",connection="scm\
+ :git:https://github.com/google/gson.git/gson",developerConnection="s\
+ cm:git:git@github.com:google/gson.git/gson",tag="gson-parent-2.9.0"
+
 -removeheaders.mr=Multi-Release
 
 WS-TraceGroup: GSON

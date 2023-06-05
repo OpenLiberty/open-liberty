@@ -30,7 +30,7 @@
   <AD id="createTables"                      type="Boolean" default="true" name="%createTables" description="%createTables.desc"/>
   <AD id="dataSourceRef"                     type="String"  default="DefaultDataSource" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource" name="%dataSource" description="%dataSoure.desc"/>
   <AD id="DataSourceFactory.target"          type="String"  default="(service.pid=${dataSourceRef})" ibm:final="true" name="internal" description="internal use only"/>
-  <AD id="dropTables"                        type="Boolean" default="false" name="internal" description="internal use only"/>
+  <AD id="dropTables"                        type="Boolean" default="false" ibm:beta="true" name="%dropTables" description="%dropTables.desc"/>
   <AD id="keyGenerationStrategy"             type="String"  default="AUTO" name="%strategy" description="%strategy.desc">
    <Option value="AUTO"     label="%strategy.auto.desc"/>
    <Option value="IDENTITY" label="%strategy.identity.desc"/>

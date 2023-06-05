@@ -26,6 +26,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientSecret = "${openIdConfig.clientSecret}",
                                          redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResourceExpression}",
                                          redirectURI = "${openIdConfig.redirectURI}",
+                                         useSessionExpression = "${openIdConfig.useSessionExpression}",
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),

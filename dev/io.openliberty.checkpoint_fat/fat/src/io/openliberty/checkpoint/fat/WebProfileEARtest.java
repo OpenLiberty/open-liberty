@@ -72,9 +72,8 @@ public class WebProfileEARtest {
         HttpUtils.findStringInUrl(server, "webApp2/webEARapp", "Hello from webEARapp");
         server.stopServer();
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
-        server.stopServer();
 
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "webApp1/EARappServlet", "Hello from EJB");

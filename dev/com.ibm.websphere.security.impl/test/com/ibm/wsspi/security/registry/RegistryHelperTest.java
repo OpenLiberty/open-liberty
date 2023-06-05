@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -99,6 +99,21 @@ public class RegistryHelperTest {
             }
         });
         RegistryHelper.getUserRegistry(null);
+    }
+
+    /**
+     * Test method for {@link com.ibm.wsspi.security.registry.RegistryHelper#getUserRegistry(java.lang.String)}.
+     */
+    @Test
+    public void getUserRegistry_null() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(wsSecurityService).getUserRegistry(null);
+                will(returnValue(null));
+            }
+        });
+        assertNull("Null is expected when a userRegistry is not configured",
+                   RegistryHelper.getUserRegistry(null));
     }
 
     /**

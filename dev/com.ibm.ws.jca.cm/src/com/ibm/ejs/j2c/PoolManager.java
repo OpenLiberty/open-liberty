@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -177,6 +178,17 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
 
+    //maxInUseTime related variables
+    protected static final String abortConnectionsActionName = "abortConnections";
+    protected static final String abortConnectionsInUse = "inuse";
+    protected final Object amMaxInUseTimeLockObject = new PoolManagerLock();
+    protected final AtomicInteger maxInUseTimeAlarmThreadCounter = new AtomicInteger(0);
+    protected int maxInUseTime = 0;
+    protected ScheduledFuture<?> amMaxInUseTime = null;
+    protected boolean maxInUseTimeThreadStarted = false;
+    private final Object maxInUseTimeTaskTimerLockObject = new PoolManagerLock();
+    private int maxInUseTimeCollectorCount = 0;
+
     public PoolManager(
                        AbstractConnectionFactoryService cfSvc,
                        Properties dsProps,
@@ -204,6 +216,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         this.minConnections = gConfigProps.getMinConnections();
         this.purgePolicy = gConfigProps.getPurgePolicy();
         this.reapTime = gConfigProps.getReapTime();
+        this.maxInUseTime = gConfigProps.getMaxInUseTime();
         this.unusedTimeout = gConfigProps.getUnusedTimeout();
         this.agedTimeout = gConfigProps.getAgedTimeout();
         this.agedTimeoutMillis = (long) this.agedTimeout * 1000;
@@ -762,19 +775,24 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         return parkedMCWrapper;
     }
 
+    public void release(MCWrapper mcWrapper, Object affinity) throws ResourceException { // PH48686
+        release(mcWrapper, affinity, true); // PH48686
+    } // PH48686
+
     /**
      * This method releases ManagedConnection. If the affinity is used and the connection is associated
      * with the affinity, it is registered as unused. Otherwise it is prepared
      * for reuse (using <code>cleanup</code> method and then registered as unused.
      *
-     * @param managed  ManagedConnection A connection to release
-     * @param affinity Object, an affinity, can be represented using <code>Identifier</code> interface.
+     * @param managed                 ManagedConnection A connection to release
+     * @param affinity                Object, an affinity, can be represented using <code>Identifier</code> interface.
+     * @param pausedPoolAbortOverRide - If true used to bypass locking during release
      *
      * @concurrency concurrent
      * @throws ResourceException
      * @throws ApplicationServerInternalException
      */
-    public void release(MCWrapper mcWrapper, Object affinity) throws ResourceException {
+    public void release(MCWrapper mcWrapper, Object affinity, boolean pausedPoolAbortOverRide) throws ResourceException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "release", mcWrapper, affinity,
@@ -794,7 +812,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
          * Added for holding out connection request while
          * a free or shared pool is being updated
          */
-        requestingAccessToPool();
+        requestingAccessToPool(pausedPoolAbortOverRide);
 
         // start  thread local fast path...
         if (localConnection_ != null) {
@@ -2367,6 +2385,197 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         }
     }
 
+    protected String abortConnections(String actionName, Object[] params) throws ResourceException {
+        boolean debugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+        boolean entryExitEnabled = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
+
+        if (entryExitEnabled) {
+            Tr.entry(tc, "abortConnections");
+        }
+
+        long maxInUseIdleValue = 0;
+        if (params[1] instanceof String) {
+            maxInUseIdleValue = Long.parseLong((String) params[1]);
+        } else if (params[1] instanceof Long) {
+            maxInUseIdleValue = ((Long) params[1]).longValue();
+        } else if (params[1] instanceof Integer) {
+            maxInUseIdleValue = ((Integer) params[1]).longValue();
+        } else {
+            Tr.error(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params), actionName);
+            String translatedError = Tr.formatMessage(tc, "INVALID_MBEAN_INVOKE_PARAM_J2CA8060", Arrays.toString(params), actionName);
+            throw new ResourceException(new IllegalArgumentException(translatedError));
+
+        }
+
+        String errorString = null;
+        StringBuffer sb = new StringBuffer();
+        updateToPoolInProgress = true;
+        synchronized (updateToPoolInProgressLockObject) {
+
+            long inuseAbortedHighValue = 0;
+            long inuseAbortedLowValue = Long.MAX_VALUE;
+            long inuseTotalAborted = 0;
+            long inuseNotAbortedHighValue = 0;
+            long inuseNotAbortedLowValue = Long.MAX_VALUE;
+            long inuseNotTotalAborted = 0;
+            int inuseNotAborted = 0;
+            boolean parkedConnectionExists = false;
+
+            try {
+                if (checkForActiveConnections(1)) {
+                    try {
+                        if (debugEnabled) {
+                            Tr.debug(tc, "Active connection pool activity detected, try again in 100 milliseconds");
+                        }
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        if (debugEnabled) {
+                            Tr.debug(tc, "abortConnections thread interrupted");
+                        }
+                        if (entryExitEnabled) {
+                            Tr.exit(tc, "abortConnections");
+                        }
+                        throw new ResourceException(e);
+                    }
+                }
+                if (checkForActiveConnections(1)) {
+                    updateToPoolInProgress = false;
+                    updateToPoolInProgressLockObject.notifyAll();
+                    errorString = "Active connection pool activity occurring that prevents "
+                                  + " abortConnections.   Try again.";
+                    ResourceException e = new ResourceException(errorString);
+                    throw e;
+                } else {
+                    ArrayList<MCWrapper> abortMCWrapperList = new ArrayList<MCWrapper>();
+                    mcToMCWMapWrite.lock();
+                    try {
+                        Collection<MCWrapper> mcWrappers = mcToMCWMap.values();
+                        for (MCWrapper mcw : mcWrappers) {
+                            if (mcw.getPoolState() == 2 || mcw.getPoolState() == 3) { // TODO - ? add thread local storage in use idle connections
+                                long startHoldTime = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
+                                long currentTime = System.currentTimeMillis();
+                                long inuseTime = currentTime - startHoldTime;
+                                if (inuseTime > maxInUseIdleValue) {
+                                    if (debugEnabled) {
+                                        Tr.debug(tc, "Managed connection added to abort list." +
+                                                     " In use time is greater than maximum in use idle time " +
+                                                     inuseTime + "/" + maxInUseIdleValue + " (in use time/maximum in use time)",
+                                                 mcw);
+                                    }
+                                    abortMCWrapperList.add(mcw);
+                                    if (inuseAbortedHighValue < inuseTime) {
+                                        inuseAbortedHighValue = inuseTime;
+                                    }
+                                    if (inuseAbortedLowValue > inuseTime) {
+                                        inuseAbortedLowValue = inuseTime;
+                                    }
+                                    inuseTotalAborted += inuseTime;
+
+                                } else {
+                                    if (debugEnabled) {
+                                        Tr.debug(tc, "Managed connection was not added to abort list." +
+                                                     " In use time is not greater than maximum in use idle time " +
+                                                     inuseTime + "/" + maxInUseIdleValue + " (in use time/maximum in use time)",
+                                                 mcw);
+                                    }
+                                    if (inuseNotAbortedHighValue < inuseTime) {
+                                        inuseNotAbortedHighValue = inuseTime;
+                                    }
+                                    if (inuseNotAbortedLowValue > inuseTime) {
+                                        inuseNotAbortedLowValue = inuseTime;
+                                    }
+                                    inuseNotTotalAborted += inuseTime;
+                                    ++inuseNotAborted;
+
+                                }
+                            }
+                            if (mcw.getPoolState() == 9) {
+                                parkedConnectionExists = true;
+                            }
+                        }
+                    } finally {
+                        mcToMCWMapWrite.unlock();
+                    }
+
+                    int abortedListSize = abortMCWrapperList.size();
+                    if (abortedListSize > 0) {
+                        for (MCWrapper mcw : abortMCWrapperList) {
+                            if (mcw instanceof com.ibm.ejs.j2c.MCWrapper
+                                && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC(true)) {
+                            } else {
+                                if (debugEnabled) {
+                                    Tr.debug(tc, "Unable to abort connection with connection.abort().  Review trace for failures.", mcw);
+                                }
+                            }
+                        }
+                        long averageTime = inuseTotalAborted / abortedListSize;
+                        String idleInUseAbortinfo = " abortConnections maximum in use time " + maxInUseIdleValue + " for pool jndi name " + gConfigProps.getJNDIName() +
+                                                    " - " +
+                                                    abortedListSize +
+                                                    " in use connections added to the in use abort list " +
+                                                    "with the highest/lowest in use times " + inuseAbortedHighValue + "/" + inuseAbortedLowValue + " Average in use time " +
+                                                    averageTime + " (all time values in milliseconds)";
+                        sb.append(idleInUseAbortinfo + nl);
+                        if (debugEnabled) {
+                            Tr.debug(tc, idleInUseAbortinfo);
+                        }
+                    }
+
+                    int remainConnectionInPool = mcToMCWMap.size();
+                    if (parkedConnectionExists) {
+                        remainConnectionInPool -= 1;
+                    }
+                    if (remainConnectionInPool > 0) {
+                        if (inuseNotAborted == 0) {
+                            String freeNotIdleInUseInfo = " abortConnections maximum in use time " + maxInUseIdleValue + " for pool jndi name " +
+                                                          gConfigProps.getJNDIName() + " - " +
+                                                          remainConnectionInPool +
+                                                          " free connections not added to the in use abort list ";
+                            sb.append(freeNotIdleInUseInfo + nl);
+                            if (debugEnabled) {
+                                Tr.debug(tc, freeNotIdleInUseInfo);
+                            }
+                        } else {
+                            long averageTime = inuseNotTotalAborted / inuseNotAborted;
+                            int freeConnections = remainConnectionInPool - inuseNotAborted;
+                            String inuseNotIdleInUseInfo = " abortConnections maximum in use time " + maxInUseIdleValue + " for pool jndi name " +
+                                                           gConfigProps.getJNDIName() + " - " +
+                                                           inuseNotAborted +
+                                                           " in use connections not added to the in use abort list " +
+                                                           "with the highest/lowest in use times " + inuseNotAbortedHighValue + "/" + inuseNotAbortedLowValue +
+                                                           " Average in use time " +
+                                                           averageTime + " (all time values in milliseconds)";
+                            sb.append(inuseNotIdleInUseInfo + nl);
+                            String freeNotIdleInUseInfo = " abortConnections maximum in use time " + maxInUseIdleValue + " for pool jndi name " +
+                                                          gConfigProps.getJNDIName() + " - " +
+                                                          freeConnections +
+                                                          " free connections not added to the in use abort list ";
+                            sb.append(freeNotIdleInUseInfo + nl);
+                            if (debugEnabled) {
+                                Tr.debug(tc, inuseNotIdleInUseInfo);
+                                Tr.debug(tc, freeNotIdleInUseInfo);
+                            }
+                        }
+                    }
+                }
+            } finally {
+                updateToPoolInProgress = false;
+                updateToPoolInProgressLockObject.notifyAll();
+                if (debugEnabled) {
+                    if (errorString == null) {
+                        Tr.debug(tc, "Completed processing abortConnections - " + nl + this.toString());
+                    } else {
+                        Tr.debug(tc, errorString + nl + this.toString());
+                    }
+                }
+                if (entryExitEnabled) {
+                    Tr.exit(tc, "abortConnections");
+                }
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * This will remove all of the free pool connections. If there are
      * active connection in the shared or un-shared pool, these connection
@@ -2778,7 +2987,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         AccessController.doPrivileged(new PrivilegedAction<Void>() {
                             @Override
                             public Void run() {
-                                new TaskTimer(tempPM);
+                                new TaskTimerReaperThread(tempPM);
                                 return null;
                             }
                         });
@@ -2794,6 +3003,42 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         if (tc.isEntryEnabled()) {
             Tr.exit(this, tc, "startReclaimConnectionThread");
+        }
+
+    }
+
+    /**
+     * Starts the reclaim collection thread that remove in use connections based on
+     * the MaxInUseTime.
+     */
+    protected void startMaxInUseTimeReclaimConnectionThread() {
+        String methodName = "startMaxInUseTimeReclaimConnectionThread";
+        if (tc.isEntryEnabled()) {
+            Tr.entry(this, tc, methodName);
+        }
+
+        synchronized (maxInUseTimeTaskTimerLockObject) {
+            if (!maxInUseTimeThreadStarted) {
+                if (maxInUseTime > 0) {
+                    final PoolManager tempPM = this;
+                    maxInUseTimeThreadStarted = true;
+                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                        @Override
+                        public Void run() {
+                            new TaskTimerMaxInUseTime(tempPM);
+                            return null;
+                        }
+                    });
+
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Started MaxInUseTime reclaimation connection thread for pool " + gConfigProps.getXpathId());
+                    }
+                }
+            }
+        }
+
+        if (tc.isEntryEnabled()) {
+            Tr.exit(this, tc, methodName);
         }
 
     }
@@ -2862,12 +3107,14 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         aBuffer.append(maxConnections);
         aBuffer.append("/");
         aBuffer.append(minConnections);
-        aBuffer.append(", reap/unused/aged ");
+        aBuffer.append(", reap/unused/aged/maxInUseTime ");
         aBuffer.append(reapTime);
         aBuffer.append("/");
         aBuffer.append(unusedTimeout);
         aBuffer.append("/");
         aBuffer.append(agedTimeout);
+        aBuffer.append("/");
+        aBuffer.append(maxInUseTime);
         aBuffer.append(", connectiontimeout/purge ");
         aBuffer.append(connectionTimeout);
         aBuffer.append("/");
@@ -3354,7 +3601,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
 
     public void executeTask() {
-        // Add to the colloctorCount
+        // Add to the collectorCount
         collectorCount++;
         // If the colloctorCount is greater than 1, then we are already
         // running reclaimConnections.  We do not what more then one running
@@ -3370,6 +3617,32 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             // agedTimeout connections.
             reclaimConnections();
             collectorCount--;
+        }
+    }
+
+    /**
+     * This calls reclaimMaxInUseConnections to remove maxInUseTime connections.
+     * This will get executed every maxInUseTime seconds.
+     *
+     * @throws ResourceException
+     */
+
+    public void executeMaxInUseTimeTask() {
+        // Add to the maxInUseTimeCollectorCount
+        maxInUseTimeCollectorCount++;
+        // If the maxInUseTimeCollectorCount is greater than 1, then we are already
+        // running reclaimMaxInUseTimeConnections.  We do not what more then one running
+        // at a time.
+        if (maxInUseTimeCollectorCount > 1) {
+            // This condition will happen if the maxInUseTime is set to low. Example:
+            // The maxInUseTime = 1 second and the reclaim max in use connections takes more than
+            // 1 second to finish.
+            maxInUseTimeCollectorCount--;
+            return;
+        } else {
+            // Running the reclaimMaxInUseConnections code to remove maxInUseTime connections.
+            reclaimMaxInUseTimeConnections();
+            maxInUseTimeCollectorCount--;
         }
     }
 
@@ -3615,6 +3888,20 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         }
     }
 
+    /**
+     * Remove in use connections that have reached their maxInUseTime value.
+     *
+     * @throws ResourceException
+     */
+    private void reclaimMaxInUseTimeConnections() {
+        try {
+            abortConnections(PoolManager.abortConnectionsActionName, new String[] { PoolManager.abortConnectionsInUse, String.valueOf(maxInUseTime) });
+        } catch (ResourceException e) {
+            Tr.warning(tc, "Exception when attempting to abort in use connections older than maxInUseTime:" + maxInUseTime);
+            Tr.warning(tc, e.toString());
+        }
+    }
+
     private static class SubjectToString implements PrivilegedAction<String> {
 
         Subject subject;
@@ -3833,48 +4120,60 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * The caller of the method must call endingAccessToPool()
      */
     protected void requestingAccessToPool() {
+        requestingAccessToPool(false);
+    }
+
+    /**
+     * The caller of the method must call endingAccessToPool()
+     *
+     * @param pausedPoolAbortOverRide - If true used to bypass locking during release
+     */
+    protected void requestingAccessToPool(boolean pausedPoolAbortOverRide) {
         /*
          * Added for holding out connection request while
          * a free or shared pool is being updated
          */
         if (updateToPoolInProgress) {
-            synchronized (updateToPoolInProgressLockObject) {
-                while (updateToPoolInProgress) {
-                    try {
-                        /*
-                         * Wait for 250 milliseconds and check if update to pool is
-                         * finished. The update is complete when updateToPoolInProgress is
-                         * changed to false and a updateToPoolInProgressLockObject.notifyAll()
-                         * is called.
-                         */
-                        updateToPoolInProgressLockObject.wait(updateToPoolInProgressSleepTime);
-                    } catch (InterruptedException e1) {
-                        // We don't need to do anything here.
-                        // e1.printStackTrace();
+            if (!pausedPoolAbortOverRide)
+                synchronized (updateToPoolInProgressLockObject) {
+                    while (updateToPoolInProgress) {
+                        try {
+                            /*
+                             * Wait for 250 milliseconds and check if update to pool is
+                             * finished. The update is complete when updateToPoolInProgress is
+                             * changed to false and a updateToPoolInProgressLockObject.notifyAll()
+                             * is called.
+                             */
+                            updateToPoolInProgressLockObject.wait(updateToPoolInProgressSleepTime);
+                        } catch (InterruptedException e1) {
+                            // We don't need to do anything here.
+                            // e1.printStackTrace();
+                        }
                     }
                 }
-            }
         }
         activeRequest.incrementAndGet();
         if (updateToPoolInProgress) {
-            activeRequest.decrementAndGet();
-            synchronized (updateToPoolInProgressLockObject) {
-                while (updateToPoolInProgress) {
-                    try {
-                        /*
-                         * Wait for 250 milliseconds and check if update to pool is
-                         * finished. The update is complete when updateToPoolInProgress is
-                         * changed to false and a updateToPoolInProgressLockObject.notifyAll()
-                         * is called.
-                         */
-                        updateToPoolInProgressLockObject.wait(updateToPoolInProgressSleepTime);
-                    } catch (InterruptedException e1) {
-                        // We don't need to do anything here.
-                        // e1.printStackTrace();
+            if (!pausedPoolAbortOverRide) {
+                activeRequest.decrementAndGet();
+                synchronized (updateToPoolInProgressLockObject) {
+                    while (updateToPoolInProgress) {
+                        try {
+                            /*
+                             * Wait for 250 milliseconds and check if update to pool is
+                             * finished. The update is complete when updateToPoolInProgress is
+                             * changed to false and a updateToPoolInProgressLockObject.notifyAll()
+                             * is called.
+                             */
+                            updateToPoolInProgressLockObject.wait(updateToPoolInProgressSleepTime);
+                        } catch (InterruptedException e1) {
+                            // We don't need to do anything here.
+                            // e1.printStackTrace();
+                        }
                     }
                 }
+                activeRequest.incrementAndGet();
             }
-            activeRequest.incrementAndGet();
         }
     }
 
@@ -3975,6 +4274,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     /**
      * This method can be submitted to a ScheduledExecutorService to run in the future.
+     * The run() method is invoked from the createReaperAlarm which uses a ScheduledFuture am
+     * object to run this on a thread.
      */
     @Override
     public void run() {
@@ -4328,6 +4629,13 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             this.agedTimeout = value;
             this.agedTimeoutMillis = (long) value * 1000;
             checkForStartingReaperThread();
+        } else if (propName.equals("maxInUseTime")) {
+            int value = ((Integer) event.getNewValue()).intValue();
+            if (tc.isInfoEnabled()) {
+                logPropertyChangeMsg("maxInUseTime", maxInUseTime, value);
+            }
+            this.maxInUseTime = value;
+            checkForStartingMaxInUseTimeThread();
         } else if (propName.equals("holdTimeLimit")) {
             int value = ((Integer) event.getNewValue()).intValue();
             if (tc.isInfoEnabled()) {
@@ -4350,6 +4658,33 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         if (tc.isEntryEnabled()) {
             Tr.exit(this, tc, "propertyChange", propName);
+        }
+    }
+
+    /**
+     *
+     * Pulled code out of method to be shared by updates for reaper, unused time out or aged time out.
+     *
+     * If any of the values are updated, we need to check if the reaper needs to be started.
+     *
+     * @param value
+     */
+    private void checkForStartingMaxInUseTimeThread() {
+        boolean isAnyTracingEnabled = TraceComponent.isAnyTracingEnabled();
+        if (isAnyTracingEnabled && tc.isDebugEnabled()) {
+            Tr.debug(this, tc,
+                     "Property change occurred, checking maxInUSeTime thread status for pool. Current number of alarm threads is " + maxInUseTimeAlarmThreadCounter.get());
+        }
+
+        if (this.maxInUseTime > 0) {
+            synchronized (amMaxInUseTimeLockObject) {
+                if (totalConnectionCount.get() > 0) {
+                    createMaxInUseTimeAlarm();
+                }
+            }
+        }
+        if (isAnyTracingEnabled && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Property change occurred, number of maxInUseTime alarm threads is " + maxInUseTimeAlarmThreadCounter.get());
         }
     }
 
@@ -4394,6 +4729,59 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Tr.debug(this, tc, "Property change occurred, number of alarm threads is " + alarmThreadCounter.get());
         }
     }
+
+    /**
+     * Creates a new alarm thread.
+     *
+     * Method that combines common code from run() and checkForStartingReaperThread()
+     *
+     */
+    private void createMaxInUseTimeAlarm() {
+        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+
+        if (pmQuiesced) {
+            if (isTracingEnabled && tc.isDebugEnabled())
+                Tr.debug(tc, " PM has been Quiesced, so cancel old maxInUseTime alarm.");
+            if (amMaxInUseTime != null)
+                amMaxInUseTime.cancel(false);
+            return;
+        }
+
+        if (isTracingEnabled && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Creating deferrable alarm for maxInUseTime");
+
+        if (amMaxInUseTime != null) {
+            // If an alarm thread already exists, cancel it and create a
+            // new one with the latest maxInUseTime
+            amMaxInUseTime.cancel(false);
+            if (amMaxInUseTime.isDone()) {
+                maxInUseTimeAlarmThreadCounter.decrementAndGet();
+                if (isTracingEnabled && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Previous maxInUseTime alarm thread cancelled.");
+
+                maxInUseTimeAlarmThreadCounter.incrementAndGet();
+                try {
+                    amMaxInUseTime = connectorSvc.deferrableSchedXSvcRef.getServiceWithException().schedule(this.new MaxInUseTimeThreadStarter(), maxInUseTime,
+                                                                                                            TimeUnit.MILLISECONDS);
+                } catch (Exception e) {
+                    maxInUseTimeAlarmThreadCounter.decrementAndGet();
+                    throw new RuntimeException(e);
+                }
+            } // end am.isDone() == true
+        } // end am != null
+        else { // am == null
+            if (isTracingEnabled && tc.isDebugEnabled())
+                Tr.debug(this, tc, "No previous maxInUseTime alarm thread exists. Creating a new one.");
+
+            maxInUseTimeAlarmThreadCounter.incrementAndGet();
+            try {
+                amMaxInUseTime = connectorSvc.deferrableSchedXSvcRef.getServiceWithException().schedule(this.new MaxInUseTimeThreadStarter(), maxInUseTime, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                maxInUseTimeAlarmThreadCounter.decrementAndGet();
+                throw new RuntimeException(e);
+            }
+        } // am == null
+    } // end nonDeferredReaperAlarm == false
 
     /**
      * Creates a new alarm thread.
@@ -4919,5 +5307,59 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
     protected AtomicInteger getTotalConnectionCount() {
         return totalConnectionCount;
+    }
+
+    @Override
+    public int getMaximumConnectionValue() {
+        return this.maxConnections;
+    }
+
+    public class MaxInUseTimeThreadStarter implements Runnable {
+        private final TraceComponent traceC = Tr.register(MaxInUseTimeThreadStarter.class,
+                                                          J2CConstants.traceSpec,
+                                                          J2CConstants.messageFile);
+
+        /**
+         * This method can be submitted to a ScheduledExecutorService to run in the future.
+         * The run() method is invoked from the createReaperAlarm which uses a ScheduledFuture am
+         * object to run this on a thread.
+         */
+        @Override
+        public void run() {
+
+            final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+
+            if (isTracingEnabled && traceC.isEntryEnabled()) {
+                Tr.entry(this, traceC, "run", "maxInUseTime alarm");
+            }
+
+            if (isTracingEnabled && traceC.isDebugEnabled()) {
+                Tr.debug(this, traceC, "run: maxInUseTime alarm, Pool contents ==> " + this.toString());
+                Tr.debug(this, traceC, "maxInUseTimeThreadStarted: ", maxInUseTimeThreadStarted);
+            }
+
+            startMaxInUseTimeReclaimConnectionThread();
+
+            if (isTracingEnabled && traceC.isDebugEnabled()) {
+                Tr.debug(this, traceC, "run: maxInUseTime alarm, Pool contents ==> " + this.toString());
+                Tr.debug(this, traceC, "maxInUseTimeThreadStarted: ", maxInUseTimeThreadStarted);
+            }
+
+            synchronized (amMaxInUseTimeLockObject) {
+                if (maxInUseTime > 0 && totalConnectionCount.get() > 0 && maxInUseTimeAlarmThreadCounter.get() >= 0) {
+                    createMaxInUseTimeAlarm();
+                } else {
+                    if (maxInUseTimeAlarmThreadCounter.get() > 0)
+                        maxInUseTimeAlarmThreadCounter.decrementAndGet();
+                    if (isTracingEnabled && traceC.isDebugEnabled())
+                        Tr.debug(traceC, "maxInUseTime alarm thread was NOT started. Number of maxInUseTime alarm threads is " + maxInUseTimeAlarmThreadCounter.get());
+                }
+            }
+
+            if (isTracingEnabled && traceC.isEntryEnabled()) {
+                Tr.exit(this, traceC, "run");
+            }
+
+        }
     }
 }

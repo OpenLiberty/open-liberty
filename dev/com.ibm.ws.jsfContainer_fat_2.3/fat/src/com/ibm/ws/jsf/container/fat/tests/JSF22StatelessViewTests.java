@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -37,9 +35,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
-
 @RunWith(FATRunner.class)
 public class JSF22StatelessViewTests extends FATServletClient {
 
@@ -57,18 +52,18 @@ public class JSF22StatelessViewTests extends FATServletClient {
         isEE10 = JakartaEE10Action.isActive();
 
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
-                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
+                        .addPackages(false, isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22", "jsf.view.beans");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
         //Mojarra 3.0.0-RC3 (and possibily later versions) need a beans.xml for the
-        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass 
+        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass
         mojarraApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
-                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
+                        .addPackages(false, isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22", "jsf.view.beans");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -83,29 +78,16 @@ public class JSF22StatelessViewTests extends FATServletClient {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            if (JakartaEE10Action.isActive()) {
-                // Unsure why these errors occur, tests pass otherwise. 
-                // "The response is already committed to the client. The session cookie cannot be set."
-                server.stopServer("SESN0066E", "SRVE8114W");
-            } else {
-                server.stopServer();
-            }
+            server.stopServer();
         }
     }
 
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-
-        String msgToSearchFor = "MyFaces CDI support enabled";
-
-        if (JakartaEE9Action.isActive()) {
-            msgToSearchFor = "MyFaces Core CDI support enabled";
-        }
-
-        server.waitForStringInLogUsingMark(msgToSearchFor);
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Core CDI support enabled"));
     }
 
     @Test
@@ -282,12 +264,15 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped ManagedBean, when embedded in a stateless view.
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Bug in Mojarra?
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
     }
 
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");

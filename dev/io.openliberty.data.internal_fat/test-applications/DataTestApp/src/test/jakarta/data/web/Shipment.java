@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,17 +15,85 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 
 /**
- *
+ * A simple unannotated entity with public accessor methods.
  */
-public class Shipment {
+public class Shipment implements ScheduledShipment {
 
-    public long id;
+    private long id;
 
-    public String destination;
+    private String destination;
 
-    public String location;
+    private String location;
 
-    public OffsetDateTime orderedAt, shippedAt, canceledAt, deliveredAt;
+    private OffsetDateTime orderedAt, shippedAt, canceledAt, deliveredAt;
 
-    public String status;
+    private String status;
+
+    public OffsetDateTime getCanceledAt() {
+        return canceledAt;
+    }
+
+    public OffsetDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    @Override
+    public String getDestination() {
+        return destination;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    @Override
+    public OffsetDateTime getOrderedAt() {
+        return orderedAt;
+    }
+
+    public OffsetDateTime getShippedAt() {
+        return shippedAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setCanceledAt(OffsetDateTime canceledAt) {
+        this.canceledAt = canceledAt;
+    }
+
+    public void setDeliveredAt(OffsetDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
+    }
+
+    @Override
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    @Override
+    public void setOrderedAt(OffsetDateTime orderedAt) {
+        this.orderedAt = orderedAt;
+    }
+
+    public void setShippedAt(OffsetDateTime shippedAt) {
+        this.shippedAt = shippedAt;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

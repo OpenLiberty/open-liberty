@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
+  	  project(':com.ibm.ws.security.fat.common.jwt'),
+  	  project(':com.ibm.ws.security.oauth.oidc_fat.common'),
       project(':io.openliberty.security.jakartasec.3.0.internal_fat.common'),
       project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
@@ -40,6 +42,15 @@ dependencies {
 
 }
 
+addRequiredLibraries {
+	dependsOn addDerby
+	dependsOn addJakartaTransformer
+}
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
 autoFVT.doLast {
   
    copy {
@@ -55,6 +66,12 @@ autoFVT.doLast {
       include '**/*.xml'
    }
   
+    copy {
+      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config/oidcClient')
+      into new File(autoFvtDir, 'publish/shared/config/oidcClient')
+      include '**/*.properties'
+   }
+ 
   def servers = [
 	'jakartasec-3.0_fat.op',
 	'jakartasec-3.0_fat.rp'
@@ -89,7 +106,15 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.useRedirectToOriginalResource.jwt.rp',
     'jakartasec-3.0_fat.useRedirectToOriginalResource.opaque.rp',
 	'jakartasec-3.0_fat.withOidcClientConfig.jwt.rp',
-    'jakartasec-3.0_fat.withOidcClientConfig.opaque.rp'
+    'jakartasec-3.0_fat.withOidcClientConfig.opaque.rp',
+	'jakartasec-3.0_fat.identityStore.jwt.rp',
+    'jakartasec-3.0_fat.identityStore.opaque.rp',
+	'jakartasec-3.0_fat.tokenValidation.jwt.rp',
+    'jakartasec-3.0_fat.tokenValidation.opaque.rp',    
+	'jakartasec-3.0_fat.authentication.jwt.rp',
+    'jakartasec-3.0_fat.authentication.opaque.rp',
+    'jakartasec-3.0_fat.authenticationEndpointValidation.jwt.rp',
+    'jakartasec-3.0_fat.authenticationEndpointValidation.opaque.rp'
   ]
 
   rpCopyServers.each { rpServer ->
@@ -100,5 +125,35 @@ autoFVT.doLast {
       include '**/**'
    }
 
+  }  
+
+   def tokenCopyServers = [
+	'jakartasec-3.0_fat.tokenValidation.jwt.rp',
+    'jakartasec-3.0_fat.tokenValidation.opaque.rp'
+  ]
+
+  tokenCopyServers.each { tokenServer ->
+  
+   copy {
+     from new File(project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').buildDir, 'test-application/TestTokenEndpoint.war')
+     into new File(autoFvtDir, 'publish/servers/' + tokenServer + '/test-apps')
+    }
+    
+    copy {
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + tokenServer + '/')
+     include '**/*private-key.pem'
+     exclude '**/*public-key.pem'
+     exclude '**/short_*private-key.pem'
+     exclude '**/short_*public-key.pem'
+    }
+
+/**
+   copy {                        
+    from project(':com.ibm.ws.security.oauth.oidc_fat.common').file('publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/shared/config')
+    include 'tokenEndpointApplication.xml'
+   }
+*/    
   }       
 }

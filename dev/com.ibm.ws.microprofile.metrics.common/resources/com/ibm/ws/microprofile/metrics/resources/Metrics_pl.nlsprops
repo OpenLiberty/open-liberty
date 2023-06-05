@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,46 @@ internal.error.CWMMC0006E=CWMMC0006E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u01
 internal.error.CWMMC0006E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
 internal.error.CWMMC0006E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: Wykryto zmian\u0119 konfiguracji dla opcji MicroProfile Metrics. W przypadku zmiany atrybutu libraryRef wymagane jest zrestartowanie serwera, aby zmiana sta\u0142a si\u0119 aktywna.
+configurationChange.info.CWMMC0007I.explanation=Funkcja MicroProfile Metrics wymaga zrestartowania serwera w celu zmiany bibliotek przywo\u0142ywanych przez libraryRef.
+configurationChange.info.CWMMC0007I.useraction=Je\u015bli atrybut libraryRef zosta\u0142 zmodyfikowany, zrestartuj serwer, aby zmiany sta\u0142y si\u0119 aktywne.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: Punkt ko\u0144cowy /metrics nie jest dost\u0119pny, poniewa\u017c \u017caden rejestr Prometheus nie jest dost\u0119pny.
+noPrometheusRegistry.info.CWMMC0008I.explanation=Funkcja MicroProfile Metrics \u0142aduje biblioteki Micrometer, kt\u00f3re s\u0105 zdefiniowane z u\u017cyciem atrybutu libraryRef, ale przywo\u0142ywana biblioteka nie zawiera rejestru Micrometer Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Je\u015bli niedost\u0119pno\u015b\u0107 rejestru Prometheus nie jest zamierzona, zmodyfikuj zawarto\u015b\u0107 biblioteki, do kt\u00f3rej odwo\u0142uje si\u0119 atrybut libraryRef, tak aby zawiera\u0142a plik JAR rejestru Micrometer Prometheus.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: Punkt ko\u0144cowy /metrics nie jest dost\u0119pny, poniewa\u017c rejestr Prometheus jest wy\u0142\u0105czony.
+disabled.info.CWMMC0009I.explanation=W\u0142a\u015bciwo\u015b\u0107 mp.metrics.prometheus.enabled konfiguracji MicroProfile jest ustawiona na warto\u015b\u0107 false (fa\u0142sz).
+disabled.info.CWMMC0009I.useraction=Je\u015bli wy\u0142\u0105czenie rejestru Prometheus nie jest zamierzone, nale\u017cy usun\u0105\u0107 w\u0142a\u015bciwo\u015b\u0107 konfiguracji MicroProfile mp.metrics.prometheus.enabled lub jawnie ustawi\u0107 w\u0142a\u015bciwo\u015b\u0107 na warto\u015b\u0107 true (prawda).
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Funkcja MicroProfile Metrics nie mog\u0142a zosta\u0107 zainicjowana. W katalogu <wlp_home>/lib nie znaleziono wymaganego pliku JAR {0}.
+fileNotFound.error.CWMMC0010E.explanation=W katalogu <wlp_home>/lib nie znaleziono pliku JAR. Plik m\u00f3g\u0142 zosta\u0107 usuni\u0119ty lub jego nazwa mog\u0142a zosta\u0107 zmieniona.
+fileNotFound.error.CWMMC0010E.useraction=Brakuje pliku JAR, kt\u00f3ry zwykle znajduje si\u0119 w katalogu <wlp_home>/lib. Ponownie wdr\u00f3\u017c instalacj\u0119 serwera aplikacji.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Funkcja MicroProfile Metrics nie mog\u0142a zosta\u0107 zainicjowana. \u015arodowisko wykonawcze funkcji MicroProfile Metrics nie by\u0142o w stanie utworzy\u0107 wymaganego programu \u0142aduj\u0105cego klasy.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Podczas tworzenia wymaganego programu \u0142aduj\u0105cego klasy wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Funkcja MicroProfile Metrics nie mog\u0142a zosta\u0107 zainicjowana. Nie za\u0142adowano klasy funkcji SmallRye Metrics.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=Klasa lub klasy ze spakowanego pliku JAR funkcji SmallRye Metrics w katalogu <wlp_home>/lib nie zosta\u0142y za\u0142adowane lub nie zosta\u0142y znalezione.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Przejrzyj dzienniki FFDC i tekst wyj\u0105tku, aby zidentyfikowa\u0107 brakuj\u0105c\u0105 klas\u0119, nast\u0119pnie sprawd\u017a, czy istnieje ona w pliku JAR <wlp_home>/lib/io.openliberty.io.smallrye.metrics.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Funkcja MicroProfile Metrics nie mog\u0142a zosta\u0107 zainicjowana. Brak klasy wymaganej przez bibliotek\u0119 Micrometer udost\u0119pnian\u0105 przez u\u017cytkownika.
+missingDependencyClasses.error.CWMMC0013E.explanation=Funkcja MicroProfile Metrics \u0142aduje biblioteki Micrometer, kt\u00f3re s\u0105 zdefiniowane przez atrybut libraryRef i musz\u0105 zawiera\u0107 wszystkie zale\u017cno\u015bci.
+missingDependencyClasses.error.CWMMC0013E.useraction=Podaj niezb\u0119dne zale\u017cno\u015bci bibliotek Micrometer.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Funkcja MicroProfile Metrics jest skonfigurowana do u\u017cywania nast\u0119puj\u0105cej warto\u015bci libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=Funkcja MicroProfile Metrics jest skonfigurowana do u\u017cywania warto\u015bci libraryRef. Ta wskazywana biblioteka musi zawiera\u0107 bibliotek\u0119 podstawow\u0105 Micrometer, docelowe biblioteki Micrometer oraz zale\u017cno\u015bci.
+libraryRefConfigured.info.CWMMC0014I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 #Memory usedHeap message
 memory.usedHeap.description=Wy\u015bwietla ilo\u015b\u0107 u\u017cywanej pami\u0119ci sterty (w bajtach).
 
@@ -95,7 +135,8 @@ classloader.totalUnloadedClass.count.description=Wy\u015bwietla \u0142\u0105czn\
 cpu.availableProcessors.description=Wy\u015bwietla liczb\u0119 procesor\u00f3w dost\u0119pnych dla wirtualnej maszyny j\u0119zyka Java. Ta warto\u015b\u0107 mo\u017ce si\u0119 zmienia\u0107 w trakcie konkretnego wywo\u0142ania maszyny wirtualnej.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=Wy\u015bwietla \u015brednie obci\u0105\u017cenie systemu w ci\u0105gu ostatniej minuty. \u015arednie obci\u0105\u017cenie systemu jest sum\u0105 liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, w kolejce do dost\u0119pnych procesor\u00f3w oraz liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, dzia\u0142aj\u0105cych na dost\u0119pnych procesorach u\u015brednion\u0105 w danym okresie. Metoda obliczania \u015bredniego obci\u0105\u017cenia jest zale\u017cna od systemu operacyjnego, ale zwykle jest to t\u0142umiona \u015brednia zale\u017cna od czasu. Je\u015bli \u015brednie obci\u0105\u017cenie nie jest dost\u0119pne, wy\u015bwietlana jest warto\u015b\u0107 ujemna. Ten atrybut jest zaprojektowany w taki spos\u00f3b, aby zapewnia\u0107 wskaz\u00f3wki na temat obci\u0105\u017cenia systemu i zapytania mog\u0105 by\u0107 do niego kierowane bardzo cz\u0119sto. \u015arednie obci\u0105\u017cenie mo\u017ce by\u0107 niedost\u0119pne na niekt\u00f3rych platformach, na kt\u00f3rych zaimplementowanie tej metody wymaga du\u017cej ilo\u015bci zasob\u00f3w.
+cpu.systemLoadAverage.description=Wy\u015bwietla \u015brednie obci\u0105\u017cenie systemu w ci\u0105gu ostatniej minuty. \u015arednie obci\u0105\u017cenie systemu jest sum\u0105 liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, w kolejce do dost\u0119pnych procesor\u00f3w oraz liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, dzia\u0142aj\u0105cych na dost\u0119pnych procesorach u\u015brednion\u0105 w danym okresie. Metoda obliczania \u015bredniego obci\u0105\u017cenia jest zale\u017cna od systemu operacyjnego, ale zwykle jest to t\u0142umiona \u015brednia zale\u017cna od czasu. Je\u015bli \u015brednie obci\u0105\u017cenie nie jest dost\u0119pne, wy\u015bwietlana jest warto\u015b\u0107 ujemna. Ten atrybut jest zaprojektowany w taki spos\u00f3b, aby zapewnia\u0107 wskaz\u00f3wki na temat obci\u0105\u017cenia systemu i zapytania mog\u0105 by\u0107 do niego kierowane bardzo cz\u0119sto. \u015arednie obci\u0105\u017cenie mo\u017ce by\u0107 niedost\u0119pne na niekt\u00f3rych \
+    platformach, na kt\u00f3rych zaimplementowanie tej metody wymaga du\u017cej ilo\u015bci zasob\u00f3w.
 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces wirtualnej maszyny j\u0119zyka Java w ostatnim czasie.
@@ -148,6 +189,7 @@ grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\
 
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera. Metryka nie b\u0119dzie rejestrowa\u0142a czasu obs\u0142ugi ani liczby \u017c\u0105da\u0144 REST powoduj\u0105cych nieodwzorowany wyj\u0105tek. S\u0142u\u017cy r\u00f3wnie\u017c do rejestrowania najd\u0142u\u017cszego czasu trwania w poprzedniej pe\u0142nej minucie i najkr\u00f3tszego czasu trwania w poprzedniej pe\u0142nej minucie.
 REST.request.unmappedException.description=\u0141\u0105czna liczba nieodwzorowanych wyj\u0105tk\u00f3w, kt\u00f3re wywo\u0142a\u0142a ta metoda zasobu RESTful od momentu uruchomienia serwera.
+
 requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
 requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.
 requestTiming.slowRequestCount.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,8 +14,10 @@
 package com.ibm.tx.jta.util;
 
 import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
+import javax.transaction.Status;
+import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
+import javax.transaction.SystemException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -40,6 +42,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
+import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
 import com.ibm.ws.recoverylog.spi.RecoveryLogFactory;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeCallbackAgent;
@@ -73,6 +76,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     private static RecoveryLogFactory _recoveryLogFactory;
     private static boolean _recoveryLogServiceReady;
     private static boolean _requireDataSourceActive;
+    private boolean _localRecoveryFailed;
 
     protected static BundleContext _bc;
 
@@ -268,6 +272,10 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // Can start recovery now
             try {
                 startRecovery();
+            } catch (RecoveryFailedException exc) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Local recovery failed.");
+                _localRecoveryFailed = true;
             } catch (Exception e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.util.impl.TxTMHelper.start", "148", this);
             }
@@ -457,9 +465,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "startRecovery");
     }
 
-    private synchronized void shutdown(boolean explicit, int timeout) {
+    private synchronized void shutdown(boolean withCleanup, int timeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutdown", new Object[] { explicit, timeout });
+            Tr.entry(tc, "shutdown", new Object[] { withCleanup, timeout });
 
         if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)) {
             // Ensure no new transactions can start
@@ -472,6 +480,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 int timeToWait = timeout;
                 int timeSlept = 0;
                 while (LocalTIDTable.getAllTransactions().length > 0) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "There are " + LocalTIDTable.getAllTransactions().length + " incomplete transactions");
                     if (timeout < 0 || timeToWait-- > 0) {
                         try {
                             // Sleep for a second at a time
@@ -486,6 +496,44 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                         break;
                     }
                 }
+
+            }
+
+            // Issue #24104 - When Transaction Service shuts down, mark laggard transactions as rollbackOnly
+            TransactionImpl[] trans = LocalTIDTable.getAllTransactions();
+            if (LocalTIDTable.getAllTransactions().length > 0) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                    Tr.event(tc, "Found " + trans.length + " active transactions.");
+
+                for (int i = 0; i < trans.length; i++) {
+                    final TransactionImpl tx = trans[i];
+
+                    final int preStatus = tx.getStatus();
+
+                    if (preStatus != Status.STATUS_ROLLEDBACK &&
+                        preStatus != Status.STATUS_COMMITTED &&
+                        preStatus != Status.STATUS_COMMITTING &&
+                        preStatus != Status.STATUS_NO_TRANSACTION &&
+                        preStatus != Status.STATUS_MARKED_ROLLBACK) {
+                        rollbackTransaction(tx);
+
+                        final int postStatus = tx.getStatus();
+
+                        if (postStatus == Status.STATUS_ROLLEDBACK ||
+                            postStatus == Status.STATUS_NO_TRANSACTION) {
+                            Tr.warning(tc, "WTRN0034_DURING_SERVER_QUIESCE_TX_ROLLBACK_SUCCEEDED", tx.getLocalTID());
+                        } else if (postStatus == Status.STATUS_MARKED_ROLLBACK) {
+                            Tr.warning(tc, "WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY", tx.getLocalTID());
+                        } else {
+                            Tr.warning(tc, "WTRN0035_DURING_SERVER_QUIESCE_TX_ROLLBACK_FAILED", tx.getLocalTID());
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                            Tr.event(tc, "Tx already committing or rolled back. Skipping.");
+                    }
+
+                }
             }
 
             // ConfigurationProviderManager.stop(true);
@@ -494,8 +542,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
             _recLogService.stop();
 
-            TransactionManager tm = TransactionManagerFactory.getTransactionManager();
-            ((TranManagerSet) tm).cleanup();
+            // Issue #23676. The JCA component needs TX services at shutdown. If TranManagerSet.cleanup() is called,
+            // as it was previously at this point, then that removes the current (shutdown) thread's reference to the TM.
+            // The task initiated by JCA may generate an IllegalStateException as a result of attempting to instantiate
+            // a new ThreadLocal because Transaction Manager may have dereferenced its Configuration Provider.
+            //
+            // The withCleanup parameter allows the retention of the previous behaviour for use by the zos_tx unittests
+            // who are the sole user of the TMHelper.shutdown(int) method
+            if (withCleanup) {
+                TransactionManager tm = TransactionManagerFactory.getTransactionManager();
+                ((TranManagerSet) tm).cleanup();
+            }
 
             setRecoveryAgent(null);
 
@@ -737,6 +794,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         // If the ConfigurationProvider is a DefaultConfigurationProvider, then we are operating in a UT environment.
         if (cp != null && !cp.needToCoordinateServices()) {
             recoverNow = true;
+        } else if (_localRecoveryFailed) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Local recovery has already been marked as failed, do not attempt again");
         } else {
             if (cp != null && cp.isSQLRecoveryLog())
                 _requireDataSourceActive = true;
@@ -767,5 +827,21 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "ableToStartRecoveryNow", recoverNow);
         return recoverNow;
+    }
+
+    private void rollbackTransaction(Transaction tran) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "rollbackTransaction", tran);
+
+        try {
+            ((TransactionImpl) tran).timeoutTransaction(false);
+        } catch (Throwable ex) {
+            FFDCFilter.processException(ex, "com.ibm.tx.jta.util.impl.TxTMHelper.rollbackTransaction", "831", this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Unexpected exception caught during transaction ROLLBACK!", ex);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "rollbackTransaction");
     }
 }

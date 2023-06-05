@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import componenttest.custom.junit.runner.RepeatTestFilter;
 
 public class EE8FeatureReplacementAction extends FeatureReplacementAction {
 
@@ -79,6 +81,10 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
+    }
+
+    public static boolean isActive() {
+        return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
     @Override

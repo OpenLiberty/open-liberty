@@ -1,12 +1,12 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,7 +66,8 @@ public class FailureScopeController {
 
     protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors().get() > SMP_THRESH;
 
-    protected FailureScopeController() {}
+    protected FailureScopeController() {
+    }
 
     @SuppressWarnings("unused")
     public FailureScopeController(FailureScope fs) throws SystemException {
@@ -233,7 +234,7 @@ public class FailureScopeController {
                     _recoveryManager.postShutdown(partnersLeft);
                 }
 
-                if (!partnersLeft) {
+                if (!partnersLeft && (_tranLog != null && !_tranLog.failed()) && (_xaLog != null && !_xaLog.failed())) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
                     // Shutdown is clean, we do some housekeeping if peer recovery is enabled.
                     if (_recoveryManager != null) {
@@ -248,11 +249,16 @@ public class FailureScopeController {
                     if (partnersLeft) {
                         Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
                     }
+
                 }
             } else {
                 // Cleanup remaining transactions and close the logs
                 if (_recoveryManager != null)
                     _recoveryManager.cleanupRemoteFailureScope();
+            }
+
+            if ((_tranLog != null && _tranLog.failed()) || (_xaLog != null && _xaLog.failed())) {
+                Tr.audit(tc, "WTRN0153_INVALID_LOG_AT_SHUTDOWN");
             }
 
             // Now that recovery processing has stopped, clear out all the fields to guarentee what
@@ -307,10 +313,10 @@ public class FailureScopeController {
      * This method is called to register the creation of a new transaction associated
      * with the managed failure scope.
      *
-     * @param tran The transaction identity object
+     * @param tran      The transaction identity object
      * @param recovered Flag to indicate if the new transaction was created as part
-     *            of a recovery process for this failure scope (true) or
-     *            normal running (false)
+     *                      of a recovery process for this failure scope (true) or
+     *                      normal running (false)
      */
     public void registerTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())

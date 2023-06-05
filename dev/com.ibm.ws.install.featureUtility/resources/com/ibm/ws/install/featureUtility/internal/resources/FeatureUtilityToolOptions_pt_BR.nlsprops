@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,30 +35,19 @@ help.desc=\tImprima informa\u00e7\u00f5es da ajuda para a a\u00e7\u00e3o especif
 installFeature.desc=\tInstale um recurso ou uma lista de recursos separados por espa\u00e7os.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ name ...
-installFeature.option-desc.name...=\tUm ou mais recursos separados por espa\u00e7os. Para os recursos,    \n\
-\tespecifique o nome abreviado do recurso ou a coordenada Maven. Ao especificar        \n\
-\tuma coordenada Maven, ela deve conter pelo menos                  \n\
-\to ID do grupo e o ID do artefato                                     \n\
-\t(por exemplo, io.openliberty.features:mpHealth-2.0).                 \n\
-\tA vers\u00e3o \u00e9 padronizada como a vers\u00e3o de runtime atual      \n\
-\te o tipo de pacote \u00e9 padronizado como ESA caso a vers\u00e3o e o pacote   \n\
-\tn\u00e3o sejam especificados.
+installFeature.option-desc.name...=\tUm ou mais recursos separados por espa\u00e7os. Para os recursos,    \n\tespecifique o nome abreviado do recurso ou a coordenada Maven. Ao especificar        \n\tuma coordenada Maven, ela deve conter pelo menos                  \n\to ID do grupo e o ID do artefato                                     \n\t(por exemplo, io.openliberty.features:mpHealth-2.0).                 \n\tA vers\u00e3o \u00e9 padronizada como a vers\u00e3o de runtime atual      \n\te o tipo de pacote \u00e9 padronizado como ESA caso a vers\u00e3o e o pacote   \n\tn\u00e3o sejam especificados.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
-installFeature.option-desc.--to=\tEspecifique onde instalar o recurso. O recurso pode ser instalado em\n\
-\tqualquer local de extens\u00e3o de produto configurado, ou como um recurso do usu\u00e1rio. Se  \n\
-\testa op\u00e7\u00e3o n\u00e3o for especificada, o recurso ser\u00e1 instalado como um recurso      \n\
-\tdo usu\u00e1rio.
+installFeature.option-desc.--to=\tEspecifique onde instalar o recurso. O recurso pode ser instalado em\n\tqualquer local de extens\u00e3o de produto configurado, ou como um recurso do usu\u00e1rio. Se  \n\testa op\u00e7\u00e3o n\u00e3o for especificada, o recurso ser\u00e1 instalado como um recurso      \n\tdo usu\u00e1rio.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
-installFeature.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\
-\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\
-\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\
-\tJSON de recursos associados no mesmo groupId que o BOM.
+installFeature.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\tJSON de recursos associados no mesmo groupId que o BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
-installFeature.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
-\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+installFeature.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installFeature.option-desc.--verify=\tUse essa op\u00e7\u00e3o para especificar como os recursos s\u00e3o verificados. A      \nop\u00e7\u00e3o padr\u00e3o \u00e9 "enforce", que verifica as assinaturas de todos os recursos do Liberty,     \nexceto para recursos do usu\u00e1rio. A op\u00e7\u00e3o "warn" \u00e9 a mesma que  \n"enforce", mas n\u00e3o finalizar\u00e1 a instala\u00e7\u00e3o se a  \nverifica\u00e7\u00e3o falhar. A op\u00e7\u00e3o "skip" ignora a verifica\u00e7\u00e3o \ne n\u00e3o faz o download de nenhuma assinatura de recurso. A op\u00e7\u00e3o "all" verifica \nrecursos do Liberty e recursos do usu\u00e1rio.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tExibir informa\u00e7\u00f5es sobre depura\u00e7\u00e3o adicionais enquanto a a\u00e7\u00e3o \u00e9 executada.
@@ -67,8 +56,7 @@ installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installFeature.option-desc.--acceptLicense=\tAceita o contrato de licen\u00e7a.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
-installFeature.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\
-\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.
+installFeature.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tInstale os recursos necess\u00e1rios para um servidor nomeado
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -76,14 +64,13 @@ installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tO nome de um servidor existente no mesmo ambiente Liberty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
-installServerFeatures.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\
-\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\
-\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\
-\tJSON de recursos associados no mesmo groupId que o BOM.
+installServerFeatures.option-desc.--featuresBom=\tEspecifique a coordenada Maven para o arquivo BOM de recursos. Esta op\u00e7\u00e3o \n\tpermite a instala\u00e7\u00e3o de recursos do usu\u00e1rio do reposit\u00f3rio maven \n\tconfigurado. Certifique-se de que o reposit\u00f3rio tamb\u00e9m contenha o arquivo    \n\tJSON de recursos associados no mesmo groupId que o BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
-installServerFeatures.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
-\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+installServerFeatures.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
+installServerFeatures.option-desc.--verify=\tUse essa op\u00e7\u00e3o para especificar como os recursos s\u00e3o verificados. A      \nop\u00e7\u00e3o padr\u00e3o \u00e9 "enforce", que verifica as assinaturas de todos os recursos do Liberty,    \nexceto para recursos do usu\u00e1rio. A op\u00e7\u00e3o "warn" \u00e9 a mesma que  \n"enforce", mas n\u00e3o finalizar\u00e1 a instala\u00e7\u00e3o se a verifica\u00e7\u00e3o falhar.\n\tA op\u00e7\u00e3o "skip" ignora a verifica\u00e7\u00e3o e n\u00e3o faz download\n  de nenhuma assinatura de recurso. A op\u00e7\u00e3o "all" verifica recursos do Liberty       \ne recursos do usu\u00e1rio.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tExibir informa\u00e7\u00f5es sobre depura\u00e7\u00e3o adicionais enquanto a a\u00e7\u00e3o \u00e9 executada.
@@ -92,8 +79,7 @@ installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
 installServerFeatures.option-desc.--acceptLicense=\tAceita o contrato de licen\u00e7a.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
-installServerFeatures.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\
-\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.
+installServerFeatures.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.
 #--------- FIND ACTION ------------------------------------------------#
 find.desc=\tLocalize recursos nos reposit\u00f3rios.
 #--------- OPTIONS ----------------------------------------------------#
@@ -103,7 +89,4 @@ find.option-desc.[searchString]=\tUse a sequ\u00eancia de procura para localizar
 viewSettings.desc=\tVisualize os reposit\u00f3rios e as configura\u00e7\u00f5es de proxy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
-viewSettings.option-desc.--viewValidationMessages=\tUse esta op\u00e7\u00e3o para exibir as mensagens detalhadas da            \n\
-\tvalida\u00e7\u00e3o do arquivo featureUtility.properties configurado.         \n\
-\tCada mensagem cont\u00e9m um c\u00f3digo de erro, o n\u00famero da linha em que o erro \n\
-\tfoi localizado e a causa do erro.
+viewSettings.option-desc.--viewValidationMessages=\tUse esta op\u00e7\u00e3o para exibir as mensagens detalhadas da            \n\tvalida\u00e7\u00e3o do arquivo featureUtility.properties configurado.         \n\tCada mensagem cont\u00e9m um c\u00f3digo de erro, o n\u00famero da linha em que o erro \n\tfoi localizado e a causa do erro.

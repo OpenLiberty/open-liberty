@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: \u53d1\u751f\u4e86 WebSpher
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=\u8bf7\u53c2\u9605 WebSphere Application Server \u652f\u6301 Web \u9875\u9762 (http://www.ibm.com/software/webservers/appserv/was/support) \u4e0a\u7684\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: \u5728 {2} \u5e94\u7528\u7a0b\u5e8f\u7684 {1} \u6a21\u5757\u4e2d\u7684\u7c7b\u4e0a\uff0c\u5c06\u5ffd\u7565 {0} \u6ce8\u91ca\u3002 Jakarta EE \u5e94\u7528\u7a0b\u5e8f\u5fc5\u987b\u4f7f\u7528 {3} \u6ce8\u91ca\u3002 \u53d7\u5f71\u54cd\u7684\u7c7b\u4e3a\uff1a{4}
+wrong.annotation.package.CWWKM0483I.explanation=\u5e94\u7528\u7a0b\u5e8f\u5305\u542b\u5177\u6709\u201cjavax\u201d\u5305\u540d\u7684 Java EE \u6ce8\u91ca\uff0c\u4f46\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u5df2\u542f\u7528 Jakarta EE \u529f\u80fd\u90e8\u4ef6\u3002 \u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u672a\u5904\u7406\u201cjavax\u201d\u5305\u540d\u6ce8\u91ca\u3002
+wrong.annotation.package.CWWKM0483I.useraction=\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee5\u4f7f\u7528\u6ce8\u91ca\u7684\u201cjakarta\u201d\u5305\u540d\u7248\u672c\uff0c\u6216\u8005\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u914d\u7f6e\u4ee5\u542f\u7528 Java EE \u529f\u80fd\u90e8\u4ef6\u3002

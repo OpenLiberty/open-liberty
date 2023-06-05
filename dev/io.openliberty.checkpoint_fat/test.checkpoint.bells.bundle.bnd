@@ -1,0 +1,17 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: test.checkpoint.bells.bundle
+Bundle-SymbolicName: test.checkpoint.bells.bundle
+Bundle-Description: This bundle provides a library for testing the exported metainf services; version=${bVersion}
+
+Export-Package: \
+  test.checkpoint.bells.bundle;version=1.0
+
+Import-Package: \
+  com.ibm.websphere.ras*, \
+  *
+
+# use the annotations to describe the services
+-dsannotations: \
+ 	test.checkpoint.bells.bundle.TestUser

@@ -7,4 +7,6 @@
 
     <include location="../fatTestPorts.xml"/>
 
+    <applicationManager startTimeout="90s"/>
+
 </server>

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -171,6 +168,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1551E_LOGOUT_TOKEN_DUP_JTI = "CWWKS1551E";
     public static final String CWWKS1552E_NO_RECENT_SESSIONS_WITH_CLAIMS = "CWWKS1552E";
+    public static final String CWWKS1557E_REDIRECT_URI_CONTAINED_ERROR = "CWWKS1557E";
 
     public static final String CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT = "CWWKS2300E";
 
@@ -235,5 +233,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String SRVE8094W_CANNOT_SET_HEADER_RESPONSE_COMMITTED = "SRVE8094W";
 
     public static final String CWWKS0005E_NO_USER_REGISTRY = "CWWKS0005E";
+
+    public static final String CWIMK0011E_MISSING_REGISTRY_DEFINITION = "CWIMK0011E";
 
 }

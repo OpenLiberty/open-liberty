@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,14 +12,17 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
-import java.io.BufferedReader;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,7 +51,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -61,6 +67,8 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtilities.ArtifactoryAuthenticator;
+import componenttest.topology.utils.tck.TCKUtilities.ProcessResult;
 import junit.framework.AssertionFailedError;
 
 /**
@@ -91,6 +99,7 @@ public class TCKRunner {
 
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
+    private static final long startNanos = System.nanoTime();
 
     private final String bucketName;
     private final String testName;
@@ -98,9 +107,13 @@ public class TCKRunner {
     private final String suiteFileName;
     private final Map<String, String> additionalMvnProps;
     private final boolean isTestNG;
-    private final String relativeTckRunner;
     private final Type type;
     private final String specName;
+    private final File mavenUserHome;
+    private final File settingsFile;
+    private final File tckRunnerDir;
+
+    private final Authenticator artifactoryAuthenticator;
 
     /**
      * runs "mvn clean test" in the tck folder
@@ -139,7 +152,6 @@ public class TCKRunner {
      * @param  type          the type of TCK (either MICROPROFILE or JAKARTA)
      * @param  specName      the formal name for the specification being tested
      * @param  suiteFileName the name of the suite xml file
-     * @return               the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception     occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
@@ -157,7 +169,6 @@ public class TCKRunner {
      * @param  specName        the formal name for the specification being tested
      * @param  suiteFileName   the name of the suite xml file
      * @param  additionalProps java properties to set when running the mvn command
-     * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
@@ -177,7 +188,6 @@ public class TCKRunner {
      * @param  suiteFileName     the name of the suite xml file
      * @param  relativeTckRunner the relative path to the TCK runner when multiple exist
      * @param  additionalProps   java properties to set when running the mvn command
-     * @return                   the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception         occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
@@ -189,16 +199,18 @@ public class TCKRunner {
     /**
      * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
      *
-     * @param server          the liberty server which should be used to run the TCK
-     * @param bucketName      the name of the test project
-     * @param testName        the name of the method that's being used to launch the TCK
-     * @param type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param specName        the formal name for the specification being tested
-     * @param suiteFileName   the name of the suite xml file
-     * @param additionalProps java properties to set when running the mvn command
+     * @param  server             the liberty server which should be used to run the TCK
+     * @param  bucketName         the name of the test project
+     * @param  testName           the name of the method that's being used to launch the TCK
+     * @param  type               the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param  specName           the formal name for the specification being tested
+     * @param  suiteFileName      the name of the suite xml file
+     * @param  relativeTckRunner  the relative path to the TCK runner
+     * @param  additionalMvnProps java properties to set when running the mvn command
+     * @throws IOException
      */
     private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                      String relativeTckRunner, Map<String, String> additionalMvnProps) {
+                      String relativeTckRunner, Map<String, String> additionalMvnProps) throws IOException {
         this.server = server;
         this.suiteFileName = suiteFileName;
         this.bucketName = bucketName;
@@ -207,19 +219,41 @@ public class TCKRunner {
         this.specName = specName;
         this.additionalMvnProps = additionalMvnProps;
         this.isTestNG = suiteFileName != null;
-        this.relativeTckRunner = relativeTckRunner;
+        this.tckRunnerDir = new File(relativeTckRunner).getAbsoluteFile();
 
+        TCKUtilities.requireDirectory(tckRunnerDir);
+
+        File wrapperPropertiesFile = TCKUtilities.exportMvnWrapper(this.tckRunnerDir);
+
+        if (TCKUtilities.useArtifactory()) {
+            Properties wrapperProperties = TCKUtilities.updateWrapperPropertiesFile(wrapperPropertiesFile, TCKUtilities.getArtifactoryServer());
+
+            // Pre-download wrapper jar and set up a temporary maven home directory (if not already created
+            this.artifactoryAuthenticator = new ArtifactoryAuthenticator();
+            TCKUtilities.downloadMvnWrapperJar(tckRunnerDir, wrapperProperties, this.artifactoryAuthenticator);
+            this.mavenUserHome = TCKUtilities.getTemporaryMavenHomeDir();
+            this.settingsFile = TCKUtilities.setupMavenHome(this.mavenUserHome, wrapperProperties, this.artifactoryAuthenticator);
+            Log.info(c, "TCKRunner", "Using maven settings file: " + this.settingsFile);
+        } else {
+            // Don't override settings or maven home
+            this.artifactoryAuthenticator = null;
+            this.mavenUserHome = null;
+            this.settingsFile = null;
+            Log.info(c, "TCKRunner", "Using default maven environment");
+        }
     }
 
     /**
      * run the TCK and process the results
      */
     private void runTCK() throws Exception {
-        String[] testOutput = runCleanTestCmd();
+        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
+
+        List<String> testOutput = runCleanTestCmd();
         List<String> failingTestsList = postProcessTestResults(testOutput);
         assertTestsPassed(this.bucketName, this.testName, failingTestsList);
 
-        String[] dependencyOutput = runDependencyCmd();
+        List<String> dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         TCKResultsWriter.preparePublicationFile(resultsInfo);
@@ -228,20 +262,19 @@ public class TCKRunner {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
-    private String[] runCleanTestCmd() throws Exception {
-        String[] testcmd = getMvnCommandArray(MVN_CLEAN, MVN_TEST);
-        String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir());
-        TCKUtilities.writeStringsToFile(mvnOutput, getMvnTestOutputFile());
+    private List<String> runCleanTestCmd() throws Exception {
+
+        List<String> testcmd = getMvnCommandParams(MVN_CLEAN, MVN_TEST);
+        List<String> mvnOutput = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome(), getMvnTestOutputFile());
         return mvnOutput;
     }
 
     /**
      * runs "mvn dependency:list" in the tck folder, passing through all the required properties
      */
-    private String[] runDependencyCmd() throws Exception {
-        String[] dependencyCmd = getMvnCommandArray(MVN_DEPENDENCY);
-        String[] mvnOutput = runCmd(dependencyCmd, getTCKRunnerDir());
-        TCKUtilities.writeStringsToFile(mvnOutput, getMvnDependencyOutputFile());
+    private List<String> runDependencyCmd() throws Exception {
+        List<String> dependencyCmd = getMvnCommandParams(MVN_DEPENDENCY);
+        List<String> mvnOutput = runMvnCmd(dependencyCmd, getTCKRunnerDir(), getMavenUserHome(), getMvnDependencyOutputFile());
         return mvnOutput;
     }
 
@@ -250,7 +283,7 @@ public class TCKRunner {
      *
      * @return a list of junit XML results files
      */
-    private List<File> findJunitResultFiles(String[] mvnOutput) {
+    private List<File> findJunitResultFiles(List<String> mvnOutput) {
         File surefileResultsDir = getSureFireResultsDir();
 
         File[] resultsFiles = surefileResultsDir.listFiles(new FilenameFilter() {
@@ -270,7 +303,7 @@ public class TCKRunner {
         return Arrays.asList(resultsFiles);
     }
 
-    private static String getErrorsFromMvnOutput(String[] mvnOutput) {
+    private static String getErrorsFromMvnOutput(List<String> mvnOutput) {
         StringBuilder sb = new StringBuilder();
         sb.append("### maven test output:\n");
         for (String line : mvnOutput) {
@@ -316,11 +349,14 @@ public class TCKRunner {
      * @return           an array of Strings representing the command to be run
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
-    private String[] getMvnCommandArray(String... commands) throws Exception {
-        String mvn = getMvn();
-
+    private List<String> getMvnCommandParams(String... commands) throws Exception {
         ArrayList<String> stringArrayList = new ArrayList<>();
-        stringArrayList.add(mvn);
+
+        if (getSettingsFile() != null) {
+            stringArrayList.add("-s");
+            stringArrayList.add(getSettingsFile().toString());
+        }
+
         for (String command : commands) {
             stringArrayList.add(command);
         }
@@ -355,8 +391,7 @@ public class TCKRunner {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
         }
 
-        String[] cmd = stringArrayList.toArray(new String[0]);
-        return cmd;
+        return stringArrayList;
     }
 
     /**
@@ -481,14 +516,15 @@ public class TCKRunner {
      * @return The TCK runner dir
      */
     private File getTCKRunnerDir() {
-        File tckRunner = new File(this.relativeTckRunner);
+        return this.tckRunnerDir;
+    }
 
-        if (!tckRunner.exists()) {
-            tckRunner = new File(RELATIVE_TCK_RUNNER);
-        }
+    private File getMavenUserHome() {
+        return this.mavenUserHome;
+    }
 
-        return tckRunner;
-
+    private File getSettingsFile() {
+        return this.settingsFile;
     }
 
     /**
@@ -520,7 +556,7 @@ public class TCKRunner {
      * @throws TransformerFactoryConfigurationError
      * @throws TransformerException
      */
-    private List<String> postProcessTestResults(String[] mvnOutput) throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    private List<String> postProcessTestResults(List<String> mvnOutput) throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 
         List<File> resultsFiles = findJunitResultFiles(mvnOutput); //the raw input files
         File targetDir = getJunitResultsDir(); //the output dir
@@ -741,16 +777,19 @@ public class TCKRunner {
     }
 
     /**
-     * Get the basic mvn command ... "mvn.cmd" on Windows, otherwise just "mvn"
+     * Get the full path to the mvnw command (or "mvnw.cmd" on Windows)
      *
-     * @return the mvn command
+     * @param  testDirectory the test directory
+     * @return               the mvnw command with the full path
      */
-    private static String getMvn() {
-        String mvn = "mvn";
-        if (System.getProperty("os.name").contains("Windows")) {
-            mvn = mvn + ".cmd";
+    private static String getMvnw(File testDirectory) {
+        String mvnw = "mvnw";
+        if (TCKUtilities.isWindows()) {
+            mvnw = mvnw + ".cmd";
         }
-        return mvn;
+        File mvnFile = new File(testDirectory, mvnw);
+        String mvnPath = mvnFile.getAbsolutePath();
+        return mvnPath;
     }
 
     /**
@@ -876,71 +915,47 @@ public class TCKRunner {
         return null;
     }
 
-    /**
-     * Run a command using a ProcessBuilder.
-     *
-     * @param  cmd
-     * @param  workingDirectory
-     * @param  outputFile
-     * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
-     * @throws Exception
-     */
-    private static Process startProcess(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
+    private static Map<String, String> getMvnEnv(File mavenUserHome) throws IOException, InterruptedException {
+        Map<String, String> mvnEnv = new HashMap<>();
 
-        // Enables timestamps in the mvnOutput logs
-        Map<String, String> mvnEnv = pb.environment();
         mvnEnv.put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
                                  " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
 
-        pb.directory(workingDirectory);
-        pb.redirectErrorStream(true);
-
-        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-
-        Process process = pb.start();
-        return process;
-    }
-
-    private static void assertNotTimedOut(boolean timeout, ArrayList<String> output, long hardTimeout, long softTimeout) {
-        if (timeout) {
-            ArrayList<String> lastLines = new ArrayList<String>();
-            int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
-            int lineNum = output.size() - numOfLinesToInclude;
-            if (lineNum < 0) {
-                lineNum = 0;
-            }
-            while (lineNum < output.size()) {
-                lastLines.add(output.get(lineNum));
-                lineNum++;
+        if (mavenUserHome != null) {
+            // If we have created a custom user home dir, we need to set some environment variables
+            // to correspond with the placeholders in the settings.xml
+            String artifactoryServer = TCKUtilities.getArtifactoryServer();
+            if (artifactoryServer == null) {
+                Log.info(c, "getMvnEnv", "Artifactory Download Server not found");
+            } else {
+                Log.info(c, "getMvnEnv", "ARTIFACTORY_SERVER=" + artifactoryServer);
+                mvnEnv.put("ARTIFACTORY_SERVER", artifactoryServer);
             }
 
-            // Prepare the timeout message
-            String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
-                                numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
-            boolean slowDownload = false;
-            while (lineNum < output.size()) {
-                String line = output.get(lineNum);
-                timeoutMsg += line + "\n";
-
-                if (lineNum > (output.size() - 3)) {
-                    if (line.toLowerCase().matches(".* downloading .*|.* downloaded .*")) {
-                        slowDownload = true;
-                    }
-                }
-
-                lineNum++;
+            String artifactoryUser = TCKUtilities.getArtifactoryUser();
+            if (artifactoryUser == null) {
+                Log.info(c, "getMvnEnv", "Artifactory Download User not found");
+            } else {
+                Log.info(c, "getMvnEnv", "MVNW_USERNAME=" + artifactoryUser);
+                mvnEnv.put("MVNW_USERNAME", artifactoryUser);
             }
 
-            // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
-            if (slowDownload) {
-                timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+            String artifactoryToken = TCKUtilities.getArtifactoryToken();
+            if (artifactoryToken == null) {
+                Log.info(c, "getMvnEnv", "Artifactory Download Token not found");
+            } else {
+                //Log.info(c, "getMvnEnv", "MVNW_PASSWORD=XXXXXXX");
+                mvnEnv.put("MVNW_PASSWORD", artifactoryToken);
             }
 
-            // Throw custom timeout error message rather then the one provided by the JUnitTask
-            Log.info(c, "runCmd", timeoutMsg); // Log the timeout message into messages.log or the default log
-            throw new AssertionFailedError(timeoutMsg);
+            String mvnUserHome = mavenUserHome.toString();
+            Log.info(c, "getMvnEnv", "MAVEN_USER_HOME=" + mvnUserHome);
+            mvnEnv.put("MAVEN_USER_HOME", mvnUserHome);
         }
+
+        mvnEnv.put("MVNW_VERBOSE", "true");
+
+        return mvnEnv;
     }
 
     /**
@@ -952,38 +967,29 @@ public class TCKRunner {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    private static String[] runCmd(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
+    private static List<String> runMvnCmd(List<String> mvnParams, File workingDirectory, File mavenUserHome, File logFile) throws Exception {
 
         //calculate the timeout
-        int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
-        long softTimeout = -1;
+        long hardTimeout = Long.parseLong(System.getProperty("fat.timeout", "10800000"));
+        assertThat("FAT timeout too short to run a TCK", hardTimeout, greaterThan(120_000L));
 
-        // We need to ensure that the hard timeout is large enough to avoid future issues
-        if (hardTimeout >= 30000) {
-            softTimeout = hardTimeout - 15000; // Soft timeout is 15 seconds less than hard timeout
-        }
-        boolean timeout = false;
+        // calculate the time elapsed so far (as best we can)
+        long elapsedTime = Duration.ofNanos(System.nanoTime() - startNanos).toMillis();
 
-        //TODO might need an async timeout thread?
+        // calculate a soft timeout for running the TCK bucket
+        // This is 2 minutes less than we think is left to account for activity before this class can record the start time
+        // and for the server to shut down cleanly afterwards
+        long softTimeout = hardTimeout - elapsedTime - 120_000;
 
-        //start the process
-        Process process = startProcess(cmd, workingDirectory);
-        //read the output
-        ArrayList<String> output = new ArrayList<>();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                output.add(line);
-            }
+        assertThat("Not enough remaining time to start running a TCK. Elapsed: " + elapsedTime + "ms", softTimeout, greaterThan(0L));
 
-            //wait for it to finish
-            timeout = TCKUtilities.waitForProcess(process, softTimeout);
-        }
+        Map<String, String> mvnEnv = getMvnEnv(mavenUserHome);
+        String mvn = getMvnw(workingDirectory);
+        ProcessResult output = TCKUtilities.startProcess(mvn, mvnParams, workingDirectory, mvnEnv, logFile, softTimeout);
 
         //if the process timed out throw an Error
-        assertNotTimedOut(timeout, output, hardTimeout, softTimeout);
+        TCKUtilities.assertNotTimedOut(output, hardTimeout, softTimeout);
 
-        String[] lines = output.toArray(new String[0]);
-        return lines;
+        return output.getOutput();
     }
 }

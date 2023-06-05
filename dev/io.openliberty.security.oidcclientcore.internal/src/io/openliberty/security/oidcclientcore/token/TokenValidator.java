@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,13 @@
 package io.openliberty.security.oidcclientcore.token;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jose4j.jwt.NumericDate;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 
@@ -32,6 +36,8 @@ public class TokenValidator {
     protected OidcClientConfig oidcConfig;
 
     private final long clockSkewInSeconds = 120; // default value in seconds
+    
+    public static final TraceComponent tc = Tr.register(TokenValidator.class);
 
     public TokenValidator(OidcClientConfig clientConfig) {
         this.oidcConfig = clientConfig;
@@ -86,8 +92,10 @@ public class TokenValidator {
     protected void validateNotBefore() throws TokenValidationException {
         if (this.notBefore != null) {
             long now = System.currentTimeMillis();
-            if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
-                throw new TokenValidationException(oidcConfig.getClientId(), "nbf claim must be in past");
+            if (now + (this.clockSkewInSeconds * 1000) < this.notBefore.getValueInMillis()) {
+                NumericDate nd = NumericDate.now();
+                nd.addSeconds(this.clockSkewInSeconds);
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.notBefore, "nbf",  nd, this.clockSkewInSeconds));
             }
         }
     }
@@ -95,14 +103,18 @@ public class TokenValidator {
     protected void validateIssuedAt() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
-            throw new TokenValidationException(oidcConfig.getClientId(), "iat claim must be in past");
+            NumericDate nd = NumericDate.now();
+            nd.addSeconds(this.clockSkewInSeconds);
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.iat, "iat",  nd, this.clockSkewInSeconds));
         }
     }
 
     protected void validateExpiration() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now - (this.clockSkewInSeconds * 1000) > this.exp.getValueInMillis()) {
-            throw new TokenValidationException(oidcConfig.getClientId(), "exp claim must be in future");
+            NumericDate nd = NumericDate.now();
+            nd.setValue((now/1000) - this.clockSkewInSeconds);            
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EXP_IN_PAST", this.exp, nd, this.clockSkewInSeconds));
         }
     }
 
@@ -115,24 +127,27 @@ public class TokenValidator {
     }
 
     protected void validateAudiences() throws TokenValidationException {
-        if (this.audiences != null && !(this.audiences.isEmpty())) {
-            if (this.audiences.size() == 1) {
-                // validate aud claim against client id
-                if (!(oidcConfig.getClientId().equals(this.audiences.get(0)))) {
-                    throw new TokenClaimMismatchException(oidcConfig.getClientId(), audiences.get(0), "aud", oidcConfig.getClientId());
-                }
-            } else if (this.azp == null) {
-                // if more than one audience, then azp claim is a must
-                throw new TokenValidationException(oidcConfig.getClientId(), "multiple audiences present [ " + this.audiences(audiences).toString()
-                                                                             + " ], but required azp claim is missing");
-            }
+        if (this.audiences == null || this.audiences.isEmpty()) {
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_MISSING_REQUIRED_CLAIM", "aud"));
         }
+        if (this.audiences.contains(oidcConfig.getClientId())) {
+            if (this.audiences.size() > 1 && this.azp == null) {
+                // if more than one audience, then azp claim is a must
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_MISSING_REQUIRED_CLAIM", "azp") );
+            }
+        } else {      
+            StringBuffer audience = new StringBuffer();
+            for (String aud : this.audiences) {            
+                audience.append("\"").append(aud).append("\"").append(" ");
+            }
+            throw new TokenClaimMismatchException(oidcConfig.getClientId(), audience.toString(), "aud", oidcConfig.getClientId());
+        }         
     }
 
     protected void validateSubject() throws TokenValidationException {
         if (this.subject != null) {
             if (this.subject.isEmpty()) {
-                throw new TokenValidationException(oidcConfig.getClientId(), "subject claim is present but empty");
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EMPTY_CLAIM", "sub"));
             }
         }
     }

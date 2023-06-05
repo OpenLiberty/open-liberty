@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package io.openliberty.checkpoint.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URL;
@@ -64,39 +63,28 @@ public class WebProfileJSPtest {
                         .addAsWebResource(new File(server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/JSPfile.jsp"))
                         .addAsResource(new File(server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/alternateJSPdir/alternateJSPfile.jsp"));
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.OVERWRITE);
-    }
-
-    @Test
-    public void testJSPwithUpdate() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS);
-        server.startServer();
-
-        URL url1 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp/alternateJSPfile.jsp");
-        int responseCode = HttpUtils.getHttpConnection(url1, 5000, HTTPRequestMethod.GET).getResponseCode();
-
-        if (responseCode < 400) {
-            fail("request did not return an HTTP error response code");
-        }
-
-        server.stopServer("SRVE0190E");
 
         ServerConfiguration preConfig = server.getServerConfiguration();
         preConfig.getJspEngine().setExtraAttribute("extendedDocumentRoot", server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/alternateJSPdir");
         server.updateServerConfiguration(preConfig);
+    }
 
-        server.checkpointRestore();
+    @Test
+    public void testJSPwithUpdate() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
+        server.startServer();
 
-        URL url2 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp");
-        int responseCode2 = HttpUtils.getHttpConnection(url2, 5000, HTTPRequestMethod.GET).getResponseCode();
+        URL url1 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp");
+        int responseCode1 = HttpUtils.getHttpConnection(url1, 5000, HTTPRequestMethod.GET).getResponseCode();
 
-        assertEquals("Incorrect response code from " + url2, 200, responseCode2);
+        assertEquals("Incorrect response code from " + url1, 200, responseCode1);
 
         assertNotNull(server.findStringsInLogs("jsp servlet"));
 
-        URL url3 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp/alternateJSPfile.jsp");
-        int responseCode3 = HttpUtils.getHttpConnection(url3, 5000, HTTPRequestMethod.GET).getResponseCode();
+        URL url2 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp/alternateJSPfile.jsp");
+        int responseCode2 = HttpUtils.getHttpConnection(url2, 5000, HTTPRequestMethod.GET).getResponseCode();
 
-        assertEquals("Incorrect response code from " + url3, 200, responseCode3);
+        assertEquals("Incorrect response code from " + url2, 200, responseCode2);
 
         assertNotNull(server.findStringsInLogs("alternate jsp dir"));
     }

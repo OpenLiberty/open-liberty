@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,17 +27,19 @@ import tests.DualServerDynamicDBRotationTest2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicDBRotationTest2.class,
+	//Ensure failures in @BeforeClass don't prevent zero tests run
+	AlwaysPassesTest.class,
+	DualServerDynamicDBRotationTest2.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
     static {
-        databaseContainerType = DatabaseContainerType.Derby;
+        beforeSuite(DatabaseContainerType.Derby);
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames));
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
+    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DualServerDynamicDBRotationTest2.serverNames))
+    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerDynamicDBRotationTest2.serverNames));
 }

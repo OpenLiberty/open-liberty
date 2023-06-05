@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package oidc.client.base.servlets;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
@@ -34,10 +35,16 @@ public class BaseServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private OpenIdContext context;
+    protected OpenIdContext context;
 
     public BaseServlet() {
         super();
+    }
+
+    protected final AtomicInteger counter = new AtomicInteger();
+
+    public int getCounter() {
+        return counter.incrementAndGet();
     }
 
     @Override
@@ -48,6 +55,23 @@ public class BaseServlet extends HttpServlet {
         if (request.getParameter(Constants.LOGOUT) != null) {
             request.logout();
         }
+
+        recordAppInfo(request, response, outputStream);
+
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        counter.set(0);
+
+    }
+
+    protected void recordAppInfo(HttpServletRequest request, HttpServletResponse response, ServletOutputStream outputStream) throws IOException {
+
+        ServletLogger.printBlankLine(outputStream);
+
+        ServletLogger.printLine(outputStream, ServletMessageConstants.APP_REQUEST_COUNT + counter.get());
 
         recordWhichApp(outputStream);
 
@@ -65,18 +89,9 @@ public class BaseServlet extends HttpServlet {
     protected void recordWhichApp(ServletOutputStream outputStream) throws IOException {
 
         ServletLogger.printLine(outputStream, "got here servlet");
-        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + getShortName(this.getClass().getSuperclass().getName()));
-        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + getShortName(this.getClass().getName()));
+        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + ServletLogger.getShortName(this.getClass().getSuperclass().getName()));
+        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + ServletLogger.getShortName(this.getClass().getName()));
 
     }
 
-    protected String getShortName(String longClassName) throws IOException {
-
-        if (longClassName != null) {
-            String[] splitClassName = longClassName.split("\\.");
-            return splitClassName[splitClassName.length - 1];
-        }
-        return null;
-
-    }
 }

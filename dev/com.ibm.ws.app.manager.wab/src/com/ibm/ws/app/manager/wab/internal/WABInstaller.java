@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -110,8 +110,6 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
-
 /**
  * This installer is an immediate DS component that will create a RecursiveBundleTracker to look for WABs, when one is found it will install it.
  *
@@ -186,8 +184,8 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = { WABInstaller.class, EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class},
-           property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED", CheckpointHook.MULTI_THREADED_HOOK + ":Boolean=true" })
+           service = { WABInstaller.class, EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class },
+           property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
 public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus {
 
     private static final TraceComponent tc = Tr.register(WABInstaller.class);

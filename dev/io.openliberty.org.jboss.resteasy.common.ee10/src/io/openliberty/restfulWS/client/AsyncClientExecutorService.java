@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,18 @@ import static io.openliberty.restfulWS.client.internal.AsyncClientExecutorHelper
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+
+import com.ibm.ws.threading.CompletionStageExecutor;
 
 import io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent;
 
@@ -176,6 +182,24 @@ public class AsyncClientExecutorService implements ExecutorService {
      * @see java.util.concurrent.ExecutorService#invokeAny(java.util.Collection, long, java.util.concurrent.TimeUnit)
      */
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return delegate.invokeAny(wrapTasks(tasks), timeout, unit);
+        return delegate.invokeAny(wrapTasks(tasks), timeout, unit);       
     }
+  
+    ExecutorService getDelegate() {
+        final ExecutorService delegate = this.delegate;
+        if (delegate == null) {
+            throw Messages.MESSAGES.executorShutdown();
+        }
+        return delegate;
+    }
+    
+    public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
+        ExecutorService executor = getDelegate();
+        if (executor instanceof CompletionStageExecutor) {
+            return ((CompletionStageExecutor) executor).supplyAsync(wrap(supplier));
+        }
+        // No need to wrap here as tasks will be wrapped when CompletableFuture submits them to this executor
+        return CompletableFuture.supplyAsync(supplier, this);
+    }
+
 }

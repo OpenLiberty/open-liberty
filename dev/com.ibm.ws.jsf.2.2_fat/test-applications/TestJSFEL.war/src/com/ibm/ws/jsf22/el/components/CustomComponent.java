@@ -1,15 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.el.components;
 
 import java.io.IOException;
@@ -171,19 +168,15 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
         ExpressionFactory expFactory = ELManager.getExpressionFactory();
         List<String> expectedResolvers = new ArrayList<String>() {
             {
+
+                add(expFactory.getStreamELResolver().getClass().getName());
+                add("javax.el.StaticFieldELResolver");
+                add("javax.el.MapELResolver");
+                add("javax.el.ListELResolver");
+                add("javax.el.ArrayELResolver");
                 if (isFaces40OrLater) {
-                    add(expFactory.getStreamELResolver().getClass().getName());
-                    add("javax.el.StaticFieldELResolver");
-                    add("javax.el.MapELResolver");
-                    add("javax.el.ListELResolver");
-                    add("javax.el.ArrayELResolver");
-                    add("org.apache.myfaces.el.resolver.LambdaBeanELResolver");
+                    add("javax.el.BeanELResolver"); // swap with add("org.apache.myfaces.el.resolver.LambdaBeanELResolver"); when o.a.m.USE_LAMBDA_METAFACTORY is true
                 } else {
-                    add(expFactory.getStreamELResolver().getClass().getName());
-                    add("javax.el.StaticFieldELResolver");
-                    add("javax.el.MapELResolver");
-                    add("javax.el.ListELResolver");
-                    add("javax.el.ArrayELResolver");
                     add("javax.el.BeanELResolver");
                 }
             }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
@@ -33,7 +30,6 @@ import com.ibm.ws.jsf23.fat.CDITestBase;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -47,7 +43,8 @@ import junit.framework.Assert;
  */
 @RunWith(FATRunner.class)
 public class JSF23CDIInjectionTests extends CDITestBase {
-    private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
+    protected static final Class<?> c = JSF23CDIInjectionTests.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
     private static final String CDI_INJECTION_TESTS_APP_NAME = "CDIInjectionTests.war";
     private static final String ACTION_LISTENER_INJECTION_APP_NAME = "ActionListenerInjection.war";
 
@@ -119,7 +116,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23CDIInjectionTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
 
     }
 
@@ -269,7 +266,6 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      * Does some simple verifications of the 4 scopes and instances ( through hashcode) are what is expected for multiple requests.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testViewScopeInjections() throws Exception {
         String contextRoot = "CDIInjectionTests";
 

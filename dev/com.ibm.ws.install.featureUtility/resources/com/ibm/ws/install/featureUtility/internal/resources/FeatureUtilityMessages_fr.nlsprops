@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=Le fichier de propri\u00e9t\u00e9s n'a pas r\u
 MSG_VALIDATION_NUM_OF_ERRORS=Nombre d''erreurs : {0}
 MSG_VALIDATION_MESSAGES=Validation du fichier de propri\u00e9t\u00e9s
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=Cl\u00e9s publiques configur\u00e9es
+MSG_NO_CONFIG_KEY=Aucune cl\u00e9 configur\u00e9e
+MSG_VERIFY_FEATURE_LABEL=V\u00e9rification des fonctions :
+MSG_DEFAULT_VERIFY=Appliquer
 
 FIELD_REPO_NAME=Nom : {0}
 FIELD_REPO_LOCATION=Emplacement : {0}
@@ -60,3 +64,4 @@ FIELD_REPO=Serveur de r\u00e9f\u00e9rentiel : {0} ({1})
 FIELD_PROXY=Serveur proxy : {0}
 FIELD_VALIDATION_RESULTS=R\u00e9sultats de la validation : {0}
 FIELD_VALIDATION_LINE=Ligne : {0}
+FIELD_KEYID=ID de cl\u00e9 :

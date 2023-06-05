@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -27,9 +27,16 @@ Bundle-Description: Provides Jackson Processor as a bundle
   @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.13.4;EXACT}!/!META-INF/versions*,\
   @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.13.4;EXACT}!/!META-INF/versions*,\
   @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;org.yaml:snakeyaml;1.32;EXACT}
-  
+  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.13.4;EXACT}!/!META-INF/versions*
+
+# Note: snakeyaml is not included in the list above because it's pulled in via the buildpath and Export-Package header
+# so that we can override one of the classes. Listing it in -includeresource would overwrite the class we compile.
+
 Export-Package: \
   com.fasterxml.jackson.*;version=2.13.4,\
-  org.yaml.snakeyaml.*;version=1.32
+  org.yaml.snakeyaml.*;version=1.32;-split-package:=merge-first
+
+# Note: -split-package directive is present becase org.yaml.snakeyaml.Yaml is found both on the classpath and in the src directory
+# Requesting "merge-first" means we prefer the version from src since src is always first on the classpath
+
+-buildpath: org.yaml:snakeyaml;version=1.32

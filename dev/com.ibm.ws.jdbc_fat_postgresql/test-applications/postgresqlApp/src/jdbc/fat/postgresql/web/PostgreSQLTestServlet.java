@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import org.postgresql.jdbc.AutoSave;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -53,9 +54,6 @@ import componenttest.app.FATServlet;
 public class PostgreSQLTestServlet extends FATServlet {
 
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
-
-    @Resource(lookup = "jdbc/anonymous/XADataSource")
-    DataSource resRefDS;
 
     @Resource
     UserTransaction tx;
@@ -71,6 +69,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     // and a JDBC driver that does not match the jar name heuristic detection. This will confirm that our java.sql.Driver
     // detection mechanism works properly for PostgreSQL
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testAnonymousPostgresDriver() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/Driver");
         ds.getConnection().close();
@@ -78,6 +77,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Verify we can auto-detect an XA DataSource implementation using a generically named PostgreSQL JDBC Driver
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testAnonymousPostgresDS() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
         ds.getConnection().close();
@@ -100,7 +100,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     // Verify that basic unwrap patterns work for the 3 DataSource types: reg, CP, and XA
     @Test
     public void testUnwrapDS() throws Exception {
-        DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/XADataSource");
         assertTrue("Class " + ds.getClass() + " was not marked as a wrapper for XADataSource",
                    ds.isWrapperFor(XADataSource.class));
         // There isn't any PosgreSQL specific interface we can unwrap to,
@@ -126,6 +126,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testUnwrapConnection() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection con = ds.getConnection()) {
@@ -143,8 +144,8 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Test that a basic PostgreSQL-only bean property (defaultFetchSize) gets set on a DataSource when configured in server.xml
     @Test
-    public void testBaiscPostgreSpecificProp() throws Exception {
-        DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
+    public void testBasicPostgreSpecificProp() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/postgres/XADataSource");
 
         // Insert 6 rows into the DB. Uses ID's 0, 1, 2, 3, 4, and 5
         try (Connection con = ds.getConnection()) {
@@ -171,7 +172,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     @Test
     public void testReadOnly() throws Exception {
         // On a regular DS, should be able to write data
-        DataSource regularDS = InitialContext.doLookup("jdbc/anonymous/XADataSource");
+        DataSource regularDS = InitialContext.doLookup("jdbc/postgres/XADataSource");
         try (Connection con = regularDS.getConnection()) {
             assertFalse("JDBC connection should not be marked read-only by default.", con.isReadOnly());
             Statement stmt = con.createStatement();
@@ -205,7 +206,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     @Test
     public void testDefaultAutoCommit() throws Exception {
         // On a regular DS, default AC should be true in an LTC, or false in a global tran
-        DataSource writingDS = InitialContext.doLookup("jdbc/anonymous/XADataSource");
+        DataSource writingDS = InitialContext.doLookup("jdbc/postgres/XADataSource");
         DataSource regularDS = InitialContext.doLookup("jdbc/postgres/ConnectionPoolDataSource");
 
         try (Connection writingConn = writingDS.getConnection();
@@ -260,6 +261,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     // Ensure defaultAutoCommit=false behaves properly across global transaction boundaries.
     // Insert/read data with two different DataSources, expect writes to auto-commit
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDefaultAutoCommitOffGlobalTran() throws Exception {
         DataSource regularDS = InitialContext.doLookup("jdbc/postgres/xa");
         DataSource autoCommitDS = InitialContext.doLookup("jdbc/postgres/defaultAutoCommitOff");
@@ -474,6 +476,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testPostgresCopyApiUsability() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection con = ds.getConnection()) {
@@ -485,6 +488,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testPostgresLargeObjectApiUsability() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
         try (Connection con = ds.getConnection()) {

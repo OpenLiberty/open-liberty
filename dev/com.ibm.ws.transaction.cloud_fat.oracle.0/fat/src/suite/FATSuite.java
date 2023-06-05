@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.transaction.test;
+package suite;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,17 +27,19 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	//Ensure failures in @BeforeClass don't prevent zero tests run
+	AlwaysPassesTest.class,
 	DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
-		databaseContainerType = DatabaseContainerType.Oracle;
+		beforeSuite(DatabaseContainerType.Oracle);
 	}
 
 	@ClassRule
-	public static RepeatTests r = RepeatTests.withoutModification()
-	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-	.andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
-	.andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames));
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRotationTest.serverNames))
+    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DBRotationTest.serverNames))
+    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRotationTest.serverNames));
 }

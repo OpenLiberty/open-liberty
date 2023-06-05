@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!--HTTP server plugin config file for srv03 -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" ConfigHash="-900946569" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/var/log/WAS/IHS/httpd-rv/http_plugin_log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/opt/WAS/IHS/ihs/plugin"/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- No virtual hosts are configured to accept requests from the webserver http port (*:80).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+<!-- No virtual hosts are configured to accept requests from the webserver https port (*:443).
+	 Verify that virtualHost elements in server.xml have appropriate hostAlias attributes to support the webserver. -->
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="*:9004"/>
+      <VirtualHost Name="*:9404"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="srv03_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="71722d50-6dd2-4d7e-920a-e85ecd286c69" ConnectTimeout="5" ExtendedHandshake="false" LoadBalanceWeight="20" MaxConnections="-1" Name="default_node_srv03" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="srv03.was.some.com" Port="9004" Protocol="http"/>
+         <Transport Hostname="srv03.was.some.com" Port="9404" Protocol="https">
+            <Property Name="keyring" Value="/opt/WAS/IHS/ihs/plugin/config/httpd-rv/plugin-key.kdb"/>
+            <Property Name="stashfile" Value="/opt/WAS/IHS/ihs/plugin/config/httpd-rv/plugin-key.sth"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_srv03"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_srv03_default_node_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/openapi/ui/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/openapi/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/jwt/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/some/thing/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/health/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/ibm/api/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/metrics/*"/>
+   </UriGroup>
+   <Route ServerCluster="srv03_default_node_Cluster" UriGroup="default_host_srv03_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>

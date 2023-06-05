@@ -633,5 +633,9 @@
 
 7356=Proceduru [{1}] nelze prov\u00e9st, proto\u017ee {0} aktu\u00e1ln\u011b nepodporuje v\u00edce v\u00fdstupn\u00edch parametr\u016f.
 
-7357=Adresa URL "[{0}]" pro prost\u0159edek "[{1}]" nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence (jako pro specifikaci Jakarta Persistence)
+7357=Adresa URL [{0}] pro prost\u0159edek [{1}] nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence, jak je definov\u00e1n specifikac\u00ed JPA.
+
+7358=Byl zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev slu\u017eby ASM.
+
+7359=\u017d\u00e1dn\u00e1 slu\u017eba ASM nen\u00ed k dispozici.
 

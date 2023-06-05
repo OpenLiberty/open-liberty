@@ -22,7 +22,7 @@ Main-Class: com.ibm.ws.install.featureUtility.FeatureUtilityExecutor
 Private-Package: \
   com.ibm.ws.install.featureUtility.*,\
   com.ibm.ws.install.featureUtility.internal.*
-  
+
 
 instrument.disabled: true
 
@@ -43,4 +43,7 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	wlp.lib.extract;version=latest
+	
+-testpath: \
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file
 

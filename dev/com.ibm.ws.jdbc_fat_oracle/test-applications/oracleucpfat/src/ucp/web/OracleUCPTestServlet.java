@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,13 +51,13 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                  @DataSourceDefinition(
                                                        name = "java:comp/env/jdbc/dsdUCPDS",
                                                        className = "oracle.ucp.jdbc.PoolDataSourceImpl",
-                                                       url = "${env.URL}",
+                                                       url = "${env.ORACLE_URL}",
                                                        isolationLevel = Connection.TRANSACTION_SERIALIZABLE,
                                                        maxIdleTime = 30,
                                                        minPoolSize = 1,
                                                        initialPoolSize = 1, //This property should be allowed when using UCP
-                                                       user = "${env.USER}",
-                                                       password = "${env.PASSWORD}",
+                                                       user = "${env.ORACLE_USER}",
+                                                       password = "${env.ORACLE_PASSWORD}",
                                                        maxPoolSize = 3,
                                                        maxStatements = 9,
                                                        properties = {
@@ -69,10 +69,10 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                  @DataSourceDefinition(
                                                        name = "java:comp/env/jdbc/dsdXAUCPDS",
                                                        className = "oracle.ucp.jdbc.PoolXADataSourceImpl",
-                                                       url = "${env.URL}",
+                                                       url = "${env.ORACLE_URL}",
                                                        initialPoolSize = 1,
-                                                       user = "${env.USER}",
-                                                       password = "${env.PASSWORD}",
+                                                       user = "${env.ORACLE_USER}",
+                                                       password = "${env.ORACLE_PASSWORD}",
                                                        maxStatements = 10,
                                                        properties = {
                                                                       "validationTimeout=30"
@@ -80,10 +80,10 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                  @DataSourceDefinition(
                                                        name = "java:comp/env/jdbc/dsdXAUCPDS2",
                                                        className = "oracle.ucp.jdbc.PoolXADataSourceImpl",
-                                                       url = "${env.URL}",
+                                                       url = "${env.ORACLE_URL}",
                                                        initialPoolSize = 1,
-                                                       user = "${env.USER}",
-                                                       password = "${env.PASSWORD}",
+                                                       user = "${env.ORACLE_USER}",
+                                                       password = "${env.ORACLE_PASSWORD}",
                                                        maxStatements = 10,
                                                        properties = {
                                                                       "validationTimeout=30"

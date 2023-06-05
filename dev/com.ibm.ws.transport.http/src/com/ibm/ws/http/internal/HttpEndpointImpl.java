@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,10 +17,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -64,6 +66,9 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Component(configurationPid = "com.ibm.ws.http",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -141,6 +146,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private BundleContext bundleContext = null;
 
+    private final Supplier<String> resolvedHostNameSupplier = new Supplier<String>() {
+        @Override
+        public String get() {
+            return resolvedHostName;
+        }
+    };
+
     /**
      * Used to specify whether to stop the server for problems encountered
      * during install/start of feature bundles
@@ -152,7 +164,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private final AtomicReference<AccessLog> accessLogger = new AtomicReference<AccessLog>(DisabledLogger.getRef());
 
-    private final Object actionLock = new Object() {};
+    private final Object actionLock = new Object() {
+    };
     private final LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     private Future<?> actionFuture = null;
 
@@ -275,6 +288,28 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         eventService.deactivate(ctx);
     }
 
+    private void registerCheckResolvedHostHook(final Map<String, Object> configAtCheckpoint, String cfgDefaultHost) {
+        if (!CheckpointPhase.getPhase().restored()) {
+            // This is the checkpoint side; register a hook that will
+            // confirm the resolved host name has not changed.
+            final String checkpointResolvedHost = resolvedHostName;
+            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                @Override
+                public void restore() {
+                    if (configAtCheckpoint == endpointConfig) {
+                        // Only verify the restore resolved hostname hasn't changed if the
+                        // config hasn't changed since checkpoint time.
+                        String restoredResolvedHost = resolveHostName(host, cfgDefaultHost);
+                        if (!Objects.equals(checkpointResolvedHost, restoredResolvedHost)) {
+                            // The resolved hostname on restore is different, force a modify to take effect
+                            modified(configAtCheckpoint);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * Process new configuration: call updateChains to push out
      * new configuration.
@@ -294,6 +329,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         host = ((String) config.get("host")).toLowerCase(Locale.ENGLISH);
         String cfgDefaultHost = ((String) config.get(HttpServiceConstants.DEFAULT_HOSTNAME)).toLowerCase(Locale.ENGLISH);
         resolvedHostName = resolveHostName(host, cfgDefaultHost);
+
+        registerCheckResolvedHostHook(config, cfgDefaultHost);
+
         if (resolvedHostName == null) {
             if (HttpServiceConstants.WILDCARD.equals(host)) {
                 // On some platforms, or if the networking stack is disabled:
@@ -359,7 +397,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * Process HTTP chain work.
      *
      * @param enableEndpoint True to enable the associated HTTP chain. False, to disable it.
-     * @param isPause True if this call is being made for pause endpoint processing.
+     * @param isPause        True if this call is being made for pause endpoint processing.
      */
     public void processHttpChainWork(boolean enableEndpoint, boolean isPause) {
         if (enableEndpoint) {
@@ -440,6 +478,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      */
     public String getResolvedHostName() {
         return resolvedHostName;
+    }
+
+    public Supplier<String> getResolvedHostNameSupplier() {
+        return resolvedHostNameSupplier;
     }
 
     /**
@@ -585,7 +627,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetTcpOptions(ChannelConfiguration config) {}
+    protected void unsetTcpOptions(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getTcpOptions() {
         ChannelConfiguration c = tcpOptions;
@@ -623,7 +666,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetHttpOptions(ChannelConfiguration config) {}
+    protected void unsetHttpOptions(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getHttpOptions() {
         ChannelConfiguration c = httpOptions;
@@ -663,7 +707,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetCompression(ChannelConfiguration config) {}
+    protected void unsetCompression(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getCompressionConfig() {
         ChannelConfiguration c = compressionConfig;
@@ -701,7 +746,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetRemoteIp(ChannelConfiguration config) {}
+    protected void unsetRemoteIp(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getRemoteIpConfig() {
         ChannelConfiguration c = remoteIpConfig;
@@ -741,7 +787,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetSamesite(ChannelConfiguration config) {}
+    protected void unsetSamesite(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getSamesiteConfig() {
         ChannelConfiguration c = samesiteConfig;
@@ -781,7 +828,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
     }
 
-    protected void unsetHeaders(ChannelConfiguration config) {}
+    protected void unsetHeaders(ChannelConfiguration config) {
+    }
 
     public Map<String, Object> getHeadersConfig() {
         ChannelConfiguration c = headersConfig;
@@ -804,7 +852,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *
      * @param bundle CHFWBundle instance to unset
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {}
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
 
     protected CHFWBundle getChfwBundle() {
         return chfw;
@@ -864,9 +913,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * @param bundle
      */
     @Reference(name = "httpDispatcher")
-    protected void setHttpDispatcher(HttpDispatcher dispatcher) {}
+    protected void setHttpDispatcher(HttpDispatcher dispatcher) {
+    }
 
-    protected void unsetHttpDispatcher(HttpDispatcher dispatcher) {}
+    protected void unsetHttpDispatcher(HttpDispatcher dispatcher) {
+    }
 
     /**
      * If we can get the chain activity off the SCR action thread, we should
@@ -882,7 +933,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      * Schedule an activity to run off the SCR action thread,
      * if the ExecutorService is available
      *
-     * @param action Runnable action to execute
+     * @param action     Runnable action to execute
      * @param addToQueue Set to false if the action should be scheduled independently of the actionQueue
      */
     @Trivial

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
@@ -61,7 +58,7 @@ public class TraceTest {
     private static WsocTest wt = null;;
     private static TraceEnabledTest mct = null;
 
-    private static final Logger LOG = Logger.getLogger(SecureTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(TraceTest.class.getName());
 
     private static final String TRACE_WAR_NAME = "trace";
 

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
@@ -50,7 +47,7 @@ import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
-import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.server.internal.MockJWKProvider;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -187,6 +184,8 @@ public class EcJwkTest {
                 will(returnValue(issuerIdentifier));
                 one(oidcServerConfig).isCustomClaimsEnabled();
                 will(returnValue(false));
+                one(jwtData).getTypHeader();
+                will(returnValue(null));
                 one(jwtData).getSigningKey();
                 will(returnValue(jsonWebKey.getPrivateKey()));
                 one(jwtData).getKeyID();
@@ -516,6 +515,8 @@ public class EcJwkTest {
                 will(returnValue(issuerIdentifier));
                 one(oidcServerConfig).isCustomClaimsEnabled();
                 will(returnValue(false));
+                one(jwtData).getTypHeader();
+                will(returnValue(null));
                 one(jwtData).getSigningKey();
                 will(returnValue(rsJsonWebKey.getPrivateKey()));
                 one(jwtData).getKeyID();

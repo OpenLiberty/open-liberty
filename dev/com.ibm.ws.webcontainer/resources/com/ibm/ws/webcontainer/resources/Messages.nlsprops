@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -23,8 +20,6 @@
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-
-
 
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Illegal Argument Exception: Trying to write < 0 chars
@@ -1616,3 +1611,16 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Check the deployment des
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: A {0} cookie name that is configured for the {1} SameSite attribute value was previously identified as a duplicate. No SameSite attribute is added for this cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=A cookie name cannot be configured for multiple SameSite attribute values. This cookie name has already been identified as a duplicate.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Check the deployment descriptor configuration to make sure the cookie name is configured for only one of the following SameSite attribute values: 'SameSiteCookies_Lax', 'SameSiteCookies_None', or 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: The request URI has invalid or improperly encoded characters: [{0}]
+bad.request.uri\:.{0}.explanation=The request URI has invalid path parameters, invalid dot segments, or improperly encoded characters.
+bad.request.uri\:.{0}.useraction=Verify that the request URI does not contain an invalid dot or path parameter combination or any improperly encoded characters.
+
+uri.has.fragment.character=URI has a fragment [#] character; encoded [%23] or not.
+uri.has.dot.character=URI has encoded dot [%2E] character.
+uri.has.forwarslash.character=URI has encoded forward slash [%2F] character.
+uri.has.backslash.character=URI has backslash character; encoded [%5C] or not.
+
+multipart.file.count.max.exceeded=CWWWC0006E: The request contained more files for upload than is permitted. The maximum number of files is [{0}].
+multipart.file.count.max.exceeded.explanation=The number of files that are uploaded by the multipart/form-data request exceeded the set limit.
+multipart.file.count.max.exceeded.useraction=Increase the maximum number of files that can be uploaded per request by setting the maxFileCount webContainer custom property in the server.xml file. The default value is 5000. For unlimited file upload, set the value to -1.

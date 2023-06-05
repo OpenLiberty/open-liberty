@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: Open Liberty API for Jakarta Data
+Bundle-SymbolicName: io.openliberty.data
+Bundle-Description: API for fully-annotative definition of repository queries, version ${bVersion}
+
+bVersion: 1.0
+
+Import-Package: io.openliberty.data.repository,\
+  jakarta.data.repository
+
+Export-Package: io.openliberty.data.repository
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/io.openliberty.data/pom.xml=io.openliberty.data.pom}
+
+-maven-dependencies:
+ 
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+  io.openliberty.data;version=latest,\
+  io.openliberty.jakarta.data.1.0;version=latest

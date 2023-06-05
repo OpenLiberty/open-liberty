@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,11 @@
  */
 subprojects {
   apply plugin: 'java'
-  
+
+  tasks.withType(Copy).all {
+  	duplicatesStrategy 'include'
+  }
+
   task publishJunitReport() {
     ext {
       outputFilesDir = rootProject.file(rootProject.ext.get('published.outputs.files'))
@@ -90,13 +94,14 @@ subprojects {
 
   
   tasks.withType(JavaCompile).configureEach({
-      // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
-      if (JavaVersion.current().isJava12Compatible()) {
-        if ('1.6'.equals(sourceCompatibility)) {
-          sourceCompatibility = "1.7"
-          targetCompatibility = "1.7"
-        }
+      int javaVersionNumVal = Integer.parseInt(JavaVersion.current().getMajorVersion())
+      // javac 20 has a min target of 1.8, so upgrade any 1.7 projects to 1.8 if running on Java 20
+      
+      if ('1.7'.equals(sourceCompatibility) && javaVersionNumVal >= 20) {
+          sourceCompatibility = "1.8"
+          targetCompatibility = "1.8"
       }
+
       // Set the --release compiler flag to keep bootclasspath in sync 
       if(!'off'.equals(bnd.get('javac.args.release'))) {
         def release = sourceCompatibility
@@ -113,7 +118,7 @@ subprojects {
       // Starting with JDK 9.0.4 the javadoc compiler started to striclty enforce proper HTML
       // syntax and other breaking changes.  Fixing all of these ocurrances would take far too
       // long and be a poor use of time, so we will disable these checks for JDK9 and up
-      options.addStringOption('Xdoclint:none', '-quiet')
+      options.addBooleanOption('Xdoclint:none', true)
     }
   }
   

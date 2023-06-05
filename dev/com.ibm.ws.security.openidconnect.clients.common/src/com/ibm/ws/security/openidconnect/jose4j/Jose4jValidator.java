@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,9 +33,9 @@ import org.jose4j.jwt.consumer.JwtContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
-import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.common.OidcCommonClientRequest;
+import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
@@ -247,7 +247,10 @@ public class Jose4jValidator {
     public void verifyIatAndExpClaims(JwtClaims jwtClaims) throws MalformedClaimException, JWTTokenValidationFailedException {
         NumericDate issueAtClaim = jwtClaims.getIssuedAt();
         NumericDate expirationClaim = jwtClaims.getExpirationTime();
+        verifyIatAndExpClaims(issueAtClaim, expirationClaim, jwtClaims.getSubject());
+    }
 
+    public void verifyIatAndExpClaims(NumericDate issueAtClaim, NumericDate expirationClaim, String subject) throws JWTTokenValidationFailedException {
         Instant issuedAt = null;
         Instant expiration = null;
         if (issueAtClaim == null) {
@@ -268,7 +271,7 @@ public class Jose4jValidator {
             if (issuedAt.isAfter(expiration) ||
                     !JsonTokenUtil.isCurrentTimeInInterval(clockSkewInSeconds, issuedAt.getMillis(), expiration.getMillis())) {
 
-                Object[] objects = new Object[] { this.clientId, jwtClaims.getSubject(), new Instant(System.currentTimeMillis()), expiration, issuedAt };
+                Object[] objects = new Object[] { this.clientId, subject, new Instant(System.currentTimeMillis()), expiration, issuedAt };
                 String msgCode = "OIDC_JWT_VERIFY_STATE_ERR";
 
                 if (oidcClientRequest != null) {
@@ -288,7 +291,7 @@ public class Jose4jValidator {
         verifySignAlgOnly(signature);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
-        builder.setSkipDefaultAudienceValidation();
+        builder.setSkipAllDefaultValidators();
         if (!rpSpecifiedSigningAlgorithm) {
             // Signature algorithm is set to "none"; don't check the signature
             builder.setDisableRequireSignature()

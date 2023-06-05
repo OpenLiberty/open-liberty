@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,9 +19,12 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -385,7 +388,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (this.bHeaderValidation) {
             checkHeaderValue(value, 0, value.length);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setByteArrayValue(value);
         addHeader(elem, FILTER_YES);
     }
@@ -404,7 +407,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (this.bHeaderValidation) {
             checkHeaderValue(value, offset, length);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setByteArrayValue(value, offset, length);
         addHeader(elem, FILTER_YES);
     }
@@ -423,7 +426,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (this.bHeaderValidation) {
             checkHeaderValue(value, 0, value.length);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setByteArrayValue(value);
         addHeader(elem, FILTER_YES);
     }
@@ -442,7 +445,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (this.bHeaderValidation) {
             checkHeaderValue(value, offset, length);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setByteArrayValue(value, offset, length);
         addHeader(elem, FILTER_YES);
     }
@@ -502,7 +505,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             else
                 checkHeaderValue(value);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setStringValue(value);
         addHeader(elem, FILTER_YES);
     }
@@ -524,7 +527,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             else
                 checkHeaderValue(value);
         }
-        HeaderElement elem = getElement(findKey(header));
+        HeaderElement elem = getElement(findKey(header, false));
         elem.setStringValue(value);
         addHeader(elem, FILTER_YES);
     }
@@ -848,8 +851,11 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getAllHeaderNames");
         }
-        List<String> vals = new ArrayList<String>();
-        if (0 != this.numberOfHeaders) {
+        List<String> vals;
+        if (0 == this.numberOfHeaders) {
+            vals = Collections.emptyList();
+        } else {
+            vals = new ArrayList<>(numberOfHeaders);
             HeaderElement elem = this.hdrSequence;
             while (null != elem) {
                 if (!elem.wasRemoved() && !vals.contains(elem.getName())) {
@@ -860,6 +866,36 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getAllHeaderNames: size=" + vals.size());
+        }
+        return vals;
+    }
+
+    /**
+     * This method is the same as getAllHeaderNames, but returns a Set instead.
+     * This was done in order to avoid calling contains on every header name.
+     *
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#getAllHeaderNamesSet()
+     */
+    @Override
+    public Set<String> getAllHeaderNamesSet() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getAllHeaderNamesSet");
+        }
+        Set<String> vals;
+        if (0 == this.numberOfHeaders) {
+            vals = Collections.emptySet();
+        } else {
+            vals = new LinkedHashSet<>(numberOfHeaders);
+            HeaderElement elem = this.hdrSequence;
+            while (null != elem) {
+                if (!elem.wasRemoved()) {
+                    vals.add(elem.getName());
+                }
+                elem = elem.nextSequence;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getAllHeaderNamesSet: size=" + vals.size());
         }
         return vals;
     }
@@ -894,7 +930,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderElement elem = findHeader(findKey(header));
+        HeaderKeys key = findKey(header, true);
+        HeaderElement elem = key == null ? null : findHeader(key);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getHeader(s): " + header + " " + elem);
         }
@@ -912,10 +949,10 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
-        HeaderElement elem = findHeader(key);
+        HeaderKeys key = findKey(header, true);
+        HeaderElement elem = key == null ? null : findHeader(key);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getHeader(b): " + key.getName() + " " + elem);
+            Tr.debug(tc, "getHeader(b): " + new String(header) + " " + elem);
         }
         if (null == elem) {
             return NULL_HEADER;
@@ -932,8 +969,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             throw new IllegalArgumentException("Null input provided");
         }
         List<HeaderField> list = new ArrayList<HeaderField>();
-        HeaderKeys key = findKey(header);
-        HeaderElement elem = findHeader(key);
+        HeaderKeys key = findKey(header, true);
+        HeaderElement elem = key == null ? null : findHeader(key);
         while (null != elem) {
             if (!elem.wasRemoved()) {
                 list.add(elem);
@@ -941,7 +978,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             elem = elem.nextInstance;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getHeaders(b): " + key.getName() + " " + list.size());
+            Tr.debug(tc, "getHeaders(b): " + new String(header) + " " + list.size());
         }
         return list;
     }
@@ -980,13 +1017,25 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        List<HeaderField> list = new ArrayList<HeaderField>();
-        HeaderElement elem = findHeader(findKey(header));
-        while (null != elem) {
-            if (!elem.wasRemoved()) {
-                list.add(elem);
+        List<HeaderField> list;
+        HeaderKeys key = findKey(header, true);
+        HeaderElement elem = key == null ? null : findHeader(key);
+        if (null == elem) {
+            list = Collections.emptyList();
+        } else if (elem.nextInstance == null) {
+            if (elem.wasRemoved()) {
+                list = Collections.emptyList();
+            } else {
+                list = Collections.singletonList(elem);
             }
-            elem = elem.nextInstance;
+        } else {
+            list = new ArrayList<HeaderField>();
+            do {
+                if (!elem.wasRemoved()) {
+                    list.add(elem);
+                }
+                elem = elem.nextInstance;
+            } while (null != elem);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getHeaders(s): " + header + " " + list.size());
@@ -1002,7 +1051,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        return countInstances(findHeader(findKey(header)));
+        HeaderKeys key = findKey(header, true);
+        return key == null ? 0 : countInstances(findHeader(key));
     }
 
     /**
@@ -1013,7 +1063,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        return countInstances(findHeader(findKey(header)));
+        HeaderKeys key = findKey(header, true);
+        return key == null ? 0 : countInstances(findHeader(key));
     }
 
     /**
@@ -1040,7 +1091,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        return (null != findHeader(findKey(header)));
+        HeaderKeys key = findKey(header, true);
+        return (key != null && null != findHeader(key));
     }
 
     /**
@@ -1051,7 +1103,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        return (null != findHeader(findKey(header)));
+        HeaderKeys key = findKey(header, true);
+        return key != null && (null != findHeader(key));
     }
 
     /**
@@ -1207,7 +1260,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @return boolean (false means the key is not allowed -- incorrect value for example)
      */
     @SuppressWarnings("unused")
-    protected boolean filterAdd(HeaderKeys key, byte[] value) {
+    protected boolean filterAdd(HeaderKeys key, byte[] value, boolean isWASPrivateHeader) {
         return true;
     }
 
@@ -1549,7 +1602,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
                 case GenericConstants.PARSING_HDR_NAME_VALUE:
                     // parse the unknown header name
-                    this.currentElem = getElement(findKey(this.parsedToken));
+                    this.currentElem = getElement(findKey(this.parsedToken, false));
                     this.binaryParsingState = GenericConstants.PARSING_HDR_VALUE_LEN;
                     resetCacheToken(4);
                     break;
@@ -1749,7 +1802,10 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "removeHeader(s): " + header);
         }
-        removeHdrInstances(findHeader(findKey(header)), FILTER_YES);
+        HeaderKeys key = findKey(header, true);
+        if (key != null) {
+            removeHdrInstances(findHeader(key), FILTER_YES);
+        }
     }
 
     /**
@@ -1760,11 +1816,13 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
+        HeaderKeys key = findKey(header, true);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "removeHeader(b): " + key.getName());
+            Tr.debug(tc, "removeHeader(b): " + new String(header));
         }
-        removeHdrInstances(findHeader(key), FILTER_YES);
+        if (key != null) {
+            removeHdrInstances(findHeader(key), FILTER_YES);
+        }
     }
 
     /**
@@ -1792,7 +1850,10 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "removeHeader(s,i): " + header + " " + instance);
         }
-        removeHdr(findHeader(findKey(header), instance));
+        HeaderKeys key = findKey(header, true);
+        if (key != null) {
+            removeHdr(findHeader(key, instance));
+        }
     }
 
     /**
@@ -1803,11 +1864,13 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
+        HeaderKeys key = findKey(header, true);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "removeHeader(b,i): " + key.getName() + " " + instance);
+            Tr.debug(tc, "removeHeader(b,i): " + new String(header) + " " + instance);
         }
-        removeHdr(findHeader(key, instance));
+        if (key != null) {
+            removeHdr(findHeader(key, instance));
+        }
     }
 
     /**
@@ -1849,7 +1912,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(s,b): " + header);
         }
-        setHeader(findKey(header), value);
+        setHeader(findKey(header, false), value);
     }
 
     /**
@@ -1863,7 +1926,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(s,b,i,i): " + header);
         }
-        setHeader(findKey(header), value, offset, length);
+        setHeader(findKey(header, false), value, offset, length);
     }
 
     /**
@@ -1874,7 +1937,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header || null == value) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
+        HeaderKeys key = findKey(header, false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(b,b): " + key.getName());
         }
@@ -1889,7 +1952,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header || null == value) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
+        HeaderKeys key = findKey(header, false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(b,b,i,i): " + key.getName());
         }
@@ -1918,7 +1981,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (null != elem) {
                 filterRemove(key, null);
             }
-            if (!filterAdd(key, value)) {
+            if (!filterAdd(key, value, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: "
                                  + GenericUtils.getEnglishString(value));
@@ -1958,7 +2021,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             // extract the bits we need from the larger array
             byte[] temp = new byte[length];
             System.arraycopy(value, offset, temp, 0, length);
-            if (!filterAdd(key, temp)) {
+            if (!filterAdd(key, temp, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: "
                                  + GenericUtils.getEnglishString(temp));
@@ -1998,7 +2061,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (null != elem) {
                 filterRemove(key, null);
             }
-            if (!filterAdd(key, GenericUtils.getEnglishBytes(value))) {
+            if (!filterAdd(key, GenericUtils.getEnglishBytes(value), false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: " + value);
                 }
@@ -2044,6 +2107,84 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeaderIfAbsent(HeaderKeys, String)
+     */
+    @Override
+    public HeaderField setHeaderIfAbsent(HeaderKeys key, String value) {
+        if (null == key || null == value) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeaderIfAbsent(h,s): " + key.getName());
+        }
+
+        // if this header already exists with a value that is not null, then return it.
+        HeaderElement elem = findHeader(key);
+        if (elem != null && elem.asString() != null) {
+            return elem;
+        }
+        if (this.bHeaderValidation) {
+            if (getCharacterValidation()) //PI45266
+                value = getValidatedCharacters(value); //PI57228
+            else
+                checkHeaderValue(value);
+        }
+        // check validity of the new value first
+        if (key.useFilters()) {
+            // if this header already exists, then wipe out existing values and
+            // make sure the new one is allowed.
+            if (null != elem) {
+                filterRemove(key, null);
+            }
+            if (!filterAdd(key, GenericUtils.getEnglishBytes(value), false)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "New value disallowed: " + value);
+                }
+                // we can't reset every value so clean it out
+                if (null != elem) {
+                    removeHdrInstances(elem, FILTER_NO);
+                }
+                return null;
+            }
+            if (null != elem) {
+                elem = findHeader(key);
+            }
+        }
+        if (null != elem) {
+            // delete all secondary instances first
+            if (null != elem.nextInstance) {
+                HeaderElement temp = elem.nextInstance;
+                while (null != temp) {
+                    temp.remove();
+                    temp = temp.nextInstance;
+                }
+            }
+            if (HeaderStorage.NOTSET != this.headerChangeLimit) {
+                // parse buffer reuse is enabled, see if we can use existing obj
+                if (value.length() <= elem.getValueLength()) {
+                    this.headerChangeCount++;
+                    elem.setStringValue(value);
+                } else {
+                    elem.remove();
+                    elem = null;
+                }
+            } else {
+                // parse buffer reuse is disabled
+                elem.setStringValue(value);
+            }
+        }
+        if (null == elem) {
+            // either it didn't exist or we chose not to re-use the object
+            elem = getElement(key);
+            elem.setStringValue(value);
+            addHeader(elem, FILTER_NO);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Replacing header " + key.getName() + " [" + elem.getDebugValue() + "]");
+        }
+        return null;
+    }
+
+    /**
      * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeader(String, String)
      */
     @Override
@@ -2054,7 +2195,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(s,s): " + header);
         }
-        setHeader(findKey(header), value);
+        setHeader(findKey(header, false), value);
     }
 
     /**
@@ -2065,7 +2206,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header || null == value) {
             throw new IllegalArgumentException("Null input provided");
         }
-        HeaderKeys key = findKey(header);
+        HeaderKeys key = findKey(header, false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(b,s): " + key.getName());
         }
@@ -2131,16 +2272,17 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                          + "] with value [" + elem.getDebugValue() + "]");
         }
 
-        if (getRemoteIp() && name.toLowerCase().startsWith("x-forwarded") && !forwardHeaderErrorState) {
-            processForwardedHeader(elem, true);
-        }
-
-        else if (getRemoteIp() && name.toLowerCase().startsWith("forwarded") && !forwardHeaderErrorState) {
-            processForwardedHeader(elem, false);
+        if (getRemoteIp() && !forwardHeaderErrorState) {
+            String lowerCaseName = name.toLowerCase();
+            if (lowerCaseName.startsWith("x-forwarded")) {
+                processForwardedHeader(elem, true);
+            } else if (lowerCaseName.startsWith("forwarded")) {
+                processForwardedHeader(elem, false);
+            }
         }
 
         if (bFilter) {
-            if (key.useFilters() && !filterAdd(key, elem.asBytes())) {
+            if (key.useFilters() && !filterAdd(key, elem.asBytes(), false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "filter disallowed: " + elem.getDebugValue());
                 }
@@ -2151,7 +2293,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "checking to see if private header is allowed: " + name);
             }
-            if (!filterAdd(key, elem.asBytes())) {
+            if (!filterAdd(key, elem.asBytes(), true)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, name + " is not trusted for this host; not adding header");
                 }
@@ -2207,7 +2349,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @param name
      * @return HeaderKeys
      */
-    protected abstract HeaderKeys findKey(String name);
+    protected abstract HeaderKeys findKey(String name, boolean returnNullForInvalidName);
 
     /**
      * Subclasses will provide the match of the input name against a defined key.
@@ -2216,7 +2358,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @param name
      * @return HeaderKeys
      */
-    protected abstract HeaderKeys findKey(byte[] name);
+    protected abstract HeaderKeys findKey(byte[] name, boolean returnNullForInvalidName);
 
     /**
      * Subclasses will provide the match of the input name against a defined key.
@@ -2227,7 +2369,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @param length - length from that offset
      * @return HeaderKeys
      */
-    protected abstract HeaderKeys findKey(byte[] data, int offset, int length);
+    protected abstract HeaderKeys findKey(byte[] data, int offset, int length, boolean returnNullForInvalidName);
 
     /**
      * Find the specific instance of this header in storage.
@@ -2239,16 +2381,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private HeaderElement findHeader(HeaderKeys key, int instance) {
         final int ord = key.getOrdinal();
 
-        if (ord <= HttpHeaderKeys.ORD_MAX && !storage.containsKey(ord)) {
-            return null;
-        }
-
         HeaderElement elem = null;
 
-        //If the ordinal created for this key is larger than 1024, the header key
-        //storage has been capped. As such, search the internal header storage
-        //to see if we have a header with this name already added.
-        if (ord > HttpHeaderKeys.ORD_MAX) {
+        if (ord <= HttpHeaderKeys.ORD_MAX) {
+            elem = storage.get(ord);
+        } else {
+            //If the ordinal created for this key is larger than 1024, the header key
+            //storage has been capped. As such, search the internal header storage
+            //to see if we have a header with this name already added.
             HeaderElement headerCand = storage.get(ord);
             // check to see if the ordinal matches and skip the loop below.
             if (headerCand != null && headerCand.getKey().getName().equalsIgnoreCase(key.getName())) {
@@ -2261,8 +2401,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     }
                 }
             }
-        } else {
-            elem = storage.get(ord);
         }
 
         int i = -1;
@@ -2286,16 +2424,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private HeaderElement findHeader(HeaderKeys key) {
         final int ord = key.getOrdinal();
 
-        if (ord <= HttpHeaderKeys.ORD_MAX && !storage.containsKey(ord)) {
-            return null;
-        }
-
         HeaderElement elem = null;
 
-        //If the ordinal created for this key is larger than 1024, the header key
-        //storage has been capped. As such, search the internal header storage
-        //to see if we have a header with this name already added.
-        if (ord > HttpHeaderKeys.ORD_MAX) {
+        if (ord <= HttpHeaderKeys.ORD_MAX) {
+            elem = storage.get(ord);
+        } else {
+            //If the ordinal created for this key is larger than 1024, the header key
+            //storage has been capped. As such, search the internal header storage
+            //to see if we have a header with this name already added.
             HeaderElement headerCand = storage.get(ord);
             // check to see if the ordinal matches and skip the loop below.
             if (headerCand != null && headerCand.getKey().getName().equalsIgnoreCase(key.getName())) {
@@ -2308,8 +2444,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     }
                 }
             }
-        } else {
-            elem = storage.get(ord);
         }
 
         while (null != elem && elem.wasRemoved()) {
@@ -3757,14 +3891,23 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             } else {
                 // reset the counter on any non-space or colon
                 numSpaces = 0;
-            }
 
-            // check for possible CRLF
-            if (BNFHeaders.CR == b || BNFHeaders.LF == b) {
-                // Note: would be nice to print the failing data but would need
-                // to keep track of where we started inside here, then what about
-                // data straddling bytecaches, etc?
-                throw new MalformedMessageException("Invalid CRLF found in header name");
+                // check for possible CRLF
+                if (BNFHeaders.CR == b || BNFHeaders.LF == b) {
+                    // Note: would be nice to print the failing data but would need
+                    // to keep track of where we started inside here, then what about
+                    // data straddling bytecaches, etc?
+                    throw new MalformedMessageException("Invalid CRLF found in header name");
+                }
+
+                // PH52074 Check for other invalid chars
+                if (!HttpHeaderKeys.isValidTchar((char) (b & 0xFF))) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        final int maskedCodePoint = b & 0xFF;
+                        Tr.debug(tc, "Invalid character found in http header name.  The Unicode is: " + String.format("%04x", maskedCodePoint));
+                    }
+                    throw new MalformedMessageException("Invalid character found in header name");
+                }
             }
 
             length++;
@@ -3841,7 +3984,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             length = data.length;
         }
         // otherwise we found the entire length of the name
-        this.currentElem = getElement(findKey(data, start, length));
+        this.currentElem = getElement(findKey(data, start, length, false));
 
         // Reset all the global variables once HeaderElement has been instantiated
         if (HeaderStorage.NOTSET != this.headerChangeLimit) {
@@ -4638,7 +4781,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             }
         }
         return nodename;
-
     }
 
     private void processForwardedErrorState() {

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.rest;
 
-import static io.openliberty.microprofile.telemetry.internal.helper.AgentDetection.isAgentActive;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -20,11 +19,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import org.eclipse.microprofile.config.Config;
-
-import io.opentelemetry.api.OpenTelemetry;
+import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
 import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
@@ -32,7 +29,11 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesGetter;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
@@ -43,76 +44,98 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
-    private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
+    private final Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
     private final String configString = "otel.span.client.";
 
-    @Inject
-    Config config;
+    private static final NetClientAttributesGetterImpl NET_CLIENT_ATTRIBUTES_GETTER = new NetClientAttributesGetterImpl();
+    private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
-    @Inject
-    OpenTelemetry openTelemetry;
-
-    // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
-    public TelemetryClientFilter() {
+    /**
+     * Retrieve the TelemetryClientFilter for the current application using CDI
+     * <p>
+     * Implementation note: It's important that there's a class which is registered as a CDI bean on the stack from this bundle when {@code CDI.current()} is called so that CDI
+     * finds the correct BDA and bean manager.
+     * <p>
+     * Calling it from this static method ensures that {@code TelemetryClientFilter} is the first thing on the stack and CDI will find the right BDA.
+     *
+     * @return the TelemetryClientFilter for the current application
+     */
+    public static TelemetryClientFilter getCurrent() {
+        return CDI.current().select(TelemetryClientFilter.class).get();
     }
 
-    @jakarta.annotation.PostConstruct
-    public void PostConstruct() {
+    @Inject
+    TelemetryClientFilter(OpenTelemetryInfo openTelemetryInfo) {
 
-        ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
+        if (openTelemetryInfo.getEnabled() && !AgentDetection.isAgentActive()) {
+            InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetryInfo.getOpenTelemetry(),
+                                                                                                            "Client filter",
+                                                                                                            HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
 
-        InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
-                                                                                                        openTelemetry,
-                                                                                                        "Client filter",
-                                                                                                        HttpSpanNameExtractor.create(clientAttributesExtractor));
+            this.instrumenter = builder
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(NetClientAttributesExtractor.create(NET_CLIENT_ATTRIBUTES_GETTER))
+                            .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+        } else {
+            this.instrumenter = null;
+        }
+    }
 
-        this.instrumenter = builder
-                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-                        .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-                        .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+    /**
+     * No-args constructor for CDI
+     */
+    TelemetryClientFilter() {
+        this.instrumenter = null;
     }
 
     @Override
     public void filter(final ClientRequestContext request) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Context parentContext = Context.current();
-                if ((!isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
-                    Context spanContext = instrumenter.start(parentContext, request);
-                    Scope scope = spanContext.makeCurrent();
-                    request.setProperty(configString + "context", spanContext);
-                    request.setProperty(configString + "parentContext", parentContext);
-                    request.setProperty(configString + "scope", scope);
+        if (instrumenter != null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Context parentContext = Context.current();
+                    if (instrumenter.shouldStart(parentContext, request)) {
+                        Context spanContext = instrumenter.start(parentContext, request);
+                        request.setProperty(configString + "context", spanContext);
+                        request.setProperty(configString + "parentContext", parentContext);
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
-        AccessController.doPrivileged(new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                Scope scope = (Scope) request.getProperty(configString + "scope");
-                if (scope == null) {
+        if (instrumenter != null) {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    Context spanContext = (Context) request.getProperty(configString + "context");
+                    if (spanContext == null) {
+                        return null;
+                    }
+                    try {
+                        instrumenter.end(spanContext, request, response, null);
+                    } finally {
+                        request.removeProperty(configString + "context");
+                        request.removeProperty(configString + "parentContext");
+                    }
                     return null;
                 }
+            });
+        }
+    }
 
-                Context spanContext = (Context) request.getProperty(configString + "context");
-                try {
-                    instrumenter.end(spanContext, request, response, null);
-                } finally {
-                    scope.close();
-                    request.removeProperty(configString + "context");
-                    request.removeProperty(configString + "parentContext");
-                    request.removeProperty(configString + "scope");
-                }
-                return null;
-            }
-        });
+    /**
+     * @return false if OpenTelemetry is disabled
+     * Indicated by instrumenter being set to null
+     */
+    public boolean isEnabled() {
+        return instrumenter != null;
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {
@@ -124,7 +147,25 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         }
     }
 
-    private static class ClientAttributesExtractor implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
+    private static class NetClientAttributesGetterImpl implements NetClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
+
+        @Override
+        public String transport(ClientRequestContext request, ClientResponseContext response) {
+            return SemanticAttributes.NetTransportValues.IP_TCP;
+        }
+
+        @Override
+        public String peerName(ClientRequestContext request) {
+            return request.getUri().getHost();
+        }
+
+        @Override
+        public Integer peerPort(ClientRequestContext request) {
+            return request.getUri().getPort();
+        }
+    }
+
+    private static class HttpClientAttributesGetterImpl implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
 
         @Override
         public String flavor(final ClientRequestContext request, final ClientResponseContext response) {

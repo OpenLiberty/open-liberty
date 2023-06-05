@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -54,11 +53,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
@@ -85,12 +82,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
                          @Reference(name = CheckpointImpl.HOOKS_REF_NAME_SINGLE_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
                                     policy = ReferencePolicy.DYNAMIC,
                                     policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))"),
-                         @Reference(name = CheckpointImpl.BETA_FEATURE_CONITION_REF, service = Condition.class,
-                                    cardinality = ReferenceCardinality.OPTIONAL,
-                                    policy = ReferencePolicy.DYNAMIC,
-                                    policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(" + Condition.CONDITION_ID + "=io.openliberty.checkpoint.feature)")
+                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
            },
            property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
            // use immediate component to avoid lazy instantiation and deactivate
@@ -101,12 +93,12 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
     private static final String CHECKPOINT_ALLOWED_FEATURES = "io.openliberty.checkpoint.allowed.features";
+    private static final String CHECKPOINT_FORCE_FAIL_TYPE = "io.openliberty.checkpoint.fail.type";
     private static final String CHECKPOINT_ALLOWED_FEATURES_ALL = "ALL_FEATURES";
     static final String CHECKPOINT_PAUSE_RESTORE = "io.openliberty.checkpoint.pause.restore";
 
     static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
     static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
-    static final String BETA_FEATURE_CONITION_REF = "io.openliberty.checkpoint.beta";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String FILE_RESTORE_FAILED_MARKER = DIR_CHECKPOINT + ".restoreFailedMarker";
@@ -128,7 +120,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final AtomicReference<CountDownLatch> waitForConfig = new AtomicReference<>();
     private final ExecuteCRIU criu;
     private final long pauseRestore;
-
+    private final CheckpointFailedException forceFail;
     private static volatile CheckpointImpl INSTANCE = null;
 
     @Activate
@@ -164,12 +156,13 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         this.checkpointAt = phase;
 
         this.pauseRestore = getPauseTime(cc.getBundleContext().getProperty(CHECKPOINT_PAUSE_RESTORE));
+        this.forceFail = getForceFailCheckpointCode(cc.getBundleContext().getProperty(CHECKPOINT_FORCE_FAIL_TYPE));
 
         // Keep assignment of static INSTANCE as last thing done.
         // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
         // until the constructor exits here given that this is an immediate component and activated early,
         // long before applications are started.
-        if (this.checkpointAt == CheckpointPhase.DEPLOYMENT) {
+        if (this.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
                                                                         FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
                                                                                                                             true)));
@@ -178,6 +171,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             this.transformerReg = null;
             INSTANCE = null;
         }
+    }
+
+    private CheckpointFailedException getForceFailCheckpointCode(String property) {
+        if (property == null) {
+            return null;
+        }
+        CheckpointFailedException.Type type = Type.valueOf(property);
+        return new CheckpointFailedException(type, "TESTING FAILURE", null);
     }
 
     private long getPauseTime(String pauseRestoreTime) {
@@ -214,20 +215,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-        if (checkpointAt == CheckpointPhase.FEATURES && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
-            notification.onCompletion(new CompletionListener<Boolean>() {
-                @Override
-                public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    if (result) {
-                        checkpointOrExitOnFailure();
-                    }
-                }
-
-                @Override
-                public void failedCompletion(Future<Boolean> future, Throwable t) {
-                }
-            });
-        } else if (jvmRestore.compareAndSet(true, false) && RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName()) && jvmRestore.compareAndSet(true, false)) {
             debug(tc, () -> "Processing config on restore.");
             final CountDownLatch localLatch = new CountDownLatch(1);
             waitForConfig.set(localLatch);
@@ -275,19 +263,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
              * The issue is that if we block the event thread then there is a deadlock that prevents the server
              * shutdown from happening until a 30 second timeout is reached.
              */
-            new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint failed, exiting...").start();
+            new Thread(() -> System.exit(e.getErrorCode()), e.isRestore() ? "Restore failed, exiting..." : "Checkpoint failed, exiting...").start();
         }
     }
 
-    @FFDCIgnore({ IllegalStateException.class, Exception.class, CheckpointFailedException.class })
+    @FFDCIgnore({ IllegalStateException.class, Throwable.class, CheckpointFailedException.class })
     void checkpoint() throws CheckpointFailedException {
         debug(tc, () -> "Checkpoint for : " + checkpointAt);
 
-        Condition betaFeature = cc.locateService(BETA_FEATURE_CONITION_REF);
-        if (betaFeature == null) {
-            // TODO this should be removed for GA.  This is why we are not defining a known type nor message ID for this exception
-            throw new CheckpointFailedException(Type.UNKNOWN_CHECKPOINT, "CWWKC0460E: The server command specified the checkpoint action. A checkpoint cannot be taken because the checkpoint-1.0 feature is not configured in the server.xml file.", null);
-        }
         // Checkpoint can only be called once
         if (checkpointCalledAlready()) {
             debug(tc, () -> "Trying to checkpoint a second time" + checkpointAt);
@@ -312,10 +295,17 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
         Collections.reverse(singleThreadRestoreHooks);
 
-        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451");
+        //map phase back to the documented command line argument.
+        String phaseName = CheckpointPhase.getPhase() == CheckpointPhase.BEFORE_APP_START ? "beforeAppStart" : "afterAppStart";
+        Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451", phaseName);
 
-        prepare(multiThreadPrepareHooks);
+        if (forceFail != null && !forceFail.isRestore()) {
+            // only done for tests
+            throw (CheckpointFailedException) forceFail.fillInStackTrace();
+        }
+
         try {
+            prepare(multiThreadPrepareHooks);
             try {
                 criu.checkpointSupported();
             } catch (CheckpointFailedException cpfe) {
@@ -334,36 +324,45 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                       unprivileged);
 
             debug(tc, () -> "criu dumped to " + imageDir + ", now in recovered process.");
-        } catch (Exception e) {
-            if (e instanceof CheckpointFailedException) {
-                if (!((CheckpointFailedException) e).isRestore()) {
-                    // TODO this should be handled by the hook in
-                    // com.ibm.ws.kernel.launch.internal.FrameworkManager.initFramework(BootstrapConfig, LogProvider)
-                    // that stops and restores the log provider.  There currently is no recovery notification
-                    // to hooks if they need to undo what they did in prepare.
-                    // Here we do this specifically to allow the logging to get re-enabled when an error occurs
-                    Map<String, Object> configMap = Collections.singletonMap(BootstrapConstants.RESTORE_ENABLED, (Object) "true");
-                    TrConfigurator.update(configMap);
+            if (forceFail != null && forceFail.isRestore()) {
+                // only done for tests
+                throw (CheckpointFailedException) forceFail.fillInStackTrace();
+            }
+            if (pauseRestore > 0) {
+                try {
+                    Thread.sleep(pauseRestore);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().isInterrupted();
                 }
-                throw (CheckpointFailedException) e;
             }
-            throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
-        }
-
-        if (pauseRestore > 0) {
-            try {
-                Thread.sleep(pauseRestore);
-            } catch (InterruptedException e) {
-                Thread.currentThread().isInterrupted();
+            restore(multiThreadRestoreHooks);
+        } catch (Throwable e) {
+            CheckpointFailedException rethrow;
+            if (e instanceof CheckpointFailedException) {
+                rethrow = (CheckpointFailedException) e;
+            } else {
+                rethrow = new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
             }
+            // tell all the hooks about a checkpoint failure
+            if (!rethrow.isRestore()) {
+                // The restore hook order is used so we call the checkpointFailed methods in the reverse order
+                // of the calls to the prepare methods.
+                callHooksOnFailure(singleThreadRestoreHooks, multiThreadRestoreHooks);
+            }
+            throw rethrow;
         }
-        restore(multiThreadRestoreHooks);
-        registerRunningCondition();
 
         waitForConfig();
+        registerRunningCondition();
+
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
 
         createRestoreMarker();
+    }
+
+    private void callHooksOnFailure(List<CheckpointHook> singleThreadRestoreHooks, List<CheckpointHook> multiThreadRestoreHooks) {
+        callHooks("checkpointFailed", singleThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
+        callHooks("checkpointFailed", multiThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
     }
 
     /**
@@ -487,21 +486,26 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return hookList;
     }
 
-    @FFDCIgnore(Exception.class)
-    private void callHooks(String operation, List<CheckpointHook> checkpointHooks,
+    @FFDCIgnore(Throwable.class)
+    @Trivial
+    private void callHooks(String operation,
+                           List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
-                           Function<Exception, CheckpointFailedException> failed) throws CheckpointFailedException {
+                           Function<Throwable, CheckpointFailedException> failed) throws CheckpointFailedException {
         for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
                 debug(tc, () -> operation + " operation on hook: " + checkpointHook);
                 perform.accept(checkpointHook);
-            } catch (Exception abortCause) {
+            } catch (Throwable abortCause) {
                 debug(tc, () -> operation + " failed on hook: " + checkpointHook);
-                throw failed.apply(abortCause);
+                if (failed != null) {
+                    throw failed.apply(abortCause);
+                }
             }
         }
     }
 
+    @Trivial
     private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         callHooks("prepare",
                   checkpointHooks,
@@ -509,10 +513,11 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                   CheckpointImpl::failedPrepare);
     }
 
-    private static CheckpointFailedException failedPrepare(Exception cause) {
+    private static CheckpointFailedException failedPrepare(Throwable cause) {
         return new CheckpointFailedException(Type.LIBERTY_PREPARE_FAILED, Tr.formatMessage(tc, "CHECKPOINT_FAILED_PREPARE_EXCEPTION_CWWKC0457E", cause.getMessage()), cause);
     }
 
+    @Trivial
     private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
         // The first thing is to set the jvmRestore flag
         jvmRestore.set(true);
@@ -522,7 +527,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                   CheckpointImpl::failedRestore);
     }
 
-    private static CheckpointFailedException failedRestore(Exception cause) {
+    private static CheckpointFailedException failedRestore(Throwable cause) {
         return new CheckpointFailedException(Type.LIBERTY_RESTORE_FAILED, Tr.formatMessage(tc, "RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E", cause.getMessage()), cause);
     }
 
@@ -537,7 +542,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     public static void deployCheckpoint() {
         CheckpointImpl current = INSTANCE;
-        if (current != null && current.checkpointAt == CheckpointPhase.DEPLOYMENT) {
+        if (current != null && current.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             current.checkpointOrExitOnFailure();
         }
     }

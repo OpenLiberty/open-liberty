@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,12 +20,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.JwtClaims;
 import jakarta.security.enterprise.identitystore.openid.Scope;
 
 public class AccessTokenImpl implements AccessToken, Serializable {
+
+    public static final TraceComponent tc = Tr.register(AccessTokenImpl.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -94,20 +99,31 @@ public class AccessTokenImpl implements AccessToken, Serializable {
 
     @Override
     public boolean isExpired() {
-        if (expirationTimeInSeconds != null && !(expirationTimeInSeconds < 0) && !(tokenMinValidityInMillis < 0)) {
-            Instant expirationInstant = responseGenerationTime.plusMillis(expirationTimeInSeconds * 1000);
-            Instant nowInstant = Instant.now();
-            return nowInstant.isAfter(expirationInstant) || nowInstant.plusMillis(tokenMinValidityInMillis).isAfter(expirationInstant);
+        Instant expirationInstant = getExpirationInstant();
+        Instant nowInstant = Instant.now();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Current time: " + nowInstant + ", expirationInstant: " + expirationInstant + " = when the token response was generated (" + responseGenerationTime
+                         + ") + expiration time (" + expirationTimeInSeconds + "), tokenMinValidityInMillis: " + tokenMinValidityInMillis);
+            Tr.debug(tc,
+                     "Token is considered expired if the current time is after expiration instant, or if the current time + tokenMinValidityInMillis is after the expiration instant");
+        }
+        return nowInstant.isAfter(expirationInstant) || nowInstant.plusMillis(tokenMinValidityInMillis).isAfter(expirationInstant);
+    }
+
+    private Instant getExpirationInstant() {
+        Instant expirationInstant = Instant.MIN;
+        if (expirationTimeInSeconds != null && !(expirationTimeInSeconds < 0)) {
+            expirationInstant = responseGenerationTime.plusMillis(expirationTimeInSeconds * 1000);
         } else if (Type.BEARER.equals(type)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Access token is a bearer token");
+            }
             Optional<Instant> expirationOptionalInstant = jwtClaims.getExpirationTime();
             if (expirationOptionalInstant.isPresent()) {
-                Instant expirationInstant = expirationOptionalInstant.get();
-                Instant nowInstant = Instant.now();
-                return nowInstant.isAfter(expirationInstant) || nowInstant.plusMillis(tokenMinValidityInMillis).isAfter(expirationInstant);
+                expirationInstant = expirationOptionalInstant.get();
             }
         }
-
-        return true;
+        return expirationInstant;
     }
 
     @Override

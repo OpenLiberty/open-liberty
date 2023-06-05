@@ -1,15 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -141,7 +138,7 @@ public class JSF22AparTests {
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PH06008.war", "");
 
-        jsfAparServer.startServer(JSF22AparTests.class.getSimpleName() + ".log");
+        jsfAparServer.startServer(c.getSimpleName() + ".log");
 
     }
 
@@ -471,7 +468,7 @@ public class JSF22AparTests {
      * button will then be clicked that will invalidate the session and the test will look to ensure
      * that the PreDestroy method on the JSF Managed Bean was invoked.
      *
-     * For EE10 this test is executed with a CDI @Named bean to verify the PreDestroy is called.
+     * For EE10 this test is executed with a CDI @Named bean to verify that PreDestroy is called.
      *
      * @throws Exception
      */
@@ -484,7 +481,7 @@ public class JSF22AparTests {
 
             HtmlPage page = webClient.getPage(url);
 
-            page = findAndClickButton(page, "form1:button1");
+            page = findAndClickButton(page, "form1:invalidateButton");
 
             String str = "ViewScopedBean1 PreDestroy Invoked";
             String ret = jsfAparServer.waitForStringInLogUsingLastOffset(str);
@@ -504,7 +501,7 @@ public class JSF22AparTests {
      */
     @Test
     // Skipping for EE10 as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
-    // are no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
+    // no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
     // be executed for EE10 with just a CDI bean to verify that PreDestroy is called.
     @SkipForRepeat(EE10_FEATURES)
     public void testViewScopedCDIManagedBeanPreDestroy() throws Exception {
@@ -515,7 +512,7 @@ public class JSF22AparTests {
 
             HtmlPage page = webClient.getPage(url);
 
-            page = findAndClickButton(page, "form1:button1");
+            page = findAndClickButton(page, "form1:invalidateButton");
 
             String str1 = "ViewScopedBean2 PreDestroy Invoked";
             String str2 = "ViewScopedCDIBean PreDestroy Invoked";

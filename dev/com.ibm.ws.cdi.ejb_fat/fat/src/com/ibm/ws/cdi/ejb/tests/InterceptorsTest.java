@@ -4,13 +4,12 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
+
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,16 +28,25 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Testing that interceptors bound with an @Interceptors annotation on an ejb can be resolved
- * even when they have a common type. In this case we force them not to be CDI beans.
+ * Testing that interceptors bound with an @Interceptors (Interceptors spec/not CDI) annotation on an ejb can be resolved
+ * even when they have a common type.
+ * <p>
+ * In this test, although the interceptor classes are eligible to be CDI beans (due to bean-discovery-mode=all), we must not
+ * look them up as beans because the classes are named directly in the {@code @Interceptors}
+ * annotation.
+ * <p>
+ * In particular, type-safe resolution for {@code InterceptorSubClass1} would fail because both
+ * {@code InterceptorSubClass1} and {@code InterceptorSubClass2} are beans with that type.
  */
 @RunWith(FATRunner.class)
+@Mode(FULL)
 public class InterceptorsTest extends FATServletClient {
 
     public static final String INTERCEPTORS_APP_NAME = "interceptorsApp";

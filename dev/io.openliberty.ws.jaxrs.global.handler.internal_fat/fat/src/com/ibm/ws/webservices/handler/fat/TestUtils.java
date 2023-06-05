@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import javax.xml.ws.BindingProvider;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -53,7 +54,7 @@ public class TestUtils {
 
     /**
      * Validate the XML attributes
-     * 
+     *
      * @param is
      * @param attributeParams The Map.Entry key likes "targetNamespace=http://com.ibm/jaxws/testmerge/replace/", value likes "{http://schemas.xmlsoap.org/wsdl/}definitions"
      * @return
@@ -107,7 +108,7 @@ public class TestUtils {
 
     /**
      * Copy the file to server, rename if the targetFileName is not equal to srcFileName.
-     * 
+     *
      * @param server, the LibertyServer
      * @param srcPathFromPubishFolder, the folder path relative to publish folder
      * @param srcFileName, the source file name to copy
@@ -124,7 +125,7 @@ public class TestUtils {
 
     /**
      * Replace the string in a server file.
-     * 
+     *
      * @param server, the LibertyServer
      * @param filePathFromServerRoot, the file path relative to server root
      * @param fromStr, the string that need replace in the file.
@@ -229,6 +230,8 @@ public class TestUtils {
     public static void installUserFeature(LibertyServer server, String featureManifestFile) throws Exception {
         if (JakartaEE9Action.isActive()) {
             server.installUserFeature("ee9/" + featureManifestFile);
+        } else if (JakartaEE10Action.isActive()) {
+            server.installUserFeature("ee10/" + featureManifestFile);
         } else {
             server.installUserFeature(featureManifestFile);
         }

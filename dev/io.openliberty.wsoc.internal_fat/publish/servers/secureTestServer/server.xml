@@ -1,48 +1,57 @@
 <!--
-    Copyright (c) 2013, 2021 IBM Corporation and others.
+    Copyright (c) 2014, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
-<server>
+<server description="Server for testing WebSockets with security enabled">
+
+    <include location="../fatTestPorts.xml"/>
+
     <featureManager>
         <feature>websocket-1.0</feature>
+        <feature>appSecurity-2.0</feature>
         <feature>localConnector-1.0</feature>
-        <feature>timedexit-1.0</feature>
     </featureManager>
-   
-
-    <!-- include location="../fatTestPorts.xml"/ -->
-        <httpEndpoint id="defaultHttpEndpoint"
-                  host="*"
-                  httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}">
-                  <httpOptions persistTimeout="5"/>
-        </httpEndpoint>          
-
-    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
-        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
-    </iiopEndpoint>
-
-    <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
-
-    <applicationMonitor dropinsEnabled="false" locationMonitoringEnabled="false" updateTrigger="disabled"/>
 
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  
-    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/> 
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,accept,listen"/>
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-    
+
+    <applicationMonitor dropinsEnabled="false" locationMonitoringEnabled="false" updateTrigger="disabled"/>
+
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="security" />
+        <user name="user2" password="security" />
+    </basicRegistry>
+
+    <application type="war" id="secure" name="secure" location="${server.config.dir}/apps/secure.war">
+        <application-bnd>
+            <security-role name="Role1">
+                <user name="user1" />
+            </security-role>
+            <security-role name="Role2">
+                <user name="user2" />
+            </security-role>
+            <security-role name="AuthenticationRole">
+                <user name="user1" />
+                <user name="user2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <keyStore id="defaultKeyStore" password="{xor}BC8+LCwoby07Ag=="/>
+
     <webContainer deferServletLoad="false"/>
 
-    <logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:HttpTransport=all:websockets=all:com.ibm.ws.runtime.update.*=all"/> 
-    
 </server>

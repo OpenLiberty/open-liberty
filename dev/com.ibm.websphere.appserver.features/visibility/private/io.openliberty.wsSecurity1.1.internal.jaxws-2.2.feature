@@ -6,9 +6,7 @@ singleton=true
 -features=com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:="3.0", \
  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0", \
  com.ibm.websphere.appserver.jaxws-2.2, \
- com.ibm.websphere.appserver.internal.slf4j-1.7, \
- com.ibm.websphere.appserver.wss4j-2.3, \
- com.ibm.websphere.appserver.httpcommons-1.0
+ com.ibm.websphere.appserver.wss4j-2.3
 -bundles=\
  com.ibm.ws.net.sf.ehcache.core.2.5.2, \
  com.ibm.ws.org.joda.time.2.9.9, \

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,17 +12,40 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.io.Writer;
+import java.io.Reader;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,9 +54,23 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import junit.framework.AssertionFailedError;
 
 public class TCKUtilities {
+
     private static final Class<TCKUtilities> c = TCKUtilities.class;
+
+    public static final String FAT_TEST_PREFIX = "fat.test.";
+    public static final String ARTIFACTORY_FORCE_EXTERNAL_KEY = "artifactory.force.external.repo";
+    public static final String ARTIFACTORY_SERVER_KEY = "artifactory.download.server";
+    public static final String ARTIFACTORY_USER_KEY = "artifactory.download.user";
+    public static final String ARTIFACTORY_TOKEN_KEY = "artifactory.download.token";
+    public static final String MVN_DISTRIBUTION_URL_KEY = "distributionUrl";
+    public static final String MVN_DISTRIBUTION_SHA_KEY = "distributionSha256Sum";
+    public static final String MVN_WRAPPER_URL_KEY = "wrapperUrl";
+    public static final String MVN_WRAPPER_SHA_KEY = "wrapperSha256Sum";
+    /** The public repo containing the maven wrapper artifacts. Must match maven-wrapper.properties. */
+    private static final String MVN_WRAPPER_REPO = "https://repo.maven.apache.org/maven2/";
 
     public static String generateSHA256(File file) {
         String sha256 = null;
@@ -117,30 +154,6 @@ public class TCKUtilities {
         }
     }
 
-    public static boolean waitForProcess(Process process, long timeoutMS) throws InterruptedException {
-        boolean timeout = false;
-        if (timeoutMS > -1) {
-            timeout = !process.waitFor(timeoutMS, TimeUnit.MILLISECONDS); // Requires Java 8+
-            if (timeout) { //timeout!
-                process.destroyForcibly(); //kill the process
-                process.waitFor();
-            }
-        }
-        return timeout;
-    }
-
-    public static void writeStringsToFile(String[] strings, File outputFile) {
-        try (Writer writer = new FileWriter(outputFile)) {
-            for (String line : strings) {
-                writer.write(line);
-                writer.write("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.error(c, "writeStringsToFile", e);
-        }
-    }
-
     //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
     //jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
 
@@ -172,7 +185,7 @@ public class TCKUtilities {
         throw new IllegalArgumentException("Unknown type: " + type);
     }
 
-    public static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
+    public static TCKJarInfo getTCKJarInfo(Type type, List<String> dependencyOutput) {
         TCKJarInfo tckJar = parseTCKDependencies(type, dependencyOutput);
 
         if (tckJar != null) {
@@ -184,7 +197,7 @@ public class TCKUtilities {
         return tckJar;
     }
 
-    public static TCKJarInfo parseTCKDependencies(Type type, String[] dependencyOutput) {
+    public static TCKJarInfo parseTCKDependencies(Type type, List<String> dependencyOutput) {
         Pattern tckPattern = getTCKPatternMatcher(type);
         TCKJarInfo tckJar = null;
         for (String sCurrentLine : dependencyOutput) {
@@ -206,5 +219,569 @@ public class TCKUtilities {
         }
 
         return tckJar;
+    }
+
+    /**
+     * On zos, tag a file as ascii.
+     *
+     * @param file
+     */
+    public static void zosTagASCII(File file) {
+        try {
+            String command = "chtag";
+            List<String> params = Arrays.asList("-tcISO8859-1", file.getCanonicalPath());
+            ProcessResult output = startProcess(command, params, file.getParentFile(), Collections.emptyMap(), null, 20_000);
+            int exitValue = output.getExitCode();
+            Log.info(c, "zosTagASCII", "chtag RC = " + exitValue);
+
+            if (exitValue != 0) {
+                Log.info(c, "zosTagASCII", "OUTPUT:");
+                for (String line : output.getOutput()) {
+                    Log.info(c, "zosTagASCII", line);
+                }
+
+                throw new RuntimeException("Process failure <chtag>. Output: \n" + String.join("\n", output.getOutput()));
+            }
+        } catch (Exception e) {
+            Log.error(c, "zosTagASCII", e, "Failed to tag file " + file + " as ASCII");
+            throw new RuntimeException("Failed to tag " + file + " as ASCII: " + e, e);
+        }
+    }
+
+    public static boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("windows");
+    }
+
+    public static boolean isZos() {
+        return System.getProperty("os.name").toLowerCase().contains("z/os");
+    }
+
+    /**
+     * Run a process and wait for it to complete.
+     *
+     * @param  command          the command to run
+     * @param  params           the parameters to the command
+     * @param  workingDirectory the working directory to use, may be {@code null} to use the working directory of the current process
+     * @param  envProperties    the environment variables to set
+     * @param  logFile          the file to log the output of the process to, may be {@code null} to not log to a file
+     * @param  timeout          the timeout in ms. If the program takes longer to this to run then it will be terminated.
+     * @return                  the result of running the process, caller should check {@link ProcessResult#isTimedOut()} and {@link ProcessResult#getExitCode()}
+     * @throws Exception        if an unexpected exception occurs while starting or waiting for the process. Note that a non-zero exit code will <b>not</b> result in an exception.
+     */
+    public static ProcessResult startProcess(String command, List<String> params, File workingDirectory, Map<String, String> envProperties, File logFile,
+                                             long timeout) throws Exception {
+        assertThat("Process timeout", timeout, greaterThan(0L));
+        if (TCKUtilities.isZos()) {
+            //The _BPXK_AUTOCVT environment variable is sent to "ON" to allow ASCII tagged
+            //files to be read in the correct codepage on zos
+            envProperties = new HashMap<>(envProperties);
+            envProperties.put("_BPXK_AUTOCVT", "ON");
+        }
+
+        List<String> commandLine = new ArrayList<>();
+        if (TCKUtilities.isWindows()) {
+            // Windows won't run a batch file directly as the command and needs "cmd /c" at the start
+            commandLine.add("cmd");
+            commandLine.add("/c");
+        }
+        commandLine.add(command);
+        commandLine.addAll(params);
+
+        Log.info(c, "startProcess", "Running command with timeout of " + timeout + "ms: " + command + " " + String.join(" ", params));
+
+        ProcessBuilder pb = new ProcessBuilder(commandLine);
+        pb.environment().putAll(envProperties);
+        pb.directory(workingDirectory);
+        pb.redirectErrorStream(true);
+
+        Process process = pb.start();
+
+        // Convert from EBCDIC on z/OS
+        Charset charset = TCKUtilities.isZos() ? Charset.forName("IBM1047") : Charset.defaultCharset();
+        Reader processReader = new InputStreamReader(process.getInputStream(), charset);
+
+        StreamMonitor monitor = new StreamMonitor(processReader);
+        monitor.logToFile(logFile);
+        monitor.logAs("process-output");
+
+        int rc = -1;
+        boolean timedout = false;
+
+        try (AutoCloseable c = monitor.start()) {
+            boolean finished = process.waitFor(timeout, TimeUnit.MILLISECONDS);
+            if (!finished) {
+                timedout = true;
+                process.destroy();
+                if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                    process.destroyForcibly();
+                    process.waitFor(10, TimeUnit.SECONDS);
+                }
+            }
+            rc = process.exitValue();
+        } finally {
+            if (process.isAlive()) {
+                // This should only occur if there was an unexpected exception before we reached destroyForcibly above
+                process.destroyForcibly();
+            }
+        }
+
+        return new ProcessResult(timedout, monitor.getLines(), rc);
+    }
+
+    /**
+     * Holds the result of executing a process
+     */
+    public static class ProcessResult {
+        private final boolean timedOut;
+        private final List<String> output;
+        private final int exitCode;
+
+        private ProcessResult(boolean timedOut, List<String> output, int exitCode) {
+            this.timedOut = timedOut;
+            this.output = output;
+            this.exitCode = exitCode;
+        }
+
+        /**
+         * @return whether the process was timed out
+         */
+        public boolean isTimedOut() {
+            return timedOut;
+        }
+
+        /**
+         * @return the merged output of stdout and stderr, split into lines
+         */
+        public List<String> getOutput() {
+            return output;
+        }
+
+        /**
+         * @return the exit code
+         */
+        public int getExitCode() {
+            return exitCode;
+        }
+    }
+
+    /**
+     * Assert that a process did not time out and create a helpful message if it did
+     *
+     * @param output      the process output
+     * @param hardTimeout a hard timeout value in ms that we're trying to avoid hitting
+     * @param softTimeout the timeout value in ms that we used when running the process
+     */
+    public static void assertNotTimedOut(ProcessResult output, long hardTimeout, long softTimeout) {
+
+        if (output.isTimedOut()) {
+            List<String> lines = output.getOutput();
+
+            int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
+            int lastLinesStart = Math.max(0, lines.size() - numOfLinesToInclude);
+            int slowDownloadSearchStart = Math.max(0, lines.size() - 3);
+
+            // Prepare the timeout message
+            String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
+                                numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
+            for (String line : lines.subList(lastLinesStart, lines.size())) {
+                timeoutMsg += line + "\n";
+            }
+
+            // Special Case: Check if the last three lines has the text "downloading" or "downloaded"
+
+            Pattern downloadingPattern = Pattern.compile("downloading|downloaded", Pattern.CASE_INSENSITIVE);
+
+            boolean slowDownload = lines
+                            .subList(slowDownloadSearchStart, lines.size())
+                            .stream()
+                            .anyMatch(l -> downloadingPattern.matcher(l).find());
+
+            if (slowDownload) {
+                timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+            }
+
+            // Throw custom timeout error message rather then the one provided by the JUnitTask
+            Log.info(c, "assertNotTimedOut", timeoutMsg); // Log the timeout message into messages.log or the default log
+            throw new AssertionFailedError(timeoutMsg);
+        }
+    }
+
+    /**
+     * Export a file from the fattest.simplicity jar to the local filesystem. If the local file
+     * already exists then it is overwritten.
+     *
+     * @param  fileName     The name of the jar resource, relative to TCKRunner.class
+     * @param  targetFolder The target local folder to export to
+     * @return              the File of the exported file (or the existing one)
+     * @throws IOException  If there is a problem exporting the resource
+     */
+    public static File exportResource(File targetFolder, String fileName) throws IOException {
+        try {
+            requireDirectory(targetFolder);
+            File targetFile = new File(targetFolder, fileName);
+
+            if (targetFile.exists()) {
+                Log.info(c, "exportResource", "Target File already exists, deleting it: " + targetFile);
+                targetFile.delete();
+            }
+
+            try (InputStream stream = TCKRunner.class.getResourceAsStream(fileName)) {
+                if (stream == null) {
+                    throw new IOException("Cannot get resource \"" + fileName + "\" from Jar file.");
+                }
+
+                try (FileOutputStream resStreamOut = new FileOutputStream(targetFile)) {
+                    int readBytes;
+                    byte[] buffer = new byte[4096];
+                    while ((readBytes = stream.read(buffer)) > 0) {
+                        resStreamOut.write(buffer, 0, readBytes);
+                    }
+                }
+            }
+
+            if (targetFile.exists()) {
+                Log.info(c, "exportResource", fileName + " exported to: " + targetFile);
+            } else {
+                throw new IOException("Writing target file did not throw an exception, but the target file was not created");
+            }
+            return targetFile;
+        } catch (Exception e) {
+            String msg = "Failed to export " + fileName + " to " + targetFolder + ": " + e.getMessage();
+            Log.error(c, "exportResource", e, msg);
+            throw new IOException(msg, e);
+        }
+    }
+
+    /**
+     * Download a maven distribution and put it where the maven wrapper would expect to find it. This allows the download to be re-tried if artifactory
+     * is being slow.
+     *
+     * @param  distroURL     The URL to download from
+     * @param  distroHash    The expected SHA-256 hash of the distro file
+     * @param  mavenUserHome The local .m2 folder to download to
+     * @param  auth          The authenticator to use
+     * @throws IOException
+     */
+    public static void downloadMavenDistro(String distroURL, String distroHash, File mavenUserHome, Authenticator auth) throws IOException {
+        // Example:
+        // URL:    https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.0/apache-maven-3.9.0-bin.zip
+        // Target: ${mavenUserHome}/wrapper/dists/apache-maven-3.9.0-bin/b0cac456/apache-maven-3.9.0-bin.zip
+        URI uri = URI.create(distroURL);
+        String hash = Integer.toHexString(uri.hashCode());
+        String fileName = distroURL.substring(distroURL.lastIndexOf('/') + 1);
+        String distName = fileName.substring(0, fileName.indexOf(".zip"));
+        File targetFolder = new File(mavenUserHome, "wrapper/dists/" + distName + "/" + hash);
+        downloadFile(distroURL, new File(targetFolder, fileName), auth, distroHash);
+    }
+
+    /**
+     * Download a file. If the download fails, retry up to 5 times.
+     * <p>
+     * If the file exists and has the correct SHA-256 hash, the download is skipped.
+     * <p>
+     * If the file exists but does not have the correct SHA-256 hash, it is deleted and downloaded again.
+     *
+     * @param  url           The url to download from
+     * @param  targetFile    The file to download to
+     * @param  authenticator The authenticator to use
+     * @param  sha256        The expected SHA-256 hash of the file. Used to check if download is required and to validate downloaded file.
+     * @return               {@code targetFile}
+     * @throws IOException   if there is an error downloading the file
+     */
+    public static File downloadFile(String url, File targetFile, Authenticator authenticator, String sha256) throws IOException {
+        try {
+            Objects.requireNonNull(sha256, "sha256 hash");
+            // If target exists, check whether it's correct
+            if (targetFile.exists() && sha256 != null) {
+                String actualSha256 = generateSHA256(targetFile);
+                if (sha256.equals(actualSha256)) {
+                    Log.info(c, "downloadFile", "Target file with correct hash already exists, skipping download for " + targetFile);
+                    return targetFile;
+                } else {
+                    Log.info(c, "downloadFile", "Removing target file with incorrect hash: " + targetFile);
+                    targetFile.delete();
+                }
+            }
+
+            Log.info(c, "downloadFile", "Downloading file from " + url);
+            Log.info(c, "downloadFile", "Download target: " + targetFile);
+            Files.createDirectories(targetFile.getParentFile().toPath());
+            Authenticator.setDefault(authenticator);
+            int attempt = 0;
+            boolean completed = false;
+            while (!completed) {
+                try {
+                    URLConnection connection = new URL(url).openConnection();
+                    connection.setConnectTimeout(60000);
+                    connection.setReadTimeout(60000);
+                    try (
+                                    FileOutputStream fileOutputStream = new FileOutputStream(targetFile);
+                                    FileChannel fileChannel = fileOutputStream.getChannel();
+                                    ReadableByteChannel readableByteChannel = Channels.newChannel(connection.getInputStream())) {
+                        // Call transferFrom until we reach the end of the stream
+                        while (fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE) > 0);
+                    }
+
+                    // Download complete, check hash
+                    String actualSha256 = generateSHA256(targetFile);
+                    if (!sha256.equals(actualSha256)) {
+                        throw new IOException("Hash of downloaded file did not match. Expected: " + sha256 + ", actual: " + actualSha256);
+                    }
+
+                    completed = true;
+                } catch (IOException e) {
+                    attempt++;
+                    if (attempt >= 5) {
+                        throw e;
+                    }
+                }
+            }
+            return targetFile;
+        } catch (Exception e) {
+            String msg = "Error downloading file " + url + ": " + e.toString();
+            Log.error(c, "downloadFile", e, msg);
+            throw new IOException(msg, e);
+        }
+    }
+
+    /**
+     * Export the maven wrapper scripts and config to the TCK working directory
+     *
+     * @return             the maven wrapper properties file
+     * @throws IOException
+     */
+    public static File exportMvnWrapper(File tckWorkingDir) throws IOException {
+
+        if (TCKUtilities.isWindows()) {
+            File mvnwCmdFile = TCKUtilities.exportResource(tckWorkingDir, "mvnw.cmd");
+            mvnwCmdFile.setExecutable(true, false);
+        } else {
+            File mvnwFile = TCKUtilities.exportResource(tckWorkingDir, "mvnw");
+            mvnwFile.setExecutable(true, false);
+            if (TCKUtilities.isZos()) {
+                TCKUtilities.zosTagASCII(mvnwFile);
+            }
+        }
+
+        File targetFolder = new File(tckWorkingDir, ".mvn/wrapper");
+        Files.createDirectories(targetFolder.toPath());
+
+        File wrapperPropertiesFile = TCKUtilities.exportResource(targetFolder, "maven-wrapper.properties");
+        return wrapperPropertiesFile;
+    }
+
+    /**
+     * Download the maven wrapper jar to the correct directory within the TCK working directory
+     *
+     * @param  tckWorkingDir the TCK working directory
+     * @param  wrapperProps  the properties from the wrapper config file
+     * @param  authenticator the authenticator to use for the download
+     * @throws IOException
+     */
+    public static void downloadMvnWrapperJar(File tckWorkingDir, Properties wrapperProps, Authenticator authenticator) throws IOException {
+
+        String wrapperURL = wrapperProps.getProperty(MVN_WRAPPER_URL_KEY);
+        String wrapperHash = wrapperProps.getProperty(MVN_WRAPPER_SHA_KEY);
+        File targetFolder = new File(tckWorkingDir, ".mvn/wrapper");
+        Files.createDirectories(targetFolder.toPath());
+
+        TCKUtilities.downloadFile(wrapperURL, new File(targetFolder, "maven-wrapper.jar"), authenticator, wrapperHash);
+    }
+
+    public static void assertSHA256(File file, String expectedSha256) {
+        String actualSha256 = generateSHA256(file);
+        assertEquals(expectedSha256, actualSha256);
+    }
+
+    public static class ArtifactoryAuthenticator extends Authenticator {
+        PasswordAuthentication authentication;
+        String userName = getArtifactoryUser();
+        String password = getArtifactoryToken();
+
+        ArtifactoryAuthenticator() {
+            if (userName == null || password == null) {
+                authentication = null;
+            } else {
+                authentication = new PasswordAuthentication(userName, password.toCharArray());
+            }
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return authentication;
+        }
+    }
+
+    /**
+     * Update the mvnw wrapper properties file to use the given artifactory server.
+     * <p>
+     * Specifically, this looks for the "distributionUrl" and "wrapperUrl" properties
+     * and replaces the public repository URL with the artifactory URL.
+     *
+     * @param  wrapperPropertiesFile the wrapper properties file to update
+     * @param  artifactoryServer     the artifactory server hostname
+     * @return                       the new set of properties
+     * @throws IOException
+     */
+    public static Properties updateWrapperPropertiesFile(File wrapperPropertiesFile, String artifactoryServer) throws IOException {
+        Objects.requireNonNull(artifactoryServer, "artifactoryServer");
+
+        Properties props = new Properties();
+        String artifactoryRepoURL = "https://" + artifactoryServer + "/artifactory/wasliberty-maven-remote/";
+
+        //load the properties file
+        try (FileInputStream fis = new FileInputStream(wrapperPropertiesFile)) {
+            props.load(fis);
+        }
+
+        //get the existing value of the distributionUrl property
+        String distributionURL = props.getProperty(MVN_DISTRIBUTION_URL_KEY);
+        //substitute the server string
+        assertThat("distributionURL update failed", distributionURL, containsString(MVN_WRAPPER_REPO));
+        distributionURL = distributionURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
+        //set it back into the properties
+        props.setProperty(MVN_DISTRIBUTION_URL_KEY, distributionURL);
+        Log.info(c, "updatePropertiesFile", MVN_DISTRIBUTION_URL_KEY + "=" + distributionURL);
+
+        //get the existing value of the wrapperUrl property
+        String wrapperURL = props.getProperty(MVN_WRAPPER_URL_KEY);
+        //substitute the server string
+        assertThat("wrapperURL update failed", wrapperURL, containsString(MVN_WRAPPER_REPO));
+        wrapperURL = wrapperURL.replace(MVN_WRAPPER_REPO, artifactoryRepoURL);
+        //set it back into the properties
+        props.setProperty(MVN_WRAPPER_URL_KEY, wrapperURL);
+        Log.info(c, "updatePropertiesFile", MVN_WRAPPER_URL_KEY + "=" + wrapperURL);
+
+        //write the properties back out into the original file
+        try (FileOutputStream fos = new FileOutputStream(wrapperPropertiesFile)) {
+            props.store(fos, "MVN Wrapper Properties");
+        }
+        return props;
+    }
+
+    /**
+     * Checks whether we are configured to use artifactory or not
+     *
+     * @return {@code true} if we are configured to use artifactory, {@code false} if not
+     */
+    public static boolean useArtifactory() {
+        String forceExternalString = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
+        boolean forceExternal = Boolean.parseBoolean(forceExternalString);
+
+        String artifactoryServer = getArtifactoryServer();
+        boolean haveArtifactoryServer = (artifactoryServer != null && !artifactoryServer.isEmpty());
+
+        boolean useArtifactory = haveArtifactoryServer && !forceExternal;
+
+        Log.info(c, "useArtifactory", "Use artifactory = " + useArtifactory + " ("
+                                      + ARTIFACTORY_SERVER_KEY + "=" + artifactoryServer + ", "
+                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternalString
+                                      + ")");
+        return useArtifactory;
+    }
+
+    /**
+     * Get the artifactory server to use
+     *
+     * @return the artifactory server or {@code null} if none is configured
+     */
+    public static String getArtifactoryServer() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
+    }
+
+    /**
+     * Get the username to access artifactory
+     *
+     * @return the username, or {@code null} if none is configured
+     */
+    public static String getArtifactoryUser() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
+    }
+
+    /**
+     * Get the token to use to access artifactory
+     *
+     * @return the token, or {@code null} if none is configured
+     */
+    public static String getArtifactoryToken() {
+        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
+    }
+
+    /**
+     * Get the location within the dev directory to create a temporary maven home directory.
+     *
+     * @return             {@code .m2} within the dev directory
+     * @throws IOException
+     */
+    public static File getTemporaryMavenHomeDir() throws IOException {
+        File workingDir = new File("").getAbsoluteFile();
+
+        //walk back from the working directory until we reach the dev folder
+        File devFolder = workingDir;
+        while (!devFolder.getName().equals("dev")) {
+            devFolder = devFolder.getParentFile();
+            if (devFolder == null) {
+                throw new IOException("Could not find dev folder above working directory: " + workingDir);
+            }
+        }
+
+        if (!devFolder.isDirectory()) {
+            throw new IOException("Located dev directory does not exist or is not a directory: " + devFolder);
+        }
+
+        File m2Dir = new File(devFolder, ".m2");
+        if (!m2Dir.exists()) {
+            Files.createDirectory(m2Dir.toPath());
+        }
+        return m2Dir;
+    }
+
+    /**
+     * Create a temporary maven home directory to use for the build.
+     * <p>
+     * Download the maven distribution as the maven wrapper would and stores it in the expected location.
+     * <p>
+     * Exports a maven settings.xml file with the artifactory mirror configuration
+     *
+     * @param  mavenUserHome     the directory to use
+     * @param  wrapperProperties the properties read from the maven-wrapper.properties file
+     * @param  authenticator     the authenticator to use when downloading the maven distribution.
+     * @return                   the exported maven settings.xml file
+     * @throws IOException
+     */
+    public static File setupMavenHome(File mavenUserHome, Properties wrapperProperties, Authenticator authenticator) throws IOException {
+
+        String distroURL = wrapperProperties.getProperty(MVN_DISTRIBUTION_URL_KEY);
+        String distroHash = wrapperProperties.getProperty(MVN_DISTRIBUTION_SHA_KEY);
+
+        TCKUtilities.downloadMavenDistro(distroURL, distroHash, mavenUserHome, authenticator);
+
+        //the local maven settings.xml file to use
+        return TCKUtilities.exportResource(mavenUserHome, "settings.xml");
+    }
+
+    /**
+     * Ensure that a directory exists
+     *
+     * @param  directory   the file to check
+     * @throws IOException if the file does not exist or is not a directory
+     */
+    public static void requireDirectory(File directory) throws IOException {
+        requireExists(directory);
+        if (!directory.isDirectory()) {
+            throw new IOException(directory + " is not a directory");
+        }
+    }
+
+    /**
+     * Ensure that a file exists
+     *
+     * @param  file        the file to check
+     * @throws IOException if the file does not exist
+     */
+    public static void requireExists(File file) throws IOException {
+        if (!file.exists()) {
+            throw new IOException(file + " does not exist");
+        }
     }
 }

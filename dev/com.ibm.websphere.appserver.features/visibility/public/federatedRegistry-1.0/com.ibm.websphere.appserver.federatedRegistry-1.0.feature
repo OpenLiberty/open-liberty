@@ -21,3 +21,4 @@ IBM-SPI-Package: \
   dev/spi/ibm/javadoc/io.openliberty.federatedRepository.spi_1.2-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

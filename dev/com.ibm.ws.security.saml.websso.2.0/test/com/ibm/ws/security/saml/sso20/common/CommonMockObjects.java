@@ -40,6 +40,7 @@ import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.Signature;
 
@@ -52,6 +53,7 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContextBuilder;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
+import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorHelper;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -89,6 +91,8 @@ public class CommonMockObjects {
     private final EntityDescriptor entityDescriptor = mockery.mock(EntityDescriptor.class);
     private final KeyInfoCredentialResolver keyInfoCredResolver = mockery.mock(KeyInfoCredentialResolver.class);
     private final DOMMetadataResolver metadataProvider = mockery.mock(DOMMetadataResolver.class);
+    //private final AcsDOMMetadataProvider acsmetadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
+    //private final IDPSSODescriptor ssoDescriptor = mockery.mock(IDPSSODescriptor.class);
     private final ForwardRequestInfo requestInfo = mockery.mock(ForwardRequestInfo.class);
     private final Signature signature = mockery.mock(Signature.class);
     private final MessageContext messageContext = mockery.mock(MessageContext.class);
@@ -117,6 +121,10 @@ public class CommonMockObjects {
     public SAMLPeerEntityContext getSAMLPeerEntityContext() {
         return samlPeerEntityContext;
     }
+    
+    /*public IDPSSODescriptor getIDPSSODescrptor() {
+        return ssoDescriptor;
+    }*/
 
     /**
      * @return the metadataProvider
@@ -124,6 +132,13 @@ public class CommonMockObjects {
     public DOMMetadataResolver getMetadataProvider() {
         return metadataProvider;
     }
+    
+    /**
+     * @return the metadataProvider
+     
+    public AcsDOMMetadataProvider getAcsMetadataProvider() {
+        return acsmetadataProvider;
+    }*/
 
     /**
      * @return the requestInfo

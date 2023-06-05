@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,6 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,9 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -66,34 +62,27 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtFeatures() throws Exception {
-        server.setCheckpoint(CheckpointPhase.FEATURES);
-        server.startServer();
-        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
-    }
-
-    @Test
-    public void testAtApplicationsMultRestore() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, (s) -> {
+    public void testAfterAppStartMultRestore() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, (s) -> {
             assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
         server.startServer();
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
         assertEquals("Unexpected app code ran.", null, server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
 
         server.stopServer(false, "");
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
 
         server.stopServer(false, "");
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
     @Test
-    public void testAtDeployment() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.DEPLOYMENT, true, (s) -> {
+    public void testBeforeAppStart() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, true, (s) -> {
             assertEquals("Unexpected app code ran.", null, s.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
         }));
         server.startServer();
@@ -103,32 +92,21 @@ public class CheckpointPhaseTest {
 
     @Test
     public void testMultCheckpointNoClean() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
 
         server.stopServer(false, "");
         server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, false /* clean start */,
                                       LibertyServer.DEFAULT_VALIDATE_APPS, false /* expectStartFailure */ );
-        server.checkpointRestore();
+        restoreServerCheckConsoleLogHeader(server);
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
-    @Test
-    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testCheckpointFeatureMissingError() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
-        ServerConfiguration svrCfg = server.getServerConfiguration();
-        Set<String> features = svrCfg.getFeatureManager().getFeatures();
-        features.remove("checkpoint-1.0");
-        server.updateServerConfiguration(svrCfg);
-
-        server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART,
-                                      LibertyServer.DEFAULT_VALIDATE_APPS, true /* expectStartFailure */ );
-
-        assertNotNull("'CWWKC0460E:",
-                      server.waitForStringInLogUsingMark(".* CWWKC0460E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
+    private void restoreServerCheckConsoleLogHeader(LibertyServer server) throws Exception {
+        server.checkpointRestore();
+        server.waitForStringInLog("Launching checkpointFATServer", 100);
     }
 
     @Before

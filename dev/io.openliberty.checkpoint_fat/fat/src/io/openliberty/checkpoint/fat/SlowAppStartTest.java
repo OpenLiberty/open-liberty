@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,8 +57,8 @@ public class SlowAppStartTest {
     }
 
     @Test
-    public void testAtDeployment() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.FEATURES, false, null));
+    public void testBeforeAppStart() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.BEFORE_APP_START, false, null));
         server.startServer();
         String initSleeping = server.waitForStringInLogUsingMark(TEST_INIT_SLEEPING, 100);
         assertNull("Unexpected message.", initSleeping);
@@ -71,8 +71,8 @@ public class SlowAppStartTest {
 
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testAtApplications() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
+    public void testAfterAppStart() throws Exception {
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
         ProgramOutput checkpointOutput = server.startServer();
         int retureCode = checkpointOutput.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,14 +15,20 @@ package com.ibm.tx.jta.cdi.interceptors;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.security.AccessController;
+import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 import javax.interceptor.InvocationContext;
 import javax.transaction.Transactional;
 
+import org.osgi.framework.FrameworkUtil;
+
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.tx.jta.embeddable.UserTransactionController;
 import com.ibm.wsspi.uow.ExtendedUOWAction;
 import com.ibm.wsspi.uow.UOWManager;
@@ -33,6 +39,8 @@ public abstract class TransactionalInterceptor implements Serializable {
     private static final long serialVersionUID = 485903803670044161L;
 
     private static final TraceComponent tc = Tr.register(TransactionalInterceptor.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /*
      * Find the Transactional annotation being processed
@@ -49,6 +57,21 @@ public abstract class TransactionalInterceptor implements Serializable {
             // Getting the class of the target only gives us a WELD proxy that won't have the annotations
             // if they're not defined as @Inherited, so we need to go a level higher in the class hierarchy.
             interceptor = findTransactionalInterceptor(context.getTarget().getClass().getSuperclass());
+
+            if (interceptor == null) {
+                CDIService cdiService = priv.getService(FrameworkUtil.getBundle(CDIService.class), CDIService.class);
+                if (cdiService != null) {
+                    Set<Annotation> bindings = cdiService.getInterceptorBindingsFromInvocationContext(context);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "bindings:", bindings);
+                    if (bindings != null)
+                        for (Annotation anno : bindings)
+                            if (Transactional.class.equals(anno.annotationType())) {
+                                interceptor = (Transactional) anno;
+                                break;
+                            }
+                }
+            }
         }
 
         if (interceptor == null) {

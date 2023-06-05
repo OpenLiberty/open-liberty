@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
@@ -386,7 +385,7 @@ public class OIDCClientAuthenticatorUtil {
             return null;
         }
         String encoded = cookieValue.substring(0, lastindex);
-        String testCookie = OidcClientUtil.calculateOidcCodeCookieValue(encoded, clientConfig);
+        String testCookie = OidcClientUtil.addSignatureToStringValue(encoded, clientConfig);
 
         if (!cookieValue.equals(testCookie)) {
             String cookieName = "WASOidcCode";

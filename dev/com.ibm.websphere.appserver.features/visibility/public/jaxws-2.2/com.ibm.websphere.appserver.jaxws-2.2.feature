@@ -35,9 +35,7 @@ Subsystem-Name: Java Web Services 2.2
 -features=\
   io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0", \
   com.ibm.websphere.appserver.globalhandler-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.jaxb-2.2, \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
@@ -69,7 +67,8 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
  com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
- com.ibm.ws.prereq.wsdl4j.1.6.2
+ com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ io.openliberty.jaxws.globalhandler.internal
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

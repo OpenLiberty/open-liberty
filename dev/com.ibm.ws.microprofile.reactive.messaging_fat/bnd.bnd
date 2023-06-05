@@ -36,7 +36,7 @@ fat.test.container.images: confluentinc/cp-kafka:7.1.1
 	org.apache.kafka:kafka-clients;version=2.3.0,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	org.testng:testng;version=6.14.3,\
+	org.testng:testng;version=7.5.1,\
 	org.reactivestreams:reactive-streams-tck;version=1.0.3,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
 	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\

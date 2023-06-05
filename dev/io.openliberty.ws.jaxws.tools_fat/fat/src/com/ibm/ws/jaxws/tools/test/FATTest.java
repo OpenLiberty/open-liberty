@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,10 @@ public class FATTest {
      * True if running on Windows and the .bat file should be used.
      */
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+    /**
+     * True if running on IBM i and a different shell should be used.
+     */
+    private static final boolean isIBMi = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");
     /**
      * Environment variable that can be set to test the UNIX script on Windows.
      */
@@ -153,7 +157,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -208,7 +216,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -253,7 +265,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -270,7 +286,7 @@ public class FATTest {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");
 
-        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(" -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
+        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(JakartaEE9Action.isActive() ? " -target 3.0 " : " -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
 
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
@@ -280,7 +296,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -341,7 +361,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -370,7 +394,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }

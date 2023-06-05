@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -34,7 +34,30 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/RequestScoped/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SessionScoped/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/IdentityStore/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/MultipleIdentityStore/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/RedirectToOriginalResourceTruePromptNone/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithCookies/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithRedirectToOriginalResource/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>
@@ -86,6 +109,58 @@
 				name="client_99"
 				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/rpProtectedClient"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP3"
+		oauthProviderRef="OAuth3" />
+
+	<oauthProvider
+		id="OAuth3"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenTestAppServlet/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+	
+	<openidConnectProvider
+		id="OP4"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		idTokenLifetime="20s"
+		oauthProviderRef="OAuth4" />
+
+	<oauthProvider
+		id="OAuth4"
+		autoAuthorize="true"
+		issueRefreshToken="false"
+		tokenFormat="${opTokenFormat}"
+		accessTokenLifetime="20s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionFalseExpiredTokenServlet/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>

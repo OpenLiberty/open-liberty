@@ -30,7 +30,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @SuiteClasses({ 
                 PluginUtilityGenerateTest.class,
-                PluginUtilityMergeTest.class })
+                PluginUtilityMergeTest.class,
+                PluginUtilityEndpointMergeTest.class })
 public class FATSuite {
    
     static LibertyServer defaultServer = LibertyServerFactory.getLibertyServer("defaultServer");

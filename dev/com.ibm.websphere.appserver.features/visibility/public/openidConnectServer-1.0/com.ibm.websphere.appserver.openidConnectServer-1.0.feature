@@ -14,8 +14,7 @@ Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSG
 -features= com.ibm.websphere.appserver.oauth-2.0, \
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  io.openliberty.openidConnectServer1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
-  com.ibm.websphere.appserver.internal.slf4j-1.7
+  io.openliberty.openidConnectServer1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0"
 -bundles=\
   com.ibm.ws.net.oauth.jsontoken.1.1-r42, \
   com.ibm.ws.org.joda.time.1.6.2, \
@@ -34,3 +33,4 @@ Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSG
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

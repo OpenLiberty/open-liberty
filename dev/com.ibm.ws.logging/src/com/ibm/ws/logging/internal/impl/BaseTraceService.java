@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,8 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -37,6 +39,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -82,6 +86,9 @@ import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 import com.ibm.wsspi.logprovider.TrService;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * This is the default delegate used by Tr when another hasn't been specified.
@@ -144,6 +151,8 @@ public class BaseTraceService implements TrService {
 
     static final PrintStream rawSystemOut = System.out;
     static final PrintStream rawSystemErr = System.err;
+
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSZ");
 
     /** Special trace component for system streams: this one "remembers" the original system out */
     protected final SystemLogHolder systemOut;
@@ -261,6 +270,9 @@ public class BaseTraceService implements TrService {
     private boolean isLogRolloverScheduled = false;
     private boolean isFfdcCleanupScheduled = false;
 
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+    private final ReadWriteLock checkpointLock = new ReentrantReadWriteLock();
+
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     /** Flags for suppressing traceback output to the console */
@@ -288,6 +300,42 @@ public class BaseTraceService implements TrService {
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
         earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
+        checkpointPhase.addMultiThreadedHook(new CheckpointHook() {
+            @Override
+            public void prepare() {
+                // Get exclusive write lock for the thread preparing to checkpoint.
+                // This is done as a multi-thread hook so we can ensure this lock
+                // is obtained before the JVM enters into single-threaded mode.
+                checkpointLock.writeLock().lock();
+            }
+
+            @Override
+            public void checkpointFailed() {
+                try {
+                    // If checkpoint fails for any reason then we must release the write lock.
+                    // because the JVM will have entered back into multi-thread mode
+                    // this is required because our single-thread prepare hook may never get
+                    // called if a failure happens before the JVM entered single-threaded mode
+                    // and our single-threaded prepare hooks get called.
+                    checkpointLock.writeLock().unlock();
+                } catch (Exception e) {
+                    // We ignore the fact that we may have already released the lock from the single thread hook
+                }
+            }
+        });
+        checkpointPhase.addSingleThreadedHook(new CheckpointHook() {
+            @Override
+            public void prepare() {
+                try {
+                    // This prepare gets called once we enter single-threaded mode in the JVM.
+                    // We no longer need the exclusive write lock access so we can release the
+                    // write lock now.
+                    checkpointLock.writeLock().unlock();
+                } catch (Exception e) {
+                    // ignore;
+                }
+            }
+        });
     }
 
     /**
@@ -384,10 +432,6 @@ public class BaseTraceService implements TrService {
         }
 
         initializeWriters(trConfig);
-        if (hideMessageids.size() > 0) {
-            String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
-            Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
-        }
 
         scheduleTimeBasedLogRollover(trConfig);
 
@@ -558,6 +602,10 @@ public class BaseTraceService implements TrService {
         }
 
         applyJsonFields(trConfig.getjsonFields());
+        if (hideMessageids.size() > 0) {
+            String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
+            Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
+        }
     }
 
     public static void applyJsonFields(String value) {
@@ -1122,6 +1170,25 @@ public class BaseTraceService implements TrService {
      * @param routedMessage
      */
     protected void publishToLogSource(RoutedMessage routedMessage) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishToLogSource0(routedMessage);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    private void publishToLogSource0(RoutedMessage routedMessage) {
         try {
             if (!(counterForLogSource.incrementCount() > 2)) {
                 logSource.publish(routedMessage);
@@ -1141,6 +1208,34 @@ public class BaseTraceService implements TrService {
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
+        boolean beforeCheckpoint = !checkpointPhase.restored();
+        // Before checkpoint we want to block all other threads once the checkpoint thread
+        // has obtained the write lock. To do that we obtain the read lock here around
+        // writeRecord.  This allows the single thread doing the checkpoint to have
+        // exclusive access to logging to avoid deadlock once the JVM goes into
+        // single-threaded mode during a checkpoint of the process.
+        if (beforeCheckpoint) {
+            checkpointLock.readLock().lock();
+        }
+        try {
+            publishTraceLogRecord0(detailLog, logRecord, id, formattedMsg, formattedVerboseMsg);
+        } finally {
+            if (beforeCheckpoint) {
+                checkpointLock.readLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Publish a trace log record.
+     *
+     * @param detailLog           the trace writer
+     * @param logRecord
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
+     */
+    private void publishTraceLogRecord0(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
         //check if tracefilename is stdout
         if (formattedVerboseMsg == null) {
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg, false);
@@ -1444,7 +1539,7 @@ public class BaseTraceService implements TrService {
             }
         }
 
-        if(maxFfdcAge < 0) {
+        if (maxFfdcAge < 0) {
             return;
         }
 
@@ -1458,13 +1553,12 @@ public class BaseTraceService implements TrService {
         //set calendar start time
         Calendar sched = Calendar.getInstance();
 
-        if(startDelay < 0) {
+        if (startDelay < 0) {
             sched.set(Calendar.HOUR_OF_DAY, 0);
             sched.set(Calendar.MINUTE, 0);
-            sched.add(Calendar.DATE, 1);                //The cleanup will run everyday at midnight.
-        }
-        else {
-            sched.add(Calendar.SECOND, startDelay);      //Used for test cases in order to trigger the cleanup event after the configured delay.
+            sched.add(Calendar.DATE, 1); //The cleanup will run everyday at midnight.
+        } else {
+            sched.add(Calendar.SECOND, startDelay); //Used for test cases in order to trigger the cleanup event after the configured delay.
         }
 
         Date firstFfdcCleanup = sched.getTime();
@@ -1523,8 +1617,7 @@ public class BaseTraceService implements TrService {
     }
 
     private String getDatetime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        String datetime = dateFormat.format(System.currentTimeMillis());
+        String datetime = dateFormat.format(ZonedDateTime.now());
         return datetime;
     }
 
@@ -2184,7 +2277,7 @@ public class BaseTraceService implements TrService {
             for (int i = 0; i < postExceptionFiles.length; i++) {
                 try {
                     Date fileLastModifiedDate = sdf.parse(sdf.format(postExceptionFiles[i].lastModified()));
-                    long fileAge = TimeUnit.MINUTES.convert(System.currentTimeMillis() - fileLastModifiedDate.getTime(),TimeUnit.MILLISECONDS);
+                    long fileAge = TimeUnit.MINUTES.convert(System.currentTimeMillis() - fileLastModifiedDate.getTime(), TimeUnit.MILLISECONDS);
 
                     if (fileAge > maxFfdcAge) {
                         postExceptionFiles[i].delete();
@@ -2194,7 +2287,7 @@ public class BaseTraceService implements TrService {
                     Tr.info(tc, "lwas.FFDCIncidentEmitted", "Error: " + e.getStackTrace());
                 }
             }
-            if(deletedCounter > 0) {
+            if (deletedCounter > 0) {
                 Tr.info(tc, "FFDC_FILE_DELETION", deletedCounter);
             }
         }

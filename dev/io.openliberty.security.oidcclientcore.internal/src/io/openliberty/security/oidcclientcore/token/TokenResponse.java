@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,12 +29,31 @@ public class TokenResponse {
 
     private Map<String, String> responseAsMap = null;
 
-    public TokenResponse(JSONObject rawResponse, String idToken, String accessToken, String refreshToken) {
-        this.rawResponse = rawResponse;
-        this.idTokenString = idToken;
-        this.accessTokenString = accessToken;
-        this.refreshTokenString = refreshToken;
+    public TokenResponse(JSONObject rawResponse) {
         this.responseGenerationTime = Instant.now();
+
+        Map<String, String> tokens = getTokensFromJson(rawResponse);
+        this.rawResponse = rawResponse;
+        this.idTokenString = tokens.get(TokenConstants.ID_TOKEN);
+        this.accessTokenString = tokens.get(TokenConstants.ACCESS_TOKEN);
+        this.refreshTokenString = tokens.get(TokenConstants.REFRESH_TOKEN);
+    }
+
+    private Map<String, String> getTokensFromJson(JSONObject json) {
+        Map<String, String> tokens = new HashMap<>();
+        List<String> tokenTypes = Arrays.asList(TokenConstants.TOKEN_TYPES);
+
+        @SuppressWarnings("unchecked")
+        Iterator<String> iterator = json.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = json.get(key);
+            if (value instanceof String && tokenTypes.contains(key)) {
+                tokens.put(key, value.toString());
+            }
+        }
+
+        return tokens;
     }
 
     public String getIdTokenString() {

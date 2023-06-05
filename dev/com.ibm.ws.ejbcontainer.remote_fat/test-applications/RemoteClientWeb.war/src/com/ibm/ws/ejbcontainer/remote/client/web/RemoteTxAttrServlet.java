@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,6 +49,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import test.TestRemoteInterface;
 
@@ -322,7 +323,7 @@ public class RemoteTxAttrServlet extends FATServlet {
      * corbaname::localhost:<IIOPSecurePort>#ejb/global/<App>/<Module>/<Bean>!<interface>
      */
     @Test //- requires additional security configuration
-    @SkipForRepeat({ EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @SkipForRepeat({ EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testDefaultContextLookupWithSecurePort() throws Exception {
         // first, lookup the bean using default context with corbaname with iiop port.
         // this is required or use of the secure port below will fail.

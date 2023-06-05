@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,47 +45,73 @@ public class LibertyTracingClassAdapter extends AbstractTracingRasClassAdapter {
 
     private final static String DEFAULT_TRACE_COMPONENT_FIELD_NAME = "$$$tc$$$";
 
-    private FieldInfo declaredLoggerField;
-    private FieldInfo traceComponentField;
+    private final FieldInfo declaredLoggerField;
+    private final FieldInfo traceComponentField;
     private boolean traceComponentAlreadyDefined;
-    private boolean onlyInstrumentPreprocessed;
+    private final boolean onlyInstrumentPreprocessed;
 
     /**
      * List of method adapters that have been created. This list will be used to
-     * determine if the class bytecode has been modified.
+     * determine if the class byte codes have been modified.
      */
     List<LibertyTracingMethodAdapter> createdMethodAdapters = new ArrayList<LibertyTracingMethodAdapter>();
 
-    public LibertyTracingClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
-        super(visitor, classInfo);
+    //
 
-        // Look for an annotated field with the correct type
+    public static final boolean ONLY_INSTRUMENT_PREPROCESSED = true;
+    
+    public LibertyTracingClassAdapter(ClassVisitor visitor,
+    		ClassInfo classInfo, ClassTraceInfo traceInfo,
+    		boolean throwComputeFrames,
+    		boolean onlyInstrumentPreprocessed) {
+    	
+        super(visitor, classInfo, traceInfo, throwComputeFrames);
+
         if (classInfo != null) {
-            declaredLoggerField = classInfo.getDeclaredLoggerField();
-            if (declaredLoggerField != null) {
-                if (declaredLoggerField.getFieldDescriptor().equals(TRACE_COMPONENT_TYPE.getDescriptor())) {
-                    traceComponentField = declaredLoggerField;
-                    traceComponentAlreadyDefined = true;
-                }
+        	this.declaredLoggerField = classInfo.getDeclaredLoggerField();
+        } else {
+        	this.declaredLoggerField = null;
+        }
+
+        FieldInfo traceField = null;
+        boolean traceFieldDefined = false;
+        if (this.declaredLoggerField != null) {
+            if (this.declaredLoggerField.getFieldDescriptor().equals(TRACE_COMPONENT_TYPE.getDescriptor())) {
+                traceField = this.declaredLoggerField;
+                traceFieldDefined = true;
             }
         }
-
-        // Build one with the defaults
-        if (traceComponentField == null) {
-            traceComponentField = new FieldInfo(DEFAULT_TRACE_COMPONENT_FIELD_NAME, TRACE_COMPONENT_TYPE.getDescriptor());
+        if (traceField == null) {
+            traceField = new FieldInfo(DEFAULT_TRACE_COMPONENT_FIELD_NAME, TRACE_COMPONENT_TYPE.getDescriptor());
         }
+
+        this.traceComponentField = traceField;
+        this.traceComponentAlreadyDefined = traceFieldDefined;
+        
+        this.onlyInstrumentPreprocessed = onlyInstrumentPreprocessed;        
     }
 
-	public LibertyTracingClassAdapter(ClassVisitor visitor, boolean onlyInstrumentPreprocessed) {
-        this(visitor, null);
-        this.onlyInstrumentPreprocessed = onlyInstrumentPreprocessed;
+    public LibertyTracingClassAdapter(ClassVisitor visitor,
+    		ClassInfo classInfo, ClassTraceInfo traceInfo,
+    		boolean onlyInstrumentPreprocessed) {
+    	this(visitor, classInfo, traceInfo, !THROW_COMPUTE_FRAMES, onlyInstrumentPreprocessed);
     }
 
     public LibertyTracingClassAdapter(ClassVisitor visitor, ClassTraceInfo info, boolean onlyInstrumentPreprocessed) {
-    	this(visitor, null);
-    	this.onlyInstrumentPreprocessed = onlyInstrumentPreprocessed;
-    	traceInfo = info;
+    	this(visitor, null, info, !THROW_COMPUTE_FRAMES, onlyInstrumentPreprocessed);
 	}
+    
+	public LibertyTracingClassAdapter(ClassVisitor visitor, boolean onlyInstrumentPreprocessed) {
+        this(visitor, null, null, !THROW_COMPUTE_FRAMES, onlyInstrumentPreprocessed);
+    }
+	
+    public LibertyTracingClassAdapter(ClassVisitor visitor, boolean throwComputeFrames, boolean onlyInstrumentPreprocessed) {
+    	this(visitor, null, null, throwComputeFrames, onlyInstrumentPreprocessed);
+	}
+
+	public LibertyTracingClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
+    	this(visitor, classInfo, null, !THROW_COMPUTE_FRAMES, !ONLY_INSTRUMENT_PREPROCESSED);
+    }
 
 	@Override
     public RasMethodAdapter createRasMethodAdapter(MethodVisitor mv, int access, String name, String descriptor, String signature, String[] exceptions) {
@@ -173,7 +199,4 @@ public class LibertyTracingClassAdapter extends AbstractTracingRasClassAdapter {
 	public boolean isTraceComponentAlreadyDefined() {
 		return traceComponentAlreadyDefined;
 	}
-
-
-
 }

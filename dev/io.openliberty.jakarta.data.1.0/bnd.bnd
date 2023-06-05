@@ -33,5 +33,7 @@ instrument.classesExcludes: jakarta/data/*.class
 #-includeresource: \
 #  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
+publish.wlp.jar.suffix: dev/api/spec
+
 -buildpath: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

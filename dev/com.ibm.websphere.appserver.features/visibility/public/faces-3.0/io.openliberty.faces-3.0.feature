@@ -36,7 +36,6 @@ IBM-ShortName: faces-3.0
 WLP-AlsoKnownAs: jsf-3.0
 Subsystem-Name: Jakarta Server Faces 3.0
 -features=io.openliberty.jakarta.websocket-2.0, \
-  io.openliberty.servlet.api-5.0, \
   io.openliberty.jakarta.xmlBinding-3.0, \
   io.openliberty.facesProvider-3.0.0.MyFaces, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \

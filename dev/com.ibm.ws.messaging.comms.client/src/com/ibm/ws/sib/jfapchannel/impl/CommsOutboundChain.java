@@ -27,7 +27,6 @@ import static org.osgi.service.component.annotations.ReferencePolicyOption.GREED
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -134,7 +133,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "getTcpOptions", tcpProps);
         return tcpProps;
     }
-    
+
     private synchronized void createBasicJFAPChain() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "createBasicJFAPChain", chainName);
         try {
@@ -304,11 +303,5 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "removeChannel");
-    }
-
-
-    @Override
-    public String getApplicationPrereqID() {
-        return chainName;
     }
 }

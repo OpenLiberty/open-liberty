@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -467,7 +467,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     private J2CGlobalConfigProperties processServerPoolManagerProperties(AbstractConnectionFactoryService svc, Map<String, Object> properties) throws ResourceException {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = properties == null ? Collections.EMPTY_MAP : new HashMap<String, Object>(properties);
-        int agedTimeout, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize, numConnectionsPerThreadLocal, reapTime;
+        int agedTimeout, connectionTimeout, maxIdleTime, maxNumberOfMCsAllowableInThread, maxPoolSize, minPoolSize, numConnectionsPerThreadLocal, reapTime, maxInUseTime;
         PurgePolicy purgePolicy;
 
         if (svc != null) {
@@ -493,6 +493,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             reapTime = -1;
             maxNumberOfMCsAllowableInThread = 0;
             numConnectionsPerThreadLocal = 0;
+            maxInUseTime = -1;
         } else {
             agedTimeout = validateProperty(map, J2CConstants.POOL_AgedTimeout, -1, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
             connectionTimeout = validateProperty(map, J2CConstants.POOL_ConnectionTimeout, 30, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, true, connectorSvc);
@@ -509,6 +510,10 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                                                             null, 0, Integer.MAX_VALUE, true, connectorSvc);
             reapTime = validateProperty(map, J2CConstants.POOL_ReapTime, ConnectionPoolProperties.DEFAULT_REAP_TIME, TimeUnit.SECONDS, -1, Integer.MAX_VALUE, false,
                                         connectorSvc);
+
+            maxInUseTime = validateProperty(map, J2CConstants.POOL_MaxInUseTime, ConnectionPoolProperties.DEFAULT_MAX_IN_USE_TIME, TimeUnit.MILLISECONDS, -1, Integer.MAX_VALUE,
+                                            true,
+                                            connectorSvc);
 
             /*
              * The purge policy has three property values in Liberty. The three same combinations
@@ -570,6 +575,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (pm.gConfigProps.getParkIfDissociateUnavailable() != temporarilyAssociateIfDissociateUnavailable)
                 pm.gConfigProps.setParkIfDissociateUnavailable(temporarilyAssociateIfDissociateUnavailable);
 
+            if (pm.gConfigProps.getMaxInUseTime() != maxInUseTime)
+                pm.gConfigProps.setMaxInUseTime(maxInUseTime);
+
             return null;
         } else {
             // Connection pool does not exist, create j2c global configuration properties for creating pool.
@@ -579,7 +587,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                             false, // diagnoseConnectionUsage,
                             connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
                             autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, //
-                            temporarilyAssociateIfDissociateUnavailable, throwExceptionOnMCThreadCheck);
+                            temporarilyAssociateIfDissociateUnavailable, throwExceptionOnMCThreadCheck, maxInUseTime);
 
         }
     }

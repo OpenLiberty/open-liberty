@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.mp.jwt.sharedTests;
 
@@ -695,7 +692,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      */
     public Expectations setEncryptMismatchExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
         Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "javax.crypto.AEADBadTagException", "Messagelog did not contain an exception indicating a tag mismatch."));
+        expectations.addExpectation(new ServerMessageExpectation(server, "org.jose4j.lang.IntegrityException", "Messagelog did not contain an IntegrityException for the JWE."));
         return expectations;
 
     }
@@ -710,7 +707,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      */
     public Expectations setEncryptMismatchKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
         Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "java.lang.ClassCastException", "Messagelog did not contain an exception indicating a classcast exception due to the key type."));
+        expectations.addExpectation(new ServerMessageExpectation(server, "org.jose4j.lang.InvalidKeyException", "Messagelog did not contain an InvalidKeyException for the JWE."));
         return expectations;
 
     }

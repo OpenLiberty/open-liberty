@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,7 +29,6 @@ import com.ibm.websphere.security.PasswordCheckFailedException;
 import com.ibm.websphere.security.Result;
 import com.ibm.websphere.security.UserRegistry;
 import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 
 /**
@@ -46,7 +45,7 @@ public class UserRegistryServlet extends HttpServlet {
      * @param realmName realm name.
      *
      * @return UserRegistry instance, or null if can't find service.
-     * @throws RegistryException
+     * @throws CustomRegistryException
      */
     private UserRegistry getCurrentUserRegistry(String realmName) throws CustomRegistryException {
         try {
@@ -80,51 +79,70 @@ public class UserRegistryServlet extends HttpServlet {
         UserRegistry ur = getCurrentUserRegistry(realmName);
         try {
             if ("getRealm".equals(method)) {
+                pw.println("Calling: " + method + "()");
                 response = ur.getRealm();
             } else if ("checkPassword".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
                 String password = req.getParameter("password");
+                pw.println("Calling: " + method + "(" + userSecurityName + ", xxxxxxx)");
                 response = String.valueOf(ur.checkPassword(userSecurityName, password));
             } else if ("mapCertificate".equals(method)) {
                 response = "mapCertificate is not supported via the servlet";
             } else if ("isValidUser".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
+                pw.println("Calling: " + method + "(" + userSecurityName + ")");
                 response = String.valueOf(ur.isValidUser(userSecurityName));
             } else if ("getUsers".equals(method)) {
                 String pattern = req.getParameter("pattern");
                 int limit = Integer.valueOf(req.getParameter("limit"));
+                pw.println("Calling: " + method + "(" + pattern + ", " + limit + ")");
                 response = convertResultToString(ur.getUsers(pattern, limit));
             } else if ("getUserDisplayName".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
+                pw.println("Calling: " + method + "(" + userSecurityName + ")");
                 response = ur.getUserDisplayName(userSecurityName);
             } else if ("getUniqueUserId".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
+                pw.println("Calling: " + method + "(" + userSecurityName + ")");
                 response = ur.getUniqueUserId(userSecurityName);
             } else if ("getUserSecurityName".equals(method)) {
                 String uniqueUserId = req.getParameter("uniqueUserId");
+                pw.println("Calling: " + method + "(" + uniqueUserId + ")");
                 response = ur.getUserSecurityName(uniqueUserId);
             } else if ("isValidGroup".equals(method)) {
                 String groupSecurityName = req.getParameter("groupSecurityName");
+                pw.println("Calling: " + method + "(" + groupSecurityName + ")");
                 response = String.valueOf(ur.isValidGroup(groupSecurityName));
             } else if ("getGroups".equals(method)) {
                 String pattern = req.getParameter("pattern");
                 int limit = Integer.valueOf(req.getParameter("limit"));
+                pw.println("Calling: " + method + "(" + pattern + ", " + limit + ")");
                 response = convertResultToString(ur.getGroups(pattern, limit));
             } else if ("getGroupDisplayName".equals(method)) {
                 String groupSecurityName = req.getParameter("groupSecurityName");
+                pw.println("Calling: " + method + "(" + groupSecurityName + ")");
                 response = ur.getGroupDisplayName(groupSecurityName);
             } else if ("getUniqueGroupId".equals(method)) {
                 String groupSecurityName = req.getParameter("groupSecurityName");
+                pw.println("Calling: " + method + "(" + groupSecurityName + ")");
                 response = ur.getUniqueGroupId(groupSecurityName);
             } else if ("getGroupSecurityName".equals(method)) {
                 String uniqueGroupId = req.getParameter("uniqueGroupId");
+                pw.println("Calling: " + method + "(" + uniqueGroupId + ")");
                 response = ur.getGroupSecurityName(uniqueGroupId);
             } else if ("getUniqueGroupIdsForUser".equals(method)) {
                 String uniqueUserId = req.getParameter("uniqueUserId");
+                pw.println("Calling: " + method + "(" + uniqueUserId + ")");
                 response = String.valueOf(ur.getUniqueGroupIds(uniqueUserId));
             } else if ("getGroupsForUser".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
+                pw.println("Calling: " + method + "(" + userSecurityName + ")");
                 response = String.valueOf(ur.getGroupsForUser(userSecurityName));
+            } else if ("getUsersForGroup".equals(method)) {
+                String groupSecurityName = req.getParameter("groupSecurityName");
+                int limit = Integer.valueOf(req.getParameter("limit"));
+                pw.println("Calling: " + method + "(" + groupSecurityName + ", " + limit + ")");
+                response = convertResultToString(ur.getUsersForGroup(groupSecurityName, limit));
             } else {
                 pw.println("Usage: url?method=name&paramName=paramValue&...");
             }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,10 +62,11 @@ public class MPFaultToleranceTimeoutTest {
         config.getVariables().getById("timeout").setValue("true");
         server.updateServerConfiguration(config);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, server -> {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
             assertNotNull("Timeout call not found at checkpoint", result);
         });
+
         server.startServer();
         Thread.sleep(22000);
         server.checkpointRestore();
@@ -79,7 +80,7 @@ public class MPFaultToleranceTimeoutTest {
 
         config.getVariables().getById("timeout").setValue("false");
         server.updateServerConfiguration(config);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, server -> {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, server -> {
             String result = server.waitForStringInLogUsingMark("TIMEOUT CALLED", 20000);
             assertNotNull("Timeout call not found at checkpoint", result);
         });

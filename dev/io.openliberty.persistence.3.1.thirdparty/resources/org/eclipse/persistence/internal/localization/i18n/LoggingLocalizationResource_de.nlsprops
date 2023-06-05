@@ -115,6 +115,10 @@ connected_user_database=Verbunden: {3}{4}Benutzer: {0}{3}{4}Datenbank: {1} Versi
 
 connected_user_database_driver=Verbunden: {0}{6}Benutzer: {1}{6}Datenbank: {2}  Version: {3}{6}Treiber: {4}  Version: {5}
 
+corrupt_object=besch\u00e4digtes Objekt: {0}
+
+corrupt_object_referenced_through_mapping=Das folgende besch\u00e4digte Objekt wird \u00fcber die Zuordnung referenziert: {0}.
+
 corrupted_session_announcement=Sitzungs-ID: {0}  Discovery Manager hat eine fehlerhafte Sitzungsank\u00fcndigung empfangen. Wird ignoriert.
 
 create_default_dbms_tables_not_supported=Die native WLS-CMP-Einstellung "create-default-dbms-tables" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Serialisiertes sopObject wird aufgrund eines falschen Prim\u
 
 sop_object_wrong_version=Serialisiertes sopObject wird aufgrund einer falschen Version [{0}] in [{1}] in [{2}] aus der Zeile entfernt.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=Stapel besuchter Objekte, die auf das besch\u00e4digte Objekt verweisen: {0}
+
 topLink_version=EclipseLink Version: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery kann f\u00fc
 validate_db_schema_with_not_supported=Die native WLS-CMP-Einstellung "validate-db-schema-with" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
 validate_ejb_jar=Die Validierung der Datei ejb-jar.xml beginnt. Die Verarbeitung kann einige Zeit dauern...
+
+validate_object_space=Objektbereich validieren.
 
 verifiy_columns_read_locking_not_supported=Die optimistische Einstellung "Read" f\u00fcr "verify-columns" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 

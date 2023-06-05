@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,16 +15,12 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
+import io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
-import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -34,6 +30,9 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
@@ -55,146 +54,45 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     private static final String SPAN_CONTEXT = "otel.span.server.context";
     private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
-    private static final String SPAN_SCOPE = "otel.span.server.scope";
+    static final String SPAN_SCOPE = "otel.span.server.scope";
 
-    private static final ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
+    private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
+    private static final NetServerAttributesGetterImpl NET_SERVER_ATTRIBUTES_GETTER = new NetServerAttributesGetterImpl();
 
-    private static final ConcurrentHashMap<RestRouteKey, String> routes = new ConcurrentHashMap<>();
-
-    private static final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
-
-    @SuppressWarnings("unchecked")
-    private static void poll() {
-        RestRouteKeyWeakReference<Class<?>> key;
-        while ((key = (RestRouteKeyWeakReference<Class<?>>) referenceQueue.poll()) != null) {
-            routes.remove(key.getOwningKey());
-        }
-    }
-
-    private static String getRoute(Class<?> restClass, Method restMethod) {
-        poll();
-        return routes.get(new RestRouteKey(restClass, restMethod));
-    }
-
-    /**
-     * Add a new route for the specified REST Class and Method.
-     *
-     * @param restClass
-     * @param restMethod
-     * @param route
-     */
-    private static void putRoute(Class<?> restClass, Method restMethod, String route) {
-        poll();
-        routes.put(new RestRouteKey(referenceQueue, restClass, restMethod), route);
-    }
-
-    private static class RestRouteKey {
-        private final RestRouteKeyWeakReference<Class<?>> restClassRef;
-        private final RestRouteKeyWeakReference<Method> restMethodRef;
-        private final int hash;
-
-        RestRouteKey(Class<?> restClass, Method restMethod) {
-            this.restClassRef = new RestRouteKeyWeakReference<>(restClass, this);
-            this.restMethodRef = new RestRouteKeyWeakReference<>(restMethod, this);
-            hash = Objects.hash(restClass, restMethod);
-        }
-
-        RestRouteKey(ReferenceQueue<Class<?>> referenceQueue, Class<?> restClass, Method restMethod) {
-            this.restClassRef = new RestRouteKeyWeakReference<>(restClass, this, referenceQueue);
-            this.restMethodRef = new RestRouteKeyWeakReference<>(restMethod, this);
-            hash = Objects.hash(restClass, restMethod);
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            RestRouteKey other = (RestRouteKey) obj;
-            if (!restClassRef.equals(other.restClassRef)) {
-                return false;
-            }
-            if (!restMethodRef.equals(other.restMethodRef)) {
-                return false;
-            }
-            return true;
-        }
-    }
-
-    private static class RestRouteKeyWeakReference<T> extends WeakReference<T> {
-        private final RestRouteKey owningKey;
-
-        RestRouteKeyWeakReference(T referent, RestRouteKey owningKey) {
-            super(referent);
-            this.owningKey = owningKey;
-        }
-
-        RestRouteKeyWeakReference(T referent, RestRouteKey owningKey,
-                                  ReferenceQueue<T> referenceQueue) {
-            super(referent, referenceQueue);
-            this.owningKey = owningKey;
-        }
-
-        RestRouteKey getOwningKey() {
-            return owningKey;
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == this) {
-                return true;
-            }
-
-            if (obj instanceof RestRouteKeyWeakReference) {
-                return get() == ((RestRouteKeyWeakReference) obj).get();
-            }
-
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            T referent = get();
-            return new StringBuilder("RestRouteKeyWeakReference: ").append(referent).toString();
-        }
-    }
+    private static final RestRouteCache ROUTE_CACHE = new RestRouteCache();
 
     private Instrumenter<ContainerRequestContext, ContainerResponseContext> instrumenter;
 
     @jakarta.ws.rs.core.Context
-    ResourceInfo resourceInfo;
+    private ResourceInfo resourceInfo;
 
     // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
     public TelemetryContainerFilter() {
     }
 
     @Inject
-    public TelemetryContainerFilter(final OpenTelemetry openTelemetry) {
+    public TelemetryContainerFilter(final OpenTelemetryInfo openTelemetry) {
+        if (openTelemetry.getEnabled() && !AgentDetection.isAgentActive()) {
+            InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
+                                                                                                                  openTelemetry.getOpenTelemetry(),
+                                                                                                                  INSTRUMENTATION_NAME,
+                                                                                                                  HttpSpanNameExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER));
 
-        InstrumenterBuilder<ContainerRequestContext, ContainerResponseContext> builder = Instrumenter.builder(
-                                                                                                              openTelemetry,
-                                                                                                              INSTRUMENTATION_NAME,
-                                                                                                              HttpSpanNameExtractor.create(serverAttributesExtractor));
+            this.instrumenter = builder
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(HttpServerAttributesExtractor.create(HTTP_SERVER_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(NetServerAttributesExtractor.create(NET_SERVER_ATTRIBUTES_GETTER))
+                            .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
 
-        this.instrumenter = builder
-                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
-                        .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
-                        .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
+        } else {
+            this.instrumenter = null;
+        }
     }
 
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
-        if ((!AgentDetection.isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
+        if (instrumenter != null && instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
@@ -208,22 +106,24 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        Scope scope = (Scope) request.getProperty(SPAN_SCOPE);
-        if (scope == null) {
+        // Note: for async resource methods, this may not run on the same thread as the other filter method
+        // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
+
+        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
+        if (spanContext == null) {
             return;
         }
 
-        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
         try {
-            instrumenter.end(spanContext, request, response, null);
+            // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
+            if (instrumenter != null) {
+                instrumenter.end(spanContext, request, response, null);
+            }
         } finally {
-            scope.close();
-
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
             request.removeProperty(SPAN_CONTEXT);
             request.removeProperty(SPAN_PARENT_CONTEXT);
-            request.removeProperty(SPAN_SCOPE);
         }
     }
 
@@ -244,7 +144,26 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         }
     }
 
-    private static class ServerAttributesExtractor implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
+    private static class NetServerAttributesGetterImpl implements NetServerAttributesGetter<ContainerRequestContext> {
+
+        @Override
+        public String transport(ContainerRequestContext request) {
+            return SemanticAttributes.NetTransportValues.IP_TCP;
+        }
+
+        @Override
+        public String hostName(ContainerRequestContext request) {
+            return request.getUriInfo().getBaseUri().getHost();
+        }
+
+        @Override
+        public Integer hostPort(ContainerRequestContext request) {
+            return request.getUriInfo().getBaseUri().getPort();
+        }
+
+    }
+
+    private static class HttpServerAttributesGetterImpl implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
 
         @Override
         public String flavor(final ContainerRequestContext request) {
@@ -257,21 +176,23 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
             Class<?> resourceClass = (Class<?>) request.getProperty(REST_RESOURCE_CLASS);
             Method resourceMethod = (Method) request.getProperty(REST_RESOURCE_METHOD);
 
-            String route = getRoute(resourceClass, resourceMethod);
+            String route = ROUTE_CACHE.getRoute(resourceClass, resourceMethod);
 
             if (route == null) {
 
                 String contextRoot = request.getUriInfo().getBaseUri().getPath();
                 UriBuilder template = UriBuilder.fromPath(contextRoot);
 
-                template.path(resourceClass);
+                if (resourceClass.isAnnotationPresent(Path.class)) {
+                    template.path(resourceClass);
+                }
 
                 if (resourceMethod.isAnnotationPresent(Path.class)) {
                     template.path(resourceMethod);
                 }
 
                 route = template.toTemplate();
-                putRoute(resourceClass, resourceMethod, route);
+                ROUTE_CACHE.putRoute(resourceClass, resourceMethod, route);
             }
 
             return route;

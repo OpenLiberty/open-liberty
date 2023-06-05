@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -150,7 +150,6 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -263,17 +262,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final CheckpointPhase checkpointPhase;
 
     public EJBRuntimeImpl() {
-        CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (!ProductInfo.getBetaEdition()) {
-            this.checkpointPhase = phase;
-        } else {
-            CheckpointPhase testPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
-            if (phase == CheckpointPhase.INACTIVE && testPhase != null) {
-                this.checkpointPhase = testPhase;
-            } else {
-                this.checkpointPhase = phase;
-            }
-        }
+        checkpointPhase = CheckpointPhase.getPhase();
 
         // For any Checkpoint phase, pause all non-persistent timers until checkpoint restored
         if (!checkpointPhase.restored()) {
@@ -1732,8 +1721,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      * @return true if application start should optimize for checkpoint deployment; false otherwise.
      */
     @Override
-    public boolean isCheckpointDeployment() {
-        return CheckpointPhase.DEPLOYMENT == checkpointPhase;
+    public boolean isCheckpointBeforeAppStart() {
+        return CheckpointPhase.BEFORE_APP_START == checkpointPhase && !checkpointPhase.restored();
     }
 
     /**
@@ -1743,8 +1732,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
      * @return true if application start should optimize for checkpoint applications; false otherwise.
      */
     @Override
-    public boolean isCheckpointApplications() {
-        return CheckpointPhase.APPLICATIONS == checkpointPhase;
+    public boolean isCheckpointAfterAppStart() {
+        return CheckpointPhase.AFTER_APP_START == checkpointPhase && !checkpointPhase.restored();
     }
 
     @Override

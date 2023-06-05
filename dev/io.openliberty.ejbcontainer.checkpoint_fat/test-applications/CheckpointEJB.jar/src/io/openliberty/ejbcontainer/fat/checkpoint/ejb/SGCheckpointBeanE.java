@@ -32,8 +32,8 @@ import javax.ejb.Singleton;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>FEATURES : initialized and constructed on first use; may reference other beans in application</li>
- * <li>DEPLOYMENT : initialized and constructed on first use; may reference other beans in application</li>
- * <li>APPLICATIONS : initialized and constructed on first use; may reference other beans in application</li>
+ * <li>BEFORE_APP_START : initialized and constructed on first use; may reference other beans in application</li>
+ * <li>AFTER_APP_START : initialized and constructed on first use; may reference other beans in application</li>
  * </ul>
  *
  * Checkpoint causes no behavior difference since StartAtAppStart is explicitly disabled. <p>

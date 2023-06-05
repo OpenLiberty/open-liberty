@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -398,8 +398,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * </p>
      *
      * @param fileLogProperties The identity and physical properties of the recovery log.
-     * @param recoveryAgent The RecoveryAgent of the associated client service.
-     * @param fs The FailureScope of the associated client service.
+     * @param recoveryAgent     The RecoveryAgent of the associated client service.
+     * @param fs                The FailureScope of the associated client service.
      */
     public SQLMultiScopeRecoveryLog(CustomLogProperties logProperties, RecoveryAgent recoveryAgent, FailureScope fs) {
         if (tc.isEntryEnabled())
@@ -496,10 +496,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * calls independently.
      * </p>
      *
-     * @exception LogCorruptedException The recovery log has become corrupted and
-     *                cannot be opened.
+     * @exception LogCorruptedException  The recovery log has become corrupted and
+     *                                       cannot be opened.
      * @exception LogAllocationException The recovery log could not be created.
-     * @exception InternalLogException An unexpected failure has occured.
+     * @exception InternalLogException   An unexpected failure has occured.
      */
     @Override
     public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException {
@@ -924,11 +924,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Retrieves log records from the database ready for recovery
      * processing.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void recover(Connection conn) throws SQLException, RecoverableUnitSectionExistsException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -998,8 +998,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must
+     *                                     be opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -1033,12 +1033,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * finished.
      * </p>
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      *
      */
     @Override
@@ -1093,12 +1093,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param serviceData The updated service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public synchronized void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException {
@@ -1371,22 +1371,26 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     }
 
     @Override
-    public void delete() {
+    public boolean delete() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "delete", new Object[] { _closesRequired, this });
+            Tr.entry(tc, "delete", _closesRequired, this);
+
+        boolean succeeded = false;
 
         synchronized (_DBAccessIntentLock) {
             synchronized (this) {
                 if (failed() || _closesRequired > 0) {
-                    // FFDC exception but allow processing to continue
-                    Exception e = new Exception();
-                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1277", this);
-                    if (tc.isDebugEnabled())
+                    if (tc.isDebugEnabled()) {
+                        // FFDC exception but allow processing to continue
+                        Exception e = new Exception();
+                        FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1277", this);
                         Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
+                    }
                 } else { // the log is in the right state, we can proceed
                     try {
                         Connection conn = getConnection();
                         dropDBTable(conn);
+                        succeeded = true;
                     } catch (Exception e) {
                         // FFDC exception but allow processing to continue
                         FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1286", this);
@@ -1396,8 +1400,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
             }
         }
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "delete");
+            Tr.exit(tc, "delete", succeeded);
+        return succeeded;
     }
 
     //------------------------------------------------------------------------------
@@ -1421,8 +1427,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The new RecoverableUnit.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must be
+     *                                     opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -1489,10 +1495,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param identity Identity of the RecoverableUnit to be removed.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException              Thrown if the recovery log is closed and must be
+     *                                                opened before this call can be issued.
      * @exception InvalidRecoverableUnitException Thrown if the RecoverableUnit does not exist.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception InternalLogException            Thrown if an unexpected error has occured.
      */
     @Override
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException {
@@ -1606,7 +1612,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *         RecoverableUnits.
      *
      * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     @Override
     public synchronized LogCursor recoverableUnits(FailureScope failureScope) throws LogClosedException /* @MD19706C */
@@ -1702,11 +1708,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * information will be removed and all cached information will be forced to disk.
      * </p>
      *
-     * @exception LogClosedException Thrown if the log is closed.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the log is closed.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public void keypoint() throws InternalLogException {
@@ -2015,8 +2021,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                  "Caught SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " SQLException: " + sqlex);
                     // Set the exception that will be reported
                     currentSqlEx = sqlex;
-                    if (conn == null)
-                        nonTransientException = sqlex;
                 } catch (PeerLostLogOwnershipException ple) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
@@ -2042,7 +2046,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             // Tidy up current connection before dropping into retry code.
                             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                             try {
-                                conn.rollback();
+                                if (conn != null)
+                                    conn.rollback();
                             } catch (Throwable exc) {
                                 // Trace the exception
                                 if (tc.isDebugEnabled())
@@ -2053,7 +2058,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             // Don't want to close the reserved connection
                             if (_reservedConn == null) {
                                 try {
-                                    closeConnectionAfterBatch(conn, initialIsolation);
+                                    if (conn != null)
+                                        closeConnectionAfterBatch(conn, initialIsolation);
                                 } catch (Throwable exc) {
                                     // Trace the exception
                                     if (tc.isDebugEnabled())
@@ -2147,8 +2153,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Drives the execution of the cached up database work.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void executeBatchStatements(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2319,11 +2325,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * lag in peer recovery where an old server is closing down while
      * a new server is opening the same log for peer recovery.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private boolean takeHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -2337,7 +2343,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME" +
                                  " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
@@ -2415,11 +2421,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * consequently it can close statements in lower isolation levels that RR and still hold the lock
      * until the transaction is completed.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void updateHADBLock(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2576,8 +2582,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createDBTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2708,8 +2714,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void dropDBTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2817,7 +2823,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return true if a serious internal error has occured, otherwise false.
      */
-    protected boolean failed() {
+    @Override
+    public boolean failed() {
         if (tc.isDebugEnabled() && _failed)
             Tr.debug(tc, "failed: RecoveryLog has been marked as failed. [" + this + "]");
         return _failed;
@@ -2954,10 +2961,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * classes collection of such objects.
      *
      * @param recoverableUnit The RecoverableUnit to be added
-     * @param recovered Flag to indicate if this instances have been created during
-     *            recovery (true) or normal running (false). If its been created
-     *            during recovery we need to reserve the associated id so that
-     *            it can't be allocated to an independent RecoverableUnit.
+     * @param recovered       Flag to indicate if this instances have been created during
+     *                            recovery (true) or normal running (false). If its been created
+     *                            during recovery we need to reserve the associated id so that
+     *                            it can't be allocated to an independent RecoverableUnit.
      */
     protected void addRecoverableUnit(SQLRecoverableUnitImpl recoverableUnit, boolean recovered) {
         if (tc.isEntryEnabled())
@@ -3336,7 +3343,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Use RDBMS SELECT FOR UPDATE to lock table for recovery
         String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                              " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                             (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                             (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                              " WHERE RU_ID=-1" +
                              (_isSQLServer ? "" : " FOR UPDATE");
         if (tc.isDebugEnabled())
@@ -3647,10 +3654,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     createDBTable(conn);
                 } catch (Exception createException) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Table Creation failed with exception: " + createException);
+                        Tr.debug(tc, "Table Creation failed with exception: " + createException + " throw, the original exception" + ex);
                     if (tc.isEntryEnabled())
-                        Tr.exit(tc, "assertDBTableExists", createException);
-                    throw createException;
+                        Tr.exit(tc, "assertDBTableExists", ex);
+                    throw ex;
                 } // end catch create failed
             } // end catch read failed
 
@@ -3666,7 +3673,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @see com.ibm.ws.recoverylog.spi.LivingRecoveryLog#heartBeat()
      */
     @Override
-    @FFDCIgnore({ LogClosedException.class })
+    @FFDCIgnore({ LogClosedException.class, SQLException.class, SQLRecoverableException.class })
     public void heartBeat() throws LogClosedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "heartBeat", new Object[] { Integer.valueOf(_closesRequired), this });
@@ -3699,14 +3706,18 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 sqlSuccess = true;
 
             } catch (SQLException sqlex) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "heartbeat failed with SQL exception: " + sqlex);
+                if (_serverStopping || failed()) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Peer locking heartbeat failed, the server is stopping or the log is marked failed, got: " + sqlex);
+                } else {
+                    Tr.audit(tc, "WTRN0107W: " +
+                                 "Peer locking heartbeat failed with SQL exception: " + sqlex);
+                }
                 currentSqlEx = sqlex;
-                if (conn == null)
-                    nonTransientException = sqlex;
             } catch (Exception ex) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "heartbeat failed with general Exception: " + ex);
+                    Tr.debug(tc, "Peer locking heartbeat failed, the server is stopping or the log is marked failed, got: " + ex);
+
                 nonTransientException = ex;
             }
 
@@ -3714,36 +3725,77 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Close the connection and reset autocommit
                 try {
                     closeConnectionAfterBatch(conn, initialIsolation);
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat success, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Caught SQLException when closing connection after heartbeat success, exc: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Close Failed, after heartbeat success, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat success, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Caught general exception when closing connection after heartbeat success, exc: " + exc);
+                    }
                 }
             } else { // !sqlSuccess
                 // Tidy up current connection before dropping into retry code
                 // Attempt a rollback. If it fails, trace the failure but allow processing to continue
                 try {
-                    conn.rollback();
+                    if (conn != null)
+                        conn.rollback();
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Rollback Failed, after heartbeat failure, SQLException: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Rollback Failed, after heartbeat failure, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Rollback Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Rollback Failed, after heartbeat failure, exc: " + exc);
+                    }
                 }
 
                 // Attempt a close. If it fails, trace the failure but allow processing to continue
                 try {
-                    closeConnectionAfterBatch(conn, initialIsolation);
+                    if (conn != null)
+                        closeConnectionAfterBatch(conn, initialIsolation);
+                } catch (SQLException sqlex) {
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close failed after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + sqlex);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Close Failed, after heartbeat failure, SQLException: " + sqlex);
+                    }
                 } catch (Throwable exc) {
                     // Trace the exception
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Close Failed, after heartbeat failure, got exception: " + exc);
+                    if (_serverStopping || failed()) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Close Failed, after heartbeat failure, the server is stopping or the log is marked failed, got exception: " + exc);
+                    } else {
+                        Tr.audit(tc, "WTRN0107W: " +
+                                     "Close Failed, after heartbeat failure, exc: " + exc);
+                    }
                 }
 
                 // Is this an environment in which a retry should be attempted
                 if (_sqlTransientErrorHandlingEnabled) {
                     if (nonTransientException == null) {
-                        // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping
-                        if (_serverStopping) {
+                        // In this case we will retry if we are operating in an HA DB environment but not if the server is stopping or the log has failed
+                        if (_serverStopping || failed()) {
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
                             throw new LogClosedException();
@@ -3768,17 +3820,19 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
             }
         } else {
-            // Alert the HeartbeatLogManager that the log is closing/closed
+            // Alert the HeartbeatLogManager that the log is closing/closed or failed
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
             throw new LogClosedException();
         }
 
         if (!sqlSuccess) {
-            // Audit the failure but allow processing to continue
-            Tr.audit(tc, "WTRN0107W: " +
-                         "Caught Exception when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName +
-                         " Exception: " + nonTransientException);
+            // Audit the failure (if not closed/failed log) but allow processing to continue
+            if (!_serverStopping && !failed()) {
+                Tr.audit(tc, "WTRN0107W: " +
+                             "Caught Exception when heartbeating SQL RecoveryLog " + _logName + " for server " + _serverName +
+                             " Exception: " + nonTransientException);
+            }
         }
 
         if (tc.isEntryEnabled())
@@ -3805,7 +3859,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
@@ -3904,8 +3958,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimLocalRecoveryLogs failed with SQLException: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
-            if (conn == null)
-                nonTransientException = sqlex;
         } catch (Exception exc) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "claimLocalRecoveryLogs failed with Exception: " + exc);
@@ -3927,7 +3979,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // Tidy up current connection before dropping into retry code
             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
             try {
-                conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -3936,7 +3989,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // Attempt a close. If it fails, trace the failure but allow processing to continue
             try {
-                closeConnectionAfterBatch(conn, initialIsolation);
+                if (conn != null)
+                    closeConnectionAfterBatch(conn, initialIsolation);
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -3957,6 +4011,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // If the retry operation succeeded, retrieve the result of the underlying operation
                     if (sqlSuccess)
                         isClaimed = claimLocalRetry.isClaimed();
+                    else
+                        nonTransientException = claimLocalRetry.getNonTransientException();
                 } else {
                     // Exception not able to be retried
                     Tr.debug(tc, "Cannot recover from Exception when claiming local recovery logs for server " + _serverName + " Exception: "
@@ -3973,10 +4029,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         // If the recovery logs have been successfully claimed, spin off a thread to heartbeat,
         // ie to periodically update the timestamp in the control row
-        if (isClaimed)
-
-        {
+        if (isClaimed) {
             HeartbeatLogManager.setTimeout(this, _peerLockTimeBetweenHeartbeats);
+        } else {
+            markFailed(nonTransientException, true, false);
         }
 
         if (tc.isEntryEnabled())
@@ -4012,7 +4068,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             lockingStmt = conn.createStatement();
             String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                                  " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                 (_isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                  " WHERE RU_ID=-1" +
                                  (_isSQLServer ? "" : " FOR UPDATE");
             if (tc.isDebugEnabled())
@@ -4169,8 +4225,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with SQLException: " + sqlex);
             // Set the exception that will be reported
             currentSqlEx = sqlex;
-            if (conn == null)
-                nonTransientException = sqlex;
         } catch (Exception exc) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with Exception: " + exc);
@@ -4193,7 +4247,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // Tidy up current connection before dropping into retry code
             // Attempt a rollback. If it fails, trace the failure but allow processing to continue
             try {
-                conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())
@@ -4202,7 +4257,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             // Attempt a close. If it fails, trace the failure but allow processing to continue
             try {
-                closeConnectionAfterBatch(conn, initialIsolation);
+                if (conn != null)
+                    closeConnectionAfterBatch(conn, initialIsolation);
             } catch (Throwable exc) {
                 // Trace the exception
                 if (tc.isDebugEnabled())

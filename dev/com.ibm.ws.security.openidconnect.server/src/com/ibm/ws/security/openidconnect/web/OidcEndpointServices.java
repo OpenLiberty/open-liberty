@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,12 +14,13 @@ package com.ibm.ws.security.openidconnect.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Principal;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,6 +29,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -63,16 +68,13 @@ import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.internal.AuthnContextImpl;
 import com.ibm.ws.security.oauth20.plugins.BaseClient;
-import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.jose4j.OidcUserClaims;
-import com.ibm.ws.security.oauth20.util.CacheUtil;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.EndpointUtils;
 import com.ibm.ws.security.oauth20.web.OAuth20EndpointServices;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
-import com.ibm.ws.security.oauth20.web.OAuthClientTracker;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HttpUtils;
@@ -80,13 +82,15 @@ import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTPayload;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
 
-import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestHelper;
+import io.openliberty.security.common.jwt.JwtParsingUtils;
+import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
 @Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class OidcEndpointServices extends OAuth20EndpointServices {
@@ -369,189 +373,11 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * - delete LTPAToken cookie.
      * - delete refresh token from tokencache if id_token_hint is present.
      * - redirect a request to a URL which is specified by post_logout_redirect_uri
-     *
-     * @param oauth20provider  extracted from the request
-     * @param oidcServerConfig is the object of oidc server configuration object
-     * @param request          is the incoming HttpServletRequest
-     * @param response         WAS OIDC response for a given provider
-     *
-     * @throws IOException
      */
-    @FFDCIgnore(IDTokenValidationFailedException.class)
     protected void processEndSession(OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig, HttpServletRequest request,
                                      HttpServletResponse response) throws ServletException, IOException {
-        Principal user = request.getUserPrincipal();
-        String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
-        String redirectUri = request.getParameter(OIDCConstants.OIDC_LOGOUT_REDIRECT_URI);
-        OAuth20Token cachedIdToken = null;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "id_token_hint : " + idTokenString + " post_logout_redirect_uri : " + redirectUri);
-        }
-        if (idTokenString != null && idTokenString.length() == 0) {
-            idTokenString = null;
-        }
-        boolean continueLogoff = true;
-
-        // lookup idtoken cache first.
-        OAuth20TokenCache tokenCache = null;
-        if (idTokenString != null) {
-            tokenCache = oauth20provider.getTokenCache();
-            if (tokenCache != null) {
-                String hash = HashUtils.digest(idTokenString);
-                if (hash != null) {
-                    cachedIdToken = tokenCache.get(hash);
-                    // if idToken is found, this is valid.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "idToken : " + cachedIdToken);
-                    }
-                } else {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
-                    continueLogoff = false;
-                }
-            }
-        }
-
-        String userName = ((user == null) ? null : user.getName());
-        String tokenUsername = ((cachedIdToken == null) ? null : cachedIdToken.getUsername());
-        String clientId = ((cachedIdToken == null) ? null : cachedIdToken.getClientId());
-
-        if (idTokenString != null && cachedIdToken == null && continueLogoff) {
-            // if it's not there parse the idTokenString and validate signature.
-            JWT jwt = null;
-            try {
-                jwt = createJwt(idTokenString, oauth20provider, oidcServerConfig);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JWT : " + jwt);
-                }
-                //if (jwt.verify()) {
-                if (jwt.verifySignatureOnly()) {
-                    tokenUsername = JsonTokenUtil.getSub(jwt.getPayload());
-                    clientId = JsonTokenUtil.getAud(jwt.getPayload());
-                } else {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { "IDTokenValidatonFailedException" });
-                    continueLogoff = false;
-                }
-            } catch (IDTokenValidationFailedException ivfe) {
-                Throwable cause = ivfe.getCause();
-                if (cause != null && cause instanceof IllegalStateException) {
-                    // this error can be ignored, since this is due to exp, iat expiration.
-                    // extract sub.
-                    try {
-                        JWTPayload payload = JsonTokenUtil.getPayload(idTokenString);
-                        if (payload != null) {
-                            tokenUsername = JsonTokenUtil.getSub(payload);
-                            clientId = JsonTokenUtil.getAud(payload);
-                        }
-                    } catch (Exception e) {
-                        Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
-                        continueLogoff = false;
-                    }
-                } else {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
-                    continueLogoff = false;
-                }
-            } catch (Exception e) {
-                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
-                continueLogoff = false;
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "login username : " + userName + " IDToken username : " + tokenUsername);
-        }
-
-        if (userName != null && tokenUsername != null && !userName.equals(tokenUsername)) {
-            // user mismatch, abort
-            Tr.error(tc, "OIDC_SERVER_USERNAME_MISMATCH_ERR", new Object[] { userName, tokenUsername });
-            continueLogoff = false;
-        }
-
-        if (continueLogoff) {
-            if (cachedIdToken != null && tokenCache != null) {
-                // delete refreshtoken.
-                CacheUtil cu = new CacheUtil(tokenCache);
-                OAuth20Token refreshToken = cu.getRefreshToken(cachedIdToken);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "refreshToken : " + refreshToken);
-                }
-                if (refreshToken != null) {
-                    tokenCache.remove(refreshToken.getTokenString());
-                }
-            }
-            //@AV999-092821
-//            if (user != null) {
-//                // logout deletes ltpatoken cookie and oidc_bsc cookie.
-//                request.logout();
-//            }
-        }
-
-        if (!continueLogoff) {
-            // this is an error condition. display an error page.
-            redirectUri = request.getContextPath() + "/end_session_error.html";
-        } else {
-            if (redirectUri == null) {
-                // no redirectUri is set, use default.
-                redirectUri = request.getContextPath() + "/end_session_logout.html";
-            } else {
-                try {
-                    String[] uris = getPostLogoutRedirectUris(oauth20provider, clientId);
-                    if (!containUri(redirectUri, uris)) {
-                        // post_logout_redirect_uri is not a member of post_logout_redirect_uris, force to redirect to the default logout page.
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            if (clientId == null) {
-                                Tr.debug(tc,
-                                         "postLogoutRedirectUri value cannot be identified because client id is not set. Most likely this is because the id_token_hint parameter is not set or invalid.");
-                            }
-                        }
-                        Tr.error(tc, "OIDC_SERVER_LOGOUT_REDIRECT_URI_MISMATCH", new Object[] { redirectUri, printArray(uris), clientId });
-                        redirectUri = request.getContextPath() + "/end_session_logout.html";
-
-                    }
-                } catch (OidcServerException ose) {
-                    // this should not happen.
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ose });
-                    // this is an error condition. display an error page.
-                    redirectUri = request.getContextPath() + "/end_session_error.html";
-                }
-            }
-        }
-        if (oauth20provider.isTrackOAuthClients()) {
-            redirectUri = updateRedirectUriWithTrackedOAuthClients(request, response, oauth20provider, redirectUri);
-        }
-        //@AV999-092821
-        request.setAttribute("OIDC_END_SESSION_REDIRECT", redirectUri);
-        if (continueLogoff) {
-            if (user != null) {
-                // logout deletes ltpatoken cookie and oidc_bsc cookie.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "save  OIDC_END_SESSION_REDIRECT uri in op end_session : " + redirectUri);
-                }
-                //if during the servlet request logout, if the other logouts are in play, then we may not want to redirect here in that case
-                request.logout();
-            } else {
-                // request.logout() will send back-channel logout requests via the LogoutService OSGi service. Since request.logout()
-                // is only called in the above block if user != null, we need to make sure back-channel logout requests are still sent
-                // based on the id_token_hint if a user Principal isn't available
-                sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
-            }
-        }
-        if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
-            request.removeAttribute("OIDC_END_SESSION_REDIRECT");
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "OIDC _SSO OP redirecting to [" + redirectUri + "]");
-            }
-            response.sendRedirect(redirectUri);
-        }
-    }
-
-    String updateRedirectUriWithTrackedOAuthClients(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, String redirectUri) {
-        OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
-        return clientTracker.updateLogoutUrlAndDeleteCookie(redirectUri);
-    }
-
-    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
+        OidcRpInitiatedLogout rpInitiatedLogout = new OidcRpInitiatedLogout(this, oauth20provider, oidcServerConfig, request, response);
+        rpInitiatedLogout.processEndSession();
     }
 
     /**
@@ -582,12 +408,12 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * construct JWT which is a super class of IDToken from IdTokenString.
      * JWT class is used in order to just perform signature validation.
      *
-     * @param oauth20provider  extracted from the request
+     * @param oauth20provider extracted from the request
      * @param oidcServerConfig is the object of oidc server configurations
      * @throws OidcServerException
      *
      */
-    JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws OidcServerException {
+    JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
         String aud = null;
         String issuer = null;
         JWTPayload payload = JsonTokenUtil.getPayload(tokenString);
@@ -595,9 +421,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             aud = JsonTokenUtil.getAud(payload);
             issuer = JsonTokenUtil.getIss(payload);
         }
-        // TODO support RS256 by resolving key issue.
-        Object key = ((aud == null) ? null : getSharedKey(oauth20provider, aud));
-        // signatureAlgorithm
+        Object key = getJwtVerificationKey(tokenString, oauth20provider, oidcServerConfig);
         String signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -605,6 +429,40 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
 
         return new JWT(tokenString, key, aud, issuer, signatureAlgorithm);
+    }
+
+    @Sensitive
+    Object getJwtVerificationKey(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
+        Object key = null;
+        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(tokenString);
+        String signingAlgorithm = JwsSignatureVerifier.verifyJwsAlgHeaderOnly(jwtContext, Arrays.asList(oidcServerConfig.getIdTokenSigningAlgValuesSupported()));
+        if (signingAlgorithm.equals("none")) {
+            key = null;
+        } else if (signingAlgorithm.startsWith("HS")) {
+            key = getSharedKey(jwtContext, oauth20provider);
+        } else {
+            // TODO - remove beta guard when ready
+            if (ProductInfo.getBetaEdition()) {
+                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+                key = getPublicKeyFromJsonWebStructure(jsonStruct, oidcServerConfig);
+            }
+        }
+        return key;
+    }
+
+    @Sensitive
+    Object getSharedKey(JwtContext jwtContext, OAuth20Provider oauth20provider) throws OidcServerException, MalformedClaimException {
+        JwtClaims jwtClaims = jwtContext.getJwtClaims();
+        List<String> audiences = jwtClaims.getAudience();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Audiences from JWT: " + audiences);
+        }
+        if (audiences == null || audiences.isEmpty() || audiences.size() > 1) {
+            // TODO
+            return null;
+        }
+        String clientId = audiences.get(0);
+        return getSharedKey(oauth20provider, clientId);
     }
 
     /**
@@ -627,45 +485,23 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         return sharedKey;
     }
 
-    /**
-     * get PostLogoutRedirectUris
-     *
-     * @param oauth20provider extracted from the request
-     * @param clientId
-     * @throws OidcServerException
-     *
-     */
-    String[] getPostLogoutRedirectUris(OAuth20Provider oauth20provider, String clientId) throws OidcServerException {
-        String[] uris = null;
-        if (clientId != null) {
-            OidcOAuth20ClientProvider clientProvider = oauth20provider.getClientProvider();
-            OidcOAuth20Client oauth20Client = clientProvider.get(clientId);
-            if (oauth20Client instanceof OidcBaseClient) {
-                OidcBaseClient baseClient = (OidcBaseClient) oauth20Client;
-                uris = OidcOAuth20Util.getStringArray(baseClient.getPostLogoutRedirectUris());
-            }
-        }
-        return uris;
-    }
+    Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
+        String alg = jsonStruct.getAlgorithmHeaderValue();
+        String kid = jsonStruct.getKeyIdHeaderValue();
+        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
 
-    /**
-     * get check whether the given string contains in the given JsonArray.
-     *
-     * @param uri  String.
-     * @param uris String[]
-     *
-     */
-    boolean containUri(String uri, String[] uris) {
-        boolean contain = false;
-        if (uris != null && uris.length > 0 && uri != null) {
-            for (int i = 0; i < uris.length; i++) {
-                if (uri.equals(uris[i])) {
-                    contain = true;
-                    break;
-                }
+        Key publicKey = null;
+        JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
+        if (jwk != null && alg.equals(jwk.getAlgorithm())) {
+            if (kid != null && kid.equals(jwk.getKeyID())) {
+                publicKey = jwk.getPublicKey();
+            } else if (x5t != null && x5t.equals(jwk.getKeyX5t())) {
+                publicKey = jwk.getPublicKey();
+            } else if (kid == null && x5t == null) {
+                publicKey = jwk.getPublicKey();
             }
         }
-        return contain;
+        return publicKey;
     }
 
     /**
@@ -927,10 +763,10 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * Return the JSONObject that will be returned for the userinfo endpoint, this method invokes the userinfo provider SPI
      * that has being installed on liberty
      *
-     * @param accessToken      the OAuth20Token used to get authentication context
+     * @param accessToken the OAuth20Token used to get authentication context
      * @param userinfoProvider the implementation of userinfoProvider which is installed at runtime
-     * @param request          the HTTPRequest for the userinfo endpoint
-     * @param response         the response for the userinfo endpoint request.
+     * @param request the HTTPRequest for the userinfo endpoint
+     * @param response the response for the userinfo endpoint request.
      * @return The JsonObject for userinfo endpoint
      * @throws IOException
      */
@@ -964,12 +800,12 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
     /**
      * Get the JSONObject that will be returned for userinfo endpoint from the user registry
      *
-     * @param oauth20provider  The OAuth20Provider
+     * @param oauth20provider The OAuth20Provider
      * @param oidcServerConfig The OidcServerConfig
-     * @param request          The HttpServletRequest
-     * @param response         The HttpServletResponse
-     * @param accessToken      The OAuth20Token
-     * @param claims           The claims for this granted access
+     * @param request The HttpServletRequest
+     * @param response The HttpServletResponse
+     * @param accessToken The OAuth20Token
+     * @param claims The claims for this granted access
      * @param response
      * @throws IOException
      *
@@ -1025,31 +861,6 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
         response.setHeader(WWW_AUTHENTICATE_HEADER, header);
         response.setStatus(status);
-    }
-
-    /**
-     * Convert the String array to a String.
-     *
-     * @param value
-     * @return
-     */
-    @Trivial
-    private String printArray(String[] value) {
-        String result = null;
-        if (value != null && value.length > 0) {
-            StringBuffer buf = null;
-            for (int i = 0; i < value.length; i++) {
-                if (buf == null) {
-                    buf = new StringBuffer("[ ");
-                } else {
-                    buf.append(", ");
-                }
-                buf.append(value[i]);
-            }
-            buf.append(" ]");
-            result = buf.toString();
-        }
-        return result;
     }
 
     @FFDCIgnore({ IDTokenValidationFailedException.class, IllegalStateException.class })

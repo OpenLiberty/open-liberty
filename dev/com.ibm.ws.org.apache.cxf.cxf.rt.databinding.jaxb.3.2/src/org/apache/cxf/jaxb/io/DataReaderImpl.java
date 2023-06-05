@@ -48,7 +48,7 @@ import org.apache.cxf.service.model.MessagePartInfo;
 public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
     JAXBDataBinding databinding;
-    boolean unwrapJAXBElement = true;
+    boolean unwrapJAXBElement;
     ValidationEventHandler veventHandler;
     boolean setEventHandler = true;
 
@@ -109,10 +109,9 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
 
     private Unmarshaller createUnmarshaller() {
         try {
-            Unmarshaller um = null;
             // Liberty change begin
             // Move the logic that is 
-            um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
+            Unmarshaller um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
             /*if (databinding.getUnmarshallerListener() != null) {
                 um.setListener(databinding.getUnmarshallerListener());
             }
@@ -146,9 +145,8 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
 
     public Object read(MessagePartInfo part, T reader) {
         boolean honorJaxbAnnotation = honorJAXBAnnotations(part);
-        Annotation[] anns = null;
         if (honorJaxbAnnotation) {
-            anns = getJAXBAnnotation(part);
+            Annotation[] anns = getJAXBAnnotation(part);
             if (anns.length > 0) {
                 // RpcLit will use the JAXB Bridge to unmarshall part message when it is
                 // annotated with @XmlList,@XmlAttachmentRef,@XmlJavaTypeAdapter

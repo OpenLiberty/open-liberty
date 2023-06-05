@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -20,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,7 +29,6 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -59,6 +58,8 @@ public class JSF23CDIGeneralTests {
 
     protected static final Class<?> c = JSF23CDIGeneralTests.class;
 
+    private static boolean isEE10;
+
     @Rule
     public TestName name = new TestName();
 
@@ -67,9 +68,10 @@ public class JSF23CDIGeneralTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        isEE10 = JakartaEE10Action.isActive();
+
         ShrinkHelper.defaultDropinApp(server, "PostRenderViewEvent.war", "com.ibm.ws.jsf23.fat.postrenderview.events");
         ShrinkHelper.defaultDropinApp(server, "CDIManagedProperty.war", "com.ibm.ws.jsf23.fat.cdi.managedproperty");
-        ShrinkHelper.defaultDropinApp(server, "ELImplicitObjectsViaCDI.war", "com.ibm.ws.jsf23.fat.elimplicit.cdi.beans");
         ShrinkHelper.defaultDropinApp(server, "ConvertDateTime.war", "com.ibm.ws.jsf23.fat.convertdatetime.beans");
         ShrinkHelper.defaultDropinApp(server, "ConverterValidatorBehaviorInjectionTarget.war", "com.ibm.ws.jsf23.fat.converter.validator.behavior.injection.beans");
         ShrinkHelper.defaultDropinApp(server, "CDIIntegrationTest.war",
@@ -77,15 +79,22 @@ public class JSF23CDIGeneralTests {
                                       "com.ibm.ws.jsf23.fat.cdi.integration.beans",
                                       "com.ibm.ws.jsf23.fat.cdi.integration.viewhandler");
 
+        WebArchive elImplicitObjectsViaCDIApp = ShrinkWrap.create(WebArchive.class, "ELImplicitObjectsViaCDI.war");
+        elImplicitObjectsViaCDIApp.addPackage("com.ibm.ws.jsf23.fat.elimplicit.cdi.beans");
+        ShrinkHelper.addDirectory(elImplicitObjectsViaCDIApp, "test-applications/" + "ELImplicitObjectsViaCDI.war" + "/resources");
+        ShrinkHelper.addDirectory(elImplicitObjectsViaCDIApp,
+                                  "test-applications/" + "ELImplicitObjectsViaCDI.war" + (isEE10 ? "/resourcesFaces40" : "/resourcesJSF23"));
+        ShrinkHelper.exportDropinAppToServer(server, elImplicitObjectsViaCDIApp);
+
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @Before
     public void startServer() throws Exception {
         if (server != null && !server.isStarted()) {
-            server.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+            server.startServer(c.getSimpleName() + ".log");
         }
     }
 
@@ -184,14 +193,10 @@ public class JSF23CDIGeneralTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
         try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-            // Avoid error: message=[missing ; after for-loop condition]
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
                                  + "listManagedProperty = zero stringArrayManagedProperty = "
@@ -249,6 +254,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
@@ -346,8 +352,15 @@ public class JSF23CDIGeneralTests {
             // Verify that the page contains the expected messages.
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("JSF 2.3 EL resolution of implicit objects using CDI"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Bean: com.ibm.ws.jsf23.fat.elimplicit.cdi.beans.ELImplicitObjectBean"));
-            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Application project stage: Production"));
-            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ApplicationScope application name: ELImplicitObjectsViaCDI "));
+
+            // MYFACES-4559
+            if (isEE10) {
+                assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Application name: JSF23ELImplicitObjectsViaCDI"));
+            } else {
+                assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Application project stage: Production"));
+            }
+
+            assertTrue(testELResolutionImplicitObjectsPage.asText().contains("ApplicationScope application name: ELImplicitObjectsViaCDI"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("Component getStyle: font-weight:bold"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("CompositeComponent label: Hello World"));
             assertTrue(testELResolutionImplicitObjectsPage.asText().contains("FacesContext project stage: Production"));
@@ -464,6 +477,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesConverterBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -504,6 +518,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesValidatorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -544,6 +559,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesBehaviorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
             CollectingAlertHandler alertHandler = new CollectingAlertHandler();
@@ -652,25 +668,14 @@ public class JSF23CDIGeneralTests {
             assertTrue(pageText.contains("Type date, dateStyle long: June 1, 2017"));
             assertTrue(pageText.contains("Type date, dateStyle full: Thursday, June 1, 2017"));
             assertTrue(pageText.contains("Type date, pattern MM-dd-yyyy: 06-01-2017"));
-            assertTrue(pageText.contains("Type time, timeStyle short: 10:30 AM"));
-            assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45 AM"));
-            assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45 AM GMT"));
-            assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45 AM GMT") ||
-                       pageText.contains("Type time, timeStyle full: 10:30:45 AM Greenwich Mean Time"));
-            assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45 AM") ||
-                       pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45 AM"));
+
             assertTrue(pageText.contains("Type localDate, dateStyle short: 6/1/17"));
             assertTrue(pageText.contains("Type localDate, dateStyle medium: Jun 1, 2017"));
             assertTrue(pageText.contains("Type localDate, dateStyle long: June 1, 2017"));
             assertTrue(pageText.contains("Type localDate, dateStyle full: Thursday, June 1, 2017"));
             assertTrue(pageText.contains("Type localDate, pattern MM-dd-yyyy: 06-01-2017"));
-            assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35 AM"));
-            assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45 AM"));
             assertTrue(pageText.contains("Type localTime, pattern HH:mm:ss: 10:35:45"));
-            assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30 AM") ||
-                       pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30 AM"));
-            assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45 AM") ||
-                       pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45 AM"));
+
             assertTrue(pageText.contains("Type localDateTime, pattern MM-dd-yyyy HH:mm:ss: 06-01-2017 10:30:45"));
             assertTrue(pageText.contains("Type offsetTime: 10:30:45.5-07:00"));
             assertTrue(pageText.contains("Type offsetTime, pattern HH:mm:ss:SSS ZZZZ: 10:30:45:500 GMT-07:00"));
@@ -678,6 +683,29 @@ public class JSF23CDIGeneralTests {
             assertTrue(pageText.contains("Type offsetDateTime, pattern MM-dd-yyyy HH:mm:ss:SSS ZZZZ: 06-01-2017 10:30:45:500 GMT-07:00"));
             assertTrue(pageText.contains("Type zonedDateTime: 2017-06-01T10:30:45.5-07:00[America/Los_Angeles] "));
             assertTrue(pageText.contains("Type zonedDateTime, pattern MM-dd-yyyy HH:mm:ss ZZZZ z: 06-01-2017 10:30:45:500 GMT-07:00 PDT"));
+
+            // JAVA 20 Checks -- https://github.com/OpenLiberty/open-liberty/issues/24009
+            char space = '\u0020';
+            if (componenttest.topology.impl.JavaInfo.JAVA_VERSION >= 20) {
+                space = '\u202F';
+            }
+
+            assertTrue(pageText.contains("Type time, timeStyle short: 10:30" + space + "AM"));
+            assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45" + space + "AM"));
+            assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45" + space + "AM GMT"));
+            assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45" + space + "AM GMT") ||
+                       pageText.contains("Type time, timeStyle full: 10:30:45" + space + "AM Greenwich Mean Time"));
+            assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45" + space + "AM") ||
+                       pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45" + space + "AM"));
+
+            assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35" + space + "AM"));
+            assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45" + space + "AM"));
+
+            assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30" + space + "AM") ||
+                       pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30" + space + "AM"));
+            assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45" + space + "AM") ||
+                       pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45" + space + "AM"));
+
         }
     }
 

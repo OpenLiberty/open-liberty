@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: La r\u00e9f\u00e9rence de service UserTransaction e
 USERTRAN_IS_NULL.explanation=Une demande a \u00e9t\u00e9 \u00e9mise en vue de l'obtention du service UserTransaction, mais aucun service UserTransaction n'a \u00e9t\u00e9 connect\u00e9 \u00e0 ce bundle.
 USERTRAN_IS_NULL.useraction=Si l'acc\u00e8s au service UserTransaction est indispensable, utilisez la console OSGi afin d'identifier la raison pour laquelle aucun service UserTransaction n'a \u00e9t\u00e9 connect\u00e9 \u00e0 ce bundle. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Une erreur de transaction inattendue s''est produite : {0}
 UNEXPECTED_TRAN_ERROR.explanation=Une demande a \u00e9t\u00e9 \u00e9mise en vue de l'obtention de l'objet Transaction, mais une erreur inattendue s'est produite. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Consultez les journaux pour d\u00e9terminer s'i
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Transaction globale annul\u00e9e en raison du d\u00e9passement du d\u00e9lai imparti : {0}
 GLOBAL_TRAN_ROLLBACK.explanation=La transaction globale actuelle a d\u00e9pass\u00e9 le d\u00e9lai imparti et a donc \u00e9t\u00e9 annul\u00e9e.
-GLOBAL_TRAN_ROLLBACK.useraction=Assurez-vous que la transaction globale se termine dans le d\u00e9lai imparti ou alors augmentez ce dernier.
+GLOBAL_TRAN_ROLLBACK.useraction=V\u00e9rifiez que la transaction globale se termine dans le d\u00e9lai imparti ou augmentez le d\u00e9lai d'attente.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le d\u00e9ploiement du serveur contient des fichiers journaux de transactions dans le r\u00e9pertoire {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty ne s'attend pas \u00e0 ce que les fichiers journaux des transactions existent dans le d\u00e9ploiement du serveur lorsqu'un point de contr\u00f4le du serveur est demand\u00e9.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Supprimez le r\u00e9pertoire du journal des transactions du d\u00e9ploiement du serveur.

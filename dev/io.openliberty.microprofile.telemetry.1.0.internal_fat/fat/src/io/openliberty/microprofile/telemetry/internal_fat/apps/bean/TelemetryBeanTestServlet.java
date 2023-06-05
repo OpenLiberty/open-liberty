@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package io.openliberty.microprofile.telemetry.internal_fat.apps.bean;
@@ -21,21 +18,15 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-
+import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.context.Context;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
 
+@SuppressWarnings("serial")
 @WebServlet("/")
 @ApplicationScoped
 public class TelemetryBeanTestServlet extends FATServlet {
@@ -66,7 +57,8 @@ public class TelemetryBeanTestServlet extends FATServlet {
             Span spanTwo = Span.current();
             logger.info("Span.current() after creating a new span and making it current : " + spanTwo.toString());
 
-            assertFalse("We got the same span from span.current() before and after calling makeCurrent() on a newly created span", span.getSpanContext().equals(spanTwo.getSpanContext()));
+            assertFalse("We got the same span from span.current() before and after calling makeCurrent() on a newly created span",
+                        span.getSpanContext().equals(spanTwo.getSpanContext()));
             assertEquals("The current span was not the one we created and invoked makeCurrent() with", newSpan.getSpanContext(), spanTwo.getSpanContext());
             assertEquals("The injected span was not the same as the current span after calling makeCurrent()", spanTwo.getSpanContext(), injectedSpan.getSpanContext());
         } finally {
@@ -84,13 +76,14 @@ public class TelemetryBeanTestServlet extends FATServlet {
 
         Baggage newBaggage = Baggage.builder().put("foo", "bar").build();
         logger.info("Baggage created during the test: " + newBaggage.toString());
-        newBaggage.makeCurrent();
+        try (Scope s = newBaggage.makeCurrent()) {
+            Baggage baggageTwo = Baggage.current();
+            logger.info("Baggage.current() after creating a new baggage and making it current : " + baggageTwo.asMap());
 
-        Baggage baggageTwo = Baggage.current();
-        logger.info("Baggage.current() after creating a new baggage and making it current : " + baggageTwo.asMap());        
+            assertEquals("Didn't find expected value in injected baggage", "bar", injectedBaggage.getEntryValue("foo"));
+            assertEquals("The current baggage was not the one we created and invoked makeCurrent() with", newBaggage.asMap(), baggageTwo.asMap());
+            assertEquals("The injected baggage was not the same as the current baggage after calling makeCurrent()", baggageTwo.asMap(), injectedBaggage.asMap());
+        }
 
-        assertEquals("Didn't find expected value in injected baggage", "bar", injectedBaggage.getEntryValue("foo"));
-        assertEquals("The current baggage was not the one we created and invoked makeCurrent() with", newBaggage.asMap(), baggageTwo.asMap());
-        assertEquals("The injected baggage was not the same as the current baggage after calling makeCurrent()", baggageTwo.asMap(), injectedBaggage.asMap());
     }
 }

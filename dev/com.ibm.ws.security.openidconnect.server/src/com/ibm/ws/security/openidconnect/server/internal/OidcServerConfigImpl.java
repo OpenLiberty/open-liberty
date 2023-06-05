@@ -49,7 +49,7 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
-import com.ibm.ws.security.openidconnect.common.ConfigUtils;
+import com.ibm.ws.security.openidconnect.clients.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.server.plugins.OIDCProvidersConfig;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;

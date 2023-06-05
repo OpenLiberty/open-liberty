@@ -126,6 +126,10 @@ error.kernelDefFile=CWWKE0023E: La d\u00e9finition de noyau sp\u00e9cifi\u00e9e 
 error.kernelDefFile.explanation=La d\u00e9finition sp\u00e9cifi\u00e9e pour le noyau (kernel) est introuvable.
 error.kernelDefFile.useraction=Assurez-vous que la ressource de d\u00e9finition du noyau existe et qu'elle peut \u00eatre lue par l'utilisateur en cours.
 
+error.badOptionValue=CWWKE0024E: La valeur ({0}) pour l''option ({1}) n''est pas valide.
+error.badOptionValue.explanation=La valeur indiqu\u00e9e n'est pas appropri\u00e9e pour l'option sp\u00e9cifi\u00e9e.
+error.badOptionValue.useraction=Ex\u00e9cutez la commande 'server help' pour obtenir une description des options.  Si la valeur est un nombre, assurez-vous qu'il soit dans la plage valide.
+
 error.specifiedLocation=CWWKE0025E: La valeur {0} doit d\u00e9signer un r\u00e9pertoire. La valeur sp\u00e9cifi\u00e9e fait r\u00e9f\u00e9rence \u00e0 une ressource de type fichier existante. Valeur : {1}
 error.specifiedLocation.explanation=L'emplacement fourni fait r\u00e9f\u00e9rence \u00e0 un fichier existant au lieu d'un r\u00e9pertoire.
 error.specifiedLocation.useraction=Remplacez l'emplacement sp\u00e9cifi\u00e9 par un r\u00e9pertoire, puis relancez l'action.
@@ -137,6 +141,10 @@ warning.noPlatformCache.useraction=Examinez et r\u00e9solvez l'exception, puis r
 warning.singleServer=CWWKE0027W: Vous ne pouvez indiquer qu''un seul serveur sur la ligne de commande ; les noms suivants seront ignor\u00e9s (serveur={0}, ignor\u00e9(s)={1}).
 warning.singleServer.explanation=Vous ne pouvez sp\u00e9cifier qu'un seul serveur sur la ligne de commande. Le premier nom de serveur a \u00e9t\u00e9 trait\u00e9, les autres ont \u00e9t\u00e9 ignor\u00e9s.
 warning.singleServer.useraction=Aucune action n'est requise. A l'avenir, sp\u00e9cifiez un seul serveur pour \u00e9viter cet avertissement.
+
+error.optionNotApplicableToCommand=CWWKE0028E: L''option ({0}) n''est pas applicable pour cette commande.
+error.optionNotApplicableToCommand.explanation=L'option indiqu\u00e9e n'est pas admise pour la commande sp\u00e9cifi\u00e9e.
+error.optionNotApplicableToCommand.useraction=Ex\u00e9cutez la commande 'server <command> help' pour obtenir des informations sur les options valides de la commande.
   
 error.serverAlreadyRunning=CWWKE0029E: Une instance du serveur {0} est d\u00e9j\u00e0 en cours d''ex\u00e9cution.
 error.serverAlreadyRunning.explanation=Vous tentez de d\u00e9marrer un serveur qui est d\u00e9j\u00e0 en cours d'ex\u00e9cution.
@@ -383,6 +391,10 @@ audit.system.exit.useraction=Si l'arr\u00eat du serveur \u00e9tait inattendu, d\
 audit.jvm.shutdown=CWWKE0085I: Le serveur {0} est en cours d''arr\u00eat car JVM est en cours d''arr\u00eat \u00e9galement.
 audit.jvm.shutdown.explanation=Le serveur a intercept\u00e9 une demande d'arr\u00eat de la machine JVM et il va essayer de s'arr\u00eater de mani\u00e8re ordonn\u00e9e. La machine JVM est peut-\u00eatre en cours d'arr\u00eat car le syst\u00e8me d'exploitation a envoy\u00e9 un signal d'arr\u00eat au processus serveur.
 audit.jvm.shutdown.useraction=Si l'arr\u00eat du serveur \u00e9tait inattendu, d\u00e9terminez si un signal d'arr\u00eat a \u00e9t\u00e9 envoy\u00e9 au processus serveur.
+
+error.optionRequiresEquals=CWWKE0086E: L''option {0} doit inclure un signe \u00e9gale (=) avant la valeur sp\u00e9cifi\u00e9e. 
+error.optionRequiresEquals.explanation=L'option sp\u00e9cifi\u00e9e doit \u00eatre suivie d'un signe \u00e9gale (=) et d'une valeur.
+error.optionRequiresEquals.useraction=L'option doit \u00eatre sp\u00e9cifi\u00e9e dans le format suivant : --option= valeur.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Le d\u00e9marrage du serveur a \u00e9t\u00e9 lanc\u00e9 pour le serveur {0}, mais il est impossible de d\u00e9terminer s''il s''est achev\u00e9 car le port de commande serveur est d\u00e9sactiv\u00e9.
 warning.serverStartedCommandPortDisabled.explanation=Le port de commande serveur est requis pour la communication avec un serveur en op\u00e9ration.  Le port de commande ayant \u00e9t\u00e9 d\u00e9sactiv\u00e9 explicitement pour ce serveur, il est impossible de savoir quand son d\u00e9marrage s'est termin\u00e9.
@@ -698,7 +710,7 @@ warning.earlyRelease=CWWKE0953W: Cette version de {0} est une version d''\u00e9d
 warning.earlyRelease.explanation=De nouvelles fonctions qui n'ont pas \u00e9t\u00e9 enti\u00e8rement test\u00e9es sont mises \u00e0 disposition dans les versions anticip\u00e9es pour que les utilisateurs puissent envoyer leurs commentaires avant qu'elles ne soient incluses dans une \u00e9dition prise en charge.
 warning.earlyRelease.useraction=N'utilisez pas de version d'\u00e9dition anticip\u00e9e sur des syst\u00e8mes de production car elles ne sont pas prises en charge.
 
-error.invalidPhaseName=CWWKE0954E: La phase de point de contr\u00f4le "{0}" sp\u00e9cifi\u00e9e est vide ou inconnue.
+error.invalidPhaseName=CWWKE0954E: La phase de point de contr\u00f4le sp\u00e9cifi\u00e9e ({0}) est vide ou inconnue.
 error.invalidPhaseName.explanation=Une phase inconnue a \u00e9t\u00e9 sp\u00e9cifi\u00e9e comme valeur de l'option de point de contr\u00f4le.
 error.invalidPhaseName.useraction=Consultez la documentation pour d\u00e9terminer les noms de phase valides. R\u00e9ex\u00e9cutez la commande \u00e0 l'aide d'une phase de point de contr\u00f4le valide.
 
@@ -710,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: \u00c9chec de la d\u00e9finiti
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager n'a pas pu \u00eatre activ\u00e9 car le syst\u00e8me utilise Java 18, ce qui par d\u00e9faut ne permet pas l'utilisation d'un gestionnaire de s\u00e9curit\u00e9 Java.
 error.cannotset.securitymanager.jdk18.useraction=D\u00e9marrez le serveur avec l'argument JVM -Djava.security.manager = autoriser.
 
-error.checkpoint.delete=CWWKE0955E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e du r\u00e9pertoire {0}.
+error.checkpoint.workarea.restore=CWWKE0957E: Le r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le ne peut pas \u00eatre restaur\u00e9 \u00e0 partir du r\u00e9pertoire {0}.
+error.checkpoint.workarea.restore.explanation=Une erreur s'est produite lors de la restauration du r\u00e9pertoire de zone de travail de point de contr\u00f4le.
+error.checkpoint.workarea.restore.useraction=V\u00e9rifiez que l'utilisateur dispose des droits suffisants pour restaurer la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car la propri\u00e9t\u00e9 websphere.java.security a \u00e9t\u00e9 d\u00e9finie dans le fichier bootstrap.properties. Cette propri\u00e9t\u00e9 active Java Security Manager et n'est pas valide lorsqu'un point de contr\u00f4le de serveur se produit.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty ne prend pas en charge Java Security Manager lorsqu'un point de contr\u00f4le de serveur est demand\u00e9. Java Security Manager est obsol\u00e8te, comme indiqu\u00e9 par JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Supprimez la propri\u00e9t\u00e9 websphere.java.security du fichier bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car l''image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e du r\u00e9pertoire {0}.
 error.checkpoint.delete.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car une image de point de contr\u00f4le existante ne peut pas \u00eatre supprim\u00e9e.
 error.checkpoint.delete.useraction=V\u00e9rifiez que l'utilisateur est autoris\u00e9 \u00e0 supprimer le r\u00e9pertoire existant. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
 
-error.checkpoint.workarea.backup=CWWKE0956E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le r\u00e9pertoire {0} ne peut pas \u00eatre sauvegard\u00e9.
+error.checkpoint.workarea.backup=CWWKE0960E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car le r\u00e9pertoire {0} ne peut pas \u00eatre sauvegard\u00e9.
 error.checkpoint.workarea.backup.explanation=Une erreur s'est produite lors de la sauvegarde du r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le.
-error.checkpoint.workarea.backup.useraction=V\u00e9rifiez que l'utilisateur dispose de droits suffisants pour sauvegarder le r\u00e9pertoire de la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
+error.checkpoint.workarea.backup.useraction=V\u00e9rifiez que l'utilisateur dispose des droits suffisants pour sauvegarder le r\u00e9pertoire de la zone de travail des points de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
 
-error.checkpoint.workarea.restore=CWWKE0957E: Le r\u00e9pertoire de la zone de travail du serveur de points de contr\u00f4le ne peut pas \u00eatre restaur\u00e9 \u00e0 partir du r\u00e9pertoire {0}.
-error.checkpoint.workarea.restore.explanation=Une erreur s'est produite lors de la restauration du r\u00e9pertoire de zone de travail de point de contr\u00f4le.
-error.checkpoint.workarea.restore.useraction=V\u00e9rifiez que l'utilisateur dispose de droits suffisants pour restaurer la zone de travail de point de contr\u00f4le. Relex\u00e9cutez la commande avec un utilisateur disposant de droits suffisants.
-
-info.checkpoint.restore.failed=CWWKE0957I: La restauration du processus du serveur de point de contr\u00f4le a \u00e9chou\u00e9. Consultez le journal {0} pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n''a pas \u00e9t\u00e9 restaur\u00e9. Lancement du serveur sans utiliser l''image de point de contr\u00f4le.
+info.checkpoint.restore.failed=CWWKE0961I: La restauration du processus du serveur de point de contr\u00f4le a \u00e9chou\u00e9. Consultez le journal {0} pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n''a pas \u00e9t\u00e9 restaur\u00e9. Lancement du serveur sans utiliser l''image de point de contr\u00f4le.
 info.checkpoint.restore.failed.explanation=Une erreur s'est produite lors de la restauration d'un processus serveur de point de contr\u00f4le.  Le serveur a \u00e9t\u00e9 lanc\u00e9 sans utiliser l'image de point de contr\u00f4le.
 info.checkpoint.restore.failed.useraction=Consultez les journaux pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n'a pas \u00e9t\u00e9 restaur\u00e9.
 
-error.checkpoint.failed=CWWKE0958E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9. La sortie suivante provient du fichier CRIU {0} qui contient des d\u00e9tails sur la raison pour laquelle le point de contr\u00f4le a \u00e9chou\u00e9.
+error.checkpoint.failed=CWWKE0962E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9. La sortie suivante provient du fichier CRIU {0} qui contient des d\u00e9tails sur la raison pour laquelle le point de contr\u00f4le a \u00e9chou\u00e9.
 error.checkpoint.failed.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9. Aucune image de processus de point de contr\u00f4le valide pour le serveur n'a \u00e9t\u00e9 cr\u00e9\u00e9e.
 error.checkpoint.failed.useraction=Pour d\u00e9terminer la raison de l'\u00e9chec du point de contr\u00f4le, examinez les fichiers journaux dans le r\u00e9pertoire des points de contr\u00f4le situ\u00e9 dans le r\u00e9pertoire des journaux du serveur.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9 car les appels syst\u00e8me netlink ont \u00e9chou\u00e9. Si SELinux est activ\u00e9 en mode d'application, les appels syst\u00e8me netlink peuvent \u00eatre bloqu\u00e9s par le param\u00e8tre de r\u00e8gle SELinux "virt_sandbox_use_netlink". D\u00e9sactivez SELinux ou activez les appels syst\u00e8me netlink \u00e0 l'aide de la commande "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car les appels syst\u00e8me netlink ont \u00e9chou\u00e9.
+error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est activ\u00e9 en mode d'application, les appels syst\u00e8me netlink peuvent \u00eatre bloqu\u00e9s par le param\u00e8tre de r\u00e8gle SELinux "virt_sandbox_use_netlink". D\u00e9sactivez SELinux ou activez les appels syst\u00e8me netlink \u00e0 l'aide de la commande "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.

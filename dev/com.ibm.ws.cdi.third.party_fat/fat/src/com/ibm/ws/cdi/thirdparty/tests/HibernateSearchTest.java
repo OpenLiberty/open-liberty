@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -34,12 +35,14 @@ import com.ibm.ws.cdi.thirdparty.apps.hibernateSearchWar.model.BasicFieldBridge;
 import com.ibm.ws.cdi.thirdparty.apps.hibernateSearchWar.web.HibernateSearchTestServlet;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -62,8 +65,8 @@ Caused by: java.lang.NoClassDefFoundError: javax.persistence.spi.PersistenceProv
 
 */
 
-@SkipForRepeat(EERepeatActions.EE7_ID)
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class HibernateSearchTest extends FATServletClient {
 
     public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
@@ -72,6 +75,12 @@ public class HibernateSearchTest extends FATServletClient {
     @Server(SERVER_NAME)
     @TestServlet(servlet = HibernateSearchTestServlet.class, contextRoot = HIBERNATE_SEARCH_APP_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
+                                                         EERepeatActions.EE10,
+                                                         EERepeatActions.EE9,
+                                                         EERepeatActions.EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {

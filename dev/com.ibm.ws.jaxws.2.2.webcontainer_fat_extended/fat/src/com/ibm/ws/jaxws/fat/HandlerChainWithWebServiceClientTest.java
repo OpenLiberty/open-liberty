@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -24,9 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jaxws.provider.AddNumbersException;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -37,6 +40,8 @@ public class HandlerChainWithWebServiceClientTest {
     public static LibertyServer server;
 
     private static final String SERVLET_PATH = "/addNumbersClient/AddNumbersTestServlet";
+
+    private static final int TIMEOUT = 5000;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -65,11 +70,35 @@ public class HandlerChainWithWebServiceClientTest {
         assertTrue("Expected output to contain \"" + expected
                    + "\", but instead it contained: " + actual + ".",
                    actual.indexOf(expected) != -1);
-        assertStatesExistedFromMark(true, 5000, new String[] {
-                                                               "com.ibm.ws.jaxws.client.MyHandler: handle outbound message",
-                                                               "com.ibm.ws.jaxws.client.MyHandler: handle inbound message",
+        assertStatesExistedFromMark(true, TIMEOUT, new String[] {
+                                                                  "com.ibm.ws.jaxws.client.MyHandler: handle outbound message",
+                                                                  "com.ibm.ws.jaxws.client.MyHandler: handle inbound message",
         });
 
+    }
+
+    // Negative test case that invokes provider with negative numbers. This should return a SOAP Fault
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testHandlerChainWithWebServiceClientAddNegativesExceptionFault() throws Exception {
+
+        try {
+            invokeService(-1, -2); // Invoking the service with negative numbers throws AddNumbersException
+        } catch (AddNumbersException ane) {
+            assertTrue("AddNumbersException is NOT caught", true); // Catching this exception is the goal of this negative test
+        }
+    }
+
+    // Negative test case that invokes provider with negative numbers. This should return a SOAP Fault
+    // Test verifies Exception is logged in Liberty by CXF's AbstractSoapInterceptor
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testHandlerChainWithWebServiceClientAddNegativesExceptionLogging() throws Exception {
+
+        invokeService(-1, -2);
+        String expected = "Fault occured, printing Exception cause to trace.";
+
+        assertNotNull("Failed to reveal main cause of the exception", server.waitForStringInTrace(expected, TIMEOUT));
     }
 
     private String invokeService(int num1, int num2) throws Exception {

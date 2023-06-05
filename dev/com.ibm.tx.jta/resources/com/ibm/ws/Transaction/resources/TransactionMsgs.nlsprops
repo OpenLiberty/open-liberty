@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -843,7 +843,7 @@ WTRN0147_REC_XID_LATE.useraction=Examine the epoch value from this message and c
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Recovered xid {0} from {1} - xid has no associated transaction and will be rolled back
-WTRN0148_REC_XA_ROLLBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not corrrespond to a logged transaction.  The transaction service will rollback the xid as part of recovery processing.
+WTRN0148_REC_XA_ROLLBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not correspond to a logged transaction. The transaction service rolls back the xid as part of recovery processing.
 WTRN0148_REC_XA_ROLLBACK.useraction=No user action is required.
 
 # 0 - xid
@@ -851,14 +851,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=No user action is required.
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: Recovered xid {0} from {1} - xid has associated transaction (tid={2}) with logged state {3}
-WTRN0149_REC_XA_TRAN.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which corrresponds to a logged transaction.  The transaction service will complete the transaction as part of recovery processing.
+WTRN0149_REC_XA_TRAN.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which corresponds to a logged transaction. The transaction service completes the transaction as part of recovery processing.
 WTRN0149_REC_XA_TRAN.useraction=No user action is required.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Response from rolling back recovered xid {0} from {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not corrrespond to a logged transaction.  The transaction service hass attempted to rollback the xid as part of recovery processing.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=The transaction service successfully issued xa recover on a logged resource manager and obtained an xid which does not correspond to a logged transaction. The transaction service attempted to rollback the xid as part of recovery processing.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Examine the error code to determine if the rollback failed.
 
 # 0 - resource manager name
@@ -870,5 +870,19 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Unusual HA configuration detected.
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA is enabled for this cluster but the HA manager is disabled.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=If this is the desired configuration, no action is required. Otherwise, correct the HA configuration.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: The transaction service shut down but the recovery log was marked as failed.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=The recovery log failed and access to the log did not occur at server shutdown.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correct any conditions that are indicated by the messages that reported the invalidation of the log. Restart the server so that the log can be repaired.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: The server checkpoint request failed because the transaction service is unable to begin a transaction.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty does not support applications that begin or require a transaction while the application starts when a server checkpoint is requested.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Use the server checkpoint at=deployment option or modify the application to begin transactions after it has started.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: An application began or required a transaction during the server checkpoint request. The following stack trace for this thread was captured when the transaction was created: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=The stack trace was captured when the transaction was created. The stack trace helps users determine which applications begin transactions during application startup and then cause the checkpoint request to fail.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine the stack trace to determine which application began a new transaction during the server checkpoint request.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

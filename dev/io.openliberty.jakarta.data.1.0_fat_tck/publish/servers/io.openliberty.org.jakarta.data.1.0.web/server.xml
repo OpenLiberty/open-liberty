@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
         <!-- Features being tested -->
         <feature>webProfile-10.0</feature>
         <feature>data-1.0</feature>
+        <feature>persistence-3.1</feature>
         
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
@@ -37,6 +38,16 @@
         <writeDir>${server.config.dir}/dropins</writeDir>
     </remoteFileAccess>
     
+    <!-- The datasource used by JPA -->
+    <dataSource id="DefaultDataSource">
+      <jdbcDriver>
+        <library id="DerbyLib">
+          <file name="${shared.resource.dir}/derby/derby.jar"/>
+        </library>
+      </jdbcDriver>
+      <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+    </dataSource>
+    
     <!-- Include test dependencies needed on the server at runtime at a global scope -->
     <library id="global">
                <fileset dir="${shared.resource.dir}/junit5/5.9.0" includes="*.jar"/>
@@ -45,6 +56,7 @@
 
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    <javaPermission className="java.util.PropertyPermission"  name="sun.jvmstat.monitor.local" actions="read" />
 
     <!-- Signature test application permissions -->
     <javaPermission codeBase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>

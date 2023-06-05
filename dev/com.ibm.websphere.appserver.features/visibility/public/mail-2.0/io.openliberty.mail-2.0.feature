@@ -26,8 +26,7 @@ IBM-API-Package: \
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.0, \
-  com.ibm.websphere.appserver.injection-2.0, \
-  io.openliberty.jakarta.activation-2.0
+  com.ibm.websphere.appserver.injection-2.0
 -bundles=\
   io.openliberty.mail.2.0.internal, \
   com.ibm.ws.javamail.config

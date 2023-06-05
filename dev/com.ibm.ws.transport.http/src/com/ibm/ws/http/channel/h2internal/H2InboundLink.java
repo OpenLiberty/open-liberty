@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -103,11 +103,14 @@ public class H2InboundLink extends HttpInboundLink {
     public volatile CountDownLatch initLock = new CountDownLatch(1) {
     };
 
-    volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
-    volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
+    // Stream level window size variables
+    volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // Write size default
+    volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us on the stream
     private final Object readWindowSync = new Object() {
     };
-    volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size
+
+    // Don't send window update frames until 1/2 the window is used
+    volatile boolean limitWindowUpdateFrames = false;
 
     FrameReadProcessor frameReadProcessor = null;
 
@@ -205,14 +208,16 @@ public class H2InboundLink extends HttpInboundLink {
         localConnectionSettings = new H2ConnectionSettings();
         localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
         localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
+        // Set up the initial stream window size
+        localConnectionSettings.setInitialWindowSize(this.config.getH2SettingsInitialWindowSize());
         configuredInactivityTimeout = this.config.getH2ConnectionIdleTimeout();
         remoteConnectionSettings = new H2ConnectionSettings();
 
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
-        // set up the initial connection read window size
-        maxReadWindowSize = config.getH2ConnReadWindowSize();
-        connectionReadWindowSize = maxReadWindowSize;
+        // Initial connection window size and window update limit config values
+        connectionReadWindowSize = this.config.getH2ConnectionWindowSize();
+        limitWindowUpdateFrames = this.config.getH2LimitWindowUpdateFrames();
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);

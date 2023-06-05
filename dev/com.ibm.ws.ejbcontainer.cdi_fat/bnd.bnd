@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,12 +25,14 @@ fat.project: true
 tested.features: \
 	cdi-2.0,\
 	cdi-3.0,\
+	cdi-4.0,\
 	enterpriseBeansLite-4.0,\
 	enterprisebeansremote-4.0, \
 	enterprisebeanshome-4.0, \
 	localconnector-1.0,\
 	servlet-4.0,\
-	servlet-5.0
+	servlet-5.0,\
+	servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

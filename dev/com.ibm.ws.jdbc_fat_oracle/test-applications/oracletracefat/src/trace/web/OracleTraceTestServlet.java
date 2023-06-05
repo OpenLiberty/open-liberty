@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.junit.Test;
@@ -28,9 +30,9 @@ import componenttest.app.FATServlet;
 @DataSourceDefinition(
                       name = "java:comp/env/jdbc/conn_prop_dsd",
                       className = "oracle.jdbc.pool.OracleDataSource",
-                      url = "${env.URL}",
-                      user = "${env.USER}",
-                      password = "${env.PASSWORD}",
+                      url = "${env.ORACLE_URL}",
+                      user = "${env.ORACLE_USER}",
+                      password = "${env.ORACLE_PASSWORD}",
                       properties = {
                                      "connectionProperties=" +
                                      "oracle.net.ssl_version=1.2;" +
@@ -46,6 +48,12 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/OracleTraceTestServlet")
 public class OracleTraceTestServlet extends FATServlet {
+
+    @Resource //The default datasource
+    private DataSource ds;
+
+    @Resource(lookup = "jdbc/default-dup")
+    private DataSource ds_dup;
 
     @Resource(lookup = "jdbc/conn-prop-ds")
     private DataSource conn_prop_ds;
@@ -84,7 +92,6 @@ public class OracleTraceTestServlet extends FATServlet {
         insert(conn_prop_dsd, 3, "three");
     }
 
-    //started from test class and verifies info message is only logged once
     public void testReadOnlyInfo() throws Exception {
         try (Connection conn = conn_prop_ds.getConnection();
                         PreparedStatement ps = conn.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
@@ -101,5 +108,21 @@ public class OracleTraceTestServlet extends FATServlet {
             ps.setString(2, "five");
             ps.executeUpdate();
         }
+    }
+
+    public void testOracleLogging(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getParameter("iteration") == null) {
+            throw new RuntimeException("iteration null");
+        }
+        Integer iteration = Integer.parseInt(request.getParameter("iteration"));
+        insert(ds, 10 + iteration, "tens");
+    }
+
+    public void testOracleLoggingAgain(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getParameter("iteration") == null) {
+            throw new RuntimeException("iteration null");
+        }
+        Integer iteration = Integer.parseInt(request.getParameter("iteration"));
+        insert(ds_dup, 10 + iteration, "tens");
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -198,15 +198,15 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             authzParameters.addParameter(AuthorizationRequestParameters.NONCE, nonceValue);
         }
         String prompt = config.getPromptParameter();
-        if (prompt != null) {
+        if (prompt != null && !prompt.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.PROMPT, prompt);
         }
         String responseMode = config.getResponseMode();
-        if (responseMode != null) {
+        if (responseMode != null && !responseMode.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.RESPONSE_MODE, responseMode);
         }
         String display = config.getDisplayParameter();
-        if (display != null) {
+        if (display != null && !display.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.DISPLAY, display);
         }
         addExtraParameters(authzParameters);
@@ -218,12 +218,15 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             return;
         }
         for (String extraParamAndValue : extraParametersArray) {
-            String[] keyAndValue = extraParamAndValue.split("=");
-            String key = keyAndValue[0];
-            String value = "";
-            if (keyAndValue.length > 1) {
-                value = keyAndValue[1];
+            String[] keyAndValue = extraParamAndValue.split("=", 2);
+            if (keyAndValue.length < 2) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "addExtraParameters", "skipping extra param '" + extraParamAndValue + "' because it is not in the format key=value");
+                }
+                continue;
             }
+            String key = keyAndValue[0];
+            String value = keyAndValue[1];
             authzParameters.addParameter(key, value);
         }
     }

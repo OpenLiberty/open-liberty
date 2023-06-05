@@ -37,6 +37,7 @@ IBM-API-Package: \
 -features=com.ibm.websphere.appserver.mpConfig-2.0, \
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.jaxrs-2.1, \
   io.openliberty.mpCompatible-4.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-2.0

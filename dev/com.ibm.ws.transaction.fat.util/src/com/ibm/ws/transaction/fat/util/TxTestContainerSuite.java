@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.fat.util;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -26,34 +31,85 @@ import componenttest.topology.database.container.DatabaseContainerType;
  */
 public class TxTestContainerSuite extends TestContainerSuite {
 
-    public static DatabaseContainerType databaseContainerType;
+    private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
 
-    public static void beforeSuite() throws Exception {
+    public static void beforeSuite(DatabaseContainerType type) {
+        Log.info(TxTestContainerSuite.class, "beforeSuite", type.toString());
+
+        setType(type);
+
         if (testContainer == null) {
           testContainer = DatabaseContainerFactory.createType(databaseContainerType);
         }
+        testContainer.setStartupAttempts(2);
+        testContainer.start();
 
-        switch (databaseContainerType) {
-          case Derby:
-          case SQLServer:
-            testContainer.waitingFor(Wait.forHealthcheck()).start();
-            break;
-          case Oracle:
-            testContainer.waitingFor(Wait.forLogMessage(".*DATABASE IS READY TO USE!.*", 1)).start();
-            break;
-          case Postgres:
-            testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
-            break;
-          default:
-            testContainer.start();
-            break;
-        }
         Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 
-    public static void afterSuite() {
-        Log.info(TxTestContainerSuite.class, "afterSuite", "stop test container");
-        testContainer.stop();
+    public static void afterSuite(String ...tables) {
+    	dropTables(tables);
     }
+    
+    public static void showTables() {
+    	Log.info(TxTestContainerSuite.class, "showTables", "");
+        try (Connection conn = testContainer.createConnection("")) {
+        	
+            DatabaseMetaData metaData = conn.getMetaData();
+            String[] types = {"TABLE"};
+            //Retrieving the columns in the database
+            ResultSet tables = metaData.getTables(null, null, "%", types);
+            while (tables.next()) {
+            	Log.info(TxTestContainerSuite.class, "showTables", tables.getString("TABLE_NAME"));
+            }
+        } catch (SQLException e) {
+        	Log.error(TxTestContainerSuite.class, "showTables", e);
+        }
+    }
+
+    public static void dropTables(String ...tables) {
+    	Log.entering(TxTestContainerSuite.class, "dropTables");
+        try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
+        	if (tables.length != 0) {
+            	Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
+        		for (String table : tables) {
+        			dropTable(stmt, table);
+        		}
+        	} else {
+        		DatabaseMetaData metaData = conn.getMetaData();
+        		String[] types = {"TABLE"};
+        		//Retrieving the columns in the database
+        		ResultSet existing = metaData.getTables(null, null, "%", types);
+        		while (existing.next()) {
+        			dropTable(stmt, existing.getString("TABLE_NAME"));
+        		}
+        	}
+        } catch (SQLException e) {
+        	Log.error(TxTestContainerSuite.class, "dropTables", e);
+        }
+    }
+    
+    private static void dropTable(Statement stmt, String table) {
+    	try {
+    		switch (databaseContainerType) {
+    		case Oracle:
+            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE " + table);
+				stmt.execute("DROP TABLE " + table);
+    			break;
+    		default:
+            	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE IF EXISTS " + table);
+				stmt.execute("DROP TABLE IF EXISTS " + table);
+    		}
+		} catch (Exception e) {
+        	Log.error(TxTestContainerSuite.class, "dropTables", e);
+		}
+    }
+
+	public static boolean isDerby() {
+		return databaseContainerType == DatabaseContainerType.Derby;
+	}
+
+	public static void setType(DatabaseContainerType type) {
+		databaseContainerType = type;	}
 }

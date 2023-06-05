@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016, 2021 IBM Corporation and others.
+    Copyright (c) 2016, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -37,37 +37,37 @@
     <!-- This DataSource intentionally uses a connectionManagerRef -->
     <dataSource id="ucpDS" jndiName="jdbc/ucpDS" connectionManagerRef="conMgr" validationTimeout="20" >
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp maxStatements="5"  maxPoolSize="3" user="${env.USER}" password="${env.PASSWORD}" connectionWaitTimeout="30" URL="${env.URL}" />
+    	<properties.oracle.ucp maxStatements="5"  maxPoolSize="3" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionWaitTimeout="30" URL="${env.ORACLE_URL}" />
     </dataSource>
     
     <dataSource id="ucpDSSameConMgr" jndiName="jdbc/ucpDSSameConMgr" connectionManagerRef="sharedConMgr" validationTimeout="20" >
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    	<properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
     </dataSource>
     
     <dataSource id="ucpXADS" jndiName="jdbc/ucpXADS" type="javax.sql.XADataSource">
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
     </dataSource>
     
     <dataSource id="ucpXADS2" jndiName="jdbc/ucpXADS2" type="javax.sql.XADataSource">
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
     </dataSource>
     
     <dataSource id="ucpConnectionPoolDS" jndiName="jdbc/ucpConnectionPoolDS" type="javax.sql.ConnectionPoolDataSource" >
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    	<properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" />
     </dataSource>
     
     <dataSource id="ucpDriverDS" jndiName="jdbc/ucpDriverDS" type="java.sql.Driver" >
     	<jdbcDriver libraryRef="UCPDBLib" />
-    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
     
     <dataSource id="ucpDSAuthData" jndiName="jdbc/ucpDSAuthData">
    	    <jdbcDriver libraryRef="UCPDBLib" />
-   		<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+   		<properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
    		<containerAuthData user="wrong" password="wrong" />
     </dataSource>
     
@@ -76,13 +76,13 @@
     	<connectionManager maxPoolSize="2" minPoolSize="1"/> 
     	<jdbcDriver libraryRef="UCPDBLib" javax.sql.DataSource="oracle.ucp.jdbc.PoolDataSourceImpl"/>
     	<!-- TODO remove noship guard -->
-    	<properties maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"/>
+    	<properties maxPoolSize="3" connectionWaitTimeout="30" URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"/>
     </dataSource>
     
     <!-- This Oracle DataSource uses Liberty connection pooling rather than UCP -->
     <dataSource id="oracleDS" jndiName="jdbc/oracleDS" connectionManagerRef="sharedConMgr" type="javax.sql.DataSource">
     	<jdbcDriver libraryRef="UCPDBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
     
     <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc8_g.jar" className="java.security.AllPermission"/>

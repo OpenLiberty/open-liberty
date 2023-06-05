@@ -31,7 +31,7 @@ Export-Package: \
    jakarta.json.stream;version=2.1
 
 -includeresource: \
-  @${repo;jakarta.json:jakarta.json-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.json:jakarta.json-api;2.1.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
   OSGI-INF=resources/OSGI-INF
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
@@ -41,4 +41,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  jakarta.json:jakarta.json-api;version=2.1.0;strategy=exact
+  jakarta.json:jakarta.json-api;version=2.1.1;strategy=exact

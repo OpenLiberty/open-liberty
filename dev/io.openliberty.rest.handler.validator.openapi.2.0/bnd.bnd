@@ -40,13 +40,12 @@ Include-Resource: \
   io.openliberty.rest.handler.validator.openapi20.ValidatorSchemaRESTHandler
 
 -buildpath: \
-	com.ibm.websphere.appserver.spi.logging,\
-	com.ibm.websphere.rest.handler;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.rest.handler.validator,\
-	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.websphere.org.osgi.core,\
-	io.openliberty.io.smallrye.openapi.core,\
-	io.openliberty.org.eclipse.microprofile.openapi.2.0,\
-	com.ibm.ws.kernel.boot
+    com.ibm.websphere.appserver.spi.logging,\
+    com.ibm.websphere.rest.handler;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.ws.rest.handler.validator,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.websphere.org.osgi.core,\
+    io.openliberty.io.smallrye.openapi.core,\
+    io.openliberty.org.eclipse.microprofile.openapi.2.0

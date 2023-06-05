@@ -1,20 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Key;
+import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,26 +25,24 @@ import javax.net.ssl.SSLSocketFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
-import com.ibm.ws.security.common.http.HttpResponseNot200Exception;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.SocialLoginWrapperException;
-import com.ibm.ws.security.common.http.HttpResponseNullOrEmptyException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
+import com.ibm.ws.security.openidconnect.clients.common.ConfigUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
-import com.ibm.ws.security.openidconnect.common.ConfigUtils;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
@@ -138,6 +135,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private List<String> forwardLoginParameter = null;
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     private String keyManagementKeyAlias = null;
+    public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
+    private String pkceCodeChallengeMethod = null;
+    public static final String CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM = "tokenEndpointAuthSigningAlgorithm";
+    private String tokenEndpointAuthSigningAlgorithm = null;
 
     HttpUtils httputils = new HttpUtils();
     ConfigUtils oidcConfigUtils = new ConfigUtils(null);
@@ -148,7 +149,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
         getRequiredConfigAttribute(props, KEY_clientId);
-        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     @Override
@@ -165,6 +165,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, userInfoEndpointEnabled);
         signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
         tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
+        tokenEndpointAuthSigningAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM);
+        keyAliasName = configUtils.getConfigAttribute(props, KEY_keyAliasName);
         scope = configUtils.getConfigAttribute(props, KEY_scope);
 
         discovery = false;
@@ -218,12 +220,20 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, uniqueId, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
+        pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
 
         if (discovery) {
             String OIDC_CLIENT_DISCOVERY_COMPLETE = "CWWKS6110I: The client [{" + getId() + "}] configuration has been established with the information from the discovery endpoint URL [{" + discoveryEndpointUrl + "}]. This information enables the client to interact with the OpenID Connect provider to process the requests such as authorization and token.";
             discoveryUtil.logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE", null, OIDC_CLIENT_DISCOVERY_COMPLETE);
         }
 
+        performMiscellaneousConfigurationChecks();
+    }
+
+    void performMiscellaneousConfigurationChecks() {
+        if (!PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
+            Tr.error(tc, "CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD", uniqueId, tokenEndpointAuthMethod);
+        }
     }
 
     private HashMap<String, String> populateCustomRequestParameterMap(Map<String, Object> configProps, String configAttributeName) {
@@ -245,7 +255,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         jwksUri = null;
         issuer = null;
         discoveryDocumentHash = null;
-        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
+        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(null).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, scope);
     }
 
     @FFDCIgnore({ Exception.class, SocialLoginWrapperException.class })
@@ -302,7 +312,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
      */
     boolean discoverEndpointUrls(JSONObject json) {
 
-        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(json).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, scope);
+        discoveryUtil = discoveryUtil.initialConfig(getId(), discoveryEndpointUrl, discoveryPollingRate).discoveryDocumentResult(json).discoveryDocumentHash(discoveryDocumentHash).discoveredConfig(signatureAlgorithm, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, scope);
         if (discoveryUtil.calculateDiscoveryDocumentHash(json)) {
             authorizationEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_AUTHZ_EP_URL));
             tokenEndpoint = discoveryUtil.discoverOPConfigSingleValue(json.get(OPDISCOVERY_TOKEN_EP_URL));
@@ -315,6 +325,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             }
             //adjustSignatureAlgorithm();
             tokenEndpointAuthMethod = discoveryUtil.adjustTokenEndpointAuthMethod();
+            tokenEndpointAuthSigningAlgorithm = discoveryUtil.adjustTokenEndpointAuthSigningAlgorithm();
             scope = discoveryUtil.adjustScopes();
             discoveryDocumentHash = discoveryUtil.getDiscoveryDocumentHash();
         }
@@ -419,6 +430,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_CLOCKSKEW + " = " + clockSkewMsec);
             Tr.debug(tc, KEY_SIGNATURE_ALGORITHM + " = " + signatureAlgorithm);
             Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
+            Tr.debug(tc, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM + " = " + tokenEndpointAuthSigningAlgorithm);
+            Tr.debug(tc, KEY_keyAliasName + " = " + keyAliasName);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED + " = " + hostNameVerificationEnabled);
             Tr.debug(tc, KEY_nonce + " = " + nonce);
@@ -908,6 +921,16 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     }
 
     @Override
+    public String getTokenEndpointAuthSigningAlgorithm() {
+        return tokenEndpointAuthSigningAlgorithm;
+    }
+
+    @Override
+    public String getKeyAliasName() {
+        return keyAliasName;
+    }
+
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
@@ -939,10 +962,21 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         }
         return null;
     }
-    
+
     @Override
     public OidcSessionCache getOidcSessionCache() {
     	return this.oidcSessionCache;
+    }
+
+    @Override
+    public String getPkceCodeChallengeMethod() {
+        return pkceCodeChallengeMethod;
+    }
+
+    @Sensitive
+    @Override
+    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
+        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), JwtUtils.getKeyStoreService());
     }
 
 }

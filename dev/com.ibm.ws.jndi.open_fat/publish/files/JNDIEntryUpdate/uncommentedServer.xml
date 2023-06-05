@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+         <feature>servlet-3.1</feature>
+         <feature>componentTest-1.0</feature>
+         <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    <jndiEntry jndiName="stringJndiEntry" value="String Value"></jndiEntry>
+    <jndiEntry jndiName="doubleJndiEntry" value="2.0"></jndiEntry>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

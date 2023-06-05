@@ -8,6 +8,6 @@ symbolicName=io.openliberty.jsonpInternal-2.1
 visibility=private
 singleton=true
 -features=io.openliberty.jsonpImpl-2.1.1; ibm.tolerates:="2.1.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

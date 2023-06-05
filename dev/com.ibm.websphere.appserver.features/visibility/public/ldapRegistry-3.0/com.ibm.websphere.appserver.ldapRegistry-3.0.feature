@@ -10,3 +10,4 @@ Subsystem-Name: LDAP User Registry 3.0
  com.ibm.ws.security.kerberos.auth
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

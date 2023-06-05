@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -16,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -29,6 +27,9 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethod;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException;
+import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -45,6 +46,7 @@ public class AuthorizationCodeHandler {
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final ConvergedClientConfig clientConfig;
+    private final String configId;
     private final String clientId;
 
     private OidcClientUtil oidcClientUtil = null;
@@ -58,6 +60,7 @@ public class AuthorizationCodeHandler {
         this.response = response;
         this.clientConfig = clientConfig;
         clientId = clientConfig.getClientId();
+        configId = clientConfig.getId();
 
         oidcClientUtil = getOidcClientUtil();
         authenticatorUtil = getOIDCClientAuthenticatorUtil();
@@ -112,11 +115,11 @@ public class AuthorizationCodeHandler {
         try {
             oidcResult = sendTokenRequestAndValidateResult(oidcClientRequest, sslSocketFactory, authzCode, responseState, redirectUrl);
         } catch (BadPostRequestException e) {
-            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getMessage(), clientId, clientConfig.getTokenEndpointUrl() });
+            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getMessage(), configId, clientConfig.getTokenEndpointUrl() });
             sendErrorJSON(e.getStatusCode(), "invalid_request", e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.FAILURE, e.getStatusCode());
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getLocalizedMessage(), clientId, clientConfig.getTokenEndpointUrl() });
+            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getLocalizedMessage(), configId, clientConfig.getTokenEndpointUrl() });
             return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
         }
         return oidcResult;
@@ -128,10 +131,10 @@ public class AuthorizationCodeHandler {
         try {
             sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
         } catch (SSLException e) {
-            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientId });
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, configId });
             throw e;
         } catch (NoSSLSocketFactoryException e) {
-            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientId });
+            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", configId });
             Tr.error(tc, nlsMessage);
             if (throwExc) {
                 throw new SSLException(nlsMessage);
@@ -144,17 +147,21 @@ public class AuthorizationCodeHandler {
     ProviderAuthenticationResult sendTokenRequestAndValidateResult(OidcClientRequest oidcClientRequest, SSLSocketFactory sslSocketFactory, String authzCode, String responseState, String redirectUrl) throws MalformedURLException, Exception {
         String url = clientConfig.getTokenEndpointUrl();
         if (url == null || url.length() == 0) {
-            String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", clientId);
+            String message = Tr.formatMessage(tc, "OIDC_CLIENT_NULL_TOKEN_ENDPOINT", configId);
             throw new MalformedURLException(message);
         }
+
         Builder tokenRequestBuilder = new TokenRequestor.Builder(url, clientId, clientConfig.getClientSecret(), redirectUrl, authzCode);
         tokenRequestBuilder.sslSocketFactory(sslSocketFactory);
         tokenRequestBuilder.grantType(clientConfig.getGrantType());
         tokenRequestBuilder.isHostnameVerification(clientConfig.isHostNameVerificationEnabled());
-        tokenRequestBuilder.authMethod(clientConfig.getTokenEndpointAuthMethod());
         tokenRequestBuilder.resources(OIDCClientAuthenticatorUtil.getResources(clientConfig));
-        tokenRequestBuilder.customParams(clientConfig.getTokenRequestParams());
+        tokenRequestBuilder.customParams(getTokenRequestCustomParameters(responseState));
         tokenRequestBuilder.useSystemPropertiesForHttpClientConnections(clientConfig.getUseSystemPropertiesForHttpClientConnections());
+        String tokenEndpointAuthMethod = clientConfig.getTokenEndpointAuthMethod();
+        tokenRequestBuilder.authMethod(tokenEndpointAuthMethod);
+        setAuthMethodSpecificSettings(tokenRequestBuilder, tokenEndpointAuthMethod);
+
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
 
         TokenResponse tokenResponse = tokenRequestor.requestTokens();
@@ -171,6 +178,28 @@ public class AuthorizationCodeHandler {
         addAuthCodeToUsedList(authzCode);
 
         return oidcResult;
+    }
+
+    HashMap<String, String> getTokenRequestCustomParameters(String state) {
+        HashMap<String, String> customParams = clientConfig.getTokenRequestParams();
+        String codeChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
+        if (codeChallengeMethod != null && !ClientConstants.PKCE_CODE_CHALLENGE_DISABLED.equals(codeChallengeMethod)) {
+            customParams = addPkceParameters(state, customParams);
+        }
+        return customParams;
+    }
+
+    HashMap<String, String> addPkceParameters(String state, HashMap<String, String> parameters) {
+        ProofKeyForCodeExchangeHelper pkceHelper = new ProofKeyForCodeExchangeHelper();
+        return pkceHelper.addCodeVerifierToTokenRequestParameters(state, parameters);
+    }
+
+    void setAuthMethodSpecificSettings(Builder tokenRequestBuilder, String tokenEndpointAuthMethod) throws TokenEndpointAuthMethodSettingsException {
+        TokenEndpointAuthMethod authMethod = TokenEndpointAuthMethod.getInstance(tokenEndpointAuthMethod, clientConfig);
+        if (authMethod == null) {
+            return;
+        }
+        authMethod.setAuthMethodSpecificSettings(tokenRequestBuilder);
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.

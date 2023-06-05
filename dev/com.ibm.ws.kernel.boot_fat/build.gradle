@@ -12,21 +12,10 @@ task prebuild(type: Sync) {
 build.dependsOn 'prebuild'
 build.dependsOn ':wlp.lib.extract:assemble'
 
-// Added copyOverrideLaunchIntoAutoFVT to copy the customized launch.xml from the override
-// directory to the autoFVT directory.  Doing so provides this FAT with the correct strong
-// encapsulation exceptions for Java 16+
-task copyOverrideLaunchIntoAutoFVT(type: Copy) {
-    mustRunAfter autoFVT
-    from project.file('override/autoFVT/src/ant')
-    into new File(autoFvtDir,"src/ant")
-    include '*.xml'
-}
-
 task postrunfat(type: Delete) {
   dependsOn prebuild
   delete new File("test-applications/osgiEmbedManager/resources/WEB-INF/lib", "org.eclipse.osgi.jar")
 }
 
-zipAutoFVT.dependsOn copyOverrideLaunchIntoAutoFVT
 runfat.finalizedBy postrunfat
 

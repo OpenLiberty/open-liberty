@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -16,8 +16,7 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Utilizzo: java [opzioni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName {0} [opzioni]  
+briefUsage=Utilizzo: java [opzioni JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\t-jar bin/tools/ws-server.jar serverName {0} [opzioni]  
 scriptUsage=Utilizzo: {0} {1} nome server [opzioni] [opzioni JVM]
 
 use.actions=Azioni:
@@ -37,23 +36,15 @@ category-key.misc=Varie
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # ServerName
 processName.key=\ \ \ \ serverName
-processName.desc=\tUn nome localmente univoco per il server; il nome pu\u00f2 essere creato    \n\
-\tutilizzando caratteri alfanumerici Unicode (ad esempio, A-Za-z0-9), \n\
-\tcarattere di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). Un nome server     \n\
-\tnon pu\u00f2 iniziare con un trattino (-) o un punto (.).
+processName.desc=\tUn nome localmente univoco per il server; il nome pu\u00f2 essere creato    \n\tutilizzando caratteri alfanumerici Unicode (ad esempio, A-Za-z0-9), \n\tcarattere di sottolineatura (_), trattino (-), segno pi\u00f9 (+) e punto (.). Un nome server     \n\tnon pu\u00f2 iniziare con un trattino (-) o un punto (.).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # JavaAgent 
 javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
-javaAgent.desc=\tOpzione JVM utilizzata per specificare un agent per la strumentazione.   \n\
-\tIl runtime utilizza la strumentazione per raccogliere informazioni \n\
-\tsulla traccia ed altre informazioni di debug. bootstrap-agent.jar \n\
-\tdeve essere nella stessa directory del jar utilizzato per avviare il runtime.
+javaAgent.desc=\tOpzione JVM utilizzata per specificare un agent per la strumentazione.   \n\tIl runtime utilizza la strumentazione per raccogliere informazioni \n\tsulla traccia ed altre informazioni di debug. bootstrap-agent.jar \n\tdeve essere nella stessa directory del jar utilizzato per avviare il runtime.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
 action-key.create=\ \ \ \ --create
-action-desc.create=\tCrea un nuovo server se il server specificato non esiste. L'opzione      \n\
-\t--template pu\u00f2 essere utilizzata per specificare un template da utilizzare quando      \n\
-\tsi crea un nuovo server.
+action-desc.create=\tCrea un nuovo server se il server specificato non esiste. L'opzione      \n\t--template pu\u00f2 essere utilizzata per specificare un template da utilizzare quando      \n\tsi crea un nuovo server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.list=\ \ \ \ --list
 action-desc.list=\tElenca i server delle applicazioni Liberty Profile che sono definiti.
@@ -65,8 +56,7 @@ action-key.run=\ \ \ \ --run
 action-desc.run=\tEsegue il server indicato nella console in primo piano.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.debug=\ \ \ \ --debug
-action-desc.debug=\tEsegue il server indicato nella console in primo piano dopo la connessione di un\n\
-\tprogramma di debug alla porta di debug (valore predefinito: 7777).
+action-desc.debug=\tEsegue il server indicato nella console in primo piano dopo la connessione di un\n\tprogramma di debug alla porta di debug (valore predefinito: 7777).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.status=\ \ \ \ --status
 action-desc.status=\tControlla lo stato del server indicato.
@@ -78,29 +68,19 @@ action-key.version=\ \ \ \ --version
 action-desc.version=\tVisualizza le informazioni relative alla versione del server e chiude.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.package=\ \ \ \ --package
-action-desc.package=\tCrea il package di un server in un archivio. L'opzione --archive pu\u00f2 essere utilizzata.    \n\
-\tL'opzione --include pu\u00f2 essere utilizzata con i valori "all", "usr", "minify", \n\
-\t"wlp", "runnable", "all,runnable" e "minify,runnable". I valori \n\
-\t"runnable" e "all,runnable" sono equivalenti. il valore "runnable"  \n\
-\tfunziona solo con il tipo di archivio "jar". L'opzione --server-root non pu\u00f2 essere\n\
-\tutilizzata per specificare la cartella root nell'archivio package.
+action-desc.package=\tCrea il package di un server in un archivio. L'opzione --archive pu\u00f2 essere utilizzata.    \n\tL'opzione --include pu\u00f2 essere utilizzata con i valori "all", "usr", "minify", \n\t"wlp", "runnable", "all,runnable" e "minify,runnable". I valori \n\t"runnable" e "all,runnable" sono equivalenti. il valore "runnable"  \n\tfunziona solo con il tipo di archivio "jar". L'opzione --server-root non pu\u00f2 essere\n\tutilizzata per specificare la cartella root nell'archivio package.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
-action-desc.dump=\tEsegue il dump delle informazioni di diagnostica dal server in un archivio. \u00c8\n\
-\tpossibile utilizzare l'opzione --archive.  L'opzione --include pu\u00f2 essere utilizzata con\n\
-\ti valori "heap", "system" e "thread".
+action-desc.dump=\tEsegue il dump delle informazioni di diagnostica dal server in un archivio. \u00c8\n\tpossibile utilizzare l'opzione --archive.  L'opzione --include pu\u00f2 essere utilizzata con\n\ti valori "heap", "system" e "thread".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.javadump=\ \ \ \ --javadump
-action-desc.javadump=\tEsegue il dump delle informazioni di diagnostica dalla JVM del server. L'opzione --include\n\
-\tpu\u00f2 essere utilizzata con i valori "heap" e "system".
+action-desc.javadump=\tEsegue il dump delle informazioni di diagnostica dalla JVM del server. L'opzione --include\n\tpu\u00f2 essere utilizzata con i valori "heap" e "system".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.registerWinService=\ \ \ \ --registerWinService
 action-desc.registerWinService=\tRegistrare il server specificato come un programma servizio Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tAvviare il server specificato come un programma servizio Windows. \
-            \n\
-\tDeve essere registrato prima dell'avvio.
+action-desc.startWinService=\tAvviare il server specificato come un programma servizio Windows. \n\tDeve essere registrato prima dell'avvio.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
 action-desc.stopWinService=\tArrestare il server specificato come un programma servizio Windows.
@@ -112,82 +92,38 @@ action-key.help=\ \ \ \ --help
 action-desc.help=\tStampa le informazioni della guida.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.pause=\ \ \ \ --pause
-action-desc.pause=\tMette in pausa tutti i componenti nel server che possono essere sospesi. \u00c8 possibile   \n\
-\tmettere in pausa una sottoserie di componenti specificando i componenti sull'opzione \n \t--target.
+action-desc.pause=\tMette in pausa tutti i componenti nel server che possono essere sospesi. \u00c8 possibile   \n\tmettere in pausa una sottoserie di componenti specificando i componenti sull'opzione \n \t--target.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
-action-desc.resume=\tRiattiva tutti i componenti messi in pausa nel server. \u00c8 possibile specificare l'opzione \n\
-\t--target per riattivare i componenti in pausa specifici.
+action-desc.resume=\tRiattiva tutti i componenti messi in pausa nel server. \u00c8 possibile specificare l'opzione \n\t--target per riattivare i componenti in pausa specifici.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tElimina tutte le informazioni memorizzate nella cache relative a questa istanza del server.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="percorso del file di archivio di destinazione"
-option-desc.dump.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione dump.       \n\
-\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
-\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\
-\tcreato nella directory di output del server. L'estensione del nome file \n\
-\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\
-\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
-\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
-\tad estrazione automatica simile all'archivio del programma di installazione originale.
-option-desc.package.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione package.       \n\
-\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
-\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\
-\tcreato nella directory di output del server. L'estensione del nome file \n\
-\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\
-\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
-\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
-\tad estrazione automatica simile all'archivio del programma di installazione originale. \
-Il formato archivio "jar"      \n\
-\tcombinato con "runnable" sull'opzione --include produce un file jar\n\
-\teseguibile che pu\u00f2 eseguire il server Liberty dal file jar utilizzando \n\
-\tjava -jar.
+option-desc.dump.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione dump.       \n\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\tcreato nella directory di output del server. L'estensione del nome file \n\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\tad estrazione automatica simile all'archivio del programma di installazione originale.
+option-desc.package.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione package.       \n\tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\tcreato nella directory di output del server. L'estensione del nome file \n\tdi destinazione pu\u00f2 influire sul formato dell'archivio generato. Il formato \n\tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\tad estrazione automatica simile all'archivio del programma di installazione originale. Il formato archivio "jar"      \n\tcombinato con "runnable" sull'opzione --include produce un file jar\n\teseguibile che pu\u00f2 eseguire il server Liberty dal file jar utilizzando \n\tjava -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=value,value,...
-option-desc.javadump.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: heap, system \n\
-\tthread.
-option-desc.package.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: all*, usr,   \n\
-\tminify, runnable, wlp. Se si specifica runnable il package risultante \n\
-\tsar\u00e0 un jar eseguibile che esegue il server. L'opzione minify \n\
-\tproduce l'immagine minima possibile per il server. L'opzione usr \n\
-\tcrea un package che contiene il server e l'applicazione, ma non \n\
-\til runtime. L'opzione wlp produce un runtime che non contiene\n\
-\tla configurazione del server. L'opzione predefinita all produce un package\n\
-\tserver che contiene tutto.
+option-desc.javadump.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: heap, system \n\tthread.
+option-desc.package.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: all*, usr,   \n\tminify, runnable, wlp. Se si specifica runnable il package risultante \n\tsar\u00e0 un jar eseguibile che esegue il server. L'opzione minify \n\tproduce l'immagine minima possibile per il server. L'opzione usr \n\tcrea un package che contiene il server e l'applicazione, ma non \n\til runtime. L'opzione wlp produce un runtime che non contiene\n\tla configurazione del server. L'opzione predefinita all produce un package\n\tserver che contiene tutto.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica il nome del modello da utilizzare quando si crea un nuovo server. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.target=\ \ \ \ --target=valore,valore
-option-desc.target=\tSpecifica un elenco di componenti, separati da virgole, che \u00e8 possibile sospendere o \n\
-\triattivare.
+option-desc.target=\tSpecifica un elenco di componenti, separati da virgole, che \u00e8 possibile sospendere o \n\triattivare.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=value,value,...
-option-desc.os=\tSpecifica i sistemi operativi che si desidera che il server in package\n\
-\tsupporti. Fornire un elenco di valori separati da virgole. Il valore predefinito \u00e8 any,    \n \tche indica che il server deve essere distribuibile a qualsiasi sistema operativo\n\
-\tsupportato dall'origine.                                      \n\
-\tPer specificare che un sistema operativo non deve essere supportato anteporre al nome\n\
-\tun segno meno ("-"). Per un elenco di valori di sistemi operativi, fare riferimento\n \tal sito web OSGi Alliance al seguente URL:                  \n\
-\thttp://www.osgi.org/Specifications/Reference#os                      \n\
-\tQuesta opzione si applica solo alle operazioni di package e pu\u00f2 essere utilizzata\n\
-\tcon l'opzione --include=minify. Se si esclude un sistema operativo\n \tnon \u00e8 possibile includerlo successivamente se si ripete l'operazione minify\n\
-\tsull'archivio.
+option-desc.os=\tSpecifica i sistemi operativi che si desidera che il server in package\n\tsupporti. Fornire un elenco di valori separati da virgole. Il valore predefinito \u00e8 any,    \n \tche indica che il server deve essere distribuibile a qualsiasi sistema operativo\n\tsupportato dall'origine.                                      \n\tPer specificare che un sistema operativo non deve essere supportato anteporre al nome\n\tun segno meno ("-"). Per un elenco di valori di sistemi operativi, fare riferimento\n \tal sito web OSGi Alliance al seguente URL:                  \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tQuesta opzione si applica solo alle operazioni di package e pu\u00f2 essere utilizzata\n\tcon l'opzione --include=minify. Se si esclude un sistema operativo\n \tnon \u00e8 possibile includerlo successivamente se si ripete l'operazione minify\n\tsull'archivio.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDisabilita la generazione della password del keystore predefinito
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="cartella server root nell'archivio"
 option-desc.package.server-root=\tSpecifica il nome della cartella del server root nel file di archivio.\n
-#------------------------------\n\
-\ a 72 car -- scheda iniziale-----------\n\
-\#
 option-key.force=\ \ \ \ --force
-option-desc.stop.force=\tIgnora la fase di inattivit\u00e0 prima dell'arresto del server. Un normale arresto\n\
-\tdel server include una fase di inattivit\u00e0 prima che il server venga arrestato. La \n\
-\tfase di inattivit\u00e0, un periodo di 30 secondi, consente ai servizi di eseguire    \n\
-\tattivit\u00e0 precedenti all'arresto, ad esempio i listener in entrata vengono arrestati ma    \n\
-\til completamento delle richieste esistenti \u00e8 consentito. L'opzione --force non ha \n\
-\teffetto se l'arresto del server \u00e8 gi\u00e0 stato invocato. Se si utilizza l'opzione --force,    \n\
-\tnel file messages.log potrebbero essere presenti eccezioni impreviste\n\
-\tverificatesi dopo la ricezione del comando server stop da parte del server.
+option-desc.stop.force=\tIgnora la fase del quiesce prima che il server venga arrestato. L'arresto normale del \nserver include una fase di quiesce prima che il server venga arrestato. La\n fase di quiesce, un periodo di 30 secondi, consente ai servizi di eseguire il lavoro di \npre - arresto; ad esempio, i listener in entrata vengono arrestati ma le richieste \nesistenti possono essere completate. L'opzione -- force non ha \neffetto se l'arresto del server \u00e8 stato gi\u00e0 richiamato. Se si utilizza l'opzione\n -- force, \u00e8 possibile che vengano visualizzate delle eccezioni impreviste nel \nfile messages.log che si verificano dopo che il server ha ricevuto il comando di arresto del server. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\ \ \ \ -- timeout
+option-desc.stop.timeout=\tImposta la quantit\u00e0 massima di tempo che il comando "server stop" attende per\n confermare che il server \u00e8 stato arrestato.  Specificare un numero intero positivo \nseguito da un'unit\u00e0 di tempo, che pu\u00f2 includere minuti (m) e \nsecondi (s). Ad esempio, specificare 2,5 minuti come --timeout=2m30s \no --timeout=150s.                                                   \n\t                                                                     \n\tIl valore di timeout predefinito \u00e8 30 secondi. Se il server impiega costantemente \npi\u00f9 di 30 secondi per l'arresto, aumentare il valore di timeout \nutilizzando l'opzione -- timeout.                                 \n

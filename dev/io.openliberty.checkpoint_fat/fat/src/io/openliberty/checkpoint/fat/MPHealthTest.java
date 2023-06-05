@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,13 @@ package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -84,12 +83,48 @@ public class MPHealthTest extends FATServletClient {
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-        server.setCheckpoint(CheckpointPhase.DEPLOYMENT, true,
+        configureBeforeCheckpoint();
+        server.setCheckpoint(getCheckpointPhase(), true,
                              server -> {
                                  configureBeforeRestore();
                              });
         server.setConsoleLogName(getTestMethod(TestMethod.class, testName) + ".log");
         server.startServer(true, false); // Do not validate apps since we have a delayed startup.
+    }
+
+    private CheckpointPhase getCheckpointPhase() {
+        CheckpointPhase phase = CheckpointPhase.AFTER_APP_START;
+        switch (testMethod) {
+            case testUpdateHealthChecks:
+                // We don't want the application to start hence doing the checkpoint in DEPLOYMENT phase.
+                phase = CheckpointPhase.BEFORE_APP_START;
+                break;
+            default:
+                break;
+        }
+        return phase;
+    }
+
+    private void configureBeforeCheckpoint() {
+        try {
+            server.saveServerConfiguration();
+            Log.info(getClass(), testName.getMethodName(), "Configuring during checkpoint: " + testMethod);
+            switch (testMethod) {
+                case testUpdateHealthChecks:
+                    ServerConfiguration config = server.getServerConfiguration();
+                    //Keeping startTimeout as 10 sec because the application will delayed start after 30 sec.
+                    //This is to ensure the application doesn't start and the health/ready and health/started endpoints are configured using the config inside server.xml - "UP"
+                    //After the application starts the endpoints are configured using application logic - "DOWN"
+                    config.getApplicationManager().setStartTimeout("10s");
+                    server.updateServerConfiguration(config);
+                    break;
+                default:
+                    Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new AssertionError("Unexpected error configuring test.", e);
+        }
     }
 
     @Test
@@ -115,11 +150,7 @@ public class MPHealthTest extends FATServletClient {
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
         assertEquals("The status of the health check was not DOWN.", jsonResponse.getString("status"), "DOWN");
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWMMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMMH0053W warning did not appear in messages.log", 1, lines.size());
-
-        Thread.sleep(30000);
-        lines = server.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
         // /health- It will return 503 since /health/ready is down
@@ -182,14 +213,13 @@ public class MPHealthTest extends FATServletClient {
 
     private void configureBeforeRestore() {
         try {
-            server.saveServerConfiguration();
-            Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+            Log.info(getClass(), testName.getMethodName(), "Configuring during restore: " + testMethod);
             switch (testMethod) {
                 case testUpdateHealthChecks:
                     Map<String, String> checks = new HashMap<>();
                     checks.put("mp.health.default.readiness.empty.response", "UP");
                     checks.put("mp.health.default.startup.empty.response", "UP");
-                    updateVariableConfig(checks);
+                    updateVariableConfigMap(checks);
                     break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
@@ -201,29 +231,16 @@ public class MPHealthTest extends FATServletClient {
         }
     }
 
-    private void updateVariableConfig(Map<String, String> configMap) throws Exception {
+    private void updateVariableConfigMap(Map<String, String> configMap) throws Exception {
         // change config of variable for restore
-        ServerConfiguration config = server.getServerConfiguration();
         for (Map.Entry<String, String> entry : configMap.entrySet()) {
-            config = removeTestKeyVar(config, entry.getKey());
-            config.getVariables().add(new Variable(entry.getKey(), entry.getValue()));
-            server.updateServerConfiguration(config);
+            updateVariableConfig(server, entry.getKey(), entry.getValue());
         }
-    }
-
-    private ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
-        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
-            Variable var = iVars.next();
-            if (var.getName().equals(key)) {
-                iVars.remove();
-            }
-        }
-        return config;
     }
 
     @After
     public void tearDown() throws Exception {
-        server.stopServer("CWMMH0052W", "CWMMH0053W");
+        server.stopServer("CWMMH0052W");
         server.restoreServerConfiguration();
     }
 

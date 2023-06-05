@@ -15,10 +15,10 @@
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
     <variable name="VARIABLE_SOURCE_DIRS" defaultValue="defaultSrcDir" />
+    <logging hideMessage="CWMOT0000E" />
 </server>

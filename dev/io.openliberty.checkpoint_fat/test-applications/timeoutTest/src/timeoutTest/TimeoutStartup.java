@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,20 +12,18 @@
  *******************************************************************************/
 package timeoutTest;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-@Startup
-@Singleton
+@ApplicationScoped
 public class TimeoutStartup {
 
     @Inject
     TimeoutService timeoutTester;
 
-    @PostConstruct
-    public void getProperties() {
+    public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
         System.out.println("TIMEOUT CALLED");
         timeoutTester.spawnTimeoutThread();
     }

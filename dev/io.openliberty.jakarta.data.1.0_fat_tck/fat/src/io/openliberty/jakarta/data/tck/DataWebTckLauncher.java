@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,7 +32,7 @@ import componenttest.topology.utils.tck.TCKRunner;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) //TODO Jakarta 11 might require java 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataWebTckLauncher {
 
     @Server("io.openliberty.org.jakarta.data.1.0.web")
@@ -40,11 +40,6 @@ public class DataWebTckLauncher {
 
     @BeforeClass
     public static void setup() throws Exception {
-        //Path that jimage will output modules for signature testing
-        Map<String, String> opts = server.getJvmOptionsAsMap();
-        opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
-        server.setJvmOptions(opts);
-
         server.startServer();
     }
 
@@ -61,14 +56,14 @@ public class DataWebTckLauncher {
     public void launchDataTckWeb() throws Exception {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
-        additionalProps.put("jakarta.tck.platform", "web");
-
-        //Always skip signature tests on Web profile, instead do signature testing on core profile
-        additionalProps.put("test.excluded.groups", "signature");
+        additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
+        additionalProps.put("jakarta.tck.profile", "web");
+        //Always skip signature tests on Web profile (already tested in core profile)
+        additionalProps.put("included.groups", "web & persistence & !signature");
 
         //TODO Remove once TCK is available from stagging repo
         additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-112222");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-05112023");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckWeb";

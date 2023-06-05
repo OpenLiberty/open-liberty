@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertPath;
 import java.security.cert.CertPathBuilder;
 import java.security.cert.CertPathValidator;
@@ -51,6 +52,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.acme.AcmeCaException;
 
@@ -63,6 +65,14 @@ class CertificateRevocationChecker {
 
 	private final AcmeConfig acmeConfig;
 
+    private static String os_name = System.getProperty("os.name").toLowerCase();
+    private static String java_vendor = System.getProperty("java.vendor").toLowerCase();
+    private static String java_version = System.getProperty("java.version");
+    private static String java_runtime = System.getProperty("java.runtime.version");
+    private static String IBMJCE ="IBMJCE";
+    private static String IBM_CERT_PARTH= "IBMCertPath";
+    boolean overrideForIBMJDK = false;
+
 	/**
 	 * Instantiate a new {@link CertificateRevocationChecker} object.
 	 * 
@@ -71,6 +81,23 @@ class CertificateRevocationChecker {
 	 */
 	CertificateRevocationChecker(AcmeConfig acmeConfig) {
 		this.acmeConfig = acmeConfig;
+
+		/*
+		 * Due to the hybrid JDK, on certain OS/JDK combos, we need to specifically set the
+		 * IBM provider on some security related getInstances to avoid mixing JDK types and
+		 * hitting NPEs.
+		 */
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "Check for hybrid JDK: " + os_name + ", " + java_vendor + ", " + java_version + ", " + java_runtime);
+		}
+		if (os_name.startsWith("mac") && (java_vendor.contains("ibm") || (java_vendor.contains("oracle") && java_runtime.contains("SR")))
+				&& java_version.startsWith("1.8")) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Detected Hybrid JDK 1.8 on Mac, will set IBM Providers on getInstance for isRevoked checks");
+			}
+			overrideForIBMJDK = true;
+		}
+
 	}
 
 	/**
@@ -311,14 +338,20 @@ class CertificateRevocationChecker {
 			 * "Trust" the signer certificate to check the signature. Validating
 			 * with the signer should result in a successful PKIX validation.
 			 */
-			KeyStore cacerts = KeyStore.getInstance(KeyStore.getDefaultType());
+			KeyStore cacerts = checkForKeyStoreProviderOverride();
+			if (cacerts == null) {
+				cacerts = KeyStore.getInstance(KeyStore.getDefaultType());
+			}
 			cacerts.load(null);
 			cacerts.setCertificateEntry("signer", signerCertificate);
 
 			/*
 			 * Get the revocation checker instance.
 			 */
-			CertPathBuilder cpb = CertPathBuilder.getInstance("PKIX");
+			CertPathBuilder cpb = checkForCertPathBuilderProviderOverride();
+			if (cpb == null) {
+				cpb = CertPathBuilder.getInstance("PKIX");
+			}
 			rc = (PKIXRevocationChecker) cpb.getRevocationChecker();
 
 			/*
@@ -348,7 +381,10 @@ class CertificateRevocationChecker {
 			 */
 			List<X509Certificate> certs = new ArrayList<X509Certificate>();
 			certs.add(leafCertificate);
-			certPath = CertificateFactory.getInstance("X.509").generateCertPath(certs);
+			certPath = checkForCertPathProviderOverride(certs);
+			if (certPath == null) {
+				certPath = CertificateFactory.getInstance("X.509").generateCertPath(certs);
+			}
 
 			/*
 			 * Configure the PKIX parameters.
@@ -360,7 +396,10 @@ class CertificateRevocationChecker {
 			/*
 			 * Finally initialize the CertPathValidator.
 			 */
-			cpv = CertPathValidator.getInstance("PKIX");
+			cpv = checkForCertPathValidatorProviderOverride();
+			if (cpv == null) {
+				cpv = CertPathValidator.getInstance("PKIX");
+			}
 
 		} catch (CertificateException | NoSuchAlgorithmException | InvalidAlgorithmParameterException
 				| KeyStoreException | IOException e) {
@@ -392,5 +431,101 @@ class CertificateRevocationChecker {
 			throw new AcmeCaException("Invalid algorithm parameter passed into CertPathValidator.validate(...) method.",
 					e);
 		}
+	}
+
+	/**
+	 * If we need to set the IBM JDK on the getInstance, set it and  return the KeyStore, otherwise
+	 * return null and the call can run a default getInstance. This method will suppress FFDC in case
+	 * of failure and we can retry with the default getInstance.
+	 *  
+	 * @return
+	 */
+	@Trivial
+	@FFDCIgnore({ KeyStoreException.class })
+	private KeyStore checkForKeyStoreProviderOverride() {
+		if (overrideForIBMJDK) {
+			try {
+				return KeyStore.getInstance(KeyStore.getDefaultType(), IBMJCE);
+			} catch (NoSuchProviderException | KeyStoreException e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Attempted to set the " + IBMJCE
+							+ " as the specific provoider for KeyStore.getInstance, but it failed. Will try default provider.",
+							e);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * If we need to set the IBM JDK on the getInstance, set it and  return the CertPathBuilder, otherwise
+	 * return null and the call can run a default getInstance. This method will suppress FFDC in case
+	 * of failure and we can retry with the default getInstance.
+	 *  
+	 * @return
+	 */
+	@Trivial
+	@FFDCIgnore({ NoSuchAlgorithmException.class })
+	private CertPathBuilder checkForCertPathBuilderProviderOverride() {
+		if (overrideForIBMJDK) {
+			try {
+				return CertPathBuilder.getInstance("PKIX", IBM_CERT_PARTH);
+			} catch (NoSuchProviderException | NoSuchAlgorithmException e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Attempted to set the " + IBM_CERT_PARTH
+							+ " as the specific provoider for CertPathBuilder.getInstance, but it failed. Will try default provider.",
+							e);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * If we need to set the IBM JDK on the getInstance, set it and  return the CertPath, otherwise
+	 * return null and the call can run a default getInstance. This method will suppress FFDC in case
+	 * of failure and we can retry with the default getInstance.
+	 *  
+	 * @return
+	 */
+	@Trivial
+	@FFDCIgnore({ CertificateException.class })
+	private CertPath checkForCertPathProviderOverride(List<X509Certificate> certs) {
+		if (overrideForIBMJDK) {
+			try {
+				return CertificateFactory.getInstance("X.509", IBMJCE).generateCertPath(certs);
+			} catch (NoSuchProviderException | CertificateException e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Attempted to set the " + IBMJCE
+							+ " as the specific provoider for CertificateFactory.getInstance, but it failed. Will try default provider.",
+							e);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * If we need to set the IBM JDK on the getInstance, set it and  return the CertPathValidator, otherwise
+	 * return null and the call can run a default getInstance. This method will suppress FFDC in case
+	 * of failure and we can retry with the default getInstance.
+	 *  
+	 * @return
+	 */
+	@Trivial
+	@FFDCIgnore({ NoSuchAlgorithmException.class })
+	private CertPathValidator checkForCertPathValidatorProviderOverride() {
+		if (overrideForIBMJDK) {
+			try {
+				return CertPathValidator.getInstance("PKIX", IBM_CERT_PARTH);
+			} catch (NoSuchProviderException | NoSuchAlgorithmException e) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Attempted to set the " + IBMJCE
+							+ " as the specific provoider for CertPathValidator.getInstance, but it failed. Will try default provider.",
+							e);
+				}
+			}
+		}
+		return null;
 	}
 }

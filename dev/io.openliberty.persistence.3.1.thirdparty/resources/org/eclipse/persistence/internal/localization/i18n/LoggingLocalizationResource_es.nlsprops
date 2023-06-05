@@ -115,6 +115,10 @@ connected_user_database=Conectado: {3}{4}Usuario: {0}{3}{4}Base de datos: {1}  V
 
 connected_user_database_driver=Conectado: {0}{6}Usuario: {1}{6}Base de datos: {2}  Versi\u00f3n: {3}{6}Controlador: {4}  Versi\u00f3n: {5}
 
+corrupt_object=objeto da\u00f1ado: {0}
+
+corrupt_object_referenced_through_mapping=Se hace referencia al siguiente objeto da\u00f1ado a trav\u00e9s de la correlaci\u00f3n: {0}.
+
 corrupted_session_announcement=SessionID: {0}  El gestor de descubrimiento ha recibido un anuncio de sesi\u00f3n da\u00f1ado - ignorando.
 
 create_default_dbms_tables_not_supported=El valor CMP nativa de WLS "crear-tablas-dbms-predeterminadas" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
@@ -677,6 +681,8 @@ sop_object_wrong_pk=Eliminando sopObject serializado de la fila porque tiene una
 
 sop_object_wrong_version=Eliminando sopObject serializado de la fila porque tiene una versi\u00f3n incorrecta [{0}] en [{1}] en [{2}]
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=pila de objetos visitados que hacen referencia al objeto da\u00f1ado: {0}
+
 topLink_version=EclipseLink, versi\u00f3n: {0}
 
 toplink=[EL]: 
@@ -711,6 +717,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery no puede uti
 validate_db_schema_with_not_supported=El valor de CMP nativa de WLS "validar-esquema-bd-con" no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 
 validate_ejb_jar=Inicia la validaci\u00f3n de ejb-jar.xml, a veces puede tardar...
+
+validate_object_space=validar espacio de objetos.
 
 verifiy_columns_read_locking_not_supported=El valor optimista "Leer" en "verificar-columnas" en la entidad ({0}) no est\u00e1 soportado directamente en la CMP EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 

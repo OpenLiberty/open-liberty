@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,7 @@ public class SQLServerSSLTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestSSLServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    private static final DockerImageName sqlserverImage = DockerImageName.parse("kyleaure/sqlserver-ssl:2019-CU10-ubuntu-16.04")//
+    private static final DockerImageName sqlserverImage = DockerImageName.parse("kyleaure/sqlserver-ssl:2019-CU18-ubuntu-20.04")//
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
     @ClassRule
@@ -58,11 +58,11 @@ public class SQLServerSSLTest extends FATServletClient {
     public static void setUp() throws Exception {
         FATSuite.setupDatabase(sqlserver, true);
 
-        server.addEnvVar("DBNAME", FATSuite.DB_NAME);
-        server.addEnvVar("HOST", sqlserver.getHost());
-        server.addEnvVar("PORT", Integer.toString(sqlserver.getFirstMappedPort()));
-        server.addEnvVar("USER", sqlserver.getUsername());
-        server.addEnvVar("PASSWORD", sqlserver.getPassword());
+        server.addEnvVar("SQL_DBNAME", FATSuite.DB_NAME);
+        server.addEnvVar("SQL_HOST", sqlserver.getHost());
+        server.addEnvVar("SQL_PORT", Integer.toString(sqlserver.getFirstMappedPort()));
+        server.addEnvVar("SQL_USER", sqlserver.getUsername());
+        server.addEnvVar("SQL_PASSWORD", sqlserver.getPassword());
         server.addEnvVar("TRUSTSTORE_PASS", "WalletPasswd123");
 
         // Create a normal Java EE application and export to server

@@ -4,13 +4,15 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cdi.ejb.tests;
+
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -34,6 +36,7 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -43,6 +46,7 @@ import componenttest.topology.utils.FATServletClient;
  * All CDI tests with all applicable server features enabled.
  */
 @RunWith(FATRunner.class)
+@Mode(FULL)
 public class StatefulSessionBeanInjectionTest extends FATServletClient {
 
     private static final Logger LOG = Logger.getLogger(StatefulSessionBeanInjectionTest.class.getName());
@@ -52,7 +56,7 @@ public class StatefulSessionBeanInjectionTest extends FATServletClient {
 
     //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE9, EERepeatActions.EE10, EERepeatActions.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

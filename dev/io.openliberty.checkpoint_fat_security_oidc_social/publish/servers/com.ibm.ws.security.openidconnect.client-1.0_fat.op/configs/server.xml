@@ -1,0 +1,66 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>osgiconsole-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>oauth-2.0</feature>
+        <feature>openidconnectserver-1.0</feature>
+    </featureManager>
+
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="utle" password="utlepwd"/>
+        <user name="testuser" password="testuserpwd"/>
+    </basicRegistry>
+
+    <sslDefault sslRef="DefaultSSLSettings"/>
+    <ssl clientAuthenticationSupported="true" id="DefaultSSLSettings" keyStoreRef="myKeyStore" trustStoreRef="myTrustStore"/>
+    <keyStore id="myKeyStore" location="${server.config.dir}/commonBasicKeyStore.jks" password="Liberty" type="jks"/>
+    <keyStore id="myTrustStore" location="${server.config.dir}/commonTrustStore.jks" password="Liberty" type="jks"/>
+    <SSLDefault sslRef="DefaultSSLSettings"/>
+
+    <httpSession cookieHttpOnly="false"/>
+    <webAppSecurity allowFailOverToBasicAuth="true" httpOnlyCookies="false"/>
+
+    <oauth-roles>
+        <authenticated>
+            <user name="testuser"/>
+            <user name="oidcLoginUser"/>
+            <group name="group1"/>
+        </authenticated>
+        <clientManager>
+            <user name="testuser"/>
+            <user name="oidcLoginUser"/>
+            <group name="group1"/>
+        </clientManager>
+    </oauth-roles>
+
+    <openidConnectProvider id="OidcConfigSample" issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample" jwkEnabled="${oidcJWKEnabled}" oauthProviderRef="OAuthConfigSample" scope="myScopeSample" signatureAlgorithm="${oidcSignAlg}"/>
+    <oauthProvider allowPublicClients="false" autoAuthorize="true" filter="request-url%=SimpleServlet;request-url!=snooping" httpsRequired="false" id="OAuthConfigSample" jwtAccessToken="${oidcCreateJWTToken}" oauthOnly="true">
+        <autoAuthorizeClient>client01</autoAuthorizeClient>
+        <localStore>
+            <client displayname="client01" enabled="true" name="client01" redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/oauthClient" scope="ALL_SCOPES" secret="{xor}LDo8LTor"/>          
+        </localStore>
+    </oauthProvider>
+  
+    <httpEndpoint host="*" httpPort="${bvt.prop.security_1_HTTP_default}" httpsPort="${bvt.prop.security_1_HTTP_default.secure}" id="defaultHttpEndpoint">
+        <tcpOptions soReuseAddr="true"/>
+    </httpEndpoint>
+
+</server>
+  

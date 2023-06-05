@@ -13,24 +13,18 @@
         IBM Corporation - initial API and implementation
  -->
 
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
-                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
 
-  <!-- -->
-  <OCD id="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl" name="internal" description="internal use only" >
-       <AD name="internal" description="internal use only"
-           id="messagingRuntime" required="true" type="String" cardinality="100"
-           ibm:type="pid" ibm:reference="com.ibm.ws.messaging.runtime" default="*" ibm:final="true"/>
-        <AD id="MessagingRuntimeService.cardinality.minimum" 
-            name="internal" 
-            description="internal use only" 
-            required="true" 
-            type="String"  
-            default="${count(messagingRuntime)}"/>
+    <!-- -->
+    <OCD id="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl" name="internal" description="internal use only" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
+        <AD id="application.prereq.id" name="internal" description="internal use only" ibm:final="true" type="String" default="MDB runtime" ibm:unique="application.prereq.id" />
+        <AD id="messagingRuntime" name="internal" description="internal use only" required="true" type="String" cardinality="100" ibm:type="pid" ibm:reference="com.ibm.ws.messaging.runtime"
+            default="*" ibm:final="true" />
+        <AD id="MessagingRuntimeService.cardinality.minimum" name="internal" description="internal use only" required="true" type="String" default="${count(messagingRuntime)}" />
     </OCD>
 
     <Designate pid="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl">
-        <Object ocdref="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl"/>
+        <Object ocdref="com.ibm.ws.ejbcontainer.mdb.internal.MDBRuntimeImpl" />
     </Designate>
-  
+
 </metatype:MetaData>

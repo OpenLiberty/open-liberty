@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -49,8 +48,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.condition.Condition;
 
-import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
-import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
@@ -65,7 +62,6 @@ public class CheckpointImplTest {
     private static final String testbuildDir = System.getProperty("test.buildDir", "generated");
     @Rule
     public TestName testName = new TestName();
-    private CompletionListener<Boolean> completionListener;
 
     static class Hooks implements InvocationHandler {
         final List<CheckpointHook> singleThreadedHooks;
@@ -98,11 +94,6 @@ public class CheckpointImplTest {
                 }
                 if (CheckpointImpl.HOOKS_REF_NAME_MULTI_THREAD.equals(args[0])) {
                     return multiThreadedHooks.toArray();
-                }
-            }
-            if ("locateService".equals(method.getName())) {
-                if (CheckpointImpl.BETA_FEATURE_CONITION_REF.equals(args[0])) {
-                    return Condition.INSTANCE;
                 }
             }
             if ("getBundleContext".equals(method.getName())) {
@@ -219,6 +210,7 @@ public class CheckpointImplTest {
 
         volatile boolean prepareCalled = false;
         volatile boolean prepareCalledSingleThreaded = false;
+        volatile boolean checkpointFailed = false;
         volatile boolean restoreCalled = false;
         volatile boolean restoreCalledSingleThreaded = false;
 
@@ -229,6 +221,11 @@ public class CheckpointImplTest {
             if (prepareException != null) {
                 throw prepareException;
             }
+        }
+
+        @Override
+        public void checkpointFailed() {
+            checkpointFailed = true;
         }
 
         @Override
@@ -249,44 +246,11 @@ public class CheckpointImplTest {
         return (ComponentContext) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ComponentContext.class }, hooks);
     }
 
-    private RuntimeUpdateNotification createRuntimeUpdateNotification() {
-        return (RuntimeUpdateNotification) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { RuntimeUpdateNotification.class }, new InvocationHandler() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-                if ("getName".equals(method.getName())) {
-                    return RuntimeUpdateNotification.APPLICATIONS_STARTING;
-                }
-                if ("onCompletion".equals(method.getName())) {
-                    completionListener = (CompletionListener<Boolean>) args[0];
-                    return true;
-                }
-                throw new UnsupportedOperationException(method.getName());
-            }
-        });
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private Future<Boolean> createTestFuture() {
-        return (Future<Boolean>) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { Future.class }, new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if ("isDone".equals(method.getName())) {
-                    return true;
-                }
-                throw new UnsupportedOperationException(method.getName());
-            }
-        });
-    }
-
     @Test
     public void testNullFactories() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.FEATURES);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkDirectory(checkpoint, criu, locAdmin);
         checkpoint.resetCheckpointCalled();
         checkFailDump(checkpoint, criu, locAdmin);
@@ -296,7 +260,7 @@ public class CheckpointImplTest {
     public void testNullHook() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkDirectory(checkpoint, criu, locAdmin);
     }
 
@@ -307,12 +271,13 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkDirectory(checkpoint, criu, locAdmin);
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Restore not called.", true, hook.restoreCalled);
         }
     }
@@ -327,12 +292,13 @@ public class CheckpointImplTest {
         TestCheckpointHook h5 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h6 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), asList(h4, h5, h6))), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), asList(h4, h5, h6))), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkDirectory(checkpoint, criu, locAdmin);
         List<TestCheckpointHook> singleThreadedHooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : singleThreadedHooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Prepare called while not single threaded.", true, hook.prepareCalledSingleThreaded);
             assertEquals("Restore not called.", true, hook.restoreCalled);
             assertEquals("Restore called while not single threaded.", true, hook.restoreCalledSingleThreaded);
@@ -340,6 +306,7 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> multiThreadedhooks = getHooks(h4, h5, h6);
         for (TestCheckpointHook hook : multiThreadedhooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called", false, hook.checkpointFailed);
             assertEquals("Prepare called while single threaded.", false, hook.prepareCalledSingleThreaded);
             assertEquals("Restore not called.", true, hook.restoreCalled);
             assertEquals("Restore called while single threaded.", false, hook.restoreCalledSingleThreaded);
@@ -354,7 +321,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(prepareException, null, criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         try {
             checkpoint.checkpoint();
@@ -368,10 +335,12 @@ public class CheckpointImplTest {
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
         }
         assertEquals("Prepare not called.", true, h1.prepareCalled);
-
         assertEquals("Prepare not called.", true, h2.prepareCalled);
-
         assertEquals("Unexpected Prepare called.", false, h3.prepareCalled);
+        // we expect all hook prepareFailed to be called
+        assertEquals("Checkpoint Failed not called.", true, h1.checkpointFailed);
+        assertEquals("Checkpoint Failed not called.", true, h2.checkpointFailed);
+        assertEquals("Checkpoint Failed not called.", true, h3.checkpointFailed);
 
         assertNull("Unexpected call to criu", criu.imageDir);
     }
@@ -384,13 +353,14 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.FEATURES);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         checkFailDump(checkpoint, criu, locAdmin);
 
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint Failed not called.", true, hook.checkpointFailed);
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
         }
     }
@@ -403,7 +373,7 @@ public class CheckpointImplTest {
         TestCheckpointHook h2 = new TestCheckpointHook(null, restoreException, criu.singleThreaded);
         TestCheckpointHook h3 = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(h1, h2, h3), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
 
         try {
             checkpoint.checkpoint();
@@ -415,52 +385,34 @@ public class CheckpointImplTest {
         List<TestCheckpointHook> hooks = getHooks(h1, h2, h3);
         for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
+            assertEquals("Checkpoint failed called.", false, hook.checkpointFailed);
         }
         assertEquals("Restore not called.", true, h3.restoreCalled);
-
         assertEquals("Restore not called.", true, h2.restoreCalled);
-
         assertEquals("Unexpected Restore called.", false, h1.restoreCalled);
 
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     @Test
-    public void testCheckpointApplications() throws CheckpointFailedException {
+    public void testCheckpointAfterAppStart() throws CheckpointFailedException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(asList(hook), emptyList());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         checkpoint.check();
         assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
         assertNotNull("Should have running condition now", hooks.runningCondition.get());
     }
 
-    @Test
-    public void testCheckpointFeatures() throws CheckpointFailedException {
+    public void testCheckpointBeforeAppStart() throws CheckpointFailedException, IllegalClassFormatException {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(asList(hook), emptyList());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
-        assertNull("Should not have running condition yet.", hooks.runningCondition.get());
-        RuntimeUpdateNotification trn = createRuntimeUpdateNotification();
-        checkpoint.notificationCreated(null, trn);
-        CompletionListener<Boolean> cl = getCompletionListener();
-        assertNotNull("Expected to have called onCompletion", cl);
-        cl.successfulCompletion(createTestFuture(), Boolean.TRUE);
-        assertTrue("Expected to have called criu", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
-        assertNotNull("Should have running condition now", hooks.runningCondition.get());
-    }
-
-    public void testCheckpointDeployment() throws CheckpointFailedException, IllegalClassFormatException {
-        TestCRIU criu = new TestCRIU();
-        TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
-        WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        Hooks hooks = new Hooks(asList(hook), emptyList());
-        new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.DEPLOYMENT);
+        new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.BEFORE_APP_START);
         assertNull("Should not have running condition yet.", hooks.runningCondition.get());
         ClassFileTransformer transformer = hooks.transformer.get();
         assertNotNull("Null transformer", transformer);
@@ -474,7 +426,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHook hook = new TestCheckpointHook(criu.singleThreaded);
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.FEATURES);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(new Hooks(asList(hook), emptyList())), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkpoint.check();
         assertTrue("Expected to have called checkpoint", checkpoint.checkpointCalledAlready());
         checkpoint.check();
@@ -490,7 +442,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("notSupported1", "notSupported2")));
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         try {
             checkpoint.checkpoint();
         } catch (CheckpointFailedException e) {
@@ -506,7 +458,7 @@ public class CheckpointImplTest {
         TestCRIU criu = new TestCRIU();
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("supported1", "supported2")));
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         checkpoint.checkpoint();
     }
 
@@ -517,7 +469,7 @@ public class CheckpointImplTest {
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "5000");
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
 
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         long startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         long totalTime = System.nanoTime() - startTime;
@@ -527,7 +479,7 @@ public class CheckpointImplTest {
         // test non-number
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "badvalue");
         // create new checkpoint object to force read of property again
-        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         totalTime = System.nanoTime() - startTime;
@@ -536,15 +488,11 @@ public class CheckpointImplTest {
         // test negative number
         hooks.putContextProperty(CheckpointImpl.CHECKPOINT_PAUSE_RESTORE, "-5000");
         // create new checkpoint object to force read of property again
-        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.APPLICATIONS);
+        checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         startTime = System.nanoTime();
         checkDirectory(checkpoint, criu, locAdmin);
         totalTime = System.nanoTime() - startTime;
         assertTrue("checkpoint took too long: " + totalTime, TimeUnit.NANOSECONDS.toSeconds(totalTime) < 2);
-    }
-
-    private CompletionListener<Boolean> getCompletionListener() {
-        return completionListener;
     }
 
     private List<TestCheckpointHook> getHooks(TestCheckpointHook... hooks) {

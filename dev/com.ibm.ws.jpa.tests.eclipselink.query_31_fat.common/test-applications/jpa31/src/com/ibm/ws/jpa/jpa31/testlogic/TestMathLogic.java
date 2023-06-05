@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -5880,7 +5880,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6059,7 +6059,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6400,7 +6400,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6579,7 +6579,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -6926,7 +6926,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }
@@ -7111,7 +7111,7 @@ public class TestMathLogic extends AbstractTestLogic {
         boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
-        // TODO: Disable until Issue 23566 is delivered
+        // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23566 is delivered
         if (isDB2 || isDB2Z) {
             return;
         }

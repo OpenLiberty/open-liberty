@@ -109,7 +109,7 @@ public class FacesTest {
 
     @Before
     public void setUp() throws Exception {
-        frontendUI.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        frontendUI.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                                  server -> {
                                      assertNotNull("'SRVE0169I: Loading Web Module: frontendUI' message not found in log before restore",
                                                    server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: frontendUI", 0));

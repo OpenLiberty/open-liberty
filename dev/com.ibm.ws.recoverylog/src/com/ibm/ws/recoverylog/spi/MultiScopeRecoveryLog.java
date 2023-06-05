@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.utils.DirUtils;
 import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
@@ -2078,8 +2077,8 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return true if a serious internal error has occured, otherwise false.
      */
-    @Trivial
-    protected boolean failed() {
+    @Override
+    public boolean failed() {
         if (tc.isDebugEnabled() && _failed)
             Tr.debug(tc, "failed: RecoveryLog has been marked as failed. [" + this + "]");
         return _failed;
@@ -2428,16 +2427,20 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     }
 
     @Override
-    public void delete() {
+    public boolean delete() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "delete", new Object[] { this });
+            Tr.entry(tc, "delete", this);
 
         if (failed() || _closesRequired > 0) {
-            // FFDC exception but allow processing to continue
-            Exception e = new Exception();
-            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2431", this);
-            if (tc.isDebugEnabled())
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Do not delete logs as failed state is {0} or closesRequired is {1}", failed(), _closesRequired);
+                // FFDC exception but allow processing to continue
+                Exception e = new Exception();
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2431", this);
+            }
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "delete", false);
+            return false;
         } else { // the log is in the right state, we can proceed
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Attempt to delete log with handle {0}", _logHandle);
@@ -2446,12 +2449,16 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
                     _logHandle.delete();
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.MultiScopeRecoveryLog.delete", "2445", this);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "delete", e);
+                    return false;
                 }
             }
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "delete");
+            Tr.exit(tc, "delete", true);
+        return true;
     }
 
     @Override

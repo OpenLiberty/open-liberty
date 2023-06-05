@@ -5,6 +5,6 @@ singleton=true
 Subsystem-Version: 10.0.0
 -bundles=com.ibm.ws.javaee.version, \
   io.openliberty.java11.internal
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

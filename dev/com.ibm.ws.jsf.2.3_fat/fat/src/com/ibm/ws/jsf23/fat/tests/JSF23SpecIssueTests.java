@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -93,7 +91,7 @@ public class JSF23SpecIssueTests {
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
-        server.startServer(JSF23SpecIssueTests.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @Before
@@ -354,6 +352,7 @@ public class JSF23SpecIssueTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSpecIssue790Test2() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -596,7 +595,6 @@ public class JSF23SpecIssueTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSpecIssue1404And1423_JSF23NewAPIMethods() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

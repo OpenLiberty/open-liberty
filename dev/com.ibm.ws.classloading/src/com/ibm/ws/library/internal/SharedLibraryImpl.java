@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,6 @@ import com.ibm.wsspi.library.LibraryChangeListener;
  */
 public class SharedLibraryImpl implements Library, SpiLibrary {
     private static final TraceComponent tc = Tr.register(SharedLibraryImpl.class);
-
-    private static final LibraryChangeListener[] EMPTY_LIBRARY_LISTENERS = {};
 
     private volatile boolean deleted;
 
@@ -254,7 +252,12 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
             return;
         }
 
-        for (LibraryChangeListener listener : ls.getServices(EMPTY_LIBRARY_LISTENERS)) {
+        // Call method getTracked() to obtain the map of listeners (ServiceReferences)
+        // sorted in order of {descending SERVICE_RANKING X ascending SERVICE_ID}.
+        // That is, the first entry is the service with the highest ranking and the
+        // lowest service id. Use SERVICE_RANKING to define a partial order for library
+        // change notifications.
+        for (LibraryChangeListener listener : ls.getTracked().values()) {
             if (deleted) {
                 return;
             }

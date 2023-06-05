@@ -39,7 +39,17 @@ src: \
 	test-applications/facesApp/src,\
 	test-applications/jsonb/src,\
 	test-applications/jsonp/src,\
-	test-applications/managedBeans/src
+	test-applications/managedBeans/src,\
+	test-applications/mpTelemetry/src,\
+	test-bundles/test.checkpoint.bells.bundle/src,\
+	test-applications/bells/src,\
+	test-applications/virtualhost/src,\
+	test-applications/DefaultPrincipalMappingApp/src,\
+	test-applications/JSPWithEL/src,\
+	test-applications/concurrentApp/src,\
+	test-applications/mapCache/src,\
+	test-applications/webCacheApp/src,\
+	test-applications/xmlBindings/src
 
 fat.project: true
 
@@ -56,10 +66,18 @@ tested.features: \
 	webProfile-8.0,\
 	webProfile-9.1,\
 	webProfile-10.0,\
-	ejb-2.3,\
 	jsf-2.3,\
 	ssl-1.0,\
-	transportSecurity-1.0
+	transportSecurity-1.0,\
+	xmlWS-3.0,\
+	xmlws-4.0,\
+	xmlbinding-4.0,\
+	connectors-2.0,\
+	connectors-2.1,\
+	sessiondatabase-1.0,\
+	oauth-2.0,\
+	openidconnectclient-1.0,\
+	sociallogin-1.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
@@ -132,6 +150,28 @@ tested.features: \
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	org.eclipse:yasson;version='1.0.8',\
-	com.ibm.websphere.javaee.jsonp.1.1;version=latest
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.javaee.jaxws.2.2,\
+	com.ibm.websphere.javaee.jws.1.0,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.registry_test.servlet;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.security.auth.data.common;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	com.ibm.ws.componenttest.2.0;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.concurrency.3.0;version=latest,\
+	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
+	com.ibm.ws.security.auth.data.common;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.appserver.api.distributedMap;version=latest,\
+	org.testng
 
 -sub: *.bnd

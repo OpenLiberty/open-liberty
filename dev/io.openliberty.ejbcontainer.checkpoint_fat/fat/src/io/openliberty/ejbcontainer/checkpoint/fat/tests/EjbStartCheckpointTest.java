@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package io.openliberty.ejbcontainer.checkpoint.fat.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -44,6 +46,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class EjbStartCheckpointTest extends FATServletClient {
     private static final Logger logger = Logger.getLogger(EjbStartCheckpointTest.class.getName());
 
+    private static final List<String> CHECKPOINT_INACTIVE = Collections.emptyList();
+    private static final List<String> CHECKPOINT_BEFORE_APP_START = Arrays.asList("--internal-checkpoint-at=beforeAppStart");
+    private static final List<String> CHECKPOINT_AFTER_APP_START = Arrays.asList("--internal-checkpoint-at=afterAppStart");
+
     private static final String MSG_INIT_ON_START = "will be initialized at Application start";
     private static final String MSG_DEFERRED_INIT = "will be deferred until it is first used";
 
@@ -60,6 +66,24 @@ public class EjbStartCheckpointTest extends FATServletClient {
                                                                          "SLCheckpointBeanM", "SLCheckpointBeanN", "SLCheckpointBeanQ", "SLCheckpointBeanR",
                                                                          "SGCheckpointBeanS", "SGCheckpointBeanT", "SGCheckpointBeanU", "SGCheckpointBeanW",
                                                                          "SLCheckpointBeanS", "SLCheckpointBeanT", "SLCheckpointBeanW", "SLCheckpointBeanX" };
+
+    private static final String[] START_ALL_INIT_ON_START = new String[] { "SGCheckpointBeanA", "SGCheckpointBeanB", "SGCheckpointBeanC", "SGCheckpointBeanD",
+                                                                           "SLCheckpointBeanC", "SLCheckpointBeanD",
+                                                                           "SGCheckpointBeanG", "SGCheckpointBeanH", "SGCheckpointBeanI", "SGCheckpointBeanJ",
+                                                                           "SLCheckpointBeanI", "SLCheckpointBeanJ",
+                                                                           "SGCheckpointBeanM", "SGCheckpointBeanN", "SGCheckpointBeanO", "SGCheckpointBeanP",
+                                                                           "SLCheckpointBeanO", "SLCheckpointBeanP",
+                                                                           "SGCheckpointBeanS", "SGCheckpointBeanT", "SGCheckpointBeanU", "SGCheckpointBeanV",
+                                                                           "SLCheckpointBeanU", "SLCheckpointBeanV" };
+
+    private static final String[] START_ALL_DEFERRED_INIT = new String[] { "SGCheckpointBeanE",
+                                                                           "SLCheckpointBeanA", "SLCheckpointBeanB", "SLCheckpointBeanE", "SLCheckpointBeanF",
+                                                                           "SGCheckpointBeanK",
+                                                                           "SLCheckpointBeanG", "SLCheckpointBeanH", "SLCheckpointBeanK", "SLCheckpointBeanL",
+                                                                           "SGCheckpointBeanQ",
+                                                                           "SLCheckpointBeanM", "SLCheckpointBeanN", "SLCheckpointBeanQ", "SLCheckpointBeanR",
+                                                                           "SGCheckpointBeanW",
+                                                                           "SLCheckpointBeanS", "SLCheckpointBeanT", "SLCheckpointBeanW", "SLCheckpointBeanX" };
 
     private static final String[] CHECKPOINT_INIT_ON_START = new String[] { "SGCheckpointBeanA", "SGCheckpointBeanB", "SGCheckpointBeanC", "SGCheckpointBeanD",
                                                                             "SLCheckpointBeanA", "SLCheckpointBeanB", "SLCheckpointBeanC", "SLCheckpointBeanD",
@@ -79,7 +103,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("EjbStartCheckpointMockServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -110,11 +134,11 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointFeatures() throws Exception {
-        setCheckpointPhase(CheckpointPhase.FEATURES);
+    public void testEjbStartCheckpointInactive() throws Exception {
+        setCheckpointPhase(CheckpointPhase.INACTIVE);
         try {
             server.startServer();
-            assert_12_BeanMetaDataInitilzedAtStart();
+            assert_12_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -124,11 +148,12 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointDeployment() throws Exception {
-        setCheckpointPhase(CheckpointPhase.DEPLOYMENT);
+    public void testEjbStartCheckpointInactiveStartAllSingletons() throws Exception {
+        setCheckpointPhase(CheckpointPhase.INACTIVE);
+        enableStartAllSingletons();
         try {
             server.startServer();
-            assert_32_BeanMetaDataInitilzedAtStart();
+            assert_24_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -138,11 +163,25 @@ public class EjbStartCheckpointTest extends FATServletClient {
     }
 
     @Test
-    public void testEjbStartCheckpointApplications() throws Exception {
-        setCheckpointPhase(CheckpointPhase.APPLICATIONS);
+    public void testEjbStartCheckpointBeforeAppStart() throws Exception {
+        setCheckpointPhase(CheckpointPhase.BEFORE_APP_START);
         try {
             server.startServer();
-            assert_32_BeanMetaDataInitilzedAtStart();
+            assert_32_BeanMetaDataInitializedAtStart();
+            runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
+        } finally {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        }
+    }
+
+    @Test
+    public void testEjbStartCheckpointAfterAppStart() throws Exception {
+        setCheckpointPhase(CheckpointPhase.AFTER_APP_START);
+        try {
+            server.startServer();
+            assert_32_BeanMetaDataInitializedAtStart();
             runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
         } finally {
             if (server.isStarted()) {
@@ -153,11 +192,30 @@ public class EjbStartCheckpointTest extends FATServletClient {
 
     private void setCheckpointPhase(CheckpointPhase phase) throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
-        jvmOptions.put("-Dio.openliberty.ejb.checkpoint.phase", phase.name());
+        switch (phase) {
+            case BEFORE_APP_START:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(CHECKPOINT_BEFORE_APP_START);
+                break;
+            case AFTER_APP_START:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(CHECKPOINT_AFTER_APP_START);
+                break;
+            default:
+                jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
+                server.setExtraArgs(CHECKPOINT_INACTIVE);
+        }
+        jvmOptions.remove("-Dio.openliberty.ejb.startAllSingletons");
         server.setJvmOptions(jvmOptions);
     }
 
-    private void assert_12_BeanMetaDataInitilzedAtStart() throws Exception {
+    private void enableStartAllSingletons() throws Exception {
+        Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+        jvmOptions.put("-Dio.openliberty.ejb.startAllSingletons", "true");
+        server.setJvmOptions(jvmOptions);
+    }
+
+    private void assert_12_BeanMetaDataInitializedAtStart() throws Exception {
         logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
         List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
         for (String line : initialized) {
@@ -179,7 +237,29 @@ public class EjbStartCheckpointTest extends FATServletClient {
         }
     }
 
-    private void assert_32_BeanMetaDataInitilzedAtStart() throws Exception {
+    private void assert_24_BeanMetaDataInitializedAtStart() throws Exception {
+        logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
+        List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
+        for (String line : initialized) {
+            logger.info("    found : " + line);
+        }
+        assertEquals("Unexpected number of beans initialized at application start", 24, initialized.size());
+        for (String beanName : START_ALL_INIT_ON_START) {
+            assertTrue(beanName + " not initialized on start", initialized.removeIf(line -> line.contains(beanName)));
+        }
+
+        logger.info("Looking for \"" + MSG_DEFERRED_INIT + "\"");
+        List<String> deferred = server.findStringsInTrace(MSG_DEFERRED_INIT);
+        for (String line : deferred) {
+            logger.info("    found : " + line);
+        }
+        assertEquals("Unexpected number of beans deferred until first use", 20, deferred.size());
+        for (String beanName : START_ALL_DEFERRED_INIT) {
+            assertTrue(beanName + " not deferred initialize", deferred.removeIf(line -> line.contains(beanName)));
+        }
+    }
+
+    private void assert_32_BeanMetaDataInitializedAtStart() throws Exception {
         logger.info("Looking for \"" + MSG_INIT_ON_START + "\"");
         List<String> initialized = server.findStringsInTrace(MSG_INIT_ON_START);
         for (String line : initialized) {

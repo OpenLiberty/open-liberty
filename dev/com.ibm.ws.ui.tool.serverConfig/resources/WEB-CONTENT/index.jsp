@@ -13,7 +13,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<%@ page import="com.ibm.ws.kernel.productinfo.ProductInfo" %>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,12 +25,10 @@
 		
 		<%
 			boolean isAdmin = request.isUserInRole("Administrator");
-			boolean isBetaMode = ProductInfo.getBetaEdition() ? true: false;
 		%>
 
 		<script type="text/javascript">
 			globalIsAdmin = <%=isAdmin%>;
-			globalIsBetaMode = <%=isBetaMode%>;
 		</script>
 
         <%
@@ -55,7 +52,7 @@
 					<div id="navbarEditorReadOnlyMessage" class="hidden" data-externalizedString="READ_ONLY"></div>
 					<div id="navbarEditorSavingMessage" class="hidden" data-externalizedString="SAVING"><img src="img/config-tool-home-progress-bgdark-D.gif" draggable="false" alt=""></div>
 					<div id="navbarEditorChangesSavedMessage" class="hidden" data-externalizedString="CHANGES_SAVED"></div>
-					<a href="#" draggable="false" id="navbarEditorButtonsSave" role="button" class="btn navbar-btn navbar-btn-primary hidden" data-externalizedString="SAVE"></a>
+					<a draggable="false" id="navbarEditorButtonsSave" role="button" class="btn navbar-btn navbar-btn-primary hidden" data-externalizedString="SAVE"></a>
 					<a href="#" draggable="false" id="navbarEditorButtonsClose" role="button" class="btn navbar-btn navbar-btn-default" data-externalizedString="CLOSE"></a>
 				</div>
 
@@ -76,12 +73,13 @@
 			<div id="messageContainer"></div>
 
 			<div id="progress" class="position-absolute top-50 start-50 translate-middle hidden">
-		  		<label class="form-label" for="progressBar" data-externalizedString="ONE_MOMENT_PLEASE"></label>
+                <label class="form-label" for="progressBar" data-externalizedString="ONE_MOMENT_PLEASE">
 			  	<div class="progress">
 					<div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 						<span class="visually-hidden" data-externalizedString="ONE_MOMENT_PLEASE"></span>
 					</div>
 				</div>
+			    </label>
 		  	</div>
 
 		  	<div id="login" class="position-absolute top-50 start-50 translate-middle hidden">
@@ -220,7 +218,7 @@
 
 		<label id="labelValidateElement" class="form-label hidden" data-externalizedString="VALIDATE_CONNECTION_DIALOG"></label>
 		<div class="modal" id="dialogValidateConnectionElement" role="dialog" aria-labelledby="labelValidateElement" tabindex="-1"> <!-- dialog validate connection element start -->
-  			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-config-val">
     			<div class="modal-content">
 					<div class="modal-body">
 						<a class="dialog-close-link" href="#" draggable="false" data-bs-dismiss="modal">
@@ -243,17 +241,17 @@
 								<div id="NoResourceReferenceUserCredentials">
 									<legend class="bx--label validationTypeDescription" data-externalizedString="NO_RESOURCE_REFERENCE_IN_USE"></legend>
 									<div id="noResourceReferenceInput">
-										<label id="testUsernameInputTitle" data-externalizedString="USER_NAME" for="testUsernameInput" class="bx--label"></label>
+										<label id="testUsernameInputTitleNoResRef" data-externalizedString="USER_NAME" for="testUsernameInputNoResourceReference" class="bx--label"></label>
 										<input id="testUsernameInputNoResourceReference" list="testUsernameInputListNoResourceReference" type="text" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
 										<datalist id="testUsernameInputListNoResourceReference"data-externalizedStringTitle="USER_NAME"></datalist>
-										<label id="testPasswordInputTitle" data-externalizedString="PASSWORD" for="testPasswordInput" class="bx--label"></label>
+										<label id="testPasswordInputTitleNoResRef" data-externalizedString="PASSWORD" for="testPasswordInputNoResourceReference" class="bx--label"></label>
 										<input id="testPasswordInputNoResourceReference" list="testPasswordInputList" type="password" class="form-control bx--text-input bx--text-input--light" data-externalizedPlaceholder="NO_VALUE" aria-labelledby="betaLabel">
 									</div>
 								</div>
 							</div>
 
 							<div id="testUserPassParameters" class="validationTabBody form-group hidden">
-								<div id="testNoReference" class="form-check">
+								<div id="testNoReference">
 									<legend class="form-label bx--label validationTypeDescription" data-externalizedString="RESOURCE_REFERENCE_WITH_APPILCATION_AUTHENTICATION_IN_USE"></legend>
 								</div>
 								<label id="testUsernameInputTitle" data-externalizedString="USER_NAME" for="testUsernameInput" class="bx--label"></label>
@@ -312,7 +310,7 @@
 											<div class="keyValueTable containerAuthSubSection" id="keyValueTable">
 												<div class="keyValueTableRow">
 													<div class="keyValueTableItemAction">
-														<div class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></div>
+														<div tabindex="0" class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></div>
 													</div>
 												</div>
 												<div id="keyValueTableRowValueSection">

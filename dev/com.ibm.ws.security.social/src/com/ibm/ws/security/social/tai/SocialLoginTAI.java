@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -45,6 +42,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionUtils;
+import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginWebappConfig;
@@ -537,7 +535,7 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
             aca.createJwtUserApiResponseAndIssuedJwtFromIdToken(idToken);
             TAISubjectUtils subjectUtils = getTAISubjectUtils(aca);
             // if have userinfo data, put it in the UserProfile object
-            String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.common.Constants.USERINFO_STR);
+            String userInfo = (String) presult.getCustomProperties().get(com.ibm.ws.security.openidconnect.clients.common.Constants.USERINFO_STR);
             if (userInfo != null) {
                 subjectUtils.setUserInfo(userInfo);
             }
@@ -576,13 +574,14 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
         boolean valid = true;
         String clientId = config.getClientId();
         String clientSecret = config.getClientSecret();
+        String tokenEndpointAuthMethod = config.getTokenEndpointAuthMethod();
         String authorizationEndpoint = config.getAuthorizationEndpointUrl();
         String jwksUri = config.getJwkEndpointUrl();
         if (clientId == null || clientId.length() == 0) {
             Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientId, clientId });
             valid = false;
         }
-        if (clientSecret == null || clientSecret.length() == 0) {
+        if (!PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(tokenEndpointAuthMethod) && (clientSecret == null || clientSecret.isEmpty())) {
             Tr.error(tc, "INVALID_CONFIG_PARAM", new Object[] { OidcLoginConfigImpl.KEY_clientSecret, "" });
             valid = false;
         }

@@ -1,3 +1,6 @@
 Bundle-SymbolicName: springBoot15Server
 Private-Package: com.ibm.ws.springboot.support.web.server.version15.container.*
 Include-Resource: resources/container
+-maven-dependencies:
+
+

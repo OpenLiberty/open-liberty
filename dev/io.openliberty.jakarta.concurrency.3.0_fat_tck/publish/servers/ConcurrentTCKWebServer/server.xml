@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@
     <!-- Include derby in gloabl library to make it available to all dropin apps -->
     <library id="global">
                <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
-               <fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/testng/7.5.1" includes="*.jar"/>
                <fileset dir="${shared.resource.dir}/sigtest/1.6" includes="*.jar"/>
     </library>
 

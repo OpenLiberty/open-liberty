@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -88,9 +85,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Klient OpenID Connect {0} napotka\u0142 nast\u01
 TOKEN_REQUEST_ERROR.explanation=Klient OpenID Connect mo\u017ce nie mie\u0107 informacji, \u017c\u0105danie do punktu ko\u0144cowego tokenu si\u0119 nie powiod\u0142o lub wyst\u0105pi\u0142 inny b\u0142\u0105d podczas przetwarzania odpowiedzi punktu ko\u0144cowego tokenu.
 TOKEN_REQUEST_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a, czy dostawca OpenID Connect zwr\u00f3ci\u0142 kod w odpowiedzi uwierzytelniania.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: W tokenie brakuje wymaganego roszczenia [{0}].
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=Roszczenie podane w komunikacie musi by\u0107 obecne w tokenie, ale nie jest ono dost\u0119pne.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Klient OpenID Connect napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania do adresu URL informacji o u\u017cytkowniku [{0}] dla dostawcy OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=Odpowied\u017a Informacje o u\u017cytkowniku od dostawcy OpenID Connect mo\u017ce by\u0107 zniekszta\u0142cona lub brakuje w niej informacji, albo dostawca OpenID Connect napotka\u0142 b\u0142\u0105d podczas obs\u0142ugi \u017c\u0105dania.
@@ -113,3 +110,32 @@ JWK_CONNECTION_TIMED_OUT.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 j
 JWK_READ_TIMED_OUT=CWWKS2422E: Klient OpenID Connect nie m\u00f3g\u0142 odczyta\u0107 danych z identyfikatora URI JWK [{0}] dostawcy OpenID Connect w ci\u0105gu {1} milisekund. Rozwa\u017c aktualizacj\u0119 w\u0142a\u015bciwo\u015bci jwksReadTimeout w konfiguracji klienta OpenID Connect.
 JWK_READ_TIMED_OUT.explanation=Klient OpenID Connect nie mo\u017ce odczyta\u0107 danych JWK z identyfikatora URI JWK w skonfigurowanym przedziale czasu.
 JWK_READ_TIMED_OUT.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 jwksReadTimeout w konfiguracji klienta OpenID Connect. Sprawd\u017a, czy dostawca OpenID Connect jest osi\u0105galny.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Podano nast\u0119puj\u0105cy niepoprawny typ odpowiedzi: ''{0}''. Poprawne typy odpowiedzi to [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Podany typ odpowiedzi nie jest poprawny. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Podaj jeden z poprawnych typ\u00f3w odpowiedzi.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Warto\u015b\u0107 [{0}] dla roszczenia [{1}] w tokenie nie jest zgodna z oczekiwan\u0105 warto\u015bci\u0105 [{2}].
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=Warto\u015b\u0107 roszczenia nie jest poprawna lub jest zniekszta\u0142cona. Konfiguracja klienta OpenID Connect mo\u017ce by\u0107 niepoprawna lub token zosta\u0142 utworzony z niepoprawnymi warto\u015bciami.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Upewnij si\u0119, \u017ce atrybut w konfiguracji klienta OpenID Connect, kt\u00f3ry jest powi\u0105zany z roszczeniem okre\u015blonym w komunikacie, zosta\u0142 poprawnie skonfigurowany.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Token klienta produktu {0} OpenID Connect nie jest poprawny. Warto\u015b\u0107 jwtClaims w obiekcie JwtContext ma warto\u015b\u0107 NULL lub jest pusta.
+TOKEN_MISSING_CLAIMS.explanation=Brak informacji w tokenie i nie mo\u017cna zako\u0144czy\u0107 sprawdzania poprawno\u015bci tokenu.
+TOKEN_MISSING_CLAIMS.useraction=Sprawd\u017a, czy w dzienniku nie odnotowano wcze\u015bniejszych b\u0142\u0119d\u00f3w zwi\u0105zanych z tym niepowodzeniem. Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Token ma puste roszczenie [{0}].
+TOKEN_EMPTY_CLAIM.explanation=Roszczenie podane w komunikacie musi mie\u0107 poprawn\u0105 warto\u015b\u0107.
+TOKEN_EMPTY_CLAIM.useraction=Dostawca OpenID Connect zwraca token identyfikatora z pustym roszczeniem. Je\u015bli roszczenie jest obecne, musi zawiera\u0107 poprawn\u0105 warto\u015b\u0107. Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Token nie jest poprawny, poniewa\u017c utraci\u0142 on wa\u017cno\u015b\u0107. Czas utraty wa\u017cno\u015bci tokenu to [{0}]. Bie\u017c\u0105ca godzina pomniejszona o przesuni\u0119cie zegara: [{1}]. Skonfigurowane przesuni\u0119cie zegara wynosi {2} sekund.
+TOKEN_EXP_IN_PAST.explanation=Tokeny, kt\u00f3re utraci\u0142y wa\u017cno\u015b\u0107, s\u0105 niepoprawne.
+TOKEN_EXP_IN_PAST.useraction=Uzyskaj nowy token, kt\u00f3ry nie utraci\u0142 wa\u017cno\u015bci. Zsynchronizuj zegary wystawcy token\u00f3w i klienta OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Token zosta\u0142 uznany za niepoprawny ze wzgl\u0119du na warto\u015b\u0107 [{0}] dla roszczenia [{1}] wskazuj\u0105c\u0105 przysz\u0142o\u015b\u0107. Suma bie\u017c\u0105cego czasu i przesuni\u0119cia zegara wynosi [{2}], a skonfigurowane przesuni\u0119cie zegara wynosi {3} sekund.
+TOKEN_CLAIM_IN_FUTURE.explanation=Warto\u015b\u0107 podana w komunikacie dla roszczenia musi by\u0107 czasem z przesz\u0142o\u015bci.
+TOKEN_CLAIM_IN_FUTURE.useraction=U\u017cyj tokenu po up\u0142ywie czasu okre\u015blonego w komunikacie lub uzyskaj nowy token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: W odpowiedzi tokenu od dostawcy OpenID Connect brakuje przynajmniej jednego wymaganego parametru: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Dostawca OpenID Connect nie zwr\u00f3ci\u0142 wymaganego parametru lub nie uda\u0142o si\u0119 przetworzy\u0107 \u017c\u0105dania tokenu.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Sprawd\u017a, czy skonfigurowany punkt ko\u0144cowy tokenu jest poprawny i czy mo\u017ce odpowiada\u0107 na \u017c\u0105dania tokenu OAuth.
+

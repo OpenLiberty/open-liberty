@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -77,8 +76,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
     private synchronized void getAndSetRESTHandlerContainer(HttpServletRequest request) throws ServletException {
         if (REST_HANDLER_CONTAINER == null) {
             // Get the bundle context
-            HttpSession session = request.getSession();
-            ServletContext sc = session.getServletContext();
+            ServletContext sc = request.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
 
             ServiceReference<RESTHandlerContainer> ref = ctxt.getServiceReference(RESTHandlerContainer.class);
@@ -88,6 +86,8 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
                 throw new ServletException("OSGi service RESTHandlerContainer is not available.");
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
+                // generate initial session metrics
+                request.getSession();
             }
         }
     }

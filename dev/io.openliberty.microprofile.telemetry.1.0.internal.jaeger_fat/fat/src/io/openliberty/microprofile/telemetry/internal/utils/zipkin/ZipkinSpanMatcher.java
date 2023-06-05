@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,9 +22,11 @@ import java.util.Optional;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan.Annotation;
+import io.opentelemetry.api.trace.SpanKind;
 
 /**
  * Hamcrest {@link Matcher} for performing assertions against {@link ZipkinSpan} objects retrieved from Zipkin
@@ -32,8 +34,9 @@ import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan.An
 public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
 
     Map<String, String> expectedTags = new HashMap<>();
-    List<String> expectedAnnotations = new ArrayList<>();
+    List<Matcher<String>> expectedAnnotations = new ArrayList<>();
     String expectedTraceId = null;
+    String expectedKind = null;
     String expectedParentSpanId = null;
     Boolean expectHasParent = null;
 
@@ -47,6 +50,11 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
         if (expectedTraceId != null) {
             desc.appendText("\n  with traceId: ");
             desc.appendText(expectedTraceId.toString());
+        }
+
+        if (expectedKind != null) {
+            desc.appendText("\n  with kind: ");
+            desc.appendText(expectedKind.toString());
         }
 
         if (expectedParentSpanId != null) {
@@ -84,6 +92,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
             return false;
         }
 
+        if (expectedKind != null && !expectedKind.equals(span.getKind())) {
+            return false;
+        }
+
         if (expectedParentSpanId != null) {
             if (!Objects.equals(expectedParentSpanId, span.getParentId())) {
                 return false;
@@ -105,10 +117,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
             }
         }
 
-        for (String expectedAnnotation : expectedAnnotations) {
+        for (Matcher<String> expectedAnnotation : expectedAnnotations) {
             Optional<Annotation> anno = span.getAnnotations()
                                             .stream()
-                                            .filter(a -> expectedAnnotation.equals(a.getValue()))
+                                            .filter(a -> expectedAnnotation.matches(a.getValue()))
                                             .findAny();
             if (!anno.isPresent()) {
                 return false;
@@ -119,7 +131,12 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
     }
 
     public ZipkinSpanMatcher withAnnotation(String name) {
-        expectedAnnotations.add(name);
+        expectedAnnotations.add(Matchers.equalTo(name));
+        return this;
+    }
+
+    public ZipkinSpanMatcher withAnnotation(Matcher<String> matcherString) {
+        expectedAnnotations.add(matcherString);
         return this;
     }
 
@@ -148,6 +165,15 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
         return this;
     }
 
+    public ZipkinSpanMatcher withKind(SpanKind kind) {
+        expectedKind = kind.name();
+        return this;
+    }
+
+    public static ZipkinSpanMatcher hasKind(SpanKind kind) {
+        return span().withKind(kind);
+    }
+    
     public static ZipkinSpanMatcher span() {
         return new ZipkinSpanMatcher();
     }
@@ -162,6 +188,10 @@ public class ZipkinSpanMatcher extends TypeSafeDiagnosingMatcher<ZipkinSpan> {
 
     public static ZipkinSpanMatcher hasAnnotation(String name) {
         return span().withAnnotation(name);
+    }
+
+    public static ZipkinSpanMatcher hasAnnotation(Matcher<String> matcherString) {
+        return span().withAnnotation(matcherString);
     }
 
     public static ZipkinSpanMatcher hasParent() {

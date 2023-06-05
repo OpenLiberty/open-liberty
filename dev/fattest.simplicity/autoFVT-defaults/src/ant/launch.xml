@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2022 IBM Corporation and others.
+    Copyright (c) 2017, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
         IBM Corporation - initial API and implementation
  -->
 <project name="standard.launch.tasks">
-    <include file="./launch-overrides.xml" optional="true" />
 
 	<!-- This is needed for Moonstone autowas to work -->
 	<target name="init-test-tasks-autowas" unless="inited-test-tasks">
@@ -199,12 +198,12 @@
 		
 		<!-- In Java 16, the default enforcement of strong encapsulation (part of JPMS, which was introduced in Java 9) has changed from 
 			 <dash><dash>"illegal-access=permit" to <dash><dash>"illegal-access=deny".  This causes many of our FATs that use reflection to fail.  
-			 Setting up a gated property (illegal.access.permit) so that any builds that take place on Java 15+ use the JVM override 
+			 Setting up a gated property (illegal.access.permit.fat) so that any builds that take place on Java 15+ use the JVM override 
 			 <dash><dash>"add-opens java.base/java.lang=ALL-UNNAMED" which is needed for many of our FATs, but older versions will be skipped -->
-		<condition property="illegal.access.permit" value="--add-opens java.base/java.lang=ALL-UNNAMED">
+		<condition property="illegal.access.permit.fat" value="--add-opens java.base/java.lang=ALL-UNNAMED">
 			<istrue value="${is.java15.orHigher}"/>
 		</condition>
-		<property name="illegal.access.permit" value=""/>
+		<property name="illegal.access.permit.fat" value=""/>
 		
 		<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
 			     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
@@ -337,7 +336,30 @@
                    else="${env.artifactory.download.server}">
           <isset property="artifactory.download.server" />
         </condition>
-		<property name="fat.test.artifactory.download.token" value="${artifactory.download.token}"/>
+        
+        <condition property="fat.test.artifactory.download.token"
+                   value="${artifactory.download.token}"
+                   else="${env.artifactory.download.token}">
+          <isset property="artifactory.download.token" />
+        </condition>
+        
+        <condition property="fat.test.artifactory.download.user"
+                   value="${artifactory.download.user}"
+                   else="${env.artifactory.download.user}">
+          <isset property="artifactory.download.user" />
+        </condition>
+		
+        <condition property="fat.test.artifactory.docker.server"
+                   value="${artifactory.docker.server}"
+                   else="${env.artifactory.docker.server}">
+          <isset property="artifactory.docker.server" />
+        </condition>
+		
+        <condition property="fat.test.artifactory.force.external.repo"
+                   value="${artifactory.force.external.repo}"
+                   else="${env.artifactory.force.external.repo}">
+          <isset property="artifactory.force.external.repo" />
+        </condition>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
@@ -527,7 +549,7 @@
 					<jvmarg value="${framework.debug.embed.jvmarg1}" />
 					<jvmarg line="${extra.vmargs}" />
 					<jvmarg line="${zos.extra.vmargs}" />
-					<jvmarg line="${illegal.access.permit}" />
+					<jvmarg line="${illegal.access.permit.fat}" />
 					<!-- Override default value of the security manager for Java 18+ -->
 					<jvmarg line="${use.java.security.manager}" />
 				</junit>

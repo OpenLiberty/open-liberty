@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,7 +32,6 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
-import javax.annotation.Resource.AuthenticationType;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
 import javax.naming.InitialContext;
@@ -47,6 +46,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import jdbc.fat.driver.derby.FATJDBCSpecialOps;
 import jdbc.fat.driver.derby.FATVendorSpecificSomething;
@@ -88,12 +88,6 @@ import jdbc.fat.driver.derby.FATVendorSpecificSomething;
 @SuppressWarnings("serial")
 @WebServlet("/JDBCDriverManagerServlet")
 public class JDBCDriverManagerServlet extends FATServlet {
-
-    @Resource(name = "jdbc/fatDataSource", shareable = false, authenticationType = AuthenticationType.APPLICATION)
-    DataSource ds;
-
-    @Resource
-    DataSource xads;
 
     @Resource(name = "jdbc/fatDriver")
     DataSource fatDriverDS;
@@ -145,9 +139,11 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * Test of basic database connectivity
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testBasicConnection() throws Exception {
         InitialContext context = new InitialContext();
         UserTransaction tran = (UserTransaction) context.lookup("java:comp/UserTransaction");
+        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/fatDataSourceRef");
         Connection con = ds.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
@@ -215,6 +211,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * Driver package and class name.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testConnectionPoolDataSource() throws Exception {
         DataSource proxypoolds = InitialContext.doLookup("jdbc/proxypoolds");
 
@@ -240,6 +237,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * ConnectionPoolDataSource implementation is available from the driver.
      */
     @ExpectedFFDC("java.sql.SQLNonTransientException")
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     @Test
     public void testConnectionPoolDataSourceNotFound() throws Exception {
         try {
@@ -299,6 +297,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
                     "java.sql.SQLException", // intentional failure to enlist second resource that isn't two-phase capable
                     "javax.resource.ResourceException" // intentional failure to enlist second resource that isn't two-phase capable
     })
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     @Test
     public void testInterfaceAsClassNameInDataSourceDefinition() throws Exception {
         DataSource dsd_ds = InitialContext.doLookup("java:app/env/jdbc/dsd-with-datasource-interface");
@@ -380,8 +379,11 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * Test enlistment in transactions.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testTransactionEnlistment() throws Exception {
         InitialContext context = new InitialContext();
+        DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/fatDataSourceRef");
+        DataSource xads = (DataSource) context.lookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -466,6 +468,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * giving highest precedence to XADataSource.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testUnspecifiedClassNameInDataSourceDefinitionWithoutURL() throws Exception {
         DataSource dsd = InitialContext.doLookup("java:module/env/jdbc/dsd-infer-datasource-class");
 
@@ -536,7 +539,9 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * Unwrap and use vendor-specific API, including parameters and return types which are also vendor-specific.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testUnwrapToVendorSpecificInterface() throws Exception {
+        DataSource xads = InitialContext.doLookup("java:comp/DefaultDataSource");
         FATJDBCSpecialOps vendorApi = xads.unwrap(FATJDBCSpecialOps.class);
         assertNotNull(vendorApi);
 
@@ -586,6 +591,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
     //Test that setting the LoginTimeout via URL or properties for DataSources using Driver is rejected and that getLoginTimeout always returns 0.
     @Test
     @ExpectedFFDC({ "java.sql.SQLNonTransientException" })
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testGetSetLoginTimeout() throws Exception {
         InitialContext ctx = new InitialContext();
         //Ensure URL with loginTimeout specified is not allowed when using Driver

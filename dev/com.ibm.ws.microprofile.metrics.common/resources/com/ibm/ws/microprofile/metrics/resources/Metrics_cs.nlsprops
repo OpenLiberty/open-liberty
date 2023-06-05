@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,46 @@ internal.error.CWMMC0006E=CWMMC0006E: Do\u0161lo k intern\u00ed chyb\u011b.
 internal.error.CWMMC0006E.explanation=Aplika\u010dn\u00ed server zaznamenal intern\u00ed chybu.
 internal.error.CWMMC0006E.useraction=Shrom\u00e1\u017ed\u011bte sadu trasov\u00e1n\u00ed a otev\u0159ete nov\u00fd probl\u00e9m k aplika\u010dn\u00edmu serveru.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: Byla zji\u0161t\u011bna zm\u011bna konfigurace pro funkci metriky MicroProfile. Pokud byla provedena zm\u011bna atributu libraryRef, je zapot\u0159eb\u00ed restartovat server, aby se zm\u011bna projevila.
+configurationChange.info.CWMMC0007I.explanation=Metriky MicroProfile vy\u017eaduj\u00ed restart serveru, aby bylo mo\u017en\u00e9 zm\u011bnit knihovny, na kter\u00e9 odkazuje libraryRef.
+configurationChange.info.CWMMC0007I.useraction=Pokud byl atribut libraryRef zm\u011bn\u011bn, restartujte server, aby se zm\u011bna projevila.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: Koncov\u00fd bod /metrics nen\u00ed k dispozici, proto\u017ee nen\u00ed k dispozici \u017e\u00e1dn\u00fd registr Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.explanation=Funkce metrik MicroProfile na\u010d\u00edt\u00e1 knihovny Micrometer, kter\u00e9 jsou definov\u00e1ny prost\u0159ednictv\u00edm atributu libraryRef, ale odkazovan\u00e1 knihovna neobsahuje registr Micrometer Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Pokud nen\u00ed nedostupnost registru Prometheus z\u00e1m\u011brn\u00e1, upravte obsah knihovny, na kterou odkazuje atribut libraryRef, aby obsahoval soubor JAR registru Micrometer Prometheus.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: Koncov\u00fd bod /metrics nen\u00ed k dispozici, proto\u017ee je registr Prometheus zak\u00e1z\u00e1n.
+disabled.info.CWMMC0009I.explanation=Vlastnost mp.metrics.prometheus.enabled MicroProfile MicroProfile Config je nastavena na hodnotu false.
+disabled.info.CWMMC0009I.useraction=Pokud nen\u00ed zak\u00e1z\u00e1n\u00ed registru Prometheus z\u00e1m\u011brn\u00e9, odeberte konfiguraci vlastnosti mp.metrics.prometuus.enabled MicroProfile Config, nebo explicitn\u011b nastavte vlastnost na hodnotu true.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. Po\u017eadovan\u00fd soubor JAR {0} nebyl nalezen v adres\u00e1\u0159i <wlp_home>/lib.
+fileNotFound.error.CWMMC0010E.explanation=Soubor JAR nebyl nalezen v adres\u00e1\u0159i <wlp_home>/lib. Soubor mohl b\u00fdt odstran\u011bn nebo p\u0159ejmenov\u00e1n.
+fileNotFound.error.CWMMC0010E.useraction=Soubor JAR, kter\u00fd se obvykle nach\u00e1z\u00ed v adres\u00e1\u0159i <wlp_home>/lib, nen\u00ed p\u0159\u00edtomen. Znovu implementujte instalaci aplika\u010dn\u00edho serveru.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. B\u011bhov\u00e9 prost\u0159ed\u00ed metrik MicroProfile nebylo schopno vytvo\u0159it po\u017eadovan\u00fd zavad\u011b\u010d t\u0159\u00edd.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed po\u017eadovan\u00e9ho zavad\u011b\u010de t\u0159\u00edd.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. T\u0159\u00edda z metrik SmallRye nebyla na\u010dtena.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=T\u0159\u00edda nebo t\u0159\u00eddy ze zabalen\u00e9ho souboru JAR metrik SmallRye z adres\u00e1\u0159e <wlp_home>/lib se nena\u010detly nebo chyb\u00ed.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Zkontrolujte protokoly FFDC a text v\u00fdjimky a identifikujte chyb\u011bj\u00edc\u00ed t\u0159\u00eddu a ov\u011b\u0159te, \u017ee existuje v souboru JAR <wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. Chyb\u00ed t\u0159\u00edda, kter\u00e1 je vy\u017eadov\u00e1na pro u\u017eivatelskou knihovnu Micrometer.
+missingDependencyClasses.error.CWMMC0013E.explanation=Funkce metrik MicroProfile na\u010d\u00edt\u00e1 knihovny Micrometer, kter\u00e9 jsou definov\u00e1ny prost\u0159ednictv\u00edm atributu libraryRef a mus\u00ed obsahovat v\u0161echny z\u00e1vislosti.
+missingDependencyClasses.error.CWMMC0013E.useraction=Zadejte nezbytn\u00e9 z\u00e1vislosti s knihovnami Micrometer.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Funkce metrik MicroProfile je nakonfigurov\u00e1na tak, aby pou\u017e\u00edvala n\u00e1sleduj\u00edc\u00ed libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=Funkce metrik MicroProfile je nakonfigurov\u00e1na pro pou\u017eit\u00ed libraryRef. Tato odkazovan\u00e1 knihovna mus\u00ed obsahovat knihovnu j\u00e1dra Micrometer, c\u00edlov\u00e9 knihovny Micrometer a z\u00e1vislosti.
+libraryRefConfigured.info.CWMMC0014I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 #Memory usedHeap message
 memory.usedHeap.description=Zobrazuje mno\u017estv\u00ed vyu\u017eit\u00e9 pam\u011bti haldy v bajtech.
 
@@ -95,7 +135,8 @@ classloader.totalUnloadedClass.count.description=Zobrazuje celkov\u00fd po\u010d
 cpu.availableProcessors.description=Zobrazuje po\u010det procesor\u016f dostupn\u00fdch pro prost\u0159ed\u00ed JVM. Tato hodnota se m\u016f\u017ee m\u011bnit b\u011bhem konkr\u00e9tn\u00edho vyvol\u00e1n\u00ed virtu\u00e1ln\u00edho po\u010d\u00edta\u010de.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=Zobrazuje pr\u016fm\u011brnou z\u00e1t\u011b\u017e syst\u00e9mu za posledn\u00ed minutu. Pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e syst\u00e9mu je sou\u010det po\u010dtu spustiteln\u00fdch entit ve front\u011b na dostupn\u00e9 procesory a po\u010det spustiteln\u00fdch entit b\u011b\u017e\u00edc\u00edch na dostupn\u00fdch procesorech zpr\u016fm\u011brovan\u00fd za ur\u010dit\u00e9 \u010dasov\u00e9 obdob\u00ed. Zp\u016fsob, jak\u00fdm se vypo\u010d\u00edt\u00e1 pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e, z\u00e1vis\u00ed na opera\u010dn\u00edm syst\u00e9mu, ale obvykle je to omezen\u00fd \u010dasov\u011b z\u00e1visl\u00fd pr\u016fm\u011br. Nen\u00ed-li hodnota pr\u016fm\u011brn\u00e9 z\u00e1t\u011b\u017ee dostupn\u00e1, zobraz\u00ed se z\u00e1porn\u00e9 \u010d\u00edslo. Tento atribut je navr\u017een tak, aby poskytoval informace o z\u00e1t\u011b\u017ei syst\u00e9mu, s mo\u017enost\u00ed \u010dast\u00e9ho dotazov\u00e1n\u00ed. Informace o pr\u016fm\u011brn\u00e9 z\u00e1t\u011b\u017ei m\u016f\u017ee b\u00fdt na n\u011bkter\u00fdch platform\u00e1ch nedostupn\u00e1, je-li nap\u0159. implementace t\u00e9to metody n\u00e1kladn\u00e1.
+cpu.systemLoadAverage.description=Zobrazuje pr\u016fm\u011brnou z\u00e1t\u011b\u017e syst\u00e9mu za posledn\u00ed minutu. Pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e syst\u00e9mu je sou\u010det po\u010dtu spustiteln\u00fdch entit ve front\u011b na dostupn\u00e9 procesory a po\u010det spustiteln\u00fdch entit b\u011b\u017e\u00edc\u00edch na dostupn\u00fdch procesorech zpr\u016fm\u011brovan\u00fd za ur\u010dit\u00e9 \u010dasov\u00e9 obdob\u00ed. Zp\u016fsob, jak\u00fdm se vypo\u010d\u00edt\u00e1 pr\u016fm\u011brn\u00e1 z\u00e1t\u011b\u017e, z\u00e1vis\u00ed na opera\u010dn\u00edm syst\u00e9mu, ale obvykle je to omezen\u00fd \u010dasov\u011b z\u00e1visl\u00fd pr\u016fm\u011br. Nen\u00ed-li hodnota pr\u016fm\u011brn\u00e9 z\u00e1t\u011b\u017ee dostupn\u00e1, zobraz\u00ed se z\u00e1porn\u00e9 \u010d\u00edslo. Tento atribut je navr\u017een tak, aby poskytoval informace o z\u00e1t\u011b\u017ei syst\u00e9mu, s mo\u017enost\u00ed \u010dast\u00e9ho dotazov\u00e1n\u00ed. Informace o pr\u016fm\u011b\
+    rn\u00e9 z\u00e1t\u011b\u017ei m\u016f\u017ee b\u00fdt na n\u011bkter\u00fdch platform\u00e1ch nedostupn\u00e1, je-li nap\u0159. implementace t\u00e9to metody n\u00e1kladn\u00e1.
 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Zobrazuje 'posledn\u00ed vyu\u017eit\u00ed procesoru' pro proces prost\u0159ed\u00ed JVM.

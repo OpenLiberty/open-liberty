@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,17 +25,21 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Select;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Limit;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Function;
+import io.openliberty.data.repository.Select;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
@@ -46,9 +50,15 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     long deleteByHostNot(String host);
 
-    int deleteByHostNotIn(Collection<String> hosts);
+    @Select("meetingId")
+    @Filter(by = "stop", fn = Function.WithSecond)
+    @OrderBy("id")
+    List<Long> endsAtSecond(int second);
 
     Iterable<Reservation> findByHost(String host);
+
+    @OrderBy("id")
+    Stream<Reservation> findByInviteesElementCount(int size);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
 
@@ -94,17 +104,31 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     HashSet<Reservation> findByLocationAndInviteesNotContains(String location, String noninvitee);
 
-    // Use a record as the return type
-    @Select({ "start", "stop" })
-    ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    @OrderBy("host")
+    List<Long> findMeetingIdByStartWithHourBetweenAndStartWithMinute(int minHour, int maxHour, int minute);
 
-    LinkedBlockingQueue<Reservation> findByLowerLocationIn(List<String> locations);
+    List<Long> findMeetingIdByStopWithSecond(int second);
+
+    // Use a record as the return type
+    ReservedTimeSlot[] findStartAndStopByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
-    CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
+    CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
+
+    int removeByHostNotIn(Collection<String> hosts);
+
+    @Select("meetingId")
+    @Filter(by = "start", fn = Function.WithHour, op = Compare.Between)
+    @Filter(by = "start", fn = Function.WithMinute)
+    @OrderBy("host")
+    List<Long> startsWithinHoursWithMinute(int minHour, int maxHour, int minute);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
+
+    @Filter(by = "invitees", fn = Function.ElementCount)
+    @OrderBy("id")
+    Stream<Reservation> withInviteeCount(int size);
 }

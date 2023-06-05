@@ -23,22 +23,32 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
 import tests.DupXidTest;
+import tests.LongTranTest;
 import tests.Simple2PCCloudTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DupXidTest.class,
                 Simple2PCCloudTest.class,
+                LongTranTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
+    static String[] serverNames = new String[] { "com.ibm.ws.transaction_DUPXID001",
+                                                 "com.ibm.ws.transaction_DUPXID002",
+                                                 "com.ibm.ws.transaction_CLOUD001",
+                                                 "com.ibm.ws.transaction_CLOUD002",
+                                                 "longLeaseLengthServer1",
+                                                 "com.ibm.ws.transaction_longtran",
+    };
+
     static {
-        databaseContainerType = DatabaseContainerType.Derby;
+        beforeSuite(DatabaseContainerType.Derby);
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(serverNames))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(serverNames));
 }

@@ -1,0 +1,29 @@
+<!--
+    Copyright (c) 2022, 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+        
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<mpJwt
+		id="mpJwt_1"
+		jwksUri="${mpJwt_jwksUri}"
+		keyName="${mpJwt_keyName}"
+		audiences="client01, client02"  
+		issuer="http://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							http://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default}/jwt/defaultJWT,
+							https://${fat.server.hostname}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://${fat.server.hostip}:${bvt.prop.security_2_HTTP_default.secure}/jwt/defaultJWT,
+							https://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidc/endpoint/OidcConfigSample,
+							testIssuer">
+	</mpJwt>
+
+</server>

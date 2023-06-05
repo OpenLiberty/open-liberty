@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -232,28 +232,28 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /*
      * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(byte[], int,
-     * int)
+     * int, boolean)
      */
     @Override
-    protected HeaderKeys findKey(byte[] data, int offset, int length) {
-        return HttpHeaderKeys.find(data, offset, length);
+    protected HeaderKeys findKey(byte[] data, int offset, int length, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(data, offset, length, returnNullForInvalidName);
     }
 
     /*
-     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[])
+     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[], boolean)
      */
     @Override
-    protected HeaderKeys findKey(byte[] name) {
-        return HttpHeaderKeys.find(name, 0, name.length);
+    protected HeaderKeys findKey(byte[] name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, 0, name.length, returnNullForInvalidName);
     }
 
     /*
      * @see
-     * com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String)
+     * com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String, boolean)
      */
     @Override
-    protected HeaderKeys findKey(String name) {
-        return HttpHeaderKeys.find(name);
+    protected HeaderKeys findKey(String name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, returnNullForInvalidName);
     }
 
     /*
@@ -261,21 +261,23 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * genericbnf.HeaderKeys, byte[])
      */
     @Override
-    protected boolean filterAdd(HeaderKeys key, byte[] value) {
+    protected boolean filterAdd(HeaderKeys key, byte[] value, boolean isWASPrivateHeader) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Adding: " + key.getName() + ":" + GenericUtils.getEnglishString(value));
         }
         boolean rc = true;
-        if (HttpHeaderKeys.HDR_CONTENT_LENGTH.equals(key)) {
-            rc = setContentLength(value);
-        } else if (HttpHeaderKeys.HDR_CONNECTION.equals(key)) {
-            matchAndParseConnection(value);
-        } else if (HttpHeaderKeys.HDR_TRANSFER_ENCODING.equals(key)) {
-            matchAndParseTransfer(value);
-        } else if (HttpHeaderKeys.HDR_CONTENT_ENCODING.equals(key)) {
-            matchAndParseContent(value);
-        } else if (HttpHeaderKeys.HDR_EXPECT.equals(key)) {
-            matchAndParseExpect(value);
+        if (!isWASPrivateHeader) {
+            if (HttpHeaderKeys.HDR_CONTENT_LENGTH.equals(key)) {
+                rc = setContentLength(value);
+            } else if (HttpHeaderKeys.HDR_CONNECTION.equals(key)) {
+                matchAndParseConnection(value);
+            } else if (HttpHeaderKeys.HDR_TRANSFER_ENCODING.equals(key)) {
+                matchAndParseTransfer(value);
+            } else if (HttpHeaderKeys.HDR_CONTENT_ENCODING.equals(key)) {
+                matchAndParseContent(value);
+            } else if (HttpHeaderKeys.HDR_EXPECT.equals(key)) {
+                matchAndParseExpect(value);
+            }
         }
         return rc;
     }
@@ -669,7 +671,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param version
      * @throws NullPointerException
-     *             if the input version is null
+     *                                  if the input version is null
      */
     @Override
     public void setVersion(VersionValues version) {
@@ -691,7 +693,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
@@ -712,7 +714,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
@@ -744,7 +746,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param length
      * @throws IllegalArgumentException
-     *             if input length is invalid
+     *                                      if input length is invalid
      */
     @Override
     public void setContentLength(long length) {
@@ -1839,7 +1841,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param type
      * @throws NullPointerException
-     *             if input string is null
+     *                                  if input string is null
      */
     @Override
     public void setMIMEType(String type) {
@@ -1901,7 +1903,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * If the content type is null, or there is no explicit character encoding, <code>null</code> is returned.
      *
      * @param contentType
-     *            a content type header.
+     *                        a content type header.
      * @return Returns the character encoding for this flow, or null if the given
      *         content-type header is null or if no character enoding is present
      *         in the content-type header.
@@ -1938,7 +1940,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param set
      * @throws NullPointerException
-     *             if the input Charset is null
+     *                                  if the input Charset is null
      */
     @Override
     public void setCharset(Charset set) {
@@ -2358,14 +2360,24 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
          */
         marshallCookieCache(this.cookieCache);
         marshallCookieCache(this.cookie2Cache);
-        if (getServiceContext().getHttpConfig().useSameSiteConfig()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Checking to see if we should mark the cookie cache as dirty - samesite is " + getServiceContext().getHttpConfig().useSameSiteConfig()
+                         + " doNotAllowDuplicateSetCookie is " + getServiceContext().getHttpConfig().doNotAllowDuplicateSetCookies());
+        }
+        if (getServiceContext().getHttpConfig().useSameSiteConfig() || getServiceContext().getHttpConfig().doNotAllowDuplicateSetCookies()) {
             //If there are set-cookie and set-cookie2 headers and the respective cache hasn't been initialized,
             //do so and set it as dirty so the cookie parsing logic is run.
             if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE) && (this.setCookieCache == null)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Marking set-cookie cache dirty");
+                }
                 getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE).setIsDirty(true);
             }
 
             if (this.containsHeader(HttpHeaderKeys.HDR_SET_COOKIE2) && (this.setCookie2Cache == null)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Marking set-cookie2 cache dirty");
+                }
                 getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE2).setIsDirty(true);
             }
 
@@ -2683,7 +2695,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * operation. This is allowed on an outgoing message only.
      *
      * @param cookie
-     *            the <code>HttpCookie</code> to add.
+     *                       the <code>HttpCookie</code> to add.
      * @param cookieType
      * @return TRUE if the cookie was set successfully otherwise returns FALSE.
      *         if setcookie constraints are violated.
@@ -2742,7 +2754,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param header
      * @return the caching data for the particular set of Cookies.
      * @throws IllegalArgumentException
-     *             if the header is not a cookie header
+     *                                      if the header is not a cookie header
      */
     private CookieCacheData getCookieCache(HttpHeaderKeys header) {
         // 347066 - removed sync because we only allow 1 thread to be working
@@ -2842,9 +2854,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Marshall the list of Cookies into the base header storage area.
      *
      * @param list
-     *            the list of new cookies.
+     *                   the list of new cookies.
      * @param header
-     *            the type of header the new cookies are intended for.
+     *                   the type of header the new cookies are intended for.
      */
     private void marshallCookies(List<HttpCookie> list, HeaderKeys header) {
 

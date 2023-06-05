@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,11 +34,11 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.openapi.impl.OpenAPIUIBundlesListener;
 import com.ibm.ws.openapi31.OpenAPIUtils;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
@@ -111,24 +111,6 @@ public class OpenAPIUIBundlesUpdater {
                     openAPIUIBundle.start();
                 }
             }
-        }
-    }
-
-    private static boolean verifyRefs(ServiceReference<Bundle>[] refs, Set<String> expectedBundles) {
-        if (refs == null) {
-            return false;
-        }
-        int foundBundles = 0;
-        for (ServiceReference<Bundle> ref : refs) {
-            String bundleKey = (String) ref.getProperty("web.module.key");
-            String bundleName = bundleKey.substring(0, bundleKey.indexOf('#'));
-            if (expectedBundles.contains(bundleName))
-                foundBundles++;
-        }
-        if (foundBundles == expectedBundles.size()) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -311,30 +293,14 @@ public class OpenAPIUIBundlesUpdater {
 
     @SuppressWarnings("unchecked")
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
-        boolean waitComplete = false;
-        Set<String> expectedBundleNames = new HashSet<String>();
-        for (Bundle bundle : openAPIUIBundles) {
-            expectedBundleNames.add(bundle.getSymbolicName());
-        }
-
         try {
-            BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
-            ServiceReference<Bundle>[] refs = (ServiceReference<Bundle>[]) bundleContext.getServiceReferences(Bundle.class.getName(), "(installed.wab.contextRoot=*)");
-            waitComplete = verifyRefs(refs, expectedBundleNames);
-            while (!waitComplete) {
-                refs = (ServiceReference<Bundle>[]) bundleContext.getServiceReferences(Bundle.class.getName(), "(installed.wab.contextRoot=*)");
-                waitComplete = verifyRefs(refs, expectedBundleNames);
-                if (!waitComplete) {
-                    //sleep UI bundle update thread to prevent getting services refs all the time
-                    Thread.sleep(500);
-                }
-            }
+            new OpenAPIUIBundlesListener(openAPIUIBundles).await();
         } catch (Exception e) {
-            waitComplete = false;
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", new Object[] { e.getMessage() });
+            if (OpenAPIUtils.isDebugEnabled(tc)) {
+                Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", e.getMessage());
             }
+            return false;
         }
-        return waitComplete;
+        return true;
     }
 }

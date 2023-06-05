@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
 import java.security.Key;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,6 +61,10 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
     public String getSSLConfigurationName();
 
     public String getTokenEndpointAuthMethod();
+
+    public String getTokenEndpointAuthSigningAlgorithm();
+
+    public String getKeyAliasName();
 
     public String getRedirectUrlFromServerToClient();
 
@@ -136,5 +138,10 @@ public interface ConvergedClientConfig extends JwtConsumerConfig {
     String getIntrospectionTokenTypeHint();
 
     public OidcSessionCache getOidcSessionCache();
+
+    public String getPkceCodeChallengeMethod();
+
+    @Sensitive
+    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception;
 
 }

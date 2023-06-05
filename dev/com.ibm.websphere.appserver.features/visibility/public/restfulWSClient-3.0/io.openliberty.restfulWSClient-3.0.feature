@@ -9,6 +9,8 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  jakarta.ws.rs.ext; type="spec", \
  jakarta.ws.rs.sse; type="spec", \
  com.ibm.websphere.jaxrs20.multipart; type="ibm-api", \
+ jakarta.xml.bind.annotation; type="internal", \
+ jakarta.xml.bind.annotation.adapters; type="internal", \
  org.jboss.resteasy.annotations; type="internal", \
  org.jboss.resteasy.client.jaxrs; type="internal", \
  org.jboss.resteasy.client.jaxrs.internal; type="internal", \
@@ -16,7 +18,7 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  org.jboss.resteasy.plugins.providers.sse; type="internal", \
  org.jboss.resteasy.plugins.providers; type="internal", \
  org.jboss.resteasy.spi;type="internal", \
- org.reactivestreams;type="internal" 
+ org.reactivestreams;type="internal"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install
@@ -29,6 +31,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
   com.ibm.websphere.appserver.globalhandler-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.servlet.internal-5.0, \
   io.openliberty.jakarta.restfulWS-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
   com.ibm.websphere.appserver.jndi-1.0, \

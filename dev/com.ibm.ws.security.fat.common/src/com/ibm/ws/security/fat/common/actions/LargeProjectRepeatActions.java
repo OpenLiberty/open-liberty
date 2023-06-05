@@ -1,14 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
+
+import java.util.Set;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
@@ -17,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTestAction;
@@ -39,6 +44,18 @@ public class LargeProjectRepeatActions {
      * @return repeat test instances
      */
     public static RepeatTests createEE9OrEE10Repeats() {
+        return createEE9OrEE10Repeats(null, null, null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature) {
+        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
 
         RepeatTests rTests = null;
 
@@ -57,10 +74,10 @@ public class LargeProjectRepeatActions {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE9Action());
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE9Action.ID, addEE9Feature, removeFeatureList, insertFeatureList, serverPaths));
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE10Action());
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE10Action.ID, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths));
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
@@ -79,6 +96,40 @@ public class LargeProjectRepeatActions {
         } else {
             return rTests.andWith(currentRepeat);
         }
+    }
+
+    /**
+     * Create the requests level of EE action and then add or remove the requested features.
+     *
+     * @param featureType
+     * @param addEEFeature
+     * @param removeFeatureList
+     * @param insertFeatureList
+     * @return
+     */
+    public static FeatureReplacementAction adjustFeatures(String featureType, String addEEFeature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
+        FeatureReplacementAction featureAction = null;
+        if (featureType.equals(JakartaEE9Action.ID)) {
+            featureAction = new JakartaEE9Action();
+        } else if (featureType.equals(JakartaEE10Action.ID)) {
+            featureAction = new JakartaEE10Action();
+        } else {
+            Log.info(thisClass, "adjustFeatures", "Unknown feature type, " + featureType + ", defaulting to " + JakartaEE9Action.ID);
+            featureAction = new JakartaEE9Action();
+        }
+        if (addEEFeature != null) {
+            featureAction.alwaysAddFeature(addEEFeature);
+        }
+        if (removeFeatureList != null) {
+            featureAction.removeFeatures(removeFeatureList);
+        }
+        if (insertFeatureList != null) {
+            featureAction.addFeatures(insertFeatureList);
+        }
+        if (serverPaths != null && serverPaths.length != 0) {
+            featureAction.forServerConfigPaths(serverPaths);
+        }
+        return featureAction;
     }
 
 }

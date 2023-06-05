@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -39,7 +36,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -113,17 +109,6 @@ public class OidcClientUtil {
         // oidcHttpUtil.extractTokensFromResponse(getResponseMap);
 
         // return userinfoResponse;
-    }
-
-    Map<String, Object> postToTokenEndpoint(String tokenEnpoint,
-            @Sensitive List<NameValuePair> params,
-            String baUsername,
-            @Sensitive String baPassword,
-            SSLSocketFactory sslSocketFactory,
-            boolean isHostnameVerification,
-            String authMethod, boolean useSystemPropertiesForHttpClientConnections)
-            throws Exception {
-        return oidcHttpUtil.postToEndpoint(tokenEnpoint, params, baUsername, baPassword, null, sslSocketFactory, isHostnameVerification, authMethod, useSystemPropertiesForHttpClientConnections);
     }
 
     Map<String, Object> postToCheckTokenEndpoint(String tokenEnpoint,
@@ -281,7 +266,7 @@ public class OidcClientUtil {
 
         String encodedHash = null;
         if (encodedReqParams != null) {
-            encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
+            encodedHash = addSignatureToStringValue(encodedReqParams, clientCfg);
         }
         CookieBasedStorage store = new CookieBasedStorage(request, response, getReferrerURLCookieHandler());
         CookieStorageProperties cookieProps = new CookieStorageProperties();
@@ -291,7 +276,7 @@ public class OidcClientUtil {
         store.store(ClientConstants.WAS_OIDC_CODE, encodedHash, cookieProps);
     }
 
-    public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
+    public static String addSignatureToStringValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
         String uniqueSecretValue = clientCfg.getClientSecret();

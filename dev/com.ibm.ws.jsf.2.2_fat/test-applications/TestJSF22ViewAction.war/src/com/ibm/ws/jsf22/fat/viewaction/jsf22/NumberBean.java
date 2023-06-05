@@ -1,23 +1,20 @@
-/*
- * Copyright (c)  2015  IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.viewaction.jsf22;
 
 import java.io.Serializable;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
 import javax.faces.event.PhaseId;
 
 @ManagedBean
@@ -31,7 +28,8 @@ public class NumberBean implements Serializable {
     protected boolean postback;
     private int count = 0;
 
-    public NumberBean() {}
+    public NumberBean() {
+    }
 
     public Integer getNumber() {
         return number;
@@ -80,7 +78,7 @@ public class NumberBean implements Serializable {
         String phaseGetName = phase.getName();
         //test new phaseIdValueOf() method
         PhaseId phaseIdValueOf = phase.phaseIdValueOf(phaseGetName);
-        
+
         getFacesContext().addMessage(null,
                                      new FacesMessage("PhaseId.getName(): " + phaseGetName + " PhaseId.phaseIdValueOf(): " + phaseIdValueOf));
     }

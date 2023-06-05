@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -160,16 +160,9 @@ public class SearchBridge {
                         break;
                     }
                     Entity loginAccount = returnedList.get(count);
-                    // d115256
-                    if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                        Object value = loginAccount.get(outputAttrName);
-                        if (value instanceof String) {
-                            people.add((String) value);
-                        } else {
-                            people.add(BridgeUtils.getStringValue(((List<?>) value).get(0)));
-                        }
-                    } else {
-                        people.add(BridgeUtils.getStringValue(loginAccount.getIdentifier().get(outputAttrName)));
+                    String sName = getSecurityNameFromEntity(methodName, outputAttrName, loginAccount);
+                    if (sName != null) {
+                        people.add(sName);
                     }
                 }
                 returnValue = new SearchResult(people, true);
@@ -350,15 +343,9 @@ public class SearchBridge {
                     }
                     // d113801
                     if (isEntityTypeGrp) {
-                        if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
-                            Object value = group.get(outputAttrName);
-                            if (value instanceof String) {
-                                groups.add((String) value);
-                            } else {
-                                groups.add(BridgeUtils.getStringValue(((List<?>) value).get(0)));
-                            }
-                        } else {
-                            groups.add(BridgeUtils.getStringValue(group.getIdentifier().get(outputAttrName)));
+                        String sName = getSecurityNameFromEntity(methodName, outputAttrName, group);
+                        if (sName != null) {
+                            groups.add(sName);
                         }
                     } else {
                         if (tc.isEventEnabled()) {
@@ -392,5 +379,39 @@ public class SearchBridge {
             }
         }
         return returnValue;
+    }
+
+    /**
+     * Get the security name from the provided entity.
+     *
+     * @param methodName     The name of the method calling.
+     * @param outputAttrName The name of the attribute to use for the security name.
+     * @param entity         The entity to get the value from.
+     * @return The security name representing the entity, or null if one could not be found.
+     */
+    private String getSecurityNameFromEntity(String methodName, String securityNameAttr, Entity entity) {
+        String entityName = null;
+        if (!this.mappingUtils.isIdentifierTypeProperty(securityNameAttr)) {
+            Object value = entity.get(securityNameAttr);
+            if (value instanceof String) {
+                entityName = (String) value;
+            } else if (value instanceof List<?> && !((List<?>) value).isEmpty()) {
+                entityName = BridgeUtils.getStringValue(((List<?>) value).get(0));
+            } else {
+                /*
+                 * The outputAttrName did not exist in the returned entity.
+                 * It will be excluded from results.
+                 */
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " Excluding the following entity from results as it does not " +
+                                 "contain the specified output attribute {0}.\n\n{1}",
+                             securityNameAttr, entity);
+                }
+            }
+        } else {
+            entityName = BridgeUtils.getStringValue(entity.getIdentifier().get(securityNameAttr));
+        }
+
+        return entityName;
     }
 }

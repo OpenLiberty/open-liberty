@@ -57,7 +57,7 @@ public class MPMetricsTest extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
     }
 

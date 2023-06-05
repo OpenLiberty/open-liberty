@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ Import-Package: \
     javax.servlet.http; version="[2.6,3)", \
     javax.servlet.resources; version="[2.6,3)", \
     com.ibm.ws.webcontainer.resources, \
+    com.ibm.wsspi.webcontainer.facade, \
     *
 
 
@@ -85,7 +86,8 @@ Import-Package: \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-    cglib:cglib-nodep;version=3.3.0, \
+    cglib:cglib;version=3.3.0, \
+    com.ibm.ws.org.objectweb.asm;version=latest, \
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.ws.javaee.dd.common;version=latest, \
@@ -94,5 +96,6 @@ Import-Package: \
     com.ibm.ws.org.apache.commons.io;version=latest,\
     com.ibm.ws.channelfw;version=latest,\
     com.ibm.ws.anno;version=latest,\
-    com.ibm.ws.threading;version=latest
+    com.ibm.ws.threading;version=latest,\
+    com.ibm.ws.kernel.boot.common;version=latest
 

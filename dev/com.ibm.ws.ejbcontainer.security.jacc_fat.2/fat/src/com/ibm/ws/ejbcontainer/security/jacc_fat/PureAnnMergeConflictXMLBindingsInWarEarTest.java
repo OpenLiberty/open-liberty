@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -117,6 +117,9 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
     @Test
     public void testPureAnnMergeConflict_EmployeeAndManagerWithParams_PermitAccessNewUserInEmployeeRoleInServerXML() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
             testHelper.reconfigureServer(Constants.MERGE_CONFLICT_RUNAS_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
@@ -154,7 +157,7 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
     @Test
     public void testPureAnnMergeConflict_RunAsSpecified_AllowAccessDifferentRunAsUserInServerXml() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
-        String waitForMessage = "CWWKT0016I.*/securityejbXMLmerge/";
+        String waitForMessage = "CWWKT0016I.*/securityejbInWarEarXMLMerge/";
         List<String> msgs = new ArrayList<String>();
         msgs.add(waitForMessage);
 

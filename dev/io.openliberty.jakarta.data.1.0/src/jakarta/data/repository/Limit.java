@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,9 +16,10 @@ package jakarta.data.repository;
  * Method signatures are copied from the jakarta.data.repository.Limit from the Jakarta Data repo.
  */
 public class Limit {
-    private final long max, start;
+    private final int max;
+    private final long start;
 
-    private Limit(long startAt, long maxResults) {
+    private Limit(long startAt, int maxResults) {
         start = startAt;
         max = maxResults;
         if (start < 1)
@@ -27,11 +28,11 @@ public class Limit {
             throw new IllegalArgumentException("maxResults: " + max);
     }
 
-    public long maxResults() {
+    public int maxResults() {
         return max;
     }
 
-    public static Limit of(long maxResults) {
+    public static Limit of(int maxResults) {
         return new Limit(1L, maxResults);
     }
 
@@ -39,7 +40,10 @@ public class Limit {
         if (startAt >= endAt)
             throw new IllegalArgumentException("startAt: " + startAt + ", endAt: " + endAt);
 
-        return new Limit(startAt, 1 + (endAt - startAt));
+        if (Integer.MAX_VALUE <= endAt - startAt)
+            throw new IllegalArgumentException("startAt: " + startAt + ", endAt: " + endAt + ", maxResults > " + Integer.MAX_VALUE);
+
+        return new Limit(startAt, 1 + (int) (endAt - startAt));
     }
 
     public long startAt() {

@@ -22,6 +22,7 @@
 
 	<!-- Import standard launch tasks into this project -->
 	<import file="${basedir}/src/ant/properties.xml" />
+	<include file="${basedir}/src/ant/launch-overrides.xml" optional="true" />
 	<import file="${basedir}/src/ant/launch.xml" />
 
 	<!-- Executable targets -->

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,12 +13,12 @@
 package com.ibm.ws.cache.web;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import com.ibm.ws.cache.ValueSet;
@@ -30,14 +30,10 @@ import com.ibm.ws.cache.intf.ExternalInvalidation;
  */
 public class ExternalCacheFragment implements ExternalInvalidation, Serializable {
     private static final long serialVersionUID = 1342185474L;
-	//As defined in RFC 1123
-	private static SimpleDateFormat httpDateFormat = null;
-	static {
-		httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 
-		TimeZone timeZone = TimeZone.getTimeZone("GMT");
-		httpDateFormat.setTimeZone(timeZone);
-	}
+    // As defined in RFC 1123
+    private static final DateTimeFormatter httpDateFormat = DateTimeFormatter
+            .ofPattern("EEE, dd MMM uuuu HH:mm:ss z", Locale.US).withZone(ZoneId.of("GMT"));
 
 	private static final String EXPIRES = "Expires";
 
@@ -269,14 +265,12 @@ public class ExternalCacheFragment implements ExternalInvalidation, Serializable
 		externalCacheEntry.host = host; //@bkma
 		externalCacheEntry.content = content;
 		externalCacheEntry.headerTable = headerTable;
-		synchronized(httpDateFormat) { // Protect the date formatting
-			if (expirationTime >= 0) {
-				if (headerTable[0].contains(EXPIRES)) {
-					headerTable[1].set(headerTable[0].indexOf(EXPIRES), httpDateFormat.format(new Date(expirationTime)));
-				} else {
-					headerTable[0].add(EXPIRES);
-					headerTable[1].add(httpDateFormat.format(new Date(expirationTime)));
-				}
+		if (expirationTime >= 0) {
+			if (headerTable[0].contains(EXPIRES)) {
+				headerTable[1].set(headerTable[0].indexOf(EXPIRES), httpDateFormat.format(Instant.ofEpochMilli(expirationTime)));
+			} else {
+				headerTable[0].add(EXPIRES);
+				headerTable[1].add(httpDateFormat.format(Instant.ofEpochMilli(expirationTime)));
 			}
 		}
 		return externalCacheEntry;

@@ -2,10 +2,13 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2022
-# The source code for this program is not published or other-
-# wise divested of its trade secrets, irrespective of what has
-# been deposited with the U.S. Copyright Office.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 # 
 # ----------------------------------------------------------------------------
 #
@@ -39,7 +42,7 @@
 #              that CRIU will fail to restore the process.  By default
 #              any failure to restore will result in the server
 #              recovering without using the checkpoint image.
-#              To disable this behavior set this to any value.
+#              To disable this behavior set this to true.
 #
 # PID_DIR    - The directory that should be used for server pid file(s).
 #              The default value is ${WLP_OUTPUT_DIR}/.pid
@@ -782,7 +785,7 @@ mergeJVMOptions()
       saveIFS=$IFS
       IFS=$newline
 
-      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+      for option in `readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'`; do
         if [ -n "$option" ]; then
           case $option in
           \#*);;
@@ -827,7 +830,7 @@ readServerEnv()
            fi ;;
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
+        if var=`safeEcho "$line" | sed -e 's/^\([_[:alnum:]][_[:alnum:]]*\)=.*/\1/'`; then
            case $var in
            *=*)
                SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
@@ -864,6 +867,9 @@ criuEnvDefaults() {
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+  # Disable CRIU's use of HW breakpoints on restore.
+  # HW breakpoints are slower in some environments.
+  export CRIU_FAULT=130 # 130=FI_NO_BREAKPOINTS
 }
 
 ##
@@ -971,7 +977,7 @@ javaCmd()
   
   if [ $ACTION = "checkpoint" ]; then
     if [ -z "$CHECKPOINT_AT" ]; then
-      CHECKPOINT_AT="features"
+      CHECKPOINT_AT="beforeAppStart"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
 
@@ -983,11 +989,8 @@ javaCmd()
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
-    # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
-    # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
-    # When that becomes available we can remove the -Xsyslog:none option
-    # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false $X_WLP_IMMUTABLE_VARS"
+    # IgnoreUnrecognizedVMOptions is used so that other JVMs don't fail on these args
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
 
     checkCriuUnprivileged
@@ -1052,6 +1055,16 @@ javaCmd()
     if [ $rc -eq 74 ] && [ -f "${X_LOG_DIR}/checkpoint/checkpoint.log" ]; then
       issueMessage --message:error.checkpoint.failed "${X_LOG_DIR}/checkpoint/checkpoint.log"
       cat "${X_LOG_DIR}/checkpoint/checkpoint.log"
+      # check if selinux is preventing net_diag feature in criu
+      CRIU_UNPRIVILEGED_ARGS=""
+      if [ $DO_CRIU_UNPRIVILEGED = true ]; then
+        CRIU_UNPRIVILEGED_ARGS="--unprivileged"
+      fi
+      criu "$CRIU_UNPRIVILEGED_ARGS" check "--feature=net_diag_raw" > /dev/null 2>&1
+      ckrc=$?
+      if [ $ckrc -ne 0 ]; then
+         issueMessage --message:error.checkpoint.failed.selinux.netdiag "${SERVER_OUTPUT_DIR}/workarea"
+      fi
     fi
     kill $TAIL_PID
     # Above JAVA_CMD should terminate after a criu dump and SIGKILL. 
@@ -1376,18 +1389,23 @@ criuRestore()
     CRIU_EXTRA_ARGS="--unprivileged $CRIU_EXTRA_ARGS"
   fi
 
+  if [ -z "${CRIU_RESTORE_PATH}" ]; then
+    # default to using the criu available on the PATH
+    CRIU_RESTORE_PATH=criu
+  fi
+
   if $BACKGROUND_RESTORE
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
       --pidfile ${X_PID_FILE} \
       --restore-detached
     rc=$?
     PID=`cat ${X_PID_FILE}`
     if [ $rc = 0 ]; then
-      # successful restore, not check server status
+      # successful restore, now check server status
       JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
       OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
@@ -1409,7 +1427,7 @@ criuRestore()
     trap "exit" INT TERM
     trap "killSilent $TAIL_PID" EXIT
 
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 
@@ -1427,7 +1445,7 @@ restoreServer()
   BACKGROUND_RESTORE=$1
 
   if [ "${ACTION}" = "checkpoint" ] || [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] ; then
-    return 1
+    return 104
   fi
 
   # must check for --clean option before restoring
@@ -1435,7 +1453,7 @@ restoreServer()
     if [ -n "${option}" ]; then
       if [ -z "${option##--clean}" ]; then
         # never restore if --clean is specified
-        return 1
+        return 104
       fi
     fi
   done
@@ -1481,7 +1499,11 @@ restoreServer()
     return $rc
   fi
   if [ $rc -ne 0 ]; then
-    issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
+      issueMessage --message:error.checkpoint.restore.failed.no.recovery "${X_LOG_DIR}/checkpoint/restore.log"
+    else
+      issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
+    fi    
   fi
   return $rc
 }
@@ -1518,8 +1540,9 @@ case "$ACTION" in
     rc=$?
     if [ $rc = 0 ]; then
       exit 0
-    elif [ $rc -ne 1 ]; then
-      if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+    # 104 is the code for no image found to restore (or --clean is used)
+    elif [ $rc -ne 104 ]; then
+      if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
         exit $rc
       fi
       # will try to recover with a normal launch below
@@ -1599,8 +1622,9 @@ case "$ACTION" in
         rc=$?
         if [ $rc = 0 ]; then
           exit 0
-        elif [ $rc -ne 1 ]; then
-          if [ -n "${CRIU_RESTORE_DISABLE_RECOVERY}" ]; then
+        # 104 is the code for no image found to restore (or --clean is used)
+        elif [ $rc -ne 104 ]; then
+          if [ "${CRIU_RESTORE_DISABLE_RECOVERY}" = "true" ]; then
             exit $rc
           fi
           # will try to recover with a normal launch below
@@ -1778,7 +1802,7 @@ case "$ACTION" in
   ;;
 
   version)
-    installEnv
+    serverEnv
     javaCmd '' --version
   ;;  
   

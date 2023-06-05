@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.condition.Condition;
+
+import com.ibm.websphere.ras.Traceable;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -50,6 +52,7 @@ public class TestCheckpointHook implements CheckpointHook {
         this.phase = phase;
         this.phaseRef = phaseRef;
         System.out.println("TESTING - initial " + getConfig());
+        System.out.println("TESTING - ProtectedString prepare " + getPassword());
     }
 
     @Activate
@@ -83,7 +86,6 @@ public class TestCheckpointHook implements CheckpointHook {
 
     @Modified
     public void modifiedConfig(Map<String, Object> modified) {
-        config.clear();
         config.putAll(modified);
         System.out.println("TESTING - modified " + getConfig());
     }
@@ -101,6 +103,7 @@ public class TestCheckpointHook implements CheckpointHook {
         if (config.get("fail.prepare") != null) {
             throw new IllegalStateException("TESTING - prepare hook fails.");
         }
+        System.out.println("TESTING - ProtectedString prepare " + getPassword());
     }
 
     @Override
@@ -116,9 +119,14 @@ public class TestCheckpointHook implements CheckpointHook {
         if (config.get("fail.restore") != null) {
             throw new IllegalStateException("TESTING - restore hook fails.");
         }
+        System.out.println("TESTING - ProtectedString restore " + getPassword());
     }
 
     private String getConfig() {
         return "config: a=" + config.get("a") + " b=" + config.get("b") + " c=" + config.get("c");
+    }
+
+    private String getPassword() {
+        return "password: " + ((Traceable) config.get("password")).toTraceString();
     }
 }

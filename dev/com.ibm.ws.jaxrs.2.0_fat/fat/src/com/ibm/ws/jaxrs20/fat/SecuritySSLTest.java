@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,6 +60,14 @@ public class SecuritySSLTest {
             assertNotNull("The Security Service should be ready", server.waitForStringInLog("CWWKS0008I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
             assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
+            assertNotNull("The defaultHttpEndpoint-ssl endpoint should report it is ready", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl"));
+            // Wait for /security endpoints to be initialized
+            assertNotNull("/security com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication was not initialized (SRVE0242I not found)",
+                          server.waitForStringInLog("SRVE0242I.*/security.*com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication"));
+            assertNotNull("/security com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication was not initialized (SRVE0242I not found)",
+                          server.waitForStringInLog("SRVE0242I.*/security.*com.ibm.ws.jaxrs.fat.security.annotations.SecurityAnnotationsApplication"));
+            assertNotNull("/security SecurityContextApp was not initialized (SRVE0242I not found)",
+                          server.waitForStringInLog("SRVE0242I.*/security.*SecurityContextApp"));
         } catch (Exception e) {
             System.out.println(e.toString());
         }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -28,7 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebSSOUtils;
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -224,6 +221,11 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             authzParameters.addParameter("prompt", clientConfig.getPrompt());
         }
 
+        String pkceCodeChallengeMethod = clientConfig.getPkceCodeChallengeMethod();
+        if (pkceCodeChallengeMethod != null && !ClientConstants.PKCE_CODE_CHALLENGE_DISABLED.equals(pkceCodeChallengeMethod)) {
+            addPkceParameters(pkceCodeChallengeMethod, state, authzParameters);
+        }
+
         if (isImplicit) {
             addImplicitParameters(authzParameters);
         }
@@ -241,6 +243,11 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
             isACR = true;
         }
         return isACR;
+    }
+
+    void addPkceParameters(String codeChallengeMethod, String state, AuthorizationRequestParameters authzParameters) {
+        ProofKeyForCodeExchangeHelper pkceHelper = new ProofKeyForCodeExchangeHelper();
+        pkceHelper.generateAndAddPkceParametersToAuthzRequest(codeChallengeMethod, state, authzParameters);
     }
 
     void addImplicitParameters(AuthorizationRequestParameters authzParameters) throws UnsupportedEncodingException {

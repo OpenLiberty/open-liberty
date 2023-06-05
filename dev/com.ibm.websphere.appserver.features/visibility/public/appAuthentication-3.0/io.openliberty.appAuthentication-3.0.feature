@@ -14,11 +14,10 @@ IBM-SPI-Package: \
 Subsystem-Name: Jakarta Authentication 3.0
 -features=io.openliberty.xmlBinding.internal-4.0, \
   io.openliberty.appSecurity-5.0, \
-  io.openliberty.jakarta.authentication-3.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import javax.json.JsonValue.ValueType;
 
 import com.ibm.ws.security.fat.common.Constants.CheckType;
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 
 public class UserInfoJsonExpectation extends com.ibm.ws.security.fat.common.social.expectations.UserInfoJsonExpectation {
 

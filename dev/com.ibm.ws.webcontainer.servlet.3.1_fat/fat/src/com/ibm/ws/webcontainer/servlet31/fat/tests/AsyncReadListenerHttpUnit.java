@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
@@ -35,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.webcontainer.servlet31.fat.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -81,6 +79,10 @@ public class AsyncReadListenerHttpUnit {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(AsyncReadListenerHttpUnit.class.getSimpleName() + ".log");
+
+        if (FATSuite.isWindows) {
+            FATSuite.setDynamicTrace(server, "*=info=enabled");
+        }
     }
 
     @AfterClass

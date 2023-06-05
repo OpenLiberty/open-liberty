@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
  * @version 1.0.0
@@ -25,12 +25,12 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.openidconnect.token.IdToken;
-import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.security.openidconnect.common.TraceConstants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.TraceConstantsCommonMessages;
 
 public class PropagationHelperImpl {
-    private static final TraceComponent tc = Tr.register(PropagationHelperImpl.class, TraceConstants.TRACE_GROUP,
-            TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(PropagationHelperImpl.class, TraceConstantsCommonMessages.TRACE_GROUP,
+            TraceConstantsCommonMessages.MESSAGE_BUNDLE);
     static final String keyExpiresIn = "expires_in";
 
     /**
@@ -186,9 +186,10 @@ public class PropagationHelperImpl {
 
     public static String getUserInfo() {
         Subject runAsSubject = getRunAsSubject();
-        return runAsSubject == null ? null : (String) getSubjectAttributeObject(runAsSubject,
-                com.ibm.ws.security.openidconnect.common.Constants.USERINFO_STR,
-                false);
+        return runAsSubject == null ? null
+                : (String) getSubjectAttributeObject(runAsSubject,
+                        com.ibm.ws.security.openidconnect.clients.common.Constants.USERINFO_STR,
+                        false);
     }
 
     /**

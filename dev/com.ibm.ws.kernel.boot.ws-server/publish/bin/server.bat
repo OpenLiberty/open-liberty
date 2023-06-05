@@ -1,10 +1,13 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright IBM Corp. 2011, 2021
-@REM The source code for this program is not published or other-
-@REM wise divested of its trade secrets, irrespective of what has
-@REM been deposited with the U.S. Copyright Office.
+@REM Copyright (c) 2011, 2021 IBM Corporation and others.
+@REM All rights reserved. This program and the accompanying materials
+@REM are made available under the terms of the Eclipse Public License 2.0
+@REM which accompanies this distribution, and is available at
+@REM http://www.eclipse.org/legal/epl-2.0/
+@REM 
+@REM SPDX-License-Identifier: EPL-2.0
 @REM 
 @REM ----------------------------------------------------------------------------
 @REM
@@ -215,7 +218,7 @@ goto:eof
 goto:eof
 
 :version
-  call:installEnv
+  call:serverEnv
   !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --version
   set RC=%errorlevel%
   call:javaCmdResult
@@ -596,7 +599,7 @@ goto:eof
   call:readServerEnv "%WLP_INSTALL_DIR%\etc\server.env"
   call:installEnvDefaults
 
-  call:readServerEnv "%WLP_USER_DIR%/shared/server.env"
+  call:readServerEnv "%WLP_USER_DIR%\shared\server.env"
   call:readServerEnv "%SERVER_CONFIG_DIR%\server.env"
   call:serverEnvDefaults
 goto:eof

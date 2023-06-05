@@ -40,6 +40,8 @@ dependencies {
 
 }
 
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
 autoFVT.doLast {
   
    copy {
@@ -83,4 +85,25 @@ autoFVT.doLast {
 
   }    
  
+   def rpCopyServers = [
+	'jakartasec-3.0_fat.refresh.rp.jwt',
+	'jakartasec-3.0_fat.refresh.rp.opaque'
+
+  ]
+
+/** The RP's used in this FAT install multiple applications using shrinkwrapper **/
+/** If each test class uses the same server we end up accumulating test apps    **/
+/** The last rp server ends up with all of its own apps plus the apps of the    **/
+/** servers that started before it.  This code will copy the original server    **/
+/** so that each server can have its own instance, but, we won't need multiple  **/
+/** copies of the same source for each server                                   **/
+  rpCopyServers.each { rpServer ->
+
+    copy { 
+      from new File(autoFvtDir, 'publish/servers/jakartasec-3.0_fat.refresh.rp')
+      into new File(autoFvtDir, 'publish/servers/' + rpServer )
+      include '**/**'
+   }
+
+  }   
 }

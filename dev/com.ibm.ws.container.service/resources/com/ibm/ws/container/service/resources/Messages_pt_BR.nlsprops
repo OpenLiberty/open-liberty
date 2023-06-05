@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -166,4 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: Ocorreu um erro interno do 
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
 
-
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: A anota\u00e7\u00e3o {0} \u00e9 ignorada nas classes no m\u00f3dulo {1} do aplicativo {2}. Os aplicativos Jakarta EE devem usar a anota\u00e7\u00e3o {3}. As classes afetadas s\u00e3o: {4}
+wrong.annotation.package.CWWKM0483I.explanation=O aplicativo cont\u00e9m uma anota\u00e7\u00e3o Java EE com o nome do pacote 'javax', mas o servidor de aplicativos tem os recursos Jakarta EE ativados. O servidor de aplicativos n\u00e3o processou a anota\u00e7\u00e3o do nome do pacote 'javax'.
+wrong.annotation.package.CWWKM0483I.useraction=Modifique o aplicativo para usar a vers\u00e3o do nome do pacote 'jakarta' da anota\u00e7\u00e3o ou modifique a configura\u00e7\u00e3o do servidor de aplicativos para ativar os recursos Java EE.

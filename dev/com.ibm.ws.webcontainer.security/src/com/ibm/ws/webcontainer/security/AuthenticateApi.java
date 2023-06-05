@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -83,6 +83,8 @@ public class AuthenticateApi {
     protected static final WebReply DENY_AUTHN_FAILED = new DenyReply("AuthenticationFailed");
     private Subject logoutSubject = null;
     private final String SECURITY_CONTEXT = "SECURITY_CONTEXT";
+    private static final String JASPIC_PROVIDER_CLEANING_SUBJECT = "JASPIC_PROVIDER_CLEANING_SUBJECT";
+    private static final String JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT = "JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT";
 
     public AuthenticateApi(SSOCookieHelper ssoCookieHelper,
                            AtomicServiceReference<SecurityService> securityServiceRef,
@@ -630,23 +632,37 @@ public class AuthenticateApi {
      * JASPI authentication and if enabled will attempt to call the JASPI provider's
      * cleanSubject method, and will always call the main logout method.
      *
-     * @param res
+     * Per section 3.10.4 of the Jakarta Authentication (JASPIC) specification,
+     * if logout is called in the context of a call it made to cleanSubject,
+     * it must not recall cleanSubject.
+     *
+     * @param req
      * @param resp
      * @param webAppSecConfig
      */
-    public void logoutServlet30(HttpServletRequest res,
+    public void logoutServlet30(HttpServletRequest req,
                                 HttpServletResponse resp,
                                 WebAppSecurityConfig webAppSecConfig) throws ServletException {
         JaspiService jaspiService = getJaspiService();
         if (jaspiService != null) {
-            try {
-                jaspiService.logout(res, resp, webAppSecConfig);
-            } catch (AuthenticationException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "AuthenticationException invoking JASPI service logout", e);
+
+            // "If logout is called in the context of a call it made to cleanSubject, it must not recall cleanSubject"
+            if (!Boolean.parseBoolean((String) req.getAttribute(JASPIC_PROVIDER_CLEANING_SUBJECT))) {
+                try {
+                    req.setAttribute(JASPIC_PROVIDER_CLEANING_SUBJECT, "true");
+                    jaspiService.logout(req, resp, webAppSecConfig);
+                } catch (AuthenticationException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "AuthenticationException invoking JASPI service logout", e);
+                } finally {
+                    req.removeAttribute(JASPIC_PROVIDER_CLEANING_SUBJECT);
+                }
             }
         }
-        logout(res, resp, webAppSecConfig);
+
+        if (!Boolean.parseBoolean((String) req.getAttribute(JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT))) {
+            logout(req, resp, webAppSecConfig);
+        }
     }
 
     public WebReply createReplyForAuthnFailure(AuthenticationResult authResult, String realm) {

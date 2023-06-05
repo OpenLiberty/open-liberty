@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
@@ -40,9 +37,9 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.ws.security.openidconnect.client.Cache;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -237,6 +234,7 @@ public class OidcRedirectServletTest {
     public void testDoPost_nullCode_invalidScopeError() {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         String error = OAuth20Exception.INVALID_SCOPE;
+        String errorDescription = "Some description of the error.";
         final String query = Constants.ERROR + "=" + error;
         final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
         wasReqURLRedirectDomainNames.add("localhost");
@@ -246,6 +244,7 @@ public class OidcRedirectServletTest {
             mockParamValue(Constants.ID_TOKEN, null);
             mockParamValue(Constants.STATE, OIDC_STATE);
             mockParamValue(Constants.ERROR, error);
+            mockParamValue(Constants.ERROR_DESCRIPTION, errorDescription);
             mockGoodCookie();
             mock.checking(new Expectations() {
                 {
@@ -268,6 +267,7 @@ public class OidcRedirectServletTest {
     public void testDoPost_nullCode_otherError() {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         String error = OAuth20Exception.INVALID_GRANT;
+        String errorDescription = "Some description of the error.";
         final String query = Constants.ERROR + "=" + OAuth20Exception.ACCESS_DENIED;
         final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
         wasReqURLRedirectDomainNames.add("localhost");
@@ -278,6 +278,7 @@ public class OidcRedirectServletTest {
             mockParamValue(Constants.STATE, OIDC_STATE);
             mockParamValue(Constants.SESSION_STATE, OIDC_SESSION_STATE);
             mockParamValue(Constants.ERROR, error);
+            mockParamValue(Constants.ERROR_DESCRIPTION, errorDescription);
             mockGoodCookie();
             mock.checking(new Expectations() {
                 {

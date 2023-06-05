@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,6 +35,7 @@ public class BasicBCETestServlet extends FATServlet {
     private Instance<TestBean> testBeans;
 
     @Test
+    @Mode(TestMode.LITE)
     public void testInjectedBeans() {
         List<String> beanNames = testBeans.stream()
                                           .map(TestBean::getName)

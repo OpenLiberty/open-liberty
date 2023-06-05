@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.social.fat.commonTests;
@@ -93,6 +90,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
                 genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "tokenEndpointAuthMethod");
                 genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKG0033W_ATTRIBUTE_VALUE_NOT_FOUND);
                 genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS5479E_CONFIG_REQUIRED_ATTRIBUTE_NULL);
+                genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS2351E_CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD);
                 // 248970 this next one is seen occasionally on windows when a bad ssl config is being deliberately used.
                 genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKO0801E_CANNOT_INIT_SSL);
                 genericTestServer.addIgnoredServerException(SocialMessageConstants.CWWKS6104W_MISSING_REQUIRED_ATTRIBUTE);

@@ -44,3 +44,11 @@ CREDENTIAL_VALIDATION_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS=CWWKS2505W: Das JSON-Objekt f\u00fcr Anspr\u00fcche in der OpenIdContext-Bean kann den Betreffwert f\u00fcr Client {0} nicht hinzuf\u00fcgen, weil der Betreffwert im OpenIdClaims-Objekt fehlt. 
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.explanation=Im OpenIdClaims-Objekt in der OpenIdContext-Bean fehlt der erforderliche Betreffwert. Daher kann der Betreffwert des JSON-Objekts f\u00fcr Anspr\u00fcche nicht festgelegt werden.  
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Suchen Sie in den Protokollen nach fr\u00fcheren Fehlern im Zusammenhang mit der OpenID-Authentifizierung.
+
+JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Der Wert des OpenID Connect-Clientschl\u00fcssels {0} ist falsch. Der Wert ist {1} und der erwartete Typ ist {2}. Der Fehler ist {3}.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Der OpenID Connect-Client hat beim \u00dcberpr\u00fcfen des erwarteten Feldtyps im OpenID-Claims-Objekt einen Fehler festgestellt. Ein h\u00e4ufiger Fehler ist, dass der tats\u00e4chliche Typ des zur\u00fcckgegebenen Werts nicht dem erwarteten Typ entspricht.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Der Wert des Attributs {0} der Annotation OpenID f\u00fcr die Definition des Authentifizierungsverfahrens darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck (Expression Language) ist, darf er nicht in eine negative ganze Zahl aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stattdessen wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Der Wert des Attributs darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck ist, darf der Wert nicht in eine negative ganze Zahl aufgel\u00f6st werden.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aktualisieren Sie das Attribut so, dass eine nicht negative ganze Zahl verwendet wird. Wenn der Attributwert ein EL-Ausdruck ist, aktualisieren Sie die referenzierte Bean so, dass sie in eine nicht negative ganze Zahl aufgel\u00f6st wird.

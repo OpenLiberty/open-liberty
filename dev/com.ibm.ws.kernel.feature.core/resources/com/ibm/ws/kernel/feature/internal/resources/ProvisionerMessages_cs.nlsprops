@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: U\u017eivatelskou funkci {
 tool.userfeature.install.location.invalid.explanation= U\u017eivatelsk\u00e1 funkce nen\u00ed funkc\u00ed j\u00e1dra, proto nem\u016f\u017ee b\u00fdt instalov\u00e1na do j\u00e1dra.
 tool.userfeature.install.location.invalid.useraction= U\u017eivatelskou funkci nainstalujte do usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Server p\u0159idal do existuj\u00edc\u00ed sady funkc\u00ed {0} funkc\u00ed.
+FEATURES_ADDED_DELTA.explanation=Server nainstaloval sadu nov\u00fdch funkc\u00ed nav\u00edc k d\u0159\u00edve nainstalovan\u00fdm funkc\u00edm.
+FEATURES_ADDED_DELTA.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Klient p\u0159idal do existuj\u00edc\u00ed sady funkc\u00ed {0} funkc\u00ed. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Klient nainstaloval sadu nov\u00fdch funkc\u00ed nav\u00edc k d\u0159\u00edve nainstalovan\u00fdm funkc\u00edm.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+
+

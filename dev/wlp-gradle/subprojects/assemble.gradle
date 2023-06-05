@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2022 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-/**
- * Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
- * 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
- * and 'publishLibNative' tasks.
- *
- * Configure 'assemble' to depend on above tasks.
- */
-def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
+def toolProject = parseBoolean(bnd.get('tool.project', 'false'))
+def testProject = parseBoolean(bnd.get('test.project', 'false'))
+def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
+
+def publishWlpJarDefault = testProject ? 'true' : 'false'
+
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
         dependsOn jar
@@ -42,10 +40,13 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
             def outerFullVersion = bnd.get('bFullVersion')
             fullVersions.put(outerSymbolicName, outerFullVersion)
 
+            boolean outerFixHeaders = ((!bnd.get('IBM-Interim-Fixes', '').empty) || (!bnd.get('IBM-Test-Fixes', '').empty))
+            boolean subBundles = (!bnd.get('-sub', '').empty)
+
             // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
             // next to the base version of the jar, *except* for jars that are directly
             // referenced in a tool script's classpath...
-            if (((!bnd.get('IBM-Interim-Fixes', '').empty) || (!bnd.get('IBM-Test-Fixes', '').empty))
+            if (outerFixHeaders && !subBundles
                     && (!project.name.equals("com.ibm.ws.kernel.boot"))
                     && (!project.name.equals("com.ibm.ws.kernel.boot.archive"))
                     && (!project.name.equals("com.ibm.ws.appclient.boot"))
@@ -53,7 +54,7 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
                 hasIFIXHeaders.put(outerSymbolicName, true)
             }
 
-            if (!bnd.get('-sub', '').empty) {
+            if (subBundles) {
                 fileTree(dir: projectDir, include: bnd.get('-sub', '')).each { subBndFile ->
                     Properties subBndProperties = new Properties()
                     subBndFile.withInputStream { subBndProperties.load(it) }
@@ -64,7 +65,7 @@ if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.
                             symbolicName = symbolicName.substring(0, index).trim()
                         }
 
-                        if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
+                        if (outerFixHeaders || subBndProperties.getProperty("IBM-Interim-Fixes") != null
                             || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
                             hasIFIXHeaders.put(symbolicName, true)
                         }

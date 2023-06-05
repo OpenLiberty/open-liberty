@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -94,6 +94,12 @@ public class InstallConstants {
     public static final String TO_EXTENSION = "to.extension";
     public static final String DOWNLOAD_LOCATION = "download.location";
     public static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
+    public static final String VERIFY_OPTION = "verify.option";
+    public static final String ACTION_VERIFY = "action.verify";
+    public static final String USER_PUBLIC_KEYS = "user.public.keys";
+    public static final String KEYID_QUALIFIER = "keyid";
+    public static final String KEYURL_QUALIFIER = "keyurl";
+    public static final String DOWNLOAD_PUBKEYS = "download.pubkeys";
 
     /**
      * An enum for specifying what action to take if a file to be installed
@@ -144,4 +150,12 @@ public class InstallConstants {
     public enum AssetType {
         addon, feature, sample, opensource, all
     }
+
+    /**
+     * An enum for specifying verify option
+     */
+    public enum VerifyOption {
+        enforce, warn, skip, all;
+    }
+
 }

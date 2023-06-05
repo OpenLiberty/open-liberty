@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2022 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
-    terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
         http://www.eclipse.org/legal/epl-2.0/
     
@@ -26,9 +26,9 @@
         <jakarta.concurrent.version>3.0.2</jakarta.concurrent.version>
         
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
-        <arquillian-wlp.version>2.1.1</arquillian-wlp.version>
-        
-        <testng.version>6.14.3</testng.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <testng.version>7.5.1</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta-testng</artifactId>
-            <version>${arquillian-wlp.version}</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <type>pom</type>
             <scope>test</scope>
             <exclusions>
@@ -101,6 +101,24 @@
                     <artifactId>jcommander</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>

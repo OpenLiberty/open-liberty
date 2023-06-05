@@ -4,6 +4,6 @@ singleton=true
 visibility=private
 -features=io.openliberty.restfulWSClient-3.1
 -bundles=io.openliberty.org.jboss.resteasy.cdi.ee10
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

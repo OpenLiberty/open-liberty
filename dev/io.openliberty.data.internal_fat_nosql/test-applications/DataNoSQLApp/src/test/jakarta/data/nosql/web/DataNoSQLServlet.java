@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,18 +30,6 @@ public class DataNoSQLServlet extends FATServlet {
     Employees employees;
 
     /**
-     * Load classes from the Jakarta NoSQL communication layer.
-     */
-    @Test
-    public void testCommunicationLayerAvailable() throws ClassNotFoundException {
-        Class.forName("jakarta.nosql.Condition");
-        Class.forName("jakarta.nosql.column.Column");
-        Class.forName("jakarta.nosql.document.Document");
-        Class.forName("jakarta.nosql.keyvalue.KeyValueEntity");
-        Class.forName("jakarta.nosql.query.Query");
-    }
-
-    /**
      * Verify that implementation of a repository class can be injected. It won't be usable yet.
      */
     @Test
@@ -54,9 +42,24 @@ public class DataNoSQLServlet extends FATServlet {
      */
     @Test
     public void testMappingLayerAvailable() throws ClassNotFoundException {
-        Class.forName("jakarta.nosql.mapping.Entity");
-        Class.forName("jakarta.nosql.mapping.column.ColumnEntityConverter");
-        Class.forName("jakarta.nosql.mapping.document.DocumentEntityConverter");
-        Class.forName("jakarta.nosql.mapping.keyvalue.KeyValueEntityConverter");
+        Class.forName("jakarta.nosql.Entity");
+        Class.forName("jakarta.nosql.column.ColumnTemplate");
+        Class.forName("jakarta.nosql.document.DocumentTemplate");
+        Class.forName("jakarta.nosql.keyvalue.KeyValueTemplate");
+
+    }
+
+    /**
+     * TODO refactor to a more useful test
+     *
+     * @throws Exception
+     */
+    //TODO enable when able to save entities
+    //@Test
+    public void testBasicNoSql() throws Exception {
+        Employee e = new Employee(10L, "Irene", "BasicTest", "Engineer", "Rochester", 2010, 35, 60L);
+
+        employees.save(e);
+
     }
 }

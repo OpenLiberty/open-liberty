@@ -1,15 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -44,6 +41,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
@@ -53,13 +51,16 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22MiscellaneousTests {
     @Rule
     public TestName name = new TestName();
 
-    String contextRootMiscellaneous = "JSF22Miscellaneous";
-    String contextRootMiscellaneousSerialize = "JSF22MiscellaneousSerialize";
+    private static final String APP_NAME_MISCELLANEOUS = "JSF22Miscellaneous";
+    private static final String APP_NAME_MISCELLANEOUS_SERIALIZE = "JSF22MiscellaneousSerialize";
+    private static final String APP_NAME_VIEW_SCOPE_LEAK = "ViewScopeLeak";
+    private static final String APP_NAME_FUNCTION_MAPPER = "FunctionMapper";
+    private static final String APP_NAME_OLGH22397 = "OLGH22397";
+    private static final String APP_NAME_FACES_CONFIX_MISSING_XMLNS = "FacesConfigMissingXmlns";
 
     protected static final Class<?> c = JSF22MiscellaneousTests.class;
 
@@ -68,35 +69,38 @@ public class JSF22MiscellaneousTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        JavaArchive JSF22MiscellaneousJar = ShrinkHelper.buildJavaArchive("JSF22Miscellaneous.jar", "com.ibm.ws.jsf22.fat.miscbean.jar");
+        JavaArchive JSF22MiscellaneousJar = ShrinkHelper.buildJavaArchive(APP_NAME_MISCELLANEOUS + ".jar", "com.ibm.ws.jsf22.fat.miscbean.jar",
+                                                                          isEE10 ? "com.ibm.ws.jsf22.fat.miscbean.jar.faces40" : "com.ibm.ws.jsf22.fat.miscbean.jar.jsf22");
 
-        WebArchive JSF22MiscellaneousWar = ShrinkHelper.buildDefaultApp("JSF22Miscellaneous.war", "com.ibm.ws.jsf22.fat.miscbean");
+        WebArchive JSF22MiscellaneousWar = ShrinkHelper.buildDefaultApp(APP_NAME_MISCELLANEOUS + ".war", "com.ibm.ws.jsf22.fat.miscbean",
+                                                                        isEE10 ? "com.ibm.ws.jsf22.fat.miscbean.faces40" : "com.ibm.ws.jsf22.fat.miscbean.jsf22");
 
-        WebArchive SerializeWar = ShrinkHelper.buildDefaultApp("JSF22MiscellaneousSerialize.war", "");
+        WebArchive SerializeWar = ShrinkHelper.buildDefaultApp(APP_NAME_MISCELLANEOUS_SERIALIZE + ".war", "");
 
-        WebArchive xmlnsWar = ShrinkHelper.buildDefaultApp("FacesConfigMissingXmlns.war", "");
+        WebArchive xmlnsWar = ShrinkHelper.buildDefaultApp(APP_NAME_FACES_CONFIX_MISSING_XMLNS + ".war", "");
 
-        EnterpriseArchive JSF22MiscellaneousEar = ShrinkWrap.create(EnterpriseArchive.class, "JSF22Miscellaneous.ear");
+        EnterpriseArchive JSF22MiscellaneousEar = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME_MISCELLANEOUS + ".ear");
 
         JSF22MiscellaneousWar.addAsLibraries(JSF22MiscellaneousJar);
         SerializeWar.addAsLibraries(JSF22MiscellaneousJar);
         JSF22MiscellaneousEar.addAsModule(JSF22MiscellaneousWar);
         JSF22MiscellaneousEar.addAsModule(SerializeWar);
 
-        ShrinkHelper.addDirectory(JSF22MiscellaneousEar, "test-applications" + "/JSF22Miscellaneous.ear" + "/resources");
+        ShrinkHelper.addDirectory(JSF22MiscellaneousEar, "test-applications" + "/" + APP_NAME_MISCELLANEOUS + ".ear" + "/resources");
 
         ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, JSF22MiscellaneousEar);
 
         ShrinkHelper.exportDropinAppToServer(jsf22MiscellaneousServer, xmlnsWar);
 
-        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "FunctionMapper.war", "com.ibm.ws.jsf23.fat.functionmapper");
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_FUNCTION_MAPPER + ".war", "com.ibm.ws.jsf23.fat.functionmapper");
 
-        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "ViewScopeLeak.war", "com.ibm.ws.jsf22.fat.viewscopedleak");
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_VIEW_SCOPE_LEAK + ".war", "com.ibm.ws.jsf22.fat.viewscopedleak");
 
-        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "OLGH22397.war");
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_OLGH22397 + ".war");
 
-        jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
+        jsf22MiscellaneousServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -116,7 +120,7 @@ public class JSF22MiscellaneousTests {
     public void testSimple() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testSimple.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testSimple.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             if (page == null) {
@@ -136,7 +140,7 @@ public class JSF22MiscellaneousTests {
     public void testAPI() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testAPI.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testAPI.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -156,7 +160,7 @@ public class JSF22MiscellaneousTests {
             if (!output.asText().contains("isSavingStateInClient = true")) {
                 Assert.fail("Invalid response from server.  <isSavingStateInClient> is set incorrectly = " + output.asText());
             }
-            if (!output.asText().contains("getApplicationContextPath = /JSF22Miscellaneous")) {
+            if (!output.asText().contains("getApplicationContextPath = /" + APP_NAME_MISCELLANEOUS)) {
                 Assert.fail("Invalid response from server.  <getApplicationContextPath> is set incorrectly = " + output.asText());
             }
             if (!output.asText().contains("isSecure = false")) {
@@ -184,12 +188,13 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testResetValues() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testResetValues.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testResetValues.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -235,7 +240,7 @@ public class JSF22MiscellaneousTests {
     public void testCSRF() throws Exception {
         try (WebClient webClient = new WebClient(); WebClient webClient2 = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testCSRF.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testCSRF.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -269,7 +274,7 @@ public class JSF22MiscellaneousTests {
             if (!page.asText().contains("This is a protected page.")) {
                 Assert.fail("Invalid response from server.  The protected page was not retrieved = " + page.asText());
             }
-            if (!page.getUrl().toString().contains((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.Token=")) {
+            if (!page.getUrl().toString().contains((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.Token=")) {
                 Assert.fail("Invalid response from server.  This page does NOT contain the token = " + page.asText());
             }
 
@@ -277,7 +282,7 @@ public class JSF22MiscellaneousTests {
             try {
                 // Turn off printing for this webClient.   We know there will very likely be an error.
                 webClient2.getOptions().setPrintContentOnFailingStatusCode(false);
-                url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "protectedPage.xhtml");
+                url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "protectedPage.xhtml");
                 webClient2.getPage(url);
                 Assert.fail("Protected page was retrieved.   This should not occur.");
             } catch (Exception ex1) {
@@ -299,7 +304,7 @@ public class JSF22MiscellaneousTests {
     public void testViewScopeBinding() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testViewScopeBinding.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testViewScopeBinding.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -330,7 +335,7 @@ public class JSF22MiscellaneousTests {
     public void testViewScopeBindingSerialize() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneousSerialize, "testViewScopeBinding.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testViewScopeBinding.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -358,13 +363,15 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
+    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // are no longer supported in Faces 4.0.
+    @SkipForRepeat(EE10_FEATURES)
     public void testViewScopeMyFaces() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testViewScopeMyFaces.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testViewScopeMyFaces.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-            System.out.println(page.asText());
             // Make sure the page initially renders correctly
             if (page == null) {
                 Assert.fail("test ViewScopeMyFaces page was not available.");
@@ -389,10 +396,13 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
+    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // are no longer supported in Faces 4.0.
+    @SkipForRepeat(EE10_FEATURES)
     public void testViewScopeMyFacesSerialize() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "JSF22MiscellaneousSerialize", "testViewScopeMyFaces.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS_SERIALIZE, "testViewScopeMyFaces.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -431,6 +441,9 @@ public class JSF22MiscellaneousTests {
      * returns the same object as JspFactory.getDefaultFactory().
      * getJspApplicationContext(servletContext).getExpressionFactory().
      *
+     * For Faces 4.0, Pages is no longer supported and the specification was updated to say:
+     * "The implementation must return the ExpressionFactory from the Expression Language container by calling jakarta.el.ELManager.getExpressionFactory()"
+     *
      * Addresses CTS test failures:
      * ./jsf/api/javax_faces/application/applicationwrapper/URLClient_applicationWrapperGetExpressionFactoryTest
      * ./jsf/api/javax_faces/application/application/URLClient_applicationGetExpressionFactoryTest
@@ -441,7 +454,7 @@ public class JSF22MiscellaneousTests {
     public void testExpressionFactoryImplConsistency() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testExpressionFactoryImplConsistency.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testExpressionFactoryImplConsistency.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Make sure the page initially renders correctly
@@ -465,10 +478,9 @@ public class JSF22MiscellaneousTests {
      */
     @Test
     public void testFunctionMapper() throws Exception {
-        String contextRootMiscellaneous = "FunctionMapper";
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_FUNCTION_MAPPER, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -489,8 +501,7 @@ public class JSF22MiscellaneousTests {
     public void testFacesConfigMissingXmlns() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            String contextRoot = "FacesConfigMissingXmlns";
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_FACES_CONFIX_MISSING_XMLNS, "index.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             if (page == null) {
@@ -509,11 +520,15 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
+    // Skip for EE10 as the jakarta.faces.application.Application.createValueBinding method
+    // was removed. In addition the fix for this isn't necessary for Faces 4.0 because the
+    // org.apache.myfaces.el.convert packages doesn't exist any longer.
+    @SkipForRepeat(EE10_FEATURES)
     public void testCustomValueBindingTag() throws Exception {
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, contextRootMiscellaneous, "testCustomValueBindingTag.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testCustomValueBindingTag.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
             page = page.getElementById("form:submit").click();
 
@@ -538,7 +553,7 @@ public class JSF22MiscellaneousTests {
     public void testMyFaces4433() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "ViewScopeLeak", "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_VIEW_SCOPE_LEAK, "index.xhtml");
 
             String size1 = "1";
             String size2 = "2";
@@ -575,43 +590,43 @@ public class JSF22MiscellaneousTests {
     /*
      * https://github.com/OpenLiberty/open-liberty/issues/22397
      * https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4450
-     * 
-     *  Verify tabindex (and other attributes) are rendered
+     *
+     * Verify tabindex (and other attributes) are rendered
      *
      */
     @Test
     public void testMyFaces4450() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "OLGH22397", "index.xhtml");
-            
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_OLGH22397, "index.xhtml");
+
             Log.info(c, name.getMethodName(), "MYFACES-4433: Making a request to " + url);
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             Log.info(c, name.getMethodName(), page.asXml());
 
             String[] expected = { "onclick=\"onclick\"",
-                                "ondblclick=\"ondblclick\"",
-                                "onmousedown=\"onmousedown\"",
-                                "onmouseup=\"onmouseup\"",
-                                "onmouseover=\"onmouseover\"",
-                                "onmousemove=\"onmousemove\"",
-                                "onmouseout=\"onmouseout\"",
-                                "onkeypress=\"onkeypress\"",
-                                "onkeydown=\"onkeydown\"",
-                                "onkeyup=\"onkeyup\"",
-                                "onfocus=\"onfocus\"",
-                                "onblur=\"onblur\"",
-                                "accesskey=\"accesskey\"",
-                                "tabindex=\"tabindex\"",
-                                "style=\"color:red\"",
-                                "class=\"styleClass\"",
-                                "dir=\"dir\"",
-                                "lang=\"lang\"",
-                                "title=\"title\"",
-                                "role=\"role\"" };
+                                  "ondblclick=\"ondblclick\"",
+                                  "onmousedown=\"onmousedown\"",
+                                  "onmouseup=\"onmouseup\"",
+                                  "onmouseover=\"onmouseover\"",
+                                  "onmousemove=\"onmousemove\"",
+                                  "onmouseout=\"onmouseout\"",
+                                  "onkeypress=\"onkeypress\"",
+                                  "onkeydown=\"onkeydown\"",
+                                  "onkeyup=\"onkeyup\"",
+                                  "onfocus=\"onfocus\"",
+                                  "onblur=\"onblur\"",
+                                  "accesskey=\"accesskey\"",
+                                  "tabindex=\"tabindex\"",
+                                  "style=\"color:red\"",
+                                  "class=\"styleClass\"",
+                                  "dir=\"dir\"",
+                                  "lang=\"lang\"",
+                                  "title=\"title\"",
+                                  "role=\"role\"" };
 
-            for(String attribute : expected){
+            for (String attribute : expected) {
                 assertTrue("Failed to render expected attribute: \n" + attribute, page.asXml().contains(attribute));
             }
 

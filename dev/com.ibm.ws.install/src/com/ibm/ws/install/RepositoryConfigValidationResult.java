@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,7 +44,15 @@ public class RepositoryConfigValidationResult {
 
         DUPLICATE_KEY,
 
-        UNSUPPORTED_PROTOCOL;
+        UNSUPPORTED_PROTOCOL,
+
+        MISSING_PUBKEY_NAME,
+
+        INVALID_VERIFY_OPTION,
+
+        INVALID_KEYID,
+
+        MISSING_KEYID;
 
     }
 
@@ -113,6 +121,12 @@ public class RepositoryConfigValidationResult {
                 return Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("VALIDATION_DUPLICATE_KEY");
             case UNSUPPORTED_PROTOCOL:
                 return Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("VALIDATION_UNSUPPORTED_PROTOCOL");
+            case MISSING_PUBKEY_NAME:
+                return Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("VALIDATION_MISSING_PUBKEY_NAME");
+            case INVALID_KEYID:
+                return Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("VALIDATION_INVALID_KEYID");
+            case MISSING_KEYID:
+                return Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("VALIDATION_MISSING_KEYID");
             default:
                 return null;
         }

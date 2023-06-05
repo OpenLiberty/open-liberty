@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -351,6 +351,7 @@ WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Es ist keine A
 WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Der Transaktionsservice hat einen Fehler in einer Operation xa_recover festgestellt. Es handelt sich um die Ressource {0}. Der Fehlercode ist {1}. Der Stack-Trace zur Ausnahme wird im Folgenden angezeigt: {2}
 WTRN0037_XA_RECOVER_ERROR.explanation=Der Transaktionsservice einen Fehler festgestellt, als er versucht hat, die Operation xa_recover f\u00fcr eine Ressource auszuf\u00fchren, um die vorbereiteten Transaktionen des zugeh\u00f6rigen Resource Manager zu ermitteln. Die Operation wird erneut ausgef\u00fchrt.
 WTRN0037_XA_RECOVER_ERROR.useraction=Untersuchen Sie den Fehlercode, um die Fehlerursache zu ermitteln. 
+
 WTRN0038_ERR_DESTROYING_XARESOURCE=WTRN0038W: Beim L\u00f6schen einer XA-Ressource ist eine Ausnahme eingetreten. Der Stack-Trace zur Ausnahme wird im Folgenden angezeigt: {0}
 WTRN0038_ERR_DESTROYING_XARESOURCE.explanation=Der Transaktionsservice konnte eine XAResource nicht l\u00f6schen.
 WTRN0038_ERR_DESTROYING_XARESOURCE.useraction=Es ist keine Aktion erforderlich, weil dies keine Auswirkung auf den Transaktionsservice hat.
@@ -571,6 +572,7 @@ WTRN0091_ASSOCIATE_FAILED.useraction=CMSG0002
 WTRN0092_QUIESCE_UNFINISHED=WTRN0092W: W\u00e4hrend der Stilllegung des Servers wurde eine unvollst\u00e4ndige Transaktion (localid={0}) gefunden. Der Transaktionsservice wartet.
 WTRN0092_QUIESCE_UNFINISHED.explanation=Eingehende transaktionsgebundene Aktionen sind noch nicht abgeschlossen. Der Transaktionsservice verz\u00f6gert das Beenden des Servers, um dem Absender die M\u00f6glichkeit zu geben, die Transaktion abzuschlie\u00dfen.
 WTRN0092_QUIESCE_UNFINISHED.useraction=Es ist keine Aktion erforderlich. 
+
 WTRN0093_COMMIT_REPLAY_COMPLETION=WTRN0093W: Es ist kein Ergebnis f\u00fcr die untergeordnete Transaktion {0} verf\u00fcgbar. Die Transaktion wird nach heuristischem Verfahren festgeschrieben.
 WTRN0093_COMMIT_REPLAY_COMPLETION.explanation=Der Transaktionsservice konnte das Ergebnis der Transaktion im konfigurierten Wiederholungszeitlimit nicht von der \u00fcbergeordneten Transaktion abrufen. Die Transaktion wird nach heuristischem Verfahren festgeschrieben.
 WTRN0093_COMMIT_REPLAY_COMPLETION.useraction=Korrigieren Sie die fehlerhaften Anwendungsdaten, die auf dieses heuristische Ergebnis zur\u00fcckzuf\u00fchren sind.
@@ -814,6 +816,7 @@ WTRN0143_REC_TXN_ROLLEDERR.useraction=Pr\u00fcfen Sie den Antwortcode, um festzu
 WTRN0144_REC_TXN_FORGOT=WTRN0144I: Die wiederhergestellte Transaktion (tid={0}) hat XID {1} mit {2} erfolgreich ignoriert.
 WTRN0144_REC_TXN_FORGOT.explanation=Der Transaktionsservice stellt gerade die angegebene Transaktion wieder her und hat eine Ressource erfolgreich ignoriert.
 WTRN0144_REC_TXN_FORGOT.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 # 0 - transaction id
 # 1 - xid
 # 2 - resource manager name
@@ -821,12 +824,14 @@ WTRN0144_REC_TXN_FORGOT.useraction=Es ist keine Benutzeraktion erforderlich.
 WTRN0145_REC_TXN_FORGETERR=WTRN0145I: Die FORGET-Anforderung der wiederhergestellten Transaktion (tid={0}) f\u00fcr XID {1} mit {2} hat das folgende Ergebnis zur\u00fcckgegeben: {3}
 WTRN0145_REC_TXN_FORGETERR.explanation=Der Transaktionsservice stellt gerade die angegebene Transaktion wieder her und hat beim Ignorieren einer Ressource den in der Nachricht angegebenen Antwortcode empfangen.
 WTRN0145_REC_TXN_FORGETERR.useraction=Pr\u00fcfen Sie den Antwortcode, um festzustellen, ob das Ignorieren der Ressource fehlgeschlagen ist, und f\u00fchren Sie die entsprechende Aktion aus. 
+
 # 0 - number of xids
 # 1 - resource manager name
 # 2 - number of xids
 WTRN0146_REC_XA_RECOVERED=WTRN0146I: Es wurden {0} XIDs bei einer XA-Wiederherstellung \u00fcber {1} abgerufen, von denen {2} von diesem Server verarbeitet werden.
 WTRN0146_REC_XA_RECOVERED.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt.
 WTRN0146_REC_XA_RECOVERED.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 # 0 - xid
 # 1 - resource manager name
 # 2 - restart epoch value
@@ -837,20 +842,22 @@ WTRN0147_REC_XID_LATE.useraction=Pr\u00fcfen Sie den in der Nachricht angegebene
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: XID {0} \u00fcber {1} wiederhergestellt - Die XID hat keine zugeordnete Transaktion und wird r\u00fcckg\u00e4ngig gemacht.
-WTRN0148_REC_XA_ROLLBACK.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice macht die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig.
+WTRN0148_REC_XA_ROLLBACK.explanation=Der Transaktionsservice hat erfolgreich eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice macht die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig.
 WTRN0148_REC_XA_ROLLBACK.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 # 0 - xid
 # 1 - resource manager name
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: XID {0} \u00fcber {1} wiederhergestellt - Die XID hat eine zugeordnete Transaktion (tid={2}) mit dem protokollierten Status {3}
-WTRN0149_REC_XA_TRAN.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die einer protokollierten Transaktion entspricht. Der Transaktionsservice f\u00fchrt die Transaktion im Rahmen der Wiederherstellung aus.
+WTRN0149_REC_XA_TRAN.explanation=Der Transaktionsservice hat eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager erfolgreich ausgef\u00fchrt und eine XID erhalten, die einer protokollierten Transaktion entspricht. Der Transaktionsservice schlie\u00dft die Transaktion im Rahmen der Wiederherstellung ab.
 WTRN0149_REC_XA_TRAN.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Antwort der Rollback-Operation f\u00fcr wiederhergestellte XID {0} von {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Der Transaktionsservice hat die XA-Wiederherstellung f\u00fcr einen protokollierten Ressourcenmanager erfolgreich ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice hat versucht, die XID im Rahmen der Wiederherstellung r\u00fcckg\u00e4ngig zu machen.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Der Transaktionsservice hat erfolgreich eine XA-Wiederherstellung f\u00fcr einen protokollierten Resource Manager ausgef\u00fchrt und eine XID abgerufen, die keiner protokollierten Transaktion entspricht. Der Transaktionsservice hat versucht, die XID im Rahmen der Wiederherstellung zur\u00fcckzusetzen.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Pr\u00fcfen Sie den Fehlercode, um festzustellen, ob die Rollback-Operation fehlgeschlagen ist.
 
 # 0 - resource manager name
@@ -862,5 +869,19 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Ungew\u00f6hnliche HA-Konfiguration erkann
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA ist f\u00fcr diesen Cluster aktiviert, der HA-Manager ist jedoch inaktiviert.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Es ist keine Aktion erforderlich, wenn diese Konfiguration beabsichtigt ist. Andernfalls korrigieren Sie die HA-Konfiguration.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Der Transaktionsservice wurde beendet, aber das Wiederherstellungsprotokoll wurde als fehlgeschlagen markiert.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Das Wiederherstellungsprotokoll ist fehlgeschlagen und der Zugriff auf das Protokoll fand beim Herunterfahren des Servers nicht statt.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Korrigieren Sie alle Bedingungen, die in den Nachrichten angegeben sind, die die Invalidierung des Protokolls gemeldet haben. Starten Sie den Server erneut, damit das Protokoll repariert werden kann.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil der Transaktionsservice keine Transaktion starten kann.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty unterst\u00fctzt keine Anwendungen, die eine Transaktion starten oder erfordern, w\u00e4hrend die Anwendung bei der Anforderung eines Serverpr\u00fcfpunkts gestartet wird.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Verwenden Sie die Serverpr\u00fcfpunktoption w\u00e4hrend der Implementierung oder \u00e4ndern Sie die Anwendung so, dass Transaktionen nach ihrem Start gestartet werden.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Eine Anwendung hat w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine Transaktion gestartet oder erfordert. Der folgende Stack-Trace f\u00fcr diesen Thread wurde erfasst, als die Transaktion erstellt wurde: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Der Stack-Trace wurde erfasst, als die Transaktion erstellt wurde. Der Stack-Trace hilft Benutzern, zu ermitteln, welche Anwendungen Transaktionen w\u00e4hrend des Anwendungsstarts starten und dann das Fehlschlagen der Pr\u00fcfpunktanforderung verursachen.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=\u00dcberpr\u00fcfen Sie den Stack-Trace, um festzustellen, welche Anwendung w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine neue Transaktion gestartet hat.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

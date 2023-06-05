@@ -33,7 +33,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -47,9 +46,11 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 /**
  * Displays validation schema
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { RESTHandler.class }, property = { RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/openapi/platform",
-                                                                                                           RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/ibm/api/platform",
-                                                                                                           RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, 
+           service = { RESTHandler.class }, 
+           property = { RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/openapi/platform",
+                        RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/ibm/api/platform",
+                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/validation" })
 public class ValidatorSchemaRESTHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(ValidatorSchemaRESTHandler.class);
 
@@ -69,14 +70,6 @@ public class ValidatorSchemaRESTHandler implements RESTHandler {
             }
             response.setResponseHeader("Accept", "GET");
             response.sendError(405); // Method Not Allowed
-            return;
-        }
-
-        // Delete once feature 18696 is GA.
-        // Remove com.ibm.ws.kernel.boot from bnd buildpath once the Beta check is no longer needed.
-        if (!ProductInfo.getBetaEdition() && request.getContextPath().contains("/ibm/api")) {
-            response.setResponseHeader("Accept", "GET");
-            response.sendError(404); // Not Found
             return;
         }
 

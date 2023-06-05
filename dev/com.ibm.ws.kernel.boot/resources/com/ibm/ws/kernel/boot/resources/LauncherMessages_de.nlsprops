@@ -126,6 +126,10 @@ error.kernelDefFile=CWWKE0023E: Die angegebene Kerneldefinition ({0}) ist nicht 
 error.kernelDefFile.explanation=Die angegebene Kerneldefinition wurde nicht gefunden.
 error.kernelDefFile.useraction=Stellen Sie sicher, dass die Kerneldefinitionsressource vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
 
+error.badOptionValue=CWWKE0024E: Der Wert ({0}) f\u00fcr die Option ({1}) ist ung\u00fcltig.
+error.badOptionValue.explanation=Der angegebene Wert ist f\u00fcr die angegebene Option nicht geeignet.
+error.badOptionValue.useraction=F\u00fchren Sie den Befehl 'server help' aus, um eine Beschreibung der Optionen anzuzeigen.  Wenn der Wert eine Zahl ist, stellen Sie sicher, dass er im g\u00fcltigen Bereich liegt.
+
 error.specifiedLocation=CWWKE0025E: Der Wert von {0} muss auf ein Verzeichnis verweisen. Der angegebene Wert verweist auf eine vorhandene Dateiressource. Wert: {1}
 error.specifiedLocation.explanation=Die angegebene Position verweist auf eine vorhandene Datei und nicht auf ein Verzeichnis.
 error.specifiedLocation.useraction=\u00c4ndern Sie die angegebene Position in ein Verzeichnis und wiederholen Sie dann die Aktion.
@@ -137,6 +141,10 @@ warning.noPlatformCache.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausn
 warning.singleServer=CWWKE0027W: Es kann nur ein einziger Server in der Befehlszeile angegeben werden. Weitere Namen werden ignoriert (Server={0}, ignoriert={1}).
 warning.singleServer.explanation=Sie k\u00f6nnen nur einen einzigen Server in der Befehlszeile angeben. Der erste Servername wurde verarbeitet. Die verbleibenden Namen wurden ignoriert.
 warning.singleServer.useraction=Es ist keine Aktion erforderlich. Geben Sie nur einen einzigen Server an, um diese Warnung zu vermeiden.
+
+error.optionNotApplicableToCommand=CWWKE0028E: Die Option ({0}) ist f\u00fcr den Befehl nicht anwendbar.
+error.optionNotApplicableToCommand.explanation=Die angegebene Option ist f\u00fcr den angegebenen Befehl nicht zul\u00e4ssig.
+error.optionNotApplicableToCommand.useraction=F\u00fchren Sie den Befehl 'server <command> help' aus, um Informationen zu g\u00fcltigen Optionen f\u00fcr den Befehl abzurufen.
   
 error.serverAlreadyRunning=CWWKE0029E: Es ist bereits eine Instanz des Servers {0} aktiv.
 error.serverAlreadyRunning.explanation=Sie versuchen, einen Server zu starten, der bereits aktiv ist.
@@ -383,6 +391,10 @@ audit.system.exit.useraction=Wenn das Stoppen des Servers unerwartet ist, stelle
 audit.jvm.shutdown=CWWKE0085I: Der Server {0} wird gerade gestoppt, weil die JVM beendet wird.
 audit.jvm.shutdown.explanation=Der Server hat eine Anforderung zum Stoppen der JVM abgefangen und versucht, die JVM ordnungsgem\u00e4\u00df zu stoppen. Die JVM wird m\u00f6glicherweise beendet, weil das Betriebssystem ein Beendigungssignal an den Serverprozess gesendet hat.
 audit.jvm.shutdown.useraction=Wenn das Stoppen des Servers unerwartet ist, stellen Sie fest, ob ein Beendigungssignal an den Serverprozess gesendet wurde.
+
+error.optionRequiresEquals=CWWKE0086E: Die Option {0} muss vor dem angegebenen Wert ein Gleichheitszeichen (=) enthalten. 
+error.optionRequiresEquals.explanation=Der angegebenen Option muss ein Gleichheitszeichen (=) und ein Wert folgen.
+error.optionRequiresEquals.useraction=Die Option muss im folgenden Format angegeben werden: --Option=Wert.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Der Serverstart f\u00fcr den Server {0} wurde eingeleitet. Es ist nicht bekannt, ob der Start erfolgreich war, da der Serverbefehlsport inaktiviert ist.
 warning.serverStartedCommandPortDisabled.explanation=Der Serverbefehlsport ist f\u00fcr die Kommunikation mit einem aktiven Server erforderlich.  Der Befehlsport f\u00fcr diesen Server wurde explizit inaktiviert. Daher ist nicht bekannt, ob der Serverstart ausgef\u00fchrt wurde.
@@ -698,7 +710,7 @@ warning.earlyRelease=CWWKE0953W: Diese Version von {0} ist eine nicht unterst\u0
 warning.earlyRelease.explanation=Neue Features, die nicht vollst\u00e4ndig getestet wurden, werden in Vorabversionen verf\u00fcgbar gemacht, um R\u00fcckmeldungen zu sondieren, bevor sie in eine unterst\u00fctzte Version aufgenommen werden.
 warning.earlyRelease.useraction=Verwenden Sie Vorabversionen nicht in Produktionssystemen, da versionierenen nicht unterst\u00fctzt werden.
 
-error.invalidPhaseName=CWWKE0954E: Die angegebene Pr\u00fcfpunktphase "{0}" ist leer oder unbekannt.
+error.invalidPhaseName=CWWKE0954E: Die angegebene Pr\u00fcfpunktphase ({0}) ist leer oder unbekannt.
 error.invalidPhaseName.explanation=Als Wert der Pr\u00fcfpunktoption wurde eine unbekannte Phase angegeben.
 error.invalidPhaseName.useraction=Informationen zu g\u00fcltigen Phasennamen finden Sie in der Dokumentation. Geben Sie den Befehl mit einer g\u00fcltigen Pr\u00fcfpunktphase erneut aus.
 
@@ -710,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Der Java Security Manager konn
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager konnte nicht aktiviert werden, da das System Java 18 verwendet, was die Verwendung eines Java Security Manager standardm\u00e4\u00dfig nicht zul\u00e4sst.
 error.cannotset.securitymanager.jdk18.useraction=Starten Sie den Server mit dem JVM-Argument -Djava.security.manager = allow.
 
-error.checkpoint.delete=CWWKE0955E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil das vorhandene Pr\u00fcfpunktimage nicht aus dem Verzeichnis {0} gel\u00f6scht werden kann.
-error.checkpoint.delete.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da ein vorhandenes Pr\u00fcfpunkt-Image nicht gel\u00f6scht werden kann.
-error.checkpoint.delete.useraction=Stellen Sie sicher, dass der Benutzer berechtigt ist, das vorhandene Verzeichnis zu l\u00f6schen. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
-
-error.checkpoint.workarea.backup=CWWKE0956E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, da das Verzeichnis {0} nicht gesichert werden kann.
-error.checkpoint.workarea.backup.explanation=Beim Sichern des Arbeitsbereichsverzeichnisses des Pr\u00fcfpunktservers ist ein Fehler aufgetreten.
-error.checkpoint.workarea.backup.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Sichern des Verzeichnisses des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
-
 error.checkpoint.workarea.restore=CWWKE0957E: Das Arbeitsbereichsverzeichnis des Pr\u00fcfpunktservers kann nicht aus dem Verzeichnis {0} wiederhergestellt werden.
 error.checkpoint.workarea.restore.explanation=Beim Wiederherstellen des Arbeitsbereichsverzeichnisses f\u00fcr den Pr\u00fcfpunkt ist ein Fehler aufgetreten.
 error.checkpoint.workarea.restore.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Wiederherstellen des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
 
-info.checkpoint.restore.failed=CWWKE0957I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil die Eigenschaft websphere.java.security in der Datei bootstrap.properties definiert wurde. Diese Eigenschaft aktiviert den Java Security Manager und ist nicht g\u00fcltig, wenn ein Serverpr\u00fcfpunkt auftritt.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty unterst\u00fctzt Java Security Manager nicht, wenn ein Serverpr\u00fcfpunkt angefordert wird. Der Java Security Manager ist veraltet, wie in JEP 411 angegeben.
+error.checkpoint.securitymanager.not.supported.useraction=Entfernen Sie die Eigenschaft websphere.java.security aus der Datei bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, weil das vorhandene Pr\u00fcfpunktimage nicht aus dem Verzeichnis {0} gel\u00f6scht werden kann.
+error.checkpoint.delete.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da ein vorhandenes Pr\u00fcfpunkt-Image nicht gel\u00f6scht werden kann.
+error.checkpoint.delete.useraction=Stellen Sie sicher, dass der Benutzer berechtigt ist, das vorhandene Verzeichnis zu l\u00f6schen. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+error.checkpoint.workarea.backup=CWWKE0960E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen, da das Verzeichnis {0} nicht gesichert werden kann.
+error.checkpoint.workarea.backup.explanation=Beim Sichern des Arbeitsbereichsverzeichnisses des Pr\u00fcfpunktservers ist ein Fehler aufgetreten.
+error.checkpoint.workarea.backup.useraction=Stellen Sie sicher, dass der Benutzer \u00fcber ausreichende Berechtigungen zum Sichern des Verzeichnisses des Pr\u00fcfpunktarbeitsbereichs verf\u00fcgt. Geben Sie den Befehl mit einem Benutzer mit ausreichenden Berechtigungen erneut aus.
+
+info.checkpoint.restore.failed=CWWKE0961I: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Server ohne Verwendung des Pr\u00fcfpunktimages starten.
 info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
 info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
 
-error.checkpoint.failed=CWWKE0958E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen. Die folgende Ausgabe stammt aus der CRIU-Datei {0}, die Details dazu enth\u00e4lt, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
+error.checkpoint.failed=CWWKE0962E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen. Die folgende Ausgabe stammt aus der CRIU-Datei {0}, die Details dazu enth\u00e4lt, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
 error.checkpoint.failed.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen. Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\u00fcr den Server erstellt.
 error.checkpoint.failed.useraction=Um festzustellen, warum der Pr\u00fcfpunkt fehlgeschlagen ist, \u00fcberpr\u00fcfen Sie die Protokolldateien im Pr\u00fcfpunktverzeichnis, das sich im Serverprotokollverzeichnis befindet.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Die Pr\u00fcfpunktanforderung des Servers ist fehlgeschlagen, da Netlink-Systemaufrufe nicht erfolgreich waren. Wenn SELinux im restriktiven Modus aktiviert ist, werden Netlink-Systemaufrufe m\u00f6glicherweise durch die SELinux-Richtlinieneinstellung "virt_sandbox_use_netlink" blockiert. Inaktivieren Sie SELinux oder aktivieren Sie die Netlink-Systemaufrufe mit dem Befehl "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da Netlink-Systemaufrufe nicht erfolgreich waren.
+error.checkpoint.failed.selinux.netdiag.useraction=Wenn SELinux im restriktiven Modus aktiviert ist, werden Netlink-Systemaufrufe m\u00f6glicherweise durch die SELinux-Richtlinieneinstellung "virt_sandbox_use_netlink" blockiert. Inaktivieren Sie SELinux oder aktivieren Sie die Netlink-Systemaufrufe mit dem Befehl "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.

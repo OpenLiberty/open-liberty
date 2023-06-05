@@ -65,8 +65,8 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
-
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
+ // Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
 public class SoapOutInterceptor extends AbstractSoapInterceptor {
     public static final String WROTE_ENVELOPE_START = "wrote.envelope.start";
 

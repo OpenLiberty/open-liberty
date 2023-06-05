@@ -126,6 +126,10 @@ error.kernelDefFile=CWWKE0023E: La definici\u00f3n de kernel especificada ({0}) 
 error.kernelDefFile.explanation=No se ha podido encontrar la definici\u00f3n de kernel especificada.
 error.kernelDefFile.useraction=Aseg\u00farese de que el recurso de definici\u00f3n de kernel existe y de que el usuario actual puede leerlo.
 
+error.badOptionValue=CWWKE0024E: El valor ({0}) de la opci\u00f3n ({1}) no es v\u00e1lido.
+error.badOptionValue.explanation=El valor especificado no es adecuado para la opci\u00f3n especificada.
+error.badOptionValue.useraction=Ejecute el comando `server help` para obtener una descripci\u00f3n de las opciones.  Si el valor es un n\u00famero, aseg\u00farese de que est\u00e1 en el rango v\u00e1lido.
+
 error.specifiedLocation=CWWKE0025E: El valor de {0} debe hacer referencia a un directorio. El valor especificado hace referencia a un recurso de archivo existente. Valor: {1}
 error.specifiedLocation.explanation=La ubicaci\u00f3n proporcionada hace referencia a un archivo existente en vez de a un directorio.
 error.specifiedLocation.useraction=Cambie la ubicaci\u00f3n especificada a un directorio y vuelva a intentar la acci\u00f3n.
@@ -137,6 +141,10 @@ warning.noPlatformCache.useraction=Compruebe y resuelva la excepci\u00f3n, y rep
 warning.singleServer=CWWKE0027W: En la l\u00ednea de mandatos s\u00f3lo se puede especificar un servidor; los nombres posteriores se ignorar\u00e1n (servidor={0}, ignorados={1}).
 warning.singleServer.explanation=En la l\u00ednea de mandatos s\u00f3lo puede especificar un servidor. El primer nombre de servidor se ha procesado; los nombres restantes se han ignorado.
 warning.singleServer.useraction=No se requiere ninguna acci\u00f3n. Especifique \u00fanicamente un servidor para evitar este aviso.
+
+error.optionNotApplicableToCommand=CWWKE0028E: La opci\u00f3n ({0}) no es aplicable al comando.
+error.optionNotApplicableToCommand.explanation=La opci\u00f3n especificada no est\u00e1 permitida en el comando especificado.
+error.optionNotApplicableToCommand.useraction=Ejecute el comando `server <command> help` para obtener informaci\u00f3n sobre las opciones v\u00e1lidas del comando.
   
 error.serverAlreadyRunning=CWWKE0029E: Ya se est\u00e1 ejecutando una instancia del servidor {0}.
 error.serverAlreadyRunning.explanation=Est\u00e1 intentando iniciar un servidor que ya se est\u00e1 ejecutando.
@@ -383,6 +391,10 @@ audit.system.exit.useraction=Si no se esperaba la detenci\u00f3n del servidor, d
 audit.jvm.shutdown=CWWKE0085I: El servidor {0} se detiene porque la JVM est\u00e1 concluyendo.
 audit.jvm.shutdown.explanation=El servidor ha interceptado una petici\u00f3n para detener la JVM e intentar\u00e1 la detenci\u00f3n de forma ordenada. Es posible que la JVM concluya debido a que el sistema operativo ha enviado una se\u00f1al de terminaci\u00f3n al proceso de servidor.
 audit.jvm.shutdown.useraction=Si no se esperaba la detenci\u00f3n del servidor, determine si se ha enviado una se\u00f1al de terminaci\u00f3n al proceso de servidor.
+
+error.optionRequiresEquals=CWWKE0086E: La opci\u00f3n {0} tiene que incluir el signo igual (=) delante del valor especificado. 
+error.optionRequiresEquals.explanation=La opci\u00f3n especificada tiene que ir seguida del signo igual (=) y un valor.
+error.optionRequiresEquals.useraction=La opci\u00f3n se especifica en el formato siguiente: --opci\u00f3n=valor.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Se ha iniciado el arranque del servidor {0}, pero no es posible saber si se ha completado el arranque porque el puerto de mandatos del servidor est\u00e1 inhabilitado.
 warning.serverStartedCommandPortDisabled.explanation=Se necesita el puerto de mandatos del servidor para comunicarse con un servidor en ejecuci\u00f3n.  El puerto de mandatos se ha inhabilitado expl\u00edcitamente para este servidor, por lo tanto no es posible saber si se ha completado el arranque del servidor.
@@ -698,7 +710,7 @@ warning.earlyRelease=CWWKE0953W: Esta versi\u00f3n de {0} es una primera versi\u
 warning.earlyRelease.explanation=En este primer release se incluyen caracter\u00edsticas que no est\u00e1n totalmente probadas para extraer conclusiones antes de incluirlas en un release soportado.
 warning.earlyRelease.useraction=No utilice una primera versi\u00f3n de release en un sistema de producci\u00f3n, ya que estas versiones no est\u00e1n soportadas.
 
-error.invalidPhaseName=CWWKE0954E: La fase de punto de comprobaci\u00f3n "{0}" especificada est\u00e1 vac\u00eda o es desconocida.
+error.invalidPhaseName=CWWKE0954E: La fase de punto de comprobaci\u00f3n especificada ({0}) est\u00e1 vac\u00eda o es desconocida.
 error.invalidPhaseName.explanation=Se ha especificado una fase desconocida como valor de la opci\u00f3n checkpoint.
 error.invalidPhaseName.useraction=Revise la documentaci\u00f3n para determinar los nombres de fase v\u00e1lidos. Vuelva a emitir el mandato utilizando una fase de punto de comprobaci\u00f3n v\u00e1lida.
 
@@ -710,25 +722,33 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: No se ha podido establecer Jav
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager no se ha podido habilitar porque el sistema est\u00e1 utilizando Java 18, que de forma predeterminada no permite el uso de un gestor de seguridad de Java.
 error.cannotset.securitymanager.jdk18.useraction=Inicie el servidor con el argumento de JVM -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque la imagen de punto de comprobaci\u00f3n existente no se puede suprimir del directorio {0}.
+error.checkpoint.workarea.restore=CWWKE0957E: El directorio del \u00e1rea de trabajo del servidor de punto de comprobaci\u00f3n no se puede restaurar desde el directorio {0}.
+error.checkpoint.workarea.restore.explanation=Se ha producido un error al restaurar el directorio de \u00e1rea de trabajo del punto de comprobaci\u00f3n.
+error.checkpoint.workarea.restore.useraction=Aseg\u00farese de que el usuario tiene permisos suficientes para restaurar el \u00e1rea de trabajo de punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque la propiedad websphere.java.security se ha establecido en el archivo bootstrap.properties. Esta propiedad habilita Java Security Manager y no es v\u00e1lida cuando existe un punto de comprobaci\u00f3n del servidor.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty no es compatible con Java Security Manager cuando se solicita un punto de comprobaci\u00f3n del servidor. Java Security Manager est\u00e1 en desuso, tal como especifica en JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Elimine la propiedad websphere.java.security del archivo bootstrap.properties.
+
+error.checkpoint.delete=CWWKE0959E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque la imagen de punto de comprobaci\u00f3n existente no se puede suprimir del directorio {0}.
 error.checkpoint.delete.explanation=Una solicitud de punto de comprobaci\u00f3n para el servidor ha fallado porque no se puede suprimir una imagen de punto de comprobaci\u00f3n existente.
 error.checkpoint.delete.useraction=Aseg\u00farese de que el usuario tiene permiso para suprimir el directorio existente. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
 
-error.checkpoint.workarea.backup=CWWKE0956E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque no se puede hacer copia de seguridad del directorio {0}.
+error.checkpoint.workarea.backup=CWWKE0960E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque no se puede hacer copia de seguridad del directorio {0}.
 error.checkpoint.workarea.backup.explanation=Se ha producido un error al realizar una copia de seguridad del directorio de \u00e1rea de trabajo del servidor.
-error.checkpoint.workarea.backup.useraction=Aseg\u00farese de que el usuario tiene suficientes permisos para realizar una copia de seguridad del directorio de \u00e1rea de trabajo del punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
+error.checkpoint.workarea.backup.useraction=Aseg\u00farese de que el usuario tiene permisos suficientes para realizar una copia de seguridad del directorio de \u00e1rea de trabajo de punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
 
-error.checkpoint.workarea.restore=CWWKE0957E: El directorio del \u00e1rea de trabajo del servidor de punto de comprobaci\u00f3n no se puede restaurar desde el directorio {0}.
-error.checkpoint.workarea.restore.explanation=Se ha producido un error al restaurar el directorio de \u00e1rea de trabajo del punto de comprobaci\u00f3n.
-error.checkpoint.workarea.restore.useraction=Aseg\u00farese de que el usuario tiene suficientes permisos para restaurar el \u00e1rea de trabajo del punto de comprobaci\u00f3n. Vuelva a emitir el mandato con un usuario que tenga permisos suficientes.
-
-info.checkpoint.restore.failed=CWWKE0957I: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Se inicia el servidor sin utilizar la imagen de punto de comprobaci\u00f3n.
+info.checkpoint.restore.failed=CWWKE0961I: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Se inicia el servidor sin utilizar la imagen de punto de comprobaci\u00f3n.
 info.checkpoint.restore.failed.explanation=Se ha producido un error al restaurar un proceso de servidor de punto de comprobaci\u00f3n.  El servidor se ha iniciado sin utilizar la imagen de punto de comprobaci\u00f3n.
 info.checkpoint.restore.failed.useraction=Consulte los registros para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n.
 
-error.checkpoint.failed=CWWKE0958E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado. La salida siguiente es del archivo {0} de CRIU que contiene detalles sobre por qu\u00e9 ha fallado el punto de comprobaci\u00f3n.
+error.checkpoint.failed=CWWKE0962E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado. La salida siguiente es del archivo {0} de CRIU que contiene detalles sobre por qu\u00e9 ha fallado el punto de comprobaci\u00f3n.
 error.checkpoint.failed.explanation=Ha fallado una solicitud de punto de comprobaci\u00f3n para el servidor. No se ha creado ninguna imagen de proceso de punto de comprobaci\u00f3n v\u00e1lida para el servidor.
 error.checkpoint.failed.useraction=Para determinar por qu\u00e9 ha fallado el punto de comprobaci\u00f3n, inspeccione los archivos de registro en el directorio de punto de comprobaci\u00f3n que se encuentra en el directorio de registros del servidor.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque las llamadas al sistema de enlace de red no han sido satisfactorias. Si SELinux est\u00e1 habilitado en modalidad de imposici\u00f3n, el valor de pol\u00edtica "virt_sandbox_use_netlink" de SELinux podr\u00eda bloquear las llamadas al sistema de enlace de red. Inhabilite SELinux o habilite las llamadas al sistema de enlace de red con el mandato "setsebool virt_sandbox_use_netlink 1".
+error.checkpoint.failed.selinux.netdiag.explanation=Una solicitud de punto de comprobaci\u00f3n para el servidor ha fallado porque las llamadas al sistema de enlace de red no han sido satisfactorias.
+error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est\u00e1 habilitado en modalidad de imposici\u00f3n, el valor de pol\u00edtica "virt_sandbox_use_netlink" de SELinux podr\u00eda bloquear las llamadas al sistema de enlace de red. Inhabilite SELinux o habilite las llamadas al sistema de enlace de red con el mandato "setsebool virt_sandbox_use_netlink 1".
 
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.

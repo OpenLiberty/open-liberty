@@ -1,15 +1,12 @@
-/*
+/*******************************************************************************
  * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.cdicommon.managed.factories;
 
 import java.util.Iterator;
@@ -21,8 +18,8 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.inject.Inject;
 
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryAppBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryDepBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryAppBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.factory.FactoryDepBean;
 
 /**
  *
@@ -79,8 +76,7 @@ public class CustomRenderKitFactory extends RenderKitFactory {
         if (methodBean != null) {
             methodBean.incrementAppCount();
             methodBean.logFirst(FacesContext.getCurrentInstance().getExternalContext(), this.getClass().getSimpleName(), "getRenderKit", output);
-        }
-        else {
+        } else {
             FacesContext.getCurrentInstance().getExternalContext().log("CustomRenderKitFactory method injection failed.");
         }
 

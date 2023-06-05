@@ -441,7 +441,8 @@ public class SIPConnectionsModel
 		return m_listeningConnections.values(); 
 	}
 
-	synchronized SIPListenningConnection createSIPListenningConnection( ListeningPointImpl lp ) throws IOException
+	//remove syncronized from createSIPListenningConnection method due to deadlock
+	SIPListenningConnection createSIPListenningConnection( ListeningPointImpl lp ) throws IOException
 	{
 		String transportFactoryKey = lp.getTransport().equals("tcp") && lp.isSecure() ? "tls" : lp.getTransport();
 		SIPConnectionFactory factory = getConnectionFactory(transportFactoryKey);

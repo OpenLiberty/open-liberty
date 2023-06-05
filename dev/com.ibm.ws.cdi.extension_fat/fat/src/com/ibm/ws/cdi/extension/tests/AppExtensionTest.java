@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,19 +33,24 @@ import com.ibm.ws.cdi.extension.apps.appExtension.jar.PlainExtension;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class AppExtensionTest extends FATServletClient {
 
     public static final String APP_NAME = "applicationExtension";
     public static final String SERVER_NAME = "cdi12AppExtensionServer";
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS,
+                                                                   CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE7_PLUS);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = com.ibm.ws.cdi.extension.apps.appExtension.AppExtensionServlet.class, contextRoot = APP_NAME)

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.zipkin;
 
+import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
+
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -27,12 +29,10 @@ import org.testcontainers.utility.DockerImageName;
  */
 public class ZipkinContainer extends GenericContainer<ZipkinContainer> {
 
-    public static final DockerImageName IMAGE_NAME = DockerImageName.parse("openzipkin/zipkin-slim:2.23");
-
     public static final int HTTP_PORT = 9411;
 
     public ZipkinContainer() {
-        this(IMAGE_NAME);
+        this(TestConstants.DOCKER_IMAGE_ZIPKIN_SLIM);
     }
 
     public ZipkinContainer(DockerImageName imageName) {

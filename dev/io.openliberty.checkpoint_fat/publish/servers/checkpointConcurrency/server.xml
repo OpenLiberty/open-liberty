@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="webSocketServer">
+
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>mpConfig-2.0</feature>
+    </featureManager>
+    
+    <managedScheduledExecutorService name="managedExec" jndiName="jndi/managedExec">
+    	<concurrencyPolicy max="5"/>
+    	<concurrencyPolicy maxQueueSize="10"/>
+    	<concurrencyPolicy startTimeout="10000"/>
+    </managedScheduledExecutorService>
+    
+    <variable id="scheduledTime" name="scheduledTime" value="5000"/>
+    <variable id="repeatTrigger" name="repeatTrigger" value="false"/>
+    <variable id="repeatManagedExec" name="repeatManagedExec" value="false" />
+
+	<include location="../fatTestPorts.xml"/>
+    <applicationManager autoExpand="true"/>
+
+	<webApplication id="concurrentApp" location="concurrentApp.war" name="concurrentApp"/>
+
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+</server>

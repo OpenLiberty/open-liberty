@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package io.openliberty.data.internal.persistence;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.repository.Compare;
 import jakarta.data.exceptions.MappingException;
 
 /**
@@ -46,6 +47,20 @@ enum Condition {
         this.operator = operator;
         this.length = length;
         this.supportsCollections = supportsCollections;
+    }
+
+    static Condition forIdClass(Compare comparison) {
+        switch (comparison) {
+            case Equal:
+                return EQUALS;
+            case Null:
+                return NULL;
+            case Empty:
+                return EMPTY;
+            default:
+                throw new MappingException("Repository filter operation " + comparison.name() +
+                                           " cannot be used when the Id of the entity is an IdClass."); // TODO
+        }
     }
 
     Condition negate() {

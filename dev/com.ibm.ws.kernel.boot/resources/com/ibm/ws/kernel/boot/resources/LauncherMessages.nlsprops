@@ -736,21 +736,37 @@ error.cannotset.securitymanager.jdk18=CWWKE0956E: Failed to set the Java Securit
 error.cannotset.securitymanager.jdk18.explanation=Java Security Manager could not be enabled because the system is using Java 18, which by default disallows use of a Java Security Manager.
 error.cannotset.securitymanager.jdk18.useraction=Start the server with the JVM argument -Djava.security.manager=allow.
 
-error.checkpoint.delete=CWWKE0955E: The server checkpoint request failed because the existing checkpoint image cannot be deleted from the {0} directory.
+error.checkpoint.workarea.restore=CWWKE0957E: The checkpoint server workarea directory cannot be restored from the {0} directory.
+error.checkpoint.workarea.restore.explanation=An error occurred restoring the checkpoint workarea directory.
+error.checkpoint.workarea.restore.useraction=Ensure that the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
+
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: The server checkpoint request failed because the websphere.java.security property was set in the bootstrap.properties file. This property enables the Java Security Manager and is not valid when a server checkpoint occurs.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty does not support the Java Security Manager when a server checkpoint is requested. The Java Security Manager is deprecated, as specified by JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Remove the websphere.java.security property from the bootstrap.properties file.
+
+error.checkpoint.delete=CWWKE0959E: The server checkpoint request failed because the existing checkpoint image cannot be deleted from the {0} directory.
 error.checkpoint.delete.explanation=A checkpoint request for the server failed because an existing checkpoint image cannot be deleted.
 error.checkpoint.delete.useraction=Ensure the user has permission to delete the existing directory. Reissue the command with a user that has sufficient permissions.
 
-error.checkpoint.workarea.backup=CWWKE0956E: The server checkpoint request failed because the {0} directory cannot be backed up.
+error.checkpoint.workarea.backup=CWWKE0960E: The server checkpoint request failed because the {0} directory cannot be backed up.
 error.checkpoint.workarea.backup.explanation=An error occurred backing up the checkpoint server workarea directory.
-error.checkpoint.workarea.backup.useraction=Ensure the user has sufficient permissions to back up the checkpoint workarea directory. Reissue the command with a user that has sufficient permissions.
+error.checkpoint.workarea.backup.useraction=Ensure that the user has sufficient permissions to back up the checkpoint workarea directory. Reissue the command with a user that has sufficient permissions.
 
-error.checkpoint.workarea.restore=CWWKE0957E: The checkpoint server workarea directory cannot be restored from the {0} directory.
-error.checkpoint.workarea.restore.explanation=An error occurred restoring the checkpoint workarea directory.
-error.checkpoint.workarea.restore.useraction=Ensure the user has sufficient permissions to restore the checkpoint workarea. Reissue the command with a user that has sufficient permissions.
-
-info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
+info.checkpoint.restore.failed=CWWKE0961I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
 info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
+
+error.checkpoint.failed=CWWKE0962E: The server checkpoint request failed. The following output is from the CRIU {0} file that contains details on why the checkpoint failed.
+error.checkpoint.failed.explanation=A checkpoint request for the server failed. No valid checkpoint process image for the server was created.
+error.checkpoint.failed.useraction=To determine why the checkpoint failed, inspect the log files in the checkpoint directory that is located in the server logs directory.
+
+error.checkpoint.failed.selinux.netdiag=CWWKE0963E: The server checkpoint request failed because netlink system calls were unsuccessful. If SELinux is enabled in enforcing mode, netlink system calls might be blocked by the SELinux "virt_sandbox_use_netlink" policy setting. Either disable SELinux or enable the netlink system calls with the "setsebool virt_sandbox_use_netlink 1" command.
+error.checkpoint.failed.selinux.netdiag.explanation=A checkpoint request for the server failed because netlink system calls were unsuccessful.
+error.checkpoint.failed.selinux.netdiag.useraction=If SELinux is enabled in enforcing mode, netlink system calls might be blocked by the SELinux "virt_sandbox_use_netlink" policy setting. Either disable SELinux or enable the netlink system calls with the "setsebool virt_sandbox_use_netlink 1" command.
+
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. The server did not launch because checkpoint restore recovery is disabled.
+error.checkpoint.restore.failed.no.recovery.explanation=An error occurred restoring a checkpoint server process. The server did not launch because checkpoint restore recovery is disabled.
+error.checkpoint.restore.failed.no.recovery.useraction=Check the logs to determine why the checkpoint process was not restored. To enable restore failure recovery, set the CRIU_RESTORE_DISABLE_RECOVERY environment variable to true.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

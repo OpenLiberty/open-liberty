@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,9 @@ public class OpenIdContextExpectationHelpers {
 
     public static void getOpenIdContextExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
+        if (rspValues.getBaseApp().equals(Constants.DEFAULT_SERVLET)) {
+            return;
+        }
         // TODO
         String updatedRequester = requester + ServletMessageConstants.OPENID_CONTEXT;
         getOpenIdContextSubjectExpectations(action, expectations, updatedRequester, rspValues, false);
@@ -97,11 +100,9 @@ public class OpenIdContextExpectationHelpers {
                                                                                                        + ServletMessageConstants.KEY
                                                                                                        + PayloadConstants.PAYLOAD_EXPIRATION_TIME_IN_SECS, "Did not find an exp claim in the id token in the OpenIdContext."));
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildIssuedAtTimeString(requester), "Did not find an iat claim in the id token in the OpenIdContext."));
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildNonceString(requester), "Did not find an nonce claim in the id token in the OpenIdContext."));
-            // TODO - remove sid check - will go away once the beta flag is removed
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
-                                                                                                       + ServletMessageConstants.KEY
-                                                                                                       + PayloadConstants.PAYLOAD_SESSION_ID, "Did not find an sid claim in the id token in the OpenIdContext."));
+            if (rspValues.getUseNonce()) {
+                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildNonceString(requester), "Did not find an nonce claim in the id token in the OpenIdContext."));
+            }
         } else {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN
                                                                                                        + ServletMessageConstants.NULL, "Found an id token in the OpenIdContext and should not have."));
@@ -142,29 +143,35 @@ public class OpenIdContextExpectationHelpers {
 
         List<NameValuePair> parms = rspValues.getParms();
 
-        if (!refreshedToken) {
-            if (parms != null) {
-                for (NameValuePair parm : parms) {
+        if (rspValues.getOriginalRequest() != null && rspValues.getOriginalRequest().contains(ServletMessageConstants.UNAUTH_SESSION_REQUEST_EXCEPTION)) {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
+                                                                                                      + ".*"
+                                                                                                      + rspValues.getOriginalRequest()
+                                                                                                      + ".*", "Did not find the original request in the Stored Value in the OpenIdContext."));
+        } else {
+            if (!refreshedToken) {
+                if (parms != null) {
+                    for (NameValuePair parm : parms) {
+                        expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
+                                                                                                                  + OpenIdConstant.ORIGINAL_REQUEST
+                                                                                                                  + ".*" + rspValues.getOriginalRequest()
+                                                                                                                  + ".*" + parm.getName() + "="
+                                                                                                                  + parm.getValue(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+
+                    }
+                } else {
                     expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
                                                                                                               + OpenIdConstant.ORIGINAL_REQUEST
-                                                                                                              + ".*" + rspValues.getOriginalRequest()
-                                                                                                              + ".*" + parm.getName() + "="
-                                                                                                              + parm.getValue(), "Did not find the original request in the Stored Value in the OpenIdContext."));
-
+                                                                                                              + ".*"
+                                                                                                              + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
                 }
             } else {
                 expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
                                                                                                           + OpenIdConstant.ORIGINAL_REQUEST
                                                                                                           + ".*"
-                                                                                                          + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+                                                                                                          + ServletMessageConstants.EMPTY, "Did not find the original request in the Stored Value in the OpenIdContext."));
             }
-        } else {
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
-                                                                                                      + OpenIdConstant.ORIGINAL_REQUEST
-                                                                                                      + ".*"
-                                                                                                      + ServletMessageConstants.EMPTY, "Did not find the original request in the Stored Value in the OpenIdContext."));
         }
-
     }
 
     public static void getOpenIdContextAccessTokenScopeExpectations(String action, Expectations expectations, String requester, String[] scopes) throws Exception {

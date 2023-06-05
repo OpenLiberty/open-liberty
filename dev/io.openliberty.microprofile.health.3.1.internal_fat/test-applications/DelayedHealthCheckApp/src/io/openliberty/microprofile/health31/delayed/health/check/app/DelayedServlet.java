@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,9 +35,9 @@ public class DelayedServlet extends HttpServlet {
 
     @Override
     public void init() {
-        System.out.println("Entering init function - Starting Thread.sleep for 65 seconds.");
+        System.out.println("Entering init function - Starting Thread.sleep for 95 seconds.");
         try {
-            Thread.sleep(65000); //65 seconds = 65000 ms
+            Thread.sleep(95000); // 95 seconds = 95000 ms
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -108,12 +108,13 @@ public class ExpirationTimer extends BaseTimer {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-    	synchronized (getSynchronizer()) {
-    		if(m_expInvoker != null) {
-    			m_expInvoker.invokeExpiredTimer(); // defect 642320, the invocation has to be in-sync with the 
-    		}									//cancel method of both the timer and the listener to avoid NPEs		
-    	}								//Note that AppSessionTimerListener.cancel is also synced on 
-    }										//the same handle
+	//remove syncronized as it can cause deadlock in proxy mode
+    	//synchronized (getSynchronizer()) {
+    	if(m_expInvoker != null) {
+    		m_expInvoker.invokeExpiredTimer(); 	// defect 642320, the invocation has to be in-sync with the 
+    	}						//cancel method of both the timer and the listener to avoid NPEs		
+    	//}						//Note that AppSessionTimerListener.cancel is also synced on 
+    }							//the same handle
 
 	/**
 	 * Gets ExpirationTimerListener

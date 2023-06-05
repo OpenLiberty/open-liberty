@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
+
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -55,15 +54,13 @@ public class JSF22BeanValidationTests extends FATServletClient {
                         .addPackage("jsf.beanval");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
-        ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
-        server.addInstalledAppForValidation(MOJARRA_APP);
+        ShrinkHelper.exportDropinAppToServer(server, mojarraApp);
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
                         .addPackage("jsf.beanval");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
-        ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
-        server.addInstalledAppForValidation(MYFACES_APP);
+        ShrinkHelper.exportDropinAppToServer(server, myfacesApp);
 
         server.startServer();
     }
@@ -76,9 +73,9 @@ public class JSF22BeanValidationTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
+        assertNotNull(server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled"));
     }
 
     @Test

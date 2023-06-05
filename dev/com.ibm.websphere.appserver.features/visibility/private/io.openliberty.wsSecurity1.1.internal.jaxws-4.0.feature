@@ -5,9 +5,7 @@ singleton=true
 -features=io.openliberty.appSecurity-5.0, \
  io.openliberty.servlet.api-6.0; apiJar=false, \
  io.openliberty.xmlWS-4.0, \
- io.openliberty.wss4j-2.3, \
- io.openliberty.jta-2.0, \
- com.ibm.websphere.appserver.httpcommons-1.0
+ io.openliberty.wss4j-2.3
 -bundles=\
  com.ibm.ws.org.joda.time.2.9.9, \
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
@@ -19,5 +17,5 @@ singleton=true
  com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1.jakarta, \
  com.ibm.ws.wssecurity.3.4.1.jakarta, \
  io.openliberty.wssecurity
-kind=beta
+kind=ga
 edition=base

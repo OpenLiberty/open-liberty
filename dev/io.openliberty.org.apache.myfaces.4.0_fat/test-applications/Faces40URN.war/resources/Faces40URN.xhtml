@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:faces="jakarta.faces"
+    xmlns:pt="jakarta.faces.passthrough"
+    xmlns:fn="jakarta.tags.functions"
+    xmlns:test="jakarta.faces.component">
+    <h:head>
+        <title>Faces 4.0 URN Test</title>
+    </h:head>
+    <h:body>
+        <!-- Test the jakarta.faces URN -->
+        <form faces:id="URNTestFacesForm">
+            <!-- Test a passthrough attribute setting the type attribute of the input. -->
+            <!-- Test the jakarta.faces.passthrough URN. -->
+            <h:inputText id="URNTestFacesInputEmail" pt:type="email" value = "madeupemail@madeupemail.com"/>
+            <br/>
+            <!-- Test fn:contains works properly. -->
+            <!-- Test the jakarta.tags.functions URN. -->
+            <h:inputText id="URNTestFacesInputText" value = "${fn:contains('Hello World', 'Hello')}"/>
+            <br/>
+            <!-- Test a simple custom component that converts the value to lowercase. -->
+            <!-- Test the jakarta.faces.component URN. -->
+            <test:testComponent value="HELLO WORLD"/>
+        </form>
+    </h:body>
+</html>

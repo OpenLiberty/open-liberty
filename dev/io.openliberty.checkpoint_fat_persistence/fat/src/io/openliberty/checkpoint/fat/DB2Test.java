@@ -111,7 +111,7 @@ public class DB2Test extends FATServletClient {
         };
 
         // at this point the server no longer has the env set; we set them just before restore
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, preRestoreLogic);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, preRestoreLogic);
 
         // Launch servlet with embedded junit tests,
         server.startServer();

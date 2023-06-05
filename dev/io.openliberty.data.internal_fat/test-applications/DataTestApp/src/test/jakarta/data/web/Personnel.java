@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,14 +17,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.Delete;
-import jakarta.data.Select;
-import jakarta.data.Update;
-import jakarta.data.Where;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
+
+import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Delete;
+import io.openliberty.data.repository.Filter;
+import io.openliberty.data.repository.Select;
+import io.openliberty.data.repository.Update;
 
 /**
  * This is a second repository interface for the Person entity,
@@ -35,9 +37,10 @@ import jakarta.enterprise.concurrent.Asynchronous;
 @Repository
 public interface Personnel {
     @Asynchronous
-    @Update("o.lastName = ?2")
-    @Where("o.lastName = ?1 AND o.ssn IN ?3")
-    CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
+    @Filter(by = "lastName")
+    @Filter(by = "ssn_id", op = Compare.In)
+    @Update(attr = "lastName")
+    CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
 
     @Asynchronous
     CompletableFuture<Long> countByFirstNameStartsWith(String beginningOfFirstName);
@@ -46,13 +49,13 @@ public interface Personnel {
     void deleteByFirstName(String firstName);
 
     @Asynchronous
-    CompletableFuture<Void> deleteBySsn(long ssn);
+    CompletableFuture<Void> deleteById(long ssn);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous
-    CompletableFuture<Person> findBySsn(long ssn);
+    CompletableFuture<Person> findBySSN_Id(long ssn);
 
     @Asynchronous
     @Query("SELECT o.firstName FROM Person o WHERE o.lastName=?1 ORDER BY o.firstName")
@@ -62,8 +65,8 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
+    @Filter(by = "firstName", op = Compare.StartsWith)
     @Select("firstName")
-    @Where("o.firstName LIKE CONCAT(?1, '%')")
     Streamable<String> namesThatStartWith(String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
@@ -77,12 +80,12 @@ public interface Personnel {
     @Asynchronous
     CompletableFuture<List<Person>> save(Person... p);
 
-    @Update("o.lastName = ?1")
-    @Where("o.ssn = ?2")
-    long setSurname(String newSurname, long ssn);
+    @Filter(by = "ssn_id")
+    @Update(attr = "lastName")
+    long setSurname(long ssn, String newSurname);
 
     @Asynchronous
-    @Update("o.lastName = ?1")
-    @Where("o.ssn = ?2")
-    CompletableFuture<Boolean> setSurnameAsync(String newSurname, long ssn);
+    @Filter(by = "ssn_id")
+    @Update(attr = "lastName")
+    CompletableFuture<Boolean> setSurnameAsync(long ssn, String newSurname);
 }

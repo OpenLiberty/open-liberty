@@ -17,6 +17,7 @@ IBM-Process-Types: client, \
  server
 Subsystem-Name: Jakarta XML Binding 4.0
 -features=io.openliberty.xmlBinding.internal-4.0, \
+  io.openliberty.activation.internal-2.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 # These jars are used for the xmlBinding scripts below.
 -jars=\
@@ -30,7 +31,8 @@ Subsystem-Name: Jakarta XML Binding 4.0
  bin/xmlBinding/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlBinding/tools/ws-xjc.jar, \
  bin/xmlBinding/schemagen.bat
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-AlsoKnownAs: jaxb-4.0
+WLP-InstantOn-Enabled: true

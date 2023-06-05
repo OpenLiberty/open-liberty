@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -35,6 +36,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import managedBeans.ManagedBeanServlet;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class ManagedBeansTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointManagedBeans";
@@ -58,7 +60,7 @@ public class ManagedBeansTest extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
                                                server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));

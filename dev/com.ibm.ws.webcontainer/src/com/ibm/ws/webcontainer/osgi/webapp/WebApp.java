@@ -101,7 +101,6 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
  
 /**
  */

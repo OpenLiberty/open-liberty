@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: La referencia del servicio UserTransaction es nula.
 USERTRAN_IS_NULL.explanation=Se ha realizado una solicitud para obtener el servicio UserTransaction, pero no se ha conectado ning\u00fan servicio UserTransaction a este paquete.
 USERTRAN_IS_NULL.useraction=Si el acceso a UserTransaction es necesario, utilice la consola OSGi para investigar por qu\u00e9 no se ha conectado ning\u00fan servicio UserTransaction a este paquete. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: Se ha producido un error de transacci\u00f3n inesperado: {0}
 UNEXPECTED_TRAN_ERROR.explanation=Se ha realizado una solicitud para obtener el objeto Transaction (de transacci\u00f3n), pero se ha producido un error inesperado. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Compruebe si en los registros hay errores anter
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: La transacci\u00f3n global se ha retrotra\u00eddo debido a que se ha superado el tiempo de espera: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=La transacci\u00f3n global actual ha superado su tiempo de espera y, por lo tanto, se ha retrotra\u00eddo.
-GLOBAL_TRAN_ROLLBACK.useraction=Aseg\u00farese de que la transacci\u00f3n global finaliza dentro del marco de tiempo permitido o aumente el tiempo de espera.
+GLOBAL_TRAN_ROLLBACK.useraction=Aseg\u00farese de que la transacci\u00f3n global finaliza dentro del intervalo de tiempo permitido o aumente el tiempo de espera.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: La solicitud de punto de comprobaci\u00f3n del servidor ha fallado porque el despliegue del servidor contiene archivos de registro de transacciones en el directorio {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty no espera que existan archivos de registro de transacciones en el despliegue del servidor cuando se solicita un punto de comprobaci\u00f3n del servidor.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Elimine el directorio de registro de transacciones del despliegue del servidor.

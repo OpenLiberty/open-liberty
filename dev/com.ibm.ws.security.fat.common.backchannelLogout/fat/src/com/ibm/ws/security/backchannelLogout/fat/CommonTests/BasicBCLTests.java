@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -108,11 +108,21 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         String localStore = "LOCALSTORE";
 
+        String theOS = null;
+        try {
+            theOS = testOPServer.getServer().getMachine().getOperatingSystem().name();
+        } catch (Exception e) {
+            Log.info(thisClass, "createRepeats", e.getMessage());
+            Log.info(thisClass, "createRepeats", "Received an exception trying to determine if the current OS is iSeries - Mongo DB tests would be skipped on iSeries - assume that it's not iSeries");
+            theOS = "assumeNotISeries";
+        }
         // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
         RepeatTests rTests = null;
         if (callingProject.equals(Constants.OIDC)) {
             if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+                if (!theOS.equals("ISERIES")) {
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+                }
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.END_SESSION + "_" + localStore));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));

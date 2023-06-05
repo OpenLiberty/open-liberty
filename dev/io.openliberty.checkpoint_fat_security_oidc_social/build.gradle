@@ -1,0 +1,256 @@
+/*******************************************************************************
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply plugin: 'war'
+
+war { enabled false } // We aren't making a war for the entire project
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+dependencies {
+	requiredLibs project(':com.ibm.ws.security.social_fat'),
+                project(':com.ibm.ws.security.fat.common'),
+                project(':com.ibm.ws.security.fat.common.jwt'),
+                project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+                project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+                fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
+                'jtidy:jtidy:4aug2000r7-dev',
+                'rhino:js:1.6R5'
+                 
+	requiredLibs project(':com.ibm.ws.org.apache.commons.io'),    
+               project(':com.ibm.ws.org.apache.commons.lang3'),
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'org.apache.httpcomponents:httpmime:4.5.12',
+               'org.brotli:dec:0.1.2',
+               'xalan:xalan:2.7.2',
+               project(':io.openliberty.org.apache.xercesImpl'),
+               'xml-apis:xml-apis:1.4.01',
+               'httpunit:httpunit:1.7'
+               
+	requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':com.ibm.websphere.javaee.servlet.3.0'),
+               project(':com.ibm.ws.security.audit_fat.common.tooling')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JASPIBase.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task JASPIBase_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "JASPIBase.jar"
+
+  from ('build/classes/java/main') { 
+    include 'web/FlexibleBaseServlet*.class'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** JASPIBasicAuthServlet.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task JASPIBasicAuthServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "JASPIBasicAuthServlet.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/JASPIBasicAuthServlet.war/resources') { 
+  	include 'META-INF/**'
+  	include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/JASPIBasicAuthServlet.class'
+    into 'WEB-INF/classes'
+  }
+  from ("${appBuildDir}") { 
+    include "JASPIBase.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn JASPIBasicAuthServlet_WAR
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
+
+autoFVT.doLast {
+
+  def servers = [
+	"com.ibm.ws.security.social_fat.LibertyOP.op",
+	"com.ibm.ws.security.social_fat.LibertyOP.social"
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(":com.ibm.ws.security.oauth.oidc_fat.common").projectDir, "securitykeys")
+      into new File(autoFvtDir, "publish/servers/" + server)
+      include 'commonKeyStore.jks', 'commonBasicKeyStore.jks', 'commonTrustStore.jks'
+      include 'commonBadTrustStore.jks', 'commonConfigServerDefault.jks', 'rsa_*.jks'
+    }
+    copy { 
+      from new File(projectDir, "publish/securitykeys/rsa_trust_for_LibertyOP.jks")
+      into new File(autoFvtDir, "publish/servers/" + server)
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }    
+  }
+    
+  /*
+   * Copy social server specific files.
+   */
+  servers = [
+	"com.ibm.ws.security.social_fat.LibertyOP.social"
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application")
+      into new File(autoFvtDir, "publish/servers/" + server + '/test-apps')
+      include 'helloworld.war.zip'
+      rename 'helloworld.war.zip', 'helloworld.war'
+    }
+    copy { 
+      from new File(projectDir, "publish/securitykeys/rsa_badTrust.jks")
+      into new File(autoFvtDir, "publish/servers/" + server)
+    }
+  } 
+  
+  /*
+  * oidc client tests
+  */
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.op',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'commonBasicKeyStore.jks'
+      include 'commonTrustStore.jks', 'rsa_*.jks'
+    }
+    
+    copy { 
+      from new File(projectDir, "publish/securitykeys/rsa_trust_for_LibertyOP.jks")
+      into new File(autoFvtDir, "publish/servers/" + server)
+    }
+    
+  }
+  
+    /*
+   * Copy formlogin application to designated test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'formlogin.zip', 'formlogin.war'
+    }
+  }
+  
+   /*
+   * Copy some other testing artifacts to the root autofvt directory.
+   */
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+    into new File(autoFvtDir, 'securitykeys')
+    include 'commonSslClientDefault.jks'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
+    into new File(autoFvtDir, 'testFiles')
+    include '**'
+  }
+  
+  /*
+   * Copy the JASPI user test feature bundle jars.
+   */
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jar', 'com.ibm.ws.security.jaspic.test_1.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_2.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_3.0.jar'
+  }
+  
+  /*
+   * Copy the JASPIBasicAuthServlet WAR into test server.
+   */
+  servers = [
+    'com.ibm.ws.security.jaspic11.fat',
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project.buildDir, 'test-application')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      include 'JASPIBasicAuthServlet.war'
+    }
+  }
+}

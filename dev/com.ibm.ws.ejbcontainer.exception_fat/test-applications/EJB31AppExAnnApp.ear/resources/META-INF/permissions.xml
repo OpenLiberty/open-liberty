@@ -10,4 +10,10 @@
         <class-name>java.lang.RuntimePermission</class-name>
         <name>getClassLoader</name>
     </permission> 
+    <permission>
+        <!-- Yoko ORB bug; org.apache.yoko.orb.OBCORBA.ORB_impl.initialize needs doPriv -->
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>*</name>
+        <actions>read,write</actions>
+    </permission>
 </permissions>

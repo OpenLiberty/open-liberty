@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014,2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,10 +31,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.internal.VirtualHostImpl.EndpointState;
 import com.ibm.ws.http.internal.VirtualHostImpl.RegistrationHolder;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -55,7 +55,21 @@ public class VirtualHostImplTest {
 
     @Test
     public void testChanged() {
-        VirtualHostImpl vi = new VirtualHostImpl();
+        final ComponentContext mockComponentContext = context.mock(ComponentContext.class);
+        final ServiceRegistration mockRegistration = context.mock(ServiceRegistration.class);
+        context.checking(new Expectations() {
+            {
+                allowing(mockComponentContext).getBundleContext();
+                will(returnValue(mockBundleContext));
+            }
+        });
+        final VirtualHostImpl vi = new VirtualHostImpl(mockComponentContext);
+        context.checking(new Expectations() {
+            {
+                allowing(mockBundleContext).registerService(with(any(Class.class)), with(vi), with(any(Dictionary.class)));
+                will(returnValue(mockRegistration));
+            }
+        });
         RegistrationHolder rh = new RegistrationHolder(mockBundleContext, vi);
 
         String[] one = new String[] { "one" };
@@ -80,22 +94,24 @@ public class VirtualHostImplTest {
 
     @Test
     public void testRegenerateAliases() {
-        final VirtualHostImpl vi = new VirtualHostImpl();
         final ComponentContext mockComponentContext = context.mock(ComponentContext.class);
         final ServiceRegistration mockRegistration = context.mock(ServiceRegistration.class);
-        final HttpEndpointImpl mockEndpoint = context.mock(HttpEndpointImpl.class);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-
         context.checking(new Expectations() {
             {
                 allowing(mockComponentContext).getBundleContext();
                 will(returnValue(mockBundleContext));
-
+            }
+        });
+        final VirtualHostImpl vi = new VirtualHostImpl(mockComponentContext);
+        context.checking(new Expectations() {
+            {
                 allowing(mockBundleContext).registerService(with(any(Class.class)), with(vi), with(any(Dictionary.class)));
                 will(returnValue(mockRegistration));
             }
         });
+        final HttpEndpointImpl mockEndpoint = context.mock(HttpEndpointImpl.class);
+
+        Map<String, Object> map = new HashMap<String, Object>();
 
         map.put("id", "default_host");
         vi.activate(mockComponentContext, map);

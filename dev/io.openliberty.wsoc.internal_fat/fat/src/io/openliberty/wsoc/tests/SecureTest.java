@@ -1,21 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-
 import java.io.File;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -70,9 +64,6 @@ public class SecureTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Test fail if running twice without building since app cannot start when validated
-        // Turn off validation, add the app if missing and then make the validation ourselves
-        LS.startServerAndValidate(true, true, false);
         // Build the war app and add the dependencies
         WebArchive SecureApp = ShrinkHelper.buildDefaultApp(SECURE_WAR_NAME + ".war",
                                                             "secure.war",
@@ -81,23 +72,16 @@ public class SecureTest {
                                                             "io.openliberty.wsoc.tests.all",
                                                             "io.openliberty.wsoc.endpoints.client.secure");
         SecureApp = (WebArchive) ShrinkHelper.addDirectory(SecureApp, "test-applications/" + SECURE_WAR_NAME + ".war/resources");
-        LOG.info("addAppToServer : " + SECURE_WAR_NAME + " already installed check");
-        // Verify if the apps are in the server before trying to deploy them
-        if (LS.isStarted()) {
-            Set<String> appInstalled = LS.getInstalledAppNames(SECURE_WAR_NAME);
-            LOG.info("addAppToServer : " + SECURE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(LS, SecureApp, DISABLE_VALIDATION);
-        }
 
-        LS.saveServerConfiguration();
-        LS.setServerConfigurationFile("Secure/server.xml");
-        // Validate app started
-        LS.waitForStringInLog("CWWKZ0001I.* " + SECURE_WAR_NAME);
+        ShrinkHelper.exportAppToServer(LS, SecureApp);
+        LS.addInstalledAppForValidation(SECURE_WAR_NAME);
 
         bwst = new WebServerSetup(LS);
         bwst.setUp();
         wt = new WsocTest(LS, false);
+
+        LS.startServer();
+
         // tests cannot work until ssl is up
         LS.waitForStringInLog("CWWKS4105I:.*configuration is ready.*");
         // tests cannot work until ssl is up
@@ -113,14 +97,7 @@ public class SecureTest {
         } catch (InterruptedException x) {
 
         }
-        LOG.info("ConfigUpdateTimeout before change is: " + LS.getConfigUpdateTimeout());
-        LS.setConfigUpdateTimeout(180 * 1000);
-        LOG.info("ConfigUpdateTimeout update change is: " + LS.getConfigUpdateTimeout());
 
-        // test cleanup
-        LS.setMarkToEndOfLog();
-        LS.restoreServerConfiguration();
-        LS.waitForConfigUpdateInLogUsingMark(null);
         if (LS != null && LS.isStarted()) {
             LS.stopServer("CWWKH0039E");
         }

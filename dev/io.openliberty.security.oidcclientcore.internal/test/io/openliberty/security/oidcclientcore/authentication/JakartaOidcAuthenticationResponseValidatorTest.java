@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     private static final String CWWKS2408E_CALLBACK_MISSING_STATE_PARAMETER = "CWWKS2408E";
     private static final String CWWKS2409E_STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH = "CWWKS2409E";
     private static final String CWWKS2410E_STATE_VALUE_IN_CALLBACK_NOT_STORED = "CWWKS2410E";
+    private static final String CWWKS2411E_STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE = "CWWKS2411E";
     private static final String CWWKS2412E_STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME = "CWWKS2412E";
     private static final String CWWKS2413E_CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI = "CWWKS2413E";
     private static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
@@ -61,6 +62,7 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     private final String clientId = "myOidcClientId";
     private final String clientSecret = "someSuperSecretValue";
     private final String requestUrl = "https://localhost/some/protected/path";
+    private final String callbackUrl = "https://localhost/Callback";
 
     private final AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     private JakartaOidcAuthenticationResponseValidator validator;
@@ -193,6 +195,34 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     }
 
     @Test
+    public void test_getAndVerifyStateValue_stateDoesNotMatch() {
+        String storageLookupKey = OidcStorageUtils.getStateStorageKey(state);
+        String storageValue = "someNonMatchingState";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getParameter(AuthorizationRequestParameters.STATE);
+                will(returnValue(state));
+                one(config).getClientSecret();
+                will(returnValue(new ProtectedString(clientSecret.toCharArray())));
+                allowing(config).getClientId();
+                will(returnValue(clientId));
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { cookie }));
+                one(cookie).getName();
+                will(returnValue(storageLookupKey));
+                one(cookie).getValue();
+                will(returnValue(storageValue));
+            }
+        });
+        try {
+            String result = validator.getAndVerifyStateValue();
+            fail("Should have thrown an exception but didn't. Method returned [" + result + "].");
+        } catch (AuthenticationResponseException e) {
+            verifyException(e, CWWKS2411E_STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE);
+        }
+    }
+
+    @Test
     public void test_getStoredStateValue_stateNotFound() {
         mockery.checking(new Expectations() {
             {
@@ -307,6 +337,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -330,6 +362,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -357,6 +391,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -381,6 +417,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(requestUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -405,10 +443,10 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
-                one(config).isRedirectToOriginalResource();
-                will(returnValue(false));
                 one(config).getRedirectURI();
                 will(returnValue(configuredUri));
+                one(config).isRedirectToOriginalResource();
+                will(returnValue(false));
                 allowing(config).getClientId();
                 will(returnValue(clientId));
             }
@@ -427,12 +465,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
-                one(config).isRedirectToOriginalResource();
-                will(returnValue(false));
                 one(config).getRedirectURI();
                 will(returnValue(requestUrl));
-                allowing(config).getClientId();
-                will(returnValue(clientId));
             }
         });
         try {

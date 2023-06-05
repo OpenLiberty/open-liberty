@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.ws.security.openidconnect.client.jose4j.util.OidcTokenImplBase;
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 
 import test.common.SharedOutputManager;
 import test.common.junit.matchers.RegexMatcher;

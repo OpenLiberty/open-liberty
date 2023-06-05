@@ -419,7 +419,7 @@ public interface EJBRuntime {
      *
      * @return true if application start should optimize for checkpoint deployment; false otherwise.
      */
-    boolean isCheckpointDeployment();
+    boolean isCheckpointBeforeAppStart();
 
     /**
      * Determines if application start should optimize for checkpoint after all configured applications
@@ -427,7 +427,7 @@ public interface EJBRuntime {
      *
      * @return true if application start should optimize for checkpoint applications; false otherwise.
      */
-    boolean isCheckpointApplications();
+    boolean isCheckpointAfterAppStart();
 
     /**
      * Returns the BeanOFactory for the the specified bean type. <p>

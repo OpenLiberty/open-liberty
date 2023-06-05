@@ -40,20 +40,15 @@ IBM-ShortName: cdi-4.0
 Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
 -features=io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.servlet.api-6.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.contextService-1.0, \
-  com.ibm.websphere.appserver.injection-2.0, \
   io.openliberty.jakarta.enterpriseBeans-4.0, \
   io.openliberty.jakarta.persistence-3.1, \
   io.openliberty.jakarta.cdi-4.0, \
   io.openliberty.jakarta.xmlWS-4.0, \
-  com.ibm.websphere.appserver.appmanager-1.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
   io.openliberty.jakarta.annotation-2.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
-  io.openliberty.jakarta.interceptor-2.1, \
   io.openliberty.jakarta.pages-3.1, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=io.openliberty.org.jboss.weld5, \
@@ -72,7 +67,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
  dev/spi/ibm/javadoc/io.openliberty.cdi.spi_1.1-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

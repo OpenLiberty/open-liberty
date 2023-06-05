@@ -633,5 +633,9 @@
 
 7356=Vorgehensweise: [{1}] kann nicht ausgef\u00fchrt werden, weil {0} derzeit nicht mehrere OUT-Parameter unterst\u00fctzt.
 
-7357=Die URL "[{0}]" f\u00fcr die Ressource "[{1}]" geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis (gem\u00e4\u00df Jakarta Persistence Specification)
+7357=Die URL [{0}] f\u00fcr die Ressource [{1}] geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis, wie in der JPA-Spezifikation definiert.
+
+7358=Falscher ASM-Servicename angegeben.
+
+7359=Kein ASM-Service verf\u00fcgbar.
 

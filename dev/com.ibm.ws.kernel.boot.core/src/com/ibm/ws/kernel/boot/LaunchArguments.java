@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,8 +39,7 @@ public class LaunchArguments {
     private static final List<String> KNOWN_OPTIONS = Collections.unmodifiableList(Arrays.asList(new String[] { "archive", "include",
                                                                                                                 "os", "pid", "pid-file",
                                                                                                                 "script", "template", "force",
-                                                                                                                "target", "no-password", "server-root",
-                                                                                                                "timeout" }));
+                                                                                                                "target", "no-password", "server-root", "timeout" }));
 
     /**
      * Script argument: set by both batch and shell scripts to record the
@@ -190,17 +189,7 @@ public class LaunchArguments {
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
                     } else if (argToLower.startsWith("--internal-checkpoint-at=")) {
-
-                        if (isBetaEdition()) {
-                            checkpointPhase = argToLower.substring("--internal-checkpoint-at=".length());
-                        } else {
-                            // we cannot efficiently do beta guard from the server script so we hard code this check here
-                            // for the checkpoint action
-                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownArgument"),
-                                                                    "checkpoint"));
-                            System.out.println();
-                            returnValue = ReturnCode.BAD_ARGUMENT;
-                        }
+                        checkpointPhase = argToLower.substring("--internal-checkpoint-at=".length());
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
 
@@ -320,13 +309,36 @@ public class LaunchArguments {
     }
 
     /**
+     * Map the external phase name used on the the launch command line to an internal Phase
+     * enumeration name. Trim surrounding white space.
+     *
+     * @param phaseName
+     * @return Matching internal enumeration name.
+     */
+    private static String commandLineToInternalPhaseName(String phaseName) {
+        phaseName = (phaseName == null) ? "null" : phaseName.trim().toLowerCase(Locale.ENGLISH);
+        switch (phaseName) {
+            case "afterappstart":
+                return CheckpointPhase.AFTER_APP_START.toString();
+            case "beforeappstart":
+                return CheckpointPhase.BEFORE_APP_START.toString();
+
+            //INACTIVE is not a valid command line option. It and any non-valid phase name passed in
+            // map to themselves and are coded as errors by follow on argument handling.
+            // NOTE: any other valid internal Phase name will pass thru and actually work.
+            default:
+                return phaseName;
+        }
+    }
+
+    /**
      * @param checkpointPhase
      */
     private ReturnCode setCheckpointPhase(String checkpointPhase, ReturnCode returnValue) {
         try {
             Method setPhase = CheckpointPhase.class.getDeclaredMethod("setPhase", String.class);
             setPhase.setAccessible(true);
-            setPhase.invoke(setPhase, checkpointPhase);
+            setPhase.invoke(setPhase, commandLineToInternalPhaseName(checkpointPhase));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

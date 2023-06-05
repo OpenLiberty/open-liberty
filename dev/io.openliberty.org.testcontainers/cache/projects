@@ -38,7 +38,11 @@ com.ibm.ws.jpa.tests.spec10.callback_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.callback_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.callback_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.callback_jpa_3.1_fat
-com.ibm.ws.jpa.tests.spec10.embeddable_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.0_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.1_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.2_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_jpa_3.0_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_jpa_3.1_fat
 com.ibm.ws.jpa.tests.spec10.entity_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.entity_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.entity_jpa_2.2_fat
@@ -99,6 +103,7 @@ com.ibm.ws.jpa.tests.spec20_jpa_3.1_fat
 com.ibm.ws.logstash.collector_fat
 com.ibm.ws.microprofile.health.2.0_fat
 com.ibm.ws.microprofile.reactive.messaging_fat
+com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.security.acme_fat
 com.ibm.ws.session.cache_fat_infinispan_container
@@ -140,8 +145,10 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
 fattest.simplicity
-io.openliberty.checkpoint_fat_container
 io.openliberty.checkpoint_fat_persistence
+io.openliberty.data.internal_fat
+io.openliberty.data.internal_fat_jpa
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
+io.openliberty.microprofile.openapi.ui.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.jaeger_fat

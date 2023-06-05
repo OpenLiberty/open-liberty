@@ -4,14 +4,12 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,7 +29,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -106,7 +103,7 @@ public class JSF22FlowsTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         // Since MyFaces doesn't output any initialization messages that contain the app name,
         // all we can do is check to make sure the MyFaces app didn't initialize with Mojarra
         Assert.assertEquals(0, server.findStringsInLogs("Initializing Mojarra .* for context '/" + MYFACES_APP + "'").size());
@@ -199,7 +196,6 @@ public class JSF22FlowsTests extends FATServletClient {
         JSF22Flows_TestDeclarativeNavigation(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Fails due to "jakarta.el.PropertyNotFoundException: Target Unreachable, identifier [flowScope] resolved to null"
     @Test
     public void JSF22Flows_TestDeclarativeNavigation_MyFaces() throws Exception {
         JSF22Flows_TestDeclarativeNavigation(MYFACES_APP);
@@ -333,7 +329,6 @@ public class JSF22FlowsTests extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Fixed in MYFACES-4542, targeted in next release after 4.0.0-RC3 
     public void JSF22Flows_TestDeclarativeNestedFlows_MyFaces() throws Exception {
         // Navigate to the index
         testNestedFlows("declarativeNested1", "declarativeNested2", "declarativeNested", MYFACES_APP);

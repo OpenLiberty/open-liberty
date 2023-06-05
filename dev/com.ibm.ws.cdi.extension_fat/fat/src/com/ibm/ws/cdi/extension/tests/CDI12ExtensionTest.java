@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementSharedLibServlet;
 import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementTestServlet;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionBean;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionTestServlet;
+import com.ibm.ws.cdi.extension.apps.invocationContext.InvocationContextTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.NoBeansTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.ejb.EmbeddedJarMyEjb;
 import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1MyBean;
@@ -43,6 +44,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,25 +55,30 @@ import componenttest.topology.utils.HttpUtils;
  * Test the runtime extension to function correctly
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class CDI12ExtensionTest extends FATServletClient {
 
     public static final String SERVER_NAME = "cdi12RuntimeExtensionServer";
 
     @TestServlets({
                     @TestServlet(contextRoot = "enablement", servlet = EnablementTestServlet.class),
-                    @TestServlet(contextRoot = "enablementSharedLib", servlet = EnablementSharedLibServlet.class)
+                    @TestServlet(contextRoot = "enablementSharedLib", servlet = EnablementSharedLibServlet.class),
+                    @TestServlet(contextRoot = "invocationContext", servlet = InvocationContextTestServlet.class)
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME, CDIExtensionRepeatActions.EE7_PLUS, CDIExtensionRepeatActions.EE9_PLUS,
-                                                                   CDIExtensionRepeatActions.EE10_PLUS);
+    public static RepeatTests r = CDIExtensionRepeatActions.repeat(SERVER_NAME,
+                                                                   CDIExtensionRepeatActions.EE10_PLUS,
+                                                                   CDIExtensionRepeatActions.EE9_PLUS,
+                                                                   CDIExtensionRepeatActions.EE7_PLUS);
 
     @BeforeClass
     public static void setUp() throws Exception {
         System.out.println("Install the user feature bundle... cdi.helloworld.extension");
         CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
+        System.out.println("Install the user feature bundle... cdi.internals");
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
 
         // multipleWar2.ear
@@ -127,6 +135,13 @@ public class CDI12ExtensionTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, enablementWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "", enablementSharedLib, DeployOptions.SERVER_ONLY);
+
+        // invocationContext.war
+
+        WebArchive invocationContextWar = ShrinkWrap.create(WebArchive.class, "invocationContext.war")
+                                                    .addPackage(InvocationContextTestServlet.class.getPackage());
+
+        ShrinkHelper.exportDropinAppToServer(server, invocationContextWar, DeployOptions.SERVER_ONLY);
 
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");

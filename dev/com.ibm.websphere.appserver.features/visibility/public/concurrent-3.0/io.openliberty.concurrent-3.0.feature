@@ -10,9 +10,7 @@ IBM-API-Service: jakarta.enterprise.concurrent.ContextService; id="DefaultContex
   jakarta.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"
 Subsystem-Name: Jakarta Concurrency 3.0
 #TODO decide if autofeature should be used to avoid dependency on injection
--features=com.ibm.websphere.appserver.appLifecycle-1.0, \
-  com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
+-features=com.ibm.websphere.appserver.concurrencyPolicy-1.0, \
   com.ibm.websphere.appserver.contextService-1.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   com.ibm.websphere.appserver.injection-2.0, \
@@ -25,7 +23,7 @@ Subsystem-Name: Jakarta Concurrency 3.0
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
   io.openliberty.concurrent.internal
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

@@ -22,6 +22,7 @@ Bundle-SymbolicName: com.ibm.ws.springboot.support.web.server.version20
 Bundle-Description: WebSphere Spring Boot 2.0 Web Server Support, version ${bVersion}
 
 Private-Package: com.ibm.ws.springboot.support.web.server.version20.osgi.*
+
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *

@@ -146,7 +146,7 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory impleme
    protected boolean lockSnapshots;
    protected StatisticsControllerImpl statisticsController = new StatisticsControllerImpl();
 
-   private final boolean defaultExceptionManagerEnabled = Options.ENABLE_DEFAULT_EXCEPTION_MAPPER.getValue();
+   private final boolean defaultExceptionManagerEnabled = getOptionValue(Options.ENABLE_DEFAULT_EXCEPTION_MAPPER);
 
    public ResteasyProviderFactoryImpl()
    {
@@ -1844,5 +1844,13 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory impleme
     */
    public boolean isDefaultExceptionManagerEnabled() {
       return defaultExceptionManagerEnabled;
+   }
+
+   @SuppressWarnings("SameParameterValue")
+   private static <T> T getOptionValue(final Options<T> option) {
+      if (System.getSecurityManager() == null) {
+         return option.getValue();
+      }
+      return AccessController.doPrivileged((PrivilegedAction<T>) option::getValue);
    }
 }

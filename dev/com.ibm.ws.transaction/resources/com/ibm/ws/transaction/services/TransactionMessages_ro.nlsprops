@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2009 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ USERTRAN_IS_NULL=CWLIB0001E: Referin\u0163a serviciului UserTransaction este nul
 USERTRAN_IS_NULL.explanation=S-a f\u0103cut o cerere pentru a ob\u0163ine serviciul UserTransaction, dar nici un serviciu UserTransaction nu a fost conectat la acest bundle.
 USERTRAN_IS_NULL.useraction=Dac\u0103 este necesar accesul la UserTransaction, folosi\u0163i consola OSGi pentru a investiga de ce nu a fost conectat nici un serviciu UserTransaction la acest bundle. 
 
-
 # {0} is the error that happened
 UNEXPECTED_TRAN_ERROR=CWLIB0002E: A ap\u0103rut o eroare de tranzac\u0163ie nea\u015fteptat\u0103: {0}
 UNEXPECTED_TRAN_ERROR.explanation=S-a f\u0103cut o cerere de a aduce obiectul Transaction dar a ap\u0103rut o eroare nea\u015fteptat\u0103. 
@@ -63,4 +62,8 @@ UNEXPECTED_TRAN_ERROR.useraction=Verifica\u0163i istoricele pentru erori anterio
 # {0} is the TransactionRolledbackException thrown
 GLOBAL_TRAN_ROLLBACK=CWLIB0003E: Tranzac\u0163ia global\u0103 a fost derulat\u0103 \u00eenapoi din cauza timeout-ului: {0}
 GLOBAL_TRAN_ROLLBACK.explanation=Tranzac\u0163ia global\u0103 curent\u0103 a expirat \u015fi, prin urmare, a fost derulat\u0103 \u00eenapoi.
-GLOBAL_TRAN_ROLLBACK.useraction=Asigura\u0163i-v\u0103 c\u0103 tranzac\u0163ia global\u0103 se termin\u0103 \u00een cadrul de timp permis sau cre\u015fte\u0163i timeout-ul.
+GLOBAL_TRAN_ROLLBACK.useraction=Asigura\u021bi-v\u0103 c\u0103 tranzac\u021bia global\u0103 se termin\u0103 \u00een cadrul de timp permis sau cre\u0219te\u021bi timeout-ul.
+
+ERROR_CHECKPOINT_TRANLOGS_EXIST=CWLIB0004E: Cererea de punct de control al serverului a e\u0219uat, deoarece implementarea serverului con\u021bine fi\u0219iere istoric de tranzac\u021bii \u00een directorul {0}.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.explanation=Liberty nu se a\u0219teapt\u0103 s\u0103 existe fi\u0219iere istoric de tranzac\u021bii \u00een implementarea serverului atunci c\u00e2nd se solicit\u0103 un punct de control al serverului.
+ERROR_CHECKPOINT_TRANLOGS_EXIST.useraction=Elimina\u021bi directorul istoricului de tranzac\u021bii din implementarea serverului.

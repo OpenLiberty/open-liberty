@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.test.wsr.server.impl;
-
-import static org.junit.Assert.assertEquals;
 
 import javax.jws.WebService;
 import javax.ws.rs.client.Client;
@@ -30,7 +28,12 @@ public class Bill implements People {
     @Override
     public String hello() {
         // Implement JAX-RS call here
-        Client client = ClientBuilder.newClient();
+        // Increasing the timeouts for the rest client to prevent failures in slow builds
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", "50000");
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", "50000");
+
+        Client client = cb.build();
         Response response = client.target(URI_CONTEXT_ROOT)
                         .path("jaxwsEP2")
                         .request(MediaType.TEXT_PLAIN_TYPE)

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,8 +13,10 @@
 
 package com.ibm.ws.jpa.fvt.entity.testlogic;
 
+import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
 
 import javax.persistence.OptimisticLockException;
 import javax.persistence.Query;
@@ -23,6 +25,7 @@ import org.junit.Assert;
 
 import com.ibm.ws.jpa.fvt.entity.entities.IVersionedEntity;
 import com.ibm.ws.jpa.fvt.entity.testlogic.enums.EntityVersionEntityEnum;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
@@ -58,8 +61,16 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
         // Fetch target entity type from test parameters
-        String entityName = (String) testExecCtx.getProperties().get("EntityName");
+        String entityName = (String) testProps.get("EntityName");
         EntityVersionEntityEnum targetEntityType = EntityVersionEntityEnum.resolveEntityByName(entityName);
         if (targetEntityType == null) {
             // Oops, unknown type
@@ -68,8 +79,27 @@ public class VersioningTestLogic extends AbstractTestLogic {
         }
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+
+        /*
+         * TODO: Disabling these tests until the issue is is delivered:
+         * https://github.com/OpenLiberty/open-liberty/issues/23949
+         * https://github.com/OpenLiberty/open-liberty/issues/23951
+         * https://github.com/OpenLiberty/open-liberty/issues/23952
+         */
+        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
+            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+            System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
+            return;
+        }
+
         if (JPAPersistenceProvider.HIBERNATE.equals(provider)) {
             // TODO: Hibernate fails with "org.hibernate.exception.LockAcquisitionException: could not execute statement".
+            System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
 
@@ -326,8 +356,16 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
         // Fetch target entity type from test parameters
-        String entityName = (String) testExecCtx.getProperties().get("EntityName");
+        String entityName = (String) testProps.get("EntityName");
         EntityVersionEntityEnum targetEntityType = EntityVersionEntityEnum.resolveEntityByName(entityName);
         if (targetEntityType == null) {
             // Oops, unknown type
@@ -336,6 +374,23 @@ public class VersioningTestLogic extends AbstractTestLogic {
         }
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+
+        /*
+         * TODO: Disabling these tests until the issue is is delivered:
+         * https://github.com/OpenLiberty/open-liberty/issues/23949
+         * https://github.com/OpenLiberty/open-liberty/issues/23951
+         * https://github.com/OpenLiberty/open-liberty/issues/23952
+         */
+        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
+            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+            System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
+            return;
+        }
 
         final int entity_one_pkey = 2;
         final int entity_two_pkey = 3;
@@ -593,12 +648,39 @@ public class VersioningTestLogic extends AbstractTestLogic {
             return;
         }
 
+        // Process Test Properties
+        final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        if (testProps != null) {
+            for (String key : testProps.keySet()) {
+                System.out.println("Test Property: " + key + " = " + testProps.get(key));
+            }
+        }
+
         // Fetch target entity type from test parameters
-        String entityName = (String) testExecCtx.getProperties().get("EntityName");
+        String entityName = (String) testProps.get("EntityName");
         EntityVersionEntityEnum targetEntityType = EntityVersionEntityEnum.resolveEntityByName(entityName);
         if (targetEntityType == null) {
             // Oops, unknown type
             Assert.fail("Invalid Entity-A type specified ('" + entityName + "').  Cannot execute the test.");
+            return;
+        }
+
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+
+        /*
+         * TODO: Disabling these tests until the issue is is delivered:
+         * https://github.com/OpenLiberty/open-liberty/issues/23949
+         * https://github.com/OpenLiberty/open-liberty/issues/23951
+         * https://github.com/OpenLiberty/open-liberty/issues/23952
+         */
+        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
+            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+            System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
 

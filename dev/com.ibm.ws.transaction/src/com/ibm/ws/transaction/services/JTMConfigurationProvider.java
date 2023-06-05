@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.services;
 
+import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
@@ -42,6 +44,9 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.resource.ResourceFactory;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class JTMConfigurationProvider extends DefaultConfigurationProvider implements ConfigurationProvider {
 
@@ -57,6 +62,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
     private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
     private boolean _dataSourceFactorySet;
+    private static boolean _frameworkShutting = false;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -113,6 +119,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
+
+        addTransactionLogDirCheckpointHook();
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -398,7 +406,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup set to " + isRoS);
+        if (isRoS && checkpointWaitForConfig()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Defer recovery until restore config updates complete");
+            return false;
+        }
         return isRoS;
+    }
+
+    boolean checkpointWaitForConfig() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && _runningCondition == null;
     }
 
     @Override
@@ -430,6 +447,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isWaitForRecovery set to " + isWfR);
+        if (!isWfR && checkpointWaitForConfig()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Defer recovery until restore config updates complete");
+            return true;
+        }
         return isWfR;
     }
 
@@ -512,7 +534,28 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             }
         } else if (tc.isDebugEnabled())
             Tr.debug(tc, "tmsref is null");
+    }
 
+    private volatile ServiceReference<Condition> _runningCondition = null;
+
+    /*
+     * Dynamically set by DS. CheckpointImpl registers the RunningCondition service (property)
+     * immediately after completing all config updates during checkpoint restore. When 
+     * recoverOnStartup is enabled, use this condition to start recovery immediately after
+     * all resource factories and transaction services have updated.
+     */
+    protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            _runningCondition = runningCondition;
+            if (isRecoverOnStartup() && tmsRef != null) {
+                tmsRef.doDeferredRecoveryAtRestore(this);
+            }
+        }
+    }
+
+    protected void unsetRunningCondition(ServiceReference<Condition> runningCondition) {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE)
+            _runningCondition = null;
     }
 
     /**
@@ -664,32 +707,46 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public void shutDownFramework() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutDownFramework");
+            Tr.entry(tc, "shutDownFramework", _frameworkShutting);
+        if (!_frameworkShutting) {
+            try {
+                if (_cc != null) {
+                    final Bundle bundle = _cc.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
 
-        try {
-            if (_cc != null) {
-                final Bundle bundle = _cc.getBundleContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+                    if (bundle != null)
+                        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                            @Override
+                            public Void run() throws BundleException {
+                                // Force quick shutdown with no quiesce period
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "force quick shutdown");
 
-                if (bundle != null)
-                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-                        @Override
-                        public Void run() throws BundleException {
-                            // Force quick shutdown with no quiesce period
-                            bundle.getBundleContext().registerService(ForcedServerStop.class, new ForcedServerStop(), null);
-                            bundle.stop();
-                            return null;
-                        }
-                    });
+                                bundle.getBundleContext().registerService(ForcedServerStop.class, new ForcedServerStop(), null);
+
+                                try {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "stop bundle");
+                                    bundle.stop();
+                                } catch (BundleException bex) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "caught bundlex - " + bex);
+                                    throw bex;
+                                }
+                                return null;
+                            }
+                        });
+                }
+                _frameworkShutting = true;
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "shutDownFramework", e);
+
+                // do not FFDC this.
+                // exceptions during bundle stop occur if framework is already stopping or stopped
+            } finally {
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "shutDownFramework");
             }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "shutDownFramework", e);
-
-            // do not FFDC this.
-            // exceptions during bundle stop occur if framework is already stopping or stopped
-        } finally {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "shutDownFramework");
         }
     }
 
@@ -845,5 +902,64 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean isDataSourceFactorySet() {
         return _dataSourceFactorySet;
+    }
+
+    /**
+     * Fail checkpoint whenever the default or configured transaction log
+     * directory exists and cannot be deleted, including the case where
+     * the directory path is unexpectedly a file.
+     */
+    protected void addTransactionLogDirCheckpointHook() {
+        if (!CheckpointPhase.getPhase().restored()) {
+            final String logDir = (String) _props.get("transactionLogDirectory");
+
+            if (logDir == null)
+                return;
+
+            // logDir is correctly formatted path string, but may contain unresolved
+            // variables or may be a file rather than directory.
+
+            CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
+                @Override
+                public void prepare() {
+                    if (!recursiveDelete(new File(logDir))) {
+                        throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Delete a file or a directory, including all directory contents.
+     *
+     * @param fileToRemove The target File.
+     * @return false iff fileToRemove exists and cannot be deleted, otherwise return true.
+     */
+    protected boolean recursiveDelete(final File fileToRemove) {
+        if (fileToRemove == null)
+            return true;
+
+        if (!fileToRemove.exists())
+            return true;
+
+        boolean success = true;
+
+        if (fileToRemove.isDirectory()) {
+            File[] files = fileToRemove.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    success |= recursiveDelete(file);
+                } else {
+                    success |= file.delete();
+                }
+            }
+            files = fileToRemove.listFiles();
+            if (files.length == 0)
+                success |= fileToRemove.delete();
+        } else {
+            success |= fileToRemove.delete();
+        }
+        return success;
     }
 }

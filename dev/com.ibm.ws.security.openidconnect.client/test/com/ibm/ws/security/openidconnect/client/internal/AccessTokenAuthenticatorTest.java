@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,11 +62,11 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
-import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.JWSHeader;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTPayload;
@@ -1190,6 +1190,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
             {
                 allowing(clientConfig).getUserIdentifier();
                 will(returnValue(userIdentifier));
+                allowing(clientConfig).isSocial();
+                will(returnValue(false));
             }
         });
     }

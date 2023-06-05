@@ -33,8 +33,8 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
  * The expected checkpoint phase startup behavior is:
  * <ul>
  * <li>FEATURES : initialized and constructed on first use; pool preload (20) on first use</li>
- * <li>DEPLOYMENT : initialized and constructed on first use; pool preload (20) on first use</li>
- * <li>APPLICATIONS : initialized and constructed on first use; pool preload (20) on first use</li>
+ * <li>BEFORE_APP_START : initialized and constructed on first use; pool preload (20) on first use</li>
+ * <li>AFTER_APP_START : initialized and constructed on first use; pool preload (20) on first use</li>
  * </ul>
  *
  * Checkpoint causes no behavior difference since StartAtAppStart is explicitly disabled. <p>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,11 @@
  *******************************************************************************/
 package io.openliberty.jakarta.restfulWS31api.fat.app.canload;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import jakarta.servlet.annotation.WebServlet;
-
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 import org.junit.Test;
@@ -165,6 +166,7 @@ public class ApiTestServlet extends FATServlet {
         assertTrue(canLoad("jakarta.ws.rs.core.Context"));
     }
 
+    @Test
     public void testCanLoadJakartaWsRsExtClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.ext.ContextResolver"));
@@ -177,22 +179,23 @@ public class ApiTestServlet extends FATServlet {
         assertTrue(canLoad("jakarta.ws.rs.ext.Providers"));
         assertTrue(canLoad("jakarta.ws.rs.ext.ReaderInterceptor"));
         assertTrue(canLoad("jakarta.ws.rs.ext.ReaderInterceptorContext"));
-        assertTrue(canLoad("jakarta.ws.rs.ext.RuntimeDelegate.HeaderDelegate"));
+        assertTrue(canLoad("jakarta.ws.rs.ext.RuntimeDelegate$HeaderDelegate"));
         assertTrue(canLoad("jakarta.ws.rs.ext.WriterInterceptor"));
         assertTrue(canLoad("jakarta.ws.rs.ext.WriterInterceptorContext"));
         // classes
         assertTrue(canLoad("jakarta.ws.rs.ext.FactoryFinder"));
         assertTrue(canLoad("jakarta.ws.rs.ext.RuntimeDelegate"));
         // annotations
-        assertTrue(canLoad("jakarta.ws.rs.ext.ParamConverter.Lazy"));
+        assertTrue(canLoad("jakarta.ws.rs.ext.ParamConverter$Lazy"));
         assertTrue(canLoad("jakarta.ws.rs.ext.Provider"));
     }
 
+    @Test
     public void testCanLoadJakartaWsRsSseClasses() throws Exception {
         // interfaces
         assertTrue(canLoad("jakarta.ws.rs.sse.InboundSseEvent"));
         assertTrue(canLoad("jakarta.ws.rs.sse.OutboundSseEvent"));
-        assertTrue(canLoad("jakarta.ws.rs.sse.OutboundSseEvent.Builder"));
+        assertTrue(canLoad("jakarta.ws.rs.sse.OutboundSseEvent$Builder"));
         assertTrue(canLoad("jakarta.ws.rs.sse.Sse"));
         assertTrue(canLoad("jakarta.ws.rs.sse.SseBroadcaster"));
         assertTrue(canLoad("jakarta.ws.rs.sse.SseEvent"));
@@ -200,7 +203,32 @@ public class ApiTestServlet extends FATServlet {
         assertTrue(canLoad("jakarta.ws.rs.sse.SseEventSource"));
         // classes
         assertTrue(canLoad("jakarta.ws.rs.sse.FactoryFinder"));
-        assertTrue(canLoad("jakarta.ws.rs.sse.SseEventSource.Builder"));
+        assertTrue(canLoad("jakarta.ws.rs.sse.SseEventSource$Builder"));
+    }
+
+    /**
+     * jakarta.ws.rs.core.Link references XMLBinding classes. The packages are added 
+     * as internal IBM-APIs.  This test validates that the classes can be loaded
+     * by the application directly with or without the XMLBinding feature being enabled.
+     *  
+     * @throws Exception
+     */
+    @Test
+    public void testCanLoadJakartaXMLBindingClasses() throws Exception {
+        assertTrue(canLoad("jakarta.xml.bind.annotation.XmlAnyAttribute"));
+        assertTrue(canLoad("jakarta.xml.bind.annotation.XmlAttribute"));
+        assertTrue(canLoad("jakarta.xml.bind.annotation.adapters.XmlAdapter"));
+    }
+
+    /**
+     * Validate that without the XMLBinding feature, XMLBinding class that is not in the 
+     * IBM-APIs that are marked internal cannot be loaded.
+     * @throws Exception
+     */
+    @Test
+    @SkipForRepeat("withXMLBinding")
+    public void testCannotLoadJakartaXMLBindingClasses() throws Exception {
+        assertFalse(canLoad("jakarta.xml.bind.JAXBContext"));
     }
 
     private boolean canLoad(String className) {

@@ -23,6 +23,8 @@ Export-Package: com.ibm.websphere.application,com.ibm.websphere.filemonitor,com.
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.basics/pom.xml=com.ibm.websphere.appserver.api.basics.pom}
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
@@ -17,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.Key;
 import java.security.KeyStoreException;
@@ -46,6 +44,8 @@ import test.common.SharedOutputManager;
 public class OidcLoginConfigImplTest extends CommonConfigTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.social.*=all");
+
+    private static final String CWWKS2351E_CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD = "CWWKS2351E";
 
     protected OidcLoginConfigImpl configImpl = null;
 
@@ -84,21 +84,25 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
     /************************************** initProps **************************************/
 
     @Test
-    public void initProps_emptyProps() {
+    public void initProps_minimumProps() {
         try {
-            configImpl.initProps(cc, new HashMap<String, Object>());
-            verifyAllMissingRequiredAttributes(outputMgr);
+            Map<String, Object> minimumProps = getRequiredConfigProps();
+            configImpl.initProps(cc, minimumProps);
+            verifyNoLogMessage(outputMgr, MSG_BASE);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
-    public void initProps_minimumProps() {
+    public void initProps_clientSecretMissing_requiredByTokenEndpointAuthMethod() {
+        Map<String, Object> minimumProps = getRequiredConfigProps();
+        minimumProps.remove(OidcLoginConfigImpl.KEY_clientSecret);
+        minimumProps.put(OidcLoginConfigImpl.KEY_tokenEndpointAuthMethod, "client_secret_post");
+
         try {
-            Map<String, Object> minimumProps = getRequiredConfigProps();
             configImpl.initProps(cc, minimumProps);
-            verifyNoLogMessage(outputMgr, MSG_BASE);
+            verifyLogMessage(outputMgr, CWWKS2351E_CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

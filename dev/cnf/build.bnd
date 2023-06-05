@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,16 +65,17 @@ instrument.taskInjection: false
 
 # Don't upload sources or javadoc unless bundle overrides
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
--maven-dependencies:
+# -maven-dependencies:
 -groupid: ${if;${test.project};test;dev}
--pom: true
+-pom: ${if;${test.project}|${fat.project};TRUE;FALSE}
+-maven-scope: runtime
 #-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine
 
 Bundle-License: \
   Eclipse Public License; \
-  url=https://www.eclipse.org/legal/epl-v10.html
+  url=https://www.eclipse.org/legal/epl-2.0/
 
 Bundle-SCM: \
   connection=scm:git:https://github.com/OpenLiberty/open-liberty.git, \
@@ -98,6 +99,8 @@ build.bnd.plugins: \
  # the location of the project that goes with that bundle.  For all transformed bundle names need to add source=none for
  # things to work in eclipse.  *.jakarta;source=none needs to be the last one.
 -buildpath+: \
+  com.ibm.jbatch.container.jakarta.ee9;project=com.ibm.jbatch.container;source=none, \
+  com.ibm.jbatch.container.jakarta.ee10;project=com.ibm.jbatch.container;source=none, \
   io.openliberty.cdi.spi;project=com.ibm.websphere.appserver.spi.cdi;source=none, \
   io.openliberty.connectors.security.internal.inbound;project=com.ibm.ws.jca.inbound.security;source=none, \
   io.openliberty.dynacache.internal;project=com.ibm.ws.dynacache;source=none, \

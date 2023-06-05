@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.client;
 
@@ -40,10 +37,13 @@ public class Client {
     public static final TraceComponent tc = Tr.register(Client.class);
 
     private final OidcClientConfig oidcClientConfig;
+    private final LogoutConfig logoutConfig;
+
     private static JWKSet jwkSet = null;
 
     public Client(OidcClientConfig oidcClientConfig) {
         this.oidcClientConfig = oidcClientConfig;
+        logoutConfig = oidcClientConfig.getLogoutConfig();
     }
 
     public OidcClientConfig getOidcClientConfig() {
@@ -73,40 +73,39 @@ public class Client {
         return jwkSet;
     }
 
-    public ProviderAuthenticationResult processExpiredToken(HttpServletRequest request, HttpServletResponse response,
+    public ProviderAuthenticationResult checkForExpiredTokensAndProcessIfNeeded(HttpServletRequest request, HttpServletResponse response,
                                                             boolean isAccessTokenExpired,
                                                             boolean isIdTokenExpired,
                                                             String idTokenString,
                                                             String refreshTokenString) {
         TokenRefresher tokenRefresher = new TokenRefresher(request, oidcClientConfig, isAccessTokenExpired, isIdTokenExpired, refreshTokenString);
-        LogoutConfig logoutConfig = oidcClientConfig.getLogoutConfig();
+
         if (tokenRefresher.isTokenExpired()) {
             if (oidcClientConfig.isTokenAutoRefresh()) {
                 // when there is no previously stored refresh_token field of the Token Response, a logout should be initiated
                 if (refreshTokenString == null) {
-                    return logout(request, response, logoutConfig, idTokenString);
+                    return logout(request, response, idTokenString);
                 }
                 ProviderAuthenticationResult providerAuthResult = tokenRefresher.refreshToken();
                 if (AuthResult.SUCCESS.equals(providerAuthResult.getStatus())) {
                     return providerAuthResult;
                 }
                 // When the call is not successful, ... a logout should be initiated.
-                return logout(request, response, logoutConfig, idTokenString);
+                return logout(request, response, idTokenString);
             } else {
+
                 if ((logoutConfig.isAccessTokenExpiry() && tokenRefresher.isAccessTokenExpired()) ||
                     (logoutConfig.isIdentityTokenExpiry() && tokenRefresher.isIdTokenExpired())) {
-                    return logout(request, response, logoutConfig, idTokenString);
+                    return logout(request, response, idTokenString);
                 }
             }
         }
 
-        // The token expiration is ignored when none of the above conditions hold
-        return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        // The token expiration is ignored when none of the above conditions hold.
+        return new ProviderAuthenticationResult(AuthResult.CONTINUE, HttpServletResponse.SC_OK);
     }
 
-    public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response,
-                                               LogoutConfig logoutConfig,
-                                               String idTokenString) {
+    public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response, String idTokenString) {
         LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig, idTokenString);
         try {
             return logoutHandler.logout();
@@ -115,7 +114,6 @@ public class Client {
                 Tr.debug(tc, "Logout failed with a ServletException exception on " + idTokenString, e);
             }
             return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
         }
     }
 

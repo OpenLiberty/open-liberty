@@ -1,7 +1,10 @@
 # NOTICE: This file was automatically updated to reflect changes made to test projects.
 # Please check these changes into GitHub.
+alpine:3.16
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
+gvenzl/oracle-xe:21.3.0-full-faststart
+gvenzl/oracle-xe:21.3.0-slim-faststart
 infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
 jaegertracing/all-in-one:1.39
@@ -13,20 +16,21 @@ kyleaure/db2-krb5:2.0
 kyleaure/db2-ssl:3.0
 kyleaure/db2:1.0
 kyleaure/krb5-server:1.0
-kyleaure/oracle-18.4.0-expanded:1.0.full
-kyleaure/oracle-18.4.0-expanded:1.0.full.krb5
-kyleaure/oracle-18.4.0-expanded:1.0.full.ssl
-kyleaure/oracle-18.4.0-expanded:1.0.slim
+kyleaure/oracle-21.3.0-faststart:1.0.full.krb5
+kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 kyleaure/postgres-krb5:1.0
 kyleaure/postgres-ssl:1.0
 kyleaure/postgres-test-table:3.0
-kyleaure/sqlserver-ssl:2019-CU10-ubuntu-16.04
+kyleaure/sqlserver-ssl:2019-CU18-ubuntu-20.04
 letsencrypt/pebble-challtestsrv:latest
 letsencrypt/pebble:latest
 mariadb:10.3
-mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 openzipkin/zipkin-slim:2.23
+otel/opentelemetry-collector:0.74.0
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
+selenium/standalone-chrome:4.8.3
 testcontainers/ryuk:0.3.4
 testcontainers/sshd:1.1.0
+testcontainers/vnc-recorder:1.2.0

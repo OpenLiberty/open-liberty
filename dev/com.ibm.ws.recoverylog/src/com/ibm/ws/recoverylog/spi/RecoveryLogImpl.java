@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
      * specify the FailureScope for recovery log being created.
      * </p>
      *
-     * @param recoveryLog MultiScopeLog delegate
+     * @param recoveryLog  MultiScopeLog delegate
      * @param failureScope FailureScope criteria used to filter the delegates
      */
     public RecoveryLogImpl(MultiScopeLog recoveryLog, FailureScope failureScope) {
@@ -276,14 +276,15 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
     }
 
     @Override
-    public void delete() {
+    public boolean delete() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "delete", this);
 
-        _recoveryLog.delete();
+        boolean deleted = _recoveryLog.delete();
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "delete", this);
+            Tr.exit(tc, "delete", deleted);
+        return deleted;
     }
 
     @Override
@@ -295,5 +296,10 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
+    }
+
+    @Override
+    public boolean failed() {
+        return _recoveryLog.failed();
     }
 }

@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>cdi-2.0</feature>
+        <feature>txtest-1.0</feature>
+        <feature>componentTest-1.0</feature>
+    </featureManager>
+
+    <transaction
+           transactionLogDirectory="TransactionalRecoveryLogs"
+           recoverOnStartup="true"
+           waitForRecovery="false"
+           heuristicRetryInterval="10"
+    />
+
+    <logging
+          traceSpecification="Transaction=all=enabled"
+          traceFileName="trace.log"
+          maxFileSize="2000"
+          maxFiles="20"
+          traceFormat="BASIC"
+    />
+
+</server>

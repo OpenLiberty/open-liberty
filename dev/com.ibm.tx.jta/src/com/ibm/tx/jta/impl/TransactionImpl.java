@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,12 +12,15 @@
  *******************************************************************************/
 package com.ibm.tx.jta.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.transaction.HeuristicCommitException;
 import javax.transaction.HeuristicMixedException;
@@ -59,6 +62,9 @@ import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 import com.ibm.ws.uow.UOWScopeLTCAware;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * TransactionImpl implements javax.transaction.Transaction interface.
@@ -258,12 +264,43 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
+    private static class CheckpointHookForNewTransaction implements CheckpointHook {
+        private static final CheckpointHookForNewTransaction _instance = new CheckpointHookForNewTransaction();
+
+        // Fail checkpoint if a new transaction was requested
+        @Override
+        public void prepare() {
+            throw new IllegalStateException(Tr.formatMessage(tc, "WTRN0154_ERROR_CHECKPOINT_NEW_TX"));
+        }
+
+        private static final AtomicBoolean alreadyAdded = new AtomicBoolean(false);
+
+        private static void add() {
+            if (!CheckpointPhase.getPhase().restored()) {
+                // Log the stack trace of the thread that created the transaction
+                final StringWriter writer = new StringWriter();
+                final PrintWriter printWriter = new PrintWriter(writer);
+                printWriter.println();
+                for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+                    printWriter.println("\t" + element);
+                }
+                Tr.warning(tc, "WTRN0155_CHECKPOINT_NEW_TX_STACK", writer.getBuffer());
+
+                if (alreadyAdded.compareAndSet(false, true)) {
+                    CheckpointPhase.getPhase().addMultiThreadedHook(_instance);
+                }
+            }
+        }
+    };
+
     /**
      * Recovery Constructor
      */
     public TransactionImpl(FailureScopeController fsc) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", fsc);
+
+        CheckpointHookForNewTransaction.add();
 
         _failureScopeController = fsc;
 
@@ -274,7 +311,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     protected TransactionImpl() {
-
+        CheckpointHookForNewTransaction.add();
     }
 
     /**
@@ -283,6 +320,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public TransactionImpl(int timeout) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", timeout);
+
+        CheckpointHookForNewTransaction.add();
 
         _failureScopeController = Configuration.getFailureScopeController();
 
@@ -306,6 +345,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { timeout, xid, jcard });
 
+        CheckpointHookForNewTransaction.add();
+
         _failureScopeController = Configuration.getFailureScopeController();
 
         _subordinate = true; /* @LI3187M */
@@ -328,6 +369,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public TransactionImpl(int txType, int timeout) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TransactionImpl", new Object[] { txType, timeout });
+
+        CheckpointHookForNewTransaction.add();
 
         _txType = txType;
 

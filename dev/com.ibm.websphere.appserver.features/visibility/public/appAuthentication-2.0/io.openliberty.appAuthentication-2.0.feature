@@ -14,8 +14,8 @@ IBM-SPI-Package: \
 Subsystem-Name: Jakarta Authentication 2.0
 -features=io.openliberty.xmlBinding-3.0, \
   io.openliberty.appSecurity-4.0, \
-  io.openliberty.jakarta.authentication-2.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.servlet.internal-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
+import componenttest.rules.repeater.MicroProfileActions;
 
 
 @SuppressWarnings("serial")
@@ -78,6 +80,7 @@ public class InterfaceTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.STANDALONE10_ID) // Looks to be a yasson 3.0 bug
     public void testMutationUsingInterfaceType(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         long timeStampAtStart = System.currentTimeMillis();
         GraphQLClient client = builder.build(GraphQLClient.class);

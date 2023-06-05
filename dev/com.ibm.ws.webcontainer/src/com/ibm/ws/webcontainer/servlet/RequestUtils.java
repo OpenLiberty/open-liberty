@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 
 public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
@@ -95,7 +97,7 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
             encoding = SYSTEM_CLIENT_ENCODING;
             return encoding;
         }
-        String header = req.getHeader(ACCEPT_CHARSET_HEADER);
+        String header = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_ACCEPT_CHARSET);
         if (header != null)
         {
         	if (header.indexOf(SHORT_ASCII)!=-1)
@@ -168,9 +170,8 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
     }
     public static String getLanguage(HttpServletRequest req)
     {
-        String header;
         String encoding = null;
-        header = req.getHeader(ACCEPT_LANGUAGE_HEADER);
+        String header = ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_ACCEPT_LANGUAGE);
         if (header != null)
         {
             StringTokenizer st = new StringTokenizer(header, HEADER_SEPARATOR);

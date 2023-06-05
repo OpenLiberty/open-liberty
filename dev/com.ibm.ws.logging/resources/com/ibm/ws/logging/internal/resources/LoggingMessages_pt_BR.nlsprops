@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: As seguintes mensagens est\u00e3o oculta
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=As mensagens que est\u00e3o configuradas para ficarem ocultas n\u00e3o s\u00e3o gravadas nos arquivos console.log e messages.log. Elas s\u00e3o gravadas no arquivo trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: O formato de sa\u00edda de messages.log est\u00e1 agora atualizado para ''{0}''.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: O formato de sa\u00edda de messages.log est\u00e1 agora atualizado para '{0}'.
 MESSAGE_FORMAT_UPDATED.explanation=O formato de sa\u00edda para messages.log est\u00e1 agora atualizado.
 MESSAGE_FORMAT_UPDATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: O formato de sa\u00edda de console est\u00e1 agora atualizado para ''{0}''.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: O formato de sa\u00edda de console est\u00e1 agora atualizado para '{0}'.
 CONSOLE_FORMAT_UPDATED.explanation=O formato de sa\u00edda para o console est\u00e1 agora atualizado.
 CONSOLE_FORMAT_UPDATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
@@ -158,13 +158,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Um caractere inv\u00e1lido foi forneci
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Somente letras, n\u00fameros e : s\u00e3o aceitos na propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Altere o valor da propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON para remover caracteres inv\u00e1lidos
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: A propriedade de hora de in\u00edcio de rolagem de log est\u00e1 formatada incorretamente. Como resultado, o valor \u00e9 configurado para um padr\u00e3o de '00:00', que representa meia-noite.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: A propriedade de tempo de in\u00edcio de rolagem de log est\u00e1 formatada incorretamente. Como resultado, o valor \u00e9 configurado para um padr\u00e3o de '00:00', que representa meia-noite.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=A propriedade de hor\u00e1rio de in\u00edcio de rolagem deve ser formatada HH:MM, com 00:00 representando a meia-noite.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Certifique-se de que o valor da propriedade de hor\u00e1rio de in\u00edcio de rolagem esteja devidamente formatado em nota\u00e7\u00e3o HH:MM 24 horas, em que 00:00 representa meia-noite.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: O intervalo de rolagem de log n\u00e3o pode ter menos de 1 minuto de dura\u00e7\u00e3o. Se um valor menor que 1 minuto for especificado, o intervalo de rolagem de log ser\u00e1 configurado para um padr\u00e3o de 1 dia.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=O intervalo de rolagem de log n\u00e3o pode ter menos de 1 minuto de dura\u00e7\u00e3o.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Especifique um intervalo de rolagem de log que seja igual ou maior que 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=O intervalo de rolagem de log n\u00e3o pode ter menos de 1 minutos de dura\u00e7\u00e3o.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Especifique um intervalo de rolagem de log que seja igual ou superior a 1 minuto.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: O nome do cabe\u00e7alho est\u00e1 ausente para um ou mais campos do accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=A cria\u00e7\u00e3o de log do JSON usa o atributo logFormat do accessLogging para selecionar quais campos da mensagem http_access.log incluir. Um nome de cabe\u00e7alho deve ser fornecido ao usar os campos %i ou %o no atributo accessLogging logFormat.

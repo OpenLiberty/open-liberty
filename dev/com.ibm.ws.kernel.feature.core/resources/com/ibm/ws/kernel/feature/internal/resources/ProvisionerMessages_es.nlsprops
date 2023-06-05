@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: La caracter\u00edstica de 
 tool.userfeature.install.location.invalid.explanation= La caracter\u00edstica de usuario no es una caracter\u00edstica del n\u00facleo por lo tanto no se puede instalar en el n\u00facleo.
 tool.userfeature.install.location.invalid.useraction= Instale la caracter\u00edstica de usuario en usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: El servidor ha a\u00f1adido las caracter\u00edsticas {0} al conjunto de caracter\u00edsticas existente.
+FEATURES_ADDED_DELTA.explanation=El servidor ha instalado un conjunto de caracter\u00edsticas nuevas adem\u00e1s de las caracter\u00edsticas instaladas anteriormente.
+FEATURES_ADDED_DELTA.useraction=No se requiere ninguna acci\u00f3n.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: El cliente ha a\u00f1adido las caracter\u00edsticas {0} al conjunto de caracter\u00edsticas existente. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=El cliente ha instalado un conjunto de caracter\u00edsticas nuevas adem\u00e1s de las caracter\u00edsticas instaladas anteriormente.
+FEATURES_ADDED_CLIENT_DELTA.useraction=No se requiere ninguna acci\u00f3n. 
+
+
+

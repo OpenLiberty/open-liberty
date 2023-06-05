@@ -24,6 +24,8 @@ Export-Package: com.ibm.websphere.security.tai.extension,com.ibm.wsspi.security.
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.sipServletSecurity.1.0/pom.xml=com.ibm.websphere.appserver.api.sipServletSecurity.1.0.pom}
 
 
+-maven-dependencies:
+ 
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \

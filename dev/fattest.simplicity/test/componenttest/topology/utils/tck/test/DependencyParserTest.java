@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,7 +137,7 @@ public class DependencyParserTest {
 
     @Test
     public void testGetTCKJarInfo() throws IOException {
-        String[] dependencyOutput = loadDependencyFile("dependency.txt");
+        List<String> dependencyOutput = loadDependencyFile("dependency.txt");
         TCKJarInfo info = TCKUtilities.parseTCKDependencies(Type.MICROPROFILE, dependencyOutput);
         assertNotNull(info);
         assertEquals("org.eclipse.microprofile.health", info.group);
@@ -147,7 +148,7 @@ public class DependencyParserTest {
 
     @Test
     public void testWindowsGetTCKJarInfo() throws IOException {
-        String[] dependencyOutput = loadDependencyFile("windowsDependency.txt");
+        List<String> dependencyOutput = loadDependencyFile("windowsDependency.txt");
         TCKJarInfo info = TCKUtilities.parseTCKDependencies(Type.MICROPROFILE, dependencyOutput);
         assertNotNull(info);
         assertEquals("org.eclipse.microprofile.health", info.group);
@@ -157,17 +158,17 @@ public class DependencyParserTest {
                      info.jarPath);
     }
 
-    private static final String[] loadDependencyFile(String name) throws IOException {
-        ArrayList<String> lines = new ArrayList<>();
+    private static final List<String> loadDependencyFile(String name) throws IOException {
+        List<String> result = new ArrayList<>();
         try (InputStream is = DependencyParserTest.class.getResourceAsStream(name)) {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
             String line;
             while ((line = br.readLine()) != null) {
-                lines.add(line);
+                result.add(line);
             }
         }
-        return lines.toArray(new String[0]);
+        return result;
     }
 }

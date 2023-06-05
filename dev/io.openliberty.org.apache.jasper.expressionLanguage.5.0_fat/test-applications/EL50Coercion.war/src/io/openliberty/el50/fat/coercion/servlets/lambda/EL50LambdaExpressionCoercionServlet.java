@@ -1,36 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.el50.fat.coercion.servlets.lambda;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import jakarta.el.BeanELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ELManager;
-import jakarta.el.StandardELContext;
-import jakarta.servlet.annotation.WebServlet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import java.util.function.Predicate;
-
 import jakarta.el.ELException;
 import jakarta.el.ELProcessor;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  * Servlet for testing LambdaExpression coercion in Expression Language 5.0
@@ -50,8 +41,9 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
     }
 
     /**
-     * 
-     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional Interface method invocation.
+     *
+     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional
+     * Interface method invocation.
      *
      * @throws Exception
      */
@@ -59,7 +51,7 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
     public void testLambdaCoercion() throws Exception {
         // Test lambda coercion basic test passing a lambda as a parameter from a defined bean
         String result;
-        String expectedResult ="success";
+        String expectedResult = "success";
         Object obj = elp.eval("lambdaBean.testLambdaCoercion(param -> true)");
         assertNotNull(obj);
         result = obj.toString();
@@ -68,30 +60,34 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
     }
 
     /**
-     * 
-     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional Interface method invocation.
+     *
+     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional
+     * Interface method invocation.
      *
      * Should fail since parameter of lambda was coerced to a wrong type then expected (int expected)
+     *
      * @throws Exception
      */
     @Test
     public void testLambdaCoercionWrongType() throws Exception {
         // Test lambda with a wrong type by passing a lambda evaluating with a wrong type
-        Object result = null;
-        boolean exceptionCaught = false;
-        try {
-            result = elp.eval("lambdaBean.testIntLambdaCoercion(param -> param.equals('should be int not string'))");
-        } catch (ELException e) {
-            exceptionCaught = true;
-        }
-        assertEquals("The expression did not throw expected ELException. Got result: "+result, true, exceptionCaught);
+        String result;
+        String expectedResult = "failed";
+
+        Object obj = elp.eval("lambdaBean.testIntLambdaCoercion(param -> param.equals('should be int not string'))");
+        assertNotNull(obj);
+        result = obj.toString();
+
+        assertEquals("The expression did not evaluate to: " + expectedResult + " but was: " + result, expectedResult, result);
     }
 
     /**
-     * 
-     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional Interface method invocation.
+     *
+     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional
+     * Interface method invocation.
      *
      * Should fail since the call was not defined
+     *
      * @throws Exception
      */
     @Test
@@ -105,14 +101,16 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
         } catch (ELException e) {
             exceptionCaught = true;
         }
-        assertEquals("The expression did not throw expected ELException. Got result: "+result, true, exceptionCaught);
+        assertEquals("The expression did not throw expected ELException. Got result: " + result, true, exceptionCaught);
     }
 
     /**
-     * 
-     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional Interface method invocation.
+     *
+     * Expression Language 5.0 in Jakarta EE10 Return the result of invoking the LambdaExpression with the parameters (coerced if necessary) that were passed to the Functional
+     * Interface method invocation.
      *
      * Should fail since parameter was coerced to a wrong type then expected (lambda expected)
+     *
      * @throws Exception
      */
     @Test
@@ -125,14 +123,14 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
         } catch (ELException e) {
             exceptionCaught = true;
         }
-        assertEquals("The expression did not throw expected ELException. Got result: "+result, true, exceptionCaught);
+        assertEquals("The expression did not throw expected ELException. Got result: " + result, true, exceptionCaught);
     }
 
     /*
-    * (non-Javadoc)
-    *
-    * Simple bean used to test lambda coercion 
-    */
+     * (non-Javadoc)
+     *
+     * Simple bean used to test lambda coercion
+     */
     public class LambdaBean {
 
         public String testLambdaCoercion(Predicate<String> filter) {
@@ -142,7 +140,7 @@ public class EL50LambdaExpressionCoercionServlet extends FATServlet {
         public String testIntLambdaCoercion(Predicate<Integer> filter) {
             // Expected string to test against
             Integer expectedInteger = 184;
-            if(filter.test(expectedInteger)){
+            if (filter.test(expectedInteger)) {
                 return "success";
             }
             return "failed";

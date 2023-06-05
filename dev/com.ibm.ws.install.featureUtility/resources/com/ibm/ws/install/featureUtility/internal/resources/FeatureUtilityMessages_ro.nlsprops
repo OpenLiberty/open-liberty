@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=Fi\u015fierul de propriet\u0103\u0163i a e\u01
 MSG_VALIDATION_NUM_OF_ERRORS=Num\u0103rul de erori: {0}
 MSG_VALIDATION_MESSAGES=Validarea fi\u015fierului de propriet\u0103\u0163i
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=Chei publice configurate
+MSG_NO_CONFIG_KEY=Nicio cheie configurat\u0103
+MSG_VERIFY_FEATURE_LABEL=Verificare caracteristic\u0103:
+MSG_DEFAULT_VERIFY=Impunere
 
 FIELD_REPO_NAME=Nume: {0}
 FIELD_REPO_LOCATION=Loca\u0163ie: {0}
@@ -60,3 +64,4 @@ FIELD_REPO=Server magazie: {0} ({1})
 FIELD_PROXY=Server proxy: {0}
 FIELD_VALIDATION_RESULTS=Rezultate de validare: {0}
 FIELD_VALIDATION_LINE=Linie: {0}
+FIELD_KEYID=ID cheie:

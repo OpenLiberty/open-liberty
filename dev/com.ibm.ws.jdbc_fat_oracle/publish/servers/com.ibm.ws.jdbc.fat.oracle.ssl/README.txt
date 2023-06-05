@@ -11,7 +11,7 @@ Java Key Store (JKS):
 - client-truststore.jks
 
 These files were generated when we built the database image:
-* kyleaure/oracle-ssl-18.4.0-xe-prebuilt
+* kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 
 This process has been automated so that future changes to this project will be easier.
 To build a new database image and re-generate these files go to:

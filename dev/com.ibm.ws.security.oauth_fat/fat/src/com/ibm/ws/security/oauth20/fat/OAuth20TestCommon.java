@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.net.ssl.HostnameVerifier;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import com.ibm.websphere.simplicity.config.MongoDBElement;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.mongo.fat.MongoServerSelector;
+import com.ibm.ws.security.fat.common.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.meterware.httpunit.HttpUnitOptions;
 import com.meterware.httpunit.WebConversation;
@@ -278,6 +280,8 @@ public class OAuth20TestCommon {
         }
         assertNotNull("OAuth role configuration was not processed in time",
                       server.waitForStringInLog("OAuth roles configuration successfully processed"));
+
+        server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
 
         printTestStart();
         init();

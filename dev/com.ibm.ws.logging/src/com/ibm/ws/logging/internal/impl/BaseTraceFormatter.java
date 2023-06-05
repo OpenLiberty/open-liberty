@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -299,8 +299,14 @@ public class BaseTraceFormatter extends Formatter {
                 }
                 // Would any of the other parameters benefit from our whizzy formatting?
             }
-            // If this is a parameter list, use MessageFormat to sort it out
-            txt = MessageFormat.format(msg, formattedParams);
+            String formattedText;
+            try {
+                // If this is a parameter list, use MessageFormat to sort it out
+                formattedText = MessageFormat.format(msg, formattedParams);
+            } catch (Throwable t) {
+                formattedText = msg + " " + formatObj(formattedParams);
+            }
+            txt = formattedText;
         } else {
             txt = msg + (hasParams ? " " + formatObj(logParams) : "");
         }

@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -28,6 +29,8 @@ import tests.DualServerDynamicDBRotationTest2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                //Ensure failures in @BeforeClass do not result in zero tests run
+                AlwaysPassesTest.class,
                 DualServerDynamicDBRotationTest2.class,
 })
 public class FATSuite extends TxTestContainerSuite {
@@ -36,8 +39,6 @@ public class FATSuite extends TxTestContainerSuite {
     private static final String POSTGRES_PASS = "superSecret";
 
     static {
-        databaseContainerType = DatabaseContainerType.Postgres;
-
         /*
          * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
          * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
@@ -49,11 +50,15 @@ public class FATSuite extends TxTestContainerSuite {
                         .withPassword(POSTGRES_PASS)
                         .withSSL()
                         .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
+
+        beforeSuite(DatabaseContainerType.Postgres);
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames));
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                    .forServers(DualServerDynamicDBRotationTest2.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DualServerDynamicDBRotationTest2.serverNames));
 }

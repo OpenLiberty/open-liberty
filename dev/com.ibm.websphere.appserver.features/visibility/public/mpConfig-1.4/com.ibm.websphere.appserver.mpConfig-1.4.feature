@@ -13,7 +13,6 @@ IBM-ShortName: mpConfig-1.4
 Subsystem-Name: MicroProfile Config 1.4
 -features=com.ibm.websphere.appserver.appmanager-1.0, \
   io.openliberty.mpCompatible-0.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3; ibm.tolerates:="1.2", \
   com.ibm.websphere.appserver.javax.cdi-2.0; ibm.tolerates:="1.2", \
   com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.4

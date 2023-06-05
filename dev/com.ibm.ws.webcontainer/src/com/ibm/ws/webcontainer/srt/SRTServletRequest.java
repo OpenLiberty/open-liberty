@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.srt;
 
@@ -59,6 +56,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.commons.fileupload.FileCountLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadException;
@@ -78,6 +76,7 @@ import com.ibm.ws.webcontainer.async.AsyncIllegalStateException;
 import com.ibm.ws.webcontainer.async.AsyncListenerEntry;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorHelperImpl;
+import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.RequestUtils;
 import com.ibm.ws.webcontainer.session.SessionManagerConfigBase;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
@@ -86,6 +85,7 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.webapp.WebGroup;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.IPoolable;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainer;
@@ -573,6 +573,29 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
+        }
+        return header;
+    }
+
+    /**
+     * Returns the value of a header field, or null if not known.
+     * @param headerKey the HttpHeaderKeys for the header name
+     */
+    @Override
+    public String getHeader(HttpHeaderKeys headerKey) {
+
+        if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
+            checkRequestObjectInUse();
+        }
+       
+        String header = null;
+        String name = headerKey.getName();
+        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
+            if (_request != null)
+                header = _request instanceof IRequestImpl ? ((IRequestImpl)_request).getHeader(headerKey) : _request.getHeader(name);
+        }// PK80362 End
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+            logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" headerKey --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
         }
         return header;
     }
@@ -1653,7 +1676,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // from the accepted languages
         if (encoding == null && webAppCfg.isAutoRequestEncoding())
         {
-            String acceptLanguage = getHeader("Accept-Language");
+            String acceptLanguage = getHeader(HttpHeaderKeys.HDR_ACCEPT_LANGUAGE);
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.logp(Level.FINE, CLASS_NAME,"getReaderEncoding", "accept-language --> " + acceptLanguage);
 
@@ -3822,7 +3845,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     private void parseMultipart(IServletConfig multiPartServletConfig, int fileThreshold, String location, long maxFileSize, long maxRequestSize) throws IOException {
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE);
+        
+        if (isTraceOn) {  
             logger.logp(Level.FINE, CLASS_NAME,"parseMultipart"," "+ multiPartServletConfig.getServletName()+" ["+ fileThreshold +", "+location+ ", " + maxFileSize+" , " + maxRequestSize+"]"); //PI75528
         }
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
@@ -3865,7 +3890,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     }
                 }       
             }
-            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            if (isTraceOn) {  
                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "uploadFile location --> " + uploadFile.getAbsolutePath());
             }
             multiPartServletConfig.setMultipartBaseLocation(uploadFile);
@@ -3874,11 +3899,18 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         ServletFileUpload sfu = new ServletFileUpload(fact);
         sfu.setFileSizeMax(maxFileSize);
         if(WCCustomProperties.USE_MAXREQUESTSIZE_FOR_MULTIPART){//PI75528
-            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+            if (isTraceOn) { 
                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "usemaxrequestsizeformultipart property set");
             }
             sfu.setSizeMax(maxRequestSize); 
         }
+       
+        int maxFileCount = ((maxFileCount = WCCustomProperties.MAX_FILE_COUNT) < 0) ? -1 : maxFileCount;
+        if (isTraceOn) 
+            logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "maxFileCount set to ["+maxFileCount+"]");
+
+        sfu.setFileCountMax(maxFileCount);
+
         List list=null;
         try {
             if (_srtRequestHelper.multipartException!=null) {
@@ -3909,9 +3941,20 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
             if (list!= null) {
                 //724365.2 Start
-                if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
-                    logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "size after parsing request --> " + list.size());
+                if (isTraceOn) { 
+                    logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "part size after parsing request body --> " + list.size());
                 }
+                
+                int maxParamPerRequest = WCCustomProperties.MAX_PARAM_PER_REQUEST;
+                if ((maxParamPerRequest != -1) &&  maxParamPerRequest < list.size()) {
+                    if (isTraceOn) { 
+                        logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "part size is greater than max param per request ["+maxParamPerRequest+"] ; throw ISE Exceeding.maximum.parameters");
+                    }
+                    
+                    //the second maxParamPerRequest is a stand-in to satisfy the message parameters
+                    throw new IllegalArgumentException(MessageFormat.format(nls.getString("Exceeding.maximum.parameters"), new Object[]{maxParamPerRequest, maxParamPerRequest})); 
+                }
+                
                 int totalPartSize = 0;
                 int dupSize = 0; // 728397
                 HashSet<Integer> key_hset = new HashSet<Integer>(); // 728397
@@ -3923,7 +3966,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     if( !multipartPartsMapcontainsKey){ 
                         if(!(key_hset.add(p.getName().hashCode()))){ 
                             dupSize++;// if false then count as duplicate hashcodes for unique keys
-                            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+                            if (isTraceOn) {
                                 logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "duplicate hashCode generated by part --> " + p.getName());
                             }
                             if( dupSize > WCCustomProperties.MAX_DUPLICATE_HASHKEY_PARAMS){                                                                                               
@@ -3932,7 +3975,6 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                         } 
                     }
                     // 728397 End
-                    int maxParamPerRequest = WCCustomProperties.MAX_PARAM_PER_REQUEST;
                     if((maxParamPerRequest == -1) || (totalPartSize < maxParamPerRequest)){
                         //91002 Liberty Start
                         if(multipartPartsMapcontainsKey){
@@ -3953,6 +3995,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                     }// 724365.2 End
                 }                
             }
+        }
+        catch(FileCountLimitExceededException maxFileCountException) {
+            _srtRequestHelper.multipartException = new IllegalStateException(MessageFormat.format(nls.getString("multipart.file.count.max.exceeded"), new Object[]{maxFileCount}));
+            _srtRequestHelper.multipartISEException = true;
+            throw (IllegalStateException)_srtRequestHelper.multipartException;
         }
         catch(FileSizeLimitExceededException fileSizeException) {
             _srtRequestHelper.multipartException = new IllegalStateException(nls.getString("multipart.file.size.too.big"));

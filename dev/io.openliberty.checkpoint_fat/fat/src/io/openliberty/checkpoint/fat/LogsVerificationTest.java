@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileReader;
@@ -64,7 +65,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testMessagesAndTraceLogsCreatedNewOnCheckpointRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
@@ -104,7 +105,7 @@ public class LogsVerificationTest {
         properties.put("com.ibm.ws.logging.max.files", "4");
         FATSuite.configureBootStrapProperties(server, properties);
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         server.checkpointRestore();
@@ -140,7 +141,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testRestoreWorksAfterMessagesLogIsDeleted() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
 
@@ -156,8 +157,19 @@ public class LogsVerificationTest {
     }
 
     @Test
+    public void testRestoreHideMessageTRAS3001I() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        assertEquals("Expected checkpoint message not found", 1, server.findStringsInLogs("CWWKC0451I", server.getDefaultLogFile()).size());
+
+        server.checkpointRestore();
+        assertNotNull("Expected TRAS3001I message not found", server.waitForStringInLogUsingMark("TRAS3001I", 100));
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
     public void testVariableSourceDirUpdateDuringRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         configureEnvVariable(server, singletonMap("VARIABLE_SOURCE_DIRS", "testSrcDir"));
@@ -170,7 +182,7 @@ public class LogsVerificationTest {
 
     @Test
     public void testEnvMessageFormatUpdateOnRestore() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         RemoteFile messagesLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "/messages.log");

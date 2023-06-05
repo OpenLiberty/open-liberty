@@ -3,8 +3,7 @@ symbolicName=io.openliberty.enterpriseBeansRemoteClient-2.0
 visibility=private
 IBM-API-Package: com.ibm.websphere.ejbcontainer; type="ibm-api", \
  com.ibm.ws.ejb.portable; type="internal"
--features=io.openliberty.jakartaeePlatform-9.0, \
-  com.ibm.websphere.appserver.iiopclient-1.0, \
+-features=com.ibm.websphere.appserver.iiopclient-1.0, \
   io.openliberty.ejbCore-2.0, \
   io.openliberty.jakarta.interceptor-2.0; ibm.tolerates:="2.1", \
   io.openliberty.jakarta.enterpriseBeans-4.0, \

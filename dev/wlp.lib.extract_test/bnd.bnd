@@ -21,7 +21,8 @@ test.project: true
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest, \
-	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest, \
 	wlp.lib.extract;version=latest

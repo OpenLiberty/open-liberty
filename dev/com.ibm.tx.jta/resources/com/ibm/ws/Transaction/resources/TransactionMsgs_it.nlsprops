@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2010 IBM Corporation and others.
+# Copyright (c) 2002, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -216,16 +216,11 @@ WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED=WTRN0003E: Durante il ripristino non \u
 WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.explanation=Durante il ripristino che comprendeva un file RAR incorporato, il file JAR richiesto non \u00e8 stato individuato. Senza questo file JAR, non \u00e8 possibile completare il ripristino della transazione.
 WTRN0003_RECOVERY_TXRECUTILS_LOAD_FAILED.useraction=Nessuna. Questo \u00e8 un errore interno di sistema.
 
-WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: impossibile creare XAResourceFactory. Il nome \
-classe di XAResourceFactory era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0004_CANT_CREATE_XARESOURCEFACTORY=WTRN0004W: impossibile creare XAResourceFactory. Il nome classe di XAResourceFactory era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0004_CANT_CREATE_XARESOURCEFACTORY.explanation=Durante il ripristino del server, non \u00e8 stato trovato il factory identificato per la creazione di oggetti XAResource. Questo \u00e8 un errore interno di sistema.
 WTRN0004_CANT_CREATE_XARESOURCEFACTORY.useraction=CMSG0002
 
-WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: Impossibile ricreare XAResource per un partecipante \
-alla transazione e il ripristino della transazione potrebbe non essere completato correttamente. La \
-risorsa era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0005_CANT_RECREATE_XARESOURCE=WTRN0005W: Impossibile ricreare XAResource per un partecipante alla transazione e il ripristino della transazione potrebbe non essere completato correttamente. La risorsa era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0005_CANT_RECREATE_XARESOURCE.explanation=Durante il ripristino del server, non \u00e8 stato possibile ricreare un oggetto XAResource dal relativo al factory corrispondente.
 WTRN0005_CANT_RECREATE_XARESOURCE.useraction=CMSG0002
 
@@ -261,15 +256,12 @@ WTRN0013_LOGGING_IN_MEMORY=WTRN0013W: Nessun log di transazione specificato, reg
 WTRN0013_LOGGING_IN_MEMORY.explanation=Il servizio di transazione \u00e8 configurato in modo da non scrivere un log nello storage permanente. Ci\u00f2 pu\u00f2 compromettere l'integrit\u00e0 dei dati o bloccare le risorse (ad esempio, tabelle di database) se alla chiusura del server vengono eseguite transazioni di commit a due fasi rimaste in sospeso.
 WTRN0013_LOGGING_IN_MEMORY.useraction=Se si richiede un ripristino della transazione, riconfigurare il servizio di transazione per utilizzare la registrazione e riavviare il server.
 
-WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: Il servizio di transazione ha rilevato una stringa di configurazione del file di log non valida. Il servizio transazioni \
-continuer\u00e0 senza registrare il ripristino.
-WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Il nome della directory per il file di log della transazione, impostato nel campo della directory di log di transazione, non \u00e8 valido. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La \
-dimensione del file di log minima e predefinita \u00e8 1M.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0014I: Il servizio di transazione ha rilevato una stringa di configurazione del file di log non valida. Il servizio transazioni continuer\u00e0 senza registrare il ripristino.
+WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Il nome della directory per il file di log della transazione, impostato nel campo della directory di log di transazione, non \u00e8 valido. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La dimensione del file di log minima e predefinita \u00e8 1M.
 WTRN0014_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Correggere la configurazione della directory del log di transazione. Verificare che il server venga riavviato per consentire la registrazione del ripristino della transazione.
 
 WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0015E: \u00c8 stata specificata una dimensione del file di log della transazione non valida: {0}. Il servizio transazioni utilizzer\u00e0 la dimensione del file di log predefinita di 1M.
-WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=La dimensione del file per il file di log della transazione, impostata nel campo della directory di log di transazione, non \u00e8 valida. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La \
-dimensione del file di log minima e predefinita \u00e8 1M.
+WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=La dimensione del file per il file di log della transazione, impostata nel campo della directory di log di transazione, non \u00e8 valida. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La dimensione del file di log minima e predefinita \u00e8 1M.
 WTRN0015_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Correggere la configurazione della directory del log di transazione.
 
 WTRN0016_EXC_DURING_RECOVERY=WTRN0016E: Eccezione rilevata durante il ripristino del servizio di transazione! {0}
@@ -332,8 +324,7 @@ WTRN0030_XARESOURCE_RECOVER_FAILURE=WTRN0030E: Ripristino dei dati XAResource no
 WTRN0030_XARESOURCE_RECOVER_FAILURE.explanation=\u00c8 un errore interno probabilmente determinato da un errore precedente.
 WTRN0030_XARESOURCE_RECOVER_FAILURE.useraction=CMSG0002
 
-WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Operazione xa_rollback su una risorsa transazionale non riuscita. La transazione globale era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0031_XA_ROLLBACK_FAILED=WTRN0031E: Operazione xa_rollback su una risorsa transazionale non riuscita. La transazione globale era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0031_XA_ROLLBACK_FAILED.explanation=Si \u00e8 verificata un'eccezione quando il servizio transazioni ha richiamato l'operazione xa_rollback su una risorsa elencata con la transazione globale identificata nel messaggio.
 WTRN0031_XA_ROLLBACK_FAILED.useraction=La transazione potrebbe essere completata con un risultato euristico. In questo caso, correggere tutti i problemi dei dati di applicazione causati dal risultato euristico.
 
@@ -357,9 +348,7 @@ WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY=WTRN0036W: Durante il qui
 WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.explanation=Durante la fase di quiesce della chiusura del server \u00e8 stata rilevata una transazione in sospeso. Questa transazione \u00e8 stata segnalata come sottoposta solo a rollback.
 WTRN0036_DURING_SERVER_QUIESCE_TX_MARKED_ROLLBACK_ONLY.useraction=Non \u00e8 richiesta alcuna azione. La transazione verr\u00e0 sottoposta a rollback durante l'arresto del server o verr\u00e0 ripristinata al riavvio del server.
 
-WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Il servizio transazioni ha rilevato un errore su un''operazione xa_recover. La \
-risorsa era {0}. Il codice di errore era {1}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {2}
+WTRN0037_XA_RECOVER_ERROR=WTRN0037W: Il servizio transazioni ha rilevato un errore su un''operazione xa_recover. La risorsa era {0}. Il codice di errore era {1}. La traccia dello stack dell''eccezione \u00e8 la seguente: {2}
 WTRN0037_XA_RECOVER_ERROR.explanation=Il servizio transazioni ha rilevato un errore durante il richiamo di xa_recover su una risorsa, per determinare le transazioni preparate gestite dal gestore risorse corrispondente. L'operazione sar\u00e0 eseguita di nuovo.
 WTRN0037_XA_RECOVER_ERROR.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
@@ -391,53 +380,43 @@ WTRN0044_HEURISTIC_MAY_HAVE_OCCURED=WTRN0044W: \u00c8 possibile che si sia verif
 WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.explanation=Il servizio transazioni ha rilevato che la transazione specificata ha coinvolto sia risorse a una fase che a due fasi. Il servizio transazioni ha trasferito una richiesta commit a una fase ad una singola risorsa a una fase, ma si \u00e8 verificato un errore nel server prima di poter completare il commit. Non \u00e8 noto se la risorsa sia stata correttamente sottoposta a commit.
 WTRN0044_HEURISTIC_MAY_HAVE_OCCURED.useraction=Tutte le risorse a due fasi verranno sottoposte a rollback. Se la risorsa ad una fase ha elaborato correttamente il commit, allora si \u00e8 verificato un danno euristico e tutti i problemi relativi ai dati dell'applicazione causati dalla condizione euristica devono essere corretti.
 
-WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: Il servizio transazioni non pu\u00f2 ripristinare la risorsa {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0045_CANNOT_RECOVER_RESOURCE=WTRN0045W: Il servizio transazioni non pu\u00f2 ripristinare la risorsa {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0045_CANNOT_RECOVER_RESOURCE.explanation=Si \u00e8 verificato un errore interno quando il servizio transazioni ha tentato di ricostruire un partecipante alla transazione durante il ripristino. Ci\u00f2 \u00e8 stato determinato probabilmente da un errore precedente.
 WTRN0045_CANNOT_RECOVER_RESOURCE.useraction=CMSG0002
 
-WTRN0046_PREPARE_FAILED=WTRN0046E: Un tentativo dal gestore transazioni di richiamare prepare su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0046_PREPARE_FAILED=WTRN0046E: Un tentativo dal gestore transazioni di richiamare prepare su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0046_PREPARE_FAILED.explanation=La risorsa transazionale non \u00e8 riuscita a soddisfare la richiesta di elaborare una chiamata a prepare. L'errore verr\u00e0 considerato come rollback vote.
 WTRN0046_PREPARE_FAILED.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
-WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: Si \u00e8 verificato un XAER_RMERR durante il commit del lavoro su un ramo della transazione. La \
-risorsa era: {0}
+WTRN0047_XAER_RMERR_ON_COMMIT=WTRN0047W: Si \u00e8 verificato un XAER_RMERR durante il commit del lavoro su un ramo della transazione. La risorsa era: {0}
 WTRN0047_XAER_RMERR_ON_COMMIT.explanation=Un errore \u00e8 stato rilevato durante il processo di commit per una transazione.
 WTRN0047_XAER_RMERR_ON_COMMIT.useraction=Risolvere i problemi relativi ai dati delle applicazioni determinati da quest'errore.
 
-WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: Un tentativo dal gestore transazioni di richiamare il commit su una risorsa transazionale ha causato un errore XAER_RMFAIL. La \
-risorsa era {0}
+WTRN0048_XAER_RMFAIL_ON_COMMIT=WTRN0048W: Un tentativo dal gestore transazioni di richiamare il commit su una risorsa transazionale ha causato un errore XAER_RMFAIL. La risorsa era {0}
 WTRN0048_XAER_RMFAIL_ON_COMMIT.explanation=La chiamata commit su una risorsa transazionale non ha avuto esito positivo in quanto il gestore risorse non era disponibile. La chiamata commit verr\u00e0 ripetuta a intervalli regolari.
 WTRN0048_XAER_RMFAIL_ON_COMMIT.useraction=Verificare che il gestore risorse sia disponibile.
 
-WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: Un tentativo dal gestore transazioni di richiamare il rollback su una risorsa transazionale ha causato un errore XAER_RMFAIL. La \
-risorsa era {0}
+WTRN0049_XAER_RMFAIL_ON_ROLLBACK=WTRN0049W: Un tentativo dal gestore transazioni di richiamare il rollback su una risorsa transazionale ha causato un errore XAER_RMFAIL. La risorsa era {0}
 WTRN0049_XAER_RMFAIL_ON_ROLLBACK.explanation=La chiamata del rollback su una risorsa transazionale non \u00e8 riuscita poich\u00e9 il gestore risorse non era disponibile. La chiamata del rollback verr\u00e0 ripetuta a intervalli regolari.
 WTRN0049_XAER_RMFAIL_ON_ROLLBACK.useraction=Verificare che il gestore risorse sia disponibile.
 
-WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: Un tentativo dal gestore transazioni di richiamare il commit su una risorsa transazionale ha causato un errore non previsto. Il codice \
-di errore XA era {0}.
+WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT=WTRN0050E: Un tentativo dal gestore transazioni di richiamare il commit su una risorsa transazionale ha causato un errore non previsto. Il codice di errore XA era {0}.
 WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.explanation=La chiamata commit su una risorsa transazionale non ha avuto esito positivo a causa di un errore non previsto. La chiamata commit verr\u00e0 ripetuta a intervalli regolari.
 WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
-WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: Un tentativo dal gestore transazioni di richiamare il rollback su una risorsa transazionale ha causato un errore non previsto. Il codice \
-di errore XA era {0}.
+WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK=WTRN0051E: Un tentativo dal gestore transazioni di richiamare il rollback su una risorsa transazionale ha causato un errore non previsto. Il codice di errore XA era {0}.
 WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.explanation=La chiamata rollback su una risorsa transazionale non ha avuto esito positivo a causa di un errore non previsto. La chiamata del rollback verr\u00e0 ripetuta a intervalli regolari.
 WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
-WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: Un tentativo dal gestore transazioni di richiamare il commit a una fase su una risorsa transazionale ha causato un errore XAER_RMFAIL. La \
-risorsa era {0}
+WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE=WTRN0052E: Un tentativo dal gestore transazioni di richiamare il commit a una fase su una risorsa transazionale ha causato un errore XAER_RMFAIL. La risorsa era {0}
 WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.explanation=La chiamata commit a una fase su una risorsa transazionale non ha avuto esito positivo in quanto il gestore risorse non era disponibile.
 WTRN0052_XAER_RMFAIL_ON_COMMIT_ONE_PHASE.useraction=La transazione verr\u00e0 sottoposta a rollback.
 
-WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: Un tentativo dal gestore transazioni di richiamare il commit a una fase su una risorsa transazionale ha causato un errore non previsto. Il codice \
-di errore XA era {0}.
+WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE=WTRN0053E: Un tentativo dal gestore transazioni di richiamare il commit a una fase su una risorsa transazionale ha causato un errore non previsto. Il codice di errore XA era {0}.
 WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.explanation=La chiamata commit a una fase su una risorsa transazionale non ha avuto esito positivo a causa di un errore non previsto.
 WTRN0053_UNEXPECTED_XA_ERROR_ON_COMMIT_ONE_PHASE.useraction=Gestore transazioni tenter\u00e0 di eseguire il rollback della transazione.
 
-WTRN0054_XA_FORGET_ERROR=WTRN0054W: Un''operazione xa_forget su una risorsa transazionale ha rilevato un errore. Il codice di errore era {0}.  La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0054_XA_FORGET_ERROR=WTRN0054W: Un''operazione xa_forget su una risorsa transazionale ha rilevato un errore. Il codice di errore era {0}.  La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0054_XA_FORGET_ERROR.explanation=Si \u00e8 verificata un'eccezione quando il servizio transazioni ha richiamato l'operazione xa_forget su una risorsa.
 WTRN0054_XA_FORGET_ERROR.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
@@ -481,8 +460,7 @@ WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE=WTRN0064E: Si \u00e8 verificato un t
 WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.explanation=Il servizio di transazione ha rifiutato il tentativo di commit di una risorsa a una fase in un ramo di transazione subordinata distribuita. La transazione verr\u00e0 sottoposta a rollback.
 WTRN0064_SUBORDINATE_COMMIT_OF_1PC_RESOURCE.useraction=Assicurarsi che non siano coinvolte risorse a una fase in una subordinata di un ramo di transazione distribuita.
 
-WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: XAResource e sconosciuta a questa transazione. La \
-risorsa era: {0}
+WTRN0065_XARESOURCE_NOT_KNOWN=WTRN0065W: XAResource e sconosciuta a questa transazione. La risorsa era: {0}
 WTRN0065_XARESOURCE_NOT_KNOWN.explanation=Il gestore transazioni non \u00e8 riuscito a eliminare una XAResource perch\u00e9 era precedentemente elencata con la transazione corrente. \u00c8 un errore interno probabilmente determinato da un errore precedente.
 WTRN0065_XARESOURCE_NOT_KNOWN.useraction=CMSG0002
 
@@ -534,13 +512,11 @@ WTRN0077_OPERATOR_CANCELLED=WTRN0077W: La transazione {0} \u00e8 stata annullata
 WTRN0077_OPERATOR_CANCELLED.explanation=La consegna del risultato per la transazione identificata nel messaggio \u00e8 stata abbandonata alla richiesta dell'operatore.
 WTRN0077_OPERATOR_CANCELLED.useraction=Risolvere i problemi relativi ai dati delle applicazioni determinati da quest'errore.
 
-WTRN0078_START_FAILED=WTRN0078E: Un tentativo dal gestore transazioni di richiamare start su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0078_START_FAILED=WTRN0078E: Un tentativo dal gestore transazioni di richiamare start su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0078_START_FAILED.explanation=La risorsa transazionale non \u00e8 riuscita a soddisfare la richiesta di elaborare una chiamata a start. La transazione verr\u00e0 sottoposta a rollback.
 WTRN0078_START_FAILED.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
-WTRN0079_END_FAILED=WTRN0079E: Un tentativo dal gestore transazioni di richiamare end su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello \
-stack dell''eccezione \u00e8 la seguente: {1}
+WTRN0079_END_FAILED=WTRN0079E: Un tentativo dal gestore transazioni di richiamare end su una risorsa transazionale ha causato un errore. Il codice di errore era {0}. La traccia dello stack dell''eccezione \u00e8 la seguente: {1}
 WTRN0079_END_FAILED.explanation=La risorsa transazionale non \u00e8 riuscita a soddisfare la richiesta di elaborare una chiamata end. La transazione verr\u00e0 sottoposta a rollback.
 WTRN0079_END_FAILED.useraction=Esaminare il codice di errore per determinare la causa del problema.
 
@@ -693,13 +669,11 @@ WTRN0115_NO_CFW_AVAILABLE.explanation=Il contenitore Web non \u00e8 definito per
 WTRN0115_NO_CFW_AVAILABLE.useraction=Correggere o definire la configurazione del framework del canale per il contenitore Web.
 
 WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION=WTRN0116I: \u00c8 stata specificata una stringa di configurazione del file di log di transazione non valida: {0}. Il servizio transazioni continuer\u00e0 senza la registrazione di ripristino per il server WebSphere ({1}).
-WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Il nome della directory per il file di log della transazione, impostato nel campo della directory di log di transazione, non \u00e8 valido. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La \
-dimensione del file di log minima e predefinita \u00e8 1M.
+WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.explanation=Il nome della directory per il file di log della transazione, impostato nel campo della directory di log di transazione, non \u00e8 valido. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La dimensione del file di log minima e predefinita \u00e8 1M.
 WTRN0116_UNEXPECTED_LOGFILE_SPECIFICATION.useraction=Correggere la configurazione della directory del log di transazione. Verificare che il server venga riavviato per consentire la registrazione del ripristino della transazione.
 
 WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE=WTRN0117E: \u00c8 stata specificata una dimensione del file di log della transazione non valida: {0}. Il servizio transazioni utilizzare la dimensione del file di log predefinita di 1M per il server WebSphere ({1}).
-WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=La dimensione del file per il file di log della transazione, impostata nel campo della directory di log di transazione, non \u00e8 valida. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La \
-dimensione del file di log minima e predefinita \u00e8 1M.
+WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.explanation=La dimensione del file per il file di log della transazione, impostata nel campo della directory di log di transazione, non \u00e8 valida. Il formato dovrebbe essere una directory del file di log completa, facoltativamente seguita da ';' e la dimensione del file di log, con M dopo la dimensione del file di log per indicare i megabyte o K per indicare i kilobyte. La dimensione del file di log minima e predefinita \u00e8 1M.
 WTRN0117_DEFAULT_AND_MINIMUM_LOG_SIZE.useraction=Correggere la configurazione della directory del log di transazione.
 
 WTRN0118_DEPRECATED_CUSTOM_PROPERTY=WTRN0118W: \u00c8 stata rilevata una propriet\u00e0 personalizzata del servizio transazioni obsoleta {0} nella configurazione del servizio transazioni.  
@@ -868,7 +842,7 @@ WTRN0147_REC_XID_LATE.useraction=Esaminare il valore epoch di questo messaggio e
 # 0 - xid
 # 1 - resource manager name
 WTRN0148_REC_XA_ROLLBACK=WTRN0148I: Lo xid {0} \u00e8 stato ripristinato da {1} - lo xid non \u00e8 associato ad alcuna transazione e sar\u00e0 sottoposto a rollback
-WTRN0148_REC_XA_ROLLBACK.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che non corrisponde a una transazione registrata.  Il servizio transazioni eseguir\u00e0 il rollback dello xid in quanto parte dell'elaborazione di ripristino.
+WTRN0148_REC_XA_ROLLBACK.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che non corrisponde a una transazione registrata. Il servizio transazioni esegue il rollback dello xid come parte dell'elaborazione del recupero.
 WTRN0148_REC_XA_ROLLBACK.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
 # 0 - xid
@@ -876,14 +850,14 @@ WTRN0148_REC_XA_ROLLBACK.useraction=Non \u00e8 richiesta alcuna azione da parte 
 # 2 - transaction id
 # 3 - transaction state
 WTRN0149_REC_XA_TRAN=WTRN0149I: Lo xid {0} \u00e8 stato ripristinato da {1} - lo xid \u00e8 associato a una transazione (tid={2}) con stato registrato {3}
-WTRN0149_REC_XA_TRAN.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che corrisponde a una transazione registrata.  Il servizio transazioni completer\u00e0 la transazione in quanto parte dell'elaborazione del ripristino.
+WTRN0149_REC_XA_TRAN.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che corrisponde a una transazione registrata. Il servizio transazioni completa la transazione come parte dell'elaborazione di recupero.
 WTRN0149_REC_XA_TRAN.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
 # 0 - xid
 # 1 - resource manager name
 # 2 - error code
 WTRN0150_REC_XA_ROLLEDBACK=WTRN0150I: Risposta dal rollback dello xid {0} ripristinato da {1} - {2}
-WTRN0150_REC_XA_ROLLEDBACK.explanation=Il servizio transazioni ha emesso correttamente il ripristino xa su un gestore risorse registrato e ha ottenuto uno xid che non corrisponde a una transazione registrata.  Il servizio transazioni ha tentato il rollback dello xid in quanto parte dell'elaborazione di ripristino.
+WTRN0150_REC_XA_ROLLEDBACK.explanation=Il servizio di transazione ha emesso correttamente il ripristino xa su un gestore risorse registrato ed ha ottenuto un xid che non corrisponde a una transazione registrata. Il servizio transazioni ha tentato di eseguire il rollback dello xid come parte dell'elaborazione di recupero.
 WTRN0150_REC_XA_ROLLEDBACK.useraction=Esaminare il codice di errore per determinare se il rollback ha avuto esito negativo.
 
 # 0 - resource manager name
@@ -895,5 +869,19 @@ WTRN0152_UNUSUAL_HA_CONFIG=WTRN0152W: Rilevata configurazione HA insolita.
 WTRN0152_UNUSUAL_HA_CONFIG.explanation=HA \u00e8 abilitato per questo cluster ma il gestore HA \u00e8 disabilitato.
 WTRN0152_UNUSUAL_HA_CONFIG.useraction=Se questa \u00e8 la configurazione desiderata, non sono necessarie azioni. In caso contrario correggere la configurazione HA.
 
+WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: Il servizio transazioni \u00e8 stato arrestato ma il log di ripristino \u00e8 stato contrassegnato come non riuscito.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=Il log di ripristino non \u00e8 riuscito e l'accesso al log non \u00e8 stato eseguito alla chiusura del server.
+WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correggere le condizioni indicate dai messaggi che hanno segnalato l'invalidazione del log. Per riparare il log, \u00e8 necessario riavviare il server.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: La richiesta di checkpoint del server non \u00e8 riuscita perch\u00e9 il servizio di transazione non \u00e8 in grado di iniziare una transazione.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty non supporta le applicazioni che iniziano o richiedono una transazione mentre l'applicazione viene avviata quando viene richiesto un punto di controllo del server.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Utilizzare l'opzione di checkpoint del server at=deployment o modificare l'applicazione per iniziare le transazioni dopo che \u00e8 stata avviata.
+
+# 0 - Stack trace of call to create new tx
+WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Un''applicazione ha avviato o richiesto una transazione durante la richiesta del punto di controllo del server. La seguente traccia di stack per questo thread \u00e8 stata catturata quando \u00e8 stata creata la transazione: {0}
+WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=La traccia di stack \u00e8 stata acquisita quando \u00e8 stata creata la transazione. La traccia di stack consente agli utenti di determinare quali applicazioni avviano le transazioni durante l'avvio dell'applicazione e quindi causano l'esito negativo della richiesta del punto di controllo.
+WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Esaminare la traccia di stack per stabilire quale applicazione ha avviato una nuova transazione durante la richiesta di checkpoint del server.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+

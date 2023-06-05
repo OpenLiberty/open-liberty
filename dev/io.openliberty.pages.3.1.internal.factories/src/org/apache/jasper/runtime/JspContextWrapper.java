@@ -501,7 +501,7 @@ public class JspContextWrapper extends PageContext implements VariableResolver {
         ELContext context =  this.invokingJspCtxt.getELContext();
 
         // Pages 3.1
-        if(tag instanceof com.ibm.ws.jsp.runtime.JspDirectiveInfo && ((com.ibm.ws.jsp.runtime.JspDirectiveInfo)tag).isErrorOnELNotFound() ){
+        if(tag instanceof com.ibm.ws.jsp.runtime.DirectiveInfo && ((com.ibm.ws.jsp.runtime.DirectiveInfo)tag).isErrorOnELNotFound() ){
             context.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
         }
 

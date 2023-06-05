@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html" xmlns:c="jakarta.tags.core"
+    xmlns:cb="http://io.openliberty/test/annotation/literal/clientBehavior">
+
+    <h:head>
+        <title>Value outputs from Annotation Literals</title>
+    </h:head>
+
+    <h:body>
+        <c:if test="#{param.testApplicationMap}">
+            <h:outputText value="#{testBean.applicationMap}" />
+        </c:if>
+
+        <c:if test="#{param.testFacesBehavior}">
+            <h:outputText value="#{testBean.facesBehavior}" />
+        </c:if>
+
+        <c:if test="#{param.testFacesConverter}">
+            <h:outputText value="#{testBean.facesConverter}" />
+        </c:if>
+
+        <c:if test="#{param.testFacesConfig}">
+            <h:outputText value="#{testBean.facesConfig}" />
+        </c:if>
+
+        <c:if test="#{param.testFacesDataModel}">
+            <h:outputText value="#{testBean.facesDataModel}" />
+        </c:if>
+
+        <c:if test="#{param.testFacesValidator}">
+            <h:outputText value="#{testBean.facesValidator}" />
+        </c:if>
+
+        <c:if test="#{param.testHeaderMap}">
+            <h:outputText value="#{testBean.headerMap}" />
+        </c:if>
+
+        <c:if test="#{param.testHeaderValuesMap}">
+            <h:outputText value="#{testBean.headerValuesMap}" />
+        </c:if>
+
+        <c:if test="#{param.testInitParameterMap}">
+            <h:outputText value="#{testBean.initParameterMap}" />
+        </c:if>
+
+        <c:if test="#{param.testManagedProperty}">
+            <h:outputText value="#{testBean.managedProperty}" />
+        </c:if>
+
+        <c:if test="#{param.testRequestCookieMap}">
+            <h:outputText value="#{testBean.requestCookieMap}" />
+        </c:if>
+
+        <c:if test="#{param.testRequestMap}">
+            <h:outputText value="#{testBean.requestMap}" />
+        </c:if>
+
+        <c:if test="#{param.testRequestParameterMap}">
+            <h:outputText value="#{testBean.requestParameterMap}" />
+        </c:if>
+
+        <c:if test="#{param.testRequestParameterValuesMap}">
+            <h:outputText value="#{testBean.requestParameterValuesMap}" />
+        </c:if>
+
+        <c:if test="#{param.testSessionMap}">
+            <h:outputText value="#{testBean.sessionMap}" />
+        </c:if>
+
+        <c:if test="#{param.testView}">
+            <h:outputText value="#{testBean.view}" />
+        </c:if>
+
+        <c:if test="#{param.testFlowMap}">
+            <h:form id="form">
+                <h:commandButton id="enter" value="enter" action="testFlow" />
+            </h:form>
+        </c:if>
+
+        <c:if test="#{param.testViewMap}">
+            <!-- Note: This is in the ViewScopedBean -->
+            <h:outputText value="#{viewScopedBean.viewMap}" />
+        </c:if>
+
+    </h:body>
+
+</html>

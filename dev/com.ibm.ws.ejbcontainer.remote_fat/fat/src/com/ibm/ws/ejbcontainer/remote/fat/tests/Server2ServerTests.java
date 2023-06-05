@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.client.web.RemoteTxAttrServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE10Secure;
 import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE7Secure;
 import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE8Secure;
 import com.ibm.ws.ejbcontainer.remote.fat.tests.repeataction.RepeatEE9Secure;
@@ -64,16 +65,25 @@ public class Server2ServerTests extends AbstractTest {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                    "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                                                                                                                                                                                                                                                                "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(new RepeatEE7Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")).andWith(new RepeatEE8Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")).andWith(new RepeatEE9Secure().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer"));
+                                                                                                                    "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                              "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                               "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
+                    .andWith(new RepeatEE7Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                            "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
+                    .andWith(new RepeatEE8Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                            "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
+                    .andWith(new RepeatEE9Secure().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                                                                                             "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
+                    .andWith(new RepeatEE10Secure().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                               "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        isSecureActive = RepeatEE7Secure.isActive() || RepeatEE8Secure.isActive() || RepeatEE9Secure.isActive();
+        isSecureActive = RepeatEE7Secure.isActive() || RepeatEE8Secure.isActive() || RepeatEE9Secure.isActive() || RepeatEE10Secure.isActive();
         LibertyServer clientServer = isSecureActive ? secureClientServer : unsecureClientServer;
         LibertyServer remoteServer = isSecureActive ? secureRemoteServer : unsecureRemoteServer;
 

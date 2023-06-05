@@ -13,7 +13,6 @@
 <server>
     <applicationManager startTimeout="90s"/>
     <featureManager>
-        <feature>checkpoint-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

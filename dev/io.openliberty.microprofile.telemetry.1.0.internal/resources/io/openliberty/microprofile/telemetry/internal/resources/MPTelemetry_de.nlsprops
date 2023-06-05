@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: Die Telemetrie-Tracefunktion von MicroProfile ist aktiviert, jedoch nicht f\u00fcr die Generierung von Traces f\u00fcr die {0}-Anwendung konfiguriert.
+CWMOT5100.tracing.is.disabled.explanation=Die Telemetrie-Tracefunktion von MicroProfile muss so konfiguriert werden, dass Traces erstellt und in ein Tracesystem exportiert werden.
+CWMOT5100.tracing.is.disabled.useraction=Zum Aktivieren der Traceerstellung geben Sie otel.sdk.disabled= false in allen Konfigurationsquellen an, auf die \u00fcber die MicroProfile-Konfiguration zugegriffen werden kann. M\u00f6glicherweise ist eine weitere Konfiguration erforderlich, damit die Telemetrie-Tracefunktion von MicroProfile Traces in Ihr Tracesystem exportieren kann.

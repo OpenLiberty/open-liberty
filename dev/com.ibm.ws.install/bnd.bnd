@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2020 IBM Corporation and others.
+# Copyright (c) 2018,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,17 +23,20 @@ Export-Package: \
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline,*
 
 Private-Package: \
-	com.ibm.ws.install.*
+	com.ibm.ws.install.*,\
+    org.bouncycastle.*
 
 instrument.disabled: true
 
 -includeresource: \
-	@${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+	@${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/* \
+	@${repo;org.bouncycastle:bcpg-jdk15on;1.69;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}
 
 -buildpath: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.install.map;version=latest,\
-	org.fusesource.jansi;strategy=exact;version=1.18.0,\
+	org.fusesource.jansi:jansi;strategy=exact;version=1.18.0,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
@@ -49,6 +52,8 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
+	org.bouncycastle:bcpg-jdk15on;version=1.69,\
+	org.bouncycastle:bcprov-jdk15on;version=1.69,\
 	org.glassfish.javax.json
 
 
@@ -61,7 +66,8 @@ instrument.disabled: true
 	org.jmock:jmock;strategy=exact;version='2.5.1',\
 	org.jmock:jmock-legacy;version='2.5.0',\
 	com.ibm.ws.org.objenesis:objenesis;version='1.0',\
-	cglib:cglib-nodep;version='3.3.0',\
+	cglib:cglib;version='3.3.0',\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\

@@ -448,7 +448,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         }
 // Liberty Change for CXF Begin
 //        SimpleDateFormat format = HttpUtils.getHttpDateFormat();
-        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(-1));
+        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(System.currentTimeMillis()));
 //Liberty Change for CXF End
     }
 

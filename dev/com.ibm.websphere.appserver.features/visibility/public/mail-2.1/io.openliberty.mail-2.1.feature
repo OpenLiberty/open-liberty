@@ -14,12 +14,12 @@ IBM-API-Package: \
   jakarta.mail.search; type="spec", \
   jakarta.mail.event; type="spec"
 -features=com.ibm.websphere.appserver.eeCompatible-10.0, \
-  com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.mail-2.1, \
+  io.openliberty.activation.internal-2.1, \
   com.ibm.websphere.appserver.injection-2.0
 -bundles=\
   io.openliberty.mail.2.1.internal, \
   io.openliberty.org.eclipse.angus.mail, \
   com.ibm.ws.javamail.config
-kind=beta
+kind=ga
 edition=core

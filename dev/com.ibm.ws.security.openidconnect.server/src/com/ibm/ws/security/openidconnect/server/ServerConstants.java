@@ -15,7 +15,7 @@ package com.ibm.ws.security.openidconnect.server;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.openidconnect.clients.common.Constants;
 
 /**
  *

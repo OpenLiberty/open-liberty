@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -43,6 +43,10 @@ MSG_VALIDATION_FAILED_NO_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed
 MSG_VALIDATION_NUM_OF_ERRORS=Po\u010det chyb: {0}
 MSG_VALIDATION_MESSAGES=Ov\u011b\u0159en\u00ed souboru vlastnost\u00ed
 MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+MSG_CONFIG_KEY_LABEL=Nakonfigurovan\u00e9 ve\u0159ejn\u00e9 kl\u00ed\u010de
+MSG_NO_CONFIG_KEY=Nejsou nakonfigurov\u00e1ny \u017e\u00e1dn\u00e9 kl\u00ed\u010de
+MSG_VERIFY_FEATURE_LABEL=Ov\u011b\u0159en\u00ed funkce:
+MSG_DEFAULT_VERIFY=Vynutit
 
 FIELD_REPO_NAME=N\u00e1zev: {0}
 FIELD_REPO_LOCATION=Um\u00edst\u011bn\u00ed: {0}
@@ -60,3 +64,4 @@ FIELD_REPO=Server \u00falo\u017ei\u0161t\u011b: {0} ({1})
 FIELD_PROXY=Server proxy: {0}
 FIELD_VALIDATION_RESULTS=V\u00fdsledky ov\u011b\u0159en\u00ed platnosti: {0}
 FIELD_VALIDATION_LINE=\u0158\u00e1dek: {0}
+FIELD_KEYID=ID kl\u00ed\u010de:

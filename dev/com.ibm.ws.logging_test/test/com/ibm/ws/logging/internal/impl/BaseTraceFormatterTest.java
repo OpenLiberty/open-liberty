@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -777,6 +777,49 @@ public class BaseTraceFormatterTest {
             vmsg = formatter.formatVerboseMessage(logRecord, msg);
             assertTrue("String should contain stack trace: " + vmsg, vmsg.matches("(?s)pre java\\.lang\\.Throwable.*\tat .* post"));
             assertFalse("String should not have truncated stack trace: " + vmsg, vmsg.matches("internal classes"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(m, t);
+        }
+    }
+
+    @Test
+    public void testFormatTrace() {
+        final String m = "testFormatTrace";
+
+        try {
+            BaseTraceFormatter formatter = new BaseTraceFormatter(TraceFormat.ENHANCED);
+
+            // First test without {0} being in the trace message
+            LogRecord logRecord = new LogRecord(Level.FINE, "trace test");
+            logRecord.setParameters(new Object[] { "param" });
+
+            // Check for the parameter in the formatted record
+            String msg = formatter.formatMessage(logRecord);
+            assertTrue("The message didn't look right: " + msg, msg.matches("trace test\\s*param"));
+
+            // The toString failing should cause an exception to bubble out. It should be handled.
+            logRecord.setParameters(new Object[] { new BadToString() });
+
+            // Check for the parameter in the formatted record
+            msg = formatter.formatMessage(logRecord);
+            assertTrue("The message didn't look right: " + msg, msg.matches("trace test[\\s\\S]*caught while calling toString\\(\\) on object.*"));
+
+            // Next test with {0} being in the trace message, using [\\s\\S] matches all characters, including newlines
+            logRecord = new LogRecord(Level.FINE, "trace before {0} after");
+            logRecord.setParameters(new Object[] { "param" });
+
+            // Check for the parameter in the formatted record
+            msg = formatter.formatMessage(logRecord);
+            assertTrue("The message didn't look right: " + msg, msg.equals("trace before param after"));
+
+            // The toString failing should cause an exception to bubble out. It should be handled.
+            logRecord.setParameters(new Object[] { new BadToString() });
+
+            // Check for the parameter in the formatted record
+            msg = formatter.formatMessage(logRecord);
+            System.out.println(msg);
+            assertTrue("The message didn't look right: " + msg, msg.matches("trace before \\{0\\} after[\\s\\S]*caught while calling toString\\(\\) on object.*"));
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);

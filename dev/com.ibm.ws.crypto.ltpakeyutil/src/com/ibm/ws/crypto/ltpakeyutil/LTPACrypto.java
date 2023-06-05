@@ -1078,7 +1078,69 @@ final class LTPACrypto {
 			// instrumented ffdc
 		} catch (java.security.NoSuchProviderException e) {
 			// instrumented ffdc
+		} catch (java.lang.UnsupportedOperationException uoe) {
+			//This is when hard ware crypto provider is at the top of java.security 
+			//Using the different key creation routines.
+		    System.out.println("DEBUG: UnsupportedOperationException is caught!! Going back to the previous hardware crypto routine for evaluation.");
+            BigInteger p, q, n, d;
+			BigInteger e = BigInteger.valueOf(f4 ? 0x10001 : 3);
+			BigInteger one = BigInteger.valueOf(1), two = BigInteger.valueOf(2);
+			byte[] b = new byte[(len /= 2) + 1];
+
+			for (p = null;;) {
+				for (q = null;;) {
+					if (q == null) {
+						random(b, 1, len);
+						b[1] |= 0xC0;
+						b[len] |= 1;
+						q = new BigInteger(b);
+					} else {
+						q = q.add(two);
+						if (q.bitLength() > len * 8) {
+							q = null;
+							continue;
+						}
+					}
+
+					if (q.isProbablePrime(32) && e.gcd(q.subtract(one)).equals(one))
+						break;
+				}
+
+				if (p == null)
+					p = q;
+				else {
+					n = p.multiply(q);
+					if (n.bitLength() == len * 2 * 8) {
+
+						d = e.modInverse((p.subtract(one)).multiply(q.subtract(one)));
+
+						if (((p.modPow(e, n)).modPow(d, n)).equals(p))
+							break;
+					}
+					p = null;
+				}
+			}
+
+			key[0] = n.toByteArray(); // modulus
+			key[1] = crt ? null : d.toByteArray(); // private exponent if a CRT key
+			key[2] = e.toByteArray(); // public exponent
+
+			if (crt) {
+				if (p.compareTo(q) < 0) {
+					e = p;
+					p = q;
+					q = e;
+				}
+				key[3] = p.toByteArray(); // PrimeP
+				key[4] = q.toByteArray(); // PrimeQ
+				key[5] = d.remainder(p.subtract(one)).toByteArray(); // PrimeExponentP \
+				key[6] = d.remainder(q.subtract(one)).toByteArray(); // PrimeExponentQ - looks like JCE sets these to
+																		// zero. You could calculate these if you want
+																		// to.
+				key[7] = q.modInverse(p).toByteArray(); // getCrtCoefficient /
+			}
 		}
+		
 
 		return key;
 	}

@@ -13,7 +13,6 @@
 <server>
     <applicationManager startTimeout="90s"/>
     <featureManager>
-    	<feature>checkpoint-1.0</feature>
     	<feature>mpJwt-1.2</feature>
         <feature>jaxrs-2.1</feature>
         <feature>componenttest-1.0</feature>

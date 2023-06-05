@@ -67,14 +67,20 @@ package org.apache.jasper.runtime;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.jasper.el.ELContextImpl;
+import org.apache.jasper.el.ExpressionEvaluatorImpl;
+import org.apache.jasper.el.FunctionMapperImpl;
+import org.apache.jasper.el.VariableResolverImpl;
+
+import com.ibm.websphere.servlet.error.ServletErrorReport;
+import com.ibm.ws.jsp.Constants;
+import com.ibm.ws.jsp.runtime.DirectiveInfo;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
@@ -97,14 +103,6 @@ import jakarta.servlet.jsp.el.ExpressionEvaluator;
 import jakarta.servlet.jsp.el.VariableResolver;
 import jakarta.servlet.jsp.tagext.BodyContent;
 
-import org.apache.jasper.el.ELContextImpl;
-import org.apache.jasper.el.ExpressionEvaluatorImpl;
-import org.apache.jasper.el.FunctionMapperImpl;
-import org.apache.jasper.el.VariableResolverImpl;
-
-import com.ibm.websphere.servlet.error.ServletErrorReport;
-import com.ibm.ws.jsp.Constants;
-
 /**
  * Implementation of the PageContext class from the JSP spec.
  * Also doubles as a VariableResolver for the EL.
@@ -118,12 +116,11 @@ import com.ibm.ws.jsp.Constants;
  */
 public class PageContextImpl extends PageContext {
 
-	private static Logger logger;
-	private static final String CLASS_NAME="org.apache.jasper.runtime.PageContextImpl";
-	static{
-		logger = Logger.getLogger("com.ibm.ws.jsp");
-	}
-
+    private static Logger logger;
+    private static final String CLASS_NAME = "org.apache.jasper.runtime.PageContextImpl";
+    static {
+        logger = Logger.getLogger("com.ibm.ws.jsp");
+    }
 
     // The variable resolver, for evaluating EL expressions.
     private VariableResolver variableResolver;
@@ -135,14 +132,14 @@ public class PageContextImpl extends PageContext {
     private Servlet servlet;
     private ServletConfig config;
     private ServletContext context;
-    private JspFactory factory;
+    private final JspFactory factory;
 
-	private JspApplicationContextImpl applicationContext;
+    private JspApplicationContextImpl applicationContext;
     private boolean needsSession;
     private String errorPageURL;
     private boolean autoFlush;
     private int bufferSize;
-    private int bodyContentBufferSize;
+    private final int bodyContentBufferSize;
 
     // page-scope attributes
     private transient HashMap attributes;
@@ -154,7 +151,7 @@ public class PageContextImpl extends PageContext {
     private transient HttpSession session;
     private boolean isIncluded;
 
-	private transient ELContextImpl elContext;
+    private transient ELContextImpl elContext;
 
     // initial output stream
     private transient JspWriter out;
@@ -170,29 +167,31 @@ public class PageContextImpl extends PageContext {
      */
     PageContextImpl(JspFactory factory) {
         this(factory, BodyContentImpl.DEFAULT_TAG_BUFFER_SIZE);
-		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
-			logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "PageContextImpl ctor 1 buffsize=["+BodyContentImpl.DEFAULT_TAG_BUFFER_SIZE+"]  this=["+this+"]");
-		}
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "PageContextImpl ctor 1 buffsize=[" + BodyContentImpl.DEFAULT_TAG_BUFFER_SIZE + "]  this=[" + this + "]");
+        }
     }
+
     PageContextImpl(JspFactory factory, int bodyContentBufferSize) {
         this.factory = factory;
         this.outs = new BodyContentImpl[0];
         this.attributes = new HashMap(16);
         this.depth = -1;
         this.bodyContentBufferSize = bodyContentBufferSize;
-		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
-			logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "PageContextImpl ctor 2 buffsize=["+this.bodyContentBufferSize+"]  this=["+this+"]");
-		}
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "PageContextImpl ctor 2 buffsize=[" + this.bodyContentBufferSize + "]  this=[" + this + "]");
+        }
     }
 
-    public void initialize(Servlet servlet, ServletRequest request, ServletResponse response, String errorPageURL, boolean needsSession, int bufferSize, boolean autoFlush)
-        throws IOException {
+    @Override
+    public void initialize(Servlet servlet, ServletRequest request, ServletResponse response, String errorPageURL, boolean needsSession, int bufferSize,
+                           boolean autoFlush) throws IOException {
 
         _initialize(servlet, request, response, errorPageURL, needsSession, bufferSize, autoFlush);
     }
 
-    private void _initialize(Servlet servlet, ServletRequest request, ServletResponse response, String errorPageURL, boolean needsSession, int bufferSize, boolean autoFlush)
-        throws IOException {
+    private void _initialize(Servlet servlet, ServletRequest request, ServletResponse response, String errorPageURL, boolean needsSession, int bufferSize,
+                             boolean autoFlush) throws IOException {
 
         wasReleased = false;
         if (alreadyInitialized) {
@@ -212,8 +211,8 @@ public class PageContextImpl extends PageContext {
         this.request = request;
         this.response = response;
 
-		// initialize application context
-		this.applicationContext = JspApplicationContextImpl.getInstance(context);
+        // initialize application context
+        this.applicationContext = JspApplicationContextImpl.getInstance(context);
 
         // Setup session (if required)
         if (request instanceof HttpServletRequest && needsSession)
@@ -225,8 +224,7 @@ public class PageContextImpl extends PageContext {
         depth = -1;
         if (this.baseOut == null) {
             this.baseOut = _createOut(bufferSize, autoFlush);
-        }
-        else {
+        } else {
             this.baseOut.init(response, bufferSize, autoFlush);
         }
         this.out = baseOut;
@@ -252,6 +250,7 @@ public class PageContextImpl extends PageContext {
         alreadyInitialized = true;
     }
 
+    @Override
     public void release() {
         if (wasReleased) {
             logger.logp(Level.SEVERE, CLASS_NAME, "release", "jsp.error.pageContext.multipleInitOrRelease");
@@ -260,12 +259,11 @@ public class PageContextImpl extends PageContext {
 
         out = baseOut;
         try {
-                 ((JspWriterImpl) out).flushBuffer();
-        }
-        catch (IOException ex) {
-			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.WARNING)) {
-				logger.logp(Level.WARNING, CLASS_NAME, "release", "failed to flush response buffer during PageContext.release().",ex);
-			}
+            ((JspWriterImpl) out).flushBuffer();
+        } catch (IOException ex) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.WARNING)) {
+                logger.logp(Level.WARNING, CLASS_NAME, "release", "failed to flush response buffer during PageContext.release().", ex);
+            }
         }
 
         servlet = null;
@@ -281,53 +279,56 @@ public class PageContextImpl extends PageContext {
         session = null;
         // defect 388930 begin
         applicationContext = null;
-		elContext = null;
+        elContext = null;
         // defect 388930 end
 
         attributes.clear();
         //PI24001 starts
-        for (BodyContentImpl body: outs) {
+        for (BodyContentImpl body : outs) {
             body.recycle();
         }
 
         // We are going to set cb to null iff we were not able to put this PageContextImpl in the pool.
-        baseOut.recycle(((JspFactoryImpl)factory).poolFreePageContextIfNotFull(this));
+        baseOut.recycle(((JspFactoryImpl) factory).poolFreePageContextIfNotFull(this));
         //PI24001 ends
         wasReleased = true;
         alreadyInitialized = false;
     }
 
+    @Override
     public Object getAttribute(String name) {
         if (name == null)
             throw new NullPointerException("Null name");
         return attributes.get(name);
     }
 
+    @Override
     public Object getAttribute(String name, int scope) {
         if (name == null)
             throw new NullPointerException("Null name");
 
         switch (scope) {
-            case PAGE_SCOPE :
+            case PAGE_SCOPE:
                 return attributes.get(name);
 
-            case REQUEST_SCOPE :
+            case REQUEST_SCOPE:
                 return request.getAttribute(name);
 
-            case SESSION_SCOPE :
+            case SESSION_SCOPE:
                 if (session == null) {
                     throw new IllegalStateException("jsp.error.page.noSession");
                 }
                 return session.getAttribute(name);
 
-            case APPLICATION_SCOPE :
+            case APPLICATION_SCOPE:
                 return context.getAttribute(name);
 
-            default :
+            default:
                 throw new IllegalArgumentException("Invalid scope");
         }
     }
 
+    @Override
     public void setAttribute(String name, Object attribute) {
         if (name == null) {
             throw new NullPointerException("Null name");
@@ -335,12 +336,12 @@ public class PageContextImpl extends PageContext {
 
         if (attribute != null) {
             attributes.put(name, attribute);
-        }
-        else {
+        } else {
             removeAttribute(name, PAGE_SCOPE);
         }
     }
 
+    @Override
     public void setAttribute(String name, Object o, int scope) {
         if (name == null) {
             throw new NullPointerException("Null name");
@@ -348,63 +349,64 @@ public class PageContextImpl extends PageContext {
 
         if (o != null) {
             switch (scope) {
-                case PAGE_SCOPE :
+                case PAGE_SCOPE:
                     attributes.put(name, o);
                     break;
 
-                case REQUEST_SCOPE :
+                case REQUEST_SCOPE:
                     request.setAttribute(name, o);
                     break;
 
-                case SESSION_SCOPE :
+                case SESSION_SCOPE:
                     if (session == null) {
                         throw new IllegalStateException("jsp.error.page.noSession");
                     }
                     session.setAttribute(name, o);
                     break;
 
-                case APPLICATION_SCOPE :
+                case APPLICATION_SCOPE:
                     context.setAttribute(name, o);
                     break;
 
-                default :
+                default:
                     throw new IllegalArgumentException("Invalid scope");
             }
-        }
-        else {
+        } else {
             removeAttribute(name, scope);
         }
     }
 
+    @Override
     public void removeAttribute(String name, int scope) {
         if (name == null) {
             throw new NullPointerException("jsp.error.attribute.null_name");
         }
         switch (scope) {
-            case PAGE_SCOPE :
+            case PAGE_SCOPE:
                 attributes.remove(name);
                 break;
 
-            case REQUEST_SCOPE :
+            case REQUEST_SCOPE:
                 request.removeAttribute(name);
                 break;
 
-            case SESSION_SCOPE :
+            case SESSION_SCOPE:
                 if (session == null) {
                     throw new IllegalStateException("jsp.error.page.noSession");
                 }
                 session.removeAttribute(name);
                 break;
 
-            case APPLICATION_SCOPE :
+            case APPLICATION_SCOPE:
                 context.removeAttribute(name);
                 break;
 
-            default :
+            default:
                 throw new IllegalArgumentException("Invalid scope");
         }
     }
 
+    @Override
     public int getAttributesScope(String name) {
         if (name == null) {
             throw new NullPointerException("jsp.error.attribute.null_name");
@@ -423,7 +425,7 @@ public class PageContextImpl extends PageContext {
             } catch (IllegalStateException ex) {
                 //Exception should be ignored in order to be able to reach Application Scope
                 //The exception is thrown when the session has been invalidated
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "The session was invalid and method getAttributesScope(String name) was called.", ex);
                 }
             }
@@ -436,6 +438,7 @@ public class PageContextImpl extends PageContext {
         return 0;
     }
 
+    @Override
     public Object findAttribute(String name) {
         if (name == null) {
             throw new NullPointerException("jsp.error.attribute.null_name");
@@ -452,10 +455,10 @@ public class PageContextImpl extends PageContext {
             //PI44611 start
             try {
                 o = session.getAttribute(name);
-            } catch(IllegalStateException ex) {
+            } catch (IllegalStateException ex) {
                 //Exception should be ignored in order to be able to reach Application Scope
                 //The exception is thrown when the session has been invalidated
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "The session was invalid and method findAttribute(String name) was called.", ex);
                 }
             }
@@ -467,28 +470,30 @@ public class PageContextImpl extends PageContext {
         return context.getAttribute(name);
     }
 
+    @Override
     public Enumeration getAttributeNamesInScope(int scope) {
         switch (scope) {
-            case PAGE_SCOPE :
+            case PAGE_SCOPE:
                 return Collections.enumeration(attributes.keySet());
 
-            case REQUEST_SCOPE :
+            case REQUEST_SCOPE:
                 return request.getAttributeNames();
 
-            case SESSION_SCOPE :
+            case SESSION_SCOPE:
                 if (session == null) {
                     throw new IllegalStateException("jsp.error.page.noSession");
                 }
                 return session.getAttributeNames();
 
-            case APPLICATION_SCOPE :
+            case APPLICATION_SCOPE:
                 return context.getAttributeNames();
 
-            default :
+            default:
                 throw new IllegalArgumentException("Invalid scope");
         }
     }
 
+    @Override
     public void removeAttribute(String name) {
         if (name == null) {
             throw new NullPointerException("jsp.error.attribute.null_name");
@@ -503,45 +508,59 @@ public class PageContextImpl extends PageContext {
                 } catch (IllegalStateException ex) {
                     //Exception should be ignored in order to be able to reach Application Scope
                     //The exception is thrown when the session has been invalidated
-                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                         logger.logp(Level.FINE, CLASS_NAME, "PageContextImpl", "The session was invalid and method removeAttribute(String name) was called.", ex);
                     }
                 }
                 //PI44611 end
             }
             removeAttribute(name, APPLICATION_SCOPE);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             // we remove as much as we can, and
             // simply ignore possible exceptions
         }
     }
 
+    @Override
     public JspWriter getOut() {
         return out;
     }
 
+    @Override
     public HttpSession getSession() {
         return session;
     }
+
     public Servlet getServlet() {
         return servlet;
     }
+
+    @Override
     public ServletConfig getServletConfig() {
         return config;
     }
+
+    @Override
     public ServletContext getServletContext() {
         return config.getServletContext();
     }
+
+    @Override
     public ServletRequest getRequest() {
         return request;
     }
+
+    @Override
     public ServletResponse getResponse() {
         return response;
     }
+
+    @Override
     public Exception getException() {
-    	return (Exception) request.getAttribute(EXCEPTION);
+        return (Exception) request.getAttribute(EXCEPTION);
     }
+
+    @Override
     public Object getPage() {
         return servlet;
     }
@@ -560,27 +579,29 @@ public class PageContextImpl extends PageContext {
         return path;
     }
 
+    @Override
     public void include(String relativeUrlPath) throws ServletException, IOException {
         JspRuntimeLibrary.include(request, response, relativeUrlPath, out, true);
     }
 
+    @Override
     public void include(String relativeUrlPath, boolean flush) throws ServletException, IOException {
         JspRuntimeLibrary.include(request, response, relativeUrlPath, out, flush);
     }
 
-
     //LIDB4147-9 Begin
-	public VariableResolver getVariableResolver() {
-		return new VariableResolverImpl(this.getELContext());
-	}
+    @Override
+    public VariableResolver getVariableResolver() {
+        return new VariableResolverImpl(this.getELContext());
+    }
     //LIDB4147-9 End
 
+    @Override
     public void forward(String relativeUrlPath) throws ServletException, IOException {
         // JSP.4.5 If the buffer was flushed, throw IllegalStateException
         try {
             out.clear();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalStateException("jsp.error.attempt_to_clear_flushed_buffer");
         }
 
@@ -599,18 +620,19 @@ public class PageContextImpl extends PageContext {
             request.removeAttribute(Constants.INC_SERVLET_PATH);
         try {
             context.getRequestDispatcher(path).forward(request, response);
-        }
-        finally {
+        } finally {
             if (includeUri != null)
                 request.setAttribute(Constants.INC_SERVLET_PATH, includeUri);
             request.setAttribute(Constants.FORWARD_SEEN, "true");
         }
     }
 
+    @Override
     public BodyContent pushBody() {
         return (BodyContent) pushBody(null);
     }
 
+    @Override
     public JspWriter pushBody(Writer writer) {
         depth++;
         if (depth >= outs.length) {
@@ -632,12 +654,12 @@ public class PageContextImpl extends PageContext {
         return outs[depth];
     }
 
+    @Override
     public JspWriter popBody() {
         depth--;
         if (depth >= 0) {
             out = outs[depth];
-        }
-        else {
+        } else {
             out = baseOut;
         }
 
@@ -654,17 +676,20 @@ public class PageContextImpl extends PageContext {
      * ExpressionEvaluator that can parse EL expressions.
      */
     //LIDB4147-9 Begin
-	public ExpressionEvaluator getExpressionEvaluator() {
-		return new ExpressionEvaluatorImpl(this.applicationContext.getExpressionFactory());
-	}
+    @Override
+    public ExpressionEvaluator getExpressionEvaluator() {
+        return new ExpressionEvaluatorImpl(this.applicationContext.getExpressionFactory());
+    }
     //LIDB4147-9 End
 
-	public void handlePageException(Exception ex) throws IOException, ServletException {
+    @Override
+    public void handlePageException(Exception ex) throws IOException, ServletException {
         // Should never be called since handleException() called with a
         // Throwable in the generated servlet.
         handlePageException((Throwable) ex);
     }
 
+    @Override
     public void handlePageException(Throwable t) throws IOException, ServletException {
         if (t == null)
             throw new NullPointerException("null Throwable");
@@ -686,8 +711,7 @@ public class PageContextImpl extends PageContext {
             request.setAttribute("jakarta.servlet.error.servlet_name", config.getServletName());
             try {
                 forward(errorPageURL);
-            }
-            catch (IllegalStateException ise) {
+            } catch (IllegalStateException ise) {
                 include(errorPageURL);
             }
 
@@ -706,8 +730,7 @@ public class PageContextImpl extends PageContext {
             request.removeAttribute("jakarta.servlet.error.status_code");
             request.removeAttribute("jakarta.servlet.jsp.jspException");
 
-        }
-        else {
+        } else {
             // Otherwise throw the exception wrapped inside a ServletException.
             // Set the exception as the root cause in the ServletException
             // to get a stack trace for the real problem
@@ -721,8 +744,7 @@ public class PageContextImpl extends PageContext {
             Throwable rootCause = null;
             if (t instanceof JspException) {
                 rootCause = ((JspException) t).getRootCause();
-            }
-            else if (t instanceof ELException) {
+            } else if (t instanceof ELException) {
                 rootCause = ((ELException) t).getRootCause();
             }
 
@@ -741,97 +763,98 @@ public class PageContextImpl extends PageContext {
             char c = s.charAt(i);
             if (c == '<') {
                 sb.append("&lt;");
-            }
-            else if (c == '>') {
+            } else if (c == '>') {
                 sb.append("&gt;");
-            }
-            else if (c == '\'') {
+            } else if (c == '\'') {
                 sb.append("&#039;"); // &apos;
-            }
-            else if (c == '&') {
+            } else if (c == '&') {
                 sb.append("&amp;");
-            }
-            else if (c == '"') {
+            } else if (c == '"') {
                 sb.append("&#034;"); // &quot;
-            }
-            else {
+            } else {
                 sb.append(c);
             }
         }
         return sb.toString();
     }
-	/**
-	 * Proprietary method to evaluate EL expressions. XXX - This method should
-	 * go away once the EL interpreter moves out of JSTL and into its own
-	 * project. For now, this is necessary because the standard machinery is too
-	 * slow.
-	 *
-	 * @param expression
-	 *            The expression to be evaluated
-	 * @param expectedType
-	 *            The expected resulting type
-	 * @param pageContext
-	 *            The page context
-	 * @param functionMap
-	 *            Maps prefix and name to Method
-	 * @return The result of the evaluation
-	 */
-	@SuppressWarnings("unchecked")
-	public static Object proprietaryEvaluate(final String expression,
-			final Class expectedType, final PageContext pageContext,
-			final ProtectedFunctionMapper functionMap, final boolean escape)
-			throws ELException {
-		Object retValue;
-		ExpressionFactory exprFactorySetInPageContext = (ExpressionFactory)pageContext.getAttribute(Constants.JSP_EXPRESSION_FACTORY_OBJECT);
-		if (exprFactorySetInPageContext==null) {
-		    exprFactorySetInPageContext = JspFactory.getDefaultFactory().getJspApplicationContext(pageContext.getServletContext()).getExpressionFactory();
-		}
-		final ExpressionFactory exprFactory = exprFactorySetInPageContext;
-		//if (SecurityUtil.isPackageProtectionEnabled()) {
-            ELContextImpl ctx = (ELContextImpl) pageContext.getELContext();
-            ctx.setFunctionMapper(new FunctionMapperImpl(functionMap));
-            ValueExpression ve = exprFactory.createValueExpression(ctx, expression, expectedType);
-            retValue = ve.getValue(ctx);
-		if (escape && retValue != null) {
-			retValue = XmlEscape(retValue.toString());
-		}
 
-		return retValue;
-	}
+    /**
+     * Proprietary method to evaluate EL expressions. XXX - This method should
+     * go away once the EL interpreter moves out of JSTL and into its own
+     * project. For now, this is necessary because the standard machinery is too
+     * slow.
+     *
+     * @param expression
+     *                         The expression to be evaluated
+     * @param expectedType
+     *                         The expected resulting type
+     * @param pageContext
+     *                         The page context
+     * @param functionMap
+     *                         Maps prefix and name to Method
+     * @return The result of the evaluation
+     */
+    @SuppressWarnings("unchecked")
+    public static Object proprietaryEvaluate(final String expression,
+                                             final Class expectedType, final PageContext pageContext,
+                                             final ProtectedFunctionMapper functionMap, final boolean escape) throws ELException {
+        Object retValue;
+        ExpressionFactory exprFactorySetInPageContext = (ExpressionFactory) pageContext.getAttribute(Constants.JSP_EXPRESSION_FACTORY_OBJECT);
+        if (exprFactorySetInPageContext == null) {
+            exprFactorySetInPageContext = JspFactory.getDefaultFactory().getJspApplicationContext(pageContext.getServletContext()).getExpressionFactory();
+        }
+        final ExpressionFactory exprFactory = exprFactorySetInPageContext;
+        //if (SecurityUtil.isPackageProtectionEnabled()) {
+        ELContextImpl ctx = (ELContextImpl) pageContext.getELContext();
+        ctx.setFunctionMapper(new FunctionMapperImpl(functionMap));
+        ValueExpression ve = exprFactory.createValueExpression(ctx, expression, expectedType);
+        retValue = ve.getValue(ctx);
+        if (escape && retValue != null) {
+            retValue = XmlEscape(retValue.toString());
+        }
+
+        return retValue;
+    }
 
     private JspWriterImpl _createOut(int bufferSize, boolean autoFlush) throws IOException {
         try {
             return new JspWriterImpl(response, bufferSize, autoFlush);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             //log.warn("creating out", t);
             return null;
         }
     }
 
     //LIDB4147-9 Begin new JSP 2.1
-	public ELContext getELContext() {
-		if (this.elContext == null) {
-			this.elContext = this.applicationContext.createELContext(this);
-		}
+    @Override
+    public ELContext getELContext() {
+        if (this.elContext == null) {
+            this.elContext = this.applicationContext.createELContext(this);
+            addImportsToELContext();
+        }
+        return this.elContext;
+    }
+    //LIDB4147-9 End
 
+    private void addImportsToELContext() {
         // For Pages 3.1
-		if(servlet instanceof com.ibm.ws.jsp.runtime.JspDirectiveInfo && ((com.ibm.ws.jsp.runtime.JspDirectiveInfo)servlet).isErrorOnELNotFound() ){
-			this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
-		}
-
-        if(servlet instanceof com.ibm.ws.jsp.runtime.JspImportInfo){
-            for(String _package : ((com.ibm.ws.jsp.runtime.JspImportInfo)servlet).getImportPackageList()){
+        DirectiveInfo  directiveInfo;
+        if (servlet instanceof DirectiveInfo) {
+            directiveInfo  =  (DirectiveInfo) servlet; 
+            if(directiveInfo.isErrorOnELNotFound()){
+                this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
+            }
+            for (String _package : directiveInfo.getImportPackageList()) {
                 this.elContext.getImportHandler().importPackage(_package);
             }
-            for(String _class : ((com.ibm.ws.jsp.runtime.JspImportInfo)servlet).getImportClassList()){
+            for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
-            // not sure about importing static fields/methods? spec doesn't seem to mention it?
-            // Follow up Liberty Issue 22507 to see if there's anything to be done here with static imports
+            // This does not work with importStatic com.example.Math.*
+            // Follow up on #24182 for importing static en masse
+            for (String _static : directiveInfo.getImportStaticList()) {
+                this.elContext.getImportHandler().importStatic(_static);
+            }
         }
-
-		return this.elContext;
-	}
-    //LIDB4147-9 End
+    }
 }

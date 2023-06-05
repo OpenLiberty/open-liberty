@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -71,16 +69,14 @@ public class JSF22FlowsTests extends FATServletClient {
                         .addPackage("jsf.flow.beans");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/JSF22FacesFlows/resources/war");
-        ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
-        server.addInstalledAppForValidation(MOJARRA_APP);
+        ShrinkHelper.exportDropinAppToServer(server, mojarraApp);
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
                         .addAsLibrary(facesFlowJar)
                         .addPackage("jsf.flow.beans");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/JSF22FacesFlows/resources/war");
-        ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
-        server.addInstalledAppForValidation(MYFACES_APP);
+        ShrinkHelper.exportDropinAppToServer(server, myfacesApp);
 
         server.startServer(JSF22FlowsTests.class.getSimpleName() + ".log");
     }
@@ -97,7 +93,7 @@ public class JSF22FlowsTests extends FATServletClient {
     @Test
     public void verifyAppProviders() throws Exception {
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
+        assertNotNull(server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'"));
         // Since MyFaces doesn't output any initialization messages that contain the app name,
         // all we can do is check to make sure the MyFaces app didn't initialize with Mojarra
         Assert.assertEquals(0, server.findStringsInLogs("Initializing Mojarra .* for context '/" + MYFACES_APP + "'").size());

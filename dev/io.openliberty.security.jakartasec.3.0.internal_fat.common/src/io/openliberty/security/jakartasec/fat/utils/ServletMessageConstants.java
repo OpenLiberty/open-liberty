@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,6 +57,7 @@ public class ServletMessageConstants {
     public static final String JAKARTA_OIDC = "JAKARTA_OIDC";
     public static final String BASIC = "BASIC";
     public static final String BASE_SERVLET = "BaseServlet";
+    public static final String ALT_BASE_SERVLET = "SimpleServlet";
     public static final String PROVIDER_METADATA = "ProviderMetadata: ";
 
     /** messages **/
@@ -70,4 +71,16 @@ public class ServletMessageConstants {
     public static final String HELLO_MSG = "Hello world from ";
     public static final String EMPTY = "empty";
     public static final String USERINFO = "userinfo: ";
+    public static final String REACHEDPOSTLOGOUT = "Reached PostLogoutServlet";
+    public static final String POSTLOGOUT_NOEXTRAPARMS = "PostLogoutServlet - No Parms were passed";
+    public static final String POSTLOGOUT_EXTRAPARM_PART1 = "PostLogoutServlet - parmKey: ";
+    public static final String POSTLOGOUT_EXTRAPARM_PART2 = " parmValue: ";
+    public static final String REACHEDTESTENDSESSION = "Reached EndSessionServlet";
+    public static final String ENDSESSION_POSTLOGOUTREDIRECTURI = "EndSessionServlet - parmKey: post_logout_redirect_uri parmValue: ";
+    public static final String POSTLOGOUTREDIRECTURIAPP = "/PostLogoutServlet/PostLogout";
+    public static final String ENDSESSION_CLIENTID = "EndSessionServlet - parmKey: client_id parmValue: ";
+    public static final String APP_REQUEST_COUNT = "App request count: ";
+    public static final String CALLBACK_REQUEST_COUNT = "Callback request count: ";
+
+    public static final String UNAUTH_SESSION_REQUEST_EXCEPTION = "UnauthorizedSessionRequestException";
 }

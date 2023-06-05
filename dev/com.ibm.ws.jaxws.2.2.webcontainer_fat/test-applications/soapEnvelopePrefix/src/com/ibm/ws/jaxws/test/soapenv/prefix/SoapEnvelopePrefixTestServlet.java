@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -109,6 +109,47 @@ public class SoapEnvelopePrefixTestServlet extends FATServlet {
         String parsedResponse = parseSourceResponse(response);
         assertTrue("Expected parsed string to contain: " + EXPECTED_PASSING_RESPONSE + " but was actually: " + parsedResponse,
                    parsedResponse.contains(EXPECTED_PASSING_RESPONSE));
+        //assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
+    }
+
+    /*
+     * A positive test where an additional optional eleement is added to the request, to ensure that service will ignore it and process the request successfully.
+     * Additionally this test sends multiple requests that a unmarshaller obtained from the poll can also process the optional element in the second request.
+     *
+     * Default Envelope Namespace: SOAP 1.1 NS - http://schemas.xmlsoap.org/soap/envelope/
+     *
+     * Valid Element QNames:
+     *
+     * Envelope QName: {http://schemas.xmlsoap.org/soap/envelope/}Envelope
+     * Body QName: {http://schemas.xmlsoap.org/soap/envelope/}Body
+     * hello QName: {http://server.wsr.test.jaxws.ws.ibm.com}hello
+     * arg0 QName: {}arg0
+     */
+    @Test
+    public void testSoap11OptionalElementMashallerPool() throws Exception {
+
+        String msgString = "<Envelope xmlns=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
+                           + "  <Body>\n"
+                           + "    <ser:hello xmlns=\"\" xmlns:ser=\"http://server.wsr.test.jaxws.ws.ibm.com\">\n"
+                           + "       <arg0>from dispatch World</arg0>\n"
+                           + "       <arg1>from dispatch World</arg1>\n"
+                           + "    </ser:hello>\n"
+                           + "  </Body>\n"
+                           + "</Envelope>";
+
+        if (dispatch == null) {
+            throw new RuntimeException("dispatch  is null!");
+        }
+
+        StreamSource response = dispatch.invoke(new StreamSource(new StringReader(msgString)));
+        String parsedResponse = parseSourceResponse(response);
+        assertTrue("Expected parsed string to contain: " + EXPECTED_PASSING_RESPONSE + " but was actually: " + parsedResponse,
+                   parsedResponse.contains(EXPECTED_PASSING_RESPONSE));
+
+        StreamSource response1 = dispatch.invoke(new StreamSource(new StringReader(msgString)));
+        String parsedResponse1 = parseSourceResponse(response1);
+        assertTrue("Expected parsed string to contain: " + EXPECTED_PASSING_RESPONSE + " but was actually: " + parsedResponse1,
+                   parsedResponse1.contains(EXPECTED_PASSING_RESPONSE));
         //assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
     }
 

@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
@@ -19,6 +16,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,7 +27,6 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -36,37 +34,36 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jsf.container.fat.utils.JSFApplication;
-import com.ibm.ws.jsf.container.fat.utils.JSFImplementation;
+import com.ibm.ws.jsf.container.fat.FATSuite;
 import com.ibm.ws.jsf.container.fat.utils.JSFUtils;
-import com.ibm.ws.jsf.container.fat.utils.UseImplementation;
-import com.ibm.ws.jsf.container.fat.utils.WebArchiveInfo;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * General JSF 2.3 test cases the also require CDI.
  */
 @RunWith(FATRunner.class)
-@UseImplementation(JSFImplementation.MYFACES)
 public class JSF23CDIGeneralTests extends FATServletClient {
 
-    protected static final Class<?> c = JSF23CDIGeneralTests.class;
+    private static final Class<?> c = JSF23CDIGeneralTests.class;
+    private static final String POST_RENDER_VIEW_EVENT_APP_NAME = "PostRenderViewEvent";
+    private static final String CDI_MANAGED_PROPERTY_APP_NAME = "CDIManagedProperty";
+    private static final String EL_IMPLICIT_OBJECTS_CDI_APP_NAME = "ELImplicitObjectsViaCDI";
+    private static final String CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME = "ConverterValidatorBehaviorInjectionTarget";
+    private static final String VIEW_HANDLER_APP_NAME = "ViewHandlerTest";
+    private static final String CONVERSATION_SCOPED_APP_NAME = "ConversationScopedTest";
 
     @Rule
     public TestName name = new TestName();
-
-    @Rule
-    public JSFApplication jsfApplication = new JSFApplication(jsf23CDIServer);
 
     @Server("jsf.container.2.3_fat.cdi")
     public static LibertyServer jsf23CDIServer;
@@ -76,6 +73,50 @@ public class JSF23CDIGeneralTests extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        WebArchive postRenderViewEventApp = ShrinkWrap.create(WebArchive.class, POST_RENDER_VIEW_EVENT_APP_NAME + ".war").addPackages(false, "com.ibm.ws.jsf23.fat.prve.events");
+        postRenderViewEventApp = FATSuite.addMyFaces(postRenderViewEventApp);
+        postRenderViewEventApp = (WebArchive) ShrinkHelper.addDirectory(postRenderViewEventApp, "publish/files/permissions");
+        postRenderViewEventApp = (WebArchive) ShrinkHelper.addDirectory(postRenderViewEventApp, "test-applications/" + POST_RENDER_VIEW_EVENT_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, postRenderViewEventApp);
+
+        WebArchive cdiManagedPropertyApp = ShrinkWrap.create(WebArchive.class, CDI_MANAGED_PROPERTY_APP_NAME + ".war")
+                        .addPackages(false, "com.ibm.ws.jsf23.fat.cdi.managedproperty");
+        cdiManagedPropertyApp = FATSuite.addMyFaces(cdiManagedPropertyApp);
+        cdiManagedPropertyApp = (WebArchive) ShrinkHelper.addDirectory(cdiManagedPropertyApp, "publish/files/permissions");
+        cdiManagedPropertyApp = (WebArchive) ShrinkHelper.addDirectory(cdiManagedPropertyApp, "test-applications/" + CDI_MANAGED_PROPERTY_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, cdiManagedPropertyApp);
+
+        WebArchive elImplicitObjectsCDIAPP = ShrinkWrap.create(WebArchive.class, EL_IMPLICIT_OBJECTS_CDI_APP_NAME + ".war")
+                        .addPackages(false, "com.ibm.ws.jsf23.fat.elcdi.beans");
+        elImplicitObjectsCDIAPP = FATSuite.addMyFaces(elImplicitObjectsCDIAPP);
+        elImplicitObjectsCDIAPP = (WebArchive) ShrinkHelper.addDirectory(elImplicitObjectsCDIAPP, "publish/files/permissions");
+        elImplicitObjectsCDIAPP = (WebArchive) ShrinkHelper.addDirectory(elImplicitObjectsCDIAPP, "test-applications/" + EL_IMPLICIT_OBJECTS_CDI_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, elImplicitObjectsCDIAPP);
+
+        WebArchive converterValidatorBehaviorInjectionTargetApp = ShrinkWrap.create(WebArchive.class, CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME + ".war")
+                        .addPackages(false, "com.ibm.ws.jsf23.fat.converter_validator.beans");
+        converterValidatorBehaviorInjectionTargetApp = FATSuite.addMyFaces(converterValidatorBehaviorInjectionTargetApp);
+        converterValidatorBehaviorInjectionTargetApp = (WebArchive) ShrinkHelper.addDirectory(converterValidatorBehaviorInjectionTargetApp, "publish/files/permissions");
+        converterValidatorBehaviorInjectionTargetApp = (WebArchive) ShrinkHelper
+                        .addDirectory(converterValidatorBehaviorInjectionTargetApp, "test-applications/" + CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, converterValidatorBehaviorInjectionTargetApp);
+
+        WebArchive viewHandlerApp = ShrinkWrap.create(WebArchive.class, VIEW_HANDLER_APP_NAME + ".war")
+                        .addPackages(false, "jsf.container.viewhandlertest");
+        viewHandlerApp = FATSuite.addMyFaces(viewHandlerApp);
+        viewHandlerApp = (WebArchive) ShrinkHelper.addDirectory(viewHandlerApp, "publish/files/permissions");
+        viewHandlerApp = (WebArchive) ShrinkHelper
+                        .addDirectory(viewHandlerApp, "test-applications/" + VIEW_HANDLER_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, viewHandlerApp);
+
+        WebArchive conversationScopedApp = ShrinkWrap.create(WebArchive.class, CONVERSATION_SCOPED_APP_NAME + ".war")
+                        .addPackages(false, "com.ibm.ws.jsf.conversationscoped.bean");
+        conversationScopedApp = FATSuite.addMyFaces(conversationScopedApp);
+        conversationScopedApp = (WebArchive) ShrinkHelper.addDirectory(conversationScopedApp, "publish/files/permissions");
+        conversationScopedApp = (WebArchive) ShrinkHelper
+                        .addDirectory(conversationScopedApp, "test-applications/" + CONVERSATION_SCOPED_APP_NAME + "/resources");
+        ShrinkHelper.exportDropinAppToServer(jsf23CDIServer, conversationScopedApp);
+
         // Start the server and use the class name so we can find logs easily.
         jsf23CDIServer.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
 
@@ -110,13 +151,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "PostRenderViewEvent", pkgs = { "com.ibm.ws.jsf23.fat.prve.events" })
     public void testPostRenderViewEvent() throws Exception {
-        String contextRoot = "PostRenderViewEvent";
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, POST_RENDER_VIEW_EVENT_APP_NAME, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -163,7 +202,6 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "PostRenderViewEvent", pkgs = { "com.ibm.ws.jsf23.fat.prve.events" })
     public void testFacesConfigVersion23() throws Exception {
         String appStarted = jsf23CDIServer.waitForStringInLog("CWWKZ0001I.*" + "Application PostRenderViewEvent", jsf23CDIServer.getConsoleLogFile());
 
@@ -186,14 +224,9 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // HTMLUnit gargoylesoftware thinks there's a JavaScript error 
     @Test
-    @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
-        String contextRoot = "CDIManagedProperty";
         try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
                                  + "listManagedProperty = zero stringArrayManagedProperty = "
@@ -204,7 +237,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
                                 + "com.ibm.ws.jsf23.fat.cdi.managedproperty.TestBean";
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CDI_MANAGED_PROPERTY_APP_NAME, "");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -248,7 +281,6 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @WebArchiveInfo(name = "ELImplicitObjectsViaCDI", pkgs = { "com.ibm.ws.jsf23.fat.elcdi.beans" })
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -256,8 +288,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             webClient.addRequestHeader("headerMessage", "This is a test");
 
             // Construct the URL for the test
-            String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, EL_IMPLICIT_OBJECTS_CDI_APP_NAME, "index.xhtml");
 
             HtmlPage testInjectableImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
@@ -290,14 +321,14 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
             assertTrue(resultPage.asText()
                             .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces.flow.FlowScoped")); // Expected exception
+                                      + "for scope type " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces"));
         }
     }
 
@@ -308,7 +339,6 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @WebArchiveInfo(name = "ELImplicitObjectsViaCDI", pkgs = { "com.ibm.ws.jsf23.fat.elcdi.beans" })
     public void testELResolutionImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -316,8 +346,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             webClient.addRequestHeader("headerMessage", "This is a test");
 
             // Construct the URL for the test
-            String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "implicit_objects.xhtml?message=Hello World");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, EL_IMPLICIT_OBJECTS_CDI_APP_NAME, "implicit_objects.xhtml?message=Hello World");
 
             HtmlPage testELResolutionImplicitObjectsPage = (HtmlPage) webClient.getPage(url);
 
@@ -351,13 +380,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @WebArchiveInfo(name = "ELImplicitObjectsViaCDI", pkgs = { "com.ibm.ws.jsf23.fat.elcdi.beans" })
     public void testELResolutionOfFlowScope() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            String contextRoot = "ELImplicitObjectsViaCDI";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "flow_index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, EL_IMPLICIT_OBJECTS_CDI_APP_NAME, "flow_index.xhtml");
 
             HtmlPage testELResolutionOfFlowScopePage = (HtmlPage) webClient.getPage(url);
 
@@ -390,13 +417,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ConverterValidatorBehaviorInjectionTarget", pkgs = { "com.ibm.ws.jsf23.fat.converter_validator.beans" })
     public void testFacesConverterBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -432,13 +457,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ConverterValidatorBehaviorInjectionTarget", pkgs = { "com.ibm.ws.jsf23.fat.converter_validator.beans" })
     public void testFacesValidatorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -474,15 +497,13 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ConverterValidatorBehaviorInjectionTarget", pkgs = { "com.ibm.ws.jsf23.fat.converter_validator.beans" })
     public void testFacesBehaviorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
             CollectingAlertHandler alertHandler = new CollectingAlertHandler();
             webClient.setAlertHandler(alertHandler);
 
             // Construct the URL for the test
-            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME, "index.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -518,13 +539,11 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      */
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ConverterValidatorBehaviorInjectionTarget", pkgs = { "com.ibm.ws.jsf23.fat.converter_validator.beans" })
     public void testConverterValidatorBehaviorObjectInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "JSFArtifactsInjection.xhtml");
+            URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CONVERTER_VALIDATOR_BEHAVIOR_INJECTION_TARGET_APP_NAME, "JSFArtifactsInjection.xhtml");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -544,15 +563,10 @@ public class JSF23CDIGeneralTests extends FATServletClient {
 
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ViewHandlerTest", pkgs = { "jsf.container.viewhandlertest" })
     public void testViewHandler() throws Exception {
-        String contextRoot = "ViewHandlerTest";
-
-        // Wait for the application to be started.
-        jsf23CDIServer.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started");
 
         // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, VIEW_HANDLER_APP_NAME, "index.xhtml");
 
         try (WebClient webClient = new WebClient()) {
             HtmlPage page = (HtmlPage) webClient.getPage(url);
@@ -581,44 +595,39 @@ public class JSF23CDIGeneralTests extends FATServletClient {
 
     @Test
     @Mode(TestMode.FULL)
-    @WebArchiveInfo(name = "ConversationScopedTest", pkgs = { "com.ibm.ws.jsf.conversationscoped.bean" })
     public void testConversationScoped() throws Exception {
-      String contextRoot = "ConversationScopedTest";
 
-      // Wait for the application to be started.
-      jsf23CDIServer.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started", 2000);
+        // Construct the URL for the test
+        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, CONVERSATION_SCOPED_APP_NAME, "index.xhtml");
 
-      // Construct the URL for the test
-      URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+        try (WebClient webClient = new WebClient()) {
+            HtmlPage indexPage = (HtmlPage) webClient.getPage(url);
 
-      try (WebClient webClient = new WebClient()) {
-          HtmlPage indexPage = (HtmlPage) webClient.getPage(url);
+            //Get index page & click increment button
+            HtmlForm form = indexPage.getFormByName("form1");
+            HtmlSubmitInput submitButton = form.getInputByName("form1:incrementButton");
+            indexPage = submitButton.click();
 
-          //Get index page & click increment button
-          HtmlForm form = indexPage.getFormByName("form1");
-          HtmlSubmitInput submitButton = form.getInputByName("form1:incrementButton");
-          indexPage = submitButton.click();
+            String responseText = indexPage.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
 
-          String responseText = indexPage.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+            //Click Continue to go to page2.xhtml
+            form = indexPage.getFormByName("form1");
+            submitButton = form.getInputByName("form1:continueButton");
+            HtmlPage page2 = submitButton.click();
 
-          //Click Continue to go to page2.xhtml 
-          form = indexPage.getFormByName("form1");
-          submitButton = form.getInputByName("form1:continueButton");
-          HtmlPage page2 = submitButton.click();
+            //Ensure value is still 1 for conversation scoped bean
+            responseText = page2.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
 
-          //Ensure value is still 1 for conversation scoped bean
-          responseText = page2.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+            //End conversation and redirect to index.xhtml
+            form = page2.getFormByName("form2");
+            submitButton = form.getInputByName("form2:endButton");
+            indexPage = submitButton.click();
 
-          //End conversation and redirect to index.xhtml
-          form = page2.getFormByName("form2");
-          submitButton = form.getInputByName("form2:endButton");
-          indexPage = submitButton.click();
-
-          //Ensure bean counter resets to 0 when conversation scope ends.
-          responseText = indexPage.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 0"));
+            //Ensure bean counter resets to 0 when conversation scope ends.
+            responseText = indexPage.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 0"));
+        }
     }
-  }
 }

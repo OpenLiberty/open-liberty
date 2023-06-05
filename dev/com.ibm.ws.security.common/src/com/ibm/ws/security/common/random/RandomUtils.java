@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.TraceConstants;
 
 public class RandomUtils {
@@ -64,6 +65,7 @@ public class RandomUtils {
         return result.toString();
     }
 
+    @FFDCIgnore({ Exception.class })
     public static Random getRandom() {
         Random result = null;
         try {
@@ -73,7 +75,10 @@ public class RandomUtils {
                 result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
             }
         } catch (Exception e) {
-            result = new Random();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "OLGH24469 - encountered exception : " + e.getMessage() + ", try without algorithm ");
+            }
+            result = new SecureRandom();
         }
         return result;
     }

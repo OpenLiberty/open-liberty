@@ -28,6 +28,8 @@ Include-Resource: \
   WEB-INF=resources/WEB-INF, \
   swagger-ui/dist;filter:=!(*.html|*.map), \
   swagger-ui/dist/oauth2-redirect.html, \
+  swagger-ui/package.json, \
+  swagger-ui/package-lock.json, \
   index.html=swagger-ui/dist/openapi.html
 
 -buildpath: \

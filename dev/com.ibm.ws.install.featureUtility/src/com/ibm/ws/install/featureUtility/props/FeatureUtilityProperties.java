@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.props;
-
-import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.InstallLogUtils;
-import com.ibm.ws.install.internal.MavenRepository;
-import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,14 +28,24 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.ibm.ws.install.InstallConstants;
+import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.MavenRepository;
+import com.ibm.ws.kernel.boot.cmdline.Utils;
+
 public class FeatureUtilityProperties {
 
     private final static String FILEPATH_EXT = "/etc/featureUtility.properties";
-    private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
+    private final static String FeatureVerifyQualifier = "feature.verify";
+    private final static Set<String> DEFINED_OPTIONS = new HashSet<>(Arrays.asList("proxyHost", "proxyPort",
+	    "proxyUser", "proxyPassword", "featureLocalRepo", FeatureVerifyQualifier));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
     private static List<String> bomIdList = new ArrayList<>();
+    private static Map<String, Map<String, String>> keyMap = new HashMap<>();
     private final static String bomIdQualifier = ".featuresbom";
+
     private static boolean didFileParse;
 
     static {
@@ -62,6 +67,10 @@ public class FeatureUtilityProperties {
         return bomIdList;
     }
     
+    public static Map<String, Map<String, String>> getKeyMap() {
+	return keyMap;
+    }
+
     public static boolean bomIdsRequired() {
     	return !getBomIds().isEmpty();
     }
@@ -106,6 +115,10 @@ public class FeatureUtilityProperties {
         return new File(Utils.getInstallDir() + FILEPATH_EXT).getPath();
     }
 
+    public static String getFeatureVerifyOption() {
+	return definedVariables.get(FeatureVerifyQualifier);
+    }
+
     public static boolean isUsingDefaultRepo(){
         return getMirrorRepositories().size() == 0;
     }
@@ -141,26 +154,37 @@ public class FeatureUtilityProperties {
 
         // iterate over the properties
         for(Object obj : Collections.list(properties.keys())){
-            String key = obj.toString();
+	    String key = obj.toString();
             String value = properties.getProperty(key);
-            if(DEFINED_OPTIONS.contains(key.toString())){
-                definedVariables.putIfAbsent(key.toString(), value.toString()); // only write the first proxy variables we see
+	    if (DEFINED_OPTIONS.contains(key)) {
+		definedVariables.putIfAbsent(key, value); // only write the first proxy variables we see
             } else {
-            	if (key.toLowerCase().contains(bomIdQualifier)) {
+		if (key.toLowerCase().contains(bomIdQualifier)) {
             		bomIdList.add(value);
             	} else {
-            		String [] split = key.toString().split("\\.");
+		    String[] split = key.toString().split("\\.");
                     if(split.length < 2){ // invalid key
                         continue;
                     }
-                    String repoName = split[0];
+		    String propName = split[0];
                     String option = split[split.length - 1]; // incase there are periods in the key, cant use [1]
-                    if(repoMap.containsKey(repoName)){
-                        repoMap.get(repoName).put(option, value.toString());
-                    } else {
-                        HashMap<String, String> individualMap = new HashMap<>();
-                        individualMap.put(option, value.toString());
-                        repoMap.put(repoName, individualMap);
+		    if (option.equalsIgnoreCase(InstallConstants.KEYID_QUALIFIER)
+			    || option.equalsIgnoreCase(InstallConstants.KEYURL_QUALIFIER)) {
+			if (keyMap.containsKey(propName)) {
+			    keyMap.get(propName).put(option, value);
+			} else {
+			    HashMap<String, String> individualMap = new HashMap<>();
+			    individualMap.put(option, value);
+			    keyMap.put(propName, individualMap);
+			}
+		    } else {
+			if (repoMap.containsKey(propName)) {
+			    repoMap.get(propName).put(option, value);
+			} else {
+			    HashMap<String, String> individualMap = new HashMap<>();
+			    individualMap.put(option, value);
+			    repoMap.put(propName, individualMap);
+			}
                     }
             	}
             }

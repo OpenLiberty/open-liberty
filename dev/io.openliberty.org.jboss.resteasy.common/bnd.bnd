@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -21,7 +21,7 @@ publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.common.jakarta.jar
 
 resteasy-version=4.7.2.Final
 resteasy-tracing-api-version=1.1.0.Final
-apache-mime4j-version=0.8.6
+apache-mime4j-version=0.8.9
 
 src: src, resources
 
@@ -158,7 +158,7 @@ DynamicImport-Package: \
 
 Private-Package: \
   org.apache.james.*
-  
+
 instrument.ffdc: false
 instrument.classesExcludes: \
   org/jboss/resteasy/client/jaxrs/internal/ClientConfiguration.class, \
@@ -178,9 +178,9 @@ instrument.classesExcludes: \
 Include-Resource:\
   @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-core;4.7.9.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-multipart-provider;4.7.9.Final;EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
   @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
   @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
@@ -194,8 +194,8 @@ Include-Resource:\
 	org.jboss.resteasy:resteasy-client-api;strategy=exact;version=${resteasy-version},\
 	org.jboss.resteasy:resteasy-client;strategy=exact;version=${resteasy-version},\
 	org.jboss.resteasy:resteasy-core-spi;strategy=exact;version=${resteasy-version},\
-	org.jboss.resteasy:resteasy-core;strategy=exact;version=${resteasy-version},\
-	org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version=${resteasy-version},\
+	org.jboss.resteasy:resteasy-core;strategy=exact;version=4.7.9.Final,\
+	org.jboss.resteasy:resteasy-multipart-provider;strategy=exact;version=4.7.9.Final,\
 	org.jboss.resteasy:resteasy-tracing-api;strategy=exact;version=${resteasy-tracing-api-version},\
 	org.apache.james:apache-mime4j-core;strategy=exact;version=${apache-mime4j-version}, \
     org.apache.james:apache-mime4j-dom;strategy=exact;version=${apache-mime4j-version}, \

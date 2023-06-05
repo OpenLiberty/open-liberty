@@ -22,7 +22,6 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE
 
 import java.util.Map;
 
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,13 +33,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.messaging.lifecycle.SingletonsReady;
-import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.messaging.service.JsMainAdminComponent;
 import com.ibm.ws.sib.admin.JsAdminService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.admin.JsMainAdminService;
 import com.ibm.ws.sib.admin.internal.JsAdminConstants.ME_STATE;
-import com.ibm.ws.sib.msgstore.MessageStore;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
@@ -56,31 +53,18 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Applicati
     private static final TraceComponent tc = SibTr.register(JsMainAdminComponentImpl.class, JsConstants.TRGRP_AS, JsConstants.MSG_BUNDLE);
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl";
     private final JsMainAdminService service;
-    public final ConfigurationAdmin configAdmin;
-    public final MessageStore messageStore;
     public final SIDestinationAddressFactory destinationAddressFactory;
-    public final RuntimeSecurityService runtimeSecurityService;
 
-    final String jsAdminComponentId;
 
     @Activate
     public JsMainAdminComponentImpl(Map<String, Object> properties,
             @Reference JsMainAdminService service,
-            @Reference ConfigurationAdmin configAdmin,
-            @Reference MessageStore messageStore,
-            @Reference RuntimeSecurityService runtimeSecurityService,
             @Reference SingletonsReady singletonsReady) {
         final String methodName = "JsMainAdminComponentImpl";
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, methodName, new Object[] { this, service });
-
-        jsAdminComponentId = (String) properties.getOrDefault("id", "ERROR: No id in the properties for "+CLASS_NAME);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, methodName, new Object[] { this, properties, service, singletonsReady });
         this.service = service;
-        this.configAdmin = configAdmin;
-        this.messageStore = messageStore;
         this.destinationAddressFactory = SIDestinationAddressFactory.getInstance();
-        this.runtimeSecurityService = runtimeSecurityService;
         service.start(properties);
-
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             exit(tc, methodName);
     }
@@ -132,10 +116,5 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Applicati
     public static JsAdminService getJsAdminService() {
         return SingletonsReady.findService(JsAdminService.class)
                 .orElse(null);
-    }
-
-    @Override
-    public String getApplicationPrereqID() {
-        return jsAdminComponentId;
     }
 }

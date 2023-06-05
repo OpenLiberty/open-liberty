@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -78,11 +77,11 @@ public class JwtBuilderAPIMinimumSSLConfigBuilderTests extends CommonSecurityFat
 
     }
 
+    // almost a minimum config - added the issuer to the config to work around an issue with test hostname resolution
     @Test
     public void JwtBuilderAPIMinimumConfigTests_minimumSSLConfig_builder() throws Exception {
 
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
-        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims();
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 

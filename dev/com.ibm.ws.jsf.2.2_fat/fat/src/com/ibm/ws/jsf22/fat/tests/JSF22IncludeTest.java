@@ -1,15 +1,12 @@
-/*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+/*******************************************************************************
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
@@ -40,7 +37,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
+ * Test if the page is properly rendered when using a jsp:include element.
  *
+ * This test is disabled for EE10/Faces 4.0 because Pages is no longer supported in Faces 4.0.
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -58,7 +57,7 @@ public class JSF22IncludeTest {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(jsf22IncludeTestServer, "TestJSF2.2.war", "com.ibm.ws.fat.jsf22.fat.testjsf.*");
-        jsf22IncludeTestServer.startServer(JSF22IncludeTest.class.getSimpleName() + ".log");
+        jsf22IncludeTestServer.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -70,7 +69,7 @@ public class JSF22IncludeTest {
     }
 
     /**
-     * Test if the page is properly rendered when using a jsp:include element
+     * Test if the page is properly rendered when using a jsp:include element.
      * This is a replacement for the JSF 2.0 test PM25955, which has been disabled
      * in the JSF 2.2 run of the JSF 2.0 bucket
      *

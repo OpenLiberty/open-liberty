@@ -52,6 +52,10 @@ import org.apache.cxf.staxutils.DepthXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.wsdl.interceptors.BareInInterceptor;
 
+// Liberty Change; This class has no Liberty specific changes
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class RPCInInterceptor extends AbstractInDatabindingInterceptor {
     private static final QName SOAP12_RESULT = new QName("http://www.w3.org/2003/05/soap-rpc",
                                                          "result");

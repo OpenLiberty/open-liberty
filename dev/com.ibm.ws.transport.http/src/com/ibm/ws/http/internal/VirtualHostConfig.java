@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.http.internal.VirtualHostImpl.EndpointState;
@@ -236,8 +237,8 @@ class VirtualHostConfig {
      * @param ePort
      * @param b
      */
-    public void listenerStarted(HttpEndpointImpl e, String resolvedHostName, int port, boolean isHttps) {
-        owner.listenerStarted(e, this, resolvedHostName, port, isHttps);
+    public void listenerStarted(HttpEndpointImpl e, Supplier<String> hostNameResolver, int port, boolean isHttps) {
+        owner.listenerStarted(e, this, hostNameResolver, port, isHttps);
     }
 
     /**

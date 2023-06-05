@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -75,7 +75,8 @@ public class LibertyCXFNegativePropertiesTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("SRVE0777E", "SRVE0315E");
+            // Ignore different SSL connection errors for negative test cases
+            server.stopServer("SRVE0777E", "SRVE0315E", "CWWKO0801E");
         }
     }
 
@@ -86,7 +87,7 @@ public class LibertyCXFNegativePropertiesTest {
     @Test
     public void testCxfUnsupportedPolicyProperty() throws Exception {
 
-        connect("ImageServiceImplService", HttpsURLConnection.HTTP_OK);
+        connect("ImageServiceImplServiceTwo", HttpsURLConnection.HTTP_OK);
 
         assertNotNull("Since cxf.ignore.unsupported.policy is not enabled, invalid alternative policies are not supported",
                       server.waitForStringInTraceUsingMark("BasicAuthentication is not supported"));
@@ -128,9 +129,9 @@ public class LibertyCXFNegativePropertiesTest {
     }
 
     private void connect(String methodName, int ExpectedConnection) throws Exception {
-        URL url = new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
-                          + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName);
-        Log.info(c, "LibertyCXFPositivePropertiesTest",
+        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
+        Log.info(c, "LibertyCXFNegativePropertiesTest",
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();
         HttpUtils.trustAllHostnames();

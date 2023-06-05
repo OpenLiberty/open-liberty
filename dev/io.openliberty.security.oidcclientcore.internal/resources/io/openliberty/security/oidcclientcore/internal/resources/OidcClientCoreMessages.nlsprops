@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,27 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ensure the attribute in the OpenID Connect
 TOKEN_MISSING_CLAIMS=CWWKS2425E: The {0} OpenID Connect client token is invalid. The jwtClaims value on the JwtContext object is null or empty.
 TOKEN_MISSING_CLAIMS.explanation=Information is missing from the token and validation of the token cannot be completed.
 TOKEN_MISSING_CLAIMS.useraction=Review the log for any earlier errors for details on the failure. Check the format and content of the token that is returned from the OpenID Connect provider.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: The token has an empty [{0}] claim.
+TOKEN_EMPTY_CLAIM.explanation=The claim that is specified in the message must have a valid value.
+TOKEN_EMPTY_CLAIM.useraction=The OpenID Connect provider returns an ID token with an empty claim. If a claim is present, it must contain a valid value. Check the format and content of the token that is returned from the OpenID Connect provider.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: The token is not valid because the token expired. The token expiration time is [{0}]. The current time minus the clock skew is [{1}]. The configured clock skew is {2} seconds.
+TOKEN_EXP_IN_PAST.explanation=Tokens that are expired are not valid.
+TOKEN_EXP_IN_PAST.useraction=Obtain a new token that is not expired. Synchronize the clock times between the token issuer and the OpenID Connect client.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: The token is deemed invalid due to the [{0}] value for the [{1}] claim being in the future. The sum of the current time and clock skew is [{2}], and the configured clock skew is {3} seconds.
+TOKEN_CLAIM_IN_FUTURE.explanation=The value that is specified in the message for the claim must be a time in the past.
+TOKEN_CLAIM_IN_FUTURE.useraction=Use the token after the time that is specified in the message expires, or obtain a new token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: The token response from the OpenID Connect provider is missing at least one required parameter: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Either the OpenID Connect provider did not return a required parameter or failed to process the token request.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verify that the configured token endpoint is correct and capable of responding to OAuth token requests.
+
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: The [{0}] OpenID Connect client failed to build a JSON Web Token to use for client authentication. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=The OpenID Connect client is configured to use JSON Web Tokens for client authentication, but an error occurred while creating the token.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=For more information, see the error in the message.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: The [{0}] OpenID Connect client is missing the key that is needed to sign the token for client authentication.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=The OpenID Connect client configuration is missing data, or a key cannot be found with the key alias name in the SSL configuration for the OpenID Connect client.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Ensure that the OpenID Connect client has a key alias name and SSL reference configured. Verify that the keystore that the SSL configuration references contains a key whose alias matches the key alias name in the OpenID Connect client configuration.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,9 @@ import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
     public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.JETTY, TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.WIREMOCK);
+        return EnumSet.of(TCKArchiveModifications.JETTY,
+                            TCKArchiveModifications.TEST_LOGGER,
+                            TCKArchiveModifications.WIREMOCK,
+                            TCKArchiveModifications.SLF4J);
     }
 }

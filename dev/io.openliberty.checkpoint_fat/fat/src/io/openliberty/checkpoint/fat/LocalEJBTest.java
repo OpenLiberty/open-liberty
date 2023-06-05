@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -65,7 +65,7 @@ public class LocalEJBTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointEJB", TestMode.FULL, //
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointEJB", TestMode.FULL,
                                                                       MicroProfileActions.MP41, // first test in LITE mode
                                                                       // rest are FULL mode
                                                                       MicroProfileActions.MP50, MicroProfileActions.MP60);
@@ -85,7 +85,7 @@ public class LocalEJBTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, ejbMisc, DeployOptions.SERVER_ONLY);
 
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                              server -> {
 
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + REMOTE_EJB_APP_NAME + "' message not found in log before restore",

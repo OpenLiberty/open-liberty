@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 
@@ -52,6 +53,7 @@ public class ApplicationManager {
     /* LogRecordContext callback to retrieve application name */
     private final static LogRecordContext.Extension APPNAME_CALLBACK = new LogRecordContext.Extension() {
         @Override
+        @Trivial
         public String getValue() {
             com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             if (metaData != null) {

@@ -10,14 +10,12 @@ IBM-ShortName: appAuthorization-2.1
 WLP-AlsoKnownAs: jacc-2.1
 Subsystem-Name: Jakarta Authorization 2.1
 -features=io.openliberty.servlet.api-6.0, \
-  com.ibm.websphere.appserver.javaeedd-1.0, \
   io.openliberty.appSecurity-5.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.authorization-2.1
 -bundles=\
   io.openliberty.security.authorization.internal.jacc
-kind=beta
+kind=ga
 edition=core
 -jars=io.openliberty.jacc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.jacc_1.0-javadoc.zip

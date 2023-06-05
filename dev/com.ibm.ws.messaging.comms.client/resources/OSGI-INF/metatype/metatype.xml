@@ -5,30 +5,44 @@
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
-    
+
     SPDX-License-Identifier: EPL-2.0
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
 
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
     <OCD id="com.ibm.ws.messaging.comms.wasJmsOutbound" ibm:alias="wasJmsOutbound" name="%wasJmsOutbound" description="%wasJmsOutbound.desc" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
         <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
+        <AD id="application.prereq.id" name="internal" description="internal use only" ibm:final="true" type="String" default="${id}" ibm:unique="application.prereq.id" />
         <AD id="useSSL" name="%useSSL" description="%useSSL.desc" required="false" type="Boolean" default="false" />
         <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc" ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" cardinality="1" type="String" required="false" default="defaultTCPOptions" />
         <AD id="sslOptionsRef" name="%sslOptions" description="%sslOptions.desc" ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid" type="String" required="false" />
-        <AD id="tcpOptions.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" 
-            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.messaging.comms.wasJmsOutbound-${id}/*)(id=defaultTCPOptions))))" /> 
+        <AD id="tcpOptions.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.messaging.comms.wasJmsOutbound-${id}/*)(id=defaultTCPOptions))))" />
         <AD id="sslOptions.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${servicePidOrFilter(sslOptionsRef)}" />
         <AD id="sslOptions.cardinality.minimum" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${count(sslOptionsRef)}" />
+        <!--
+        The <wasJmsOutbound> config is consumed by two DS components:
+        - CommsOutboundChain
+        - OutboundSecureFacetImpl
+        The CommsOutboundChain also has a DS reference to the
+        OutboundSecureFacetImpl, called "secureFacet".
+        To ensure the CommsOutboundChain receives the CORRECT
+        OutboundSecureFacetImpl, constrain the "secureFacet"
+        reference using the "secureFacet.target" property.
+        This LDAP filter ensures the OutboundSecureFacetImpl's "id" property
+        matches the receiving CommsOutboundChain's "id" property.
+        -->
+        <AD id="secureFacet.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="(id=${id})" />
    </OCD>
 
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">
-      <Object ocdref="com.ibm.ws.messaging.comms.wasJmsOutbound" /> 
+      <Object ocdref="com.ibm.ws.messaging.comms.wasJmsOutbound" />
    </Designate>
 
 </metatype:MetaData>

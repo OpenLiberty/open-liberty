@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
@@ -47,6 +48,7 @@ import com.microsoft.sqlserver.jdbc.ISQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.ISQLServerStatement;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -59,12 +61,6 @@ public class SQLServerTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ss", authenticationType = Resource.AuthenticationType.APPLICATION)
     private DataSource ds_ss;
-
-    @Resource(lookup = "jdbc/ss-inferred")
-    private DataSource ss_inferred_ds;
-
-    @Resource(lookup = "jdbc/ss-using-driver")
-    private DataSource ss_using_driver;
 
     @Resource(lookup = "jdbc/ss-using-driver-type")
     private DataSource ss_using_driver_type;
@@ -333,6 +329,7 @@ public class SQLServerTestServlet extends FATServlet {
     //Test that a datasource backed by Driver can be used with both the generic properties element and properties.microsoft.sqlserver
     //element when type="java.sql.Driver"
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDSUsingDriver() throws Exception {
         Connection conn = ss_using_driver_type.getConnection();
         assertFalse("ss_using_driver_type should not wrap ISQLServerDataSource", ss_using_driver_type.isWrapperFor(ISQLServerDataSource.class));
@@ -347,6 +344,7 @@ public class SQLServerTestServlet extends FATServlet {
             conn.close();
         }
 
+        DataSource ss_using_driver = InitialContext.doLookup("jdbc/ss-using-driver");
         assertFalse("ss_using_driver should not wrap ISQLServerDataSource", ss_using_driver.isWrapperFor(ISQLServerDataSource.class));
         Connection conn2 = ss_using_driver.getConnection();
         try {
@@ -363,6 +361,7 @@ public class SQLServerTestServlet extends FATServlet {
     //Test that the proper implementation classes are used for the various datasources configured in this test bucket
     //since the JDBC Driver used is named so as not to be recognized by the built-in logic
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testInferSQLServerDataSource() throws Exception {
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.microsoft.sqlserver configured
         assertTrue("default datasource should wrap XADataSource", ds.isWrapperFor(XADataSource.class));
@@ -371,9 +370,11 @@ public class SQLServerTestServlet extends FATServlet {
         assertTrue("ds_ss should wrap ConnectionPoolDataSource", ds_ss.isWrapperFor(ConnectionPoolDataSource.class));
 
         //ss_using_driver doesn't specify a type.  The presence of URL will result in the DataSource being back by Driver
+        DataSource ss_using_driver = InitialContext.doLookup("jdbc/ss-using-driver");
         assertFalse("The presence of the URL should result in ss_using_driver being back by Driver", ss_using_driver.isWrapperFor(ISQLServerDataSource.class));
 
         //inferred ds does not specify a URL or type. This should result in inferring a datasource class name
+        DataSource ss_inferred_ds = InitialContext.doLookup("jdbc/ss-inferred");
         assertTrue("ss_inferred_ds should wrap datasource since it does not have a URL property",
                    ss_inferred_ds.isWrapperFor(ISQLServerDataSource.class));
 

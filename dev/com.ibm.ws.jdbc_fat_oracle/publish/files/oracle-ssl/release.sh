@@ -7,7 +7,7 @@ USER_NAME=kyleaure
 VERSION=1.0.full.ssl
 
 #Name of the final image
-IMAGE_NAME=oracle-18.4.0-expanded
+IMAGE_NAME=oracle-21.3.0-faststart
 
 #Docker image signiture in form username/image:version
 SIGNATURE=$USER_NAME/$IMAGE_NAME:$VERSION

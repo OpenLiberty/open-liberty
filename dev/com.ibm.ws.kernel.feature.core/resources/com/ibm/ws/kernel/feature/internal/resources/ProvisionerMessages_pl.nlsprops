@@ -342,3 +342,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: Sk\u0142adnika u\u017cytko
 tool.userfeature.install.location.invalid.explanation= Sk\u0142adnik u\u017cytkownika nie jest sk\u0142adnikiem podstawowym, dlatego nie mo\u017cna go zainstalowa\u0107 w katalogu core.
 tool.userfeature.install.location.invalid.useraction= Zainstaluj sk\u0142adnik u\u017cytkownika w katalogu usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: Serwer doda\u0142 {0} funkcje(i) do istniej\u0105cego zestawu funkcji.
+FEATURES_ADDED_DELTA.explanation=Opr\u00f3cz wcze\u015bniej zainstalowanych funkcji serwer zainstalowa\u0142 zestaw nowych funkcji.
+FEATURES_ADDED_DELTA.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: Klient doda\u0142 {0} funkcje(i) do istniej\u0105cego zestawu funkcji. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=Opr\u00f3cz wcze\u015bniej zainstalowanych funkcji klient zainstalowa\u0142 zestaw nowych funkcji.
+FEATURES_ADDED_CLIENT_DELTA.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+
+

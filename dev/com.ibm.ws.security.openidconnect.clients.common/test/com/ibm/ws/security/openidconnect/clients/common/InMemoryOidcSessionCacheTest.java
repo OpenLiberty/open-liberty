@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,31 +16,47 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
-public class InMemoryOidcSessionCacheTest {
+import com.ibm.ws.security.test.common.CommonTestClass;
+
+public class InMemoryOidcSessionCacheTest extends CommonTestClass {
 
     private final String issuer = "https://localhost";
     private final String configId = "myOidcClientConfig";
+    private final String clientSecret = "myClientSecret";
 
-    OidcSessionInfo sessionEmptySid1 = new OidcSessionInfo(configId, issuer, "testsub", "", "1234");
-    OidcSessionInfo sessionEmptySid2 = new OidcSessionInfo(configId, issuer, "testsub", "", "2345");
-    OidcSessionInfo sessionNonEmptySid = new OidcSessionInfo(configId, issuer, "testsub", "testsid", "3456");
-    OidcSessionInfo sessionDiffSub = new OidcSessionInfo(configId, issuer, "testsub2", "testsid2", "4567");
+    private final ConvergedClientConfig clientConfig = mockery.mock(ConvergedClientConfig.class);
+
+    OidcSessionInfo sessionEmptySid1;
+    OidcSessionInfo sessionEmptySid2;
+    OidcSessionInfo sessionNonEmptySid;
+    OidcSessionInfo sessionDiffSub;
 
     private InMemoryOidcSessionCache cache;
 
     @Before
-    public void setup() throws Exception {
+    public void before() {
         cache = new InMemoryOidcSessionCache();
+        mockery.checking(new Expectations() {
+            {
+                allowing(clientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+            }
+        });
+        sessionEmptySid1 = new OidcSessionInfo(configId, issuer, "testsub", "", "1234", clientConfig);
+        sessionEmptySid2 = new OidcSessionInfo(configId, issuer, "testsub", "", "2345", clientConfig);
+        sessionNonEmptySid = new OidcSessionInfo(configId, issuer, "testsub", "testsid", "3456", clientConfig);
+        sessionDiffSub = new OidcSessionInfo(configId, issuer, "testsub2", "testsid2", "4567", clientConfig);
     }
 
     @Test
     public void test_insert() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         boolean inserted = cache.insertSession(sessionInfo);
 
@@ -51,7 +67,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_sidIsNull() {
         String sub = "testsub";
         String sid = null;
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         boolean inserted = cache.insertSession(sessionInfo);
 
@@ -62,7 +78,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_sidIsEmpty() {
         String sub = "testsub";
         String sid = "";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         boolean inserted = cache.insertSession(sessionInfo);
 
@@ -73,7 +89,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_subIsNull() {
         String sub = null;
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         boolean inserted = cache.insertSession(sessionInfo);
 
@@ -84,7 +100,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_subIsEmpty() {
         String sub = "";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         boolean inserted = cache.insertSession(sessionInfo);
 
@@ -95,8 +111,8 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateSid() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
-        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345", clientConfig);
 
         boolean inserted1 = cache.insertSession(sessionInfo1);
         boolean inserted2 = cache.insertSession(sessionInfo2);
@@ -109,8 +125,8 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateNullSid() {
         String sub = "testsub";
         String sid = null;
-        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
-        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345", clientConfig);
 
         boolean inserted1 = cache.insertSession(sessionInfo1);
         boolean inserted2 = cache.insertSession(sessionInfo2);
@@ -123,8 +139,8 @@ public class InMemoryOidcSessionCacheTest {
     public void test_insert_duplicateEmptySid() {
         String sub = "testsub";
         String sid = "";
-        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
-        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345");
+        OidcSessionInfo sessionInfo1 = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
+        OidcSessionInfo sessionInfo2 = new OidcSessionInfo(configId, issuer, sub, sid, "2345", clientConfig);
 
         boolean inserted1 = cache.insertSession(sessionInfo1);
         boolean inserted2 = cache.insertSession(sessionInfo2);
@@ -369,7 +385,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_removeInvalidatedSession() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
@@ -383,7 +399,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_removeInvalidatedSession_sessionIsNull() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
@@ -397,12 +413,12 @@ public class InMemoryOidcSessionCacheTest {
     public void test_removeInvalidatedSession_sessionDoesNotExist() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
 
-        OidcSessionInfo doesnotexist = new OidcSessionInfo(configId, issuer, sub, sid, "9876");
+        OidcSessionInfo doesnotexist = new OidcSessionInfo(configId, issuer, sub, sid, "9876", clientConfig);
         boolean removed = cache.removeInvalidatedSession(doesnotexist);
 
         assertFalse("Should not be able to remove a session whose oidc session id does not exist.", removed);
@@ -412,7 +428,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_isSessionInvalidated() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
@@ -426,7 +442,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_isSessionInvalidated_sessionIsNull() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
         cache.invalidateSession(sub, sid);
@@ -440,7 +456,7 @@ public class InMemoryOidcSessionCacheTest {
     public void test_isSessionInvalidated_sessionHasNotBeenInvalidated() {
         String sub = "testsub";
         String sid = "testsid";
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234");
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, issuer, sub, sid, "1234", clientConfig);
 
         cache.insertSession(sessionInfo);
 

@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
@@ -22,9 +19,9 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 bVersion=1.0
 
-resteasy-version=6.2.0.Final
+resteasy-version=6.2.3.Final
 resteasy-tracing-api-version=1.1.0.Final
-apache-mime4j-version=0.8.6
+apache-mime4j-version=0.8.9
 
 src: src, resources
 
@@ -36,7 +33,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyReader | \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
-  META-INF/services/jakarta.ws.rs.ext.Providers
+  META-INF/services/jakarta.ws.rs.ext.Providers | \
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
 
 -cdiannotations:
 
@@ -82,7 +80,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal.proxy;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
-  org.jboss.resteasy.concurrent;version=${resteasy-version}, \
+  org.jboss.resteasy.concurrent;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
   org.jboss.resteasy.core.messagebody;version=${resteasy-version}, \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
@@ -219,13 +217,15 @@ Include-Resource:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.logging.core,\
+  com.ibm.ws.threading,\
   io.openliberty.org.jboss.logging35,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.ws.kernel.service,\
   io.openliberty.webcontainer.security.internal,\
-  com.ibm.websphere.security
+  com.ibm.websphere.security,\
+  com.ibm.ws.org.jboss.jandex
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file,\

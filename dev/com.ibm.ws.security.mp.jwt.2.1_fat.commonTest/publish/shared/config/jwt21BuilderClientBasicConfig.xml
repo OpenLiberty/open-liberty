@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022, 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+        
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<jwtBuilder id="defaultJWT" 
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+        			keyAlias="rs256"
+        			issuer="testIssuer"
+				signatureAlgorithm="RS256"
+				/>
+
+	<jwtBuilder id="sign_RS256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				trustStoreRef="trust_allSigAlg"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+	<jwtBuilder id="sign_RS256_enc_RS256_RSA_OAEP_256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
+				signatureAlgorithm="RS256"
+				trustStoreRef="trust_allSigAlg"
+				keyManagementKeyAlgorithm="RSA-OAEP-256"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
+				/>		
+
+</server>
+			

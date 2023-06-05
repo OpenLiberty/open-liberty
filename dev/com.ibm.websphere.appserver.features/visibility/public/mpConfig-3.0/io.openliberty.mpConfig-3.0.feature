@@ -12,7 +12,6 @@ IBM-API-Package: \
 IBM-ShortName: mpConfig-3.0
 Subsystem-Name: MicroProfile Config 3.0
 -features=com.ibm.websphere.appserver.appmanager-1.0, \
-  com.ibm.websphere.appserver.containerServices-1.0, \
   io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1", \
   io.openliberty.org.eclipse.microprofile.config-3.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \

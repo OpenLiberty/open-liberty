@@ -11,5 +11,5 @@ IBM-Process-Types: client
   io.openliberty.xmlws.common-4.0
 -bundles=\
   com.ibm.ws.jaxws.2.3.clientcontainer.jakarta
-kind=beta
+kind=ga
 edition=base

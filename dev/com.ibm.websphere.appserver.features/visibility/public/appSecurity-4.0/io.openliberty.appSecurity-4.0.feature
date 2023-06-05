@@ -16,11 +16,13 @@ Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
 -features=io.openliberty.cdi-3.0, \
   io.openliberty.jakarta.authentication-2.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.servlet.internal-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.security-1.0, \
   io.openliberty.securityAPI.jakarta-1.0, \
   io.openliberty.jakarta.security.enterprise-2.0, \
-  io.openliberty.expressionLanguage-4.0
+  io.openliberty.expressionLanguage-4.0, \
+  io.openliberty.webAppSecurity-2.0
 -bundles=\
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="testServer1">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>mpOpenTracing-3.0</feature>
+        <feature>mpRestClient-3.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+    
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true" />
+
+    <library id="jaeger" apiTypeVisibility="+third-party">
+        <fileset dir="${server.config.dir}/jaegerLib/" includes="*.jar"/>
+    </library>
+
+    <webApplication id="spanTest" location="crossFeature.war" >
+        <classloader apiTypeVisibility="+third-party" commonLibraryRef="jaeger"/>
+    </webApplication>
+    
+    <!-- The Jaeger tracer needs a bunch of permissions. -->
+    <!-- We could scope this more tightly, but I haven't bothered because -->
+    <!-- we're not really trying to test the jaeger tracer in this test, -->
+    <!-- we're just testing compatibility with mpTelemetry -->
+    <javaPermission className="java.security.AllPermission"/>
+
+</server>

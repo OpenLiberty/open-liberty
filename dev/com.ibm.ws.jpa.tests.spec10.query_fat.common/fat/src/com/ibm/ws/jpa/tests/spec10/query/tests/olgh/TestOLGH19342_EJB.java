@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,7 +32,6 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SF_Servlet;
 import com.ibm.ws.jpa.olgh19342.ejb.TestOLGH19342_EJB_SL_Servlet;
 import com.ibm.ws.jpa.tests.spec10.query.tests.AbstractFATSuite;
@@ -78,8 +77,7 @@ public class TestOLGH19342_EJB extends JPAFATServletClient {
     @Server("JPA10QueryServer")
     @TestServlets({
                     @TestServlet(servlet = TestOLGH19342_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH19342_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH19342_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH19342_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH19342_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH19342_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestOLGH19342_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH19342_EJB_SF_Servlet")
     })
     public static LibertyServer server;
 

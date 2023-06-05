@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,14 +27,16 @@ import io.openliberty.ejbcontainer.fat.checkpoint.ejb.CheckpointStatistics;
 @SuppressWarnings("serial")
 public class EjbStartCheckpointServlet extends FATServlet {
 
-    public void testEjbStartCheckpointFeatures() throws Exception {
-        // Only the @Startup Singleton bean classes should be initialized
-        assertEquals("Wrong number of classes initialized", 8, CheckpointStatistics.getInitializedClassListSize());
+    public void testEjbStartCheckpointInactive() throws Exception {
+        // Only the @Startup Singleton bean classes should be initialized and some stateless with hard minimum
+        assertEquals("Wrong number of classes initialized", 10, CheckpointStatistics.getInitializedClassListSize());
         assert_8_StartupSingletonClassesInitialized();
+        assert_2_StartAtAppStatelessClassesInitialized();
 
-        // Only the @Startup Singleton bean instances should be created; 1 each
-        assertEquals("Wrong number of classes created", 8, CheckpointStatistics.getInstanceCountMapSize());
+        // Only the @Startup Singleton bean instances should be created; 1 each, and some stateless with hard minimum
+        assertEquals("Wrong number of classes created", 10, CheckpointStatistics.getInstanceCountMapSize());
         assert_8_StartupSingletonClassInstancesCreated();
+        assert_2_StartAtAppStatelessClassInstancesPreloaded_Default();
 
         // Access all beans and verify they are functional
         verifyAllBeans();
@@ -50,14 +52,41 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assert_24_StatelessClassInstancesCreated();
     }
 
-    public void testEjbStartCheckpointDeployment() throws Exception {
-        // Only the @Startup Singleton bean classes should be initialized
-        assertEquals("Wrong number of classes initialized", 8, CheckpointStatistics.getInitializedClassListSize());
-        assert_8_StartupSingletonClassesInitialized();
+    public void testEjbStartCheckpointInactiveStartAllSingletons() throws Exception {
+        // All Singleton that don't disable StartAtAppStart bean classes should be initialized  and some stateless with hard minimum
+        assertEquals("Wrong number of classes initialized", 18, CheckpointStatistics.getInitializedClassListSize());
+        assert_16_SingletonClassesInitialized();
+        assert_2_StartAtAppStatelessClassesInitialized();
 
-        // Only the @Startup Singleton bean instances should be created; 1 each
-        assertEquals("Wrong number of classes created", 8, CheckpointStatistics.getInstanceCountMapSize());
+        // All beans from above should be fully created; 1 each, and some stateless with hard minimum
+        assertEquals("Wrong number of classes created", 18, CheckpointStatistics.getInstanceCountMapSize());
+        assert_16_SingletonClassInstancesCreated();
+        assert_2_StartAtAppStatelessClassInstancesPreloaded_Default();
+
+        // Access all beans and verify they are functional
+        verifyAllBeans();
+
+        // All bean classes should now be initialized
+        assertEquals("Wrong number of classes initialized", 44, CheckpointStatistics.getInitializedClassListSize());
+        assert_20_SingletonClassesInitialized();
+        assert_24_StatelessClassesInitialized();
+
+        // At least one instance per bean should now be created; more for those with a hard minimum poolSize
+        assertEquals("Wrong number of classes created", 44, CheckpointStatistics.getInstanceCountMapSize());
+        assert_20_SingletonClassInstancesCreated();
+        assert_24_StatelessClassInstancesCreated();
+    }
+
+    public void testEjbStartCheckpointBeforeAppStart() throws Exception {
+        // Only the @Startup Singleton bean classes should be initialized and some stateless with hard minimum
+        assertEquals("Wrong number of classes initialized", 10, CheckpointStatistics.getInitializedClassListSize());
+        assert_8_StartupSingletonClassesInitialized();
+        assert_2_StartAtAppStatelessClassesInitialized();
+
+        // Only the @Startup Singleton bean instances should be created; 1 each, and some stateless with hard minimum
+        assertEquals("Wrong number of classes created", 10, CheckpointStatistics.getInstanceCountMapSize());
         assert_8_StartupSingletonClassInstancesCreated();
+        assert_2_StartAtAppStatelessClassInstancesPreloaded_Default();
 
         verifyAllBeans();
 
@@ -72,16 +101,16 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assert_24_StatelessClassInstancesCreated();
     }
 
-    public void testEjbStartCheckpointApplications() throws Exception {
-        // All Singleton and Stateless that don't disable StartAtAppStart bean classes should be initialized
-        assertEquals("Wrong number of classes initialized", 32, CheckpointStatistics.getInitializedClassListSize());
-        assert_16_SingletonClassesInitialized();
-        assert_16_StartAtAppStatelessClassesInitialized();
+    public void testEjbStartCheckpointAfterAppStart() throws Exception {
+        // Only the @Startup Singleton bean classes should be initialized and some stateless with hard minimum
+        assertEquals("Wrong number of classes initialized", 10, CheckpointStatistics.getInitializedClassListSize());
+        assert_8_StartupSingletonClassesInitialized();
+        assert_2_StartAtAppStatelessClassesInitialized();
 
-        // All beans from above should be fully preloaded; no need to wait as preload should complete before application start completes
-        assertEquals("Wrong number of classes created", 32, CheckpointStatistics.getInstanceCountMapSize());
-        assert_16_SingletonClassInstancesCreated();
-        assert_16_StartAtAppStatelessClassInstancesPreloaded();
+        // Only the @Startup Singleton bean instances should be created; 1 each, and some stateless with hard minimum
+        assertEquals("Wrong number of classes created", 10, CheckpointStatistics.getInstanceCountMapSize());
+        assert_8_StartupSingletonClassInstancesCreated();
+        assert_2_StartAtAppStatelessClassInstancesPreloaded_Checkpoint();
 
         verifyAllBeans();
 
@@ -94,7 +123,7 @@ public class EjbStartCheckpointServlet extends FATServlet {
         // be fully preloaded; otherwise will be preloaded if there is a configured hard minimum pool size.
         assertEquals("Wrong number of classes created", 44, CheckpointStatistics.getInstanceCountMapSize());
         assert_20_SingletonClassInstancesCreated();
-        assert_24_StatelessClassInstancesPreloaded();
+        assert_24_StatelessClassInstancesCreated();
     }
 
     // Just the @Startup Singleton beans
@@ -153,24 +182,10 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assertTrue("Singleton bean SGCheckpointBeanW not initialized", CheckpointStatistics.isClassInitialized("SGCheckpointBeanW"));
     }
 
-    // Just the Stateless beans that do not explicitly disable start-at-app-start
-    private void assert_16_StartAtAppStatelessClassesInitialized() {
-        assertTrue("Stateless bean SLCheckpointBeanA not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanA"));
-        assertTrue("Stateless bean SLCheckpointBeanB not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanB"));
-        assertTrue("Stateless bean SLCheckpointBeanC not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanC"));
-        assertTrue("Stateless bean SLCheckpointBeanD not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanD"));
-        assertTrue("Stateless bean SLCheckpointBeanG not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanG"));
+    // Just the Stateless beans with hard minimum and either explicitly enable start-at-app-start or referenced by startup singleton
+    private void assert_2_StartAtAppStatelessClassesInitialized() {
         assertTrue("Stateless bean SLCheckpointBeanH not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanH"));
-        assertTrue("Stateless bean SLCheckpointBeanI not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanI"));
         assertTrue("Stateless bean SLCheckpointBeanJ not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanJ"));
-        assertTrue("Stateless bean SLCheckpointBeanM not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanM"));
-        assertTrue("Stateless bean SLCheckpointBeanN not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanN"));
-        assertTrue("Stateless bean SLCheckpointBeanO not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanO"));
-        assertTrue("Stateless bean SLCheckpointBeanP not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanP"));
-        assertTrue("Stateless bean SLCheckpointBeanS not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanS"));
-        assertTrue("Stateless bean SLCheckpointBeanT not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanT"));
-        assertTrue("Stateless bean SLCheckpointBeanU not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanU"));
-        assertTrue("Stateless bean SLCheckpointBeanV not initialized", CheckpointStatistics.isClassInitialized("SLCheckpointBeanV"));
     }
 
     // All Stateless beans in the application
@@ -260,26 +275,30 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assertEquals("Wrong number of bean instances for SGCheckpointBeanW", 1, CheckpointStatistics.getInstanceCount("SGCheckpointBeanW"));
     }
 
-    // Just the Stateless beans that do not explicitly disable start-at-app-start
-    private void assert_16_StartAtAppStatelessClassInstancesPreloaded() {
-        // Verifies the StartAtApp stateless beans are preloaded during application start; instance count should be exact
+    // Just the Stateless beans with hard minimum and either explicitly enabled start-at-app-start or referenced by startup singleton
+    private void assert_2_StartAtAppStatelessClassInstancesPreloaded_Default() throws Exception {
+        // Default behavior for stateless beans with a hard minimum is to preload on first use, except when when configured
+        // with start-at-app-start, then the preload will occur at the end of application start. If a stateless bean is
+        // referenced by a startup singleton, that will also result in a preload at the end of application start.
+        // Note: the count for preloaded beans may vary by one, depending on whether the method call creates before preload starts
+        // Verifies the StartAtApp stateless beans with a hard minimum are preloaded during application start; instance count should be exact
         // and there is no need to wait on a CountDownLatch since preload should complete before application start completes
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanA", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanA"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanB", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanB"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanC", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanC"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanD", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanD"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanG", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanG"));
+        int instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanH");
+        assertTrue("Wrong number of bean instances for SLCheckpointBeanH : " + instanceCount, instanceCount == 20 || instanceCount == 21);
+        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanJ");
+        assertTrue("Wrong number of bean instances for SLCheckpointBeanJ : " + instanceCount, instanceCount == 20 || instanceCount == 21);
+    }
+
+    // Just the Stateless beans with hard minimum and either explicitly enabled start-at-app-start or referenced by startup singleton
+    private void assert_2_StartAtAppStatelessClassInstancesPreloaded_Checkpoint() {
+        // Default behavior for stateless beans with a hard minimum is to preload on first use, except when when configured
+        // with start-at-app-start, then the preload will occur at the end of application start. If a stateless bean is
+        // referenced by a startup singleton, that will also result in a preload at the end of application start.
+        // Note: when checkpoint applications is enabled, the preload occurs as part of application start, so instance
+        // count should be exact and there is no need to wait on a CountDownLatch since preload should complete before
+        // application start completes
         assertEquals("Wrong number of bean instances for SLCheckpointBeanH", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanH"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanI", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanI"));
         assertEquals("Wrong number of bean instances for SLCheckpointBeanJ", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanJ"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanM", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanM"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanN", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanN"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanO", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanO"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanP", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanP"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanS", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanS"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanT", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanT"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanU", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanU"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanV", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanV"));
     }
 
     // All Stateless beans in the application; default preloading
@@ -295,9 +314,11 @@ public class EjbStartCheckpointServlet extends FATServlet {
         int instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanF");
         assertTrue("Wrong number of bean instances for SLCheckpointBeanF : " + instanceCount, instanceCount == 20 || instanceCount == 21);
         assertEquals("Wrong number of bean instances for SLCheckpointBeanG", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanG"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanH", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanH"));
+        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanH");
+        assertTrue("Wrong number of bean instances for SLCheckpointBeanH : " + instanceCount, instanceCount == 20 || instanceCount == 21);
         assertEquals("Wrong number of bean instances for SLCheckpointBeanI", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanI"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanJ", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanJ"));
+        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanJ");
+        assertTrue("Wrong number of bean instances for SLCheckpointBeanJ : " + instanceCount, instanceCount == 20 || instanceCount == 21);
         assertEquals("Wrong number of bean instances for SLCheckpointBeanK", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanK"));
         instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanL");
         assertTrue("Wrong number of bean instances for SLCheckpointBeanL : " + instanceCount, instanceCount == 20 || instanceCount == 21);
@@ -312,42 +333,6 @@ public class EjbStartCheckpointServlet extends FATServlet {
         assertEquals("Wrong number of bean instances for SLCheckpointBeanT", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanT"));
         assertEquals("Wrong number of bean instances for SLCheckpointBeanU", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanU"));
         assertEquals("Wrong number of bean instances for SLCheckpointBeanV", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanV"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanW", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanW"));
-        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanX");
-        assertTrue("Wrong number of bean instances for SLCheckpointBeanX : " + instanceCount, instanceCount == 20 || instanceCount == 21);
-    }
-
-    // All Stateless beans in the application; extra checkpoint preloading
-    private void assert_24_StatelessClassInstancesPreloaded() throws Exception {
-        // Checkpoint behavior for stateless beans is to preload all beans, except those with StartAtAppStart explicitly disabled.
-        // Verify the beans without StartAtAppStart disabled will be fully preloaded and the remaining will only be preloaded if
-        // there is a hard minimum pool size configured (a wait will be required since they preload on first use).
-        // Note: the count for preload on first use beans may vary by one, depending on whether the method call creates before preload starts
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanA", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanA"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanB", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanB"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanC", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanC"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanD", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanD"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanE", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanE"));
-        int instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanF");
-        assertTrue("Wrong number of bean instances for SLCheckpointBeanF : " + instanceCount, instanceCount == 20 || instanceCount == 21);
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanG", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanG"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanH", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanH"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanI", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanI"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanJ", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanJ"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanK", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanK"));
-        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanL");
-        assertTrue("Wrong number of bean instances for SLCheckpointBeanL : " + instanceCount, instanceCount == 20 || instanceCount == 21);
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanM", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanM"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanN", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanN"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanO", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanO"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanP", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanP"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanQ", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanQ"));
-        instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanR");
-        assertTrue("Wrong number of bean instances for SLCheckpointBeanR : " + instanceCount, instanceCount == 20 || instanceCount == 21);
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanS", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanS"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanT", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanT"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanU", 50, CheckpointStatistics.getInstanceCount("SLCheckpointBeanU"));
-        assertEquals("Wrong number of bean instances for SLCheckpointBeanV", 20, CheckpointStatistics.getInstanceCount("SLCheckpointBeanV"));
         assertEquals("Wrong number of bean instances for SLCheckpointBeanW", 1, CheckpointStatistics.getInstanceCount("SLCheckpointBeanW"));
         instanceCount = CheckpointStatistics.getInstanceCountAfterPreload("SLCheckpointBeanX");
         assertTrue("Wrong number of bean instances for SLCheckpointBeanX : " + instanceCount, instanceCount == 20 || instanceCount == 21);

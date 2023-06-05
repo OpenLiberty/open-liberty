@@ -31,4 +31,4 @@ fat.minimum.java.level: 11
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
--buildpath: org.testng:testng;version=6.14.3
+-buildpath: org.testng:testng;version=7.5.1

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2010, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -255,7 +255,8 @@ ERROR_ASSET_INVALID_PRODUCT_INSTALLTYPE.useraction=Pomoc\u00ed n\u00e1stroje ins
 
 ERROR_ASSET_MISSING_DEPENDENT=CWWKF1258E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
 ERROR_ASSET_MISSING_DEPENDENT.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
-ERROR_ASSET_MISSING_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/apps\
+    erv/was/support.
 
 ERROR_FAILED_TO_RESOLVE_ASSETS=CWWKF1259E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed aktiva: {0} Ujist\u011bte se, \u017ee ur\u010den\u00e1 aktiva jsou platn\u00e1. Chcete-li naj\u00edt ID pou\u017eiteln\u00fdch aktiv, spus\u0165te vyhled\u00e1vac\u00ed p\u0159\u00edkaz installUtility.
 ERROR_FAILED_TO_RESOLVE_ASSETS.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee z \u00falo\u017ei\u0161\u0165 na\u010d\u00edst ur\u010den\u00e1 aktiva.
@@ -403,7 +404,8 @@ ERROR_UNABLE_TO_CREATE_FILE.useraction=Ov\u011b\u0159te, zda existuje nad\u0159\
 
 ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1290E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nelze st\u00e1hnout nebo nainstalovat na {2}, {3}, {4}. Aktivum {1} v aktu\u00e1ln\u011b nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch plat\u00ed pouze pro n\u00e1sleduj\u00edc\u00ed vyd\u00e1n\u00ed a verze produktu: {5}. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval verzi aktiva, kter\u00e9 plat\u00ed pro va\u0161\u00ed instalaci. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul toto aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
 ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9. Verze po\u017eadovan\u00e9ho aktiva sice byla nalezena, ale neplat\u00ed pro nainstalovanou verzi nebo vyd\u00e1n\u00ed produktu.
-ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte bal\u00edk zip jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul toto aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte bal\u00edk zip jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul toto aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/suppor\
+    t.
 
 ERROR_DEPENDENT_INVALID_VERSION_EDITION=CWWKF1291E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nelze st\u00e1hnout nebo nainstalovat na {2}, {3}, {4}. Aktivum {1} v \u00falo\u017ei\u0161ti IBM WebSphere Liberty Repository plat\u00ed pouze pro n\u00e1sleduj\u00edc\u00ed verze a vyd\u00e1n\u00ed produktu: {5}. Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zopakujte instalaci {0} znovu.
 ERROR_DEPENDENT_INVALID_VERSION_EDITION.explanation=Funkci, dopl\u0148kov\u00fd modul nebo prozat\u00edmn\u00ed opravu nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9. Verze po\u017eadovan\u00e9ho aktiva sice byla nalezena, ale neplat\u00ed pro nainstalovanou verzi nebo vyd\u00e1n\u00ed produktu.
@@ -524,6 +526,10 @@ LOG_CANNOT_CLOSE_OBJECT=Do\u010dasn\u00e9 soubory nelze odstranit.
 LOG_CANNOT_CLOSE_OBJECT.explanation=Uk\u00e1zka vy\u017eaduje k odstran\u011bn\u00ed adres\u00e1\u0159e installTmp prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
 LOG_CANNOT_CLOSE_OBJECT.action=Odeberte adres\u00e1\u0159 installTmp ru\u010dn\u011b, nebo pou\u017eijte prost\u0159ed\u00ed Java 7 nebo vy\u0161\u0161\u00ed.
 
+LOG_VERIFIED_FEATURE=\u00dasp\u011b\u0161n\u011b ov\u011b\u0159ena funkce {0}.
+LOG_VERIFIED_FEATURE.explanation=Uveden\u00e1 funkce byla \u00fasp\u011b\u0161n\u011b ov\u011b\u0159ena.
+LOG_VERIFIED_FEATURE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 LOG_PASSWORD_NOT_ENCODED_PROXY=Heslo pro tento server proxy nen\u00ed zak\u00f3dovan\u00e9: {0}. Heslo je mo\u017en\u00e9 zak\u00f3dovat pomoc\u00ed p\u0159\u00edkazu securityUtility encode s volbou --encoding nastavenou na podporovan\u00fd typ k\u00f3dov\u00e1n\u00ed, tedy xor (v\u00fdchoz\u00ed), aes nebo hash. Nap\u0159\u00edklad: securityUtility encode --encoding=aes proxyPassword
 LOG_PENDING_UNINSTALLING_FEATURE=Funkce ur\u010den\u00e9 k odinstalaci:
 # Following messages for debug logging purpose
@@ -566,6 +572,8 @@ STATE_DOWNLOAD_FILES_OK=\nV\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b s
 STATE_CONTACTING_MAVEN_REPO=Z\u0159izov\u00e1n\u00ed p\u0159ipojen\u00ed k nakonfigurovan\u00e9mu \u00falo\u017ei\u0161ti Maven...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=P\u0159ipojen\u00ed ke zkonfigurovan\u00e9mu \u00falo\u017ei\u0161ti bylo \u00fasp\u011b\u0161n\u00e9.
 STATE_READING_ENV_PROPS_FILE=\u010cten\u00ed {0}/etc/featureUtility.env...
+STATE_STARTING_VERIFY=Ov\u011b\u0159en\u00ed podpis\u016f...
+STATE_VERIFYING=Ov\u011b\u0159en\u00ed {0}...
 PROGRESS_STEP=Krok {0} z {1}
 
 MSG_DOWNLOAD_SUCCESS=Funkce {0} \u00fasp\u011b\u0161n\u011b sta\u017eena.
@@ -602,6 +610,10 @@ MSG_VALIDATION_MISSING_HOST=Nen\u00ed ur\u010den n\u00e1zev hostitele serveru pr
 MSG_VALIDATION_INVALID_URL=N\u00e1sleduj\u00edc\u00ed adresa URL je neplatn\u00e1: {0}. Podporov\u00e1ny jsou pouze adresy HTTP, HTTPS a adresy URL soubor\u016f. Zkontrolujte, zda je adresa URL zad\u00e1na spr\u00e1vn\u011b.
 MSG_VALIDATION_UNSUPPORT_PROTOCOL=Pro n\u00e1sleduj\u00edc\u00ed \u00falo\u017ei\u0161t\u011b nen\u00ed podporov\u00e1n protokol URL: {0}. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. Zkontrolujte, zda je adresa URL zad\u00e1na spr\u00e1vn\u011b.
 MSG_VALIDATION_INVALID_HOST=N\u00e1sleduj\u00edc\u00ed hostitel serveru proxy je neplatn\u00fd: {0}. Zadejte platn\u00fd n\u00e1zev hostitele serveru proxy HTTP. P\u0159edpona http:// nen\u00ed nutn\u00e1.
+MSG_VALIDATION_EMPTY_PUBKEY_NAME=N\u00e1zev ve\u0159ejn\u00e9ho kl\u00ed\u010de nen\u00ed uveden. Bu\u010f zadejte n\u00e1zev pro ve\u0159ejn\u00fd kl\u00ed\u010d, nebo odeberte vlastnost, pokud se nepou\u017e\u00edv\u00e1.
+MSG_VALIDATION_INVALID_VERIFY_OPTION=Vlastnost feature.verify nepodporuje hodnotu {0}. Zadejte platnou hodnotu, kter\u00e1 je bu\u010f "enforce", "warn", "skip", nebo "all".
+MSG_VALIDATION_INVALID_KEYID={0} nen\u00ed v 64 bitov\u00e9m form\u00e1tu. Spus\u0165te p\u0159\u00edkaz GnuPG a najd\u011bte dlouh\u00fd form\u00e1t ID kl\u00ed\u010de. 
+MSG_VALIDATION_MISSING_KEYID=ID kl\u00ed\u010de nen\u00ed uvedeno. Uve\u010fte ID kl\u00ed\u010de pro adresu URL kl\u00ed\u010de, nebo ozna\u010dte vlastnosti adresy URL kl\u00ed\u010de jako koment\u00e1\u0159.
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Nebyly nalezeny \u017e\u00e1dn\u00e9 funkce.
@@ -618,6 +630,10 @@ VALIDATION_INVALID_HOST=Neplatn\u00fd n\u00e1zev hostitele
 VALIDATION_INVALID_URL=Nepodporovan\u00fd form\u00e1t adresy URL
 VALIDATION_DUPLICATE_KEY=Duplicitn\u00ed n\u00e1zev vlastnosti
 VALIDATION_UNSUPPORTED_PROTOCOL=Nepodporovan\u00fd protokol
+VALIDATION_MISSING_PUBKEY_NAME=Chyb\u00ed n\u00e1zev ve\u0159ejn\u00e9ho kl\u00ed\u010de
+VALIDATION_INVALID_key_URL=Nepodporovan\u00e1 adresa URL kl\u00ed\u010de
+VALIDATION_INVALID_KEYID=Neplatn\u00fd form\u00e1t ID kl\u00ed\u010de
+VALIDATION_MISSING_KEYID=Chyb\u011bj\u00edc\u00ed ID kl\u00ed\u010de
 
 # Following for tool
 TOOL_UNINSTALL_FEATURE_OK=CWWKF1350I: Minim\u00e1ln\u011b jedna funkce byla odinstalov\u00e1na \u00fasp\u011b\u0161n\u011b: {0}.
@@ -631,6 +647,7 @@ TOOL_PASSWORD_DOES_NOT_MATCH=Polo\u017eky si neodpov\u00eddaly.
 
 TOOL_FEATURES_INSTALLATION_COMPLETED=V\u0161echny funkce byly \u00fasp\u011b\u0161n\u011b nainstalov\u00e1ny.
 TOOL_INSTALLATION_COMPLETED=V\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b nainstalov\u00e1na.
+TOOL_FEATURES_VERIFICATION_COMPLETED=V\u0161echny funkce byly \u00fasp\u011b\u0161n\u011b ov\u011b\u0159eny.
 
 ERROR_TOOL_MISSING_PASSWORD_OPTION=CWWKF1351E: Heslo pro ID u\u017eivatele ur\u010den\u00e9 ve volb\u011b --user nebylo dod\u00e1no.
 ERROR_TOOL_MISSING_PASSWORD_OPTION.explanation=P\u0159i ur\u010dov\u00e1n\u00ed ID u\u017eivatele je nezbytn\u00e9 heslo.
@@ -764,11 +781,13 @@ ERROR_FAILED_TO_RESOLVE_ASSETS_BAD_CONNECTION.useraction=Ujist\u011bte se, \u017
 
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION=CWWKF1383E: Aktivum {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Minim\u00e1ln\u011b jedno z nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 nemus\u00ed b\u00fdt p\u0159\u00edstupn\u00e9. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b.
 ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.explanation=Aktivum nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
-ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. M\u016f\u017eete pou\u017e\u00edt akci viewSettings k ov\u011b\u0159en\u00ed nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 a potom k otestov\u00e1n\u00ed p\u0159ipojen\u00ed zvolit akci testConnection. \n\nNebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. \n\nPokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. \n\nDal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_DEPENDENT_BAD_CONNECTION.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. M\u016f\u017eete pou\u017e\u00edt akci viewSettings k ov\u011b\u0159en\u00ed nakonfigurovan\u00fdch \u00falo\u017ei\u0161\u0165 a potom k otestov\u00e1n\u00ed p\u0159ipojen\u00ed zvolit akci testConnection. \n\nNebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. \n\nPokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. \n\nDal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed\
+    \ IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
 
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT=CWWKF1384E: Aktiva {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v nakonfigurovan\u00fdch \u00falo\u017ei\u0161t\u00edch k dispozici. Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktivum i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b.
 ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.explanation=Aktiva nelze st\u00e1hnout nebo nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
-ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktiva i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT.useraction=Nakonfigurujte obslu\u017en\u00fd program installUtility tak, aby se p\u0159ipojil k \u00falo\u017ei\u0161ti IBM WebSphere Liberty a st\u00e1hnul nebo nainstaloval aktivum. Nebo st\u00e1hn\u011bte soubor wlp-featureRepo-<verze>.zip z webov\u00e9ho serveru IBM Fix Central a nakonfigurujte extrahovanou slo\u017eku jako adres\u00e1\u0159ov\u00e9 \u00falo\u017ei\u0161t\u011b. Pokud nem\u00e1te p\u0159\u00edstup k internetu, po\u017e\u00e1dejte sv\u00e9ho administr\u00e1tora, aby st\u00e1hnul chyb\u011bj\u00edc\u00ed aktiva i v\u0161echny z\u00e1vislosti a p\u0159idal je do nakonfigurovan\u00e9ho \u00falo\u017ei\u0161t\u011b. Dal\u0161\u00ed informace o instalaci aktiv viz dokumentace installUtility v Centru znalost\u00ed IBM. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webserv\
+    ers/appserv/was/support.
 
 ERROR_MISSING_MULTIPLE_DEPENDENT=CWWKF1385E: Aktiva {0} z\u00e1vis\u00ed na {1}, co\u017e nen\u00ed v \u00falo\u017ei\u0161ti IBM WebSphere Liberty k dispozici. Je-li po\u017eadovan\u00e9 aktivum funkc\u00ed, kterou jste ji\u017e st\u00e1hli, nainstalujte tuto chyb\u011bj\u00edc\u00ed funkci zad\u00e1n\u00edm um\u00edst\u011bn\u00ed souboru ESA t\u00e9to funkce do volby featureManager install --location a zkuste znovu nainstalovat {0}.
 ERROR_MISSING_MULTIPLE_DEPENDENT.explanation=Funkce, dopl\u0148kov\u00e9 moduly nebo prozat\u00edmn\u00ed opravy nelze nainstalovat, proto\u017ee z\u00e1vis\u00ed na aktivu, kter\u00e9 nen\u00ed dostupn\u00e9.
@@ -893,3 +912,44 @@ ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Form\u00e1t sou\u0159adnice BOM
 ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=P\u0159eform\u00e1tujte sou\u0159adnici BOM Maven funkc\u00ed tak, aby odpov\u00eddala form\u00e1tu groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Tato akce featureManager je stabilizov\u00e1na. M\u00edsto toho pou\u017eijte p\u0159\u00edkaz installUtility {0}. P\u0159\u00edkaz installUtility je doporu\u010den\u00fd pro instalaci a akce souvisej\u00edc\u00ed s \u00falo\u017ei\u0161t\u011bm.
+
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH=CWWKF1504E: Volba ov\u011b\u0159en\u00ed funkce "{0}" neodpov\u00edd\u00e1 "{1}" na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku.
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.explanation=Volba ov\u011b\u0159en\u00ed funkce v souboru vlastnost\u00ed nebo prom\u011bnn\u00e9 prost\u0159ed\u00ed mus\u00ed odpov\u00eddat volb\u011b na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku. 
+ERROR_VERIFY_OPTION_DOES_NOT_MATCH.useraction=Ujist\u011bte se, \u017ee si uveden\u00e9 volby ov\u011b\u0159en\u00ed funkce navz\u00e1jem odpov\u00eddaj\u00ed.
+
+ERROR_VERIFY_OPTION_NOT_VALID=CWWKF1505E: Volba ov\u011b\u0159en\u00ed {0} je neplatn\u00e1. Ujist\u011bte se, \u017ee je volba platn\u00e1.
+ERROR_VERIFY_OPTION_NOT_VALID.explanation=Zadan\u00e1 volba nen\u00ed platn\u00e1. 
+ERROR_VERIFY_OPTION_NOT_VALID.useraction=Uve\u010fte jednu z n\u00e1sleduj\u00edc\u00edch platn\u00fdch voleb: enforce, warn, skip, all.
+
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL=CWWKF1506E: Ve\u0159ejn\u00fd kl\u00ed\u010d nebylo mo\u017en\u00e9 st\u00e1hnout: {0}
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.explanation=Uveden\u00fd ve\u0159ejn\u00fd kl\u00ed\u010d nebyl sta\u017een z uveden\u00e9 adresy URL kl\u00ed\u010de. 
+ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL.useraction=Ov\u011b\u0159te ID kl\u00ed\u010de, adresu URL kl\u00ed\u010de a s\u00ed\u0165ov\u00fd p\u0159\u00edstup a pot\u00e9 zkuste akci zopakovat. Pokud p\u0159ipojen\u00ed st\u00e1le selh\u00e1v\u00e1, m\u016f\u017ee b\u00fdt adresa URL kl\u00ed\u010de do\u010dasn\u011b nedostupn\u00e1.
+
+ERROR_KEYID_NOT_PROVIDED=CWWKF1508E: ID ve\u0159ejn\u00e9ho kl\u00ed\u010de pro adresu URL kl\u00ed\u010de {0} nebylo zad\u00e1no. 
+ERROR_KEYID_NOT_PROVIDED.explanation=ID ve\u0159ejn\u00e9ho kl\u00ed\u010de pro uvedenou adresu URL kl\u00ed\u010de nebylo zad\u00e1no. 64bitov\u00e9 ID kl\u00ed\u010de je povinn\u00e9 pro sta\u017een\u00ed a ov\u011b\u0159en\u00ed pravosti kl\u00ed\u010de. 
+ERROR_KEYID_NOT_PROVIDED.useraction=Zadejte ID kl\u00ed\u010de v 64bitov\u00e9m form\u00e1tu. Chcete-li zjistit ID kl\u00ed\u010de, spus\u0165te p\u0159\u00edkaz GnuPG. 
+
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL=CWWKF1509E: Protokol adresy URL pro n\u00e1sleduj\u00edc\u00ed adresu URL kl\u00ed\u010de nen\u00ed podporov\u00e1n: {0}. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. Zkontrolujte, zda je adresa URL\nzad\u00e1na spr\u00e1vn\u011b.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.explanation=Protokol adresy URL pro uvedenou adresu URL kl\u00ed\u010de nen\u00ed podporov\u00e1n.
+ERROR_KEYURL_UNSUPPORTED_PROTOCOL.useraction=Zkontrolujte, zda je adresa URL\nzad\u00e1na spr\u00e1vn\u011b. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. 
+
+ERROR_REVOKED_PUBLIC_KEY=CWWKF1510E: ID ve\u0159ejn\u00e9ho kl\u00ed\u010de {0} je odvol\u00e1no. 
+ERROR_REVOKED_PUBLIC_KEY.explanation=Ve\u0159ejn\u00fd kl\u00ed\u010d je zru\u0161en\u00fd. 
+ERROR_REVOKED_PUBLIC_KEY.useraction=Zadejte nov\u00e9 ID a podpisy ve\u0159ejn\u00e9ho kl\u00ed\u010de. Je-li odvolan\u00fdm kl\u00ed\u010dem ve\u0159ejn\u00fd kl\u00ed\u010d Liberty, pou\u017eijte prozat\u00edmn\u00ed opravu, nebo zadejte nov\u00e9 ID ve\u0159ejn\u00e9ho kl\u00ed\u010de, kter\u00e9 je k dispozici na webu OpenLiberty.io.
+
+ERROR_EXPIRED_PUBLIC_KEY=CWWKF1511E: Platnost ID ve\u0159ejn\u00e9ho kl\u00ed\u010de {0} vypr\u0161ela {1}.
+ERROR_EXPIRED_PUBLIC_KEY.explanation=Platnost ve\u0159ejn\u00e9ho kl\u00ed\u010de vypr\u0161ela.
+ERROR_EXPIRED_PUBLIC_KEY.useraction=Spus\u0165te p\u0159\u00edkaz GnuPG a prodlu\u017ete datum vypr\u0161en\u00ed platnosti ve\u0159ejn\u00e9ho kl\u00ed\u010de a zopakujte pokus. 
+
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE=CWWKF1512E: Nelze ov\u011b\u0159it n\u00e1sleduj\u00edc\u00ed podpisy funkc\u00ed: {0}.  
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.explanation=Podpisy funkc\u00ed nebyly ov\u011b\u0159eny.
+ERROR_FAILED_TO_VERIFY_FEATURE_SIGNATURE.useraction=Pou\u017eijte volbu --verbose a zobrazte trasov\u00e1n\u00ed lad\u011bn\u00ed.
+
+ERROR_KEYURL_NOT_PROVIDED=CWWKF1513E: Adresa URL ve\u0159ejn\u00e9ho kl\u00ed\u010de pro ID kl\u00ed\u010de {0} nebyla zad\u00e1na. 
+ERROR_KEYURL_NOT_PROVIDED.explanation= Adresa URL ve\u0159ejn\u00e9ho kl\u00ed\u010de pro ID kl\u00ed\u010de {0} nebyla zad\u00e1na. Adresa URL ve\u0159ejn\u00e9ho kl\u00ed\u010de je povinn\u00e9 pole pro sta\u017een\u00ed ve\u0159ejn\u00e9ho kl\u00ed\u010de. 
+ERROR_KEYURL_NOT_PROVIDED.useraction=Zadejte adresu URL ve\u0159ejn\u00e9ho kl\u00ed\u010de. Podporovan\u00e9 protokoly jsou HTTP, HTTPS a soubor. 
+
+ERROR_INAUTHENTIC_PUBLIC_KEY=CWWKF1514E: ID ve\u0159ejn\u00e9ho kl\u00ed\u010de {0} se neshoduje se zadan\u00fdm ID kl\u00ed\u010de {1}. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.explanation=Je mo\u017en\u00e9, \u017ee se ve\u0159ejn\u00fd kl\u00ed\u010d zm\u011bnil. 
+ERROR_INAUTHENTIC_PUBLIC_KEY.useraction=Je-li ve\u0159ejn\u00fd kl\u00ed\u010d lok\u00e1ln\u00ed soubor, ujist\u011bte se, \u017ee jste zadali spr\u00e1vn\u00fd soubor.
+

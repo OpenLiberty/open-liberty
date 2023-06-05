@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -87,7 +87,7 @@ public class RESTclientTest {
         HttpUtils.findStringInUrl(server, "webappWAR/app/client/early/properties", "{\'property\':\'value\'}");
         server.stopServer();
 
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
 
         ServerConfiguration config = server.getServerConfiguration();
@@ -112,12 +112,16 @@ public class RESTclientTest {
     @AfterClass
     public static void stopServer() throws Exception {
 
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("testClient").setValue("http://localhost:" + server.getHttpDefaultPort() + "/webappWAR/endpoint");
-        server.updateServerConfiguration(config);
+        try {
+            ServerConfiguration config = server.getServerConfiguration();
+            config.getVariables().getById("testClient").setValue("http://localhost:" + server.getHttpDefaultPort() + "/webappWAR/endpoint");
+            server.updateServerConfiguration(config);
 
-        server.stopServer();
-        server.setCheckpoint((CheckpointInfo) null);
+            server.stopServer();
+        } finally {
+            // must always make sure to null out checkpoint even if stopServer fails
+            server.setCheckpoint((CheckpointInfo) null);
+        }
     }
 
 }

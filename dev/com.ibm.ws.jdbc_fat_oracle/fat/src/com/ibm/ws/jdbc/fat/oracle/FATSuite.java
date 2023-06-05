@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,7 @@ import oracle.jdbc.pool.OracleDataSource;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                OracleCustomTrace.class,
                 OracleTest.class,
                 OracleTraceTest.class,
                 OracleUCPTest.class,
@@ -40,8 +41,7 @@ import oracle.jdbc.pool.OracleDataSource;
 })
 public class FATSuite extends TestContainerSuite {
 
-    //TODO update this image to gvenzl/oracle-xe if this issue is ever resolved: https://github.com/gvenzl/oci-oracle-xe/issues/36
-    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.slim").asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-xe:21.3.0-slim-faststart");
     public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
                     .usingSid()
                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))

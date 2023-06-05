@@ -18,7 +18,6 @@ IBM-ShortName: batch-2.1
 Subsystem-Name: Jakarta Batch 2.1
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.1, \
-  io.openliberty.jakarta.xmlBinding-4.0, \
   io.openliberty.jakarta.annotation-2.1, \
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
@@ -33,6 +32,6 @@ Subsystem-Name: Jakarta Batch 2.1
   com.ibm.websphere.security, \
   com.ibm.jbatch.container.jakarta.ee10, \
   io.openliberty.jakarta.batch.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.batch:jakarta.batch-api:2.1.1"
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

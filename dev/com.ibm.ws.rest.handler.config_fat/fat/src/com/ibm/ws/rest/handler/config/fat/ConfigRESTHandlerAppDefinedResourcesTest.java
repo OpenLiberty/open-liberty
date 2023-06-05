@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,6 +43,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -445,6 +446,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
      * output to test a connection.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testAppDefinedDataSourceInJavaGlobalAndTestConnection() throws Exception {
         JsonObject ds = new HttpsRequest(server, "/ibm/api/config/dataSource/dataSource%5Bjava:global%2Fenv%2Fjdbc%2Fds4%5D")
                         .run(JsonObject.class);
@@ -1175,6 +1177,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                    "jakarta.resource.ResourceException" // expected: Value 1:05:30 is not supported for agedTimeout
     })
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testValidateAppDefinedDataSources() throws Exception {
         JsonArray array = new HttpsRequest(server, "/ibm/api/validation/dataSource?auth=container&authAlias=derbyAuth3")
                         .run(JsonArray.class);

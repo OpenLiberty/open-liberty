@@ -8,6 +8,7 @@ IBM-ShortName: mpTelemetry-1.0
 Subsystem-Name: MicroProfile Telemetry 1.0
 IBM-API-Package: \
   io.opentelemetry.api.baggage;type="third-party",\
+  io.opentelemetry.api.baggage.propagation;type="third-party",\
   io.opentelemetry.api;type="third-party",\
   io.opentelemetry.api.trace;type="third-party",\
   io.opentelemetry.api.common;type="third-party",\
@@ -30,8 +31,7 @@ IBM-API-Package: \
   io.openliberty.mpConfig-3.0, \
   io.openliberty.cdi-4.0, \
   io.openliberty.mpCompatible-6.0,\
-  com.ibm.websphere.appserver.injection-2.0, \
-  io.openliberty.org.eclipse.microprofile.telemetry-1.0
+  io.openliberty.org.eclipse.microprofile.rest.client-3.0
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
   io.openliberty.com.squareup.okio-jvm,\
@@ -40,8 +40,9 @@ IBM-API-Package: \
   io.openliberty.io.zipkin.zipkin2,\
   com.ibm.ws.cdi.interfaces.jakarta, \
   io.openliberty.microprofile.telemetry.1.0.internal,\
-  io.openliberty.io.opentelemetry.internal
-kind=beta
+  io.openliberty.io.opentelemetry
+-jars=io.openliberty.mpTelemetry.1.0.thirdparty; location:="dev/api/third-party/,lib/"
+kind=ga
 edition=core
 WLP-Activation-Type: parallel 
 WLP-InstantOn-Enabled: true

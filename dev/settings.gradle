@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import org.apache.tools.ant.DirectoryScanner
+
 pluginManagement {
   /**
    * Load properties before initializing in order to use credentials to configure repositories.
@@ -65,7 +67,7 @@ pluginManagement {
           ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
                   +'name = RemoteIBMSource'
                   +';local=~/.ibmdhe/repository'
-                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';releaseUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
                   +';index=${build}/oss_ibm_source_dependencies.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
@@ -97,7 +99,7 @@ pluginManagement {
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
                   +';name = RemoteIBM'
                   +';local=~/.ibmdhe/repository'
-                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';releaseUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
                   +';index=${build}/oss_ibm.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
@@ -186,6 +188,9 @@ if (!JavaVersion.current().isJava11Compatible()) {
         throw new GradleException('Current Java version is not 11 or higher.')
 
 }
+
+//DirectoryScanner.removeDefaultExclude("**/.gitignore")
+//DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 apply from: 'wlp-gradle/propertiesSettings.gradle'
 apply from: 'wlp-gradle/bndSettings.gradle'

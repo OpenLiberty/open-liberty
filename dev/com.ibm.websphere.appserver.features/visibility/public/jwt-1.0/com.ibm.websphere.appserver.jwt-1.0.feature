@@ -7,9 +7,7 @@ IBM-API-Package: com.ibm.websphere.security.jwt; type="ibm-api"
 Subsystem-Name: JSON Web Token 1.0
 -features=io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
   io.openliberty.webBundleSecurity.internal-1.0, \
-  io.openliberty.webBundle.internal-1.0, \
-  io.openliberty.jwt1.0.internal.ee-6.0; ibm.tolerates:="9.0", \
-  com.ibm.websphere.appserver.internal.slf4j-1.7
+  io.openliberty.jwt1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
   com.ibm.ws.org.apache.httpcomponents, \
   io.openliberty.org.apache.commons.logging, \

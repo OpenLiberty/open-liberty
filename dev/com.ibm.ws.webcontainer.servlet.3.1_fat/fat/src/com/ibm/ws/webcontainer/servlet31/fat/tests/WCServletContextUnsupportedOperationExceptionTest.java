@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
@@ -25,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.webcontainer.servlet31.fat.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -45,7 +43,7 @@ public class WCServletContextUnsupportedOperationExceptionTest {
     private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_JAR_NAME = "TestProgrammaticListenerAddition";
     private static final String TEST_PROGRAMATIC_LISTENER_ADDITION_APP_NAME = "TestProgrammaticListenerAddition";
 
-    @Server("servlet31_ServletContext_UnsupportedOperationExceptionr")
+    @Server("servlet31_ServletContext_UnsupportedOperationException")
     public static LibertyServer server;
 
     @BeforeClass
@@ -61,6 +59,10 @@ public class WCServletContextUnsupportedOperationExceptionTest {
         ShrinkHelper.exportDropinAppToServer(server, TestProgrammaticListenerApp);
 
         server.startServer(WCServletContextUnsupportedOperationExceptionTest.class.getSimpleName() + ".log");
+
+        if (FATSuite.isWindows) {
+            FATSuite.setDynamicTrace(server, "*=info=enabled");
+        }
     }
 
     @AfterClass
@@ -130,7 +132,6 @@ public class WCServletContextUnsupportedOperationExceptionTest {
     @Test
     @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES })
     public void test_ProgrammaticListenerAddition_No_UnsupportedOperationException() throws Exception {
-
         String logMessage = server
                         .waitForStringInLog("UnsupportedOperationException was not thrown.");
         Assert.assertNotNull("An UnsupportedOperationException was thrown and should not have been.", logMessage);

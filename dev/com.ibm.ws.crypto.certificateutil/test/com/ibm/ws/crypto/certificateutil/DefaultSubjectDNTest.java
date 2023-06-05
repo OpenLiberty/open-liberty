@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,7 @@ public class DefaultSubjectDNTest {
     public void DefaultSubjectDN() {
         DefaultSubjectDN dn = new DefaultSubjectDN();
         assertTrue("Default DN should not have expected pattern, was " + dn.getSubjectDN(),
-                   dn.getSubjectDN().matches("CN=.*,O=ibm,C=us"));
+                   dn.getSubjectDN().matches("CN=.*"));
         assertFalse("Default DN should not have the server name",
                     dn.getSubjectDN().contains("OU="));
     }
@@ -42,7 +42,7 @@ public class DefaultSubjectDNTest {
     public void DefaultSubjectDNStringString() {
         DefaultSubjectDN dn = new DefaultSubjectDN("myhost", "myserver");
         assertEquals("Subject DN should contain host and server",
-                     "CN=myhost,OU=myserver,O=ibm,C=us", dn.getSubjectDN());
+                     "CN=myhost,OU=myserver", dn.getSubjectDN());
     }
 
 }
