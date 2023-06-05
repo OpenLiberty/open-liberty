@@ -8,7 +8,7 @@ Subsystem-Version: 2.0
 Subsystem-Name: Automatic Certificate Management Environment (ACME) Support 2.0
 -features=com.ibm.websphere.appserver.certificateCreator-2.0, \
   com.ibm.websphere.appserver.restHandler-1.0, \
-  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="3.1,5.0,6.0", \
+  com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="3.1,5.0,6.0,6.1", \
   io.openliberty.acmeCA2.0.internal.ee-7.0; ibm.tolerates:="9.0", \
   com.ibm.websphere.appserver.transportSecurity-1.0
 kind=ga

@@ -10,7 +10,7 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.config; type="spec", \
  jakarta.json.bind.serializer; type="spec", \
  jakarta.json.bind.spi; type="spec"
--features=com.ibm.websphere.appserver.eeCompatible-10.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.jsonbInternal-3.0
 -bundles=com.ibm.ws.jsonb.service
 kind=ga

@@ -7,7 +7,7 @@ IBM-App-ForceRestart: uninstall, \
 IBM-Process-Types: client, \
  server
 Subsystem-Name: Jakarta XML Bindings 4.0
--features=com.ibm.websphere.appserver.eeCompatible-10.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jakarta.activation-2.1
 -bundles=\

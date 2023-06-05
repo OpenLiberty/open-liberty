@@ -18,7 +18,7 @@ IBM-Process-Types: client, \
 Subsystem-Name: Jakarta XML Binding 4.0
 -features=io.openliberty.xmlBinding.internal-4.0, \
   io.openliberty.activation.internal-2.1, \
-  com.ibm.websphere.appserver.eeCompatible-10.0
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0"
 # These jars are used for the xmlBinding scripts below.
 -jars=\
  io.openliberty.xmlBinding.3.0.internal.tools, \

@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.batchManagement1.0.internal.ee-10.0
 singleton=true
 -features=com.ibm.websphere.appserver.servlet-6.0, \
+  io.openliberty.persistence-3.1, \
   io.openliberty.batch-2.1, \
   com.ibm.websphere.appserver.transaction-2.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \

@@ -5,7 +5,7 @@ singleton=true
 visibility = private
 
 -features=\
-  io.openliberty.servlet.internal-6.0
+  io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1"
 
 -bundles= io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \
           io.openliberty.security.authentication.internal.filter, \

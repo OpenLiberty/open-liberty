@@ -13,7 +13,7 @@ IBM-API-Package: \
   jakarta.mail.util; type="spec", \
   jakarta.mail.search; type="spec", \
   jakarta.mail.event; type="spec"
--features=com.ibm.websphere.appserver.eeCompatible-10.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.jakarta.mail-2.1, \
   io.openliberty.activation.internal-2.1, \
   com.ibm.websphere.appserver.injection-2.0

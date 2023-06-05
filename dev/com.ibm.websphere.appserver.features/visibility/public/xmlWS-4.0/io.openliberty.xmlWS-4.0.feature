@@ -9,8 +9,8 @@ Subsystem-Name: Jakarta XML Web Services 4.0
 IBM-API-Package: \
  org.apache.cxf.binding.soap.wsdl.extensions;type="internal", \
  org.apache.cxf.databinding;type="internal"
--features=com.ibm.websphere.appserver.eeCompatible-10.0, \
-  com.ibm.websphere.appserver.servlet-6.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
+  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1", \
   io.openliberty.xmlws.common-4.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \

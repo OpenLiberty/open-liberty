@@ -9,10 +9,9 @@ IBM-API-Package: \
   jakarta.nosql.document; type="spec",\
   jakarta.nosql.keyvalue; type="spec",\
 Subsystem-Name: Jakarta NoSQL 1.0
-#TODO com.ibm.websphere.appserver.eeCompatible-11.0
 #TODO io.openliberty.jakartaeePlatform-11.0
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-10.0,\
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.jakarta.nosql-1.0
 -bundles=\
   io.openliberty.org.eclipse.jnosql.1.0,\
