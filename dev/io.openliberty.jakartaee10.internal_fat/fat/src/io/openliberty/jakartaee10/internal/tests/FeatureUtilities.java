@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
@@ -47,6 +48,7 @@ public class FeatureUtilities {
         features.addAll(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         features.addAll(JakartaEE9Action.EE9_FEATURE_SET);
         features.addAll(JakartaEE10Action.EE10_FEATURE_SET);
+        features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
 
         // EE-related features which aren't in one of the feature sets
         features.add("appSecurity-1.0");

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -35,11 +32,11 @@ import componenttest.topology.utils.FileUtils;
  * Test repeat action that will do 2 things:
  * <ol>
  * <li>Invoke the Jakarta transformer on all war/ear files under the autoFVT/publish/ folder</li>
- * <li>Update all server.xml configs under the autoFVT/publish/ folder to use EE 10 features</li>
+ * <li>Update all server.xml configs under the autoFVT/publish/ folder to use EE 11 features</li>
  * </ol>
  */
-public class JakartaEE10Action extends FeatureReplacementAction {
-    public static final String ID = "EE10_FEATURES";
+public class JakartaEE11Action extends FeatureReplacementAction {
+    public static final String ID = "EE11_FEATURES";
 
     private static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap();
@@ -65,29 +62,27 @@ public class JakartaEE10Action extends FeatureReplacementAction {
         DEFAULT_TRANSFORMATION_RULES.put("-td", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
         DEFAULT_TRANSFORMATION_RULES.put("-tf", JakartaEE9Action.TRANSFORMER_RULES_ROOT + "jakarta-text.properties"); // text updates
     }
-    // TODO This will eventually be a list of Jakarta EE 10 features.
-    // TODO Replace EE 9 features in the list below with EE 10 features when they are added.
-    //
+
     // FAT tests use a mix of enabled features and not yet enabled
     // features, which is necessary for the FATs to run.
 
-    static final String[] EE10_FEATURES_ARRAY = {
+    static final String[] EE11_FEATURES_ARRAY = {
                                                   "appClientSupport-2.0",
-                                                  "jakartaee-10.0",
-                                                  "webProfile-10.0",
-                                                  "jakartaeeClient-10.0",
+                                                  "jakartaee-11.0",
+                                                  "webProfile-11.0",
+                                                  "jakartaeeClient-11.0",
                                                   "componenttest-2.0", // replaces "componenttest-1.0"
                                                   "txtest-2.0",
-                                                  "appAuthentication-3.0",
-                                                  "appAuthorization-2.1",
-                                                  "appSecurity-5.0",
+                                                  "appAuthentication-3.1",
+                                                  "appAuthorization-3.0",
+                                                  "appSecurity-6.0",
                                                   "batch-2.1",
                                                   "beanValidation-3.0",
-                                                  "cdi-4.0",
-                                                  "concurrent-3.0",
+                                                  "cdi-4.1",
+                                                  "concurrent-3.1",
                                                   "connectors-2.1",
-                                                  "data-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11
-                                                  "expressionLanguage-5.0",
+                                                  "data-1.0",
+                                                  "expressionLanguage-6.0",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",
                                                   "enterpriseBeansLite-4.0",
@@ -95,110 +90,110 @@ public class JakartaEE10Action extends FeatureReplacementAction {
                                                   "enterpriseBeansRemote-4.0",
                                                   "enterpriseBeansTest-2.0",
                                                   "mail-2.1",
-                                                  "persistence-3.1",
-                                                  "persistenceContainer-3.1",
+                                                  "persistence-3.2",
+                                                  "persistenceContainer-3.2",
                                                   "jsonp-2.1",
                                                   "jsonb-3.0",
                                                   "jsonpContainer-2.1",
                                                   "jsonbContainer-3.0",
-                                                  "faces-4.0",
-                                                  "facesContainer-4.0",
-                                                  "pages-3.1",
+                                                  "faces-5.0",
+                                                  "facesContainer-5.0",
+                                                  "pages-4.0",
                                                   "managedBeans-2.0",
                                                   "mdb-4.0",
                                                   "messaging-3.1",
                                                   "messagingClient-3.0",
                                                   "messagingServer-3.0",
                                                   "messagingSecurity-3.0",
-                                                  "nosql-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11 or whichever release Jakarta NoSQL goes into
-                                                  "restfulWS-3.1",
-                                                  "restfulWSClient-3.1",
-                                                  "servlet-6.0",
-                                                  "websocket-2.1",
+                                                  "nosql-1.0",
+                                                  "restfulWS-4.0",
+                                                  "restfulWSClient-4.0",
+                                                  "servlet-6.1",
+                                                  "websocket-2.2",
                                                   "xmlBinding-4.0",
                                                   "xmlWS-4.0"
     };
 
-    public static final Set<String> EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
+    public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
 
-    public JakartaEE10Action() {
-        // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super(EE10_FEATURE_SET);
+    public JakartaEE11Action() {
+        // Remove the EE7, EE8, EE9 and EE10 features; replace them with the EE11 features
+        super(EE11_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
-        removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(11);
+        withMinJavaLevel(17);
         withID(ID);
     }
 
     @Override
     public String toString() {
-        return "JakartaEE10 FAT repeat action";
+        return "JakartaEE11 FAT repeat action";
     }
 
     //
 
     @Override
-    public JakartaEE10Action addFeature(String addFeature) {
-        return (JakartaEE10Action) super.addFeature(addFeature);
+    public JakartaEE11Action addFeature(String addFeature) {
+        return (JakartaEE11Action) super.addFeature(addFeature);
     }
 
     @Override
-    public JakartaEE10Action conditionalFullFATOnly(Predicate<FeatureReplacementAction> conditional) {
-        return (JakartaEE10Action) super.conditionalFullFATOnly(conditional);
+    public JakartaEE11Action conditionalFullFATOnly(Predicate<FeatureReplacementAction> conditional) {
+        return (JakartaEE11Action) super.conditionalFullFATOnly(conditional);
     }
 
     @Override
-    public JakartaEE10Action fullFATOnly() {
-        return (JakartaEE10Action) super.fullFATOnly();
+    public JakartaEE11Action fullFATOnly() {
+        return (JakartaEE11Action) super.fullFATOnly();
     }
 
     @Override
-    public JakartaEE10Action liteFATOnly() {
-        return (JakartaEE10Action) super.liteFATOnly();
+    public JakartaEE11Action liteFATOnly() {
+        return (JakartaEE11Action) super.liteFATOnly();
     }
 
     @Override
-    public JakartaEE10Action withTestMode(TestMode mode) {
-        return (JakartaEE10Action) super.withTestMode(mode);
+    public JakartaEE11Action withTestMode(TestMode mode) {
+        return (JakartaEE11Action) super.withTestMode(mode);
     }
 
     @Override
-    public JakartaEE10Action addFeatures(Set<String> addFeatures) {
-        return (JakartaEE10Action) super.addFeatures(addFeatures);
+    public JakartaEE11Action addFeatures(Set<String> addFeatures) {
+        return (JakartaEE11Action) super.addFeatures(addFeatures);
     }
 
     @Override
-    public JakartaEE10Action removeFeature(String removeFeature) {
-        return (JakartaEE10Action) super.removeFeature(removeFeature);
+    public JakartaEE11Action removeFeature(String removeFeature) {
+        return (JakartaEE11Action) super.removeFeature(removeFeature);
     }
 
     @Override
-    public JakartaEE10Action removeFeatures(Set<String> removeFeatures) {
-        return (JakartaEE10Action) super.removeFeatures(removeFeatures);
+    public JakartaEE11Action removeFeatures(Set<String> removeFeatures) {
+        return (JakartaEE11Action) super.removeFeatures(removeFeatures);
     }
 
     @Override
-    public JakartaEE10Action withMinJavaLevel(int javaLevel) {
-        return (JakartaEE10Action) super.withMinJavaLevel(javaLevel);
+    public JakartaEE11Action withMinJavaLevel(int javaLevel) {
+        return (JakartaEE11Action) super.withMinJavaLevel(javaLevel);
     }
 
     @Override
-    public JakartaEE10Action withID(String id) {
-        return (JakartaEE10Action) super.withID(id);
+    public JakartaEE11Action withID(String id) {
+        return (JakartaEE11Action) super.withID(id);
     }
 
     @Override
-    public JakartaEE10Action forServers(String... serverNames) {
-        return (JakartaEE10Action) super.forServers(serverNames);
+    public JakartaEE11Action forServers(String... serverNames) {
+        return (JakartaEE11Action) super.forServers(serverNames);
     }
 
     @Override
-    public JakartaEE10Action forClients(String... clientNames) {
-        return (JakartaEE10Action) super.forClients(clientNames);
+    public JakartaEE11Action forClients(String... clientNames) {
+        return (JakartaEE11Action) super.forClients(clientNames);
     }
 
     /**
@@ -208,7 +203,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalPackageTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalPackageTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tr", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -220,7 +215,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalSelectionTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalSelectionTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-ts", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -232,7 +227,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalVersionTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalVersionTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tv", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -244,7 +239,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalBundleTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalBundleTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tb", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -256,7 +251,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalStringTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalStringTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-td", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -268,7 +263,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * @param fileName The file name in the publish/rules directory to use for appending
      *
      */
-    public JakartaEE10Action withLocalXMLTransformAppend(String fileName) {
+    public JakartaEE11Action withLocalXMLTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tf", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -278,7 +273,7 @@ public class JakartaEE10Action extends FeatureReplacementAction {
      * inside of other jars or zips inside of other zips. These are not the usual setup of
      * of bundles and applications, so it is only enabled by an argument to the transformer.
      */
-    public JakartaEE10Action withWiden() {
+    public JakartaEE11Action withWiden() {
         WIDEN = true;
         return this;
     }
