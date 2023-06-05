@@ -28,36 +28,37 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class LPSTest extends DBTestBase {
 
-	private static LibertyServer server;
+	@Server("MigrationServer1")
+	public static LibertyServer server;
+
+	@Server("MigrationServer2")
+	public static LibertyServer server2;
+
+	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2"};
+
 	private static String BASE_URL;
-	private static LibertyServer server2;
 	private static String BASE_URL2;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		server = LibertyServerFactory
-				.getLibertyServer("MigrationServer1");
-		BASE_URL = "http://" + server.getHostname() + ":"
-				+ server.getHttpDefaultPort();
-		server2 = LibertyServerFactory
-				.getLibertyServer("MigrationServer2");
-		server2.setHttpDefaultPort(9992);
+
+		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
+		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
@@ -93,7 +94,6 @@ public class LPSTest extends DBTestBase {
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "java.lang.IllegalStateException" })
 	public void testWSTXLPS103FVT() {
 		callServlet("WSTXLPS103FVT");
@@ -110,7 +110,6 @@ public class LPSTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
 	public void testWSTXLPS106FVT() {
 		callServlet("WSTXLPS106FVT");
 	}
@@ -126,7 +125,6 @@ public class LPSTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
 	public void testWSTXLPS109FVT() {
 		callServlet("WSTXLPS109FVT");
 	}
@@ -143,7 +141,6 @@ public class LPSTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS112FVT() {
 		callServlet("WSTXLPS112FVT");
@@ -162,7 +159,6 @@ public class LPSTest extends DBTestBase {
 	}
 	
 	@Test
-  @Mode(TestMode.LITE)
 	public void testWSTXLPS201FVT() {
 		callServlet("WSTXLPS201FVT");
 	}
@@ -183,7 +179,6 @@ public class LPSTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSTXLPS204FVT() {
 		callServlet("WSTXLPS204FVT");
@@ -203,7 +198,6 @@ public class LPSTest extends DBTestBase {
 	}
 
 	@Test
-  @Mode(TestMode.LITE)
 	public void testWSTXLPS207FVT() {
 		callServlet("WSTXLPS207FVT");
 	}

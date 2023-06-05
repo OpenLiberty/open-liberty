@@ -33,12 +33,9 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.FULL)
 @AllowedFFDC(value = { "javax.transaction.SystemException" })
 @RunWith(FATRunner.class)
 public class ComplexTest extends DBTestBase {
@@ -60,9 +57,9 @@ public class ComplexTest extends DBTestBase {
 	public static void beforeTests() throws Exception {
 
 		BASE_URL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort();
-		server2.setHttpDefaultPort(9992);
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
-		server3.setHttpDefaultPort(9993);
+		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
 		BASE_URL3 = "http://" + server3.getHostname() + ":" + server3.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server1);
@@ -100,7 +97,6 @@ public class ComplexTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE066FVT() {
 		callServlet("WSATRE066FVT");
@@ -119,7 +115,6 @@ public class ComplexTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE069FVT() {
 		callServlet("WSATRE069FVT");
 	}
@@ -136,7 +131,6 @@ public class ComplexTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE072FVT() {
 		callServlet("WSATRE072FVT");

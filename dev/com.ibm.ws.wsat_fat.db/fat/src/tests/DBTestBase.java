@@ -154,6 +154,7 @@ public abstract class DBTestBase extends WSATTest {
 
 	public String executeWSAT(String url) throws Exception {
 		String method = "executeWSAT";
+		Log.info(getClass(), method, "Execute WS-AT test from " + url);
 		HttpURLConnection con = getHttpConnection(new URL(url),
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 		BufferedReader br = HttpUtils.getConnectionStream(con);

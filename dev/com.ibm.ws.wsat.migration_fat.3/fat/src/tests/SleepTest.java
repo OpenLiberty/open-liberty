@@ -35,12 +35,9 @@ import com.ibm.ws.wsat.fat.util.DBTestBase;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class SleepTest extends DBTestBase {
 
@@ -59,10 +56,8 @@ public class SleepTest extends DBTestBase {
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
-		BASE_URL = "http://" + server.getHostname() + ":"
-				+ server.getHttpDefaultPort();
-
-		server2.setHttpDefaultPort(9992);
+		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
@@ -95,7 +90,6 @@ public class SleepTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
 	public void testWSATRE094FVT() {
 		callServlet("WSATRE094FVT");
@@ -113,7 +107,6 @@ public class SleepTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE097FVT() {
 		callServlet("WSATRE097FVT");
 	}
@@ -130,7 +123,6 @@ public class SleepTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.SystemException" })
 	public void testWSATRE100FVT() {
 		callServlet("WSATRE100FVT");
@@ -148,7 +140,6 @@ public class SleepTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE103FVT() {
 		callServlet("WSATRE103FVT");
 	}

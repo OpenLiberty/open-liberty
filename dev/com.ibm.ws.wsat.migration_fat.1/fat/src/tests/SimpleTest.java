@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
@@ -38,7 +39,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class SimpleTest extends DBTestBase {
 
@@ -48,14 +48,17 @@ public class SimpleTest extends DBTestBase {
 	@Server("MigrationServer2")
 	public static LibertyServer server2;
 
+	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2"};
+
 	private static String BASE_URL;
 	private static String BASE_URL2;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
+		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
-		server2.setHttpDefaultPort(9992);
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
@@ -99,7 +102,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE003FVT() {
 		callServlet("WSATRE003FVT");
 	}
@@ -116,7 +118,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE006FVT() {
 		callServlet("WSATRE006FVT");
 	}
@@ -133,7 +134,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE009FVT() {
 		callServlet("WSATRE009FVT");
 	}
@@ -166,7 +166,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE015FVT() {
 		callServlet("WSATRE015FVT");
 	}
@@ -183,7 +182,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
 	public void testWSATRE018FVT() {
 		callServlet("WSATRE018FVT");
@@ -200,7 +198,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE021FVT() {
 		callServlet("WSATRE021FVT");
 	}
@@ -216,7 +213,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE024FVT() {
 		callServlet("WSATRE024FVT");
 	}
@@ -234,7 +230,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE027FVT() {
 		callServlet("WSATRE027VT");
 	}
@@ -250,7 +245,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE030FVT() {
 		callServlet("WSATRE030FVT");
 	}
@@ -267,7 +261,6 @@ public class SimpleTest extends DBTestBase {
 
 	@Test
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	@Mode(TestMode.LITE)
 	public void testWSATRE033FVT() {
 		callServlet("WSATRE033FVT");
 	}
@@ -284,7 +277,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE036FVT() {
 		callServlet("WSATRE036FVT");
 	}
@@ -300,7 +292,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE039FVT() {
 		callServlet("WSATRE039FVT");
 	}
@@ -317,7 +308,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE042FVT() {
 		callServlet("WSATRE042FVT");
@@ -334,7 +324,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE045FVT() {
 		callServlet("WSATRE045FVT");
 	}
@@ -350,7 +339,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE048FVT() {
 		callServlet("WSATRE048FVT");
@@ -368,7 +356,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE051FVT() {
 		callServlet("WSATRE051FVT");
 	}
@@ -385,7 +372,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE054FVT() {
 		callServlet("WSATRE054FVT");
 	}
@@ -403,7 +389,6 @@ public class SimpleTest extends DBTestBase {
 
 	@Test
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	@Mode(TestMode.LITE)
 	public void testWSATRE057FVT() {
 		callServlet("WSATRE057VT");
 	}
@@ -420,7 +405,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	public void testWSATRE060FVT() {
 		callServlet("WSATRE060FVT");
 	}
@@ -438,7 +422,6 @@ public class SimpleTest extends DBTestBase {
 	}
 
 	@Test
-	@Mode(TestMode.LITE)
 	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
 	public void testWSATRE063FVT() {
 		callServlet("WSATRE063FVT");
