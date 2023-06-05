@@ -18,7 +18,7 @@ dependencies {
                project(':com.ibm.ws.org.apache.commons.io'),
                project(':io.openliberty.org.apache.commons.logging'),
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0'),
+               project(':com.ibm.ws.org.apache.wss4j.ws.security.common'),
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',

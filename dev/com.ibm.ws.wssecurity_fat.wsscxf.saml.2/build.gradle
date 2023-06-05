@@ -21,7 +21,6 @@ dependencies {
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',
-               'org.apache.ws.security:wss4j:1.6.18',
                'httpunit:httpunit:1.6.2',                           
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5',

@@ -4,13 +4,13 @@ visibility=private
 singleton=true
 -bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0.jakarta, \
  com.ibm.ws.com.google.guava, \
- com.ibm.ws.org.apache.wss4j.bindings.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.policy.2.3.0, \
- com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.ws.security.policy.stax.2.3.0, \
- com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0.jakarta, \
- com.ibm.ws.org.apache.wss4j.ws.security.web.2.3.0.jakarta, \
+ com.ibm.ws.org.apache.wss4j.bindings.jakarta, \
+ com.ibm.ws.org.apache.wss4j.policy, \
+ com.ibm.ws.org.apache.wss4j.ws.security.common.jakarta, \
+ com.ibm.ws.org.apache.wss4j.ws.security.dom.jakarta, \
+ com.ibm.ws.org.apache.wss4j.ws.security.policy.stax, \
+ com.ibm.ws.org.apache.wss4j.ws.security.stax.jakarta, \
+ com.ibm.ws.org.apache.wss4j.ws.security.web.jakarta, \
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
  com.ibm.ws.org.ehcache.ehcache.107.3.8.1.jakarta, \
  com.ibm.ws.org.jasypt.jasypt.1.9.3, \

@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2020,2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=2.3.0
+
+Bundle-Name: org.apache.wss4j.wss4j.ws.security.policy.stax
+Bundle-Description: org.apache.wss4j.wss4jws.security.policy.stax; version=2.3.0
+Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.policy.stax
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.wss4j.policy.stax.*;version=${bVersion}
+
+Import-Package: \
+ javax.xml.bind.*, \
+ !com.ibm.security.jgss, \
+ !com.sun.security.jgss, \
+ !org.bouncycastle.asn1.*, \
+ * 
