@@ -23,6 +23,7 @@ src: \
 	
 fat.project: true
 
+#Any changes to these names must be copied to TestConstants
 fat.test.container.images: \
     jaegertracing/all-in-one:1.39, \
     openzipkin/zipkin-slim:2.23, \
