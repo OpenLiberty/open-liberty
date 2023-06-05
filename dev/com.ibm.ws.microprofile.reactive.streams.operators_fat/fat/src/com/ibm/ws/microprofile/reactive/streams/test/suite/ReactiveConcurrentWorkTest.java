@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
@@ -28,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +33,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -55,11 +55,16 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class ReactiveConcurrentWorkTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "ReactiveStreamsConcurrentWorkServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30);
+
     public static final String APP_NAME = "ReactiveConcurrentWorkTest";
 
     private static final long FIVE_MINS = 5 * 60 * 1000;
 
-    @Server("ReactiveStreamsConcurrentWorkServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
