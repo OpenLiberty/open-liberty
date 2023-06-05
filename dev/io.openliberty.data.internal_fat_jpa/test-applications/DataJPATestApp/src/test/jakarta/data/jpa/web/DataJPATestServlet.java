@@ -42,8 +42,8 @@ import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Pageable;
@@ -635,7 +635,7 @@ public class DataJPATestServlet extends FATServlet {
             try {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");
-            } catch (DataException x) {
+            } catch (OptimisticLockingFailureException x) {
                 System.out.println("Deletion was rejected as it ought to be when the version does not match.");
             }
 
@@ -660,7 +660,7 @@ public class DataJPATestServlet extends FATServlet {
         try {
             Order unexpected = orders.save(o2old);
             fail("Should not be able to update old version of entity: " + unexpected);
-        } catch (DataException x) {
+        } catch (OptimisticLockingFailureException x) {
             // expected
         }
 
@@ -672,7 +672,7 @@ public class DataJPATestServlet extends FATServlet {
         try {
             Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
             fail("Should not be able to update old version of entity: " + unexpected);
-        } catch (DataException x) {
+        } catch (OptimisticLockingFailureException x) {
             // expected
         }
 
@@ -1848,7 +1848,7 @@ public class DataJPATestServlet extends FATServlet {
             dodge.population = 20873;
             counties.save(dodge);
             fail("Should not be able to save using old version: " + dodge.lastUpdated);
-        } catch (DataException x) {
+        } catch (OptimisticLockingFailureException x) {
             // expected
         }
 

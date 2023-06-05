@@ -73,6 +73,7 @@ import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -87,6 +88,7 @@ import jakarta.data.repository.Streamable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
@@ -577,7 +579,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     x = new MappingException(original);
             }
             if (x == null) {
-                if (original instanceof NoResultException)
+                if (original instanceof OptimisticLockException)
+                    x = new OptimisticLockingFailureException(original);
+                else if (original instanceof NoResultException)
                     x = new EmptyResultException(original);
                 else if (original instanceof jakarta.persistence.NonUniqueResultException)
                     x = new NonUniqueResultException(original);
@@ -2252,9 +2256,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
                 if (queryInfo.entityInfo.versionAttributeName == null)
-                    throw new DataException("Entity was not found."); // TODO NLS
+                    throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
                 else
-                    throw new DataException("Version " + v + " of the entity was not found."); // TODO NLS
+                    throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
             throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
