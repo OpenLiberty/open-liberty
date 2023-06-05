@@ -48,7 +48,7 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * @param app
      *            - the app to invoke
      * @param challengeMethod
-     *            - the type of challenge (S256 or plain)
+     *            - the type of challenge (S256, plain, disabled)
      * @throws Exception
      */
     public void positiveTestWithChallenge(String app, String challengeMethod) throws Exception {
@@ -132,7 +132,7 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyFalse_RS256_S256() throws Exception {
 
-        positiveTestWithChallenge("proofKeyFalse_RS256_S256", "S256");
+        positiveTestWithChallenge("proofKeyFalse_RS256_S256", S256);
 
     }
 
@@ -145,7 +145,20 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyFalse_RS256_plain() throws Exception {
 
-        positiveTestWithChallenge("proofKeyFalse_RS256_Plain", "plain");
+        positiveTestWithChallenge("proofKeyFalse_RS256_Plain", PLAIN);
+
+    }
+
+    /**
+     * Test with proofKeyForCodeExchange not set in the OP, so it uses the default value of false. The client sets
+     * pkceCodeChallengeMethod to disabled.
+     * Both client and server are using RS256 as the signature algorithm.
+     * We should successfully access the protected application.
+     */
+    @Test
+    public void PKCEClientTests_proofKeyFalse_RS256_disabled() throws Exception {
+
+        positiveTestWithoutChallenge("proofKeyFalse_RS256_disabled");
 
     }
 
@@ -171,7 +184,7 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyFalse_HS256_S256() throws Exception {
 
-        positiveTestWithChallenge("proofKeyFalse_HS256_S256", "S256");
+        positiveTestWithChallenge("proofKeyFalse_HS256_S256", S256);
 
     }
 
@@ -184,7 +197,20 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyFalse_HS256_plain() throws Exception {
 
-        positiveTestWithChallenge("proofKeyFalse_HS256_Plain", "plain");
+        positiveTestWithChallenge("proofKeyFalse_HS256_Plain", PLAIN);
+
+    }
+
+    /**
+     * Test with proofKeyForCodeExchange not set in the OP, so it uses the default value of false. The client sets
+     * pkceCodeChallengeMethod to disabled.
+     * Both client and server are using HS256 as the signature algorithm.
+     * We should successfully access the protected application.
+     */
+    @Test
+    public void PKCEClientTests_proofKeyFalse_HS256_disabled() throws Exception {
+
+        positiveTestWithoutChallenge("proofKeyFalse_HS256_disabled");
 
     }
 
@@ -211,7 +237,7 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyTrue_RS256_S256() throws Exception {
 
-        positiveTestWithChallenge("proofKeyTrue_RS256_S256", "S256");
+        positiveTestWithChallenge("proofKeyTrue_RS256_S256", S256);
 
     }
 
@@ -225,7 +251,23 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyTrue_RS256_plain() throws Exception {
 
-        positiveTestWithChallenge("proofKeyTrue_RS256_Plain", "plain");
+        positiveTestWithChallenge("proofKeyTrue_RS256_Plain", PLAIN);
+
+    }
+
+    /**
+     * Test with proofKeyForCodeExchange is set to true in the OP. The client sets
+     * pkceCodeChallengeMethod to disabled.
+     * Both client and server are using RS256 as the signature algorithm.
+     * We should fail to access the protected app - the caller should receive a 403 status and
+     * the OP should log a message stating that the code_challenge was missing.
+     */
+    @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException" })
+    @Mode(TestMode.LITE)
+    @Test
+    public void PKCEClientTests_proofKeyTrue_RS256_disabled() throws Exception {
+
+        negativeTestWithoutChallenge("proofKeyTrue_RS256_disabled");
 
     }
 
@@ -254,7 +296,7 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyTrue_HS256_S256() throws Exception {
 
-        positiveTestWithChallenge("proofKeyTrue_HS256_S256", "S256");
+        positiveTestWithChallenge("proofKeyTrue_HS256_S256", S256);
 
     }
 
@@ -267,7 +309,23 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
     @Test
     public void PKCEClientTests_proofKeyTrue_HS256_plain() throws Exception {
 
-        positiveTestWithChallenge("proofKeyTrue_HS256_Plain", "plain");
+        positiveTestWithChallenge("proofKeyTrue_HS256_Plain", PLAIN);
+
+    }
+
+    /**
+     * Test with proofKeyForCodeExchange is set to true in the OP. The client sets
+     * pkceCodeChallengeMethod to disabled.
+     * Both client and server are using RS256 as the signature algorithm.
+     * We should fail to access the protected app - the caller should receive a 403 status and
+     * the OP should log a message stating that the code_challenge was missing.
+     */
+    @AllowedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException" })
+    @Mode(TestMode.LITE)
+    @Test
+    public void PKCEClientTests_proofKeyTrue_HS256_disabled() throws Exception {
+
+        negativeTestWithoutChallenge("proofKeyTrue_HS256_disabled");
 
     }
 
@@ -286,4 +344,5 @@ public class PKCEClientTests extends PKCEPrivateKeyJwtCommonTooling {
         negativeTestWithoutChallenge("proofKeyTrue_HS256_na");
 
     }
+
 }

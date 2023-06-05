@@ -68,6 +68,34 @@
 	>
 	</openidConnectClient>
 
+	<authFilter id="filter_proofKeyFalse_RS256_disabled">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/proofKeyFalse_RS256_disabled"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="proofKeyFalse_RS256_disabled"
+		scope="openid profile"
+		clientId="proofKeyFalse_RS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_proofKeyFalse_RS256_disabled"
+		pkceCodeChallengeMethod="disabled"
+	>
+	</openidConnectClient>
+
 	<authFilter id="filter_proofKeyFalse_RS256_na">
 		<requestUrl
 			id="myRequestUrl"
@@ -144,6 +172,32 @@
 		userInfoEndpointEnabled="true"
 		authFilterRef="filter_proofKeyFalse_HS256_Plain"
 		pkceCodeChallengeMethod="plain"
+	>
+	</openidConnectClient>
+
+	<authFilter id="filter_proofKeyFalse_HS256_disabled">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/proofKeyFalse_HS256_disabled"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="proofKeyFalse_HS256_disabled"
+		scope="openid profile"
+		clientId="proofKeyFalse_HS256"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		inboundPropagation="supported"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_proofKeyFalse_HS256_disabled"
+		pkceCodeChallengeMethod="disabled"
 	>
 	</openidConnectClient>
 
@@ -228,6 +282,34 @@
 	>
 	</openidConnectClient>
 
+	<authFilter id="filter_proofKeyTrue_RS256_disabled">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/proofKeyTrue_RS256_disabled"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="proofKeyTrue_RS256_disabled"
+		scope="openid profile"
+		clientId="proofKeyTrue_RS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		inboundPropagation="supported"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_proofKeyTrue_RS256_disabled"
+		pkceCodeChallengeMethod="disabled"
+	>
+	</openidConnectClient>
+
 	<authFilter id="filter_proofKeyTrue_RS256_na">
 		<requestUrl
 			id="myRequestUrl"
@@ -304,6 +386,32 @@
 		userInfoEndpointEnabled="true"
 		authFilterRef="filter_proofKeyTrue_HS256_Plain"
 		pkceCodeChallengeMethod="plain"
+	>
+	</openidConnectClient>
+
+	<authFilter id="filter_proofKeyTrue_HS256_disabled">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/proofKeyTrue_HS256_disabled"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="proofKeyTrue_HS256_disabled"
+		scope="openid profile"
+		clientId="proofKeyTrue_HS256"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		inboundPropagation="supported"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/token"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_proofKeyTrue_HS256_disabled"
+		pkceCodeChallengeMethod="disabled"
 	>
 	</openidConnectClient>
 
