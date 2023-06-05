@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,8 +13,7 @@
 -include=~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
 
 Bundle-Name: Apache CXF Command Line Tools WADLTo JAXRS Frontend
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2
@@ -24,14 +23,14 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.tools.wadlto;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.wadlto.jaxb;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.wadlto.jaxrs;version=${cxfExportVersion}
+  org.apache.cxf.tools.wadlto;version=${cxfVersion}, \
+  org.apache.cxf.tools.wadlto.jaxb;version=${cxfVersion}, \
+  org.apache.cxf.tools.wadlto.jaxrs;version=${cxfVersion}
 
 Private-Package: schemas.wadl
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;${cxfImportVersion}}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;${cxfVersion}}!/!META-INF/*
 
 -buildpath: \
-  org.apache.cxf:cxf-tools-wadlto-jaxrs;version=${cxfImportVersion}
+  org.apache.cxf:cxf-tools-wadlto-jaxrs;version=${cxfVersion}

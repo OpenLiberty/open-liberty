@@ -22,7 +22,7 @@ package org.apache.wss4j.common.cache;
 import java.io.File;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.util.Map;
+import java.util.Map; // Liberty Change
 
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.ehcache.Cache;
@@ -35,7 +35,7 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
-import org.ehcache.expiry.ExpiryPolicy;
+import org.ehcache.expiry.ExpiryPolicy; // Liberty Change
 
 /**
  * An in-memory EHCache implementation of the ReplayCache interface, that overflows to disk.
@@ -46,8 +46,8 @@ public class EHCacheReplayCache implements ReplayCache {
     private static final org.slf4j.Logger LOG =
             org.slf4j.LoggerFactory.getLogger(EHCacheReplayCache.class);
 
-    private Cache<String, EHCacheValue> cache;
-    private CacheManager cacheManager;
+    private Cache<String, EHCacheValue> cache; // Liberty Change
+    private CacheManager cacheManager; // Liberty Change
     private final String key;
     private final Path diskstorePath;
     private final boolean persistent;
@@ -77,16 +77,16 @@ public class EHCacheReplayCache implements ReplayCache {
             throw new IllegalArgumentException("The heapEntries parameter must be greater than 100 (entries)");
         }
         
-        ResourcePoolsBuilder resourcePoolsBuilder = null;
-        CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder = null;
+        ResourcePoolsBuilder resourcePoolsBuilder = null;  // Liberty Change
+        CacheConfigurationBuilder<String, EHCacheValue> configurationBuilder = null;  // Liberty Change
         try {
-            resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+            resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()  // Liberty Change
                     .heap(heapEntries, EntryUnit.ENTRIES);
             if (diskstorePath != null) {
                 resourcePoolsBuilder = resourcePoolsBuilder.disk(diskSize, MemoryUnit.MB, persistent);
             }
 
-            configurationBuilder =
+            configurationBuilder =  // Liberty Change
                     CacheConfigurationBuilder.newCacheConfigurationBuilder(
                             String.class, EHCacheValue.class, resourcePoolsBuilder)
                             .withExpiry(new EHCacheExpiry());
@@ -105,7 +105,7 @@ public class EHCacheReplayCache implements ReplayCache {
             cacheManager.init();
             cache = cacheManager.getCache(key, String.class, EHCacheValue.class);
         } catch (Exception ex) {  
-            // Liberty Change
+            // Liberty Change Start
             LOG.debug("Error configuring EHCacheReplayCache (will try again without disk params) : " + ex.getMessage());
             try {
                 resourcePoolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
@@ -119,14 +119,14 @@ public class EHCacheReplayCache implements ReplayCache {
                 cacheManager.init();
                 cache = cacheManager.getCache(key, String.class, EHCacheValue.class);
             } catch (Exception ex2) {
-                LOG.error("Error configuring EHCacheReplayCache " + ex2.getMessage());
+                LOG.error("Error configuring EHCacheReplayCache: ()" + ex2.getMessage());
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex2, "replayCacheError");  
             }
-            // End Liberty Change
+            // Liberty Change End
         }
     }
     
-    //Liberty Change
+    // Liberty Change Start
     public EHCacheReplayCache(String cacheKey, Path diskstorePath, Map oldconfig) throws WSSecurityException {
         
         this.key = cacheKey;
@@ -206,7 +206,7 @@ public class EHCacheReplayCache implements ReplayCache {
         }
         
     } 
-        
+      // Liberty Change End  
  
 
     /**
@@ -223,10 +223,10 @@ public class EHCacheReplayCache implements ReplayCache {
      * @param expiry A custom expiry time for the identifier. Can be null in which case, the default expiry is used.
      */
     public void add(String identifier, Instant expiry) {
-        if (identifier == null || "".equals(identifier)) {
+        if (identifier == null || identifier.length() == 0) {
             return;
         }
-        
+
         cache.put(identifier, new EHCacheValue(identifier, expiry));
     }
 

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
+
 
 Import-Package: \
   !com.ctc.wstx.*, \
@@ -38,18 +38,18 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.tools.common;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.common.dom;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.common.model;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.common.toolspec;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.common.toolspec.parser;version=${cxfExportVersion}, \
-  org.apache.cxf.tools.util;version=${cxfExportVersion}
+  org.apache.cxf.tools.common;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.dom;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.model;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.toolspec;version=${cxfVersion}, \
+  org.apache.cxf.tools.common.toolspec.parser;version=${cxfVersion}, \
+  org.apache.cxf.tools.util;version=${cxfVersion}
 
 Private-Package: \
   org.apache.cxf.tools.common.jaxb
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-common;${cxfImportVersion}}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
 
 -buildpath: \
-  org.apache.cxf:cxf-tools-common;version=${cxfImportVersion}
+  org.apache.cxf:cxf-tools-common;version=${cxfVersion}

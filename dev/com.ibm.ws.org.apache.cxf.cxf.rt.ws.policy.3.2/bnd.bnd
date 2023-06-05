@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
+
 
 Import-Package: \
   !java.*, \
@@ -42,14 +42,14 @@ Import-Package: \
 Export-Package: \
   !schemas, \
   !schemas.blueprint, \
-  org.apache.cxf.ws.policy.*;version=${cxfExportVersion}
+  org.apache.cxf.ws.policy.*;version=${cxfVersion}
 
 Private-Package: \
   schemas, \
   schemas.blueprint
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfImportVersion};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF/cxf=resources/META-INF/cxf
 
@@ -57,7 +57,7 @@ instrument.disabled: true
 instrument.ffdc: false
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfImportVersion}, \
+  org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.logging.core, \

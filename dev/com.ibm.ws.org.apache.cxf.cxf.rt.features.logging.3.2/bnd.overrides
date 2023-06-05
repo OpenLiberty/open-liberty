@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2022 IBM Corporation and others.
+# Copyright (c) 2021, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
 -include= ~../cnf/resources/bnd/rejar.props
 
 bVersion=1.0
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
 
 # not 100% sure this is needed
 Bundle-ActivationPolicy: lazy
@@ -22,10 +22,10 @@ Bundle-Activator: org.apache.cxf.ext.logging.osgi.Activator
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2
 
 Export-Package: \
-  org.apache.cxf.ext.logging;version=${cxfExportVersion},\
-  org.apache.cxf.ext.logging.event;version=${cxfExportVersion},\
-  org.apache.cxf.ext.logging.osgi;version=${cxfExportVersion},\
-  org.apache.cxf.ext.logging.slf4j;version=${cxfExportVersion}
+  org.apache.cxf.ext.logging;version=${cxfVersion},\
+  org.apache.cxf.ext.logging.event;version=${cxfVersion},\
+  org.apache.cxf.ext.logging.osgi;version=${cxfVersion},\
+  org.apache.cxf.ext.logging.slf4j;version=${cxfVersion}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the

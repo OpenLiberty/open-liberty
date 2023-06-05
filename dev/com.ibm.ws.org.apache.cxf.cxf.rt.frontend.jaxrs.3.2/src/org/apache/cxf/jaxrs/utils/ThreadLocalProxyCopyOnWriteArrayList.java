@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.apache.cxf.jaxrs.utils;
 
@@ -22,7 +20,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.concurrent.locks.ReentrantLock;
-
+// Liberty Change for CXF Begin - Entire class is unique to our fork
 public class ThreadLocalProxyCopyOnWriteArrayList<E>
                 implements List<E>, RandomAccess {
     private static final long serialVersionUID = 8673264195747942595L;

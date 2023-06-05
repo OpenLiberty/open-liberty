@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,8 +13,7 @@
 -include=~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
 
 Bundle-Name: Apache CXF Runtime JAX-RS Frontend
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2
@@ -47,19 +46,19 @@ Import-Package: \
 
 Export-Package: \
   com.ibm.ws.jaxrs20.cache, \
-  org.apache.cxf.jaxrs;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.ext;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.ext.multipart;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.ext.xml;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.impl;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.impl.tl;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.interceptor;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.lifecycle;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.model;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.model.doc;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.provider;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.utils;version=${cxfExportVersion}, \
-  org.apache.cxf.jaxrs.utils.schemas;version=${cxfExportVersion}, \
+  org.apache.cxf.jaxrs;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.ext;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.ext.multipart;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.ext.xml;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.impl;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.impl.tl;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.interceptor;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.lifecycle;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.model;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.model.doc;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.provider;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.utils;version=${cxfVersion}, \
+  org.apache.cxf.jaxrs.utils.schemas;version=${cxfVersion}, \
   com.ibm.websphere.jaxrs20.multipart;version=1.1.0, \
   com.ibm.ws.jaxrs20, \
   com.ibm.ws.jaxrs20.api;provide=true, \
@@ -77,12 +76,12 @@ Export-Package: \
 -dsannotations: com.ibm.ws.jaxrs21.component.*
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;${cxfImportVersion};EXACT}!/!META-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;${cxfVersion};EXACT}!/!META-INF/*, \
   com/ibm/ws=${bin}/com/ibm/ws, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-frontend-jaxrs;strategy=exact;version=${cxfImportVersion}, \
+  org.apache.cxf:cxf-rt-frontend-jaxrs;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.javaee.annotation.1.2;version=latest, \
   com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \

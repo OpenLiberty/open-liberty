@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,13 +15,12 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.1
+cxfVersion=3.5.5
 
 Bundle-ActivationPolicy: lazy
 
 Export-Package: \
-  org.apache.cxf.*;version=${cxfExportVersion}
+  org.apache.cxf.*;version=${cxfVersion}
 
 Import-Package: \
   javax.xml.bind.*, \
@@ -33,11 +32,11 @@ Import-Package: \
   *
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/!META-INF/maven/*, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfImportVersion};EXACT}!/META-INF/cxf/*
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/!META-INF/maven/*, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;${cxfVersion};EXACT}!/META-INF/cxf/*
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=${cxfImportVersion}
+  org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=${cxfVersion}

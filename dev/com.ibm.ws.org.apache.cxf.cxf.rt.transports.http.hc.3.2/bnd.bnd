@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@
 -include=~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
+
 
 Bundle-Name: Apache CXF Runtime HTTP Async Transport
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2
@@ -28,14 +28,14 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.transport.http.asyncclient;version=${cxfExportVersion}
+  org.apache.cxf.transport.http.asyncclient;version=${cxfVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-transports-http-hc;${cxfImportVersion}}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-transports-http-hc;${cxfVersion}}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-transports-http-hc;version=${cxfImportVersion}, \
+  org.apache.cxf:cxf-rt-transports-http-hc;version=${cxfVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest, \
   com.ibm.ws.org.apache.httpcomponents;version=latest, \

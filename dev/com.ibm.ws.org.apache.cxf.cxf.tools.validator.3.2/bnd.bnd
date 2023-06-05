@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,16 +15,15 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
 
 Import-Package:
 
 Export-Package: \
-  org.apache.cxf.tools.validator;version=${cxfExportVersion}
+  org.apache.cxf.tools.validator;version=${cxfVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-validator;${cxfImportVersion};EXACT}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-validator;${cxfVersion};EXACT}!/!META-INF/*
 
 -buildpath: \
-  org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfImportVersion}
+  org.apache.cxf:cxf-tools-validator;strategy=exact;version=${cxfVersion}

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
+
 
 Import-Package: \
   !java.*,\
@@ -40,18 +40,18 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.ws.addressing.soap;version=${cxfExportVersion}, \
-  org.apache.cxf.ws.addressing.policy;version=${cxfExportVersion}, \
-  org.apache.cxf.ws.addressing.blueprint;version=${cxfExportVersion}, \
-  org.apache.cxf.ws.addressing.spring;version=${cxfExportVersion}
+  org.apache.cxf.ws.addressing.soap;version=${cxfVersion}, \
+  org.apache.cxf.ws.addressing.policy;version=${cxfVersion}, \
+  org.apache.cxf.ws.addressing.blueprint;version=${cxfVersion}, \
+  org.apache.cxf.ws.addressing.spring;version=${cxfVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfImportVersion};EXACT}!/!*-INF/*,\
+  @${repo;org.apache.cxf:cxf-rt-ws-addr;${cxfVersion};EXACT}!/!*-INF/*,\
   META-INF/cxf=resources/META-INF/cxf,\
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfImportVersion},\
+  org.apache.cxf:cxf-rt-ws-addr;strategy=exact;version=${cxfVersion},\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2, \
   com.ibm.websphere.javaee.wsdl4j.1.2, \

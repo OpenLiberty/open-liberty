@@ -15,8 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfImportVersion=3.5.5
-cxfExportVersion=3.4.3
+cxfVersion=3.5.5
+
 
 Import-Package: \
   !com.ctc.wstx.*, \
@@ -38,17 +38,17 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.binding.xml.*;version=${cxfExportVersion}
+  org.apache.cxf.binding.xml.*;version=${cxfVersion}
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfImportVersion};EXACT}!/!*-INF/*, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/!*-INF/*, \
   META-INF=resources/META-INF
 
 instrument.classesIncludes: \
   org/apache/cxf/*.class
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfImportVersion}, \
+  org.apache.cxf:cxf-rt-bindings-xml;strategy=exact;version=${cxfVersion}, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core

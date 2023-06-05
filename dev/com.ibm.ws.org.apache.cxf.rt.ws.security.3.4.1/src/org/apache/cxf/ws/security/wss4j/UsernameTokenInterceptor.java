@@ -25,15 +25,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
-
+import java.util.logging.Logger; // Liberty Change
 import javax.security.auth.Subject;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.apache.cxf.binding.soap.SoapMessage;
-import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.common.logging.LogUtils; // Liberty Change
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
@@ -82,9 +81,9 @@ import org.apache.xml.security.utils.XMLUtils;
  *
  */
 public class UsernameTokenInterceptor extends AbstractTokenInterceptor {
-    //Liberty code change start, for debug only
+    //Liberty Change Start
     private static final Logger LOG = LogUtils.getL7dLogger(UsernameTokenInterceptor.class);
-    //Liberty code change end
+    //Liberty Change End
     public UsernameTokenInterceptor() {
         super();
     }
@@ -105,7 +104,7 @@ public class UsernameTokenInterceptor extends AbstractTokenInterceptor {
                 try {
                     boolean bspCompliant = isWsiBSPCompliant(message);
                     boolean allowNSPasswdTypes = allowNamespaceQualifiedPWDTypes(message);
-                    Principal principal = null;
+                    Principal principal;
                     Subject subject = null;
                     Object transformedToken = null;
 
@@ -386,6 +385,7 @@ public class UsernameTokenInterceptor extends AbstractTokenInterceptor {
 
     protected void addToken(SoapMessage message) {
         UsernameToken tok = assertTokens(message);
+
         Header h = findSecurityHeader(message, true);
         Element el = (Element)h.getObject();
         Document doc = el.getOwnerDocument();
