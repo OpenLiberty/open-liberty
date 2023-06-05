@@ -18,7 +18,8 @@ Bundle-SymbolicName: com.ibm.ws.security.fat.common.SSO.clientTests
 Bundle-Description: Common test code for security SSO Client FAT projects; version=${bVersion}
 
 src: \
-  fat/src
+  fat/src, \
+  test-applications/privateKeyJwtTokenEndpoint/src
 
 Import-Package: \
     !*.internal.*,  \

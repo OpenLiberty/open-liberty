@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.SSO.clientTests.PKCE.PKCEClientTests;
+import com.ibm.ws.security.SSO.clientTests.PrivateKeyJwt.PrivateKeyJwtClientTests;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
@@ -32,18 +32,21 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- * This is the test class that will run PKCE client tests - end to end tests
- * using and OIDC client and an OP with proofKeyForCodeExchange set to true or
- * not set (uses the default value of false)
+ * This is the test class that will run Private Key Jwt client tests using oidcLogin social client and an OP to provide
+ * authorization functionality. The tests stub out the token endpoint which will just log the request used to invoke it.
+ * The tests will then search for the different request parameters recorded in the log. They will
+ * validate that the proper parms were passed and that the content of those parms is what was expected (based on the config used
+ * by that test). This includes parsing the private key jwt and making sure that all of the required claims are included and
+ * are correct.
  *
  **/
 
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
 @RunWith(FATRunner.class)
-public class LibertyOP_Social_PKCETests extends PKCEClientTests {
+public class LibertyOP_Social_PrivateKeyJwtTests extends PrivateKeyJwtClientTests {
 
-    public static Class<?> thisClass = LibertyOP_Social_PKCETests.class;
+    public static Class<?> thisClass = LibertyOP_Social_PrivateKeyJwtTests.class;
 
     public static RSCommonTestTools rsTools = new RSCommonTestTools();
 
@@ -52,7 +55,6 @@ public class LibertyOP_Social_PKCETests extends PKCEClientTests {
     public static void setUp() throws Exception {
 
         useLdap = false;
-        firstFFDCInstance = true;
 
         Log.info(thisClass, "beforeClass", "Set useLdap to: " + useLdap);
 
@@ -70,12 +72,14 @@ public class LibertyOP_Social_PKCETests extends PKCEClientTests {
         Log.info(thisClass, "setupBeforeTest", "inited tokenType to: " + tokenType);
 
         // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.op.pkce", "op_server_PKCE.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        testOPServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.op.privateKeyJwt", "op_server_PrivateKeyJwt.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         // Start the Social client server and setup default values
-        clientServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.social.pkce", "server_LibertyOP_PKCE.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+        clientServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.social.privateKeyJwt", "server_LibertyOP_PrivateKeyJwt.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         testSettings.setFlowType(SocialConstants.SOCIAL);
+        testSettings.setTokenEndpt(clientServer.getHttpsString() + "/PrivateKeyJwtTokenEndpoint/token");
+
     }
 
 }

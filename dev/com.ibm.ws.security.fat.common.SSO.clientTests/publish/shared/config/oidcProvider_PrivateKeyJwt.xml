@@ -1,0 +1,155 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSample_RS256"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthConfigSample_RS256" />
+
+	<oauthProvider
+		id="OAuthConfigSample_RS256"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+
+		<autoAuthorizeClient>client_RS256</autoAuthorizeClient>
+        
+		<localStore>
+			<client
+				name="client_RS256"
+				secret="{xor}LDo8LTor"
+				displayname="client_RS256"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_RS256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_RS256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_RS384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_RS384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_RS512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_RS512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_ES256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_ES256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_ES384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_ES384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_ES512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_ES512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_badKeyAlias,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_badKeyAlias,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_omittedKeyAlias,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_omittedKeyAlias,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_authMethodPost,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_authMethodPost,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_omittedAuthSingingAlg,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_omittedAuthSingingAlg,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_private_key_mismatch1,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_private_key_mismatch1,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_private_key_mismatch2,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_private_key_mismatch2,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_withRealTokenEndpoint,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_withRealTokenEndpoint,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_noClientSSLRef,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_noClientSSLRef,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_RS256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_RS256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_RS384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_RS384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_RS512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_RS512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_ES256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_ES256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_ES384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_ES384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_ES512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_ES512,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_badKeyAlias,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_badKeyAlias,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_omittedKeyAlias,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_omittedKeyAlias,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_authMethodPost,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_authMethodPost,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_RS256_omittedAuthSingingAlg,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_RS256_omittedAuthSingingAlg,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_private_key_mismatch1,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_private_key_mismatch1,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_private_key_mismatch2,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_private_key_mismatch2,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_withRealTokenEndpoint,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_withRealTokenEndpoint,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_noClientSSLRef,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_noClientSSLRef"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_HS256"
+		oauthProviderRef="OAuthConfigSample_HS256" />
+
+	<oauthProvider
+		id="OAuthConfigSample_HS256"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+
+		<autoAuthorizeClient>client_HS256</autoAuthorizeClient>
+        
+		<localStore>
+			<client
+				name="client_HS256"
+				secret="{xor}LDo8LTor"
+				displayname="client_HS256"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_RS256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_RS256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_RS384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_RS384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_RS512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_RS512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_ES256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_ES256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_ES384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_ES384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_ES512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_ES512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_RS256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_RS256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_RS384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_RS384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_RS512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_RS512,							
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_ES256,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_ES256,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_ES384,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_ES384,
+							http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/client_HS256_ES512,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/client_HS256_ES512"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+
+
+</server>

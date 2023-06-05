@@ -60,6 +60,8 @@ dependencies {
 
 addRequiredLibraries.dependsOn addJakartaTransformer
 
+def appBuildDir = "${buildDir}/test-application"
+
 /******************************************************************
  ******************************************************************
  **
@@ -71,3 +73,21 @@ assemble.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 assemble.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 assemble.dependsOn ':com.ibm.ws.security.fat.common.social:assemble'
 assemble.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+assemble.dependsOn 'tokenEndpoint'
+
+task tokenEndpoint(type: War, dependsOn: classes) {
+  def appName = "privateKeyJwtTokenEndpoint"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+ println "In tokenEndpoint"
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ('build/classes/java/main') {
+    include "com/ibm/ws/security/fat/common/TokenEndpointServlets/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+
