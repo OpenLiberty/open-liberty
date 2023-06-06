@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,8 @@ public class SSOCookieHelperImplTest {
             {
                 one(config).isSingleSignonEnabled();
                 will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
             }
         });
         ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null);
@@ -123,6 +125,8 @@ public class SSOCookieHelperImplTest {
                 one(req).isSecure();
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
+                will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
                 will(returnValue(false));
             }
         });
@@ -143,6 +147,9 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
+
             }
         });
         ssoCookieHelper.addSSOCookiesToResponse(new Subject(), req, resp, null);
@@ -204,7 +211,6 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
@@ -231,7 +237,6 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
@@ -500,7 +505,6 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
@@ -526,7 +530,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
-                one(config).isUseContextRootForSSOCookiePath();
+//                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
