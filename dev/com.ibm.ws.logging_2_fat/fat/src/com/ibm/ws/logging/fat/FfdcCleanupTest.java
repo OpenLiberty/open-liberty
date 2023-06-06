@@ -36,8 +36,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -92,7 +90,6 @@ public class FfdcCleanupTest {
     }
 
     @Test
-    @Mode(TestMode.FULL)
     @ExpectedFFDC("java.lang.ArithmeticException")
     public void testFfdcCleanupNoDeletion() {
         try {
@@ -113,7 +110,6 @@ public class FfdcCleanupTest {
     }
 
     @Test
-    @Mode(TestMode.FULL)
     @ExpectedFFDC("java.lang.ArithmeticException")
     public void testFfdcCleanupNotConfigured() throws Exception {
         hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
