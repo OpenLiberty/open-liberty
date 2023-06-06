@@ -187,7 +187,7 @@ public class VerifySignatureUtility {
         return downloadedKeys;
     }
 
-    private Map<String, String> getPublicKeyURL(Collection<Map<String, String>> keys, VerifyOption verify) throws InstallException {
+    protected Map<String, String> getPublicKeyURL(Collection<Map<String, String>> keys, VerifyOption verify) throws InstallException {
         Map<String, String> pubKeyUrls = new HashMap();
         try {
             if (isKeyValid(LIBERTY_KEY, getLibertyKeyID())) {
@@ -201,6 +201,15 @@ public class VerifySignatureUtility {
         }
 
         //get users public keys
+        getUserPubKey(keys, pubKeyUrls);
+        return pubKeyUrls;
+    }
+
+    /**
+     * @param keys
+     * @param pubKeyUrls
+     */
+    protected void getUserPubKey(Collection<Map<String, String>> keys, Map<String, String> pubKeyUrls) {
         for (Map<String, String> keyMap : keys) {
             String keyURL = keyMap.get(InstallConstants.KEYURL_QUALIFIER);
             String keyID = keyMap.get(InstallConstants.KEYID_QUALIFIER);
@@ -218,7 +227,6 @@ public class VerifySignatureUtility {
                 }
             }
         }
-        return pubKeyUrls;
     }
 
     /**

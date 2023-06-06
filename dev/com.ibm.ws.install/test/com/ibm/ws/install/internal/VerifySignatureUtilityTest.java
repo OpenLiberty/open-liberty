@@ -7,7 +7,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.jmock.Expectations;
@@ -52,6 +56,7 @@ public class VerifySignatureUtilityTest {
     }
 
     @Test
+    //Expected error msg: CWWKF1514E: The {0} public key ID does not match the {1} provided key ID.
     public void testValidatePublicKeyIDInvalid() throws InstallException {
         boolean pass = false;
         mockery.checking(new Expectations() {
@@ -151,6 +156,56 @@ public class VerifySignatureUtilityTest {
             pass = true;
             assertTrue(e.getMessage().contains(getKeyID(publicKey)));
             assertFalse(e.getMessage().contains(expiryDate.toString()));
+        }
+        assertTrue(pass);
+    }
+
+    @Test
+    public void testgetUserPubKeyEmptyKeyMap() {
+        Collection<Map<String, String>> keys = new ArrayList();
+        Map<String, String> pubKeyUrls = new HashMap();
+        utility.getUserPubKey(keys, pubKeyUrls);
+        assertTrue(pubKeyUrls.isEmpty());
+    }
+
+    @Test
+    //Expected error msg: CWWKF1513E: The public key URL for the {0} key ID was not provided.
+    public void testGetValidKeyURLNull() {
+        boolean pass = false;
+        try {
+            utility.getValidKeyURL(null, expectedkeyID);
+        } catch (InstallException e) {
+            pass = true;
+            assertTrue(e.getMessage().contains("CWWKF1513E"));
+        }
+        assertTrue(pass);
+    }
+
+    @Test
+    //Expected error msg: CWWKF1509E: The URL protocol for the following key URL is not supported: {0}.
+    //Supported protocols are HTTP, HTTPS, and file. Ensure that the URL is specified correctly.
+    public void testGetValidKeyURLInvalidURL() {
+        boolean pass = false;
+        try {
+            String keyURL = "ftp://invalid.url";
+            utility.getValidKeyURL(keyURL, expectedkeyID);
+        } catch (InstallException e) {
+            pass = true;
+            assertTrue(e.getMessage().contains("CWWKF1509E"));
+        }
+        assertTrue(pass);
+    }
+
+    @Test
+    //Expected error msg: CWWKF1506E: The public key could not be downloaded: {0}
+    public void testGetValidKeyURLFIle() {
+        boolean pass = false;
+        try {
+            String keyURL = "/tmp/com.ibm.ws.install/unit.test/verifySignatureUtility/usrPublicKeyForFeatureUtility.asc";
+            utility.getValidKeyURL(keyURL, expectedkeyID);
+        } catch (InstallException e) {
+            pass = true;
+            assertTrue(e.getMessage().contains("CWWKF1506E"));
         }
         assertTrue(pass);
     }
