@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: A solicita\u00e7\u00e3o de 
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=A configura\u00e7\u00e3o de login de m\u00eddia social n\u00e3o \u00e9 um cliente OpenID Connect, portanto, n\u00e3o oferece suporte a logout de back-channel.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Use o terminal de logout que \u00e9 apropriado para a configura\u00e7\u00e3o de login de m\u00eddia social.
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: O cliente {0} OpenID Connect usa o m\u00e9todo de autentica\u00e7\u00e3o de terminal do token {1}. Esse m\u00e9todo de autentica\u00e7\u00e3o requer um segredo do cliente, que n\u00e3o est\u00e1 configurado.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=O m\u00e9todo de autentica\u00e7\u00e3o de terminal do token especificado na mensagem requer um segredo do cliente para se autenticar no terminal do token do provedor OpenID Connect.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configure um segredo do cliente para o cliente OpenID Connect ou alterne o m\u00e9todo de autentica\u00e7\u00e3o de terminal do token do cliente para um que n\u00e3o requeira um segredo do cliente.

@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tToto je volba prost\u0159ed\u00ed JVM, kter\u00e1 ur\u010duje agenta pro p\u0159\u00edpravu n\u00e1stroj\u016f.   \n\tB\u011bhov\u00e9 prost\u0159ed\u00ed pou\u017e\u00edv\u00e1 p\u0159\u00edpravu n\u00e1stroj\u016f ke shroma\u017e\u010fov\u00e1n\u00ed informac\u00ed trasov\u00e1n\u00ed a dal\u0161\u00edho \n\tlad\u011bn\u00ed. Soubor bootstrap-agent.jar se nach\u00e1z\u00ed ve stejn\u00e9m adres\u00e1\u0159i \n\tjako soubor jar pou\u017eit\u00fd ke spu\u0161t\u011bn\u00ed b\u011bhov\u00e9ho prost\u0159ed\u00ed.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tKontroln\u00ed bod uveden\u00e9ho serveru v uveden\u00e9 f\u00e1zi kontroln\u00edho bodu. Pomoc\u00ed volby \n--at m\u016f\u017eete uv\u00e9st f\u00e1zi kontroln\u00edho bodu. Kdy\u017e je kontroln\u00ed bod \ndokon\u010den, server se zastav\u00ed a jeho aktu\u00e1ln\u00ed stav se zap\u00ed\u0161e na \ndisk. Tento kontroln\u00ed bod poskytuje chov\u00e1n\u00ed InstantOn p\u0159i spu\u0161t\u011bn\u00ed \nserveru. Po dokon\u010den\u00ed kontroln\u00edho bodu m\u016f\u017eete server spustit \npomoc\u00ed InstantOn pomoc\u00ed akce spu\u0161t\u011bn\u00ed.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tVytvo\u0159\u00ed nov\u00fd server, pokud zadan\u00fd server neexistuje. \n\tvolbu --template lze pou\u017e\u00edt k ur\u010den\u00ed \u0161ablony, kter\u00e1 m\u00e1 b\u00fdt pou\u017eita p\u0159i      \n\ttvorb\u011b nov\u00e9ho serveru.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tPozastavit v\u0161echny komponenty serveru, kter\u00e9 pozas
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tObnovit b\u011bh v\u0161ech pozastaven\u00fdch komponent serveru. S pomoc\u00ed volby \n \t--target je mo\u017en\u00e9 obnovit pouze b\u011bh konkr\u00e9tn\u00edch pozastaven\u00fdch komponent.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="f\u00e1ze kontroln\u00edho bodu "
+option-desc.checkpoint.at=\tUv\u00e1d\u00ed f\u00e1zi kontroln\u00edho bodu. Platn\u00e9 hodnoty jsou: beforeAppStart \nnebo afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tVy\u010dist\u00ed ve\u0161ker\u00e9 informace ulo\u017een\u00e9 v mezipam\u011bti vztahuj\u00edc\u00ed se k t\u00e9to instanci serveru. 

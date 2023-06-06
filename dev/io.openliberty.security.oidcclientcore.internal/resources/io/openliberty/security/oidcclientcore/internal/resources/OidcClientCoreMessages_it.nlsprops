@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Nella risposta del token fornita da
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Il provider OpenID Connect non ha restituito un parametro obbligatorio o non \u00e8 riuscito a elaborare la richiesta del token.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verificare che l'endpoint del token configurato sia corretto e in grado di rispondere alle richieste del token OAuth.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: Il client [{0}] OpenID Connect non \u00e8 riuscito a creare un JWT (JSON Web Token) da utilizzare per l''autenticazione client. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Il client OpenID Connect \u00e8 configurato per utilizzare i JWT (JSON Web Token) per l'autenticazione client, ma si \u00e8 verificato un errore durante la creazione del token.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Il client [{0}] OpenID Connect \u00e8 privo della chiave necessaria per firmare il token per l''autenticazione client.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Alla configurazione del client OpenID Connect mancano dei dati oppure non \u00e8 possibile trovare una chiave con il nome alias della chiave nella configurazione SSL per il client OpenID Connect.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Verificare che nel client OpenID Connect siano configurati un nome alias chiave e un riferimento SSL. Verificare che il keystore a cui fa riferimento la configurazione SSL contenga una chiave il cui alias corrisponda al nome alias della chiave nella configurazione del client OpenID Connect.

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: Cererea de delogare back-ch
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=Configura\u021bia de logare la re\u021belele sociale nu este un client OpenID Connect, deci nu suport\u0103 delogarea back-channel.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utiliza\u021bi terminalul de delogare adecvat pentru configura\u021bia de logare la re\u021belele sociale.
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Clientul OpenID Connect {0} utilizeaz\u0103 metoda de autentificare a punctului final de jeton {1}. Aceast\u0103 metod\u0103 de autentificare necesit\u0103 un secret al clientului, dar secretul clientului nu este configurat.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Metoda de autentificare a punctului final de jeton care este specificat\u0103 \u00een mesaj necesit\u0103 un secret al clientului pentru autentificarea cu punctul final de jeton al furnizorului OpenID Connect.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configura\u021bi un secret de client pentru clientul OpenID Connect sau comuta\u021bi metoda clientului de autentificare a punctului final de jeton la una care nu necesit\u0103 un secret al clientului.

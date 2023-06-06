@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: \u975e\u6cd5\u53c2\u6570\u5f02\u5e38\uff1a\u5c1d\u8bd5\u5199\u5165\u7684\u5b57\u7b26\u6570\u5c0f\u4e8e 0
 Illegal.Argument.Trying.to.write.chars.explanation=\u5c1d\u8bd5\u8f93\u51fa\u5927\u5c0f\u5c0f\u4e8e 0 \u7684\u7f13\u51b2\u533a\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002

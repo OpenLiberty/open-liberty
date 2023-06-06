@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Pentru mai multe inform
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Un jeton de delogare back-channel bazat pe un jeton de ID memorat \u00een cache cu revendic\u0103rile [{0}] pentru clientul {1} nu poate fi creat, din cauza urm\u0103toarei erori: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=O ap\u0103rut o eroare la construirea \u0219irului jetonului de delogare. Mai este posibil ca emitentul jetonului de ID memorat \u00een cache s\u0103 nu se potriveasc\u0103 cu acest furnizor OpenID Connect sau ca jetonului de ID din cache s\u0103-i lipseasc\u0103 unele revendic\u0103ri.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea inclus\u0103 \u00een mesaj.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: Revendicarea aud [{0}] din parametrul id_token_hint nu se potrive\u0219te cu valoarea [{1}] pentru parametrul de cerere client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Atunci c\u00e2nd sunt prezen\u021bi ambii parametri, at\u00e2t client_id, c\u00e2t \u0219i id_token_hint, identificatorul de client din jetonul de ID trebuie s\u0103 se potriveasc\u0103 cu valoarea care este furnizat\u0103 pentru parametrul client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea parametrului client_id se potrive\u0219te cu revendicarea aud din jetonul de ID.

@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Excepci\u00f3n de argumento no permitido: Se est\u00e1n intentando escribir < 0 caracteres
 Illegal.Argument.Trying.to.write.chars.explanation=Se ha intentando escribir un almacenamiento intermedio de un tama\u00f1o inferior a 0. Se trata de un error de aplicaci\u00f3n.

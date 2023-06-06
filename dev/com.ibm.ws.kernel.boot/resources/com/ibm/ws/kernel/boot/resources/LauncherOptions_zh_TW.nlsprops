@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\t\u9019\u662f JVM \u9078\u9805\uff0c\u7528\u4f86\u6307\u5b9a\u8a2d\u5099\u6e2c\u8a66\u7684\u4ee3\u7406\u7a0b\u5f0f\u3002  \n\t\u57f7\u884c\u6642\u671f\u4f7f\u7528\u8a2d\u5099\u6e2c\u8a66\u4f86\u6536\u96c6\u8ffd\u8e64\u548c\u5176\u4ed6\u9664\u932f\n\t\u8cc7\u8a0a\u3002bootstrap-agent.jar \u8207\u7528\u4f86\u555f\u52d5\u57f7\u884c\u6642\u671f\u7684 JAR\n\t\u4f4d\u65bc\u76f8\u540c\u76ee\u9304\u4e2d\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\t\u5728\u6307\u5b9a\u7684\u6aa2\u67e5\u9ede\u968e\u6bb5\u5c0d\u6307\u540d\u4f3a\u670d\u5668\u9032\u884c\u6aa2\u67e5\u9ede\u6aa2\u67e5\u4f5c\u696d\u3002 \u4f7f\u7528\n --at \u9078\u9805\u4f86\u6307\u5b9a\u6aa2\u67e5\u9ede\u968e\u6bb5\u3002 \u7576\u6aa2\u67e5\u9ede\n\u5b8c\u6210\u6642\uff0c\u4f3a\u670d\u5668\u6703\u505c\u6b62\uff0c\u4e14\u5176\u73fe\u884c\u72c0\u614b\u6703\u5beb\u5165\n\u78c1\u789f\u3002 \u9019\u500b\u6aa2\u67e5\u9ede\u6703\u5728\u4f3a\u670d\u5668\u555f\u52d5\u6642\u63d0\u4f9b InstantOn \n\u884c\u70ba\u3002 \u7576\u6aa2\u67e5\u9ede\u5b8c\u6210\u6642\uff0c\u60a8\u53ef\u4ee5\u4f7f\u7528\u57f7\u884c\u6216\u555f\u52d5\u52d5\u4f5c\uff0c\n\u4ee5 InstantOn \u555f\u52d5\u4f3a\u670d\u5668\u3002
 action-key.create=\ \ \ \ --create
 action-desc.create=\t\u5982\u679c\u6307\u5b9a\u7684\u4f3a\u670d\u5668\u4e0d\u5b58\u5728\uff0c\u5247\u5efa\u7acb\u65b0\u4f3a\u670d\u5668\u3002\n\t--template \u9078\u9805\u53ef\u7528\u4f86\u6307\u5b9a\u5efa\u7acb\u65b0\u4f3a\u670d\u5668\u6642\n\t\u8981\u4f7f\u7528\u7684\u7bc4\u672c\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\t\u66ab\u505c\u4f3a\u670d\u5668\u4e2d\u6240\u6709\u53ef\u66ab
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\t\u56de\u5fa9\u4f3a\u670d\u5668\u4e2d\u6240\u6709\u66ab\u505c\u7684\u5143\u4ef6\u3002\u60a8\u53ef\u4ee5\u6307\u5b9a\n\t--target \u9078\u9805\uff0c\u4f86\u56de\u5fa9\u7279\u5b9a\u7684\u66ab\u505c\u5143\u4ef6\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="checkpoint phase"
+option-desc.checkpoint.at=\t\u6307\u5b9a\u6aa2\u67e5\u9ede\u968e\u6bb5\u3002 \u6709\u6548\u503c\u70ba\uff1abeforeAppStart\n \u6216 afterAppStart\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\t\u6e05\u9664\u8207\u6b64\u4f3a\u670d\u5668\u5be6\u4f8b\u76f8\u95dc\u7684\u6240\u6709\u5feb\u53d6\u8cc7\u8a0a\u3002

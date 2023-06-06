@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: V odezv\u011b tokenu od poskytovate
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nevr\u00e1til povinn\u00fd parametr, nebo selhal p\u0159i zpracov\u00e1n\u00ed po\u017eadavku tokenu.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Ov\u011b\u0159te, zda je nakonfigurovan\u00fd koncov\u00fd bod tokenu spr\u00e1vn\u00fd a schopn\u00fd odpov\u00eddat na po\u017eadavky tokenu OAuth.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: Klientovi [{0}] OpenID Connect se nezda\u0159ilo sestavit webov\u00fd token JSON, kter\u00fd m\u00e1 b\u00fdt pou\u017eit pro ov\u011b\u0159en\u00ed klienta. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Klient OpenID Connect je nakonfigurov\u00e1n tak, aby pou\u017e\u00edval tokeny webov\u00fdch token\u016f JSON pro ov\u011b\u0159en\u00ed klienta, ale p\u0159i vytv\u00e1\u0159en\u00ed tokenu do\u0161lo k chyb\u011b.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Klient [{0}] OpenID Connect postr\u00e1d\u00e1 kl\u00ed\u010d nutn\u00fd k podeps\u00e1n\u00ed tokenu pro ov\u011b\u0159en\u00ed klienta.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Konfigurace klienta OpenID Connect postr\u00e1d\u00e1 data, nebo nelze nal\u00e9zt kl\u00ed\u010d s n\u00e1zvem aliasu kl\u00ed\u010de v konfiguraci SSL pro klienta OpenID Connect.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Ujist\u011bte se, \u017ee m\u00e1 klient OpenID Connect nakonfigurov\u00e1n n\u00e1zev aliasu kl\u00ed\u010de a odkaz na SSL. Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, na kter\u00e9 odkazuje konfigurace SSL, obsahuje kl\u00ed\u010d, jeho\u017e alias odpov\u00edd\u00e1 n\u00e1zvu aliasu kl\u00ed\u010de v konfiguraci klienta OpenID Connect.

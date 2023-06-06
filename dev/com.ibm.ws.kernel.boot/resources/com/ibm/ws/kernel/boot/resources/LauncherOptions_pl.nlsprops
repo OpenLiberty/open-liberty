@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tOpcja maszyny JVM umo\u017cliwiaj\u0105ca okre\u015blenie agenta na potrzeby instrumentacji.   \n\t\u015arodowisko wykonawcze u\u017cywa instrumentacji do gromadzenia danych \u015bledzenia \n\ti innych informacji debugowania. Plik bootstrap-agent.jar znajduje si\u0119 w tym \n\tsamym katalogu co plik jar u\u017cywany do uruchomienia \u015brodowiska wykonawczego.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tPunkt kontrolny dla nazwanego serwera w okre\u015blonej fazie punktu kontrolnego. U\u017cyj \n    opcji --at, aby okre\u015bli\u0107 faz\u0119 punktu kontrolnego. Po zako\u0144czeniu punktu \nkontrolnego serwer zatrzymuje si\u0119, a jego bie\u017c\u0105cy stan jest zapisywany \nna dysku. Ten punkt kontrolny zapewnia zachowanie InstantOn podczas uruchamiania \nserwera. Po zako\u0144czeniu punktu kontrolnego mo\u017cna uruchomi\u0107 serwer \nz opcj\u0105 InstantOn, korzystaj\u0105c z dzia\u0142ania uruchamiania lub uruchamiania.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tUtw\u00f3rz nowy serwer, je\u015bli okre\u015blony serwer nie istnieje. Do okre\u015blenia\n\tszablonu u\u017cywanego przy tworzeniu nowego serwera mo\u017cna u\u017cy\u0107 opcji --template\n\t.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tWstrzymaj wszystkie komponenty na serwerze, kt\u00f3re mo\u0
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tWzn\u00f3w wszystkie wstrzymane komponenty na serwerze. Mo\u017cesz poda\u0107 \n\topcj\u0119 --target, aby wznowi\u0107 konkretne wstrzymane komponenty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="faza punktu kontrolnego"
+option-desc.checkpoint.at=\tOkre\u015bla faz\u0119 punktu kontrolnego. Poprawne warto\u015bci to: beforeAppStart \ni afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacje odnosz\u0105ce si\u0119 do tej instancji serwera.             

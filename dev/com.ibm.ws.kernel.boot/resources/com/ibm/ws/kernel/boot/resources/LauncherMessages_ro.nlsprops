@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Cererea de punct de control 
 error.checkpoint.failed.selinux.netdiag.explanation=O cerere de punct de control pentru server a e\u0219uat, deoarece apelurile sistemului netlink nu au avut succes.
 error.checkpoint.failed.selinux.netdiag.useraction=Dac\u0103 SELinux este activat \u00een modul de impunere, apelurile sistemului netlink ar putea fi blocate de setarea de politic\u0103 SELinux "virt_sandbox_use_netlink". Fie dezactiva\u021bi SELinux, fie activa\u021bi apelurile sistemului netlink cu comanda "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Serverul nu s-a lansat, deoarece recuperarea prin restaurarea unui punct de control este dezactivat\u0103.
+error.checkpoint.restore.failed.no.recovery.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control. Serverul nu s-a lansat, deoarece recuperarea prin restaurarea unui punct de control este dezactivat\u0103.
+error.checkpoint.restore.failed.no.recovery.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit. Pentru a permite recuperarea din e\u0219ec prin restaurare, seta\u021bi variabila de mediu CRIU_RESTORE_DISABLE_RECOVERY la adev\u0103rat.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

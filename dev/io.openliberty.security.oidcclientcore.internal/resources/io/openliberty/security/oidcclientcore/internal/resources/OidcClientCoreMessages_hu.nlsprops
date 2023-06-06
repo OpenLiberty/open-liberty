@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Az OpenID Connect szolg\u00e1ltat\u
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Vagy a OpenID Connect szolg\u00e1ltat\u00f3 nem adott vissza k\u00f6telez\u0151 param\u00e9tert, vagy nem tudta feldolgozni a token k\u00e9r\u00e9st.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Ellen\u0151rizze, hogy a be\u00e1ll\u00edtott token v\u00e9gpont helyes \u00e9s k\u00e9pes-e az OAuth token k\u00e9r\u00e9sek megv\u00e1laszol\u00e1s\u00e1ra.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l nem tudott \u00f6ssze\u00e1ll\u00edtani egy JSON Web Tokent az \u00fcgyf\u00e9lhiteles\u00edt\u00e9shez. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l JSON Web tokenek haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva az \u00fcgyf\u00e9lhiteles\u00edt\u00e9shez, de hiba t\u00f6rt\u00e9nt a token l\u00e9trehoz\u00e1sakor.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Az [{0}] OpenID Connect \u00fcgyf\u00e9l nem rendelkezik a kulccsal, amely az \u00fcgyf\u00e9lhiteles\u00edt\u00e9shez sz\u00fcks\u00e9ges token al\u00e1\u00edr\u00e1s\u00e1hoz sz\u00fcks\u00e9ges.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Az OpenID Connect \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyoznak adatok, vagy egy kulcs nem tal\u00e1lhat\u00f3 meg a kulcs\u00e1ln\u00e9vvel az OpenID Connect \u00fcgyf\u00e9l SSL konfigur\u00e1ci\u00f3j\u00e1ban.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9lhez be van \u00e1ll\u00edtva kulcs\u00e1ln\u00e9v \u00e9s SSL hivatkoz\u00e1s. Ellen\u0151rizze, hogy az SSL konfigur\u00e1ci\u00f3 \u00e1ltal hivatkozott kulcst\u00e1rol\u00f3 tartalmaz-e egy kulcsot, amelynek \u00e1lneve megegyezik az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban megadott kulcs\u00e1ln\u00e9vvel.

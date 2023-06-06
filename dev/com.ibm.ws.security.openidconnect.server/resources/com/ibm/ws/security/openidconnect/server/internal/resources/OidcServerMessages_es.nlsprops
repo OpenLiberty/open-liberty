@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Para obtener m\u00e1s i
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: No se puede crear una se\u00f1al de cierre de sesi\u00f3n de canal de fondo basada en una se\u00f1al de ID en memoria cach\u00e9 con reclamaciones [{0}] para el cliente de {1} debido al error siguiente: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Se ha generado un error durante la creaci\u00f3n de la serie de la se\u00f1al de cierre de sesi\u00f3n. De forma alternativa, es posible que el emisor de la se\u00f1al de ID en memoria cach\u00e9 no coincida con este proveedor de OpenID Connect o que falte la se\u00f1al de ID almacenada en memoria cach\u00e9 falte en algunas reclamaciones que son necesarias.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error incluido en el mensaje.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: La reclamaci\u00f3n aud [{0}] dentro del par\u00e1metro id_token_hint no coincide con el valor [{1}] del par\u00e1metro de solicitud client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Cuando est\u00e1n presentes los par\u00e1metros client_id e id_token_hint, el identificador de cliente dentro de la se\u00f1al de ID debe coincidir con el valor que se proporciona para el par\u00e1metro client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Aseg\u00farese de que el valor del par\u00e1metro client_id coincide con la reclamaci\u00f3n aud en la se\u00f1al de ID.

@@ -607,7 +607,7 @@
 
 7342=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru setarea permite interog\u0103ri sql native, este invalid\u0103, valoarea trebuie s\u0103 fie ori "true" ori "false".
 
-7343=Au fost specifica\u021bi mai mul\u021bi identificatori VPD (proprietatea contextului discriminator de chiria\u0219). Entitatea [{1}] utilizeaz\u0103 [{0}] \u0219i Entitatea [{3}] utilizeaz\u0103 [{2}]. C\u00e2nd se utilizeaz\u0103 o strategie VPD multi-chiria\u0219, poate exista o singur\u0103 coloan\u0103 de discriminator de chiria\u0219 per entitate \u0219i proprietatea sa de context trebuie s\u0103 fie consecvent\u0103 pentru toate entit\u0103\u021bile VPD multi-chiria\u0219.
+7343=Au fost specifica\u021bi mai mul\u021bi identificatori VPD (proprietatea contextului discriminator de chiria\u0219). Entitatea [{1}] utilizeaz\u0103 [{0}] \u0219i Entitatea [{3}] utilizeaz\u0103 [{2}]. Strategia VPD multi-chiria\u0219 permite o singur\u0103 coloan\u0103 de discriminator de chiria\u0219i pentru fiecare entitate \u0219i proprietatea sa de context s\u0103u trebuie s\u0103 fie consecvent\u0103 \u00een toate entit\u0103\u021bile VPD multi-chiria\u0219.
 
 7344=VPD (conexiuni \u015fi generare DDL) nu este suportat pentru platforma: [{0}].
 

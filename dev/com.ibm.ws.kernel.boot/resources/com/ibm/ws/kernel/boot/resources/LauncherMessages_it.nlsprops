@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La richiesta di checkpoint d
 error.checkpoint.failed.selinux.netdiag.explanation=Una richiesta di checkpoint per il server non \u00e8 riuscita perch\u00e9 le chiamate di sistema netlink hanno avuto esito negativo.
 error.checkpoint.failed.selinux.netdiag.useraction=Se SELinux \u00e8 abilitato in modalit\u00e0 di applicazione, le chiamate di sistema netlink potrebbero essere bloccate dall'impostazione della politica "virt_sandbox_use_netlink" di SELinux. Disabilitare SELinux o abilitare le chiamate di sistema netlink con il comando "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Ripristino del processo del server di checkpoint non riuscito. Controllare il log {0} per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Il server non \u00e8 stato avviato perch\u00e9 il recupero del ripristino del checkpoint \u00e8 disabilitato.
+error.checkpoint.restore.failed.no.recovery.explanation=Si \u00e8 verificato un errore durante il ripristino di un processo del server di checkpoint. Il server non \u00e8 stato avviato perch\u00e9 il recupero del ripristino del checkpoint \u00e8 disabilitato.
+error.checkpoint.restore.failed.no.recovery.useraction=Controllare i log per determinare il motivo per cui il processo di checkpoint non \u00e8 stato ripristinato. Per abilitare il recupero dall'errore di ripristino, impostare la variabile d'ambiente CRIU_RESTORE_DISABLE_RECOVERY su true.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.

@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Excep\u0163ie argument ilegal: \u00cencercarea de a scrie < 0 caractere
 Illegal.Argument.Trying.to.write.chars.explanation=\u00cencercare de furnizare a unui buffer de dimensiune mai mic\u0103 de 0. Aceasta este o eroare de aplica\u0163ie.

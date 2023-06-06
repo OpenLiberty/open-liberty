@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u00c9rv\u00e9nytele
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Rossz form\u00e1tum\u00fa cookie-t tartalmaz\u00f3 k\u00e9r\u00e9s \u00e9rkezett.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3i \u00e9s az \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3kat. A rosszul form\u00e1zott cookie-t okozhatja, hogy a cookie m\u00f3dos\u00edt\u00e1sa a felhaszn\u00e1l\u00f3 \u00fcgyf\u00e9len olyan hosztn\u00e9vvel t\u00f6rt\u00e9nt, ami elt\u00e9r a szolg\u00e1ltat\u00f3n regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1si hosztn\u00e9vt\u0151l. Ha a hosztn\u00e9v elv\u00e1rt, akkor adja azt hozz\u00e1 a webAppSecurity elem wasReqURLRedirectDomainNames attrib\u00fatum\u00e1hoz a server.xml f\u00e1jlban.
 
-# 1533-1544 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: A hiteles\u00edt\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert az OpenID Connect szolg\u00e1ltat\u00f3 a k\u00f6vetkez\u0151 {0} hib\u00e1t adta vissza: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=A megadott v\u00e1lasz\u00e1llapot azt jelezte, hogy a hiteles\u00edt\u00e9s nem volt sikeres. Az \u00fczenetben megadott hiba \u00e9s hibale\u00edr\u00e1s tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaz.
+REDIRECT_URI_CONTAINED_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

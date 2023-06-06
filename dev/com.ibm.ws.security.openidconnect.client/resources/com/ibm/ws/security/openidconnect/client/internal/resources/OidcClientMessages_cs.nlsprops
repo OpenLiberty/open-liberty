@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Po\u017eadavek na [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Byl p\u0159ijat po\u017eadavek, kter\u00fd obsahuje chybn\u00fd soubor cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bn\u00fd soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben \u00fapravou soubor\u016f cookie na agentovi u\u017eivatele s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Je-li o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomainNames prvku webAppSecurity v souboru server.xml.
 
-# 1533-1544 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: Po\u017eadavek na ov\u011b\u0159en\u00ed se nezda\u0159il, proto\u017ee poskytovatel OpenID Connect vr\u00e1til n\u00e1sleduj\u00edc\u00ed chybu {0}: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=Zadan\u00fd stav odezvy ozna\u010dil, \u017ee ov\u011b\u0159ov\u00e1n\u00ed nebylo \u00fasp\u011b\u0161n\u00e9. Chyba a popis chyby uveden\u00e9 ve zpr\u00e1v\u011b obsahuj\u00ed dal\u0161\u00ed informace.
+REDIRECT_URI_CONTAINED_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

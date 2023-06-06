@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
@@ -8,7 +9,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -38,13 +39,13 @@
 
 2005=Selh\u00e1n\u00ed \u010dek\u00e1n\u00ed u obslu\u017en\u00e9 rutiny p\u0159ipojen\u00ed posloupnosti pro relaci datab\u00e1ze.
 
-2006=Byl proveden pokus o z\u00edsk\u00e1n\u00ed hodnot posloupnosti p\u0159es jedno p\u0159ipojen\u00ed ({0}) sou\u010dasn\u011b ve v\u00edce podprocesech
+2006=Byl proveden pokus o z\u00edsk\u00e1n\u00ed hodnot sekvencov\u00e1n\u00ed p\u0159es jedno p\u0159ipojen\u00ed ({0}) sou\u010dasn\u011b ve v\u00edce podprocesech.
 
 2007=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt: {0}. Nezda\u0159ilo se klonovat objekt.
 
 2008=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt: {0}. Nezda\u0159ilo se slou\u010dit transakci.
 
-2009=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt. Nezda\u0159ilo se sestavit objekt. Podproces: {0} m\u00e1 z\u00e1mek na objektu, ale podproces: {1} je sestavuj\u00edc\u00edm objektem
+2009=Byl p\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f zamknout objekt.  Nezda\u0159ilo se sestavit objekt. Podproces: {0} m\u00e1 z\u00e1mek na objektu, ale podproces: {1} je sestavuj\u00edc\u00edm objektem.
 
 2010=Z\u00e1mek je ji\u017e p\u0159eveden na odlo\u017een\u00fd z\u00e1mek. Druh\u00fd pokus o p\u0159eveden\u00ed z\u00e1mku byl vy\u017e\u00e1d\u00e1n podprocesem: {0} b\u011bhem slou\u010den\u00ed.
 

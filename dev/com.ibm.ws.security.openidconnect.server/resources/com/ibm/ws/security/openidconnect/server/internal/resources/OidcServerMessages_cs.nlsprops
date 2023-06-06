@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Dal\u0161\u00ed informa
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Token odhl\u00e1\u0161en\u00ed v postrann\u00edm komunika\u010dn\u00edm kan\u00e1lu, kter\u00fd je zalo\u017een na token ID v mezipam\u011bti s n\u00e1roky [{0}] pro klienta {1}, nelze vytvo\u0159it kv\u016fli n\u00e1sleduj\u00edc\u00ed chyb\u011b: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Do\u0161lo k chyb\u011b p\u0159i sestavov\u00e1n\u00ed \u0159et\u011bzce tokenu odhl\u00e1\u0161en\u00ed. Nebo vydavatel token ID ulo\u017een\u00e9ho v mezipam\u011bti nemus\u00ed odpov\u00eddat tomuto poskytovateli OpenID Connect, nebo token ID v mezipam\u011bti postr\u00e1d\u00e1 n\u011bkter\u00e9 n\u00e1roky, kter\u00e9 jsou vy\u017eadov\u00e1ny.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Dal\u0161\u00ed informace naleznete v chybov\u00e9 zpr\u00e1v\u011b obsa\u017een\u00e9 ve zpr\u00e1v\u011b. 
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: N\u00e1rok p\u0159\u00edjemce (aud) [{0}] v r\u00e1mci parametru id_token_hint neodpov\u00edd\u00e1 hodnot\u011b [{1}] pro parametr po\u017eadavku client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Pokud jsou p\u0159\u00edtomny parametry client_id i id_token_hint, mus\u00ed se identifik\u00e1tor klienta v tokenu ID shodovat s hodnotou, kter\u00e1 je zad\u00e1na pro parametr client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Ujist\u011bte se, \u017ee hodnota parametru client_id odpov\u00edd\u00e1 n\u00e1roku p\u0159\u00edjemce (aud) v tokenu ID.

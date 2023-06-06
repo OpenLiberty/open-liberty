@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Cererea pentru [{0}]
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A fost primit\u0103 o cerere care include un modul cookie afectat.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifica\u021bi configura\u021bia furnizorului OpenID Connect \u0219i configura\u021biile clientului. Modulul cookie afectat poate fi cauzat de modificarea modului cookie de c\u0103tre reprezentantul utilizatorului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 al redirec\u021bion\u0103rii \u00eenregistrate la furnizor. Dac\u0103 se a\u0219teapt\u0103 numele de gazd\u0103, atunci ad\u0103uga\u021bi-l la atributul wasReqURLRedirectDomainNames al elementului webAppSecurity \u00een server.xml.
 
-# 1533-1544 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: O cerere de autentificare a e\u0219uat, deoarece furnizorul OpenID Connect a returnat urm\u0103toarea eroare {0}: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=Starea r\u0103spunsului specificat a indicat c\u0103 autentificarea nu a avut succes. Eroarea \u0219i descrierea erorii care sunt furnizate \u00een mesaj con\u021bin informa\u021bii suplimentare.
+REDIRECT_URI_CONTAINED_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

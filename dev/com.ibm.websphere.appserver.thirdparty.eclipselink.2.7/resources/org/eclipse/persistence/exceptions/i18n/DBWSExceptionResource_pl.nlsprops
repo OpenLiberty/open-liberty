@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
@@ -8,7 +9,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -28,21 +29,21 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-47000=Nie mo\u017cna znale\u017a\u0107 pliku [{0}]
+47000=Nie mo\u017cna znale\u017a\u0107 pliku "[{0}]"
 
-47001=Nie mo\u017cna znale\u017a\u0107 deskryptora [{0}] dla operacji [{1}] w projekcie O-R
+47001=W projekcie O-R nie mo\u017cna znale\u017a\u0107 deskryptora [{0}] dla operacji [{1}]
 
-47002=Nie mo\u017cna znale\u017a\u0107 zapytania [{0}] dla deskryptora [{1}]
+47002=Nie mo\u017cna znale\u017a\u0107 zapytania "[{0}]" dla deskryptora [{1}]
 
-47003=Nie mo\u017cna znale\u017a\u0107 zapytania [{0}] dla sesji [{1}]
+47003=Nie mo\u017cna znale\u017a\u0107 zapytania "[{0}]" dla sesji [{1}]
 
-47004=Typ parametru [{0}] dla operacji [{1}] nie istnieje w schemacie
+47004=Typu parametru [{0}] (dla operacji [{1}]) nie ma w schemacie
 
-47005=Typ parametru [{0}] dla operacji [{1}] nie ma odwzorowania O-X
+47005=[{0}] typ parametru (dla operacji [{1}]) nie ma odwzorowania O-X.
 
-47006=Typ wyniku [{0}] dla operacji [{1}] nie istnieje w schemacie
+47006=[{0}] typ wyniku (dla operacji [{1}]) nie istnieje w schemacie
 
-47007=Typ wyniku [{0}] dla operacji [{1}] nie ma odwzorowania O-X
+47007=[{0}] typ wyniku (dla operacji [{1}]) nie ma odwzorowania O-X.
 
 47008=Tylko zapytania w prostym formacie XML obs\u0142uguj\u0105 wiele argument\u00f3w wyj\u015bciowych
 

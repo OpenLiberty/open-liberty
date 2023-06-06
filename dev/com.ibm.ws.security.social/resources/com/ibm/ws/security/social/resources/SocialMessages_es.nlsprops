@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: La solicitud de cierre de s
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=La configuraci\u00f3n de inicio de sesi\u00f3n de redes sociales no es un cliente de OpenID Connect, por lo que no da soporte al cierre de sesi\u00f3n de canal de fondo.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Utilice el punto final de cierre de sesi\u00f3n adecuado para la configuraci\u00f3n de inicio de sesi\u00f3n de redes sociales.
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: El cliente de {0} OpenID Connect utiliza el m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al {1}. Este m\u00e9todo de autenticaci\u00f3n requiere un secreto de cliente, pero no se ha configurado un secreto de cliente.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=El m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al que se especifica en el mensaje requiere un secreto de cliente para autenticarse con el punto final de se\u00f1al del proveedor de OpenID Connect.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configure un secreto de cliente para el cliente de OpenID Connect, o cambie el m\u00e9todo de autenticaci\u00f3n de punto final de se\u00f1al del cliente a uno que no requiera un secreto de cliente.

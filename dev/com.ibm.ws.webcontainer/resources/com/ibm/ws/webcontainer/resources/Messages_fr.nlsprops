@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Exception d'argument incorrect : Tentative d'\u00e9criture < 0 caract\u00e8res
 Illegal.Argument.Trying.to.write.chars.explanation=Tentative de g\u00e9n\u00e9ration d'un tampon dont la taille est inf\u00e9rieure \u00e0 z\u00e9ro. Il s'agit d'une erreur d'application.

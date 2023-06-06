@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tEz egy JVM param\u00e9ter, amellyel megadhat\u00f3 egy \u00fcgyn\u00f6k a bytek\u00f3dd\u00e1 alak\u00edt\u00e1shoz (instrumentation).   \n\tA fut\u00e1si k\u00f6rnyezet ezt a funkci\u00f3t haszn\u00e1lja a nyomk\u00f6vet\u00e9si \u00e9s egy\u00e9b hibakeres\u00e9si inform\u00e1ci\u00f3k\n\t\u00f6sszegy\u0171jt\u00e9s\u00e9hez. A bootstrap-agent.jar f\u00e1jlnak ugyanabban a k\u00f6nyvt\u00e1rban kell lennie,\n\tmint a fut\u00e1si k\u00f6rnyezet ind\u00edt\u00e1s\u00e1hoz haszn\u00e1lt jar f\u00e1jlnak.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tVissza\u00e1ll\u00edt\u00e1s-pont l\u00e9tes\u00edt\u00e9se a kiszolg\u00e1l\u00f3hoz a megadott ellen\u0151rz\u0151 pont f\u00e1zisban. Az ellen\u0151rz\u0151 \n pont f\u00e1zis megad\u00e1s\u00e1hoz haszn\u00e1lja az --at param\u00e9tert. Amikor a vissza\u00e1ll\u00edt\u00e1s-pont\n l\u00e9tes\u00edt\u00e9se befejez\u0151dik, a kiszolg\u00e1l\u00f3 le\u00e1ll, \u00e9s az aktu\u00e1lis \u00e1llapota ki\u00edr\u00f3dik a \n lemezre. Ez az ellen\u0151rz\u0151 pont InstantOn viselked\u00e9st biztos\u00edt a kiszolg\u00e1l\u00f3 \nindul\u00e1sakor. Amikor a vissza\u00e1ll\u00edt\u00e1s-pont l\u00e9tes\u00edt\u00e9se befejez\u0151dik, a \nkiszolg\u00e1l\u00f3t az InstantOn viselked\u00e9ssel a futtat\u00e1s vagy az ind\u00edt\u00e1s m\u0171velet haszn\u00e1lat\u00e1val ind\u00edthatja el.
 action-key.create=\ \ \ \ --create
 action-desc.create=\t\u00daj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sa, ha a megadott kiszolg\u00e1l\u00f3 nem l\u00e9tezik. A        \n\t--template param\u00e9terrel adhat\u00f3 meg egy sablon haszn\u00e1lata \u00faj          \n\tkiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1sakor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tMinden v\u00e1rakoztathat\u00f3 \u00f6sszetev\u0151 v\u00e1r
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --folytat\u00e1s
 action-desc.resume=\tMinden v\u00e1rakoztatott \u00f6sszetev\u0151 folytat\u00e1sa a kiszolg\u00e1l\u00f3n. A \n\t--c\u00e9lbe\u00e1ll\u00edt\u00e1s megad\u00e1s\u00e1val konkr\u00e9t v\u00e1rakoztatott \u00f6sszetev\u0151k folytat\u00e1s\u00e1t is meghat\u00e1rozhatja.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="ellen\u0151rz\u0151 pont f\u00e1zis"
+option-desc.checkpoint.at=\tMegadja az ellen\u0151rz\u0151 pont f\u00e1zist. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: beforeAppStart \n vagy afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tT\u00f6rli a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny \u00f6sszes gyors\u00edt\u00f3t\u00e1razott inform\u00e1ci\u00f3it.             

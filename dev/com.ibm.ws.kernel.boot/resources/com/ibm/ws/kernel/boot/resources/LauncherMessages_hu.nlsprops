@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: A kiszolg\u00e1l\u00f3 ellen
 error.checkpoint.failed.selinux.netdiag.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult, mert a netlink rendszerh\u00edv\u00e1sok sikertelenek voltak.
 error.checkpoint.failed.selinux.netdiag.useraction=Ha a SELinux k\u00e9nyszer\u00edt\u0151 m\u00f3dban van enged\u00e9lyezve, akkor a netlink rendszerh\u00edv\u00e1sokat blokkolhatja a SELinux "virt_sandbox_use_netlink" ir\u00e1nyelv-be\u00e1ll\u00edt\u00e1s. Tiltsa le a SELinux modult, vagy enged\u00e9lyezze a netlink rendszerh\u00edv\u00e1sokat a "setsebool virt_sandbox_use_netlink 1" paranccsal.
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 nem indult el, mert az ellen\u0151rz\u00e9si pont vissza\u00e1ll\u00edt\u00e1si helyre\u00e1ll\u00edt\u00e1s le van tiltva.
+error.checkpoint.restore.failed.no.recovery.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor. A kiszolg\u00e1l\u00f3 nem indult el, mert az ellen\u0151rz\u00e9si pont vissza\u00e1ll\u00edt\u00e1si helyre\u00e1ll\u00edt\u00e1s le van tiltva.
+error.checkpoint.restore.failed.no.recovery.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A hib\u00e1s vissza\u00e1ll\u00edt\u00e1s ut\u00e1ni helyre\u00e1ll\u00edt\u00e1s enged\u00e9lyez\u00e9s\u00e9hez \u00e1ll\u00edtsa a CRIU_RESTORE_DISABLE_RECOVERY k\u00f6rnyezeti v\u00e1ltoz\u00f3t true \u00e9rt\u00e9kre.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.
