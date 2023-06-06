@@ -4552,11 +4552,6 @@
       <version>3.0.2</version>
     </dependency>
     <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>0.6.5</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.equinox.console</artifactId>
       <version>1.4.300</version>
