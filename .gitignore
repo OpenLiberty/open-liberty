@@ -30,3 +30,6 @@
 
 # Ignore JetBrains .idea
 .idea
+
+# Ignore direnv files - for quickly switching between JDK levels between projects
+.envrc

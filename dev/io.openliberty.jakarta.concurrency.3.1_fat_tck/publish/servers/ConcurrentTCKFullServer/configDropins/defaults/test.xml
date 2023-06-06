@@ -1,9 +1,0 @@
-<server>
-    <!-- These are features that we do not want in the standalon WLP case test -->
-    <featureManager>
-	    <!-- Required by test infrastructure -->
-	    <feature>timedexit-1.0</feature>
-        <!-- Convenience feature -->
-	    <feature>arquillian-support-jakarta-2.1</feature>
-	</featureManager>
-</server>

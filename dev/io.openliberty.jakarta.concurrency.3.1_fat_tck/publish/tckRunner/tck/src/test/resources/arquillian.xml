@@ -9,23 +9,24 @@
 <arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://jboss.org/schema/arquillian"
 	xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+	
 	<engine>
 		<property name="deploymentExportPath">target/</property>
 	</engine>
-	<container qualifier="wlp-remote" default="true">
+	
+	<container qualifier="wlp-managed" default="true">
 		<configuration>
 			<!-- Each variable used is set in surefire config in running pom.xml -->
 			<property name="wlpHome">${wlp}</property>
 			<property name="serverName">${tck_server}</property>
-			<property name="hostName">${tck_hostname}</property>
-			<property name="username">${tck_username}</property>
-			<property name="password">${tck_password}</property>
 			<property name="httpPort">${tck_port}</property>
-			<property name="httpsPort">${tck_port_secure}</property>
-			<property name="allowConnectingToRunningServer">true</property>
 			<property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+			
+			<!-- Specific to web/full profiles -->
+			<property name="testProtocol">servlet</property>
+			<property name="allowConnectingToRunningServer">true</property>
 		</configuration>
 	</container>
 </arquillian> 

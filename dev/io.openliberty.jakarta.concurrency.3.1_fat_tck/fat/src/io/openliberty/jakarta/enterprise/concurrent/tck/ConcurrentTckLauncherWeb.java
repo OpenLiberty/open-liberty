@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PortType;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
@@ -38,39 +38,31 @@ import componenttest.topology.utils.tck.TCKRunner;
  * tests as if they were running as simplicity junit FAT tests in the standard location.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
+@MinimumJavaLevel(javaLevel = 17)
 public class ConcurrentTckLauncherWeb {
 
     final static Map<String, String> additionalProps = new HashMap<>();
-
-    private static String suiteXmlFile = "tck-suite-web.xml"; //Default value
 
     @Server("ConcurrentTCKWebServer")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //UNCOMMENT - To test against a local snapshot of TCK
-//        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-//        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT");
+        //TODO Remove once TCK is available from stagging repo
+        additionalProps.put("jakarta.concurrent.tck.groupid", "io.openliberty.jakarta.enterprise.concurrent");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-20230802");
 
-        //username and password for Arquillian to authenticate to restConnect
-        additionalProps.put("tck_username", "arquillian");
-        additionalProps.put("tck_password", "arquillianPassword");
+        //Jakarta TCK platform
+        additionalProps.put("jakarta.tck.platform", "web");
 
-        //Logging properties for java.util.logging to use for mvn output
-        additionalProps.put("java.util.logging.config.file", server.getServerRoot() + "/resources/logging/logging.properties");
-
-        //username and password to set on quickStartSecurity
-        server.addEnvVar("tck_username", "arquillian");
-        server.addEnvVar("tck_password", "arquillianPassword");
-
-        //Ports liberty should be using for testing
-        server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
-        server.addEnvVar("tck_port_secure", "" + server.getPort(PortType.WC_defaulthost_secure));
+        // Skip signature testing on Windows.
+        // So far as I can tell the signature test plugin is not supported on this configuration
+        if (System.getProperty("os.name").contains("Windows")) {
+            Log.info(ConcurrentTckLauncherWeb.class, "setUp", "Skipping Jakarta Concurrency Signature Test on Windows");
+            additionalProps.put("jakarta.tck.platform", "web & !signature");
+        }
 
         Map<String, String> opts = server.getJvmOptionsAsMap();
-        //Path that jimage will output modules for signature testing
         opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
         server.setJvmOptions(opts);
 
@@ -83,6 +75,11 @@ public class ConcurrentTckLauncherWeb {
         server.stopServer(
                           "WLTC0032W", //Transaction rollback warning.
                           "WLTC0033W", //Transaction rollback warning.
+                          "J2CA0046E", //See: https://github.com/jakartaee/concurrency/issues/317
+                          "DSRA9400E", //See: https://github.com/jakartaee/concurrency/issues/317
+                          "CWWKC1101E", //See: https://github.com/jakartaee/concurrency/issues/317
+                          "CWWKE0955E", //websphere.java.security java 18+
+                          "CWWKS9582E", //Quickstart security
                           "CWWKS0901E" //Quickstart security
         );
     }
@@ -92,19 +89,12 @@ public class ConcurrentTckLauncherWeb {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchConcurrent30TCKWeb() throws Exception {
+    public void launchConcurrent31TCKWeb() throws Exception {
 
-        suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.WEB);
-
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
-        String testName = this.getClass() + ":launchConcurrent30TCKWeb";
+        String bucketName = "io.openliberty.jakarta.concurrency.3.1_fat_tck";
+        String testName = this.getClass() + ":launchConcurrent31TCKWeb";
         Type type = Type.JAKARTA;
         String specName = "Concurrency (Web)";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, null, additionalProps);
     }
 }
