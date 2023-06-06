@@ -58,6 +58,7 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -4563,7 +4564,7 @@ public class DataTestServlet extends FATServlet {
         try {
             products.save(prod1a);
             fail("Able to update using old version.");
-        } catch (DataException x) {
+        } catch (OptimisticLockingFailureException x) {
             if (x.getCause() != null && "jakarta.persistence.OptimisticLockException".equals(x.getCause().getClass().getName()))
                 ; // expected;
             else
