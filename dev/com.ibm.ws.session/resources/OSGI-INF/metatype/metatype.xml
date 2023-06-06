@@ -100,7 +100,7 @@
             name="%use.context.root.as.cookie.path" 
             description="%use.context.root.as.cookie.path.desc" 
             ibmui:group="cookies"
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" default="true" />
             
         <AD id="cookieSecure" 
             name="%cookie.secure" 
