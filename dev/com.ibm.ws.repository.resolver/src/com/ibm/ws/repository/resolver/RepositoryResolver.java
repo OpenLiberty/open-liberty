@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -689,8 +692,11 @@ public class RepositoryResolver {
     List<RepositoryResource> createInstallList(SampleResource resource) {
         List<MissingRequirement> missingRequirements = new ArrayList<>();
 
+        // Map from a feature to the position it should appear in the install list
+        HashMap<RepositoryResource, Integer> positionMap = new HashMap<>();
+        AtomicInteger nextPosition = new AtomicInteger(0);
         AtomicBoolean allDependenciesResolved = new AtomicBoolean(true);
-        ArrayList<ProvisioningFeatureDefinition> installList = new ArrayList<>();
+
         if (resource.getRequireFeature() != null) {
 
             List<ProvisioningFeatureDefinition> rootFeatures = new ArrayList<>();
@@ -709,15 +715,17 @@ public class RepositoryResolver {
                 }
             }
 
-            // We do a breadth first walk, adding features to the list. If we find a feature a second time, we move it to the end of the list.
-            // This creates a list ordered by their deepest occurrence in the tree which ensures that all the dependencies of a feature
-            // come after it in the list.
+            // We do a breadth first walk, collecting features for the list. If we find a feature a second time, we update the position to move it
+            // to the end of the list so far.
+            // This means the features can be ordered by their deepest occurrence in the tree which ensures that all dependencies of a feature come after
+            // it in the list.
+            // Note: Building a map of feature to position index is faster than building a list as we go and moving features to the end of the list if we find them twice.
             FeatureTreeWalker.walkOver(resolvedFeatures)
                              .forEach(f -> {
-                                 // Move the feature to the end if it's already in the list
-                                 // to ensure it comes after everything that depends on it
-                                 installList.remove(f);
-                                 installList.add(f);
+                                 RepositoryResource r = getResource(f);
+                                 if (r != null) {
+                                     positionMap.put(r, nextPosition.getAndIncrement());
+                                 }
                              })
                              .onMissingDependency((f, dependency) -> {
                                  if (featuresMissing.contains(dependency.getSymbolicName())) {
@@ -734,17 +742,14 @@ public class RepositoryResolver {
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Remove installed features from the list and convert to EsaResources
-        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>();
-        for (ProvisioningFeatureDefinition installFeature : installList) {
-            EsaResource featureResource = getResource(installFeature);
-            if (featureResource != null) {
-                resourceInstallList.add(featureResource);
-            }
-        }
-
-        // Our walk ensures that every feature comes before its dependencies, but we actually need it to be the other way around
-        Collections.reverse(resourceInstallList);
+        // Take the positionMap and convert it to an install list
+        // Put features in reverse order based on their position from the map so that all dependencies of a feature come before it in the list
+        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>(positionMap.size() + 1);
+        positionMap.entrySet()
+                   .stream()
+                   .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                   .map(Map.Entry::getKey)
+                   .forEachOrdered(resourceInstallList::add);
 
         // Add the sample itself to the end of the install list
         resourceInstallList.add(resource);
@@ -779,18 +784,23 @@ public class RepositoryResolver {
         }
 
         List<MissingRequirement> missingRequirements = new ArrayList<>();
-        List<ProvisioningFeatureDefinition> installList = new ArrayList<>();
         AtomicBoolean foundAll = new AtomicBoolean(true);
 
-        // We do a breadth first walk, adding features to the list. If we find a feature a second time, we move it to the end of the list.
-        // This creates a list ordered by their deepest occurrence in the tree which ensures that all the dependencies of a feature
-        // come after it in the list.
+        // Map from a feature to the position it should appear in the install list
+        HashMap<RepositoryResource, Integer> positionMap = new HashMap<>();
+        AtomicInteger nextPosition = new AtomicInteger(0);
+
+        // We do a breadth first walk, collecting features for the list. If we find a feature a second time, we update the position to move it
+        // to the end of the list so far.
+        // This means the features can be ordered by their deepest occurrence in the tree which ensures that all dependencies of a feature come after
+        // it in the list.
+        // Note: Building a map of feature to position index is faster than building a list as we go and moving features to the end of the list if we find them twice.
         FeatureTreeWalker.walkOver(resolvedFeatures)
                          .forEach(f -> {
-                             // Move the feature to the end if it's already in the list
-                             // to ensure it comes after everything that depends on it
-                             installList.remove(f);
-                             installList.add(f);
+                             RepositoryResource r = getResource(f);
+                             if (r != null) {
+                                 positionMap.put(r, nextPosition.getAndIncrement());
+                             }
                          })
                          .onMissingDependency((f, dependency) -> {
                              if (featuresMissing.contains(dependency.getSymbolicName())) {
@@ -806,19 +816,15 @@ public class RepositoryResolver {
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Remove installed features from the list and convert to EsaResources
-        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>();
-        for (ProvisioningFeatureDefinition installFeature : installList) {
-            EsaResource resource = getResource(installFeature);
-            if (resource != null) {
-                resourceInstallList.add(resource);
-            }
-        }
+        // Take the positionMap and convert it to an install list
+        // Put features in reverse order based on their position from the map so that all dependencies of a feature come before it in the list
+        List<RepositoryResource> installList = positionMap.entrySet()
+                                                          .stream()
+                                                          .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                                                          .map(Map.Entry::getKey)
+                                                          .collect(toList());
 
-        // Our walk ensures that every feature comes before its dependencies, but we actually need it to be the other way around
-        Collections.reverse(resourceInstallList);
-
-        return resourceInstallList;
+        return installList;
     }
 
     /**
