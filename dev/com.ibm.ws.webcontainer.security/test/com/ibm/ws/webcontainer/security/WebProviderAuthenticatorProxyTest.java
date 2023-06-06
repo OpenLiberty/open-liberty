@@ -524,7 +524,7 @@ public class WebProviderAuthenticatorProxyTest {
     protected void registersSession(final Subject subject) {
         mockery.checking(new Expectations() {
             {
-                one(ssoCookieHelper).addSSOCookiesToResponse(subject, request, response, null);
+                one(ssoCookieHelper).addSSOCookiesToResponse(subject, request, response, null, false);
             }
         });
     }

@@ -128,7 +128,7 @@ public class AuthenticateApiTest {
                 allowing(req).getRemoteUser();
                 allowing(req).getUserPrincipal();
                 allowing(req).getHeader("Authorization");
-                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp, null);
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp, null, false);
                 allowing(req).getMethod();
                 will(returnValue("GET"));
                 allowing(unauthSubjectService).getUnauthenticatedSubject();
@@ -170,7 +170,7 @@ public class AuthenticateApiTest {
                 allowing(req).getUserPrincipal();
                 allowing(securityService).getUserRegistryService();
                 allowing(req).getHeader("Authorization");
-                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp, null);
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(null, req, resp, null, false);
                 allowing(req).getMethod();
                 will(returnValue("GET"));
                 allowing(unauthSubjectService).getUnauthenticatedSubject();
@@ -261,7 +261,7 @@ public class AuthenticateApiTest {
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, loginSubject);
         mock.checking(new Expectations() {
             {
-                allowing(ssoCookieHelper).addSSOCookiesToResponse(loginSubject, req, resp, null);
+                allowing(ssoCookieHelper).addSSOCookiesToResponse(loginSubject, req, resp, null, false);
                 allowing(config).getWebAlwaysLogin();
                 will(returnValue(false));
                 allowing(securityServiceRef).getService();
@@ -291,7 +291,7 @@ public class AuthenticateApiTest {
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, loginSubject);
         mock.checking(new Expectations() {
             {
-                allowing(ssoCookieHelper).addSSOCookiesToResponse(loginSubject, req, resp, null);
+                allowing(ssoCookieHelper).addSSOCookiesToResponse(loginSubject, req, resp, null, false);
                 allowing(config).getWebAlwaysLogin();
                 will(returnValue(true));
                 allowing(securityServiceRef).getService();
@@ -374,7 +374,7 @@ public class AuthenticateApiTest {
                 will(returnValue(false));
                 allowing(authnService).authenticate(with(equal(jaasEntryName)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                 will(returnValue(null));
-                one(ssoCookieHelper).addSSOCookiesToResponse(null, req, resp, null);
+                one(ssoCookieHelper).addSSOCookiesToResponse(null, req, resp, null, false);
                 allowing(securityServiceRef).getService();
                 will(returnValue(securityService));
                 allowing(securityService).getAuthenticationService();
@@ -417,7 +417,7 @@ public class AuthenticateApiTest {
                 will(returnValue(false));
                 allowing(authnService).authenticate(with(equal(jaasEntryName)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                 will(returnValue(subject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(subject, req, resp, null);
+                one(ssoCookieHelper).addSSOCookiesToResponse(subject, req, resp, null, false);
                 allowing(securityServiceRef).getService();
                 will(returnValue(securityService));
                 allowing(securityService).getAuthenticationService();

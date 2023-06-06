@@ -277,12 +277,12 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     private void registerSession(final WebRequest webRequest, final Subject subject, final SSOCookieHelper ssoCh) {
         if (System.getSecurityManager() == null) {
-            ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null);
+            ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null, false);
         } else {
             AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
                 public Object run() {
-                    ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null);
+                    ssoCh.addSSOCookiesToResponse(subject, webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), null, false);
                     return null;
                 }
             });
@@ -532,7 +532,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     authResult = authHelper.loginWithHashtable(request, response, authResult.getSubject());
                     if (AuthResult.SUCCESS == authResult.getStatus()) {
                         SSOCookieHelper ssoCh = webAppSecurityConfig.createSSOCookieHelper();
-                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(), request, response, null);
+                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(), request, response, null, false);
                     }
                 }
             }
@@ -660,7 +660,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     if (includeAccessTokenInLtpa) {
                         addAccessTokenToTheCookie(authResult, ssoCh);
                     }
-                    ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
+                    ssoCh.addSSOCookiesToResponse(authResult.getSubject(), req, res, null, false);
                 }
             }
         }

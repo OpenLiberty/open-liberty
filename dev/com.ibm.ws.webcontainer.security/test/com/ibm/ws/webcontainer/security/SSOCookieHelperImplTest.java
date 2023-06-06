@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,9 +105,11 @@ public class SSOCookieHelperImplTest {
             {
                 one(config).isSingleSignonEnabled();
                 will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
             }
         });
-        ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null);
+        ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null, false);
         mock.assertIsSatisfied();
     }
 
@@ -124,9 +126,11 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
             }
         });
-        ssoCookieHelper.addSSOCookiesToResponse(null, req, resp, null);
+        ssoCookieHelper.addSSOCookiesToResponse(null, req, resp, null, false);
         mock.assertIsSatisfied();
     }
 
@@ -143,9 +147,12 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
+
             }
         });
-        ssoCookieHelper.addSSOCookiesToResponse(new Subject(), req, resp, null);
+        ssoCookieHelper.addSSOCookiesToResponse(new Subject(), req, resp, null, false);
         mock.assertIsSatisfied();
     }
 
@@ -183,7 +190,7 @@ public class SSOCookieHelperImplTest {
         });
         Subject subject = new Subject();
         subject.getPrivateCredentials().add(ssoToken);
-        ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null);
+        ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null, false);
         mock.assertIsSatisfied();
         assertTrue("The removeSSOCookieFromResponse method should NOT be invoked.", ssoCookieHelper.removeSSOCookieFromResponseNOTInvoked);
     }
@@ -204,7 +211,6 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
@@ -231,7 +237,6 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
@@ -500,7 +505,6 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
-                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
@@ -526,7 +530,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
-                one(config).isUseContextRootForSSOCookiePath();
+//                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);

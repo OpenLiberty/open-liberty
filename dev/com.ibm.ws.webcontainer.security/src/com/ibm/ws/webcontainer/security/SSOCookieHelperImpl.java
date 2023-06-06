@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @return true if cookies were added
      */
     @Override
-    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
+    public boolean addJwtSsoCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot, boolean useContextRoot) {
         boolean result = false;
         if (JwtSSOTokenHelper.isDisableJwtCookie()) {
             return result;
@@ -145,22 +145,22 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      *
      * @param req the HTTP servlet request.
      * @param cookieValue the value used to create the cookie from.
-     * @param contextRoot TODO
+     * @param contextRoot the application context root.
      * @return ssoCookie the SSO cookie.
      */
 
-    public Cookie createCookie(HttpServletRequest req, String cookieValue, String contextRoot) {
+    protected Cookie createCookie(HttpServletRequest req, String cookieValue, String contextRoot) {
         return createCookie(req, getSSOCookiename(), cookieValue, config.getSSORequiresSSL(), contextRoot);
     }
 
-    public Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure, String contextRoot) {
+    protected Cookie createCookie(HttpServletRequest req, String cookieName, String cookieValue, boolean isSecure, String contextRoot) {
+        String path = "/";
         Cookie ssoCookie = new Cookie(cookieName, cookieValue);
         ssoCookie.setMaxAge(-1);
-        if (contextRoot == null)
-            contextRoot = getContextRoot();
-        //TODO: UTLE check below comment
-        //The path has to be "/" so we will not have multiple cookies in the same domain
-        ssoCookie.setPath(contextRoot);
+        if (contextRoot != null) {
+            path = contextRoot;
+        }
+        ssoCookie.setPath(path);
         ssoCookie.setSecure(isSecure);
         ssoCookie.setHttpOnly(config.getHttpOnlyCookies());
 
@@ -184,16 +184,20 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
 
     /**
      * @param contextRoot
+     * @param useContextRoot
      * @return
      */
-    private String getContextRoot() {
-        String ctRoot = "/";
-        if (config.isUseContextRootForSSOCookiePath()) {
-            WebAppConfig webapp = WebConfigUtils.getWebAppConfig();
-            if (webapp != null)
-                ctRoot = webapp.getContextRoot();
+    private String resolveContextRoot(String contextRoot, boolean useContextRoot) {
+        if (useContextRoot && config.isUseContextRootForSSOCookiePath()) {
+            if (contextRoot != null) //SSO LTPA/JWT and Form login will pass in the application contextRoot
+                return contextRoot;
+            else {
+                WebAppConfig webapp = WebConfigUtils.getWebAppConfig();
+                if (webapp != null)
+                    return webapp.getContextRoot();
+            }
         }
-        return ctRoot;
+        return "/";
     }
 
     /**
@@ -279,7 +283,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             for (int i = 0; i < cookies.length; i++) {
                 if (cookies[i].getName().equalsIgnoreCase(ssoCookieName)) {
                     cookies[i].setValue(null);
-                    addLogoutCookieToList(req, ssoCookieName, logoutCookieList);
+                    addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
                 }
             }
             if (deleteJwtCookies) {
@@ -356,8 +360,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                                          java.util.ArrayList<Cookie> cookieList) {
         Cookie c = new Cookie(cookieName, "");
         c.setMaxAge(0);
-        String contextRoot = getContextRoot();
-        c.setPath(contextRoot);
+        c.setPath("/");
         c.setSecure(req.isSecure());
         if (config.getHttpOnlyCookies()) {
             c.setHttpOnly(true);
@@ -569,17 +572,18 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * [; path=<some_path>][; secure][; httponly]
      **/
     @Override
-    public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
+    public void addSSOCookiesToResponse(Subject subject, HttpServletRequest req, HttpServletResponse resp, String contextRoot, boolean useContextRoot) {
+        String ctRoot = resolveContextRoot(contextRoot, useContextRoot); //Only SSO LTPA/JWT cookie path support contextRoot
         if (!allowToAddCookieToResponse(req))
             return;
-        addJwtSsoCookiesToResponse(subject, req, resp, contextRoot);
+        addJwtSsoCookiesToResponse(subject, req, resp, ctRoot, true);
 
         if (!JwtSSOTokenHelper.shouldAlsoIncludeLtpaCookie()) {
             return;
         }
 
         if (!isDisableLtpaCookie(subject)) {
-            addLtpaSsoCookiesToResponse(subject, req, resp, contextRoot);
+            addLtpaSsoCookiesToResponse(subject, req, resp, ctRoot);
         }
 
         if (oidcServerRef != null && oidcServerRef.getService() != null) {
@@ -639,7 +643,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             for (int i = 0; i < cookies.length; i++) {
                 if (cookies[i].getName().equalsIgnoreCase(ssoCookieName)) {
                     cookies[i].setValue(null);
-                    addLogoutCookieToList(req, ssoCookieName, logoutCookieList);
+                    addLogoutCookieToList(req, cookies[i].getName(), logoutCookieList);
                 } else if (cookies[i].getName().equalsIgnoreCase(OIDC_BROWSER_STATE_COOKIE)) {
                     // remove oidc browser state cookie, if it exists.
                     if (oidcServerRef != null && oidcServerRef.getService() != null) {
@@ -678,8 +682,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void removeBrowserStateCookie(HttpServletRequest req, HttpServletResponse res) {
         Cookie c = new Cookie(OIDC_BROWSER_STATE_COOKIE, "");
         c.setMaxAge(0);
-        String contextRoot = getContextRoot();
-        c.setPath(contextRoot);
+        c.setPath("/");
         c.setSecure(req.isSecure());
         res.addCookie(c);
     }

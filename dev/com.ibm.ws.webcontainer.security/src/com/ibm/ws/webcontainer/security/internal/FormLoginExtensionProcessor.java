@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,7 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
                 ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
                                                              webAppSecConfig.getWASReqURLRedirectDomainNames());
             }
-            ssoCookieHelper.addSSOCookiesToResponse(subject, req, res, wac.getContextRoot());
+            ssoCookieHelper.addSSOCookiesToResponse(subject, req, res, wac.getContextRoot(), true);
             referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
             if (!res.isCommitted()) {
                 res.sendRedirect(res.encodeURL(storedReq));

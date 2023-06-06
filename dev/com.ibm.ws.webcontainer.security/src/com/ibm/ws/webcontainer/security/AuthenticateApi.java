@@ -549,7 +549,7 @@ public class AuthenticateApi {
         }
         subjectManager.setInvocationSubject(subject);
         if (addSSOCookie) {
-            ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null);
+            ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp, null, true);
         }
         try {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subject);
