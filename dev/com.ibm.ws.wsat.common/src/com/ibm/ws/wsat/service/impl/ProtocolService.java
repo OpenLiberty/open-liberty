@@ -4,13 +4,15 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
+
+import java.util.Map;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.osgi.service.component.annotations.Component;
@@ -30,17 +32,18 @@ public class ProtocolService implements Protocol {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#register(java.lang.String)
      */
     @Override
-    public EndpointReferenceType registrationRegister(String globalId, EndpointReferenceType participant) throws WSATException {
-        return registrationService.register(globalId, participant);
+    public EndpointReferenceType registrationRegister(Map<String, String> wsatProperties, String globalId, EndpointReferenceType participant,
+                                                      String recoveryID) throws WSATException {
+        return registrationService.register(wsatProperties, globalId, participant, recoveryID);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorPrepared(java.lang.String)
      */
     @Override
@@ -50,17 +53,17 @@ public class ProtocolService implements Protocol {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorReadOnly(java.lang.String)
      */
     @Override
-    public void coordinatorReadOnly(String globalId, String partId) throws WSATException {
-        protocolService.readOnly(globalId, partId);
+    public void coordinatorReadOnly(String globalId, String partId, String recoveryId) throws WSATException {
+        protocolService.readOnly(globalId, partId, recoveryId);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorAborted(java.lang.String)
      */
     @Override
@@ -70,7 +73,7 @@ public class ProtocolService implements Protocol {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorCommitted(java.lang.String)
      */
     @Override
@@ -80,37 +83,37 @@ public class ProtocolService implements Protocol {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#participantPrepare(java.lang.String)
      */
     @Override
-    public void participantPrepare(String globalId, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.prepare(globalId, fromEpr);
+    public void participantPrepare(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        protocolService.prepare(wsatProperties, fromEpr);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#participantCommit(java.lang.String)
      */
     @Override
-    public void participantCommit(String globalId, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.commit(globalId, fromEpr);
+    public void participantCommit(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        protocolService.commit(wsatProperties, fromEpr);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#participantRollback(java.lang.String)
      */
     @Override
-    public void participantRollback(String globalId, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.rollback(globalId, fromEpr);
+    public void participantRollback(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        protocolService.rollback(wsatProperties, fromEpr);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.Protocol#fault(java.lang.String, com.ibm.ws.wsat.service.WSATFault)
      */
     @Override

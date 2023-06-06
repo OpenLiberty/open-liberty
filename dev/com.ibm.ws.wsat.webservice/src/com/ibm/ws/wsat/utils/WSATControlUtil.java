@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -69,12 +69,16 @@ public class WSATControlUtil {
             if (name != null && name.getNamespaceURI() != null && ele.getFirstChild() != null) {
                 if (Constants.WS_WSAT_CTX_REF.getLocalPart().equals(name.getLocalPart()) && Constants.WS_WSAT_CTX_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
                     map.put(Constants.WS_WSAT_CTX_REF.getLocalPart(), ele.getFirstChild().getNodeValue());
+                } else if (Constants.WS_WSAT_REC_REF.getLocalPart().equals(name.getLocalPart()) && Constants.WS_WSAT_REC_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
+                    map.put(Constants.WS_WSAT_REC_REF.getLocalPart(), ele.getFirstChild().getNodeValue());
                 } else if (Constants.WS_WSAT_PART_REF.getLocalPart().equals(name.getLocalPart()) && Constants.WS_WSAT_PART_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
                     map.put(Constants.WS_WSAT_PART_REF.getLocalPart(), ele.getFirstChild().getNodeValue());
                 } else if (Names.WSA_FAULTTO_QNAME.getLocalPart().equals(name.getLocalPart()) && Names.WSA_FAULTTO_QNAME.getNamespaceURI().equals(name.getNamespaceURI())) {
                     map.put(Names.WSA_FAULTTO_QNAME.getLocalPart(), ele.getFirstChild().getFirstChild().getNodeValue());
                 } else if (Names.WSA_REPLYTO_QNAME.getLocalPart().equals(name.getLocalPart()) && Names.WSA_REPLYTO_QNAME.getNamespaceURI().equals(name.getNamespaceURI())) {
                     map.put(Names.WSA_REPLYTO_QNAME.getLocalPart(), ele.getFirstChild().getFirstChild().getNodeValue());
+                } else if (Names.WSA_TO_QNAME.getLocalPart().equals(name.getLocalPart()) && Names.WSA_TO_QNAME.getNamespaceURI().equals(name.getNamespaceURI())) {
+                    map.put(Names.WSA_TO_QNAME.getLocalPart(), ele.getFirstChild().getNodeValue());
                 }
             }
         }
@@ -87,8 +91,8 @@ public class WSATControlUtil {
         Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
         String ctxID = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
         String partID = wsatProperties.get(Constants.WS_WSAT_PART_REF.getLocalPart());
-        AddressingProperties addressProp = (AddressingProperties) wmc
-                        .get(org.apache.cxf.ws.addressing.JAXWSAConstants.SERVER_ADDRESSING_PROPERTIES_INBOUND);
+        String recoveryID = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        AddressingProperties addressProp = (AddressingProperties) wmc.get(org.apache.cxf.ws.addressing.JAXWSAConstants.SERVER_ADDRESSING_PROPERTIES_INBOUND);
         EndpointReferenceType replyTo = addressProp.getReplyTo();
         EndpointReferenceType faultTo = addressProp.getFaultTo();
         EndpointReferenceType from = addressProp.getFrom();
@@ -106,7 +110,7 @@ public class WSATControlUtil {
 
         Protocol service = WSATOSGIService.getInstance().getProtocolService();
 
-        return new ProtocolServiceWrapper().setFaultTo(faultTo).setReplyTo(replyTo).setFrom(from).setService(service).setTxID(ctxID).setPartID(partID).setMigrationHeaders(migration).setNextStepEPR(replyTo);
+        return new ProtocolServiceWrapper().setFaultTo(faultTo).setReplyTo(replyTo).setFrom(from).setService(service).setTxID(ctxID).setPartID(partID).setRecoveryID(recoveryID).setMigrationHeaders(migration).setNextStepEPR(replyTo).setWSATProperties(wsatProperties);
     }
 
     /**

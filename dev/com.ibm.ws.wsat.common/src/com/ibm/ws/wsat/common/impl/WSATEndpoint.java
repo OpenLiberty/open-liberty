@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -26,13 +28,16 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.EndpointReference;
 
+import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.ContextJAXBUtils;
 import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
+import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
 /**
@@ -44,13 +49,14 @@ import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 public abstract class WSATEndpoint implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String CLASS_NAME = WSATEndpoint.class.getName();
     private static final TraceComponent TC = Tr.register(WSATEndpoint.class);
 
     private static TranManagerImpl tranService = TranManagerImpl.getInstance();
 
     private transient EndpointReferenceType endpointRef;
+    private transient EndpointReferenceType testRef;
     private transient EndpointReference wsEpr;
+    private transient EndpointReference testEpr;
     private transient boolean isSecure;
 
     public WSATEndpoint(EndpointReferenceType epr) {
@@ -85,6 +91,46 @@ public abstract class WSATEndpoint implements Serializable {
                     }
                 }
             });
+            testRef = cloneEPR(endpointRef);
+            try {
+                misRoute(testRef);
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
+            testEpr = AccessController.doPrivileged(new PrivilegedAction<EndpointReference>() {
+                @Override
+                public EndpointReference run() {
+                    ClassLoader saveLoader = Thread.currentThread().getContextClassLoader();
+                    ClassLoader localLoader = tranService.getThreadClassLoader(WSATEndpoint.class);
+                    try {
+                        Thread.currentThread().setContextClassLoader(localLoader);
+                        return EndpointReference.readFrom(EndpointReferenceUtils.convertToXML(testRef));
+                    } finally {
+                        Thread.currentThread().setContextClassLoader(saveLoader);
+                        tranService.destroyThreadClassLoader(localLoader);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * @param epr
+     * @throws MalformedURLException
+     */
+    private void misRoute(EndpointReferenceType epr) throws MalformedURLException {
+        AttributedURIType uri = epr.getAddress();
+
+        URL url = new URL(uri.getValue());
+        URL newURL = new URL(url.getProtocol(), "localhost", 8050, url.getFile());
+        AttributedURIType newURI = new AttributedURIType();
+        newURI.setValue(newURL.toString());
+        epr.setAddress(newURI);
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "Misrouting: " + epr.getAddress().getValue());
         }
     }
 
@@ -94,6 +140,10 @@ public abstract class WSATEndpoint implements Serializable {
 
     public EndpointReference getWsEpr() {
         return wsEpr;
+    }
+
+    public EndpointReference getTestEpr() {
+        return testEpr;
     }
 
     public boolean isSecure() {
@@ -110,18 +160,26 @@ public abstract class WSATEndpoint implements Serializable {
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         try {
-            String xml = null;
-            if (endpointRef != null) {
-                StringWriter xmlWriter = new StringWriter();
-                JAXBContext jbCtx = ContextJAXBUtils.getJAXBContext();
-                JAXBElement<EndpointReferenceType> jbEpr = ContextUtils.WSA_OBJECT_FACTORY.createEndpointReference(endpointRef);
-                jbCtx.createMarshaller().marshal(jbEpr, xmlWriter);
-                xml = xmlWriter.toString();
-            }
-            stream.writeObject(xml);
+            stream.writeObject(getXML());
         } catch (JAXBException e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * @return
+     * @throws JAXBException
+     */
+    @Trivial
+    private String getXML() throws JAXBException {
+        if (endpointRef != null) {
+            StringWriter xmlWriter = new StringWriter();
+            JAXBContext jbCtx = ContextJAXBUtils.getJAXBContext();
+            JAXBElement<EndpointReferenceType> jbEpr = ContextUtils.WSA_OBJECT_FACTORY.createEndpointReference(endpointRef);
+            jbCtx.createMarshaller().marshal(jbEpr, xmlWriter);
+            return xmlWriter.toString();
+        }
+        return null;
     }
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -140,4 +198,17 @@ public abstract class WSATEndpoint implements Serializable {
             throw new IOException(e);
         }
     }
+
+    public EndpointReferenceType cloneEPR(EndpointReferenceType epr) {
+        EndpointReferenceType newEpr = EndpointReferenceUtils.duplicate(epr);
+        // duplicate doesn't seem to copy the ReferenceParams?, so add
+        // back the originals plus our new participant id.
+        ReferenceParametersType refs = new ReferenceParametersType();
+        for (Object ref : epr.getReferenceParameters().getAny()) {
+            refs.getAny().add(ref);
+        }
+        newEpr.setReferenceParameters(refs);
+        return newEpr;
+    }
+
 }

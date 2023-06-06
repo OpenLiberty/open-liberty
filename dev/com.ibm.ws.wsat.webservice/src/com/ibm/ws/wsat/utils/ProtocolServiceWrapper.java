@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.wsat.utils;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
@@ -29,9 +30,11 @@ public class ProtocolServiceWrapper {
     private EndpointReferenceType nextStepEPR;
     private String txID;
     private String partID;
+    private String recoveryID;
     private EndpointReferenceType faultTo;
     private EndpointReferenceType replyTo;
     private EndpointReferenceType from;
+    private Map<String, String> setWSATProperties;
 
     /**
      * @return the service
@@ -68,6 +71,13 @@ public class ProtocolServiceWrapper {
      */
     public String getPartID() {
         return partID;
+    }
+
+    /**
+     * @return the partID
+     */
+    public String getRecoveryID() {
+        return recoveryID;
     }
 
     /**
@@ -150,6 +160,24 @@ public class ProtocolServiceWrapper {
      */
     public ProtocolServiceWrapper setMigrationHeaders(List<Header> migrationHeaders) {
         this.migrationHeaders = migrationHeaders;
+        return this;
+    }
+
+    /**
+     * @param recoveryID
+     * @return
+     */
+    public ProtocolServiceWrapper setRecoveryID(String recoveryID) {
+        this.recoveryID = recoveryID;
+        return this;
+    }
+
+    /**
+     * @param wsatProperties
+     * @return
+     */
+    public ProtocolServiceWrapper setWSATProperties(Map<String, String> wsatProperties) {
+        this.setWSATProperties = wsatProperties;
         return this;
     }
 

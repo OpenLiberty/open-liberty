@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,17 +12,25 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+
 import javax.xml.bind.JAXBElement;
 
+import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
+import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
+import org.w3c.dom.Element;
 
 import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.wsat.Constants;
+import com.ibm.ws.wsat.common.impl.DebugUtils;
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
 import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
@@ -104,6 +112,11 @@ public class ProtocolImpl {
         ReferenceParametersType refs = new ReferenceParametersType();
 
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, ctxId));
+        String recoveryId = tranService.getRecoveryId();
+        if (recoveryId != null && !recoveryId.isEmpty()) {
+            refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        }
+
         eprCopy.setReferenceParameters(refs);
 
         return eprCopy;
@@ -124,8 +137,20 @@ public class ProtocolImpl {
     // unexpected errors.
 
     @FFDCIgnore(WSATException.class)
-    public void prepare(String globalId, EndpointReferenceType fromEpr) throws WSATException {
+    public void prepare(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        final String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
+        if (tran == null) {
+            String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Here we are again: " + recoveryId);
+                wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "prepare", e.getKey() + " -> " + e.getValue()));
+            }
+            if (recoveryId != null && !recoveryId.equals(tranService.getRecoveryId())) {
+                reroutePrepare(wsatProperties, fromEpr);
+                return;
+            }
+        }
         try {
             Vote vote = tranService.prepareTransaction(globalId);
             WSATParticipantState resp = (vote == Vote.VoteCommit) ? WSATParticipantState.PREPARED : (vote == Vote.VoteReadOnly) ? WSATParticipantState.READONLY : WSATParticipantState.ABORTED;
@@ -135,6 +160,114 @@ public class ProtocolImpl {
         }
     }
 
+    private void reroutePrepare(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "prepare", e.getKey() + " -> " + e.getValue()));
+
+            Tr.debug(TC, "From:\n{0}", DebugUtils.printEPR(fromEpr));
+        }
+
+        // Find out from the tran service what address is dealing
+        // with this recoveryId
+        String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
+        EndpointReferenceType to = new EndpointReferenceType();
+        URL newAddress = null;
+        try {
+            URL originalAddress = new URL(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
+            URL storedAddress = new URL(tranService.getAddress(recoveryId));
+            newAddress = new URL(storedAddress.getProtocol(), storedAddress.getHost(), storedAddress.getPort(), originalAddress.getFile());
+        } catch (MalformedURLException e) {
+            throw new WSATException(e.getMessage());
+        }
+
+        AttributedURIType uri = new AttributedURIType();
+        uri.setValue(newAddress.toString());
+        to.setAddress(uri);
+
+        // Add participant recovery Id
+        ReferenceParametersType refs = new ReferenceParametersType();
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        to.setReferenceParameters(refs);
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "prepare needs to go to " + newAddress);
+        }
+
+        String partId = null;
+        for (Object obj : fromEpr.getReferenceParameters().getAny()) {
+            try {
+                Element name = (Element) obj;
+                if (Constants.WS_WSAT_PART_REF.getLocalPart().equals(name.getLocalName()) && Constants.WS_WSAT_PART_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
+                    partId = name.getFirstChild().getNodeValue();
+                }
+            } catch (Throwable e) {
+            }
+        }
+
+        WSATCoordinator coord = new WSATCoordinator(globalId, fromEpr);
+        WSATParticipant part = new WSATParticipant(globalId, partId, to);
+
+        WebClient webClient = WebClient.getWebClient(part, coord);
+        webClient.setMisrouting(false);
+        webClient.prepare();
+    }
+
+    private void rerouteCommit(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "commit", e.getKey() + " -> " + e.getValue()));
+
+            Tr.debug(TC, "From:\n{0}", DebugUtils.printEPR(fromEpr));
+        }
+
+        // Find out from the tran service what address is dealing
+        // with this recoveryId
+        String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
+        EndpointReferenceType to = new EndpointReferenceType();
+        URL newAddress = null;
+        try {
+            URL originalAddress = new URL(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
+            URL storedAddress = new URL(tranService.getAddress(recoveryId));
+            newAddress = new URL(storedAddress.getProtocol(), storedAddress.getHost(), storedAddress.getPort(), originalAddress.getFile());
+        } catch (MalformedURLException e) {
+            throw new WSATException(e.getMessage());
+        }
+
+        AttributedURIType uri = new AttributedURIType();
+        uri.setValue(newAddress.toString());
+        to.setAddress(uri);
+
+        // Add participant recovery Id
+        ReferenceParametersType refs = new ReferenceParametersType();
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        to.setReferenceParameters(refs);
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "commit needs to go to " + newAddress);
+        }
+
+        String partId = null;
+        for (Object obj : fromEpr.getReferenceParameters().getAny()) {
+            try {
+                Element name = (Element) obj;
+                if (Constants.WS_WSAT_PART_REF.getLocalPart().equals(name.getLocalName()) && Constants.WS_WSAT_PART_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
+                    partId = name.getFirstChild().getNodeValue();
+                }
+            } catch (Throwable e) {
+            }
+        }
+
+        WSATCoordinator coord = new WSATCoordinator(globalId, fromEpr);
+        WSATParticipant part = new WSATParticipant(globalId, partId, to);
+
+        WebClient webClient = WebClient.getWebClient(part, coord);
+        webClient.setMisrouting(false);
+        webClient.commit();
+    }
+
     // COMMIT and ROLLBACK can occur during recovery when the tran manager might know about
     // the real transaction but our WSAT HashMaps might not be rebuilt. To handle this we
     // always go straight to the tran manager to process the request - if this fails we do
@@ -142,24 +275,48 @@ public class ProtocolImpl {
     // sort things out.
 
     @FFDCIgnore(WSATException.class)
-    public void commit(String globalId, EndpointReferenceType fromEpr) {
-        try {
-            final WSATTransaction tran = WSATTransaction.getTran(globalId);
-            tranService.commitTransaction(globalId);
-            participantResponse(tran, globalId, fromEpr, WSATParticipantState.COMMITTED);
-        } catch (WSATException e) {
+    public void commit(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        final String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
+        final WSATTransaction tran = WSATTransaction.getTran(globalId);
+
+        if (tran == null) {
+            String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
             if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "Unable to complete commit: {0}", e);
+                Tr.debug(TC, "Here we are again: " + recoveryId);
+                wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "prepare", e.getKey() + " -> " + e.getValue()));
+            }
+            if (recoveryId != null && !recoveryId.equals(tranService.getRecoveryId())) {
+                rerouteCommit(wsatProperties, fromEpr);
+                return;
+            }
+        } else {
+
+            try {
+                tranService.commitTransaction(globalId);
+                participantResponse(tran, globalId, fromEpr, WSATParticipantState.COMMITTED);
+            } catch (WSATException e) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Unable to complete commit: {0}", e);
+                }
             }
         }
     }
 
     @FFDCIgnore(WSATException.class)
-    public void rollback(String globalId, EndpointReferenceType fromEpr) {
+    public void rollback(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        final String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
         final WSATTransaction tran = WSATTransaction.getTran(globalId);
-
-        // Tran might have already gone
-        if (tran != null) {
+        if (tran == null) {
+            String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Here we are again: " + recoveryId);
+                wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "prepare", e.getKey() + " -> " + e.getValue()));
+            }
+            if (recoveryId != null && !recoveryId.equals(tranService.getRecoveryId())) {
+                rerouteRollback(wsatProperties, fromEpr);
+                return;
+            }
+        } else {
             try {
                 tranService.rollbackTransaction(globalId);
             } catch (WSATException e) {
@@ -167,13 +324,13 @@ public class ProtocolImpl {
                     Tr.debug(TC, "Unable to complete rollback: {0}", e);
                 }
             }
-        }
 
-        try {
-            participantResponse(tran, globalId, fromEpr, WSATParticipantState.ABORTED);
-        } catch (WSATException e) {
-            if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "Unable to send rollback response: {0}", e);
+            try {
+                participantResponse(tran, globalId, fromEpr, WSATParticipantState.ABORTED);
+            } catch (WSATException e) {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Unable to send rollback response: {0}", e);
+                }
             }
         }
     }
@@ -195,6 +352,9 @@ public class ProtocolImpl {
     }
 
     private void participantResponse(WSATTransaction tran, String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "fromEPR:\n{0}", DebugUtils.printEPR(fromEpr));
+        }
         // Send the response to our known coordinator, if we have one.  Otherwise fall back to
         // using the sender's EPR (see WS-AT specification section 8).
         WSATCoordinator coord = null;
@@ -207,23 +367,6 @@ public class ProtocolImpl {
         if (coord != null) {
             WebClient client = WebClient.getWebClient(coord, coord.getParticipant());
             if (response == WSATParticipantState.PREPARED) {
-                /*
-                 *
-                 * Uncomment to recreate 286979
-                 *
-                 * Also uncomment similar code in EndToEndClientServletMagerImpl, MultiServerTest & TransactionImpl
-                 *
-                 * try {
-                 * if (TC.isDebugEnabled()) {
-                 * Tr.debug(TC, "SLEEPING IN PARTICIPANTRESPONSE BEFORE SENDING PREPARED");
-                 * }
-                 * Thread.sleep(10000);
-                 * } catch (InterruptedException e) {
-                 * // TODO Auto-generated catch block
-                 * // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                 * e.printStackTrace();
-                 * }
-                 */
                 client.prepared();
             } else if (response == WSATParticipantState.COMMITTED) {
                 client.committed();
@@ -265,11 +408,31 @@ public class ProtocolImpl {
         }
     }
 
-    public void readOnly(String globalId, String partId) throws WSATException {
+    public void readOnly(String globalId, String partId, String recoveryId) throws WSATException {
+
         WSATParticipant participant = findParticipant(globalId, partId);
         if (participant != null) {
             participant.setResponse(WSATParticipantState.READONLY);
+        } else {
+            rerouteReadOnly(globalId, partId, recoveryId);
         }
+    }
+
+    /**
+     * @param recoveryId
+     * @param partId
+     * @param wsatProperties
+     */
+    private void rerouteReadOnly(String globalId, String partId, String recoveryId) {
+        rerouteParticipantResponse(WSATParticipantState.READONLY);
+    }
+
+    /**
+     * @param readonly
+     */
+    private void rerouteParticipantResponse(WSATParticipantState readonly) {
+        // TODO Auto-generated method stub
+
     }
 
     public void aborted(String globalId, String partId) throws WSATException {
@@ -303,5 +466,59 @@ public class ProtocolImpl {
             }
         }
         return participant;
+    }
+
+    private void rerouteRollback(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            wsatProperties.entrySet().stream().forEach(e -> Tr.debug(TC, "rollback", e.getKey() + " -> " + e.getValue()));
+
+            Tr.debug(TC, "From:\n{0}", DebugUtils.printEPR(fromEpr));
+        }
+
+        // Find out from the tran service what address is dealing
+        // with this recoveryId
+        String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        String globalId = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
+        EndpointReferenceType to = new EndpointReferenceType();
+        URL newAddress = null;
+        try {
+            URL originalAddress = new URL(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
+            URL storedAddress = new URL(tranService.getAddress(recoveryId));
+            newAddress = new URL(storedAddress.getProtocol(), storedAddress.getHost(), storedAddress.getPort(), originalAddress.getFile());
+        } catch (MalformedURLException e) {
+            throw new WSATException(e.getMessage());
+        }
+
+        AttributedURIType uri = new AttributedURIType();
+        uri.setValue(newAddress.toString());
+        to.setAddress(uri);
+
+        // Add participant recovery Id
+        ReferenceParametersType refs = new ReferenceParametersType();
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        to.setReferenceParameters(refs);
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "rollback needs to go to " + newAddress);
+        }
+
+        String partId = null;
+        for (Object obj : fromEpr.getReferenceParameters().getAny()) {
+            try {
+                Element name = (Element) obj;
+                if (Constants.WS_WSAT_PART_REF.getLocalPart().equals(name.getLocalName()) && Constants.WS_WSAT_PART_REF.getNamespaceURI().equals(name.getNamespaceURI())) {
+                    partId = name.getFirstChild().getNodeValue();
+                }
+            } catch (Throwable e) {
+            }
+        }
+
+        WSATCoordinator coord = new WSATCoordinator(globalId, fromEpr);
+        WSATParticipant part = new WSATParticipant(globalId, partId, to);
+
+        WebClient webClient = WebClient.getWebClient(part, coord);
+        webClient.setMisrouting(false);
+        webClient.rollback();
     }
 }

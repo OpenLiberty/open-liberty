@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,7 +54,8 @@ public class WSATRequestHandler {
 
     private static final TraceComponent tc = Tr.register(WSATRequestHandler.class, Constants.TRACE_GROUP, null);
 
-    private RegisterResponseType doRegister(String protocolId, EndpointReferenceType participant, String txID) throws Throwable {
+    private RegisterResponseType doRegister(Map<String, String> wsatProperties, String protocolId, EndpointReferenceType participant, String txID,
+                                            String recoveryID) throws Throwable {
         String errorStr = null;
         Protocol service = WSATOSGIService.getInstance().getProtocolService();
         EndpointReferenceType coordinator = null;
@@ -66,7 +67,7 @@ public class WSATRequestHandler {
             errorStr = "Protocol service is NULL";
         } else {
             try {
-                coordinator = service.registrationRegister(txID, participant);
+                coordinator = service.registrationRegister(wsatProperties, txID, participant, recoveryID);
             } catch (WSATException e) {
                 errorStr = WSATControlUtil.getInstance().trace(e);
             }
@@ -89,6 +90,10 @@ public class WSATRequestHandler {
         String protocolId = parameters.getProtocolIdentifier();
         EndpointReferenceType epr = parameters.getParticipantProtocolService();
         Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
+        if (tc.isDebugEnabled()) {
+            wsatProperties.entrySet().stream().forEach(e -> Tr.debug(tc, "handleRegistrationRequest", e.getKey() + " -> " + e.getValue()));
+        }
+
         String txID = null;
         for (Object obj : epr.getReferenceParameters().getAny()) {
             try {
@@ -103,9 +108,11 @@ public class WSATRequestHandler {
         if (txID == null)
             txID = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
 
+        final String recoveryID = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+
         // Can EndpointReferenceType.class in CXF work with tWAS? Possibly not..
 
-        return doRegister(protocolId, epr, txID);
+        return doRegister(wsatProperties, protocolId, epr, txID, recoveryID);
     }
 
     public void handleFaultRequest(QName faultcode, String faultstring, String faultactor, Detail detail) throws WSATException {
@@ -115,9 +122,13 @@ public class WSATRequestHandler {
     public void handleParticipantPrepareRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
+        // needs attention but....
+        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
+        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
+
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantPrepare(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantPrepare(wsatProperties, getResponseEpr(wrapper));
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -127,9 +138,12 @@ public class WSATRequestHandler {
     public void handleParticipantCommitRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
+        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
+        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
+
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantCommit(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantCommit(wsatProperties, getResponseEpr(wrapper));
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -139,9 +153,12 @@ public class WSATRequestHandler {
     public void handleParticipantRollbackRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
+        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
+        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
+
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantRollback(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantRollback(wsatProperties, getResponseEpr(wrapper));
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -189,7 +206,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorReadOnly(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorReadOnly(wrapper.getTxID(), wrapper.getPartID(), wrapper.getRecoveryID());
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }

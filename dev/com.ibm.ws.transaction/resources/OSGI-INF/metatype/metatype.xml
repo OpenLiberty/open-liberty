@@ -81,7 +81,7 @@
         <AD name="%recovery.group" description="%recovery.group.desc"
             id="recoveryGroup" required="false" type="String" default="" />
 
-        <AD name="%shutdown.on.log.failure" description="%shutdown.on.log.failure.desc"
+        <AD name="internal" description="internal use only"
             id="shutdownOnLogFailure" required="false" type="Boolean" default="true" />
 
         <AD name="internal" description="internal use only"
@@ -93,10 +93,10 @@
         <AD name="internal" description="internal use only"
             id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
 
-        <AD name="%log.retry.interval" description="%log.retry.interval.desc"
+        <AD name="internal" description="internal use only"
             id="logRetryInterval" required="false" type="Integer" default="10" />
 
-        <AD name="%log.retry.limit" description="%log.retry.limit.desc"
+        <AD name="internal" description="internal use only"
             id="logRetryLimit" required="false" type="Integer" default="180" /> 
                         
         <AD name="internal" description="internal use only"

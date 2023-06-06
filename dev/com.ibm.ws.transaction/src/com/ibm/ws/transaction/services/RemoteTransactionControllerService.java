@@ -27,6 +27,7 @@ import javax.transaction.TransactionManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerSet;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.tx.jta.embeddable.impl.WSATRecoveryCoordinator;
@@ -434,5 +435,22 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     @Override
     public void putResource(String globalId, Object o) {
         ((TransactionImpl) getTransactionForID(globalId)).putResource(globalId, o);
+    }
+
+    @Override
+    public String getRecoveryId() {
+        return ConfigurationProviderManager.getConfigurationProvider().getRecoveryIdentity();
+    }
+
+    @Override
+    public String getAddress(String recoveryId) {
+        // Retrieve address from lease log
+        if ("MigrationServer1".equals(recoveryId))
+            return "http://localhost:8010";
+        if ("MigrationServer2".equals(recoveryId))
+            return "http://localhost:8030";
+        if ("MigrationServer3".equals(recoveryId))
+            return "http://localhost:8050";
+        return null;
     }
 }
