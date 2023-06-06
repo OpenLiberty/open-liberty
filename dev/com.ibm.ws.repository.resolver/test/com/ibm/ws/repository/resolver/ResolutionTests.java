@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2700,6 +2701,75 @@ public class ResolutionTests {
         RepositoryResolver resolver = createResolver(installedFeatures);
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA10.getShortName()));
         assertThat(resolved, contains(contains(featureA10)));
+    }
+
+    /**
+     * Test a big tree of features - mostly for local performance checking
+     *
+     * @throws RepositoryException
+     */
+    @Test
+    public void testBigTree() throws RepositoryException {
+        List<String> names = createFeatureTree("bigtree", 5, 5); // Should be around 1000 features on the fifth layer
+
+        RepositoryResolver resolver = createResolver();
+
+        long startTime = System.nanoTime();
+        resolve(resolver, names);
+        Duration duration = Duration.ofNanos(System.nanoTime() - startTime);
+
+        System.out.println("BigTree resolve took " + duration);
+    }
+
+    /**
+     * Test a big interlocking tree of features - mostly for local performance checking
+     *
+     * @throws RepositoryException
+     */
+    @Test
+    public void testInterlockTree() throws RepositoryException {
+        List<String> names = createInterlockTree("interlockTree", 5, 5); // Should be around 1000 features on the fifth layer
+
+        RepositoryResolver resolver = createResolver();
+        long startTime = System.nanoTime();
+        resolve(resolver, names);
+        Duration duration = Duration.ofNanos(System.nanoTime() - startTime);
+
+        System.out.println("InterlockTree resolve took " + duration);
+    }
+
+    private List<String> createFeatureTree(String name, int depth, int width) throws RepositoryResourceException, RepositoryBackendException {
+        if (depth == 0) {
+            return Collections.emptyList();
+        }
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            String myName = name + "-" + i;
+            List<String> children = createFeatureTree(myName, depth - 1, width);
+            createEsaResource(myName, null, null, children, null);
+            names.add(myName);
+        }
+        return names;
+    }
+
+    private List<String> createInterlockTree(String name, int depth, int width) throws RepositoryResourceException, RepositoryBackendException {
+        if (depth == 0) {
+            return Collections.emptyList();
+        }
+        List<String> names = new ArrayList<>();
+        List<String> children = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            String myName = name + "-" + i;
+            List<String> newChildren = createFeatureTree(myName, depth - 1, width);
+            children.addAll(newChildren);
+        }
+
+        for (int i = 0; i < width; i++) {
+            String myName = name + "-" + i;
+            createEsaResource(myName, null, null, children, null);
+            names.add(myName);
+        }
+        return names;
     }
 
     /**
