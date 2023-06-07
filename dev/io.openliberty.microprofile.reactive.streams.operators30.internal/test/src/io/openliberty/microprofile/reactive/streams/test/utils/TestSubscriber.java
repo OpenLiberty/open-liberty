@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -59,7 +60,10 @@ public class TestSubscriber<T> implements Subscriber<T> {
     }
 
     public TestSubscriber<T> await() throws InterruptedException {
-        done.await();
+        boolean reallyDone = done.await(5, TimeUnit.SECONDS);//wait max 5 seconds because this is only a unit test
+        if (!reallyDone) {
+            throw new InterruptedException("TestSubscriber.await() timed out after 5 seconds");
+        }
         return this;
     }
 

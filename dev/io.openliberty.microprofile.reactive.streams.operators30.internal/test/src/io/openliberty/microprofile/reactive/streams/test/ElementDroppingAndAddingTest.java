@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import io.openliberty.microprofile.reactive.streams.test.utils.TestSubscriber;
 
-public class ElementDroppingAndAddingTest extends LibertyReactiveUT {
+public class ElementDroppingAndAddingTest extends AbstractReactiveUnitTest {
 
     /**
      * Test that the number of element that goes into a stream is not necessarily
@@ -33,7 +33,7 @@ public class ElementDroppingAndAddingTest extends LibertyReactiveUT {
     public void testDropping() throws InterruptedException {
 
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
-        ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer>builder().dropWhile(t -> t < 3);
+        ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
         TestSubscriber<Integer> rxSub = new TestSubscriber<Integer>();
         data.via(filter).to(rxSub).run(getEngine());

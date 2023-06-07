@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.reactive.streams.test;
+package io.openliberty.microprofile.reactive.streams.test.utils;
 
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
@@ -26,7 +26,7 @@ import org.reactivestreams.Subscriber;
  * This is a simple subclass that merely records if its methods have been called
  * before delegating to the superclass
  */
-public class LibertyReactiveStreamsFactoryImplSubclass extends ReactiveStreamsFactoryImpl implements ReactiveStreamsFactory {
+public class TestReactiveStreamsFactory extends ReactiveStreamsFactoryImpl implements ReactiveStreamsFactory {
 
     private boolean builderCalled;
     private boolean ofCalled;
@@ -139,12 +139,15 @@ public class LibertyReactiveStreamsFactoryImplSubclass extends ReactiveStreamsFa
         return super.coupled(subscriber, publisher);
     }
 
-    /**
-     * @return
-     */
-    public String check() {
-        String check = "BitString:" + builderCalled + ofCalled + fromIterableCalled;
-        return check;
+    public boolean builderCalled() {
+        return builderCalled;
     }
 
+    public boolean ofCalled() {
+        return ofCalled;
+    }
+
+    public boolean fromIterableCalled() {
+        return fromIterableCalled;
+    }
 }

@@ -9,35 +9,75 @@
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.streams.test;
 
-import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
-import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
-import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
-import io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl;
+import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.junit.After;
+import org.junit.Before;
 
-/**
- * This is just a simple base class to put common function in.
- */
-public abstract class AbstractReactiveUnitTest {
+import io.openliberty.microprofile.reactive.streams.test.utils.TestReactiveStreamsEngine;
 
-    /**
-     * Runs before any tests in classes that inherit from us
-     */
-    @BeforeClass
-    public static void setup() {
-        ReactiveStreamsEngineResolver.setInstance(new LibertyReactiveStreamsEngineImpl());
-        ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
+public class AbstractReactiveUnitTest {
+
+    private static final long TIMEOUT = 10000; //timeout in ms
+    private TestReactiveStreamsEngine engine;
+
+    @Before
+    public void activateEngine() {
+        engine = new TestReactiveStreamsEngine();
+        engine.setExecutorService(ForkJoinPool.commonPool());
+        engine.activate();
+    }
+
+    @After
+    public void deactivateEngine() {
+        if (engine != null) {
+            engine.deactivate();
+            engine = null;
+        }
+    }
+
+    public TestReactiveStreamsEngine getEngine() {
+        return engine;
     }
 
     /**
-     * Runs after any tests in classes that inherit from us
+     * Waits for things to complete (with a timeout) and returns the actual result
+     *
+     * @param future
+     * @return the stage's CompletableFuture.get()
      */
-    @AfterClass
-    public static void tearDown() {
-        ReactiveStreamsEngineResolver.setInstance(null);
-        ReactiveStreamsFactoryResolver.setInstance(null);
+    protected <T> T await(CompletionStage<T> future) {
+        try {
+            return future.toCompletableFuture().get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof RuntimeException) {
+                throw (RuntimeException) e.getCause();
+            } else {
+                throw new RuntimeException(e.getCause());
+            }
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Future timed out after " + TIMEOUT + "ms", e);
+        }
+    }
+
+    /**
+     * An infinite stream of integers starting from one.
+     */
+    protected PublisherBuilder<Integer> infiniteStream() {
+        return ReactiveStreams.fromIterable(() -> {
+            AtomicInteger value = new AtomicInteger();
+            return IntStream.generate(value::incrementAndGet).boxed().iterator();
+        });
     }
 
 }

@@ -7,12 +7,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.reactive.streams.test;
+package io.openliberty.microprofile.reactive.streams.test.utils;
 
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.streams.operators.spi.Graph;
-import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEngine;
 import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
 import org.reactivestreams.Processor;
@@ -24,7 +23,7 @@ import io.openliberty.microprofile.reactive.streams.operators30.spi.impl.Liberty
  * This is a simple subclass that merely records if its methods have been called
  * before delegating to the superclass
  */
-public class LibertyReactiveStreamsEngineImplSubclass extends LibertyReactiveStreamsEngineImpl implements ReactiveStreamsEngine {
+public class TestReactiveStreamsEngine extends LibertyReactiveStreamsEngineImpl {
 
     private boolean buildPublisherCalled;
     private boolean buildSubscriberCalled;
@@ -59,12 +58,20 @@ public class LibertyReactiveStreamsEngineImplSubclass extends LibertyReactiveStr
         return super.buildCompletion(graph);
     }
 
-    /**
-     * @return
-     */
-    String check() {
-        String check = "BitString:" + buildPublisherCalled + buildSubscriberCalled + buildProcessorCalled +
-                       buildCompletionCalled;
-        return check;
+    public boolean buildPublisherCalled() {
+        return buildPublisherCalled;
     }
+
+    public boolean buildSubscriberCalled() {
+        return buildSubscriberCalled;
+    }
+
+    public boolean buildProcessorCalled() {
+        return buildProcessorCalled;
+    }
+
+    public boolean buildCompletionCalled() {
+        return buildCompletionCalled;
+    }
+
 }

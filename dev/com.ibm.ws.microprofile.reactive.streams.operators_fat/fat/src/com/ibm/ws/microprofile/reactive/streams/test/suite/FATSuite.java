@@ -30,11 +30,11 @@ import componenttest.rules.repeater.RepeatTests;
                 ReactiveConcurrentWorkTest.class
 })
 public class FATSuite {
-    public static final String MPRS10_ID = "MPRS10";
-    public static final String MPRS30_ID = "MPRS30";
+    public static final String MPRS10_ID = MicroProfileActions.MP21_ID + "_" + "MPRS10";
+    public static final String MPRS30_ID = MicroProfileActions.MP50_ID + "_" + "MPRS30";
 
-    public static final FeatureSet MPRS10 = MicroProfileActions.MP21.addFeature("mpReactiveStreams-1.0").build(MicroProfileActions.MP21_ID + "_" + MPRS10_ID);
-    public static final FeatureSet MPRS30 = MicroProfileActions.MP50.addFeature("mpReactiveStreams-3.0").build(MicroProfileActions.MP50_ID + "_" + MPRS30_ID);
+    public static final FeatureSet MPRS10 = MicroProfileActions.MP21.addFeature("mpReactiveStreams-1.0").build(MPRS10_ID);
+    public static final FeatureSet MPRS30 = MicroProfileActions.MP50.addFeature("mpReactiveStreams-3.0").build(MPRS30_ID);
 
     public static final Set<FeatureSet> ALL;
     static {

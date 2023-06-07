@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * The initial set of unit test material was heavily derived from
@@ -35,7 +35,7 @@ import org.junit.Test;
  * This is the ground-zero test set that is run most commonly during development
  * to be able to look at a Stream all at once, you need to collect it.
  */
-public class CollectTest extends LibertyReactiveUT {
+public class CollectTest extends AbstractReactiveUnitTest {
 
     /**
      * This simple test is broken down into small stages so that we can tell which
@@ -63,11 +63,11 @@ public class CollectTest extends LibertyReactiveUT {
         assertNotNull("composed is null", composed);
 
         List<Integer> awaitedComposed = await(
-                composed);
+                                              composed);
         assertNotNull("awaitedComposed is null", awaitedComposed);
 
         assertEquals(awaitedComposed,
-                list);
+                     list);
     }
 
     /**
@@ -76,7 +76,8 @@ public class CollectTest extends LibertyReactiveUT {
     @Test
     public void toListStageShouldReturnEmpty() {
         assertEquals(await(
-                ReactiveStreams.of().toList().run(getEngine())), Collections.emptyList());
+                           ReactiveStreams.of().toList().run(getEngine())),
+                     Collections.emptyList());
     }
 
     /**
@@ -85,9 +86,10 @@ public class CollectTest extends LibertyReactiveUT {
     @Test
     public void collectShouldAccumulateResult() {
         assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).collect(() -> new AtomicInteger(0),
-                        AtomicInteger::addAndGet).run(getEngine())).get(),
-                6);
+                           ReactiveStreams.of(1, 2, 3).collect(() -> new AtomicInteger(0),
+                                                               AtomicInteger::addAndGet)
+                                           .run(getEngine())).get(),
+                     6);
     }
 
     /**
@@ -96,9 +98,10 @@ public class CollectTest extends LibertyReactiveUT {
     @Test
     public void collectShouldSupportEmptyStreams() {
         assertEquals(await(
-                ReactiveStreams.<Integer>empty().collect(() -> new AtomicInteger(42),
-                        AtomicInteger::addAndGet).run(getEngine())).get(),
-                42);
+                           ReactiveStreams.<Integer> empty().collect(() -> new AtomicInteger(42),
+                                                                     AtomicInteger::addAndGet)
+                                           .run(getEngine())).get(),
+                     42);
     }
 
     /**
@@ -106,8 +109,9 @@ public class CollectTest extends LibertyReactiveUT {
      */
     @Test(expected = RuntimeException.class)
     public void collectShouldPropagateErrors() {
-        await(ReactiveStreams.<Integer>failed(new RuntimeException("failed")).collect(() -> new AtomicInteger(0),
-                AtomicInteger::addAndGet).run(getEngine()));
+        await(ReactiveStreams.<Integer> failed(new RuntimeException("failed")).collect(() -> new AtomicInteger(0),
+                                                                                       AtomicInteger::addAndGet)
+                        .run(getEngine()));
     }
 
     /**
@@ -116,9 +120,9 @@ public class CollectTest extends LibertyReactiveUT {
     @Test
     public void finisherFunctionShouldBeInvoked() {
         assertEquals(await(
-                ReactiveStreams.of("1", "2", "3")
-                        .collect(Collectors.joining(", ")).run(getEngine())),
-                "1, 2, 3");
+                           ReactiveStreams.of("1", "2", "3")
+                                           .collect(Collectors.joining(", ")).run(getEngine())),
+                     "1, 2, 3");
     }
 
     /**
@@ -126,13 +130,15 @@ public class CollectTest extends LibertyReactiveUT {
      */
     @Test
     public void collectStageBuilderShouldBeReusable() {
-        SubscriberBuilder<Integer, List<Integer>> reusedBuilder = ReactiveStreams.<Integer>builder().toList();
+        SubscriberBuilder<Integer, List<Integer>> reusedBuilder = ReactiveStreams.<Integer> builder().toList();
         assertEquals(await(
-                ReactiveStreams.of(1, 2, 3).to(reusedBuilder).run(getEngine())),
-                Arrays.asList(1, 2,
-                        3));
+                           ReactiveStreams.of(1, 2, 3).to(reusedBuilder).run(getEngine())),
+                     Arrays.asList(1, 2,
+                                   3));
         assertEquals(await(ReactiveStreams.of(4, 5,
-                6).to(reusedBuilder).run(getEngine())), Arrays.asList(4, 5, 6));
+                                              6)
+                        .to(reusedBuilder).run(getEngine())),
+                     Arrays.asList(4, 5, 6));
     }
 
 }

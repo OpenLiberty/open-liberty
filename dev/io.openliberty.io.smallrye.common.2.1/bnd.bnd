@@ -27,4 +27,4 @@ instrument.disabled: true
 #notice that this version only contains common-annotation for now
 #might rename the bundle if this does turn out to be the only one needed
 -buildpath: \
-  io.smallrye.common:smallrye-common-annotation;version=2.1.0
+  io.smallrye.common:smallrye-common-annotation;version=2.1.0;strategy=exact

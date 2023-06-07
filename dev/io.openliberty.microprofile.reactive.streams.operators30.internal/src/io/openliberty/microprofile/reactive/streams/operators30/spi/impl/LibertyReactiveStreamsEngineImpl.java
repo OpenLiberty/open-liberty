@@ -13,7 +13,6 @@ import java.security.PrivilegedAction;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
 
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
@@ -22,17 +21,14 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsEn
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
 import org.eclipse.microprofile.reactive.streams.operators.spi.SubscriberWithCompletionStage;
 import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 import io.smallrye.mutiny.jakarta.streams.Engine;
@@ -40,93 +36,39 @@ import io.smallrye.mutiny.jakarta.streams.Engine;
 @Component(name = "io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl", service = { ReactiveStreamsEngine.class }, property = { "service.vendor=IBM" }, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LibertyReactiveStreamsEngineImpl extends Engine implements ReactiveStreamsEngine {
 
-    private static final TraceComponent tc = Tr.register(LibertyReactiveStreamsEngineImpl.class);
+    private ExecutorService executorService;
 
-    private static ReactiveStreamsEngine singleton = null;
+    private WSContextService wsContextService;
 
-    private final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
-
-    private final AtomicServiceReference<WSContextService> contextServiceRef = new AtomicServiceReference<WSContextService>("contextService");
-
-    /**
-     * The OSGi component active call
-     *
-     * @param cc the OSGi component context
-     */
-    public void activate(ComponentContext cc) {
-        executorServiceRef.activate(cc);
-        contextServiceRef.activate(cc);
+    @Activate
+    public void activate() {
         ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
         ReactiveStreamsEngineResolver.setInstance(this);
-        singleton = this;
     }
 
-    /**
-     * The OSGi component deactive call
-     *
-     * @param cc the OSGi component context
-     */
-    public void deactivate(ComponentContext cc) {
-        singleton = null;
+    @Deactivate
+    public void deactivate() {
         ReactiveStreamsEngineResolver.setInstance(null);
         ReactiveStreamsFactoryResolver.setInstance(null);
-        executorServiceRef.deactivate(cc);
-        contextServiceRef.deactivate(cc);
     }
 
-    @Reference(name = "executorService", service = ExecutorService.class)
-    protected void setExecutorService(ServiceReference<ExecutorService> ref) {
-        executorServiceRef.setReference(ref);
+    @Reference
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
-    /**
-     * Declarative Services method for setting the context service reference
-     *
-     * @param ref reference to the service
-     */
-    @Reference(name = "contextService", service = WSContextService.class)
-    protected void setContextService(ServiceReference<WSContextService> ref) {
-        contextServiceRef.setReference(ref);
-    }
-
-    public LibertyReactiveStreamsEngineImpl() {
-        super();
+    @Reference
+    public void setContextService(WSContextService wsContextService) {
+        this.wsContextService = wsContextService;
     }
 
     /**
-     * A means for Unit Tests to get hold of the engine
-     *
-     * @return a usable ReactiveStreamsEngine
-     */
-    public static ReactiveStreamsEngine getEngine() {
-        if (singleton == null) {
-            singleton = new LibertyReactiveStreamsEngineImpl();
-        }
-        return singleton;
-    }
-
-    /**
-     * Get the real or UnitTest executor service for getting threads from. Will use
-     * the ForkJoin.commonPool for UT and the WAS "ExecutorService" service in a
-     * server
+     * Get the executor service for getting threads from.
      *
      * @return the executor
      */
     public ExecutorService getExecutor() {
-        ExecutorService executor = executorServiceRef != null ? executorServiceRef.getService() : null;
-        if (executor != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The Liberty ExecutorService is being used to run asynch reactive work");
-            }
-            return executor;
-        } else {
-            // For unit testing
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The ForkJoinPool.commonPool is being used to run asynch reactive work");
-            }
-            return ForkJoinPool.commonPool();
-
-        }
+        return this.executorService;
     }
 
     /** {@inheritDoc} */
@@ -140,18 +82,11 @@ public class LibertyReactiveStreamsEngineImpl extends Engine implements Reactive
             }
         };
 
-        WSContextService contextService;
-        if (contextServiceRef != null) {
-            contextService = contextServiceRef.getService();
-        } else {
-            contextService = null;
-        }
+        StreamRunner<T> runner = new StreamRunner<>(getExecutor(), this.wsContextService, action);
 
-        StreamRunner<T> runner = new StreamRunner<>(getExecutor(), contextService, action);
+        StreamTask<T> streamTask = runner.startStream();
 
-        StreamTask<?> streamTask = runner.startStream();
-
-        CompletableFuture<T> wrapper = (CompletableFuture<T>) streamTask.getWrapperCompletableFuture();
+        CompletableFuture<T> wrapper = streamTask.getWrapperCompletableFuture();
 
         return wrapper;
     }

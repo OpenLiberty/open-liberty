@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -294,10 +294,12 @@ public class MicroProfileActions {
                                                                  "mpReactiveStreams-1.0" };
 
     private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
-                                                                 "mpGraphQL-2.0" };
+                                                                 "mpGraphQL-2.0",
+                                                                 "mpReactiveStreams-3.0" };
 
     private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
-                                                                  "mpGraphQL-2.0" };
+                                                                  "mpGraphQL-2.0",
+                                                                  "mpReactiveStreams-3.0" };
 
     private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
     private static final Set<String> STANDALONE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE9_FEATURES_ARRAY)));
