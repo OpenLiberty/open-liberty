@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Po\u017eadavek kontroln\u00e
 error.checkpoint.failed.selinux.netdiag.explanation=Po\u017eadavek kontroln\u00edho bodu pro server selhal, proto\u017ee byla syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink ne\u00fasp\u011b\u0161n\u00e1.
 error.checkpoint.failed.selinux.netdiag.useraction=Je-li povoleno SELinux v re\u017eimu vynucen\u00ed, mohou b\u00fdt syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink blokov\u00e1na nastaven\u00edm z\u00e1sad SELinux "virt_sandbox_use_netlink". Bu\u010f zaka\u017ete SELinux, nebo povolte syst\u00e9mov\u00e1 vol\u00e1n\u00ed netlink pomoc\u00ed p\u0159\u00edkazu "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Obnova procesu serveru kontroln\u00edch bod\u016f se nezda\u0159ila. Zkontrolujte protokol {0}, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Server se nespustil, proto\u017ee je zotaven\u00ed obnovy kontroln\u00edho bodu vypnut\u00e9.
+error.checkpoint.restore.failed.no.recovery.explanation=Do\u0161lo k chyb\u011b p\u0159i obnov\u011b procesu serveru kontroln\u00edch bod\u016f. Server se nespustil, proto\u017ee je zotaven\u00ed obnovy kontroln\u00edho bodu vypnut\u00e9.
+error.checkpoint.restore.failed.no.recovery.useraction=Zkontrolujte protokoly, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Chcete-li povolit zotaven\u00ed p\u0159i obnov\u011b po selh\u00e1n\u00ed, nastavte prom\u011bnnou prost\u0159ed\u00ed CRIU_RECORE_DISABLE_RECOVERY na hodnotu true.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.

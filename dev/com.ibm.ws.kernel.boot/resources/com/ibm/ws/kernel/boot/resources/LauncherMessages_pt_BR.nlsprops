@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: A solicita\u00e7\u00e3o de p
 error.checkpoint.failed.selinux.netdiag.explanation=Uma solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o para o servidor falhou porque as chamadas do sistema netlink n\u00e3o foram bem-sucedidas.
 error.checkpoint.failed.selinux.netdiag.useraction=Se o SELinux estiver ativado no modo de execu\u00e7\u00e3o, as chamadas do sistema netlink poder\u00e3o ser bloqueadas pela configura\u00e7\u00e3o da pol\u00edtica "virt_sandbox_use_netlink" do SELinux. Desative o SELinux ou ative as chamadas do sistema netlink com o comando "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: A restaura\u00e7\u00e3o do processo do servidor de ponto de verifica\u00e7\u00e3o falhou. Verifique o log {0} para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. O servidor n\u00e3o foi ativado porque a recupera\u00e7\u00e3o da restaura\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o est\u00e1 desativada.
+error.checkpoint.restore.failed.no.recovery.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o. O servidor n\u00e3o foi ativado porque a recupera\u00e7\u00e3o da restaura\u00e7\u00e3o do ponto de verifica\u00e7\u00e3o est\u00e1 desativada.
+error.checkpoint.restore.failed.no.recovery.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado. Para ativar a recupera\u00e7\u00e3o da falha de restaura\u00e7\u00e3o, configure a vari\u00e1vel de ambiente CRIU_RESTORE_DISABLE_RECOVERY como true.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi iniciado com o ID de processo {1}.

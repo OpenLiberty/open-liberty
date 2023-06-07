@@ -607,7 +607,7 @@
 
 7342=Podana warto\u015b\u0107 boolowska [{0}] ustawienia zezwolenia na zapytania w rodzimym j\u0119zyku SQL jest niepoprawna. Warto\u015bci\u0105 musi by\u0107 true lub false.
 
-7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3}] u\u017cywa [{2}]. Podczas stosowania strategii Multitenant VPD mo\u017ce istnie\u0107 tylko jedna kolumna wyr\u00f3\u017cnika klienta na obiekt, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna dla wszystkich obiekt\u00f3w Multitenant VPD.
+7343=Okre\u015blono wiele identyfikator\u00f3w VPD (w\u0142a\u015bciwo\u015b\u0107 kontekstu wyr\u00f3\u017cnika klienta). Obiekt [{1}] u\u017cywa [{0}], a obiekt [{3}] u\u017cywa [{2}]. Strategia danych VPD dla wielu najemc\u00f3w pozwala tylko na jedn\u0105 kolumny wyr\u00f3\u017cnika najemcy dla ka\u017cdej jednostki, a jej w\u0142a\u015bciwo\u015b\u0107 kontekstu musi by\u0107 sp\u00f3jna we wszystkich jednostkach VPD Multitenant.
 
 7344=Strategia VPD (po\u0142\u0105czenia i generowanie kodu DDL) nie jest obs\u0142ugiwana dla platformy [{0}].
 

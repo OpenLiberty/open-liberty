@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tAceasta este o op\u0163iune JVM folosit\u0103 pentru a specifica un agent pentru instrumentare.   \n\tRuntime-ul folose\u015fte instrumentarea pentru a aduna urme \u015fi alte informa\u0163ii \n\tde depanare. bootstrap-agent.jar treb uie s\u0103 fie \u00een acela\u015fi director ca  \n\tJAR-ul folosit pentru a lansa runtime-ul.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tPunctul de control al serverului numit la faza de verificare a punctului de control specificat. Utiliza\u021bi   \n op\u021biunea --at pentru a specifica faza punctului de control. C\u00e2nd punctul de control \n  se finalizeaz\u0103, serverul se opre\u0219te \u0219i starea sa curent\u0103 este scris\u0103 pe      \ndisc. Acest punct de control furnizeaz\u0103 un comportament InstantOn atunci c\u00e2nd se lanseaz\u0103    \n serverul. C\u00e2nd punctul de control se finalizeaz\u0103, pute\u021bi lansa serverul   \ncu InstantOn folosind ac\u021biunea rulare sau pornire.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tCrea\u0163i un nou server dac\u0103 serverul specificat nu exist\u0103. Op\u0163iunea   \n\t--template poate fi folosit\u0103 pentru a specifica un \u015fablon de folosit \n\tla crearea unui nou server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tPune\u0163i \u00een pauz\u0103 toate componentele din server
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tRepune\u0163i \u00een func\u0163iune toate componentele puse \u00een pauz\u0103 din server. Pute\u0163i specifica      \n\top\u0163iunea --target pentru a repune \u00een func\u0163iune componentele puse \u00een pauz\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="checkpoint phase"
+option-desc.checkpoint.at=\tSpecific\u0103 faza punctului de control. Valorile valide sunt: beforeAppStart \nsau afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tCur\u0103\u0163a\u0163i toate informa\u0163iile din cache legate de aceast\u0103 instan\u0163\u0103 de server.             

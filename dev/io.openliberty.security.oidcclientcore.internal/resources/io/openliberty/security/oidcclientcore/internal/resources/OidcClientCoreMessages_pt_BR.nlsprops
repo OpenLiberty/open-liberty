@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: A resposta do token do provedor Ope
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=O provedor OpenID Connect n\u00e3o retornou um par\u00e2metro necess\u00e1rio ou falhou ao processar a solicita\u00e7\u00e3o de token.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verifique se o terminal do token configurado est\u00e1 correto e \u00e9 capaz de responder \u00e0s solicita\u00e7\u00f5es de token OAuth.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: O cliente [{0}] OpenID Connect falhou ao construir um JSON Web Token a ser usado para autentica\u00e7\u00e3o de cliente. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=O cliente OpenID Connect est\u00e1 configurado para usar JSON Web Tokens para autentica\u00e7\u00e3o de cliente, mas ocorreu um erro ao criar o token.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Para obter mais informa\u00e7\u00f5es, veja o erro na mensagem.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: O cliente [{0}] OpenID Connect n\u00e3o tem a chave necess\u00e1ria para assinar o token para autentica\u00e7\u00e3o de cliente.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=A configura\u00e7\u00e3o do cliente OpenID Connect n\u00e3o tem dados ou n\u00e3o \u00e9 poss\u00edvel localizar uma chave com o nome do alias de chave na configura\u00e7\u00e3o SSL para o cliente OpenID Connect.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Assegure-se de que o cliente OpenID Connect tenha um nome de alias de chave e refer\u00eancia SSL configurados. Verifique se o keystore referenciado pela configura\u00e7\u00e3o SSL cont\u00e9m uma chave cujo alias corresponde ao nome do alias de chave na configura\u00e7\u00e3o do cliente OpenID Connect.

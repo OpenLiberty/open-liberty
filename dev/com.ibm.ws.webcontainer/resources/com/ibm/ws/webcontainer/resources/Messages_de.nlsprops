@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Ausnahme aufgrund von ung\u00fcltigem Argument: Es wurde versucht, weniger als 0 Zeichen zu schreiben
 Illegal.Argument.Trying.to.write.chars.explanation=Es wurde versucht, einen Puffer mit einer Gr\u00f6\u00dfe kleiner als null auszugeben. Dies ist ein Anwendungsfehler.

@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La solicitud de punto de com
 error.checkpoint.failed.selinux.netdiag.explanation=Una solicitud de punto de comprobaci\u00f3n para el servidor ha fallado porque las llamadas al sistema de enlace de red no han sido satisfactorias.
 error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est\u00e1 habilitado en modalidad de imposici\u00f3n, el valor de pol\u00edtica "virt_sandbox_use_netlink" de SELinux podr\u00eda bloquear las llamadas al sistema de enlace de red. Inhabilite SELinux o habilite las llamadas al sistema de enlace de red con el mandato "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: La restauraci\u00f3n del proceso del servidor de punto de comprobaci\u00f3n ha fallado. Compruebe el registro de {0} para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. El servidor no se ha iniciado porque la recuperaci\u00f3n de restauraci\u00f3n de punto de comprobaci\u00f3n est\u00e1 inhabilitada.
+error.checkpoint.restore.failed.no.recovery.explanation=Se ha producido un error al restaurar un proceso de servidor de punto de comprobaci\u00f3n. El servidor no se ha iniciado porque la recuperaci\u00f3n de restauraci\u00f3n de punto de comprobaci\u00f3n est\u00e1 inhabilitada.
+error.checkpoint.restore.failed.no.recovery.useraction=Consulte los registros para determinar por qu\u00e9 no se ha restaurado el proceso de punto de comprobaci\u00f3n. Para habilitar la recuperaci\u00f3n de errores de restauraci\u00f3n, establezca la variable de entorno CRIU_RESTORE_DISABLE_RECOVERY en true.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.

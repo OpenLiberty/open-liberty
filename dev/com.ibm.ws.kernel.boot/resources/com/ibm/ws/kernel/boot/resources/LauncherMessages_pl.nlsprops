@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: \u017b\u0105danie punktu kon
 error.checkpoint.failed.selinux.netdiag.explanation=\u017b\u0105danie punktu kontrolnego dla serwera si\u0119 nie powiod\u0142o, poniewa\u017c wywo\u0142ania systemowe netlink si\u0119 nie powiod\u0142y.
 error.checkpoint.failed.selinux.netdiag.useraction=Je\u015bli mechanizm SELinux jest w\u0142\u0105czony w trybie wymuszania, wywo\u0142ania systemowe netlink mog\u0105 by\u0107 blokowane przez ustawienie strategii SELinux "virt_sandbox_use_netlink". Wy\u0142\u0105cz system SELinux lub w\u0142\u0105cz wywo\u0142ania systemowe netlink za pomoc\u0105 komendy "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Serwer nie zosta\u0142 uruchomiony, poniewa\u017c odtwarzanie punktu kontrolnego zosta\u0142o wy\u0142\u0105czone.
+error.checkpoint.restore.failed.no.recovery.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego. Serwer nie zosta\u0142 uruchomiony, poniewa\u017c odtwarzanie punktu kontrolnego zosta\u0142o wy\u0142\u0105czone.
+error.checkpoint.restore.failed.no.recovery.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Aby w\u0142\u0105czy\u0107 odtwarzanie po awarii, ustaw zmienn\u0105 \u015brodowiskow\u0105 CRIU_RESTORE_DISABLE_RECOVERY na warto\u015b\u0107 true.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 uruchomiony. ID procesu: {1}.

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -55,7 +52,7 @@ KUBERNETES_ACCESS_TOKEN_MISSING.useraction=Ov\u011b\u0159te, \u017ee koncov\u00f
 # 0=HTTP response code, 1=Response body
 KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: Rozhran\u00ed API u\u017eivatele Kubernetes vr\u00e1tilo neo\u010dek\u00e1van\u00fd k\u00f3d odezvy [{0}]. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace a \u017ee token servisn\u00edho \u00fa\u010dtu Kubernetes byl vytvo\u0159en se spr\u00e1vn\u00fdmi opr\u00e1vn\u011bn\u00edmi. Odezva z rozhran\u00ed API je [{1}].
 KUBERNETES_USER_API_BAD_STATUS.explanation=Rozhran\u00ed API u\u017eivatele Kubernetes nevr\u00e1tilo o\u010dek\u00e1van\u00fd stavov\u00fd k\u00f3d.
-KUBERNETES_USER_API_BAD_STATUS.useraction=Zkontrolujte odezvu rozhran\u00ed API, \u017ee je v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace. Ujist\u011bte se, \u017ee token servisn\u00edho \u00fa\u010dtu Kubernetes byl vytvo\u0159en se spr\u00e1vn\u00fdmi opr\u00e1vn\u011bn\u00edmi.
+KUBERNETES_USER_API_BAD_STATUS.useraction=Zkontrolujte odezvu rozhran\u00ed API, \u017ee je v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace. Ujist\u011bte se, \u017ee token servisn\u00edho \u00fa\u010dtu Kubernetes byl vytvo\ufffd\ufffden se spr\u00e1vn\u00fdmi opr\u00e1vn\u011bn\u00edmi.
 
 # 0=JSON key string, 1=User API response string
 KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: Odezv\u011b rozhran\u00ed API u\u017eivatele Kubernetes chyb\u00ed o\u010dek\u00e1van\u00fd kl\u00ed\u010d: [{0}]. \u00dapln\u00e1 odezva je [{1}].
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: Po\u017eadavek na odhl\u00e
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=Konfigurace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch m\u00e9di\u00ed nen\u00ed klientem OpenID Connect, tak\u017ee nepodporuje odhl\u00e1\u0161en\u00ed zadn\u00edho kan\u00e1lu.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Pou\u017eijte koncov\u00fd bod odhl\u00e1\u0161en\u00ed, kter\u00fd odpov\u00edd\u00e1 konfiguraci p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch m\u00e9di\u00ed.
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Klient {0} OpenID Connect pou\u017e\u00edv\u00e1 metodu ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu {1}. Tato metoda ov\u011b\u0159en\u00ed vy\u017eaduje utajen\u00fd tajn\u00fd kl\u00ed\u010d klienta, ale tajn\u00fd kl\u00ed\u010d klienta nen\u00ed nakonfigurov\u00e1n.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Metoda ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu uveden\u00e1 ve zpr\u00e1v\u011b po\u017eaduje tajn\u00fd kl\u00ed\u010d klienta pro ov\u011b\u0159en\u00ed s koncov\u00fdm bodem tokenu poskytovatele OpenID Connect.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Nakonfigurujte tajn\u00fd kl\u00ed\u010d klienta pro klienta OpenID Connect, nebo p\u0159epn\u011bte metodu ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu klienta na metodu nevy\u017eaduj\u00edc\u00ed tajn\u00fd kl\u00ed\u010d klienta.

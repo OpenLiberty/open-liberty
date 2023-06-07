@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una richiesta per [{
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che include un cookie con un formato non corretto.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie con il formato non corretto pu\u00f2 essere causato dalla modifica del cookie presso l'agent utente con un nome host diverso dal nome host del reindirizzamento registrato con il provider. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity in server.xml.
 
-# 1533-1544 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: Una richiesta di autenticazione non \u00e8 riuscita perch\u00e9 il provider OpenID Connect ha restituito il seguente errore {0}: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=Lo stato della risposta specificato indica che l'autenticazione non \u00e8 riuscita. L'errore e la descrizione dell'errore presenti nel messaggio contengono ulteriori informazioni.
+REDIRECT_URI_CONTAINED_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

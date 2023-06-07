@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Weitere Informationen f
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Ein Back-Channel-Abmeldetoken, das auf einem zwischengespeicherten ID-Token mit Claims [{0}] f\u00fcr den {1}-Client basiert, kann aufgrund des folgenden Fehlers nicht erstellt werden: {2}.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Beim Erstellen der Abmeldetokenzeichenfolge ist ein Fehler aufgetreten. Alternativ kann es sein, dass der Aussteller des zwischengespeicherten ID-Tokens nicht mit diesem OpenID Connect-Provider \u00fcbereinstimmt oder dass im zwischengespeicherten ID-Token einige erforderliche Claims fehlen.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Weitere Informationen finden Sie in der Fehlernachricht.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: Der Anspruch [{0}] aud im Parameter id_token_hint stimmt nicht mit dem Wert [{1}] f\u00fcr den Anforderungsparameter client_id \u00fcberein.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Wenn sowohl der Parameter client_id als auch der Parameter id_token_hint vorhanden sind, muss die Client-ID im ID-Token mit dem f\u00fcr den Parameter client_id angegebenen Wert \u00fcbereinstimmen.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Stellen Sie sicher, dass der Wert des Parameters client_id mit dem aud-Anspruch im ID-Token \u00fcbereinstimmt.

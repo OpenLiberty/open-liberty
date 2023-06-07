@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
@@ -8,7 +9,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -38,13 +39,13 @@
 
 2005=Error de espera en el manejador de conexi\u00f3n de secuenciaci\u00f3n para DatabaseSession.
 
-2006=Se han intentado adquirir valores de secuenciaci\u00f3n a trav\u00e9s de una sola conexi\u00f3n ({0}) simult\u00e1neamente en varias hebras
+2006=Intente adquirir valores de secuenciaci\u00f3n a trav\u00e9s de una sola conexi\u00f3n ({0}) simult\u00e1neamente en varias hebras.
 
 2007=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto: {0}.  No se ha podido clonar el objeto.
 
 2008=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto: {0}.  No se ha podido fusionar la transacci\u00f3n.
 
-2009=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto.  No se ha podido crear el objeto. La hebra: {0} tiene un bloqueo en el objeto, pero la hebra: {1} est\u00e1 creando el objeto
+2009=Se ha excedido el n\u00famero m\u00e1ximo de intentos de bloquear el objeto.  No se ha podido crear el objeto. La hebra: {0} tiene un bloqueo en el objeto pero la hebra: {1} est\u00e1 creando el objeto.
 
 2010=El bloqueo ya ha cambiado a un bloqueo aplazado.  La hebra: {0} ha solicitado un segundo intento de cambiar el bloqueo durante la fusi\u00f3n.
 

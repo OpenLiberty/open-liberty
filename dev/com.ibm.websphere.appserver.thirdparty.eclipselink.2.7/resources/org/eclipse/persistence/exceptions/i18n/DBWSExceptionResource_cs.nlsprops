@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
@@ -8,7 +9,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -28,29 +29,29 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-47000=Nelze naj\u00edt soubor [{0}]
+47000=Nelze vyhledat soubor "[{0}]"
 
-47001=Nelze naj\u00edt deskriptor [{0}] pro operaci [{1}] v objektu O-R
+47001=Nelze vyhledat deskriptor [{0}] pro operaci [{1}] v projektu O-R
 
-47002=Nelze naj\u00edt dotaz [{0}] pro deskriptor [{1}]
+47002=Nelze vyhledat dotaz "[{0}]" pro deskriptor [{1}]
 
-47003=Nelze naj\u00edt dotaz [{0}] pro relaci [{1}]
+47003=Nelze vyhledat dotaz "[{0}]" pro relaci [{1}]
 
-47004=Typ parametru [{0}] pro operaci [{1}] ve sch\u00e9matu neexistuje
+47004=Typ parametru [{0}], pro operaci [{1}], ve sch\u00e9matu neexistuje
 
-47005=Typ parametru [{0}] pro operaci [{1}] nem\u00e1 \u017e\u00e1dn\u00e9 mapov\u00e1n\u00ed O-X
+47005=Typ parametru [{0}] operace [{1}] nem\u00e1 \u017e\u00e1dn\u00e9 mapov\u00e1n\u00ed O-X
 
-47006=V\u00fdsledn\u00fd typ [{0}] pro operaci [{1}] ve sch\u00e9matu neexistuje
+47006=Typ v\u00fdsledku [{0}] operace [{1}] neexistuje ve sch\u00e9matu
 
-47007=V\u00fdsledn\u00fd typ [{0}] pro operaci [{1}] nem\u00e1 \u017e\u00e1dn\u00e9 mapov\u00e1n\u00ed O-X
+47007=Typ v\u00fdsledku [{0}] operace [{1}] nem\u00e1 \u017e\u00e1dn\u00e9 mapov\u00e1n\u00ed O-X
 
 47008=Dotazy jednoduch\u00e9ho form\u00e1tu XML podporuj\u00ed pouze v\u00edce v\u00fdstupn\u00edch argument\u016f
 
 47009=Parametry kurzoru INOUT nejsou podporov\u00e1ny
 
-47010=Nelze naj\u00edt relaci O-R pro slu\u017ebu [{0}]
+47010=Nelze vyhledat relaci O-R pro slu\u017ebu [{0}]
 
 47011=Nelze vyhledat relaci O-X pro slu\u017ebu [{0}]
 
-47012=Nelze zanalyzovat soubor DBWS
+47012=Nelze analyzovat soubor DBWS
 

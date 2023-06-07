@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tOption de JVM d\u00e9signant un agent pour l'instrumentation.   \n\tL'ex\u00e9cution (runtime) utilise l'instrumentation pour recueillir des  \n\tdonn\u00e9es de trace et d'autres informations de d\u00e9bogage. L'archive     \n\tbootstrap-agent.jar doit se trouver dans le m\u00eame r\u00e9pertoire que le   \n\tfichier jar utilis\u00e9 pour lancer le runtime.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tPoint de contr\u00f4le du serveur nomm\u00e9 \u00e0 la phase de point de contr\u00f4le sp\u00e9cifi\u00e9e. Utilisez\n l'option -- at pour sp\u00e9cifier la phase de point de contr\u00f4le. Une fois le point de contr\u00f4le\n termin\u00e9, le serveur s'arr\u00eate et son \u00e9tat en cours est consign\u00e9 sur le \ndisque. Ce point de contr\u00f4le fournit le comportement InstantOn lors du lancement du \nserveur. Une fois le point de contr\u00f4le termin\u00e9, vous pouvez lancer le serveur \navec InstantOn \u00e0 l'aide de l'action d'ex\u00e9cution ou de d\u00e9marrage.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tCr\u00e9e un nouveau serveur si le serveur sp\u00e9cifi\u00e9 n'existe pas. \n\tL'option --template permet de sp\u00e9cifier un mod\u00e8le \u00e0 utiliser      \n\tlors de la cr\u00e9ation d'un nouveau serveur.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tMet en pause tous les composants du serveur dont la mise en 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tReprend tous les composants mis en pause dans le serveur. Vous \n\tpouvez utiliser l'option --target pour reprendre des composants \n\tsp\u00e9cifiques, pr\u00e9c\u00e9demment mis en pause.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="phase de point de contr\u00f4le"
+option-desc.checkpoint.at=\tIndique la phase de point de contr\u00f4le. Valeurs admises : beforeAppStart\n ou afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tEfface du cache toutes les donn\u00e9es relatives \u00e0 cette instance de serveur             
