@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,9 +16,7 @@ import java.util.Map;
 
 import javax.xml.soap.SOAPException;
 
-import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -33,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
 import com.ibm.ws.wsat.service.Handler;
+import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -54,8 +53,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
     private static final String WSATHANDLERSERVICE_REFERENCE_NAME = "handler";
 
-    private static final AtomicServiceReference<VirtualHost> httpOptions = new AtomicServiceReference<VirtualHost>(
-                    HTTPCONFIGSERVICE_REFERENCE_NAME);
+    private static final AtomicServiceReference<VirtualHost> httpOptions = new AtomicServiceReference<VirtualHost>(HTTPCONFIGSERVICE_REFERENCE_NAME);
     private static final AtomicServiceReference<Handler> handlerService = new AtomicServiceReference<Handler>(WSATHANDLERSERVICE_REFERENCE_NAME);
 
     private boolean enabled;
@@ -80,7 +78,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.wsat.service.WSATConfigService#isGlobalEnabled()
      */
     @Override
@@ -138,9 +136,9 @@ public class WSATConfigServiceImpl implements WSATConfigService {
                           + "/"
                           + Constants.PARTICIPANT_ENDPOINT;
 
-        EndpointReferenceType localCoorEpr = createEpr(coorHost);
-        EndpointReferenceType localRegEpr = createEpr(regHost);
-        EndpointReferenceType localPartEpr = createEpr(partHost);
+        EndpointReferenceType localCoorEpr = WSATUtil.createEpr(coorHost);
+        EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost);
+        EndpointReferenceType localPartEpr = WSATUtil.createEpr(partHost);
 
         //set into HandlerService will always self coor...
         handlerService.getService().setCoordinatorEndpoint(localCoorEpr);
@@ -150,7 +148,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getSSLReferenceId()
      */
     @Override
@@ -160,7 +158,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getWSATUrl(boolean)
      */
     @Override
@@ -189,19 +187,9 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         return host;
     }
 
-    private EndpointReferenceType createEpr(String hostname) throws SOAPException {
-        EndpointReferenceType epr = new EndpointReferenceType();
-        AttributedURIType uri = new AttributedURIType();
-        uri.setValue(hostname);
-        epr.setAddress(uri);
-        ReferenceParametersType para = new ReferenceParametersType();
-        epr.setReferenceParameters(para);
-        return epr;
-    }
-
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#isClientAuthEnabled()
      */
     @Override

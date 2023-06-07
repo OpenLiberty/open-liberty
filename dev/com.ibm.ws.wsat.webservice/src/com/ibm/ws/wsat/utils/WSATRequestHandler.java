@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.service.Protocol;
+import com.ibm.ws.wsat.service.ProtocolServiceWrapper;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
 import com.ibm.ws.wsat.webservice.client.soap.Detail;
@@ -122,13 +123,9 @@ public class WSATRequestHandler {
     public void handleParticipantPrepareRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
-        // needs attention but....
-        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
-        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
-
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantPrepare(wsatProperties, getResponseEpr(wrapper));
+            wrapper.getService().participantPrepare(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -138,12 +135,9 @@ public class WSATRequestHandler {
     public void handleParticipantCommitRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
-        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
-        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
-
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantCommit(wsatProperties, getResponseEpr(wrapper));
+            wrapper.getService().participantCommit(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -153,29 +147,12 @@ public class WSATRequestHandler {
     public void handleParticipantRollbackRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
         WrappedMessageContext wmc = (WrappedMessageContext) ctx.getMessageContext();
 
-        List<Header> headers = CastUtils.cast((List<?>) wmc.getWrappedMessage().get(Header.HEADER_LIST));
-        Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
-
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantRollback(wsatProperties, getResponseEpr(wrapper));
+            wrapper.getService().participantRollback(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
-    }
-
-    private EndpointReferenceType getResponseEpr(ProtocolServiceWrapper wrapper) {
-        EndpointReferenceType fromEpr = wrapper.getFrom();
-
-        if (fromEpr == null || fromEpr.getAddress().getValue().equals(Constants.WS_ADDR_NONE)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Response address selected from the replyTo header");
-            }
-
-            fromEpr = wrapper.getReplyTo();
-        }
-
-        return fromEpr;
     }
 
     public void handleCoordinatorPreparedRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
@@ -183,7 +160,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorPrepared(wrapper.getTxID(), wrapper.getPartID(), getResponseEpr(wrapper));
+            wrapper.getService().coordinatorPrepared(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -195,7 +172,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorCommitted(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorCommitted(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -206,7 +183,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorReadOnly(wrapper.getTxID(), wrapper.getPartID(), wrapper.getRecoveryID());
+            wrapper.getService().coordinatorReadOnly(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -217,7 +194,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorAborted(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorAborted(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }

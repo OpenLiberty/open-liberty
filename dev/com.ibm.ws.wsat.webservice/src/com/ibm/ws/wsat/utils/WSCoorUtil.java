@@ -32,9 +32,7 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceModelUtil;
 import org.apache.cxf.transport.Conduit;
-import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.policy.EffectivePolicy;
@@ -105,16 +103,6 @@ public class WSCoorUtil {
         cc.setRegistrationService(epr);
 
         return cc;
-    }
-
-    public static EndpointReferenceType createEpr(String hostname) throws SOAPException {
-        EndpointReferenceType epr = new EndpointReferenceType();
-        AttributedURIType uri = new AttributedURIType();
-        uri.setValue(hostname);
-        epr.setAddress(uri);
-        ReferenceParametersType para = new ReferenceParametersType();
-        epr.setReferenceParameters(para);
-        return epr;
     }
 
     public static boolean assertAT(Message message) {

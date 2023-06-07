@@ -35,6 +35,7 @@ import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
+import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.ws.wsat.utils.WSATOSGIService;
 import com.ibm.ws.wsat.utils.WSCoorConstants;
 import com.ibm.ws.wsat.utils.WSCoorUtil;
@@ -92,7 +93,7 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
 //                                  + WSCoorConstants.COORDINATION_ENDPOINT;
 
                 //      EndpointReferenceType localCoorEpr = WSCoorUtil.createEpr(coorHost);
-                EndpointReferenceType localRegEpr = WSCoorUtil.createEpr(regHost);
+                EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost);
 
 //                //set into HandlerService will always self coor...
 //                WSATOSGIService.getInstance().getHandlerService().setCoordinatorEndpoint(localCoorEpr);

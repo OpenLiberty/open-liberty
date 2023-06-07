@@ -18,6 +18,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.wsat.service.Protocol;
+import com.ibm.ws.wsat.service.ProtocolServiceWrapper;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
 
@@ -47,8 +48,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorPrepared(java.lang.String)
      */
     @Override
-    public void coordinatorPrepared(String globalId, String partId, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.prepared(globalId, partId, fromEpr);
+    public void coordinatorPrepared(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.prepared(wrapper);
     }
 
     /*
@@ -57,8 +58,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorReadOnly(java.lang.String)
      */
     @Override
-    public void coordinatorReadOnly(String globalId, String partId, String recoveryId) throws WSATException {
-        protocolService.readOnly(globalId, partId, recoveryId);
+    public void coordinatorReadOnly(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.readOnly(wrapper);
     }
 
     /*
@@ -67,8 +68,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorAborted(java.lang.String)
      */
     @Override
-    public void coordinatorAborted(String globalId, String partId) throws WSATException {
-        protocolService.aborted(globalId, partId);
+    public void coordinatorAborted(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.aborted(wrapper);
     }
 
     /*
@@ -77,8 +78,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#coordinatorCommitted(java.lang.String)
      */
     @Override
-    public void coordinatorCommitted(String globalId, String partId) throws WSATException {
-        protocolService.committed(globalId, partId);
+    public void coordinatorCommitted(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.committed(wrapper);
     }
 
     /*
@@ -87,8 +88,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#participantPrepare(java.lang.String)
      */
     @Override
-    public void participantPrepare(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.prepare(wsatProperties, fromEpr);
+    public void participantPrepare(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.prepare(wrapper);
     }
 
     /*
@@ -97,8 +98,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#participantCommit(java.lang.String)
      */
     @Override
-    public void participantCommit(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.commit(wsatProperties, fromEpr);
+    public void participantCommit(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.commit(wrapper);
     }
 
     /*
@@ -107,8 +108,8 @@ public class ProtocolService implements Protocol {
      * @see com.ibm.ws.wsat.service.Protocol#participantRollback(java.lang.String)
      */
     @Override
-    public void participantRollback(Map<String, String> wsatProperties, EndpointReferenceType fromEpr) throws WSATException {
-        protocolService.rollback(wsatProperties, fromEpr);
+    public void participantRollback(ProtocolServiceWrapper wrapper) throws WSATException {
+        protocolService.rollback(wrapper);
     }
 
     /*

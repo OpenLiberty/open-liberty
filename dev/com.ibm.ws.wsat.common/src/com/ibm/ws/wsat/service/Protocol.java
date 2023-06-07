@@ -37,23 +37,23 @@ public interface Protocol {
      * Coordinator
      */
 
-    public void coordinatorPrepared(String globalId, String partId, EndpointReferenceType reply) throws WSATException;
+    public void coordinatorPrepared(ProtocolServiceWrapper wrapper) throws WSATException;
 
-    public void coordinatorReadOnly(String globalId, String partId, String recoveryId) throws WSATException;
+    public void coordinatorReadOnly(ProtocolServiceWrapper wrapper) throws WSATException;
 
-    public void coordinatorAborted(String globalId, String partId) throws WSATException;
+    public void coordinatorAborted(ProtocolServiceWrapper wrapper) throws WSATException;
 
-    public void coordinatorCommitted(String globalId, String partId) throws WSATException;
+    public void coordinatorCommitted(ProtocolServiceWrapper wrapper) throws WSATException;
 
     /*
      * Participant
      */
 
-    public void participantPrepare(Map<String, String> wsatProperties, EndpointReferenceType reply) throws WSATException;
+    public void participantPrepare(ProtocolServiceWrapper wrapper) throws WSATException;
 
-    public void participantCommit(Map<String, String> wsatProperties, EndpointReferenceType reply) throws WSATException;
+    public void participantCommit(ProtocolServiceWrapper wrapper) throws WSATException;
 
-    public void participantRollback(Map<String, String> wsatProperties, EndpointReferenceType reply) throws WSATException;
+    public void participantRollback(ProtocolServiceWrapper wrapper) throws WSATException;
 
     /*
      * Faults

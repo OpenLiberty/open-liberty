@@ -26,7 +26,7 @@ import tests.SimpleTest;
 	SimpleTest.class,
 })
 public class FATSuite {
-//    @ClassRule
+    @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SimpleTest.serverNames))
     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(SimpleTest.serverNames))

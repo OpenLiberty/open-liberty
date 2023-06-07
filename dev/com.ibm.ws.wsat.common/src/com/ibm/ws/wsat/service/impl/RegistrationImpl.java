@@ -12,13 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.Names;
@@ -35,6 +32,7 @@ import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
 import com.ibm.ws.wsat.service.WSATFaultException;
+import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.ws.wsat.service.WebClient;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
@@ -47,10 +45,16 @@ public class RegistrationImpl {
 
     private static final RegistrationImpl INSTANCE = new RegistrationImpl();
 
-    private final TranManagerImpl tranService = TranManagerImpl.getInstance();
+    private final static TranManagerImpl tranService = TranManagerImpl.getInstance();
+
     private final ProtocolImpl protocolService = ProtocolImpl.getInstance();
 
+    private static String recoveryId;
+
     public static RegistrationImpl getInstance() {
+        if (recoveryId == null) {
+            recoveryId = tranService.getRecoveryId();
+        }
         return INSTANCE;
     }
 
@@ -150,30 +154,29 @@ public class RegistrationImpl {
     // TODO: Should we return WSATFaultExceptions from here and make the web-service
     //       layer return the fault response, or should we return the fault from here?
     public EndpointReferenceType register(Map<String, String> wsatProperties, String globalId, EndpointReferenceType partEpr, String recoveryID) throws WSATException {
-        // Get the transaction - this should exist.  We should always be registering
-        // into an existing active transaction.
-        WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
-        if (wsatTran == null) {
-            if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "We are here. Tran must be on server handling recoveryIdentity: " + wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart()));
+        if (recoveryId != null && !recoveryId.equals(wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart()))) {
+            EndpointReferenceType epr = rerouteRegistration(wsatProperties, globalId, partEpr);
 
-                EndpointReferenceType epr = rerouteRegistration(wsatProperties, globalId, partEpr);
-
-                if (epr != null) {
-                    return epr;
-                }
+            if (epr != null) {
+                return epr;
             }
-            // Not a known transaction.  This should result in the WS-Coor spec
-            // CannotRegisterParticipant fault being returned.
-            throw new WSATFaultException(WSATFault.getCannotRegisterParticipant(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId)));
+        } else {
+            // Get the transaction - this should exist.  We should always be registering
+            // into an existing active transaction.
+            WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+            if (wsatTran != null) {
+                // Add the new participant and enlist with the transaction manager so it
+                // will take part in 2PC transaction completion.
+                WSATParticipant participant = wsatTran.addParticipant(partEpr);
+                tranService.registerParticipant(globalId, participant);
+
+                return participant.getCoordinator().getEndpointReference();
+            }
         }
 
-        // Add the new participant and enlist with the transaction manager so it
-        // will take part in 2PC transaction completion.
-        WSATParticipant participant = wsatTran.addParticipant(partEpr);
-        tranService.registerParticipant(globalId, participant);
-
-        return participant.getCoordinator().getEndpointReference();
+        // Not a known transaction.  This should result in the WS-Coor spec
+        // CannotRegisterParticipant fault being returned.
+        throw new WSATFaultException(WSATFault.getCannotRegisterParticipant(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId)));
     }
 
     private EndpointReferenceType rerouteRegistration(Map<String, String> wsatProperties, String globalId, EndpointReferenceType epr) throws WSATException {
@@ -181,26 +184,20 @@ public class RegistrationImpl {
             Tr.debug(TC, "Originally sent to: " + wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
         }
 
-        // Find out from the tran service what address is dealing
-        // with this recoveryId
-        EndpointReferenceType to = new EndpointReferenceType();
-        URL newAddress = null;
-        try {
-            URL originalAddress = new URL(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
-            URL storedAddress = new URL(tranService.getAddress(wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart())));
-            newAddress = new URL(storedAddress.getProtocol(), storedAddress.getHost(), storedAddress.getPort(), originalAddress.getFile());
-        } catch (MalformedURLException e) {
-            return null;
-        }
+        String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        String newAddr = tranService.getAddress(recoveryId);
+        String toAddr = WSATUtil.createRedirectAddr(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
+        EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 
-        AttributedURIType uri = new AttributedURIType();
-        uri.setValue(newAddress.toString());
-        to.setAddress(uri);
-        ReferenceParametersType para = new ReferenceParametersType();
-        to.setReferenceParameters(para);
-        WSATCoordinator coord = new WSATCoordinator(globalId, to);
+        // Copy across necessary reference parameters
+        ReferenceParametersType refs = toEpr.getReferenceParameters();
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+
+        WSATCoordinator coord = new WSATCoordinator(globalId, toEpr);
 
         WebClient webClient = WebClient.getWebClient(coord, null);
+        webClient.setMisrouting(false);
         return webClient.register(epr);
     }
 

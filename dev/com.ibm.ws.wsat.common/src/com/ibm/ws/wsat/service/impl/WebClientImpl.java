@@ -78,7 +78,14 @@ public class WebClientImpl extends WebClient {
             @Override
             public EndpointReferenceType call() throws Exception {
                 RegistrationService regService = new RegistrationService();
-                RegistrationPortType port = getPort(regService, RegistrationPortType.class);
+
+                RegistrationPortType port;
+                if (_misrouting) {
+/* ! */ port = getTestPort(regService, RegistrationPortType.class);
+                } else {
+                    port = getPort(regService, RegistrationPortType.class);
+                }
+
                 setTimeouts(port);
 
                 RegisterType regParm = new RegisterType();
@@ -166,7 +173,12 @@ public class WebClientImpl extends WebClient {
             @Override
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
-                CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                CoordinatorPortType port;
+                if (_misrouting) {
+/* ! */ port = getTestPort(coordService, CoordinatorPortType.class);
+                } else {
+                    port = getPort(coordService, CoordinatorPortType.class);
+                }
                 setTimeouts(port);
 
                 Notification parm = new Notification();
@@ -203,7 +215,12 @@ public class WebClientImpl extends WebClient {
             @Override
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
-                CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                CoordinatorPortType port;
+                if (_misrouting) {
+/* ! */ port = getTestPort(coordService, CoordinatorPortType.class);
+                } else {
+                    port = getPort(coordService, CoordinatorPortType.class);
+                }
                 setTimeouts(port);
 
                 Notification parm = new Notification();
@@ -219,7 +236,12 @@ public class WebClientImpl extends WebClient {
             @Override
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
-                CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                CoordinatorPortType port;
+                if (_misrouting) {
+/* ! */ port = getTestPort(coordService, CoordinatorPortType.class);
+                } else {
+                    port = getPort(coordService, CoordinatorPortType.class);
+                }
                 setTimeouts(port);
 
                 Notification parm = new Notification();

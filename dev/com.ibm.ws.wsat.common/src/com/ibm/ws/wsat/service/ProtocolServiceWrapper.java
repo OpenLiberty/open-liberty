@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsat.utils;
+package com.ibm.ws.wsat.service;
 
 import java.util.List;
 import java.util.Map;
@@ -18,12 +18,15 @@ import java.util.Map;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
-import com.ibm.ws.wsat.service.Protocol;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxws.wsat.Constants;
 
 /**
  *
  */
 public class ProtocolServiceWrapper {
+    private static final TraceComponent TC = Tr.register(ProtocolServiceWrapper.class);
 
     private Protocol service;
     private List<Header> migrationHeaders;
@@ -34,7 +37,7 @@ public class ProtocolServiceWrapper {
     private EndpointReferenceType faultTo;
     private EndpointReferenceType replyTo;
     private EndpointReferenceType from;
-    private Map<String, String> setWSATProperties;
+    private Map<String, String> wsatProperties;
 
     /**
      * @return the service
@@ -177,8 +180,42 @@ public class ProtocolServiceWrapper {
      * @return
      */
     public ProtocolServiceWrapper setWSATProperties(Map<String, String> wsatProperties) {
-        this.setWSATProperties = wsatProperties;
+        this.wsatProperties = wsatProperties;
         return this;
     }
 
+    public EndpointReferenceType getResponseEpr() {
+        EndpointReferenceType fromEpr = getFrom();
+
+        if (fromEpr == null || fromEpr.getAddress().getValue().equals(Constants.WS_ADDR_NONE)) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Response address selected from the replyTo header");
+            }
+
+            fromEpr = getReplyTo();
+        }
+
+        return fromEpr;
+    }
+
+    /**
+     * @return the wsatProperties
+     */
+    public Map<String, String> getWsatProperties() {
+        return wsatProperties;
+    }
+
+    /**
+     * @param wsatProperties the wsatProperties to set
+     */
+    public void setWsatProperties(Map<String, String> wsatProperties) {
+        this.wsatProperties = wsatProperties;
+    }
+
+    /**
+     * @return the tc
+     */
+    public static TraceComponent getTc() {
+        return TC;
+    }
 }
