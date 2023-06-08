@@ -133,7 +133,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
         Class<?> recordClass = null;
 
-        if (defaultEntityClass.getName().equals("test.jakarta.data.web.Receipt")) // TODO with Java 17: if (defaultEntityClass.isRecord())
+        if (defaultEntityClass.isRecord())
             try {
                 recordClass = defaultEntityClass;
                 defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Record");
@@ -2326,7 +2326,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final Object toEntity(Object o) {
         Object entity = o;
         Class<?> oClass = o == null ? null : o.getClass();
-        if (o != null && oClass.getName().equals("test.jakarta.data.web.Receipt")) // TODO with Java 17: oClass.isRecord()
+        if (o != null && oClass.isRecord())
             try {
                 final Object recordObj = o;
                 entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {

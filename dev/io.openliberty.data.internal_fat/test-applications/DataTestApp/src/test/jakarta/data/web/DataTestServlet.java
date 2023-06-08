@@ -2544,7 +2544,6 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * Tests all CrudRepository methods with a record as the entity.
-     * TODO use a real record once compiling against Java 17
      */
     @Test
     public void testRecordCrudRepositoryMethods() {

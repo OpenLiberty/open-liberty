@@ -13,10 +13,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: Jakarta Data Liberty Persistence Integration
 Bundle-SymbolicName: io.openliberty.data.internal.persistence
