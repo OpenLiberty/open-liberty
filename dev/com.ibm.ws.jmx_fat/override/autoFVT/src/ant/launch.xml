@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2022 IBM Corporation and others.
+    Copyright (c) 2017, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -147,7 +147,10 @@
 			<or>
 				<and> <equals arg1="11" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
 		
