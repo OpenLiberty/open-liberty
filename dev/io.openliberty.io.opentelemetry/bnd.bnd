@@ -32,6 +32,7 @@ Import-Package: \
   zipkin2.reporter,\
   zipkin2.reporter.okhttp3,\
   jakarta.interceptor,\
+  jakarta.enterprise.util,\
   com.ibm.wsspi.classloading,\
   org.osgi.framework,\
   com.ibm.websphere.ras,\
@@ -63,6 +64,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.openliberty.com.squareup.okio-jvm;version=latest,\
 	io.openliberty.io.zipkin.zipkin2;version=latest,\
 	io.openliberty.jakarta.interceptor.2.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support;version='1.19.0.alpha';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version='1.19.0.alpha';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version='1.19.0';strategy=exact,\
