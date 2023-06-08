@@ -29,6 +29,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.Server;
@@ -72,6 +73,7 @@ public class ServletTest extends FATServletClient {
     public static LibertyServer server;
 
     private static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server.xml config
+    private static String TRANLOG_DIR = "${server.output.dir}TRANLOG_DIR"; // Differs from server.xml config
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -82,6 +84,7 @@ public class ServletTest extends FATServletClient {
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                 serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                serverEnvWriter.println("TRANLOG_DIR=" + TRANLOG_DIR);
             } catch (FileNotFoundException e) {
                 throw new UncheckedIOException(e);
             }
@@ -95,6 +98,24 @@ public class ServletTest extends FATServletClient {
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
         server.checkpointRestore();
+    }
+
+    //   @Test
+    public void testLTCAfterGlobalTran() throws Exception {
+
+        // Exercise a transaction to start logging to the datasource.
+        // The server will throw an exception and fail this test the TM cannot
+        // establish a connection to the database.
+        runTest("testLTCAfterGlobalTran", server);
+    }
+
+    private void runTest(String testName, LibertyServer ls) throws Exception {
+        StringBuilder sb = null;
+        try {
+            sb = runTestWithResponse(ls, SERVLET_NAME, testName);
+        } finally {
+            Log.info(this.getClass(), testName, testName + " returned: " + sb);
+        }
     }
 
     @AfterClass
