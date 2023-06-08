@@ -49,10 +49,10 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -211,10 +211,12 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         if (deferRecoveryAtRestore.compareAndSet(true, false)) {
             // To be here isStarted is true, checkpoint restore config updates are complete,
             // and recoverOnStartup was overriden (disabled/skipped) during doStartup0.
-            try {
-                TMHelper.start(cp.isWaitForRecovery());
-            } catch (Exception e) {
-                FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doDeferredRecoveryAtRestore", "60", this);
+            if (cp.isRecoverOnStartup()) {
+                try {
+                    TMHelper.start(cp.isWaitForRecovery());
+                } catch (Exception e) {
+                    FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doDeferredRecoveryAtRestore", "60", this);
+                }
             }
         }
     }
