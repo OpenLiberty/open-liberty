@@ -134,6 +134,7 @@ Import-Package: \
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
   com.ibm.ws.jsf.shared;version=latest,\
   com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+  commons-digester:commons-digester;version=2.1, \
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.serialization;version=latest,\

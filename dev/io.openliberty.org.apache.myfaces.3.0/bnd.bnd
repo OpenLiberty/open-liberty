@@ -25,6 +25,7 @@ Include-Resource: \
   @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/internal-resources/**, \
+  @${repo;commons-digester:commons-digester;2.1}, \
   META-INF=@src/META-INF
 
 Service-Component: \
@@ -63,6 +64,7 @@ Export-Package: \
   !org.apache.myfaces.shared.renderkit, \
   !org.apache.myfaces.shared.renderkit.html, \
   !org.apache.myfaces.shared.renderkit.html.util, \
+  org.apache.commons.digester, \
   com.ibm.ws.faces.taglibconfig, \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
@@ -121,6 +123,7 @@ Import-Package: \
 -buildpath: \
   org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.3.0;version=latest,\
+  commons-digester:commons-digester;version=2.1, \
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.serialization;version=latest,\
