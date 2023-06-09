@@ -12,6 +12,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.reactive.streams.operators.core; type="stable", \
   org.reactivestreams; type="stable";
 -features=io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
+  io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0", \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators-3.0, \
   io.openliberty.concurrent-2.0; ibm.tolerates:="3.0"
 -bundles=\
