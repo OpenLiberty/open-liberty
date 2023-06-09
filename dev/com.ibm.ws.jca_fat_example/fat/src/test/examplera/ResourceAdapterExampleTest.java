@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -52,14 +53,13 @@ public class ResourceAdapterExampleTest extends FATServletClient {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ExampleApp.ear")
                         .addAsModule(war)
                         .addAsManifestResource(new File("test-applications/ExampleApp/resources/META-INF/application.xml"));
-        ShrinkHelper.exportToServer(server, "dropins", ear);
-        server.addInstalledAppForValidation("ExampleApp");
+        ShrinkHelper.exportDropinAppToServer(server, ear);
 
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "ExampleRA.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("com.ibm.example.jca.adapter"))
                         .addAsManifestResource(new File("test-resourceadapters/ExampleRA/resources/META-INF/ra.xml"));
-        ShrinkHelper.exportToServer(server, "dropins", rar);
+        ShrinkHelper.exportDropinAppToServer(server, rar, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer();
     }

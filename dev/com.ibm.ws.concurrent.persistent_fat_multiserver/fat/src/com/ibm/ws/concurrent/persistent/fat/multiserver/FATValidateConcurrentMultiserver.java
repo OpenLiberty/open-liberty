@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,8 +71,8 @@ public class FATValidateConcurrentMultiserver {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME)
                 .addPackage("com.ibm.test.servlet")
                 .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
-        ShrinkHelper.exportToServer(server1, "apps", app);
-        ShrinkHelper.exportToServer(server2, "apps", app);
+        ShrinkHelper.exportAppToServer(server1, app);
+        ShrinkHelper.exportAppToServer(server2, app);
     	
     	server1.startServer(true);
         server2.startServer(true);

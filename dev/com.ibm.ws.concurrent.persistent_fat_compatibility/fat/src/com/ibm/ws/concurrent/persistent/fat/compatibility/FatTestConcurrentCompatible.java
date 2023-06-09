@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class FatTestConcurrentCompatible extends CommonUtils {
     	//causes time out error waiting for app to start.
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                 .addPackage("com.ibm.test.servlet");
-        ShrinkHelper.exportToServer(server, "apps", app);
+        ShrinkHelper.exportAppToServer(server, app);
         //No need to start the server.  Each test will start the server when necessary.
     }
 

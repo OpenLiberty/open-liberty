@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.addDirectory;
 import static com.ibm.websphere.simplicity.ShrinkHelper.buildDefaultApp;
 import static com.ibm.websphere.simplicity.ShrinkHelper.buildJavaArchive;
 import static com.ibm.websphere.simplicity.ShrinkHelper.defaultDropinApp;
-import static com.ibm.websphere.simplicity.ShrinkHelper.exportToServer;
+import static com.ibm.websphere.simplicity.ShrinkHelper.exportDropinAppToServer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -84,7 +84,7 @@ public class BeanVal20Test extends FATServletClient {
                         .addAsModule(multipleValidationXmlEjb2_jar)
                         .addAsModule(multipleValidationXmlWeb_war);
         addDirectory(multiValXmlEar, "test-applications/MultipleValidationXmlEjb.ear/resources");
-        exportToServer(server, "dropins", multiValXmlEar);
+        exportDropinAppToServer(server, multiValXmlEar);
 
         defaultDropinApp(server, REG_APP, "bval.v20.web");
         defaultDropinApp(server, CDI_APP, "bval.v20.cdi.web");

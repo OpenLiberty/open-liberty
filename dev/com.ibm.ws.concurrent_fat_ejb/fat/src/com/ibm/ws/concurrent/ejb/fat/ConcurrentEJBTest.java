@@ -60,8 +60,7 @@ public class ConcurrentEJBTest extends FATServletClient {
                         .addPackage("web")
                         .addPackage("ejb")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/web.xml"));
-        ShrinkHelper.exportToServer(server, "dropins", app);
-        server.addInstalledAppForValidation(APP_NAME);
+        ShrinkHelper.exportDropinAppToServer(server, app);
         server.startServer();
     }
 

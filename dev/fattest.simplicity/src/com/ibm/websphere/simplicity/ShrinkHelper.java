@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,6 +82,10 @@ public class ShrinkHelper {
      * autoFVT/publish/... and wlp/usr/...
      */
     public static void exportToServer(LibertyServer server, String path, Archive<?> a, DeployOptions... options) throws Exception {
+        if (path == "dropins" || path == "apps") {
+            Log.warning(c, "Consider using 'exportAppToServer' or 'exportDropinAppToServer' when copying an Application "
+                           + "these methods will automatically add the application for validation on server startup.");
+        }
         String localLocation;
         if (serverOnly(options)) {
             localLocation = getTmpLocation(a);

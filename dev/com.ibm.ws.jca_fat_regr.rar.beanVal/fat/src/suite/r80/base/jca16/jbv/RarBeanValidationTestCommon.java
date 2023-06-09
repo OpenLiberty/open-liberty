@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -155,7 +155,7 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         EnterpriseArchive sampleapp_jca16_jbv_embeddedra_ear = ShrinkWrap.create(EnterpriseArchive.class, RarTests.sampleapp_jca16_jbv_embeddedraApp + ".ear");
         sampleapp_jca16_jbv_embeddedra_ear.addAsModules(jbvweb1_war, adapter_jca16_jbv_ResourceAdapterValidation_Embedded, jbv_no_xmls_ejb1_jar);
 
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedra_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedra_ear);
 
         //Package adapter_jca16_jbv_AdministeredObjectValidation_Success adapter_jca16_jbv_AdministeredObjectValidation_Success.rar
         JavaArchive resourceAdapterAdminObject_jar = ShrinkWrap.create(JavaArchive.class, "rarBeanResourceAdapterAdminObject.jar");
@@ -227,12 +227,12 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         EnterpriseArchive jvbapp_ear = ShrinkWrap.create(EnterpriseArchive.class, RarTests.Jbvapp + ".ear");
         jvbapp_ear.addAsModules(jvbweb_war);
         ShrinkHelper.addDirectory(jvbapp_ear, "lib/LibertyFATTestFiles/" + RarTests.Jbvapp);
-        ShrinkHelper.exportToServer(server, "apps", jvbapp_ear);
+        ShrinkHelper.exportAppToServer(server, jvbapp_ear);
 
         EnterpriseArchive sampleapp_jca16_jbv_embeddedao_ear = ShrinkWrap.create(EnterpriseArchive.class, RarTests.sampleapp_jca16_jbv_embeddedaoApp + ".ear");
         sampleapp_jca16_jbv_embeddedao_ear.addAsModules(jbvweb1_war, adapter_jca16_jbv_AdministeredObjectValidation_Embedded, jbv_no_xmls_ejb1_jar, jvbweb_war);
 
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedao_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedao_ear);
 
         //Package adapter_jca16_jbv_ActivationSpecValidation_Success adapter_jca16_jbv_ActivationSpecValidation_Success.rar
         JavaArchive resourceAdapterActivSpecResourceAdapter_jar = ShrinkWrap.create(JavaArchive.class, "ResourceAdapterActivSpecResourceAdapter.jar");
@@ -314,13 +314,13 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         EnterpriseArchive sampleapp_jca16_jbv_embeddedas_ear = ShrinkWrap.create(EnterpriseArchive.class, RarTests.sampleapp_jca16_jbv_embeddedasApp + ".ear");
         sampleapp_jca16_jbv_embeddedas_ear.addAsModules(rar10, jbv_no_override_ejb2_jar, jvbweb_war);
 
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedas_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedas_ear);
 
         EnterpriseArchive sampleapp_jca16_jbv_standaloneassuccess_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                           RarTests.sampleapp_jca16_jbv_standaloneassuccessApp + ".ear");
         sampleapp_jca16_jbv_standaloneassuccess_ear.addAsModules(jbv_no_override_ejb2_jar);
 
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_standaloneassuccess_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_standaloneassuccess_ear);
 
         //Package adapter_jca16_jbv_ManagedConnectionFactoryValidation_Success adapter_jca16_jbv_ManagedConnectionFactoryValidation_Success.rar
         JavaArchive managedConnectionFactoryValidation_Success_jar = ShrinkWrap.create(JavaArchive.class, "ManagedConnectionFactoryValidation_Success.jar");
@@ -357,7 +357,7 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
                                                                                                        RarTests.sampleapp_jca16_jbv_embeddedraApp + ".ear");
         adapter_jca16_jbv_ResourceAdapterValidation_Embedded_ear.addAsModules(jbvweb1_war, adapter_jca16_jbv_ResourceAdapterValidation_Embedded, jbv_no_xmls_ejb1_jar);
 
-        ShrinkHelper.exportToServer(server, "apps", adapter_jca16_jbv_ResourceAdapterValidation_Embedded_ear);
+        ShrinkHelper.exportAppToServer(server, adapter_jca16_jbv_ResourceAdapterValidation_Embedded_ear);
 
         JavaArchive jbv_ejb1_jar = ShrinkWrap.create(JavaArchive.class, JBV_EJB1_JAR_NAME + ".jar");
         jbv_ejb1_jar.addPackage("ejb");
@@ -368,18 +368,18 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         EnterpriseArchive sampleapp_jca16_jbv_embeddedra_ejbvalconfig_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                               RarTests.sampleapp_jca16_jbv_embeddedra_ejbvalconfigApp + ".ear");
         sampleapp_jca16_jbv_embeddedra_ejbvalconfig_ear.addAsModules(jbvweb1_war, adapter_jca16_jbv_ResourceAdapterValidation_Embedded, jbv_ejb1_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedra_ejbvalconfig_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedra_ejbvalconfig_ear);
 
         EnterpriseArchive sampleapp_jca16_jbv_embeddedravalconfig_ejb = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                           RarTests.sampleapp_jca16_jbv_embeddedravalconfig_ejbApp + ".ear");
         sampleapp_jca16_jbv_embeddedravalconfig_ejb.addAsModules(jbvweb1_war, adapter_jca16_jbv_ResourceAdapterValidation_Success, jbv_no_xmls_ejb1_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedravalconfig_ejb);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedravalconfig_ejb);
 
         EnterpriseArchive sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                                        RarTests.sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfigApp
                                                                                                                                 + ".ear");
         sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig_ear.addAsModules(jbvweb1_war, adapter_jca16_jbv_ResourceAdapterValidation_Success, jbv_ejb1_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_embeddedravalconfig_ejbvalconfig_ear);
 
         JavaArchive jbv_ejb2_jar = ShrinkWrap.create(JavaArchive.class, "jbv_ejb2.jar");
         jbv_ejb2_jar.addPackages(true, "ejb1");
@@ -387,17 +387,17 @@ public abstract class RarBeanValidationTestCommon extends FATServletClient {
         EnterpriseArchive sampleapp_jca16_jbv_standaloneasfailure_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                           RarTests.sampleapp_jca16_jbv_standaloneasfailureApp + ".ear");
         sampleapp_jca16_jbv_standaloneasfailure_ear.addAsModules(jbv_ejb2_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_standaloneasfailure_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_standaloneasfailure_ear);
 
         EnterpriseArchive sampleapp_jca16_jbv_ejb_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                           RarTests.sampleapp_jca16_jbv_ejbApp + ".ear");
         sampleapp_jca16_jbv_ejb_ear.addAsModules(jbvweb1_war, jbv_no_xmls_ejb1_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_ejb_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_ejb_ear);
 
         EnterpriseArchive sampleapp_jca16_jbv_ejbvalconfig_ear = ShrinkWrap.create(EnterpriseArchive.class,
                                                                                    RarTests.sampleapp_jca16_jbv_ejbvalconfigApp + ".ear");
         sampleapp_jca16_jbv_ejbvalconfig_ear.addAsModules(jbvweb1_war, jbv_ejb1_jar);
-        ShrinkHelper.exportToServer(server, "apps", sampleapp_jca16_jbv_ejbvalconfig_ear);
+        ShrinkHelper.exportAppToServer(server, sampleapp_jca16_jbv_ejbvalconfig_ear);
     }
 
     @AfterClass
