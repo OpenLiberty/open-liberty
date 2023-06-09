@@ -22,6 +22,9 @@ src: \
 
 fat.project: true
 
+tested.features:\
+	servlet-3.1
+
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	org.hamcrest:hamcrest-all;version=1.3, \
