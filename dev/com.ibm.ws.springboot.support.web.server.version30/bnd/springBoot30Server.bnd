@@ -1,4 +1,0 @@
-Bundle-SymbolicName: springBoot30Server
-Private-Package: com.ibm.ws.springboot.support.web.server.version30.container.*
-Include-Resource: resources/container
--maven-dependencies:
