@@ -50,12 +50,12 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = "https://localhost";
         String sub = "testSub";
         String sid = "testSid";
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_3ssUE3zEBGw4jK8MkAp6udTSo9PaqTVpJgoE4BwmqUs=";
 
-        assertEquals("Expected to return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
+        assertEquals("Expected to return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(exp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
@@ -64,12 +64,12 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = "https://localhost";
         String sub = "testSub";
         String sid = "";
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=_cPjhjKp9RSS1oESEIBaiK3x+GDs3Rft83urh4KaDYg8=";
 
-        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(timestamp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
+        assertEquals("Expected to the return the session id in the format 'Base64(configId):Base64(sub):Base64(sid):Base64(exp)_Signature(SessionId, ClientSecret)'.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
@@ -78,9 +78,9 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = "https://localhost";
         String sub = "testSub";
         String sid = "testSid";
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = ":aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_hG1yWN/mOMMxzHGsS8KnpfXKP3e4C74BxDDJZtQQMzk=";
 
         assertEquals("Expected to replace the configId with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
@@ -92,9 +92,9 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = null;
         String sub = "testSub";
         String sid = "testSid";
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk::dGVzdFN1Yg==:dGVzdFNpZA==:MTIzNDU=_XViM+YzwC84l+DMxTjTqgaH8oVqkWMmjfsQP6kDgZKk=";
 
         assertEquals("Expected to replace the sub with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
@@ -106,9 +106,9 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = "https://localhost";
         String sub = null;
         String sid = "testSid";
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=::dGVzdFNpZA==:MTIzNDU=_JTmRlEJgi/mUGSFs3Jg8j1BOcc/faLKDIxdBE5XlFV4=";
 
         assertEquals("Expected to replace the sub with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
@@ -120,26 +120,26 @@ public class OidcSessionInfoTest extends CommonTestClass {
         String iss = "https://localhost";
         String sub = "testSub";
         String sid = null;
-        String timestamp = "12345";
+        String exp = "12345";
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==::MTIzNDU=_cPjhjKp9RSS1oESEIBaiK3x+GDs3Rft83urh4KaDYg8=";
 
         assertEquals("Expected to replace the sid with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
-    public void test_createSessionId_timestampIsNull() {
+    public void test_createSessionId_expIsNull() {
         String configId = "testConfigId";
         String iss = "https://localhost";
         String sub = "testSub";
         String sid = "testSid";
-        String timestamp = null;
+        String exp = null;
 
-        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, timestamp, clientConfig);
+        OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
         String expectedSesssionId = "dGVzdENvbmZpZ0lk:aHR0cHM6Ly9sb2NhbGhvc3Q=:dGVzdFN1Yg==:dGVzdFNpZA==:_vb86W5kVUmHqMfboDo/jG491Zk5axpk0UqNVPqk5oR4=";
 
-        assertEquals("Expected to replace the timestamp with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
+        assertEquals("Expected to replace the exp with an empty string.", expectedSesssionId, sessionInfo.getSessionId());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         assertEquals("https://localhost", sessionInfo.getIss());
         assertEquals("testSub", sessionInfo.getSub());
         assertEquals("testSid", sessionInfo.getSid());
-        assertEquals("12345", sessionInfo.getTimestamp());
+        assertEquals("12345", sessionInfo.getExp());
     }
 
     @Test
@@ -167,7 +167,7 @@ public class OidcSessionInfoTest extends CommonTestClass {
         assertEquals("https://localhost", sessionInfo.getIss());
         assertEquals("testSub", sessionInfo.getSub());
         assertEquals("", sessionInfo.getSid());
-        assertEquals("12345", sessionInfo.getTimestamp());
+        assertEquals("12345", sessionInfo.getExp());
     }
 
     @Test
