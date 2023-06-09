@@ -40,16 +40,16 @@ public class WABConfigManager {
     /**
      * WAB Configuration Manager for OpenAPI Endpoints
      *
-     * @param context Component Context for the Web bundle
+     * @param context     Component Context for the Web bundle
      * @param contextName Name of the property within the bnd that the Web-ContextPath is bound to e.g. "openAPIUIPATH"
      * @param contextPath Context path for the bundle to be served from
-     * @param name Name associated with the bundle for tracing
+     * @param name        Name associated with the bundle for tracing
      */
     public WABConfigManager(BundleContext context, String contextName, String contextPath, String name) {
         this.context = context;
         this.contextName = contextName;
         this.contextPath = contextPath;
-        this.name=name;
+        this.name = name;
     }
 
     /**
@@ -60,7 +60,8 @@ public class WABConfigManager {
         props.put(WABConfiguration.CONTEXT_NAME, contextName);
         props.put(WABConfiguration.CONTEXT_PATH, contextPath);
         if (wabConfigReg == null) {
-            wabConfigReg = context.registerService(WABConfiguration.class, new WABConfiguration() {}, props);
+            wabConfigReg = context.registerService(WABConfiguration.class, new WABConfiguration() {
+            }, props);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 registerEvent(props);
             }
@@ -94,7 +95,7 @@ public class WABConfigManager {
     }
 
     public void deactivateEvent() {
-        Tr.event(tc, "Unregistered web app bundle "+ name +", WAB config=" + wabConfigReg + " for contextName=" + contextName + " and contextPath=" + contextPath);
+        Tr.event(tc, "Unregistered web app bundle " + name + ", WAB config=" + wabConfigReg + " for contextName=" + contextName + " and contextPath=" + contextPath);
     }
 
 }

@@ -16,8 +16,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,15 +39,20 @@ public class OpenAPIEndpointManager {
 
     private static final Pattern PATH_PATTERN = Pattern.compile("^(/[\\w./_-]*)?$");
     private static final Map<String, String> CONFLICTING_PATHS_MAP = Stream.of(
-            new AbstractMap.SimpleEntry<>("/ibm/api", "OpenAPI"),
-            new AbstractMap.SimpleEntry<>("/health", "mpHealth"),
-            new AbstractMap.SimpleEntry<>("/metrics", "mpMetrics")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                                                                               new AbstractMap.SimpleEntry<>("/ibm/api", "OpenAPI"),
+                                                                               new AbstractMap.SimpleEntry<>("/health", "mpHealth"),
+                                                                               new AbstractMap.SimpleEntry<>("/metrics", "mpMetrics")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    public enum EndpointId {
+        UI,
+        DOCUMENT
+    };
 
     private String uiPath = null;
     private String docPath = null;
 
-    private WABConfigManager UIWabConfigManager;
-    private WABConfigManager DocWabConfigManager;
+    private WABConfigManager uiWabConfigManager;
+    private WABConfigManager docWabConfigManager;
 
     @Activate
     @Modified
@@ -63,77 +66,77 @@ public class OpenAPIEndpointManager {
                 resolvePathFromProperties(properties);
             }
         }
-        UIWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, uiPath, "OpenAPI UI");
-        DocWabConfigManager = new WABConfigManager(context, OPEN_API_DOC_VAR_NAME, docPath, "OpenAPI Doc");
-        UIWabConfigManager.register();
-        DocWabConfigManager.register();
+        //If One of the WAB Config Managers exists then we are modifying the configuration therefore we need to unregister the existing WABs
+        if(uiWabConfigManager != null){
+            deactivate();
+        }
+        uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, uiPath, "OpenAPI UI");
+        docWabConfigManager = new WABConfigManager(context, OPEN_API_DOC_VAR_NAME, docPath, "OpenAPI Doc");
+        uiWabConfigManager.register();
+        docWabConfigManager.register();
     }
 
     @Deactivate
-    protected void deactivate(BundleContext context, int reason){
-        UIWabConfigManager.unregister();
-        DocWabConfigManager.unregister();
+    protected void deactivate() {
+        uiWabConfigManager.unregister();
+        docWabConfigManager.unregister();
     }
 
-    private void resolvePathFromProperties(Map<String,Object> properties){
+    private void resolvePathFromProperties(Map<String, Object> properties) {
         docPath = (String) properties.get(OPEN_API_DOC_ENDPOINT_CONFIG_NAME);
         docPath = resolvePath(docPath);
         //If path is not valid revert to default value before we process the UI Path
-        if(!validatePath(docPath, "Document")){
-            Tr.error(tc,"OPEN_API_PATH_UPDATE_FAILED_CWWKO1669E", "Document");
-            docPath=OPEN_API_DOC_ENDPOINT_PATH;
+        if (!validatePath(docPath, EndpointId.DOCUMENT)) {
+            Tr.error(tc, "OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E");
+            docPath = OPEN_API_DOC_ENDPOINT_PATH;
         }
 
-        if(!docPath.equals(OPEN_API_DOC_ENDPOINT_PATH)) {
-            Tr.info(tc, "OPEN_API_PATH_UPDATE_CWWKO1668I", "Document", docPath);
+        if (!docPath.equals(OPEN_API_DOC_ENDPOINT_PATH)) {
+            Tr.info(tc, "OPEN_API_DOC_PATH_UPDATE_CWWKO1669I", docPath);
         }
 
-        if(properties.containsKey(OPEN_API_UI_CONFIG_NAME)){
+        if (properties.containsKey(OPEN_API_UI_CONFIG_NAME)) {
             uiPath = (String) properties.get(OPEN_API_UI_CONFIG_NAME);
             uiPath = resolvePath(uiPath);
             if (uiPath.equals(docPath)) {
-                Tr.error(tc, "OPEN_API_PATH_CONFLICT_CWWKO1670E", uiPath);
-                uiPath=docPath+OPEN_API_UI_PATH;
-            } else if (!validatePath(uiPath, "UI")){
-                    Tr.error(tc,"OPEN_API_PATH_UPDATE_FAILED_CWWKO1669E", "UI");
-                    uiPath=docPath+OPEN_API_UI_PATH;
+                Tr.error(tc, "OPEN_API_UI_PATH_CONFLICT_CWWKO1672E", uiPath);
+                uiPath = docPath + OPEN_API_UI_PATH;
+            } else if (!validatePath(uiPath, EndpointId.UI)) {
+                Tr.error(tc, "OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E");
+                uiPath = docPath + OPEN_API_UI_PATH;
             }
-        }else{
-            uiPath=docPath+OPEN_API_UI_PATH;
+        } else {
+            uiPath = docPath + OPEN_API_UI_PATH;
         }
 
-        if(!uiPath.equals(OPEN_API_DOC_ENDPOINT_PATH+OPEN_API_UI_PATH)) {
-            Tr.info(tc, "OPEN_API_PATH_UPDATE_CWWKO1668I", "UI", docPath);
+        if (!uiPath.equals(OPEN_API_DOC_ENDPOINT_PATH + OPEN_API_UI_PATH)) {
+            Tr.info(tc, "OPEN_API_UI_PATH_UPDATE_CWWKO1668I", docPath);
         }
     }
-
     /**
      * Validate the OpenAPI path to ensure it is Valid, contains only valid characters and mets certain rules.
      *
-     *
-     * @param path
+     * @param path Path to be validated
+     * @param id   Which OpenAPI bundle we are validating the path for.
      * @return
      */
-    public static boolean validatePath(String path, String id) {
+    public static boolean validatePath(String path, EndpointId id) {
         boolean valid = true;
-        try {
-            //temporarily construct a URL using provided path to use the URL validation code.
-            new URL("https://localhost" + path);
-        } catch (MalformedURLException e) {
-            Tr.error(tc, "OPEN_API_PATH_INVALID_CWWKO1672E",e.getLocalizedMessage());
-            return false;
-        }
+
         //check that path is made up of valid characters
         if (!PATH_PATTERN.matcher(path).matches()) {
-            Tr.error(tc, "OPEN_API_PATH_INVALID_CWWKO1672E", id, path);
+            if (id.equals(EndpointId.UI)) {
+                Tr.error(tc, "OPEN_API_UI_PATH_INVALID_CWWKO1675E", path);
+            } else {
+                Tr.error(tc, "OPEN_API_DOC_PATH_INVALID_CWWKO1676E", path);
+            }
             valid = false;
-            //check against other feature paths to see if a potential conflict might occur
         }
 
         // check that no segment is just `/.` or `/..`, `/.....` should be left as is as it has no special meaning
         ArrayList<String> segments = new ArrayList<>(Arrays.asList(path.split("/")));
         if (segments.contains(".") || segments.contains("..")) {
-            Tr.error(tc, "OPEN_API_PATH_SEGMENT_INVALID_CWWKO1673E");
+            Tr.error(tc, "OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E");
             valid = false;
         }
 
@@ -141,14 +144,18 @@ public class OpenAPIEndpointManager {
         if (CONFLICTING_PATHS_MAP.containsKey(path)) {
             //Just warn that might conflict with other features as they might not be active, so not a cause for failure.
             //If there is a conflict WebContainer will error for the second feature that starts.
-            Tr.warning(tc, "OPEN_API_PATH_POTENTIAL_CONFLICT_CWWKO1671W", id, CONFLICTING_PATHS_MAP.get(path));
+            if (id.equals(EndpointId.UI)) {
+                Tr.warning(tc, "OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W", CONFLICTING_PATHS_MAP.get(path));
+            } else {
+                Tr.warning(tc, "OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W", CONFLICTING_PATHS_MAP.get(path));
+            }
         }
 
         return valid;
     }
 
     /**
-     * Resolve the provided path to check and modify the path to meet a basic path structure
+     * Resolve the provided path to check and modify the path to meet a basic path structure requirements
      *
      * @param path
      * @return
@@ -168,5 +175,7 @@ public class OpenAPIEndpointManager {
         }
         return path;
     }
+
+
 
 }

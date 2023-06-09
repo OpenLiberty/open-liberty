@@ -99,26 +99,42 @@ OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: The {0} configuration proper
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=The server is configured to create OpenAPI documentation for the application or module name, but no application or web module with that name was deployed.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Check that all applications started correctly and that the names in the configuration property are specified correctly.
 
-OPEN_API_PATH_UPDATE_CWWKO1668I=CWWKO1668I: The OpenAPI {0} path has been set to {1}.
-OPEN_API_PATH_UPDATE_CWWKO1668I.explanation=The OpenAPI UI/Document path has been set to a value that is not the default.
-OPEN_API_PATH_UPDATE_CWWKO1668I.useraction=No action is required.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: The OpenAPI UI path has been set to {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=The OpenAPI UI path has been set to a value that is not the default.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=No action is required.
 
-OPEN_API_PATH_UPDATE_FAILED_CWWKO1669E=CWWKO1669E: The OpenAPI {0} path is invalid, the default value will be used instead. Check previous warnings for cause of validation failure.
-OPEN_API_PATH_UPDATE_FAILED_CWWKO1669E.explanation= The OpenAPI UI/Document path is invalid and will use the default value instead.
-OPEN_API_PATH_UPDATE_FAILED_CWWKO1669E.useraction=Check earlier warning messages for causes of validation failures.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: The OpenAPI Document path has been set to {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=The OpenAPI Document path has been set to a value that is not the default.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=No action is required.
 
-OPEN_API_PATH_CONFLICT_CWWKO1670E=CWWKO1670E: The OpenAPI UI path cannot be set to {0}. This path is used to retrieve the OpenAPI documents.
-OPEN_API_PATH_CONFLICT_CWWKO1670E.explanation=The OpenAPI document and OpenAPI UI paths cannot be the same.
-OPEN_API_PATH_CONFLICT_CWWKO1670E.useraction=Specify a unique path for the OpenAPI UI.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: The OpenAPI UI path is invalid, the default value will be used instead. Check previous warnings for cause of validation failure.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation= The OpenAPI UI path is invalid and will use the default value instead.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Check earlier error messages for causes of validation failures.
 
-OPEN_API_PATH_POTENTIAL_CONFLICT_CWWKO1671W=CWWKO1671W: The OpenAPI {0} path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
-OPEN_API_PATH_POTENTIAL_CONFLICT_CWWKO1671W.explanation=The OpenAPI UI/Document path was set to the same path as another feature, which can prevent startup or access.
-OPEN_API_PATH_POTENTIAL_CONFLICT_CWWKO1671W.useraction=Specify a different path for the OpenAPI UI path.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: The OpenAPI Document path is invalid, the default value will be used instead. Check previous warnings for cause of validation failure.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation= The OpenAPI Document path is invalid and will use the default value instead.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Check earlier error messages for causes of validation failures.
 
-OPEN_API_PATH_INVALID_CWWKO1672E=CWWKO1672E: The OpenAPI {0} path is invalid or contains invalid characters. The URL must be constructed using Unicode alphanumeric characters A-Za-z0-9, the underscore (_), dash (-), forward slash (/) and period (.).
-OPEN_API_PATH_INVALID_CWWKO1672E.explanation=The OpenAPI UI/Document Path cannot be set to a value that contains invalid characters.
-OPEN_API_PATH_INVALID_CWWKO1672E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: The OpenAPI UI path cannot be set to {0}. This path is used to retrieve the OpenAPI documents.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=The OpenAPI Document and OpenAPI UI paths cannot be the same.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Specify a unique path for the OpenAPI UI.
 
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1673E=CWWKO1673E: path segments "/." or "/.." are invalid for OpenAPI endpoints.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1673E.explanation=OpenAPI path segments "/." or "/.." are invalid.
-OPEN_API_PATH_SEGMENT_INVALID_CWWKO1673E.useraction=Remove any path "/." or "/.." segments from the path.
+OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W=CWWKO1673W: The OpenAPI UI path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
+OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W.explanation=An OpenAPI UI path was set to the same path as another feature, which can prevent startup or access.
+OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W.useraction=Specify a different path for the OpenAPI path.
+
+OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W=CWWKO1674W: The OpenAPI Document path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
+OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W.explanation=An OpenAPI Document path was set to the same path as another feature, which can prevent startup or access.
+OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W.useraction=Specify a different path for the OpenAPI path.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: The OpenAPI UI path is invalid or contains invalid characters. The URL must be constructed using Unicode alphanumeric characters A-Za-z0-9, the underscore (_), dash (-), forward slash (/) and period (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=The OpenAPI UI Path cannot be set to a value that contains invalid characters.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676: The OpenAPI Document path is invalid or contains invalid characters. The URL must be constructed using Unicode alphanumeric characters A-Za-z0-9, the underscore (_), dash (-), forward slash (/) and period (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=The OpenAPI Document Path cannot be set to a value that contains invalid characters.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1673E: path segments "/." or "/.." are invalid for OpenAPI endpoints.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=OpenAPI path segments "/." or "/.." are invalid.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Remove any path "/." or "/.." segments from the path.
