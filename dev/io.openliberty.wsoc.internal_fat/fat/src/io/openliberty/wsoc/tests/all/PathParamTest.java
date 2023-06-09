@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -128,21 +128,6 @@ public class PathParamTest {
     }
 
     /*
-     * ServerEndpoint - @see PathParamBasicServerEP - TestOnClose
-     */
-    public void TestPathParamOnClose() throws Exception {
-
-        //server endpoint uri path is /basic/pathparamonerrortest/{String-var}/{Integer-var}
-        String path2 = "/basic/pathparamonclosetest/testString/1";
-
-        String[] readerValues2 = { "msg1" };
-        //'testString' from onClose() method of previous test gets appended to the return mssage
-        String[] expectedData2 = { "msg1,testString" };
-
-        runEchoTest(new BasicClientEP.TestOnClose(readerValues2), path2, readerValues2, expectedData2);
-    }
-
-    /*
      * ServerEndpoint - @see PathParamBasicServerEP - TestOnOpen
      */
     public void TestOnOpenThroughUpgrade(String path) throws Exception {
@@ -166,7 +151,7 @@ public class PathParamTest {
      * @ExpectedFFDC({ "java.lang.NumberFormatException", "javax.websocket.DecodeException" })
      */
     public void TestOnError() throws Exception {
-        //server endpoint uri path is /basic/pathparamonclosetest/{String-var}/{Integer-var}
+        //server endpoint uri path is /basic/pathparamonerrortest/{String-var}/{Integer-var}
         String path = "/basic/pathparamonerrortest/testString/xyz"; //pass 'xyz' for {Integer-var} which will fail while processing @PathParam
 
         String[] readerValues = { "msg1" };
