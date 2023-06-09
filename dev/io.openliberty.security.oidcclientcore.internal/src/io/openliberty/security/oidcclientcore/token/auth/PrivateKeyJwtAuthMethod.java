@@ -13,7 +13,10 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 
@@ -21,15 +24,24 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
 import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthMissingKeyException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.token.TokenConstants;
+import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
 
 public class PrivateKeyJwtAuthMethod {
 
     public static final TraceComponent tc = Tr.register(PrivateKeyJwtAuthMethod.class);
 
+    public static final String AUTH_METHOD = "private_key_jwt";
+
     private static final float EXP_TIME_IN_MINUTES = 5;
+
+    private static boolean issuedBetaMessage = false;
 
     private final String clientId;
     private final String tokenEndpoint;
@@ -56,6 +68,46 @@ public class PrivateKeyJwtAuthMethod {
             throw new PrivateKeyJwtAuthException(clientId, e.getMessage());
         }
         return jwt;
+    }
+
+    public void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException {
+        try {
+            tokenRequestBuilder.clientAssertionSigningAlgorithm(clientAssertionSigningAlgorithm);
+            tokenRequestBuilder.clientAssertionSigningKey(clientAssertionSigningKey);
+        } catch (Exception e) {
+            throw new TokenEndpointAuthMethodSettingsException(clientId, AUTH_METHOD, e.getMessage());
+        }
+    }
+
+    void addPrivateKeyJwtParameters(List<NameValuePair> params) throws TokenRequestException {
+        if (!isRunningBetaMode()) {
+            return;
+        }
+        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION_TYPE, TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER));
+        String clientAssertionJwt = buildClientAssertionJwt();
+        params.add(new BasicNameValuePair(TokenConstants.CLIENT_ASSERTION, clientAssertionJwt));
+    }
+
+    private boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
+    }
+
+    private String buildClientAssertionJwt() throws TokenRequestException {
+        PrivateKeyJwtAuthMethod pkjAuthMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpoint, clientAssertionSigningAlgorithm, clientAssertionSigningKey);
+        try {
+            return pkjAuthMethod.createPrivateKeyJwt();
+        } catch (PrivateKeyJwtAuthException e) {
+            throw new TokenRequestException(clientId, e.getMessage(), e);
+        }
     }
 
     private JwtClaims populateJwtClaims() {

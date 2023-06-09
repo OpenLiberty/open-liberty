@@ -12,21 +12,25 @@ package io.openliberty.security.oidcclientcore.exceptions;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class PrivateKeyJwtAuthMissingKeyException extends Exception {
+public class TokenEndpointAuthMethodSettingsException extends Exception {
 
-    public static final TraceComponent tc = Tr.register(PrivateKeyJwtAuthMissingKeyException.class);
+    public static final TraceComponent tc = Tr.register(TokenEndpointAuthMethodSettingsException.class);
 
     private static final long serialVersionUID = 1L;
 
     private final String clientId;
+    private final String authMethod;
+    private final String nlsMessage;
 
-    public PrivateKeyJwtAuthMissingKeyException(String clientId) {
+    public TokenEndpointAuthMethodSettingsException(String clientId, String authMethod, String nlsMessage) {
         this.clientId = clientId;
+        this.authMethod = authMethod;
+        this.nlsMessage = nlsMessage;
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_SIGNING_KEY", clientId);
+        return Tr.formatMessage(tc, "TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR", clientId, authMethod, nlsMessage);
     }
 
 }
