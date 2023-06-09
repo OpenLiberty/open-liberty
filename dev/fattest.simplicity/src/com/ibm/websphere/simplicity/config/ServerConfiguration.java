@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -210,6 +210,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webContainer")
     private WebContainerElement webContainer;
 
+    @XmlElement(name = "webAppSecurity")
+    private WebAppSecurity webAppSecurity;
+
     @XmlElement(name = "sslDefault")
     private SSLDefault sslDefault;
 
@@ -314,13 +317,13 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "oidcLogin")
     private ConfigElementList<OidcLogin> oidcLogins;
-    
+
     @XmlElement(name = "openidConnectClient")
     private ConfigElementList<OpenidConnectClient> openIdConnectClients;
 
     @XmlElement(name = "jwtBuilder")
     private ConfigElementList<JwtBuilder> jwtBuilders;
-    
+
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -692,6 +695,12 @@ public class ServerConfiguration implements Cloneable {
         if (spnego == null)
             spnego = new Spnego();
         return spnego;
+    }
+
+    public WebAppSecurity getWebAppSecurity() {
+        if (webAppSecurity == null)
+            webAppSecurity = new WebAppSecurity();
+        return webAppSecurity;
     }
 
     /**
