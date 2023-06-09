@@ -35,7 +35,7 @@ public class ProofKeyForCodeExchange {
      */
     public static String generateCodeVerifier() {
         SecureRandom random = new SecureRandom();
-        byte verifierBytes[] = new byte[32];
+        byte verifierBytes[] = new byte[96];
         random.nextBytes(verifierBytes);
         String codeVerifier = new String(Base64.getUrlEncoder().encode(verifierBytes));
         codeVerifier = codeVerifier.replaceAll("[=]+$", "");
