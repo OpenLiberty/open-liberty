@@ -87,6 +87,7 @@ import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
@@ -337,9 +338,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Delete.class) != null) {
-                queryInfo.type = QueryInfo.Type.DELETE;
-                q = new StringBuilder(13 + o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+                boolean isDeleteOnly = queryInfo.hasVoidOrBooleanOrUpdateCountReturnType();
+                if (isDeleteOnly) {
+                    queryInfo.type = QueryInfo.Type.DELETE;
+                    q = new StringBuilder(13 + o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                    .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+                } else { // SELECT_AND_DELETE
+                    queryInfo.type = QueryInfo.Type.SELECT_AND_DELETE;
+                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                    q = generateSelectClause(queryInfo, select).append(whereClause);
+                    queryInfo.jpqlDelete = new StringBuilder(22 + o.length() * 2 + entityInfo.name.length()) // TODO add length of id attribute
+                                    .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
+                                    .append(" WHERE ").append(o).append('.').append("id").append("=?") // TODO need name of id attribute
+                                    .toString();
+                }
                 if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Count.class) != null) {
@@ -1788,7 +1800,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
                         break;
                     }
-                    case SELECT: {
+                    case SELECT:
+                    case SELECT_AND_DELETE: {
                         Limit limit = null;
                         Pageable pagination = null;
                         List<Sort> sortList = null;
@@ -1864,6 +1877,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass));
                             queryInfo.setParameters(query, args);
 
+                            if (queryInfo.type == QueryInfo.Type.SELECT_AND_DELETE)
+                                query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+
                             int maxResults = limit != null ? limit.maxResults() //
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
@@ -1879,7 +1895,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
-                                if (Stream.class.equals(multiType))
+                                if (Stream.class.equals(multiType)) // TODO SELECT_AND_DELETE from stream?
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
                                     returnValue = stream.mapToInt(RepositoryImpl::toInt);
@@ -1981,6 +1997,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
                                 }
+
+                                if (queryInfo.type == QueryInfo.Type.SELECT_AND_DELETE)
+                                    for (Object result : results)
+                                        em.remove(result); // TODO not all results are entity instances
                             }
                         }
 

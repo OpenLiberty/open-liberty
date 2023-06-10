@@ -1051,6 +1051,32 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Annotated repository operation to remove and return a single entity.
+     */
+    @Test
+    public void testFindAndDeleteAnnotated() {
+        packages.save(new Package(50001, 51.0f, 31.0f, 21.0f, "testFindAndDeleteAnnotated#50001"));
+        packages.save(new Package(50002, 52.0f, 32.0f, 22.0f, "testFindAndDeleteAnnotated#50002"));
+
+        Package p1 = packages.take(50001);
+        assertEquals(50001, p1.id);
+        assertEquals(51.0f, p1.length, 0.01f);
+        assertEquals(31.0f, p1.width, 0.01f);
+        assertEquals(21.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDeleteAnnotated#50001", p1.description);
+
+        p1 = packages.take(50001);
+        assertEquals(null, p1); // TODO consider if EmptyResultException should be raised here
+
+        Package p2 = packages.take(50002);
+        assertEquals(50002, p2.id);
+        assertEquals(52.0f, p2.length, 0.01f);
+        assertEquals(32.0f, p2.width, 0.01f);
+        assertEquals(22.0f, p2.height, 0.01f);
+        assertEquals("testFindAndDeleteAnnotated#50002", p2.description);
+    }
+
+    /**
      * Search for missing item. Insert it. Search again.
      */
     @Test
