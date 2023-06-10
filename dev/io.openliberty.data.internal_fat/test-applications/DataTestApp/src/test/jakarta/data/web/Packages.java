@@ -72,6 +72,10 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @Filter(by = "id")
     Package take(int id);
 
+    @Delete
+    @Filter(by = "length", op = Compare.Between)
+    List<Package> takeWithin(float minLength, float maxLength);
+
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 
     void updateByIdDivideLengthDivideWidthDivideHeight(int id, float lengthDivisor, float widthDivisor, float heightDivisor);

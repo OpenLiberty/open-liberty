@@ -40,7 +40,7 @@ class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     static enum Type {
-        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, MERGE, SELECT, SELECT_AND_DELETE, UPDATE
+        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, MERGE, UPDATE
     }
 
     /**

@@ -1065,8 +1065,12 @@ public class DataTestServlet extends FATServlet {
         assertEquals(21.0f, p1.height, 0.01f);
         assertEquals("testFindAndDeleteAnnotated#50001", p1.description);
 
-        p1 = packages.take(50001);
-        assertEquals(null, p1); // TODO consider if EmptyResultException should be raised here
+        try {
+            p1 = packages.take(50001);
+            fail("Should get EmptyResultException when there is no result. Instead, result is: " + p1);
+        } catch (EmptyResultException x) {
+            // expected
+        }
 
         Package p2 = packages.take(50002);
         assertEquals(50002, p2.id);
@@ -1074,6 +1078,37 @@ public class DataTestServlet extends FATServlet {
         assertEquals(32.0f, p2.width, 0.01f);
         assertEquals(22.0f, p2.height, 0.01f);
         assertEquals("testFindAndDeleteAnnotated#50002", p2.description);
+    }
+
+    /**
+     * Annotated repository operation to remove and return a single entity.
+     */
+    @Test
+    public void testFindAndDeleteMultipleAnnotated() {
+        packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated#60001"));
+        packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated#60002"));
+
+        List<Package> list = packages.takeWithin(60.0f, 65.0f);
+        assertEquals(list.toString(), 2, list.size());
+
+        list.sort(Comparator.comparing(p -> p.id));
+
+        Package p0 = list.get(0);
+        Package p1 = list.get(1);
+
+        assertEquals(60001, p0.id);
+        assertEquals(61.0f, p0.length, 0.01f);
+        assertEquals(41.0f, p0.width, 0.01f);
+        assertEquals(26.0f, p0.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated#60001", p0.description);
+
+        assertEquals(60002, p1.id);
+        assertEquals(62.0f, p1.length, 0.01f);
+        assertEquals(42.0f, p1.width, 0.01f);
+        assertEquals(25.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated#60002", p1.description);
+
+        assertEquals(Collections.EMPTY_LIST, packages.takeWithin(60.0f, 65.0f));
     }
 
     /**
