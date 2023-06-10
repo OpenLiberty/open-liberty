@@ -49,6 +49,8 @@ import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 public abstract class WSATEndpoint implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static int MISROUTE_PORT = Integer.getInteger("MISROUTE_PORT", 0);
+
     private static final TraceComponent TC = Tr.register(WSATEndpoint.class);
 
     private static TranManagerImpl tranService = TranManagerImpl.getInstance();
@@ -121,16 +123,18 @@ public abstract class WSATEndpoint implements Serializable {
      * @throws MalformedURLException
      */
     private void misRoute(EndpointReferenceType epr) throws MalformedURLException {
-        AttributedURIType uri = epr.getAddress();
+        if (MISROUTE_PORT != 0) {
+            AttributedURIType uri = epr.getAddress();
 
-        URL url = new URL(uri.getValue());
-        URL newURL = new URL(url.getProtocol(), "localhost", 8050, url.getFile());
-        AttributedURIType newURI = new AttributedURIType();
-        newURI.setValue(newURL.toString());
-        epr.setAddress(newURI);
+            URL url = new URL(uri.getValue());
+            URL newURL = new URL(url.getProtocol(), "localhost", MISROUTE_PORT, url.getFile());
+            AttributedURIType newURI = new AttributedURIType();
+            newURI.setValue(newURL.toString());
+            epr.setAddress(newURI);
 
-        if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "Misrouting: " + epr.getAddress().getValue());
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Misrouting: " + epr.getAddress().getValue());
+            }
         }
     }
 

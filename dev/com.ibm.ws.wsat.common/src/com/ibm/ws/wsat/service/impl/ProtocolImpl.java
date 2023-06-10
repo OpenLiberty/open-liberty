@@ -140,7 +140,7 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void prepare(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.PREPARE);
             return;
         } else {
@@ -215,7 +215,7 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void commit(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.COMMIT);
             return;
         } else {
@@ -237,7 +237,7 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
             return;
         } else {
@@ -310,7 +310,7 @@ public class ProtocolImpl {
      */
 
     public void prepared(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.PREPARED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -334,7 +334,7 @@ public class ProtocolImpl {
     }
 
     public void readOnly(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.READONLY);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -388,7 +388,7 @@ public class ProtocolImpl {
     }
 
     public void aborted(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.ABORTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -399,7 +399,7 @@ public class ProtocolImpl {
     }
 
     public void committed(ProtocolServiceWrapper wrapper) throws WSATException {
-        if (recoveryId != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.COMMITTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());

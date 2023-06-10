@@ -60,9 +60,14 @@ public class SimpleTest extends DBTestBase {
 	public static void beforeTests() throws Exception {
 
 		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
+		server.addEnvVar("backendURL", "http://localhost:"+System.getProperty("HTTP_default"));
+		server.addEnvVar("MISROUTE_PORT", System.getProperty("HTTP_tertiary"));
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+		server2.addEnvVar("backendURL", "http://localhost:"+System.getProperty("HTTP_secondary"));
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
+		server2.addEnvVar("MISROUTE_PORT", System.getProperty("HTTP_tertiary"));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
+		server3.addEnvVar("backendURL", "http://localhost:"+System.getProperty("HTTP_tertiary"));
 
 		DBTestBase.initWSATTest(server);
 		DBTestBase.initWSATTest(server2);

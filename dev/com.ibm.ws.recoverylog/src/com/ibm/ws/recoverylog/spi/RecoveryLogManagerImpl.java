@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -109,6 +109,8 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      */
     private String _traceId;
 
+    private SharedServerLeaseLog _leaseLog;
+
     //------------------------------------------------------------------------------
     // Method: RecoveryLogManagerImpl.RecoveryLogManagerImpl
     //------------------------------------------------------------------------------
@@ -172,14 +174,14 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      * object provided by the client service.
      * </p>
      *
-     * @param failureScope The required FailureScope
+     * @param failureScope  The required FailureScope
      * @param logProperties Contains the identity and physical properties of the
-     *            recovery log.
+     *                          recovery log.
      *
      * @return The RecoveryLog instance.
      *
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
-     *                support the supplied LogProperties
+     *                                              support the supplied LogProperties
      */
     @Override
     public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
@@ -455,6 +457,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getLeaseLog", leaseLog);
+        _leaseLog = leaseLog;
         return leaseLog;
     }
 
@@ -479,5 +482,10 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                        + System.identityHashCode(this);
 
         return _traceId;
+    }
+
+    @Override
+    public SharedServerLeaseLog getLeaseLog() {
+        return _leaseLog;
     }
 }

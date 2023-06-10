@@ -27,6 +27,8 @@
 	<transaction
 		recoveryIdentity="MigrationServer3"
 		recoveryGroup="defaultGroup"
+        recoverOnStartup="true"
+        waitForRecovery="true"
     />
 
 	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>

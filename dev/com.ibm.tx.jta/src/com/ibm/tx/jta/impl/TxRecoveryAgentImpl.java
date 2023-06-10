@@ -1199,5 +1199,4 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             Tr.debug(tc, "isServerStopping", _serverStopping);
         return _serverStopping;
     }
-
 }

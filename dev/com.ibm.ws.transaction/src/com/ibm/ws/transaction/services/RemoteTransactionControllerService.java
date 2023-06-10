@@ -45,6 +45,8 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
+import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 
 /**
  *
@@ -442,15 +444,15 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         return ConfigurationProviderManager.getConfigurationProvider().getRecoveryIdentity();
     }
 
+    // Retrieve address from lease log
     @Override
     public String getAddress(String recoveryId) {
-        // Retrieve address from lease log
-        if ("MigrationServer1".equals(recoveryId))
-            return "http://localhost:8010";
-        if ("MigrationServer2".equals(recoveryId))
-            return "http://localhost:8030";
-        if ("MigrationServer3".equals(recoveryId))
-            return "http://localhost:8050";
+        SharedServerLeaseLog leaseLog = Configuration.getLogManager().getLeaseLog();
+
+        if (leaseLog != null) {
+            return leaseLog.readBackendURL(recoveryId);
+        }
+
         return null;
     }
 }

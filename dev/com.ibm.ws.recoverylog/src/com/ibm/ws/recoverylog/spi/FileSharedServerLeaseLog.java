@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -224,6 +226,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                             FileChannel fChannel = _localLeaseLock.getFileChannel();
                             byteBuffer = ByteBuffer.wrap(_tranRecoveryLogDirStem.getBytes());
                             fChannel.write(byteBuffer);
+                            byteBuffer = ByteBuffer.wrap(("\n" + getBackendURL()).getBytes());
+                            fChannel.write(byteBuffer);
                             fChannel.force(false);
                             leaseLogWrittenInThisRun = true;
                             if (tc.isDebugEnabled())
@@ -262,6 +266,15 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "updateServerLease", this);
 
+    }
+
+    /**
+     * @return
+     */
+    private String getBackendURL() {
+        // get from config really
+        // meantime we'll default to the backendURL env var
+        return System.getenv("backendURL"); // temporarily
     }
 
     /*
@@ -367,6 +380,19 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteServerLease", this);
+    }
+
+    @Override
+    public String readBackendURL(String recoveryId) {
+        // Want the second line out of the file
+        try (BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId))) {
+            // discard first line
+            reader.readLine();
+            // return the second
+            return reader.readLine();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     /*

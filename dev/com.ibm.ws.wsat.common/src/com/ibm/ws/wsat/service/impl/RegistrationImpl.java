@@ -153,7 +153,7 @@ public class RegistrationImpl {
      */
     // TODO: Should we return WSATFaultExceptions from here and make the web-service
     //       layer return the fault response, or should we return the fault from here?
-    public EndpointReferenceType register(Map<String, String> wsatProperties, String globalId, EndpointReferenceType partEpr, String recoveryID) throws WSATException {
+    public EndpointReferenceType register(Map<String, String> wsatProperties, String globalId, EndpointReferenceType partEpr, String recoveryId) throws WSATException {
         if (recoveryId != null && !recoveryId.equals(wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart()))) {
             EndpointReferenceType epr = rerouteRegistration(wsatProperties, globalId, partEpr);
 
