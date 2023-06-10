@@ -332,6 +332,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public String getBackendURL() {
+        return (String) _props.get("backendURL");
+    }
+
+    @Override
     public int getLeaseCheckInterval() {
         Number num = (Number) _props.get("leaseCheckInterval");
         return num.intValue();
@@ -540,7 +545,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /*
      * Dynamically set by DS. CheckpointImpl registers the RunningCondition service (property)
-     * immediately after completing all config updates during checkpoint restore. When 
+     * immediately after completing all config updates during checkpoint restore. When
      * recoverOnStartup is enabled, use this condition to start recovery immediately after
      * all resource factories and transaction services have updated.
      */
