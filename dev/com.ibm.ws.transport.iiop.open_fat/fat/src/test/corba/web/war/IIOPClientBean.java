@@ -10,11 +10,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package test.iiop.common;
+package test.corba.web.war;
 
-public final class LogMessages {
-    public static final String TEST_FEATURE_DEACTIVATING = "### test feature deactivating";
-    public static final String TEST_FEATURE_ACTIVATING = "### test feature activating";
+import javax.annotation.Resource;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateful;
 
-    private LogMessages() {}
+import org.omg.CORBA.ORB;
+
+import shared.IIOPClientTestLogic;
+
+@Stateful
+@LocalBean
+public class IIOPClientBean implements IIOPClientTestLogic {
+    @Resource
+    private ORB orb;
+    public ORB getOrb() {return orb;}
 }
