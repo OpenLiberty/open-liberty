@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,24 +39,34 @@ public class MockClient extends WebClient {
     }
 
     @Override
-    public void prepare() throws WSATException {}
+    public void prepare() throws WSATException {
+    }
 
     @Override
-    public void rollback() throws WSATException {}
+    public void rollback() throws WSATException {
+    }
 
     @Override
-    public void commit() throws WSATException {}
+    public void commit() throws WSATException {
+    }
 
     @Override
-    public void prepared() throws WSATException {}
+    public void prepared() throws WSATException {
+    }
 
     @Override
-    public void readOnly() throws WSATException {}
+    public void readOnly() throws WSATException {
+    }
 
     @Override
-    public void aborted() throws WSATException {}
+    public void aborted() throws WSATException {
+    }
 
     @Override
-    public void committed() throws WSATException {}
+    public void committed() throws WSATException {
+    }
 
+    @Override
+    public void setMisrouting(boolean b) {
+    }
 }

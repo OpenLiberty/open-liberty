@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,9 +23,19 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 WS-TraceGroup: WSAT
 
 Import-Package: \
-  javax.xml.ws.*;version="[2.2,3)", \
-  org.apache.cxf.*;version="[3.2,4)", \
-  *
+ !com.ibm.ws.wsat.interceptor, \
+ javax.xml.ws.*;version="[2.2,3)", \
+ javax.xml.bind.*;version="[2.2,3)", \
+ org.apache.cxf.*;version="[3.2,4)", \
+ com.ibm.ws.wsat.webservice.client.soap, \
+ com.ibm.ws.wsat.webservice.client.wscoor, \
+ com.ibm.ws.wsat.service, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ com.ibm.ws.webcontainer.extension, \
+ com.ibm.ws.webcontainer.osgi, \
+ *
 
 Export-Package: \
   com.ibm.ws.wsat.service, \
@@ -63,19 +73,26 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.wsat;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.ws.org.apache.neethi.3.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.ws.wsat.webclient;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.jaxws.globalhandler.internal,\
+	org.apache.cxf.cxf-rt-frontend-jaxws
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file,\

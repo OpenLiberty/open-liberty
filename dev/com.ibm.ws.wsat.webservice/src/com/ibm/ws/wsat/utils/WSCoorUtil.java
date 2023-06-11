@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,7 @@ import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceModelUtil;
 import org.apache.cxf.transport.Conduit;
-import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.ws.addressing.ReferenceParametersType;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.policy.EffectivePolicy;
@@ -101,19 +99,10 @@ public class WSCoorUtil {
         Identifier id = new Identifier();
         id.setValue(ctx.getId());
         cc.setIdentifier(id);
+//        epr.getAddress().setValue("http://localhost:8050/ibm/wsatservice/RegistrationService");
         cc.setRegistrationService(epr);
 
         return cc;
-    }
-
-    public static EndpointReferenceType createEpr(String hostname) throws SOAPException {
-        EndpointReferenceType epr = new EndpointReferenceType();
-        AttributedURIType uri = new AttributedURIType();
-        uri.setValue(hostname);
-        epr.setAddress(uri);
-        ReferenceParametersType para = new ReferenceParametersType();
-        epr.setReferenceParameters(para);
-        return epr;
     }
 
     public static boolean assertAT(Message message) {

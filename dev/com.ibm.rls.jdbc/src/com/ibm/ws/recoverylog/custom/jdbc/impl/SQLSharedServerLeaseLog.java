@@ -1702,4 +1702,9 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
         // A no-op for this class
     }
+
+    @Override
+    public String readBackendURL(String recoveryId) {
+        return null; // for now
+    }
 }

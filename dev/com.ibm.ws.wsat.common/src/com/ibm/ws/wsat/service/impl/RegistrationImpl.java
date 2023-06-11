@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
+import java.util.Map;
+
 import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
+import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
 import com.ibm.websphere.ras.Tr;
@@ -29,6 +32,7 @@ import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
 import com.ibm.ws.wsat.service.WSATFaultException;
+import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.ws.wsat.service.WebClient;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
@@ -37,15 +41,20 @@ import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
  */
 public class RegistrationImpl {
 
-    private static final String CLASS_NAME = RegistrationImpl.class.getName();
     private static final TraceComponent TC = Tr.register(RegistrationImpl.class);
 
     private static final RegistrationImpl INSTANCE = new RegistrationImpl();
 
-    private final TranManagerImpl tranService = TranManagerImpl.getInstance();
+    private final static TranManagerImpl tranService = TranManagerImpl.getInstance();
+
     private final ProtocolImpl protocolService = ProtocolImpl.getInstance();
 
+    private static String ourRecoveryId;
+
     public static RegistrationImpl getInstance() {
+        if (ourRecoveryId == null) {
+            ourRecoveryId = tranService.getRecoveryId();
+        }
         return INSTANCE;
     }
 
@@ -63,7 +72,7 @@ public class RegistrationImpl {
      * Return a copy of the EPR with a ReferenceParameter for a WSAT tran
      * global id added.
      */
-    public synchronized EndpointReferenceType getRegistrationEndpoint(String global) throws WSATException {
+    public synchronized EndpointReferenceType getRegistrationEndpoint(String globalId) throws WSATException {
         while (registrationEndpoint == null) {
             try {
                 wait(30000);
@@ -77,7 +86,12 @@ public class RegistrationImpl {
         EndpointReferenceType epr = EndpointReferenceUtils.duplicate(registrationEndpoint);
         ReferenceParametersType refs = new ReferenceParametersType();
 
-        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, global));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        String recoveryId = tranService.getRecoveryId();
+        if (recoveryId != null && !recoveryId.isEmpty()) {
+            refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+        }
+
         epr.setReferenceParameters(refs);
 
         return epr;
@@ -99,8 +113,8 @@ public class RegistrationImpl {
 
         // Set ourselves as the registration service and note the protocol
         // coordinator to return when others register with us.
-        wsatTran.setRegistration(getRegistrationEndpoint(wsatTran.getGlobalId()));
-        wsatTran.setCoordinator(protocolService.getCoordinatorEndpoint(wsatTran.getGlobalId()));
+        wsatTran.setRegistration(getRegistrationEndpoint(globalId));
+        wsatTran.setCoordinator(protocolService.getCoordinatorEndpoint(globalId));
 
         // Once activated we can add the reference to the control map
         WSATTransaction.putTran(wsatTran);
@@ -139,22 +153,52 @@ public class RegistrationImpl {
      */
     // TODO: Should we return WSATFaultExceptions from here and make the web-service
     //       layer return the fault response, or should we return the fault from here?
-    public EndpointReferenceType register(String globalId, EndpointReferenceType partEpr) throws WSATException {
-        // Get the transaction - this should exist.  We should always be registering
-        // into an existing active transaction.
-        WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
-        if (wsatTran == null) {
-            // Not a known transaction.  This should result in the WS-Coor spec
-            // CannotRegisterParticipant fault being returned.
-            throw new WSATFaultException(WSATFault.getCannotRegisterParticipant(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId)));
+    public EndpointReferenceType register(Map<String, String> wsatProperties, String globalId, EndpointReferenceType partEpr, String recoveryId) throws WSATException {
+        if (recoveryId != null && ourRecoveryId != null && !recoveryId.equals(ourRecoveryId)) {
+            EndpointReferenceType epr = rerouteRegistration(wsatProperties, globalId, partEpr);
+
+            if (epr != null) {
+                return epr;
+            }
+        } else {
+            // Get the transaction - this should exist.  We should always be registering
+            // into an existing active transaction.
+            WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+            if (wsatTran != null) {
+                // Add the new participant and enlist with the transaction manager so it
+                // will take part in 2PC transaction completion.
+                WSATParticipant participant = wsatTran.addParticipant(partEpr);
+                tranService.registerParticipant(globalId, participant);
+
+                return participant.getCoordinator().getEndpointReference();
+            }
         }
 
-        // Add the new participant and enlist with the transaction manager so it
-        // will take part in 2PC transaction completion.
-        WSATParticipant participant = wsatTran.addParticipant(partEpr);
-        tranService.registerParticipant(globalId, participant);
+        // Not a known transaction.  This should result in the WS-Coor spec
+        // CannotRegisterParticipant fault being returned.
+        throw new WSATFaultException(WSATFault.getCannotRegisterParticipant(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId)));
+    }
 
-        return participant.getCoordinator().getEndpointReference();
+    private EndpointReferenceType rerouteRegistration(Map<String, String> wsatProperties, String globalId, EndpointReferenceType epr) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "Originally sent to: " + wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
+        }
+
+        String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+        String newAddr = tranService.getAddress(recoveryId);
+        String toAddr = WSATUtil.createRedirectAddr(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
+        EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
+
+        // Copy across necessary reference parameters
+        ReferenceParametersType refs = toEpr.getReferenceParameters();
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, globalId));
+        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, recoveryId));
+
+        WSATCoordinator coord = new WSATCoordinator(globalId, toEpr);
+
+        WebClient webClient = WebClient.getWebClient(coord, null);
+        webClient.setMisrouting(false);
+        return webClient.register(epr);
     }
 
     /*

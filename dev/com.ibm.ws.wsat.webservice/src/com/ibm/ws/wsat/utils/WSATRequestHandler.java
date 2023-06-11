@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.service.Protocol;
+import com.ibm.ws.wsat.service.ProtocolServiceWrapper;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
 import com.ibm.ws.wsat.webservice.client.soap.Detail;
@@ -54,7 +55,8 @@ public class WSATRequestHandler {
 
     private static final TraceComponent tc = Tr.register(WSATRequestHandler.class, Constants.TRACE_GROUP, null);
 
-    private RegisterResponseType doRegister(String protocolId, EndpointReferenceType participant, String txID) throws Throwable {
+    private RegisterResponseType doRegister(Map<String, String> wsatProperties, String protocolId, EndpointReferenceType participant, String txID,
+                                            String recoveryID) throws Throwable {
         String errorStr = null;
         Protocol service = WSATOSGIService.getInstance().getProtocolService();
         EndpointReferenceType coordinator = null;
@@ -66,7 +68,7 @@ public class WSATRequestHandler {
             errorStr = "Protocol service is NULL";
         } else {
             try {
-                coordinator = service.registrationRegister(txID, participant);
+                coordinator = service.registrationRegister(wsatProperties, txID, participant, recoveryID);
             } catch (WSATException e) {
                 errorStr = WSATControlUtil.getInstance().trace(e);
             }
@@ -89,6 +91,10 @@ public class WSATRequestHandler {
         String protocolId = parameters.getProtocolIdentifier();
         EndpointReferenceType epr = parameters.getParticipantProtocolService();
         Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
+        if (tc.isDebugEnabled()) {
+            wsatProperties.entrySet().stream().forEach(e -> Tr.debug(tc, "handleRegistrationRequest", e.getKey() + " -> " + e.getValue()));
+        }
+
         String txID = null;
         for (Object obj : epr.getReferenceParameters().getAny()) {
             try {
@@ -103,9 +109,11 @@ public class WSATRequestHandler {
         if (txID == null)
             txID = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
 
+        final String recoveryID = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
+
         // Can EndpointReferenceType.class in CXF work with tWAS? Possibly not..
 
-        return doRegister(protocolId, epr, txID);
+        return doRegister(wsatProperties, protocolId, epr, txID, recoveryID);
     }
 
     public void handleFaultRequest(QName faultcode, String faultstring, String faultactor, Detail detail) throws WSATException {
@@ -117,7 +125,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantPrepare(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantPrepare(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -129,7 +137,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantCommit(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantCommit(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -141,24 +149,10 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().participantRollback(wrapper.getTxID(), getResponseEpr(wrapper));
+            wrapper.getService().participantRollback(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
-    }
-
-    private EndpointReferenceType getResponseEpr(ProtocolServiceWrapper wrapper) {
-        EndpointReferenceType fromEpr = wrapper.getFrom();
-
-        if (fromEpr == null || fromEpr.getAddress().getValue().equals(Constants.WS_ADDR_NONE)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Response address selected from the replyTo header");
-            }
-
-            fromEpr = wrapper.getReplyTo();
-        }
-
-        return fromEpr;
     }
 
     public void handleCoordinatorPreparedRequest(Notification parameters, WebServiceContext ctx) throws WSATException {
@@ -166,7 +160,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorPrepared(wrapper.getTxID(), wrapper.getPartID(), getResponseEpr(wrapper));
+            wrapper.getService().coordinatorPrepared(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -178,7 +172,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorCommitted(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorCommitted(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -189,7 +183,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorReadOnly(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorReadOnly(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }
@@ -200,7 +194,7 @@ public class WSATRequestHandler {
 
         ProtocolServiceWrapper wrapper = WSATControlUtil.getInstance().getService(wmc);
         try {
-            wrapper.getService().coordinatorAborted(wrapper.getTxID(), wrapper.getPartID());
+            wrapper.getService().coordinatorAborted(wrapper);
         } catch (WSATException e) {
             wrapper.getService().wsatFault(wrapper.getTxID(), WSATFault.getUnknownTransaction(e.getMessage()));
         }

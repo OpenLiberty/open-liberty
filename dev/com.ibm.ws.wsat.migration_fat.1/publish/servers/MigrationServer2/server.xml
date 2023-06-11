@@ -11,12 +11,12 @@
 
 	<include location="../fatTestCommon.xml" />
 
-  <httpEndpoint id="defaultHttpEndpoint"
+  	<httpEndpoint id="defaultHttpEndpoint"
                 host="*"
                 httpPort="${bvt.prop.HTTP_secondary}"
                 httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
-  <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+	<tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
 
 	<httpOptions
 		readTimeout="150s"
@@ -24,13 +24,14 @@
 		persistTimeout="150s"
 	/>
 
-  <logging
-    traceSpecification="Transaction=all:WSAT=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all:com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor=all"
-		traceFileName="trace.log"
-		maxFileSize="2000"
-		maxFiles="20"
-		traceFormat="BASIC"
-	/>
+	<transaction
+	  backendURL="http://${HOSTNAME}:${bvt.prop.HTTP_secondary}"
+      recoveryIdentity="MigrationServer2"
+      recoveryGroup="defaultGroup"
+      recoverOnStartup="true"
+      waitForRecovery="true"
+    />
 
-  <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
 </server>

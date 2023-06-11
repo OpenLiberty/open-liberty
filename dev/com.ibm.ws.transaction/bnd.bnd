@@ -20,14 +20,14 @@ bVersion=1.0
 WS-TraceGroup: Transaction
 
 Service-Component: com.ibm.ws.transaction; \
-      provide:='com.ibm.tx.config.ConfigurationProvider'; \
+	  provide:='com.ibm.tx.config.ConfigurationProvider'; \
       implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
       runningCondition='org.osgi.service.condition.Condition';\
-      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
-      dynamic:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
+      optional:='dataSourceFactory,transactionSettingsProvider';\
+      dynamic:='dataSourceFactory,transactionSettingsProvider';\
       configuration-policy:=require;\
       properties:='\
          service.vendor=IBM,\
@@ -106,29 +106,30 @@ Export-Package: \
 instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
 
 -buildpath: \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.tx.util;version=latest,\
   com.ibm.websphere.appserver.spi.logging;version=latest,\
-	com.ibm.tx.jta;version=latest,\
-	com.ibm.tx.util;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.connector.1.6;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.injection;version=latest,\
-	com.ibm.ws.kernel.boot,\
-	com.ibm.ws.kernel.service,\
-	com.ibm.ws.logging,\
-	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.resource;version=latest,\
-	com.ibm.ws.transaction.cdi;version=latest, \
-	com.ibm.ws.tx.embeddable;version=latest,\
-	com.ibm.ws.tx.jta.extensions;version=latest,\
-	com.ibm.ws.webcontainer;version=latest, \
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.kernel.boot.common;version=latest
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+  com.ibm.websphere.javaee.connector.1.6;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.injection;version=latest,\
+  com.ibm.ws.kernel.boot,\
+  com.ibm.ws.kernel.boot.common;version=latest,\
+  com.ibm.ws.kernel.service,\
+  com.ibm.ws.logging,\
+  com.ibm.ws.logging.core;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.recoverylog;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.ws.transaction.cdi;version=latest, \
+  com.ibm.ws.tx.embeddable;version=latest,\
+  com.ibm.ws.tx.jta.extensions;version=latest,\
+  com.ibm.ws.webcontainer;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

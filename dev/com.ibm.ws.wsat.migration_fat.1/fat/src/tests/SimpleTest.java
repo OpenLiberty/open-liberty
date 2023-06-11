@@ -48,7 +48,10 @@ public class SimpleTest extends DBTestBase {
 	@Server("MigrationServer2")
 	public static LibertyServer server2;
 
-	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2"};
+	@Server("MigrationServer3")
+	public static LibertyServer server3;
+
+	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2", "MigrationServer3"};
 
 	private static String BASE_URL;
 	private static String BASE_URL2;
@@ -56,9 +59,12 @@ public class SimpleTest extends DBTestBase {
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
-		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
+		System.getProperties().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "Properties", e.getKey() + " -> " + e.getValue()));
+		System.getenv().entrySet().stream().forEach(e -> Log.info(SimpleTest.class, "Environment", e.getKey() + " -> " + e.getValue()));
+		server.addEnvVar("MISROUTE_PORT", System.getProperty("HTTP_tertiary"));
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
+		server2.addEnvVar("MISROUTE_PORT", System.getProperty("HTTP_tertiary"));
 		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
@@ -70,12 +76,12 @@ public class SimpleTest extends DBTestBase {
 		server.setServerStartTimeout(START_TIMEOUT);
 		server2.setServerStartTimeout(START_TIMEOUT);
 
-		FATUtils.startServers(server, server2);;
+		FATUtils.startServers(server, server2, server3);;
 	}
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		FATUtils.stopServers(server, server2);
+		FATUtils.stopServers(server, server2, server3);
 
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
