@@ -16,7 +16,6 @@
 
 bVersion=1.0
 
-
 WS-TraceGroup: Transaction
 
 Service-Component: com.ibm.ws.transaction; \
@@ -26,8 +25,8 @@ Service-Component: com.ibm.ws.transaction; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
       runningCondition='org.osgi.service.condition.Condition';\
-      optional:='dataSourceFactory,transactionSettingsProvider';\
-      dynamic:='dataSourceFactory,transactionSettingsProvider';\
+      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
+      dynamic:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
       configuration-policy:=require;\
       properties:='\
          service.vendor=IBM,\

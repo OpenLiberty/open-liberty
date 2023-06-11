@@ -159,6 +159,9 @@ public class ProtocolImpl {
     }
 
     private void rerouteToCorrectParticipant(ProtocolServiceWrapper wrapper, WSATParticipantState messageType) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "REROUTE {0} originally sent to {1}", messageType, wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()));
+        }
 
         String globalId = wrapper.getTxID();
 
@@ -213,47 +216,36 @@ public class ProtocolImpl {
     // not try to send any response - we allow retry processing on the coordinator to eventually
     // sort things out.
 
-    @FFDCIgnore(WSATException.class)
     public void commit(ProtocolServiceWrapper wrapper) throws WSATException {
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.COMMIT);
             return;
-        } else {
-            final String globalId = wrapper.getTxID();
-            final WSATTransaction tran = WSATTransaction.getTran(globalId);
-
-            if (tran != null) {
-                try {
-                    tranService.commitTransaction(globalId);
-                    participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
-                } catch (WSATException e) {
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Unable to complete commit: {0}", e);
-                    }
-                }
-            }
         }
+
+        final String globalId = wrapper.getTxID();
+        final WSATTransaction tran = WSATTransaction.getTran(globalId);
+
+        if (tran != null) {
+            tranService.commitTransaction(globalId);
+        }
+
+        participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.COMMITTED);
     }
 
-    @FFDCIgnore(WSATException.class)
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
             return;
-        } else {
-            final String globalId = wrapper.getTxID();
-            final WSATTransaction tran = WSATTransaction.getTran(globalId);
-            if (tran != null) {
-                try {
-                    tranService.rollbackTransaction(globalId);
-                    participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.ABORTED);
-                } catch (WSATException e) {
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Unable to send rollback response: {0}", e);
-                    }
-                }
-            }
         }
+
+        final String globalId = wrapper.getTxID();
+        final WSATTransaction tran = WSATTransaction.getTran(globalId);
+
+        if (tran != null) {
+            tranService.rollbackTransaction(globalId);
+        }
+
+        participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.ABORTED);
     }
 
     private void coordinatorResponse(ProtocolServiceWrapper wrapper, WSATParticipantState response) throws WSATException {
@@ -349,6 +341,9 @@ public class ProtocolImpl {
      * @throws WSATException
      */
     private void rerouteToCorrectCoordinator(ProtocolServiceWrapper wrapper, WSATParticipantState messageType) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "REROUTE {0} originally sent to {1}", messageType, wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()));
+        }
 
         String globalId = wrapper.getTxID();
 

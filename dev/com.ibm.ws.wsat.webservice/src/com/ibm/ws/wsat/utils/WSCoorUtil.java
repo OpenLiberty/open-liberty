@@ -99,7 +99,6 @@ public class WSCoorUtil {
         Identifier id = new Identifier();
         id.setValue(ctx.getId());
         cc.setIdentifier(id);
-//        epr.getAddress().setValue("http://localhost:8050/ibm/wsatservice/RegistrationService");
         cc.setRegistrationService(epr);
 
         return cc;

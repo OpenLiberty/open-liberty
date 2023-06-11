@@ -181,7 +181,7 @@ public class RegistrationImpl {
 
     private EndpointReferenceType rerouteRegistration(Map<String, String> wsatProperties, String globalId, EndpointReferenceType epr) throws WSATException {
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "Originally sent to: " + wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
+            Tr.debug(TC, "REROUTE REGISTRATION Originally sent to: " + wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()));
         }
 
         String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());

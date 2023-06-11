@@ -450,7 +450,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         SharedServerLeaseLog leaseLog = Configuration.getLogManager().getLeaseLog();
 
         if (leaseLog != null) {
-            return leaseLog.readBackendURL(recoveryId);
+            return leaseLog.getBackendURL(recoveryId);
         }
 
         return null;

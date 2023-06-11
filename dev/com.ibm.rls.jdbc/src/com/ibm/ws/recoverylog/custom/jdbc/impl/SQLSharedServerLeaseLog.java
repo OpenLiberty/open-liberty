@@ -34,6 +34,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
+import com.ibm.ws.recoverylog.spi.LeaseLogImpl;
 import com.ibm.ws.recoverylog.spi.PeerLeaseData;
 import com.ibm.ws.recoverylog.spi.PeerLeaseTable;
 import com.ibm.ws.recoverylog.spi.RecoveryFailedException;
@@ -44,7 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  *
  */
-public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriableLog {
+public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServerLeaseLog, SQLRetriableLog {
 
     /**
      * WebSphere RAS TraceComponent registration.
@@ -84,16 +85,16 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
      */
     private final String genericTablePreString = "CREATE TABLE ";
     private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                                  "LEASE_TIME BIGINT) ";
+                                                  "LEASE_TIME BIGINT, BACKEND_URL VARCHAR(128)) ";
 
     private final String oracleTablePreString = "CREATE TABLE ";
     private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                                 "LEASE_TIME NUMBER(19)) ";
+                                                 "LEASE_TIME NUMBER(19), BACKEND_URL VARCHAR(128)) ";
 
     private final String postgreSQLTablePreString = "CREATE TABLE ";
     private final String postgreSQLTablePostString = "( SERVER_IDENTITY VARCHAR (128) UNIQUE NOT NULL, RECOVERY_GROUP VARCHAR (128) NOT NULL, LEASE_OWNER VARCHAR (128) NOT NULL, "
                                                      +
-                                                     "LEASE_TIME BIGINT);";
+                                                     "LEASE_TIME BIGINT, BACKEND_URL VARCHAR(128));";
 
     /**
      * We only want one client at a time to attempt to create a new
@@ -698,8 +699,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
         short serviceId = (short) 1;
         String insertString = "INSERT INTO " +
                               _leaseTableName +
-                              " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
-                              " VALUES (?,?,?,?)";
+                              " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME, BACKEND_URL)" +
+                              " VALUES (?,?,?,?,?)";
 
         PreparedStatement specStatement = null;
         long fir1 = System.currentTimeMillis();
@@ -713,6 +714,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
             specStatement.setString(2, recoveryGroup);
             specStatement.setString(3, recoveryIdentity);
             specStatement.setLong(4, fir1);
+            specStatement.setString(5, getBackendURL());
 
             int ret = specStatement.executeUpdate();
 
@@ -1704,7 +1706,22 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog, SQLRetriab
     }
 
     @Override
-    public String readBackendURL(String recoveryId) {
+    public String getBackendURL(String recoveryId) {
+        try (Connection conn = getConnection();
+                        Statement stmt = conn.createStatement()) {
+            String queryString = "SELECT BACKEND_URL" +
+                                 " FROM " + _leaseTableName +
+                                 " WHERE SERVER_IDENTITY = '" + recoveryId + "'";
+
+            ResultSet rs = stmt.executeQuery(queryString);
+            while (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "getBackendURL", e);
+        }
+
         return null; // for now
     }
 }

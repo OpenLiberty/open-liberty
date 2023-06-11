@@ -32,10 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-/**
- *
- */
-public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
+public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServerLeaseLog {
 
     // The file system directory where the tx recovery logs are stored. This location is retrieved from the RecoveryLogManager at server startup.
     static String _tranRecoveryLogDirStem;
@@ -268,21 +265,6 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
     }
 
-    /**
-     * @return
-     */
-    private String getBackendURL() {
-        String backendURL = ConfigurationProviderManager.getConfigurationProvider().getBackendURL();
-
-        if (backendURL == null || backendURL.isEmpty()) {
-            backendURL = "http://localhost:9080";
-        }
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "backendURL: {0}", backendURL);
-        return backendURL;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -389,15 +371,23 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     }
 
     @Override
-    public String readBackendURL(String recoveryId) {
+    @FFDCIgnore(IOException.class)
+    public String getBackendURL(String recoveryId) {
         // Want the second line out of the file
-        try (BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId))) {
-            // discard first line
-            reader.readLine();
-            // return the second
-            return reader.readLine();
-        } catch (IOException e) {
-            return null;
+        while (true) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId))) {
+                // discard first line
+                reader.readLine();
+                // return the second
+                return reader.readLine();
+            } catch (IOException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "must have been locked", e);
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -455,11 +445,16 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
                         buffer.flip();
 
-                        // Read first (and only) line in file
+                        // Read file. Gives us both lines
                         String line = new String(buffer.array());
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Lease file contained " + line);
+
+                        int newline = line.indexOf("\n");
+
+                        // strip off the backend URL
+                        line = line.substring(0, newline);
 
                         // Set the string into the LeaseInfo object
                         leaseInfo.setLeaseDetail(new File(line));

@@ -49,7 +49,14 @@ import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 public abstract class WSATEndpoint implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static int MISROUTE_PORT = Integer.getInteger("MISROUTE_PORT", 0);
+    private static int MISROUTE_PORT = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+
+        @Override
+        public Integer run() {
+            return Integer.getInteger("MISROUTE_PORT", 0);
+        }
+
+    });
 
     private static final TraceComponent TC = Tr.register(WSATEndpoint.class);
 

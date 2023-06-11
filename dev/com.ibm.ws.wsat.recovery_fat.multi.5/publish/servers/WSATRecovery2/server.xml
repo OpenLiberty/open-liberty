@@ -1,0 +1,32 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>txtest-1.0</feature>
+		<feature>cdi-1.2</feature>
+	</featureManager>
+
+	<include location="../fatTestCommon.xml" />
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
+		<tcpOptions portOpenRetries="100000"/>
+    </httpEndpoint>
+
+	<transaction
+      backendURL="http://localhost:${bvt.prop.HTTP_secondary}"
+        recoveryIdentity="WSATRecovery2"
+        recoveryGroup="defaultGroup"
+ 		recoverOnStartup="true"
+ 		waitForRecovery="false"
+ 		heuristicRetryInterval="10"
+  		heuristicRetryLimit="10"
+  		clientInactivityTimeout="15s"
+  	/>
+
+	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+</server>

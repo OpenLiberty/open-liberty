@@ -19,7 +19,11 @@ import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class WSATUtil {
+    private static final TraceComponent TC = Tr.register(WSATUtil.class);
 
     public static EndpointReferenceType createEpr(String hostname) {
         EndpointReferenceType epr = new EndpointReferenceType();
@@ -46,6 +50,12 @@ public class WSATUtil {
             return null;
         }
 
-        return redirectURL.toString();
+        String ret = redirectURL.toString();
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "REROUTE ADDRESS: {0}", ret);
+        }
+
+        return ret;
     }
 }

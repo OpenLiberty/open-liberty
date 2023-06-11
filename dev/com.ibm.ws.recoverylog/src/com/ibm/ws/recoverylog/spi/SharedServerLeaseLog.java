@@ -41,5 +41,5 @@ public interface SharedServerLeaseLog {
 
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
 
-    public String readBackendURL(String recoveryId);
+    public String getBackendURL(String recoveryId);
 }
