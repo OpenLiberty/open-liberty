@@ -16,7 +16,6 @@ bVersion=1.0
 
 -sub: *.bnd
 
-
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 Export-Package: \
  com.ibm.ws.app.manager.springboot.container.config,\
@@ -31,7 +30,6 @@ Include-Resource: OSGI-INF=resources/OSGI-INF
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *
-
 
 -dsannotations-inherit: true
 -dsannotations: \
