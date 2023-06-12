@@ -10,7 +10,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include=~../cnf/resources/bnd/bundle.props
+-include= \
+  ~../cnf/resources/bnd/bundle.props, \
+  ~../cnf/resources/bnd/bundle.spring.props
 -nouses=true
 
 bVersion=1.0
@@ -28,8 +30,6 @@ Include-Resource: springBoot15Server.jar
 instrument.disabled: true
 
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot15Server.jar; version:Version=1.5
-
--include=~../cnf/resources/bnd/bundle.spring.props
 
 // 'com.ibm.ws.logging.core' and 'com.ibm.ws.ras.instrument' are present to avoid BND warnings,
 // for example:
