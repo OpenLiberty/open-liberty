@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,18 +82,24 @@ public class WithSpanInterceptor {
         Scope scope = null;
         boolean shouldStart = instrumenter.shouldStart(parentContext, methodRequest);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Should start: " + shouldStart);
+            Tr.debug(this, tc, "Method " + invocationContext.getMethod().toString() + " Should start: " + shouldStart);
         }
 
         if (shouldStart) {
             spanContext = instrumenter.start(parentContext, methodRequest);
             scope = spanContext.makeCurrent();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "spanContext " + spanContext.toString() + " has started and is now the current context");
+            }
         }
 
         try {
             Object result = invocationContext.proceed();
             if (shouldStart) {
                 instrumenter.end(spanContext, methodRequest, null, null);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "spanContext " + spanContext.toString() + " has ended");
+                }
             }
             return result;
         } finally {
