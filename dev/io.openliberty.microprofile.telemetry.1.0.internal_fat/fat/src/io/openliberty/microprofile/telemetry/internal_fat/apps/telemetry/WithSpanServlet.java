@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.sdk.trace.ReadableSpan;
@@ -40,6 +41,7 @@ public class WithSpanServlet extends FATServlet {
 
     private static final String PARAMETER_TEST = "testString";
     private static final String INVALID_SPAN_ID = "0000000000000000";
+    private static final String TEST_NAME = "testSpan";
 
     @Test
     public void callNotAnnotated() {
@@ -62,6 +64,45 @@ public class WithSpanServlet extends FATServlet {
         String newSpanId = spanBean.methodAnnotated();
         assertThat(newSpanId, not(equalTo(INVALID_SPAN_ID)));
         assertThat(spanId, not(equalTo(newSpanId)));
+    }
+
+    @Test
+    public void callAnnotatedWithName() {
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+
+        ReadableSpan testSpan = spanBean.methodAnnotatedWithName();
+
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getName(), equalTo(TEST_NAME));
+        assertThat(testSpan.getKind(), equalTo(SpanKind.INTERNAL));
+    }
+
+    @Test
+    public void callAnnotatedWithKind() {
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+
+        ReadableSpan testSpan = spanBean.methodAnnotatedWithKind();
+
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getName(), equalTo("SpanBean.methodAnnotatedWithKind"));
+        assertThat(testSpan.getKind(), equalTo(SpanKind.PRODUCER));
+    }
+
+    @Test
+    public void callAnnotatedWithNameAndKind() {
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span before call
+
+        ReadableSpan testSpan = spanBean.methodAnnotatedWithNameAndKind();
+
+        assertThat(Span.current().getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID)); // No current span after call
+
+        assertThat(testSpan.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
+        assertThat(testSpan.getName(), equalTo(TEST_NAME));
+        assertThat(testSpan.getKind(), equalTo(SpanKind.CONSUMER));
     }
 
     @Test
@@ -102,6 +143,21 @@ public class WithSpanServlet extends FATServlet {
             ids.add(span.getSpanContext().getSpanId());
             ids.add(secondSpanBean.methodAnnotated());
             return ids;
+        }
+
+        @WithSpan(TEST_NAME)
+        public ReadableSpan methodAnnotatedWithName() {
+            return (ReadableSpan) Span.current();
+        }
+
+        @WithSpan(kind = SpanKind.PRODUCER)
+        public ReadableSpan methodAnnotatedWithKind() {
+            return (ReadableSpan) Span.current();
+        }
+
+        @WithSpan(value = TEST_NAME, kind = SpanKind.CONSUMER)
+        public ReadableSpan methodAnnotatedWithNameAndKind() {
+            return (ReadableSpan) Span.current();
         }
 
         //SpanAttribute is applied to the method parameter

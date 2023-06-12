@@ -20,6 +20,7 @@ import componenttest.annotation.MinimumJavaLevel;
 @SuiteClasses({
                 JaxRsIntegration.class,
                 JaxRsIntegrationWithConcurrency.class,
+                Telemetry10.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
                 TelemetrySpiTest.class,
