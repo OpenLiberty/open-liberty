@@ -31,7 +31,7 @@ import jakarta.interceptor.InterceptorBinding;
 
 //Adds ElementType.TYPE to target, @InterceptorBinding annotation and @Nonbinding annotations
 @InterceptorBinding
-@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE })
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WithSpan {
     /**
