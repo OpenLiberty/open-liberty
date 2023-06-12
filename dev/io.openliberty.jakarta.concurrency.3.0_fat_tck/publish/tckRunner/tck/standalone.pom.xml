@@ -171,11 +171,7 @@
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
-                        <tck_hostname>${tck_hostname}</tck_hostname>
-                        <tck_username>${tck_username}</tck_username>
-                        <tck_password>${tck_password}</tck_password>
                         <tck_port>${tck_port}</tck_port>
-                        <tck_port>${tck_port_secure}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <suiteXmlFiles>

@@ -36,7 +36,7 @@ import componenttest.custom.junit.runner.TestModeFilter;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test while normal tests are disabled
-                ConcurrentTckLauncherFull.class,
+                ConcurrentTckLauncherFull.class, //Full Mode
                 ConcurrentTckLauncherWeb.class
 })
 public class FATSuite {
