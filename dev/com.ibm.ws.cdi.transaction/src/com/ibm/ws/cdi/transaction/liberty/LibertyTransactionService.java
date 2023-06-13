@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.tx.jta.impl.RegisteredSyncs;
@@ -76,7 +77,7 @@ public class LibertyTransactionService implements TransactionService {
      *
      * @param ref the reference from DS
      */
-    @Reference(name = "userTransaction", service = UserTransaction.class, policy = ReferencePolicy.DYNAMIC)
+    @Reference(name = "userTransaction", service = UserTransaction.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setUserTransaction(ServiceReference<UserTransaction> ref) {
         this.userTransaction.setReference(ref);
     }
@@ -95,7 +96,7 @@ public class LibertyTransactionService implements TransactionService {
      *
      * @param ref the reference from DS
      */
-    @Reference(name = "transactionManager", service = TransactionManager.class, policy = ReferencePolicy.DYNAMIC)
+    @Reference(name = "transactionManager", service = TransactionManager.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setTransactionManager(ServiceReference<TransactionManager> ref) {
         this.transactionManager.setReference(ref);
     }
