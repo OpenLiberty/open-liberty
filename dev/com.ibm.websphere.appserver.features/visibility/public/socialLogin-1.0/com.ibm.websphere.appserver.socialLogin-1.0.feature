@@ -6,7 +6,7 @@ IBM-ShortName: socialLogin-1.0
 Subsystem-Name: Social Media Login 1.0
 -features=com.ibm.websphere.appserver.jwt-1.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
+  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1", \
   io.openliberty.socialLogin1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0", \
   com.ibm.websphere.appserver.oauth-2.0
 -bundles=\

@@ -6,7 +6,7 @@ singleton=true
 visibility=private
 -features=\
   com.ibm.websphere.appserver.bells-1.0, \
-  com.ibm.websphere.appserver.eeCompatible-10.0
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0"
 -bundles=\
  io.openliberty.jakarta.jsonp.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.1.1"
 kind=ga

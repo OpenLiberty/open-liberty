@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -236,9 +236,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
     }
 
     /**
-     * Test expected compatibility of the jsonp-2.0 feature (picked as an example of an EE9 feature)
+     * Test expected compatibility of the cdi-3.0 feature (picked as an example of an EE10 feature)
      * <p>
-     * For jsonp-2.0 and jsonp-2.1, check that it's incompatible and that io.openliberty.jsonp is listed as a conflict
+     * For cdi-3.0 and cdi-4.0, check that it's incompatible and that io.openliberty.cdi is listed as a conflict
      * <p>
      * Otherwise:
      * <ul>
@@ -249,12 +249,13 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    public void testJsonP20Feature() throws Exception {
+    public void testCdi40Feature() throws Exception {
         Map<String, String> specialEE9Conflicts = new HashMap<>();
-        // jsonp-2.0 will conflict with itself
-        specialEE9Conflicts.put("jsonp-2.0", "io.openliberty.jsonp");
-        specialEE9Conflicts.put("jsonp-2.1", "io.openliberty.jsonp");
-        testCompatibility("jsonp-2.0", allFeatures, specialEE9Conflicts);
+        // cdi-3.0 will conflict with itself
+        specialEE9Conflicts.put("cdi-3.0", "io.openliberty.cdi");
+        specialEE9Conflicts.put("cdi-4.0", "io.openliberty.cdi");
+        specialEE9Conflicts.put("cdi-4.1", "io.openliberty.cdi");
+        testCompatibility("cdi-3.0", allFeatures, specialEE9Conflicts);
     }
 
     /**
@@ -273,6 +274,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
     @Test
     public void testServlet50Feature() throws Exception {
         Map<String, String> specialEE9Conflicts = new HashMap<>();
+        specialEE9Conflicts.put("servlet-6.1", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-5.0", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-4.0", "com.ibm.websphere.appserver.servlet");
@@ -283,7 +285,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
     /**
      * This test is marked as FULL FAT because it can take 10 to 30 minutes to run depending on
-     * the system. This puts it past the 5 minute expected limit for lite tests. The jsonp-2.0 test
+     * the system. This puts it past the 5 minute expected limit for lite tests. The cdi-3.0 test
      * is a quick test to show that the basics work with feature resolution.
      *
      * @throws Exception
@@ -301,6 +303,8 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         // faces and facesContainer conflict with each other
         specialEE9Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
+        specialEE9Conflicts.put("facesContainer-4.0", "io.openliberty.facesProvider");
+        specialEE9Conflicts.put("facesContainer-5.0", "io.openliberty.facesProvider");
         // the jakartaee-9.1 convenience feature conflicts with itself
         specialEE9Conflicts.put("jakartaee-9.1", "io.openliberty.jakartaee");
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3

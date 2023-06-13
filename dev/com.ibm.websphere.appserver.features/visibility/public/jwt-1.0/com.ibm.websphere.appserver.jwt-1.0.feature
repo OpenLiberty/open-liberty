@@ -5,7 +5,7 @@ visibility=public
 IBM-ShortName: jwt-1.0
 IBM-API-Package: com.ibm.websphere.security.jwt; type="ibm-api"
 Subsystem-Name: JSON Web Token 1.0
--features=io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0", \
+-features=io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1", \
   io.openliberty.webBundleSecurity.internal-1.0, \
   io.openliberty.jwt1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\

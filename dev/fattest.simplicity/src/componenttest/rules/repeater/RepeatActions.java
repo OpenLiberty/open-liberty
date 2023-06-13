@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class RepeatActions {
 
     public static enum EEVersion {
-        EE6(8), EE7(8), EE8(8), EE9(8), EE10(11);
+        EE6(8), EE7(8), EE8(8), EE9(8), EE10(11), EE11(17);
 
         private EEVersion(int minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
@@ -95,6 +95,8 @@ public class RepeatActions {
             action = new JakartaEE9Action();
         } else if (eeVersion == EEVersion.EE10) {
             action = new JakartaEE10Action();
+        } else if (eeVersion == EEVersion.EE11) {
+            action = new JakartaEE11Action();
         } else {
             action = new FeatureReplacementAction();
         }

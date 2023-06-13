@@ -17,14 +17,14 @@ IBM-API-Package: \
 IBM-ShortName: batch-2.1
 Subsystem-Name: Jakarta Batch 2.1
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
-  io.openliberty.persistence-3.1, \
+  io.openliberty.persistence-3.1; ibm.tolerates:="3.2", \
   io.openliberty.jakarta.annotation-2.1, \
-  com.ibm.websphere.appserver.servlet-6.0, \
-  com.ibm.websphere.appserver.eeCompatible-10.0, \
+  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1", \
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.persistenceService-2.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
-  io.openliberty.jakarta.cdi-4.0, \
+  io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1", \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
   com.ibm.jbatch.spi, \

@@ -8,7 +8,7 @@ IBM-ShortName: messaging-3.1
 WLP-AlsoKnownAs: jms-3.1
 Subsystem-Name: Jakarta Messaging 3.1
 -features=io.openliberty.messaging.internal-3.1, \
-  com.ibm.websphere.appserver.eeCompatible-10.0, \
+  com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.connectors-2.1, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.jms20.feature
