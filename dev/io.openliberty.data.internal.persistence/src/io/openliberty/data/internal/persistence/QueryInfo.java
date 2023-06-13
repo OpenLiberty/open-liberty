@@ -40,7 +40,7 @@ class QueryInfo {
     private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     static enum Type {
-        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, MERGE, SELECT, UPDATE
+        COUNT, DELETE, DELETE_WITH_ENTITY_PARAM, EXISTS, FIND, FIND_AND_DELETE, MERGE, UPDATE
     }
 
     /**
@@ -79,6 +79,12 @@ class QueryInfo {
      * Null if pagination is not used or only slices are used.
      */
     String jpqlCount;
+
+    /**
+     * For deleting an entry when using the find-and-delete pattern
+     * where a delete query returns the deleted entity.
+     */
+    String jpqlDelete;
 
     /**
      * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
@@ -353,6 +359,27 @@ class QueryInfo {
     }
 
     /**
+     * Determines whether a delete operation is a delete only (returning void or an update count)
+     * or find-and-delete (returning the deleted entity).
+     *
+     * @return true if the return type is void or is the type of an update count.
+     */
+    boolean hasVoidOrBooleanOrUpdateCountReturnType() {
+        boolean returnsVoidOrBooleanOrUpdateCount;
+        if (getMultipleResultType() == null) {
+            Class<?> singleType = getSingleResultType();
+            returnsVoidOrBooleanOrUpdateCount = void.class.equals(singleType) || Void.class.equals(singleType) //
+                                                || boolean.class.equals(singleType) || Boolean.class.equals(singleType) //
+                                                || int.class.equals(singleType) || Integer.class.equals(singleType) //
+                                                || long.class.equals(singleType) || Long.class.equals(singleType) //
+                                                || Number.class.equals(singleType);
+        } else {
+            returnsVoidOrBooleanOrUpdateCount = false;
+        }
+        return returnsVoidOrBooleanOrUpdateCount;
+    }
+
+    /**
      * Raises an error because the number of keyset keys does not match the number of sort parameters.
      *
      * @param keysetCursor keyset cursor
@@ -581,6 +608,7 @@ class QueryInfo {
         q.jpqlAfterKeyset = jpqlAfterKeyset;
         q.jpqlBeforeKeyset = jpqlBeforeKeyset;
         q.jpqlCount = jpqlCount;
+        q.jpqlDelete = jpqlDelete; // TODO jpqlCount and jpqlDelete could potentially be combined because you will never need both at once
         q.maxResults = maxResults;
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;

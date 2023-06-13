@@ -24,6 +24,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
 import io.openliberty.data.repository.Operation;
@@ -66,6 +67,14 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @Update(attr = "height", op = Operation.Subtract, param = "reduction")
     @Update(attr = "description", op = Operation.Add, param = "moreDesc")
     void shortenBy(@Param("reduction") int amount, @Param("moreDesc") String moreDescription, @Param("id") int id);
+
+    @Delete
+    @Filter(by = "id")
+    Package take(int id);
+
+    @Delete
+    @Filter(by = "length", op = Compare.Between)
+    List<Package> takeWithin(float minLength, float maxLength);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 

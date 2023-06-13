@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,15 +16,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Pageable;
-import jakarta.data.repository.ReactiveRepository;
 import jakarta.data.repository.Repository;
 
 /**
  *
  */
 @Repository
-public interface Tariffs extends ReactiveRepository<Tariff, Long> {
+public interface Tariffs extends DataRepository<Tariff, Long> {
 
     int deleteByLeviedBy(String country);
 
