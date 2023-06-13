@@ -132,14 +132,13 @@ Import-Package: \
   !javax.ejb, \
   !javax.persistence, \
   !org.apache.myfaces.ee6, \
-  !net.sf.cglib.proxy, \
   *
 
 Include-Resource: \
   META-INF=@src/META-INF, \
   @${repo;com.ibm.websphere.javaee.jsf.2.2}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.2}!/META-INF/internal-resources/**, \
-  @${repo;commons-digester:commons-digester;2.1}, \
+  @${repo;commons-digester:commons-digester;2.1}!/!META-INF/**, \
   org/apache/myfaces/resource=resources/org/apache/myfaces/resource, \
   OSGI-INF=resources/OSGI-INF
     
