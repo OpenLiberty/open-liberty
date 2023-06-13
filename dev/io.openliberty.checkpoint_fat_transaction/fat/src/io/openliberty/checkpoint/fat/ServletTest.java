@@ -29,7 +29,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.Server;
@@ -72,15 +71,17 @@ public class ServletTest extends FATServletClient {
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    private static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server.xml config
-    private static String TRANLOG_DIR = "${server.output.dir}TRANLOG_DIR"; // Differs from server.xml config
+    // Overrides for config vars in server.xml
+    static final String DERBY_DS_JNDINAME = "jdbc/derby";
+    static final String TRANLOG_DIR = "${server.output.dir}TRANLOG_DIR";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "servlets.simple.*");
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
-            // Configure the datasource jndiName used by the test servlet upon restore
+            // Env vars that override the application datasource and transaction
+            // configurations at restore
             File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
             try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                 serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
@@ -90,32 +91,14 @@ public class ServletTest extends FATServletClient {
             }
             // Verify the application starts during checkpoint
             assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                          server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                          checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
             assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                          server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                          checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
         server.checkpointRestore();
-    }
-
-    //   @Test
-    public void testLTCAfterGlobalTran() throws Exception {
-
-        // Exercise a transaction to start logging to the datasource.
-        // The server will throw an exception and fail this test the TM cannot
-        // establish a connection to the database.
-        runTest("testLTCAfterGlobalTran", server);
-    }
-
-    private void runTest(String testName, LibertyServer ls) throws Exception {
-        StringBuilder sb = null;
-        try {
-            sb = runTestWithResponse(ls, SERVLET_NAME, testName);
-        } finally {
-            Log.info(this.getClass(), testName, testName + " returned: " + sb);
-        }
     }
 
     @AfterClass

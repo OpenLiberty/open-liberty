@@ -14,6 +14,11 @@ package io.openliberty.checkpoint.fat;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 
 import org.junit.BeforeClass;
@@ -39,6 +44,8 @@ public class RecoveryTest extends RecoveryTestBase {
     @Server("checkpointTransactionRecovery")
     public static LibertyServer server;
 
+    static final String TX_RETRY_INT = "11";
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         Log.info(RecoveryTest.class, "subBefore", server.getServerName());
@@ -46,11 +53,18 @@ public class RecoveryTest extends RecoveryTestBase {
         ShrinkHelper.defaultApp(server, APP_NAME, "servlets.recovery.*");
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
+            // Env var change that triggers the transaction config to update at restore
+            File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+            try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+            } catch (FileNotFoundException e) {
+                throw new UncheckedIOException(e);
+            }
             // Verify the application starts during checkpoint
             assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                          server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                          checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
             assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                          server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                          checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
         server.setServerStartTimeout(RecoveryUtils.LOG_SEARCH_TIMEOUT);
