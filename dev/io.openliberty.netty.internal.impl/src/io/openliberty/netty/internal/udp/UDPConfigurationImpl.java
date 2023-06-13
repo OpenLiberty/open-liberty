@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
 
@@ -23,7 +20,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.openliberty.netty.internal.BootstrapConfiguration;
+import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.exception.NettyException;
 
 /**
@@ -31,11 +30,11 @@ import io.openliberty.netty.internal.exception.NettyException;
  */
 public class UDPConfigurationImpl implements BootstrapConfiguration {
 
-    private static final TraceComponent tc = Tr.register(UDPConfigurationImpl.class, UDPMessageConstants.NETTY_TRACE_NAME, UDPMessageConstants.UDP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(UDPConfigurationImpl.class,
+            UDPMessageConstants.NETTY_TRACE_NAME, UDPMessageConstants.UDP_BUNDLE);
 
     private static int DEFAULT_READ_BUFFER_SIZE = 1024000;
     private Map<String, Object> channelProperties = null;
-
 
     private ChannelData channelData;
     private String hostname = null;
@@ -53,7 +52,8 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
 
     /**
      * Constructor.
-     * @throws NettyException 
+     * 
+     * @throws NettyException
      */
     public UDPConfigurationImpl(Map<String, Object> options, boolean inbound) throws NettyException {
         this.sendBufferSize = DEFAULT_READ_BUFFER_SIZE;
@@ -68,7 +68,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "UDPConfigurationImpl object constructed with null properties");
             }
-            throw new NettyException("UDPConfigurationImpl constructed with null properties");
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             outputConfigToTrace();
@@ -81,15 +80,19 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
     @Override
     public void applyConfiguration(Bootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
-
-        if ((getReceiveBufferSize() >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
-            && (getReceiveBufferSize() <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
+        int receiveBufferSize = getReceiveBufferSize();
+        if ((receiveBufferSize >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
+                && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "setting receive buffer to size " + getReceiveBufferSize());
+                Tr.debug(tc, "setting receive buffer to size " + receiveBufferSize);
             }
-            bootstrap.option(ChannelOption.SO_RCVBUF, getReceiveBufferSize());
+            //SO_RCVBUF - size of buffer that holds the datagrams the client hasn't read yet
+            bootstrap.option(ChannelOption.SO_RCVBUF, receiveBufferSize);
+            //set common RCVBUF_ALLOCATOR strategy 
+            bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(receiveBufferSize));
         }
-        if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN) && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {
+        if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)
+                && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "setting send buffer to size " + getSendBufferSize());
             }
@@ -137,10 +140,10 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
                         setSendBufferSize(Integer.parseInt((String) value));
                         continue;
                     }
-                    if (key.equalsIgnoreCase("externalName")) {
-                        this.setExternalName((String) value);
-                        continue;
-                    }
+                }
+                if (key.equalsIgnoreCase(ConfigConstants.EXTERNAL_NAME)) {
+                    setExternalName((String) value);
+                    continue;
                 }
                 if (key.equalsIgnoreCase(UDPConfigConstants.SEND_BUFF_SIZE)) {
                     setSendBufferSize(Integer.parseInt((String) value));
@@ -309,8 +312,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
     }
 
     /**
-     * Set the port value for the configuration, only valid for an inbound
-     * channel.
+     * Set the port value for the configuration, only valid for an inbound channel.
      *
      * @param newPort
      */
@@ -372,7 +374,8 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
         this.channelReceiveBufferSize = size;
         if (size < 0 || size > UDPConfigConstants.MAX_UDP_PACKET_SIZE) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Channel Receive buffer size not within Limits: " + size + " setting to default: " + UDPConfigConstants.MAX_UDP_PACKET_SIZE);
+                Tr.debug(tc, "Channel Receive buffer size not within Limits: " + size + " setting to possible maximum value: "
+                        + UDPConfigConstants.MAX_UDP_PACKET_SIZE);
             }
             this.channelReceiveBufferSize = UDPConfigConstants.MAX_UDP_PACKET_SIZE;
         }

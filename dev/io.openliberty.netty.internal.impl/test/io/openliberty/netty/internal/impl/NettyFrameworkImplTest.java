@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.impl;
 
@@ -17,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -35,10 +33,12 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
+import io.openliberty.netty.internal.tcp.TCPMessageConstants;
 import test.common.SharedOutputManager;
 
 /**
@@ -46,7 +46,8 @@ import test.common.SharedOutputManager;
  */
 public class NettyFrameworkImplTest {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+            .trace(NettyConstants.NETTY_TRACE_STRING);
     private List<Channel> testChannels = null;
     NettyFrameworkImpl framework = null;
     Map<String, Object> options;
@@ -71,6 +72,7 @@ public class NettyFrameworkImplTest {
     public void setup() {
         testChannels = new ArrayList<Channel>();
         framework = new NettyFrameworkImpl();
+        framework.setExecutorService(GlobalEventExecutor.INSTANCE);
         framework.activate(null, null);
         options = new HashMap<String, Object>();
     }
@@ -103,70 +105,128 @@ public class NettyFrameworkImplTest {
     @Test
     public void testCreateTCPBootstrap() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         Assert.assertTrue((boolean) bootstrap.config().options().get(ChannelOption.SO_REUSEADDR));
         Assert.assertTrue(bootstrap.getBaseInitializer() instanceof TCPChannelInitializerImpl);
         framework.deactivate(null, null);
     }
 
     /**
-     * Start listening on a TCP channel 
+     * Start listening on a TCP channel
      * 
      * @throws Exception
      */
     @Test
     public void testTCPStart() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
-        final CountDownLatch latch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
-            if (future.isSuccess()) {
-                testChannels.add(future.channel());
-                latch.countDown();
+        framework.setServerStarted(null);
+        FutureTask<ChannelFuture> startFuture = framework.start(bootstrap, LOCALHOST, TCP_PORT, callback -> {
+            if (callback.isSuccess()) {
+                testChannels.add(callback.channel());
             } else {
-                Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                Assert.fail("framework failed to start: " + callback.cause().getMessage());
             }
         });
-        framework.setServerStarted(null);
-        latch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertTrue(testChannels.size() == 1);
         Assert.assertTrue(testChannels.get(0).isActive());
         Assert.assertTrue(framework.getActiveChannels().contains(testChannels.get(0)));
     }
 
     /**
-     * Start listening on a UDP channel 
+     * Start listening on a UDP channel
      * 
      * @throws Exception
      */
     @Test
     public void testUDPStart() throws Exception {
-        BootstrapExtended bootstrap =  framework.createUDPBootstrap(options);
+        BootstrapExtended bootstrap = framework.createUDPBootstrap(options);
         bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
                 // do nothing
             }
         });
-        final CountDownLatch latch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, UDP_PORT, future -> {
-            if (future.isSuccess()) {
-                testChannels.add(future.channel());
-                latch.countDown();
+        framework.setServerStarted(null);
+        FutureTask<ChannelFuture> startFuture = framework.start(bootstrap, LOCALHOST, UDP_PORT, callback -> {
+            if (callback.isSuccess()) {
+                testChannels.add(callback.channel());
             } else {
-                Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                Assert.fail("framework failed to start: " + callback.cause().getMessage());
             }
         });
-        framework.setServerStarted(null);
-        latch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertTrue(testChannels.size() == 1);
         Assert.assertTrue(testChannels.get(0).isActive());
-        Assert.assertTrue(framework.getActiveChannels().contains(testChannels.get(0)));
+        Assert.assertTrue(framework.getOutboundConnections().contains(testChannels.get(0)));
+    }
+
+    /**
+     * Create an outbound UDP channel
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testUDPStartOutbound() throws Exception {
+    	testUDPStart();
+        BootstrapExtended bootstrap = framework.createUDPBootstrapOutbound(null);
+        bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
+                // do nothing
+            }
+        });
+        FutureTask<ChannelFuture> startFuture = framework.startOutbound(bootstrap, LOCALHOST, UDP_PORT, callback -> {
+            if (callback.isSuccess()) {
+                testChannels.add(callback.channel());
+            } else {
+                Assert.fail("framework failed to start: " + callback.cause().getMessage());
+            }
+        });
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
+        Assert.assertEquals(2, testChannels.size());
+        Assert.assertTrue(testChannels.get(1).isActive());
+        Assert.assertTrue(framework.getOutboundConnections().contains(testChannels.get(1)));
+    }
+
+    /**
+     * Create an inbound TCP channel, then create a new outbound TCP channel and
+     * connect to the inbound channel
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testTCPStartOutbound() throws Exception {
+        testTCPStart();
+        BootstrapExtended bootstrapOutbound = framework.createTCPBootstrapOutbound(null);
+        bootstrapOutbound.handler(new SimpleChannelInboundHandler<ByteBuf>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
+                // do nothing
+            }
+        });
+
+        FutureTask<ChannelFuture> startFuture = framework.startOutbound(bootstrapOutbound, LOCALHOST, TCP_PORT, callback -> {
+            if (callback.isSuccess()) {
+                testChannels.add(callback.channel());
+            } else {
+                outputMgr.failWithThrowable("testTCPStartOutbound", callback.cause());
+            }
+        });
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
+        // Ensure we have two channels created and active
+        Assert.assertEquals(2, testChannels.size());
+        Assert.assertTrue(testChannels.get(1).isActive());
+        // Ensure there is an active connection for both the outbound connection started
+        // and the endpoint that received it
+        Assert.assertEquals(1, framework.getActiveChannelsMap().get(testChannels.get(0)).size());
+        Assert.assertTrue(framework.getOutboundConnections().contains(testChannels.get(1)));
     }
 
     /**
@@ -177,30 +237,27 @@ public class NettyFrameworkImplTest {
     @Test
     public void testAsyncStop() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
-        final CountDownLatch latch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
-            if (future.isSuccess()) {
-                testChannels.add(future.channel());
-                latch.countDown();
+        framework.setServerStarted(null);
+        FutureTask<ChannelFuture> startFuture = framework.start(bootstrap, LOCALHOST, TCP_PORT, callback -> {
+            if (callback.isSuccess()) {
+                testChannels.add(callback.channel());
             } else {
-                Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                Assert.fail("framework failed to start: " + callback.cause().getMessage());
             }
         });
-        framework.setServerStarted(null);
-        latch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertTrue(testChannels.get(0) != null);
         Assert.assertTrue(testChannels.get(0).isActive());
         Assert.assertEquals(1, framework.getActiveChannels().size());
         Assert.assertTrue(framework.getActiveChannels().contains(testChannels.get(0)));
-        ChannelFuture future = framework.stop(testChannels.get(0));
-        future.await(15, TimeUnit.SECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        ChannelFuture stopFuture = framework.stop(testChannels.get(0));
+        stopFuture.await(15, TimeUnit.SECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertFalse(testChannels.get(0).isActive());
-        Assert.assertTrue(future.isSuccess());
+        Assert.assertTrue(stopFuture.isSuccess());
         Assert.assertFalse(framework.getActiveChannels().contains(testChannels.get(0)));
         Assert.assertTrue(framework.getActiveChannels().isEmpty());
 
@@ -214,21 +271,18 @@ public class NettyFrameworkImplTest {
     @Test
     public void testSyncStop() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
-        final CountDownLatch latch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
+        framework.setServerStarted(null);
+        FutureTask<ChannelFuture> startFuture = framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
-                latch.countDown();
             } else {
                 Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
             }
         });
-        framework.setServerStarted(null);
-        latch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        startFuture.get(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS).await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertTrue(testChannels.get(0) != null);
         Assert.assertTrue(testChannels.get(0).isActive());
         framework.stop(testChannels.get(0), 10000);
@@ -247,39 +301,39 @@ public class NettyFrameworkImplTest {
         setTCPConfig();
         int secondPort = TCP_PORT + 1;
         int thirdPort = TCP_PORT + 2;
-        ServerBootstrapExtended bootstrap =  framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
-        final CountDownLatch latch = new CountDownLatch(3);
+        final CountDownLatch connectionLatch = new CountDownLatch(3);
+        framework.setServerStarted(null);
         framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
-                latch.countDown();
+                connectionLatch.countDown();
             } else {
                 Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                connectionLatch.countDown();
             }
         });
         framework.start(bootstrap, LOCALHOST, secondPort, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
-                latch.countDown();
+                connectionLatch.countDown();
             } else {
                 Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                connectionLatch.countDown();
             }
         });
         framework.start(bootstrap, LOCALHOST, thirdPort, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
-                latch.countDown();
+                connectionLatch.countDown();
             } else {
                 Assert.fail("framework failed to start: " + future.cause().getMessage());
-                latch.countDown();
+                connectionLatch.countDown();
             }
         });
-        framework.setServerStarted(null);
-        latch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-        Thread.sleep(10); // wait to ensure framework's internal callbacks are handled
+        connectionLatch.await(PORT_BIND_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        Thread.sleep(100); // wait to ensure framework's internal callbacks are handled
         Assert.assertTrue(testChannels.get(0) != null);
         Assert.assertTrue(testChannels.get(0).isActive());
         Assert.assertEquals(3, testChannels.size());

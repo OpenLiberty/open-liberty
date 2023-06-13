@@ -8,4 +8,4 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.netty.internal.tcp;
+package io.openliberty.netty.internal.tls.impl;

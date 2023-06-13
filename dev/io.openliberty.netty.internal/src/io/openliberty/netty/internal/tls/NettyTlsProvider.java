@@ -7,5 +7,14 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.netty.internal.tcp;
+package io.openliberty.netty.internal.tls;
+
+import java.util.Map;
+import io.netty.handler.ssl.SslContext;
+
+public interface NettyTlsProvider {
+
+    public SslContext getOutboundSSLContext(Map<String, Object> sslOptions, String host, String port);
+
+    public SslContext getInboundSSLContext(Map<String, Object> sslOptions, String host, String port);
+}
