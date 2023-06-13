@@ -14,6 +14,7 @@
         <feature>mpRestClient-1.1</feature>
         <feature>componentTest-1.0</feature>
         <feature>concurrent-1.0</feature>
+        <feature>jsonb-1.0</feature>
     </featureManager>
 
 
