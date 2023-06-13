@@ -26,18 +26,8 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
 
-        String sbv = SpringBootVersion.getVersion();
-        System.out.println("spring.boot.version = " + sbv);
-
-        // TODO:
-        /*
-         * SB 3
-         * 1. check to make sure they are using java 17 or higher
-         * 2. determine the version of servlet to check agains javax vs jakartaee
-         * 3. we also need a checkSpringBoot30() method similar to the ones for 15 and 20
-         */
-
-        checkJavaVersion(sbv);
+        String sbVersion = SpringBootVersion.getVersion();
+        checkJavaVersion(sbVersion);
 
         /*
          * Throw an Application error if the wrong version of spring boot feature is
@@ -63,9 +53,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
         }
 
-        // SB3
         try {
-            // Not sure if this is correct....
             Class.forName("org.springframework.boot.web.servlet.server.ServletWebServerFactory");
             Class.forName("io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration");
             checkSpringBootVersion30();
@@ -77,7 +65,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         /* Throw an application error if servlet feature is not enabled */
         try {
             Class.forName("org.springframework.web.WebApplicationInitializer");
-            checkServletPresent(sbv);
+            checkServletPresent(sbVersion);
         } catch (ClassNotFoundException e) {
 
         }
@@ -91,37 +79,16 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         }
     }
 
-    private void checkJavaVersion(String sbv) {
+    private void checkJavaVersion(String sbVersion) {
         String javaVersion = System.getProperty("java.version");
-        /*
-         * Properties p = System.getProperties();
-         * Set<String> keys = p.stringPropertyNames();
-         * for (String key : keys) {
-         * System.out.println("key = " + key);
-         * System.out.println("value = " + p.getProperty(key));
-         * }
-         */
-        System.out.println("java.version = " + javaVersion);
 
         // java version isnt supported by sb version, upgrade to 2.x or higher
         if (!javaVersion.startsWith("1.")) {
             try {
                 Class.forName("org.springframework.boot.context.embedded.EmbeddedServletContainerFactory");
-                ApplicationTr.warning(Type.WARNING_UNSUPPORTED_JAVA_VERSION, javaVersion, sbv); //SpringBootVersion.getVersion());
+                ApplicationTr.warning(Type.WARNING_UNSUPPORTED_JAVA_VERSION, javaVersion, sbVersion);
             } catch (ClassNotFoundException e) {
 
-            }
-        }
-
-        // SB 3 - must have java 17 or higher for 3.x - do we need this?  Or would this be caught by the features required?
-        String javaSpecVersion = System.getProperty("java.vm.specification.version");
-        if (sbv.startsWith("3.")) {
-            int jVersion = Integer.parseInt(javaSpecVersion);
-            System.out.println("javaversion int = " + jVersion);
-            if (jVersion >= 17) {
-                System.out.println("java okay");
-            } else {
-                System.out.println("java needs to upgrade to 17 or higher");
             }
         }
     }
@@ -166,7 +133,6 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
     }
 
-    // SB3
     private void checkSpringBootVersion30() {
         try {
             Class.forName(
