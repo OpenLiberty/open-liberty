@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.jwt.utils.JweHelper;
@@ -205,10 +206,10 @@ public class Jose4jUtil {
     }
 
     private void createWASOidcSession(OidcClientRequest oidcClientRequest, @Sensitive JwtClaims jwtClaims, ConvergedClientConfig clientConfig) throws MalformedClaimException {
-        String configId = clientConfig.getId();
-        String iss = jwtClaims.getIssuer();
-        String sub = jwtClaims.getSubject();
-        String sid = jwtClaims.getClaimValue("sid", String.class);
+        String configId = HashUtils.digest(clientConfig.getId());
+        String iss = HashUtils.digest(jwtClaims.getIssuer());
+        String sub = HashUtils.digest(jwtClaims.getSubject());
+        String sid = HashUtils.digest(jwtClaims.getClaimValue("sid", String.class));
         String exp = String.valueOf(jwtClaims.getExpirationTime().getValueInMillis());
 
         OidcSessionInfo sessionInfo = new OidcSessionInfo(configId, iss, sub, sid, exp, clientConfig);
