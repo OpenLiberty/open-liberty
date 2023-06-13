@@ -151,7 +151,6 @@ io.prometheus:simpleclient_tracer_otel_agent:0.15.0
 io.reactivex.rxjava2:rxjava:2.2.19
 io.reactivex:rxjava:1.3.8
 io.smallrye.common:smallrye-common-annotation:1.6.0
-io.smallrye.common:smallrye-common-annotation:2.1.0
 io.smallrye.common:smallrye-common-classloader:1.6.0
 io.smallrye.common:smallrye-common-constraint:1.6.0
 io.smallrye.common:smallrye-common-expression:1.6.0
@@ -159,9 +158,6 @@ io.smallrye.common:smallrye-common-function:1.6.0
 io.smallrye.config:smallrye-config-common:2.5.1
 io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config:2.5.1
-io.smallrye.reactive:mutiny-reactive-streams-operators-jakarta:2.2.0
-io.smallrye.reactive:mutiny-zero-flow-adapters:1.0.0
-io.smallrye.reactive:mutiny:2.2.0
 io.smallrye:jandex:3.0.5
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
@@ -520,11 +516,8 @@ org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.3
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:2.0
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:3.0
 org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1
-org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:3.0
 org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1
-org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:3.0
 org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:1.0
-org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:3.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.2.0
