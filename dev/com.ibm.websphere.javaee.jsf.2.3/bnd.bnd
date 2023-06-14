@@ -15,7 +15,7 @@ bVersion=1.0
 Bundle-Name: WS_J2EE_jsf
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsf.2.3; singleton:=true
 Bundle-Description: WS_J2EE_jsf, version 2.3
-Implementation-Version: 2.3.9
+Implementation-Version: 2.3.10
 
 
 Export-Package: javax.faces.*; version=${Implementation-Version}
