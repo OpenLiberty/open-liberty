@@ -1927,6 +1927,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                                 List<?> results = query.getResultList();
 
+                                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
+                                    for (Object result : results)
+                                        em.remove(result); // TODO not all results are entity instances
+
                                 if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
                                     returnValue = null;
                                 } else if (multiType == null && (queryInfo.entityInfo.entityClass).equals(singleType)) {
@@ -2014,10 +2018,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
                                 }
-
-                                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
-                                    for (Object result : results)
-                                        em.remove(result); // TODO not all results are entity instances
                             }
                         }
 

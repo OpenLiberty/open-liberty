@@ -71,6 +71,8 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
@@ -1053,8 +1055,8 @@ public class DataTestServlet extends FATServlet {
     /**
      * Query-by-method name repository operation to remove and return one or more entities.
      */
-    @Test
-    public void testFindAndDelete() {
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDelete(HttpServletRequest request, HttpServletResponse response) {
         packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
         packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
         packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
@@ -1077,13 +1079,20 @@ public class DataTestServlet extends FATServlet {
             // expected
         }
 
-        Package[] p = packages.deleteByDescriptionEndsWith("#4001x");
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+        Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.asc("id") } : null;
+
+        Package[] p = packages.deleteByDescriptionEndsWith("#4001x", sorts);
         assertEquals(Arrays.toString(p), 2, p.length);
 
-        p = Stream.of(p) // sort by id
-                        .sorted(Comparator.comparing(pkg -> pkg.id))
-                        .collect(Collectors.toList())
-                        .toArray(new Package[2]);
+        if (!supportsOrderByForUpdate) {
+            System.out.println("Sorting results in test code.");
+            p = Stream.of(p)
+                            .sorted(Comparator.comparing(pkg -> pkg.id))
+                            .collect(Collectors.toList())
+                            .toArray(new Package[2]);
+        }
 
         assertEquals(40012, p[0].id);
         assertEquals(42.0f, p[0].length, 0.01f);
@@ -1143,15 +1152,23 @@ public class DataTestServlet extends FATServlet {
     /**
      * Annotated repository operation to remove and return a single entity.
      */
-    @Test
-    public void testFindAndDeleteMultipleAnnotated() {
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated#60001"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated#60002"));
 
-        List<Package> list = packages.takeWithin(60.0f, 65.0f);
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        List<Package> list = supportsOrderByForUpdate //
+                        ? packages.takeWithinOrdered(60.0f, 65.0f) //
+                        : packages.takeWithin(60.0f, 65.0f);
         assertEquals(list.toString(), 2, list.size());
 
-        list.sort(Comparator.comparing(p -> p.id));
+        if (!supportsOrderByForUpdate) {
+            System.out.println("Sorting results in test code.");
+            list.sort(Comparator.comparing(p -> p.id));
+        }
 
         Package p0 = list.get(0);
         Package p1 = list.get(1);
