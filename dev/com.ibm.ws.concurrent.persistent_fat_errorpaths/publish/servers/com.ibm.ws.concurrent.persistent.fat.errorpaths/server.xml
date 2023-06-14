@@ -31,6 +31,12 @@
     <jdbcDriver libraryRef="FATJDBCLib"/>
     <properties.derby.embedded createDatabase="create" databaseName="memory:persisterrdb"/>
   </dataSource>
+  
+  <!-- for ensuring database is created -->
+  <dataSource jndiName="jdbc/schedDBCreate">
+    <jdbcDriver libraryRef="FATJDBCLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:persisterrdb"/>
+  </dataSource>
 
   <!-- for shutting down the Derby database -->
   <dataSource jndiName="jdbc/schedDBShutdown">

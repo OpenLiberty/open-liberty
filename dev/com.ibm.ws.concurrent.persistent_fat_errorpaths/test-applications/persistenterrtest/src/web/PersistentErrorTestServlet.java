@@ -993,7 +993,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      */
     public void testShutDownDerbyDuringTaskExecution(HttpServletRequest request, PrintWriter out) throws Exception {
     	//Ensure database is available prior to testing
-    	DataSource schedDBCreate = (DataSource) new InitialContext().lookup("jdbc/schedDB");
+    	DataSource schedDBCreate = (DataSource) new InitialContext().lookup("jdbc/schedDBCreate");
     	try (Connection con = schedDBCreate.getConnection()) {
     		//pass
     	} catch (SQLException e) {
