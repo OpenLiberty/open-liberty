@@ -9,5 +9,5 @@ Subsystem-Name: Spring Boot Support 3.0
 -features=io.openliberty.springBootHandler-3.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=io.openliberty.java17.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
