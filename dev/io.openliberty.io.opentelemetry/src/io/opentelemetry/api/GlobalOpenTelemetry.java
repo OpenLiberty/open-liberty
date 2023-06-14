@@ -24,10 +24,6 @@ package io.opentelemetry.api;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.api.metrics.Meter;
-import io.opentelemetry.api.metrics.MeterBuilder;
-import io.opentelemetry.api.metrics.MeterProvider;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.TracerBuilder;
 import io.opentelemetry.api.trace.TracerProvider;
@@ -64,23 +60,5 @@ public final class GlobalOpenTelemetry {
 
     public static TracerBuilder tracerBuilder(String instrumentationScopeName) {
         return get().tracerBuilder(instrumentationScopeName);
-    }
-
-    public static MeterProvider getMeterProvider() {
-        return OpenTelemetry.noop().getMeterProvider();
-    }
-
-    public static Meter getMeter(String instrumentationScopeName) {
-        return OpenTelemetry.noop().getMeter(instrumentationScopeName);
-    }
-
-    public static MeterBuilder meterBuilder(String instrumentationScopeName) {
-        return OpenTelemetry.noop().meterBuilder(instrumentationScopeName);
-    }
-
-    public static void resetForTest() { } //no op
-
-    public static ContextPropagators getPropagators() {
-        return OpenTelemetry.noop().getPropagators();
     }
 }
