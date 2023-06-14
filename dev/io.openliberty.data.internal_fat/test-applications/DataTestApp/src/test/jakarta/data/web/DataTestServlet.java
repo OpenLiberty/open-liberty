@@ -1051,6 +1051,66 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Query-by-method name repository operation to remove and return one or more entities.
+     */
+    @Test
+    public void testFindAndDelete() {
+        packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
+        packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
+        packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
+        packages.save(new Package(40013, 43.0f, 13.0f, 3.0f, "testFindAndDelete#4001x"));
+
+        Optional<Package> none = packages.deleteByDescription("testFindAndDelete#40000");
+        assertEquals(true, none.isEmpty());
+
+        Package p1 = packages.deleteByDescription("testFindAndDelete#40001").orElseThrow();
+        assertEquals(40001, p1.id);
+        assertEquals(41.0f, p1.length, 0.01f);
+        assertEquals(14.0f, p1.width, 0.01f);
+        assertEquals(4.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDelete#40001", p1.description);
+
+        try {
+            Optional<Package> p = packages.deleteByDescription("testFindAndDelete#4001x");
+            fail("Should get NonUniqueResultException when there are multiple results but a singular return type. Instead, result is: " + p);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+
+        Package[] p = packages.deleteByDescriptionEndsWith("#4001x");
+        assertEquals(Arrays.toString(p), 2, p.length);
+
+        p = Stream.of(p) // sort by id
+                        .sorted(Comparator.comparing(pkg -> pkg.id))
+                        .collect(Collectors.toList())
+                        .toArray(new Package[2]);
+
+        assertEquals(40012, p[0].id);
+        assertEquals(42.0f, p[0].length, 0.01f);
+        assertEquals(12.0f, p[0].width, 0.01f);
+        assertEquals(2.0f, p[0].height, 0.01f);
+        assertEquals("testFindAndDelete#4001x", p[0].description);
+
+        assertEquals(40013, p[1].id);
+        assertEquals(43.0f, p[1].length, 0.01f);
+        assertEquals(13.0f, p[1].width, 0.01f);
+        assertEquals(3.0f, p[1].height, 0.01f);
+        assertEquals("testFindAndDelete#4001x", p[1].description);
+
+        p = packages.deleteByDescriptionEndsWith("#40000");
+        assertEquals(Arrays.toString(p), 0, p.length);
+
+        p = packages.deleteByDescriptionEndsWith("#40004");
+        assertEquals(Arrays.toString(p), 1, p.length);
+
+        assertEquals(40004, p[0].id);
+        assertEquals(44.0f, p[0].length, 0.01f);
+        assertEquals(40.4f, p[0].width, 0.01f);
+        assertEquals(4.4f, p[0].height, 0.01f);
+        assertEquals("testFindAndDelete#40004", p[0].description);
+    }
+
+    /**
      * Annotated repository operation to remove and return a single entity.
      */
     @Test

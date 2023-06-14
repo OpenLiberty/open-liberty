@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -35,6 +36,10 @@ import io.openliberty.data.repository.Update;
  */
 @Repository
 public interface Packages extends PageableRepository<Package, Integer> {
+    Optional<Package> deleteByDescription(String description);
+
+    Package[] deleteByDescriptionEndsWith(String ending);
+
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
