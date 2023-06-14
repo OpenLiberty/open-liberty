@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ ********************************************************************************/
+
+// https://plugins.gradle.org/plugin/org.springframework.boot
+plugins {
+  id 'org.springframework.boot' version '3.0.7'
+}
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+def sv = springVersions[ '3.0' ]
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 17
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot' + ':' + sv['springBoot.fat'])
+  implementation('org.springframework.boot:spring-boot-autoconfigure' + ':' + sv['springBoot.fat'])
+
+  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot']) // x
+  implementation('org.springframework.boot:spring-boot-starter-thymeleaf') // + ':' + sv['springBoot']) // x
+  implementation('org.springframework.boot:spring-boot-starter-security') // + ':' + sv['springBoot']) // x
+
+  implementation('org.springframework:spring-beans' + ':' + sv['spring.fat'])
+  implementation('org.springframework:spring-core' + ':' + sv['spring.fat'])
+  implementation('org.springframework:spring-context' + ':' + sv['spring.fat'])
+  implementation('org.springframework:spring-web' + ':' + sv['spring.fat'])
+  implementation('org.springframework:spring-webmvc' + ':' + sv['spring.fat'])
+
+  implementation('org.springframework.security:spring-security-config' + ':' + sv['springSecurity.fat'])
+  implementation('org.springframework.security:spring-security-core' + ':' + sv['springSecurity.fat'])
+  implementation('org.springframework.security:spring-security-web' + ':' + sv['springSecurity.fat'])
+
+  // Why multiple versions of the same dependency??
+
+  // https://mvnrepository.com/artifact/org.webjars/bootstrap
+  // 5.3.0
+  // 5.2.3
+  // https://mvnrepository.com/artifact/org.webjars/webjars-locator
+  // 0.46
+  // https://mvnrepository.com/artifact/org.webjars/jquery
+  // 3.6.4
+
+  implementation('org.webjars:bootstrap:5.2.3')
+  implementation('org.webjars:webjars-locator:0.46')
+  implementation('org.webjars:jquery:3.6.4')
+}
+
+bootJar {
+  duplicatesStrategy 'warn'
+}
+
+// https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
+// Problem:
+//
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:19: error: cannot find symbol
+// import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//                                                                        ^
+//   symbol:   class WebSecurityConfigurerAdapter
+//   location: package org.springframework.security.config.annotation.web.configuration
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:24: error: cannot find symbol
+// public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//                                        ^
+//   symbol: class WebSecurityConfigurerAdapter
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:25: error: method does not override or implement a method from a supertype
+//     @Override
+//     ^
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:29: warning: [deprecation] authorizeRequests() in HttpSecurity has been deprecated
+//          .authorizeRequests()
+//          ^
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:30: error: cannot find symbol
+//          .antMatchers("/hello").fullyAuthenticated()
+//          ^
+//   symbol:   method antMatchers(String)
+//   location: class ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry
+// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:38: warning: [deprecation] authorizeRequests() in HttpSecurity has been deprecated
+//         .authorizeRequests()
+//         ^
+// 4 errors
+// 2 warnings

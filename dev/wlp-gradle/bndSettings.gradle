@@ -170,6 +170,14 @@ if (allBndProjects.contains('com.ibm.ws.springboot.fat20.war.app')) {
     include ':com.ibm.ws.springboot.fat20.war.app:module'
 }
 
+// The project 'com.ibm.ws.springboot.fat30.war.app' has an implementation
+// dependency on task 'module' of itself!  See the dependencies list of that
+// project.
+
+if (allBndProjects.contains('com.ibm.ws.springboot.fat30.war.app')) {
+    include ':com.ibm.ws.springboot.fat30.war.app:module'
+}
+
 private boolean parseBoolean(String value) {
     return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
 }

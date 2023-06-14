@@ -39,6 +39,11 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 //   Project with path ':com.ibm.ws.springboot.fat20.war.app:module'
 //   could not be found in project ':com.ibm.ws.springboot.fat20.war.app'.
 
+// TODO:
+// Per: https://mvnrepository.com/artifact/javax.servlet/jstl
+// javax.servlet:jstl was moved to:
+// javax.servlet.jsp.jstl » jstl
+
 dependencies {
   implementation project(':com.ibm.ws.springboot.fat20.war.app:module')
   implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
