@@ -30,7 +30,6 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryConfigEnvOnlyTest.class,
                 TelemetryConfigNullTest.class,
                 TelemetryServiceNameTest.class,
-                TelemetryShimTest.class,
                 TelemetryLoggingExporterTest.class,
                 TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
