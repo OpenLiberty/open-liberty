@@ -109,6 +109,12 @@ public class ServerEnvTest {
      */
     @Test
     public void testVariableExpansionInServerEnv() throws Exception {
+
+        // Temporarily disable on Windows.  The test is not cleaning up properly and is breaking other tests.
+        if (OS.contains("win")) {
+            return;
+        }
+
         final String METHOD_NAME = "testVariableExpansionInServerEnv";
         Log.info(c, METHOD_NAME, "ENTER");
 
@@ -138,6 +144,12 @@ public class ServerEnvTest {
      */
     @Test
     public void testVariableExpansionInServerEnvWhenExpansionNotEnabled() throws Exception {
+
+        // Temporarily disable on Windows.  The test is not cleaning up properly and is breaking other tests.
+        if (OS.contains("win")) {
+            return;
+        }
+
         final String METHOD_NAME = "testVariableExpansionInServerEnvWhenExpansionNotEnabled";
         Log.info(c, METHOD_NAME, "ENTER");
         if (OS.contains("win") || OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
@@ -415,6 +427,12 @@ public class ServerEnvTest {
      */
     @Test
     public void testAlternateLocaleServerEnv() throws Exception {
+
+        // Temporarily disable on Windows.  The test is not cleaning up properly and is breaking other tests.
+        if (OS.contains("win")) {
+            return;
+        }
+
         final String METHOD_NAME = "testAlternateLocaleServerEnv";
         Log.info(c, METHOD_NAME, "ENTER");
         //Set Locale to turkish
