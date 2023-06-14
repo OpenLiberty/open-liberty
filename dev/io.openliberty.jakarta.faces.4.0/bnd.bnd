@@ -38,9 +38,9 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
-    io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    io.openliberty.jakarta.servlet.6.0;version=latest, \
-    io.openliberty.jakarta.cdi.4.0;version=latest
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version}
+    # org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
+    # io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
+    # io.openliberty.jakarta.servlet.6.0;version=latest, \
+    # io.openliberty.jakarta.cdi.4.0;version=latest
 
