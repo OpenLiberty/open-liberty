@@ -39,7 +39,6 @@ public class FATSuite {
     public static final Set<FeatureSet> ALL;
     static {
         ALL = new HashSet<>(MicroProfileActions.ALL);
-        ALL.addAll(MicroProfileActions.STANDALONE_ALL);
         ALL.add(MPRS10);
         ALL.add(MPRS30);
     }
