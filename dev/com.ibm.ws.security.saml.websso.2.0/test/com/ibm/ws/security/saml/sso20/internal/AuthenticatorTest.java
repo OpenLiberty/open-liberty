@@ -213,6 +213,8 @@ public class AuthenticatorTest {
 
                 allowing(ssoConfig).isAllowCustomCacheKey();
                 will(returnValue(false));
+                allowing(ssoConfig).getProviderId();
+                will(returnValue(PROVIDER_ID));
 
                 //Expectations for ssoServiceRefMap mock object.
                 one(ssoServiceRefMap).getService(PROVIDER_ID);
@@ -229,11 +231,6 @@ public class AuthenticatorTest {
     public static void tearDown() {
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(null);
         outputMgr.trace("*=all=disabled");
-    }
-
-    @Test
-    public void testDeleteMe() {
-        // TODO - Delete me
     }
 
     @Test
