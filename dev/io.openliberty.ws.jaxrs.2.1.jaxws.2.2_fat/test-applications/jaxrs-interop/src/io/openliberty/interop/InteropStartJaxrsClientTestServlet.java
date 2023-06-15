@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs.fat.prototype;
+package io.openliberty.interop;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,9 +27,9 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JaxrsPrototypeClientTestServlet")
-public class PrototypeClientTestServlet extends FATServlet {
+public class InteropStartJaxrsClientTestServlet extends FATServlet {
 
-    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/prototype/ep2";
+    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/interop/ep2";
 
     private Client client;
 

@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs.fat.prototype;
+package io.openliberty.interop;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,7 +29,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/JaxrsInteropStartClientTestServlet")
 public class InteropStartClientTestServlet extends FATServlet {
 
-    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/prototype/ep1";
+    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/interop/ep1";
 
     private Client client;
 
