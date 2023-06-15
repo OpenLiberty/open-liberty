@@ -28,6 +28,8 @@ java.base/java.util.concurrent=ALL-UNNAMED
 --add-opens
 java.base/java.io=ALL-UNNAMED
 --add-opens
+java.base/java.nio=ALL-UNNAMED
+--add-opens
 java.naming/javax.naming.spi=ALL-UNNAMED
 --add-opens
 java.naming/com.sun.naming.internal=ALL-UNNAMED
