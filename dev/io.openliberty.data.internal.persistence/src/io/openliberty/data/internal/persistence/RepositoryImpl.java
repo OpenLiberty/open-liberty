@@ -1154,8 +1154,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 .toString();
             }
 
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            int orderBy = isDeleteOnly ? -1 : methodName.lastIndexOf("OrderBy");
+            if (orderBy > c || orderBy == -1 && methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+            if (orderBy >= c)
+                parseOrderBy(queryInfo, orderBy, q);
+
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
         } else if (methodName.startsWith("update")) {
             int by = methodName.indexOf("By", 6);
