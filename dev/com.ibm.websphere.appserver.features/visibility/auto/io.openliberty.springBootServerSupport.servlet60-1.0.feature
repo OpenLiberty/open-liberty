@@ -6,7 +6,7 @@ visibility=private
 
 IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.springBoot-3.0))", \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-6.0))"
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.servlet-6.0)(osgi.identity=com.ibm.websphere.appserver.servlet-6.1)))"
 IBM-Install-Policy: when-satisfied
 IBM-API-Package: com.ibm.ws.springboot.support.web.server.initializer; type="internal"
 

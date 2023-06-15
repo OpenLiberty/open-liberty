@@ -14,6 +14,7 @@ Subsystem-Name: Jakarta NoSQL 1.0
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.jakarta.nosql-1.0
 -bundles=\
+  io.openliberty.java17.internal, \
   io.openliberty.org.eclipse.jnosql.1.0,\
   io.openliberty.jakarta.data.1.0; location:="dev/api/spec/",\
   io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/",\
