@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2021 IBM Corporation and others.
+# Copyright (c) 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,16 +13,12 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# Used for the JSP/Pages Internal Compiler. 
-# The classes here were compiled with Java 8.
-# Higher Java runtimes should use io.openliberty.org.eclipse.jdt.core.java11 or io.openliberty.org.eclipse.jdt.core.java17
-
 Bundle-Name: JDT Compiler
-Bundle-SymbolicName: com.ibm.ws.org.eclipse.jdt.core
-Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.26.0: June, 2021
+Bundle-SymbolicName: io.openliberty.org.eclipse.jdt.core.java17
+Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.34.0: June, 2023
 
 Import-Package: !*
    
-Export-Package: org.eclipse.jdt.*;version=3.26.0;usage=JSP
+Export-Package: org.eclipse.jdt.*;version=3.34.0;usage=JSP
 
--buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.26.0
+-buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.34.0
