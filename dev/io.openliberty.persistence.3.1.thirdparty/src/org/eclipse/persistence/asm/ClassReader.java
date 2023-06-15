@@ -21,6 +21,7 @@ import org.eclipse.persistence.asm.internal.Util;
 
 public abstract class ClassReader {
 
+    //This block must be first - begin
     private final static String ASM_CLASSREADER_ECLIPSELINK = "org.eclipse.persistence.internal.libraries.asm.ClassReader";
     private final static String ASM_CLASSREADER_OW2 = "org.objectweb.asm.ClassReader";
 
@@ -30,8 +31,13 @@ public abstract class ClassReader {
         ASM_CLASSREADER_MAP.put(ASMFactory.ASM_SERVICE_OW2, ASM_CLASSREADER_OW2);
         ASM_CLASSREADER_MAP.put(ASMFactory.ASM_SERVICE_ECLIPSELINK, ASM_CLASSREADER_ECLIPSELINK);
     }
+    //This block must be first - end
 
-    public static int valueInt(String fieldName) {
+    public static final int SKIP_CODE = valueInt("SKIP_CODE");
+    public static final int SKIP_DEBUG = valueInt("SKIP_DEBUG");
+    public static final int SKIP_FRAMES = valueInt("SKIP_FRAMES");
+    
+    private static int valueInt(String fieldName) {
         return ((int) Util.getFieldValue(ASM_CLASSREADER_MAP, fieldName, Integer.TYPE));
     }
 

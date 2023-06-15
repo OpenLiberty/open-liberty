@@ -131,9 +131,9 @@ public class PersistenceWeaver implements ClassTransformer {
                         PrivilegedAccessHelper.getSystemProperty(SystemProperties.WEAVING_REFLECTIVE_INTROSPECTION);
                 ClassWriter classWriter = null;
                 if (reflectiveIntrospectionProperty != null) {
-                    classWriter = ASMFactory.createClassWriter(ClassWriter.valueInt("COMPUTE_FRAMES"));
+                    classWriter = ASMFactory.createClassWriter(ClassWriter.COMPUTE_FRAMES);
                 } else {
-                    classWriter = new ComputeClassWriter(loader, ClassWriter.valueInt("COMPUTE_FRAMES"));
+                    classWriter = new ComputeClassWriter(loader, ClassWriter.COMPUTE_FRAMES);
                     classWriter.setCustomClassWriterInImpl(classWriter);
                 }
                 final ClassWeaver classWeaver = new ClassWeaver(classWriter, classDetails);

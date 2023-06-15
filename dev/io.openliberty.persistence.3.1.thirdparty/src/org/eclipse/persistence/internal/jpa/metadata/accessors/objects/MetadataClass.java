@@ -478,7 +478,7 @@ public class MetadataClass extends MetadataAnnotatedElement {
      * Return if this is an interface (super is null).
      */
     public boolean isInterface() {
-        return (Opcodes.valueInt("ACC_INTERFACE") & m_modifiers) != 0;
+        return (Opcodes.ACC_INTERFACE & m_modifiers) != 0;
     }
 
     /**

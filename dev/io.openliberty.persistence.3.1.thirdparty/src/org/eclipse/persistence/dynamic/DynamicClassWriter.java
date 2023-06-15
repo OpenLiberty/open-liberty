@@ -160,31 +160,31 @@ public class DynamicClassWriter implements EclipseLinkClassWriter {
         ClassWriter cw = new EclipseLinkASMClassWriter();
 
         // public class Foo extends DynamicEntityImpl {
-        cw.visit(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_SUPER"), classNameAsSlashes, null, parentClassNameAsSlashes, interfaces != null ? interfaces.toArray(new String[interfaces.size()]) : null);
+        cw.visit(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNameAsSlashes, null, parentClassNameAsSlashes, interfaces != null ? interfaces.toArray(new String[interfaces.size()]) : null);
 
         // public static DynamicPropertiesManager DPM = new
         // DynamicPropertiesManager();
-        cw.visitField(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_STATIC"), PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";", null, null);
-        MethodVisitor mv = cw.visitMethod(Opcodes.valueInt("ACC_STATIC"), CLINIT, "()V", null, null);
-        mv.visitTypeInsn(Opcodes.valueInt("NEW"), DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES);
-        mv.visitInsn(Opcodes.valueInt("DUP"));
-        mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES, INIT, "()V", false);
-        mv.visitFieldInsn(Opcodes.valueInt("PUTSTATIC"), classNameAsSlashes, PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";");
-        mv.visitInsn(Opcodes.valueInt("RETURN"));
+        cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";", null, null);
+        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_STATIC, CLINIT, "()V", null, null);
+        mv.visitTypeInsn(Opcodes.NEW, DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES);
+        mv.visitInsn(Opcodes.DUP);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES, INIT, "()V", false);
+        mv.visitFieldInsn(Opcodes.PUTSTATIC, classNameAsSlashes, PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";");
+        mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(0, 0);
 
         // public Foo() {
         // super();
         // }
-        mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC"), INIT, "()V", null, null);
-        mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 0);
-        mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), parentClassNameAsSlashes, INIT, "()V", false);
-        mv.visitInsn(Opcodes.valueInt("RETURN"));
+        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, INIT, "()V", null, null);
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parentClassNameAsSlashes, INIT, "()V", false);
+        mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(0, 0);
 
-        mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC"), "fetchPropertiesManager", "()L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";", null, null);
-        mv.visitFieldInsn(Opcodes.valueInt("GETSTATIC"), classNameAsSlashes, PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";");
-        mv.visitInsn(Opcodes.valueInt("ARETURN"));
+        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "fetchPropertiesManager", "()L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";", null, null);
+        mv.visitFieldInsn(Opcodes.GETSTATIC, classNameAsSlashes, PROPERTIES_MANAGER_FIELD, "L" + DYNAMIC_PROPERTIES_MANAGER_CLASSNAME_SLASHES + ";");
+        mv.visitInsn(Opcodes.ARETURN);
         mv.visitMaxs(0, 0);
 
         addFields(cw, parentClassNameAsSlashes);
@@ -221,7 +221,7 @@ public class DynamicClassWriter implements EclipseLinkClassWriter {
     protected void addMethods(ClassWriter cw, String parentClassType) {
     }
 
-    public static int[] ICONST = new int[] { Opcodes.valueInt("ICONST_0"), Opcodes.valueInt("ICONST_1"), Opcodes.valueInt("ICONST_2"), Opcodes.valueInt("ICONST_3"), Opcodes.valueInt("ICONST_4"), Opcodes.valueInt("ICONST_5") };
+    public static int[] ICONST = new int[] { Opcodes.ICONST_0, Opcodes.ICONST_1, Opcodes.ICONST_2, Opcodes.ICONST_3, Opcodes.ICONST_4, Opcodes.ICONST_5 };
 
     protected byte[] createEnum(EnumInfo enumInfo) {
 
@@ -231,88 +231,88 @@ public class DynamicClassWriter implements EclipseLinkClassWriter {
         String internalClassName = className.replace('.', '/');
 
         ClassWriter cw = new EclipseLinkASMClassWriter();
-        cw.visit(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_FINAL") + Opcodes.valueInt("ACC_SUPER") + Opcodes.valueInt("ACC_ENUM"), internalClassName, null, "java/lang/Enum", null);
+        cw.visit(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER + Opcodes.ACC_ENUM, internalClassName, null, "java/lang/Enum", null);
 
         // Add the individual enum values
         for (String enumValue : enumValues) {
-            cw.visitField(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_FINAL") + Opcodes.valueInt("ACC_STATIC") + Opcodes.valueInt("ACC_ENUM"), enumValue, "L" + internalClassName + ";", null, null);
+            cw.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC + Opcodes.ACC_ENUM, enumValue, "L" + internalClassName + ";", null, null);
         }
 
         // add the synthetic "$VALUES" field
-        cw.visitField(Opcodes.valueInt("ACC_PRIVATE") + Opcodes.valueInt("ACC_FINAL") + Opcodes.valueInt("ACC_STATIC") + Opcodes.valueInt("ACC_SYNTHETIC"), "$VALUES", "[L" + internalClassName + ";", null, null);
+        cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC + Opcodes.ACC_SYNTHETIC, "$VALUES", "[L" + internalClassName + ";", null, null);
 
         // Add the "values()" method
-        MethodVisitor mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_STATIC"), "values", "()[L" + internalClassName + ";", null, null);
-        mv.visitFieldInsn(Opcodes.valueInt("GETSTATIC"), internalClassName, "$VALUES", "[L" + internalClassName + ";");
-        mv.visitMethodInsn(Opcodes.valueInt("INVOKEVIRTUAL"), "[L" + internalClassName + ";", "clone", "()Ljava/lang/Object;", false);
-        mv.visitTypeInsn(Opcodes.valueInt("CHECKCAST"), "[L" + internalClassName + ";");
-        mv.visitInsn(Opcodes.valueInt("ARETURN"));
+        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "values", "()[L" + internalClassName + ";", null, null);
+        mv.visitFieldInsn(Opcodes.GETSTATIC, internalClassName, "$VALUES", "[L" + internalClassName + ";");
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "[L" + internalClassName + ";", "clone", "()Ljava/lang/Object;", false);
+        mv.visitTypeInsn(Opcodes.CHECKCAST, "[L" + internalClassName + ";");
+        mv.visitInsn(Opcodes.ARETURN);
         mv.visitMaxs(1, 0);
 
         // Add the "valueOf()" method
-        mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC") + Opcodes.valueInt("ACC_STATIC"), "valueOf", "(Ljava/lang/String;)L" + internalClassName + ";", null, null);
+        mv = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "valueOf", "(Ljava/lang/String;)L" + internalClassName + ";", null, null);
         mv.visitLdcInsn(Type.getType("L" + internalClassName + ";").unwrap());
-        mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 0);
-        mv.visitMethodInsn(Opcodes.valueInt("INVOKESTATIC"), "java/lang/Enum", "valueOf", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;", false);
-        mv.visitTypeInsn(Opcodes.valueInt("CHECKCAST"), internalClassName);
-        mv.visitInsn(Opcodes.valueInt("ARETURN"));
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Enum", "valueOf", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;", false);
+        mv.visitTypeInsn(Opcodes.CHECKCAST, internalClassName);
+        mv.visitInsn(Opcodes.ARETURN);
         mv.visitMaxs(2, 1);
 
         // Add constructors
         // SignatureAttribute methodAttrs1 = new SignatureAttribute("()V");
-        mv = cw.visitMethod(Opcodes.valueInt("ACC_PRIVATE"), "<init>", "(Ljava/lang/String;I)V", null, null);
-        mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 0);
-        mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 1);
-        mv.visitVarInsn(Opcodes.valueInt("ILOAD"), 2);
-        mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), "java/lang/Enum", "<init>", "(Ljava/lang/String;I)V", false);
-        mv.visitInsn(Opcodes.valueInt("RETURN"));
+        mv = cw.visitMethod(Opcodes.ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", null, null);
+        mv.visitVarInsn(Opcodes.ALOAD, 0);
+        mv.visitVarInsn(Opcodes.ALOAD, 1);
+        mv.visitVarInsn(Opcodes.ILOAD, 2);
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Enum", "<init>", "(Ljava/lang/String;I)V", false);
+        mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(3, 3);
 
         // Add enum constants
-        mv = cw.visitMethod(Opcodes.valueInt("ACC_STATIC"), "<clinit>", "()V", null, null);
+        mv = cw.visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
 
         int lastCount = 0;
         for (int i = 0; i < enumValues.length; i++) {
             String enumValue = enumValues[i];
-            mv.visitTypeInsn(Opcodes.valueInt("NEW"), internalClassName);
-            mv.visitInsn(Opcodes.valueInt("DUP"));
+            mv.visitTypeInsn(Opcodes.NEW, internalClassName);
+            mv.visitInsn(Opcodes.DUP);
             mv.visitLdcInsn(enumValue);
             if (i <= 5) {
                 mv.visitInsn(ICONST[i]);
             } else if (i <= 127) {
-                mv.visitIntInsn(Opcodes.valueInt("BIPUSH"), i);
+                mv.visitIntInsn(Opcodes.BIPUSH, i);
             } else {
-                mv.visitIntInsn(Opcodes.valueInt("SIPUSH"), i);
+                mv.visitIntInsn(Opcodes.SIPUSH, i);
             }
-            mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), internalClassName, "<init>", "(Ljava/lang/String;I)V", false);
-            mv.visitFieldInsn(Opcodes.valueInt("PUTSTATIC"), internalClassName, enumValue, "L" + internalClassName + ";");
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, internalClassName, "<init>", "(Ljava/lang/String;I)V", false);
+            mv.visitFieldInsn(Opcodes.PUTSTATIC, internalClassName, enumValue, "L" + internalClassName + ";");
             lastCount = i;
         }
 
         if (lastCount < 5) {
             mv.visitInsn(ICONST[lastCount + 1]);
         } else if (lastCount < 127) {
-            mv.visitIntInsn(Opcodes.valueInt("BIPUSH"), lastCount + 1);
+            mv.visitIntInsn(Opcodes.BIPUSH, lastCount + 1);
         } else {
-            mv.visitIntInsn(Opcodes.valueInt("SIPUSH"), lastCount + 1);
+            mv.visitIntInsn(Opcodes.SIPUSH, lastCount + 1);
         }
-        mv.visitTypeInsn(Opcodes.valueInt("ANEWARRAY"), internalClassName);
+        mv.visitTypeInsn(Opcodes.ANEWARRAY, internalClassName);
 
         for (int i = 0; i < enumValues.length; i++) {
             String enumValue = enumValues[i];
-            mv.visitInsn(Opcodes.valueInt("DUP"));
+            mv.visitInsn(Opcodes.DUP);
             if (i <= 5) {
                 mv.visitInsn(ICONST[i]);
             } else if (i <= 127) {
-                mv.visitIntInsn(Opcodes.valueInt("BIPUSH"), i);
+                mv.visitIntInsn(Opcodes.BIPUSH, i);
             } else {
-                mv.visitIntInsn(Opcodes.valueInt("SIPUSH"), i);
+                mv.visitIntInsn(Opcodes.SIPUSH, i);
             }
-            mv.visitFieldInsn(Opcodes.valueInt("GETSTATIC"), internalClassName, enumValue, "L" + internalClassName + ";");
-            mv.visitInsn(Opcodes.valueInt("AASTORE"));
+            mv.visitFieldInsn(Opcodes.GETSTATIC, internalClassName, enumValue, "L" + internalClassName + ";");
+            mv.visitInsn(Opcodes.AASTORE);
         }
-        mv.visitFieldInsn(Opcodes.valueInt("PUTSTATIC"), internalClassName, "$VALUES", "[L" + internalClassName + ";");
-        mv.visitInsn(Opcodes.valueInt("RETURN"));
+        mv.visitFieldInsn(Opcodes.PUTSTATIC, internalClassName, "$VALUES", "[L" + internalClassName + ";");
+        mv.visitInsn(Opcodes.RETURN);
         mv.visitMaxs(4, 0);
 
         cw.visitEnd();

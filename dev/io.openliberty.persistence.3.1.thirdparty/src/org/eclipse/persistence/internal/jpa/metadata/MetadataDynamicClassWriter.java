@@ -64,25 +64,25 @@ public class MetadataDynamicClassWriter extends DynamicClassWriter {
             Type returnType = getAsmType(accessor);
 
             // Add getter
-            MethodVisitor mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC"), GET + propertyName, "()" + returnType.getDescriptor(), null, new String[] { DYNAMIC_EXCEPTION });
+            MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, GET + propertyName, "()" + returnType.getDescriptor(), null, new String[] { DYNAMIC_EXCEPTION });
             mv.visitCode();
-            mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 0);
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitLdcInsn(accessor.getAttributeName());
-            mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), parentClassType, "get", "(" + LJAVA_LANG_STRING + ")" + LJAVA_LANG_OBJECT, false);
-            mv.visitTypeInsn(Opcodes.valueInt("CHECKCAST"), returnType.getInternalName());
-            mv.visitInsn(Opcodes.valueInt("ARETURN"));
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parentClassType, "get", "(" + LJAVA_LANG_STRING + ")" + LJAVA_LANG_OBJECT, false);
+            mv.visitTypeInsn(Opcodes.CHECKCAST, returnType.getInternalName());
+            mv.visitInsn(Opcodes.ARETURN);
             mv.visitMaxs(2, 1);
             mv.visitEnd();
 
             // Add setter
-            mv = cw.visitMethod(Opcodes.valueInt("ACC_PUBLIC"), SET + propertyName, "(" + returnType.getDescriptor() + ")V", null, new String[] { DYNAMIC_EXCEPTION });
+            mv = cw.visitMethod(Opcodes.ACC_PUBLIC, SET + propertyName, "(" + returnType.getDescriptor() + ")V", null, new String[] { DYNAMIC_EXCEPTION });
             mv.visitCode();
-            mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 0);
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
             mv.visitLdcInsn("id");
-            mv.visitVarInsn(Opcodes.valueInt("ALOAD"), 1);
-            mv.visitMethodInsn(Opcodes.valueInt("INVOKESPECIAL"), parentClassType, SET, "(" + LJAVA_LANG_STRING + LJAVA_LANG_OBJECT + ")" + LDYNAMIC_ENTITY, false);
-            mv.visitInsn(Opcodes.valueInt("POP"));
-            mv.visitInsn(Opcodes.valueInt("RETURN"));
+            mv.visitVarInsn(Opcodes.ALOAD, 1);
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, parentClassType, SET, "(" + LJAVA_LANG_STRING + LJAVA_LANG_OBJECT + ")" + LDYNAMIC_ENTITY, false);
+            mv.visitInsn(Opcodes.POP);
+            mv.visitInsn(Opcodes.RETURN);
             mv.visitMaxs(3, 2);
             mv.visitEnd();
         }

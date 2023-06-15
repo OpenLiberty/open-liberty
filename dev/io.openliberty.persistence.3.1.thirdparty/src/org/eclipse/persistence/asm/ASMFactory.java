@@ -41,8 +41,8 @@ public class ASMFactory {
     private final static String ASM_ECLIPSELINK_CLASS_VISITOR = "org.eclipse.persistence.internal.libraries.asm.ClassVisitor";
 
     //Should be changed in case of ASM upgrade
-    public final static int ASM_API_SELECTED = Opcodes.valueInt("ASM9");
-    public final static int JAVA_CLASS_VERSION = Opcodes.valueInt("V1_8");
+    public final static int ASM_API_SELECTED = Opcodes.ASM9;
+    public final static int JAVA_CLASS_VERSION = Opcodes.V1_8;
     public final static int JAVA_CLASS_LATEST_VERSION = ASMFactory.getLatestOPCodeVersion();
 
     public static AnnotationVisitor createAnnotationVisitor(final int api) {

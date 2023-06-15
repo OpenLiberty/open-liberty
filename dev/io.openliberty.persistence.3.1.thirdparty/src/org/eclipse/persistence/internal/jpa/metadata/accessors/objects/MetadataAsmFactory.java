@@ -101,7 +101,7 @@ public class MetadataAsmFactory extends MetadataFactory {
 
             ClassReader reader = ASMFactory.createClassReader(stream);
             Attribute[] attributes = new Attribute[0];
-            reader.accept(visitor, attributes, ClassReader.valueInt("SKIP_CODE") | ClassReader.valueInt("SKIP_DEBUG") | ClassReader.valueInt("SKIP_FRAMES"));
+            reader.accept(visitor, attributes, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         } catch (IllegalArgumentException iae) {
             // class was probably compiled with some newer than officially
             // supported and tested JDK
@@ -132,7 +132,7 @@ public class MetadataAsmFactory extends MetadataFactory {
                     //as checkClassVersion is not visible by public constructor
                     ClassReader reader = ASMFactory.createClassReader(stream, false);
                     Attribute[] attributes = new Attribute[0];
-                    reader.accept(visitor, attributes, ClassReader.valueInt("SKIP_CODE") | ClassReader.valueInt("SKIP_DEBUG") | ClassReader.valueInt("SKIP_FRAMES"));
+                    reader.accept(visitor, attributes, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
                 } catch (Exception e) {
                     SessionLog log = getLogger().getSession() != null
                             ? getLogger().getSession().getSessionLog() : AbstractSessionLog.getLog();

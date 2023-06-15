@@ -23,7 +23,7 @@ public class EclipseLinkASMClassWriter extends ClassWriter {
     private ClassWriter classWriter;
 
     public EclipseLinkASMClassWriter() {
-        this(ClassWriter.valueInt("COMPUTE_FRAMES"));
+        this(ClassWriter.COMPUTE_FRAMES);
     }
 
     public EclipseLinkASMClassWriter(final int flags) {
