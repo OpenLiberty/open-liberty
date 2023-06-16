@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.jakartaee10.internal.apps.jakartaee10.web.WebProfile10TestServlet;
@@ -63,6 +64,14 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("netty-1.0");
         compatFeatures.remove("noShip-1.0");
         compatFeatures.remove("scim-2.0");
+
+        // springBoot-3.0, data-1.0 and nosql-1.0 requires Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        if (JavaInfo.JAVA_VERSION < 17) {
+            compatFeatures.remove("springBoot-3.0");
+            compatFeatures.remove("data-1.0");
+            compatFeatures.remove("nosql-1.0");
+        }
+
         return compatFeatures;
     }
 
@@ -72,7 +81,8 @@ public class JakartaEE10Test extends FATServletClient {
                     .with(new FeatureReplacementAction()
                                     .removeFeature("webProfile-10.0")
                                     .addFeature("jakartaee-10.0")
-                                    .withID("jakartaee10")) //LITE
+                                    .withID("jakartaee10")
+                                    .fullFATOnly())
                     .andWith(new FeatureReplacementAction()
                                     .removeFeature("jakartaee-10.0")
                                     .addFeature("webProfile-10.0")
@@ -82,8 +92,7 @@ public class JakartaEE10Test extends FATServletClient {
                                     .removeFeature("webProfile-10.0")
                                     .removeFeature("jakartaee-10.0")
                                     .addFeatures(getCompatFeatures())
-                                    .withID(ALL_COMPAT_FEATURES)
-                                    .fullFATOnly());
+                                    .withID(ALL_COMPAT_FEATURES)); //LITE
 
     public static final String APP_NAME = "webProfile10App";
 
