@@ -119,14 +119,6 @@ OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: The OpenAPI UI path cannot be s
 OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=The OpenAPI Document and OpenAPI UI paths cannot be the same.
 OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Specify a unique path for the OpenAPI UI.
 
-OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W=CWWKO1673W: The OpenAPI UI path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
-OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W.explanation=An OpenAPI UI path was set to the same path as another feature, which can prevent startup or access.
-OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W.useraction=Specify a different path for the OpenAPI path.
-
-OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W=CWWKO1674W: The OpenAPI Document path was set to the same path as the {0} feature, which might prevent startup of itself or the other feature.
-OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W.explanation=An OpenAPI Document path was set to the same path as another feature, which can prevent startup or access.
-OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W.useraction=Specify a different path for the OpenAPI path.
-
 OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: The OpenAPI UI path is invalid or contains invalid characters. The URL must be constructed with Unicode alphanumeric characters A-Za-z0-9, underscore (_), dash (-), forward slash (/), or period (.).
 OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=The OpenAPI UI Path cannot be set to a value that contains invalid characters.
 OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Ensure the OpenAPI Path contains only A-Za-z0-9, _, -, ., /.

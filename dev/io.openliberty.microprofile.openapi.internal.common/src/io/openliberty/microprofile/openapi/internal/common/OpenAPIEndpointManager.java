@@ -10,13 +10,10 @@
 
 package io.openliberty.microprofile.openapi.internal.common;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -43,9 +40,6 @@ public class OpenAPIEndpointManager {
     private static final String OPEN_API_UI_PATH = "/ui";
 
     private static final Pattern PATH_PATTERN = Pattern.compile("^(/[\\w./_-]*)?$");
-    private static final Map<String, String> CONFLICTING_PATHS_MAP = Stream.of(new AbstractMap.SimpleEntry<>("/ibm/api", "OpenAPI"),
-                                                                               new AbstractMap.SimpleEntry<>("/health", "mpHealth"),
-                                                                               new AbstractMap.SimpleEntry<>("/metrics", "mpMetrics")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public enum EndpointId {
         UI,
@@ -157,17 +151,6 @@ public class OpenAPIEndpointManager {
         if (segments.contains(".") || segments.contains("..")) {
             Tr.error(tc, "OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E");
             valid = false;
-        }
-
-        // Check if there are potential conflicts with other Liberty/MicroProfile features and warn if there is a match.
-        if (CONFLICTING_PATHS_MAP.containsKey(path)) {
-            //Just warn that might conflict with other features as they might not be active, so not a cause for failure.
-            //If there is a conflict WebContainer will error for the second feature that starts.
-            if (id.equals(EndpointId.UI)) {
-                Tr.warning(tc, "OPEN_API_UI_PATH_POTENTIAL_CONFLICT_CWWKO1673W", CONFLICTING_PATHS_MAP.get(path));
-            } else {
-                Tr.warning(tc, "OPEN_API_DOC_PATH_POTENTIAL_CONFLICT_CWWKO1674W", CONFLICTING_PATHS_MAP.get(path));
-            }
         }
 
         return valid;
