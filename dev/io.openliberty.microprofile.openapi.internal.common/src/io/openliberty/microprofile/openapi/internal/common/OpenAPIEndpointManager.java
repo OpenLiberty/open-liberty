@@ -10,12 +10,6 @@
 
 package io.openliberty.microprofile.openapi.internal.common;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.*;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +17,17 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, configurationPid = "io.openliberty.microprofile.openapi")
 public class OpenAPIEndpointManager {
@@ -38,8 +43,7 @@ public class OpenAPIEndpointManager {
     private static final String OPEN_API_UI_PATH = "/ui";
 
     private static final Pattern PATH_PATTERN = Pattern.compile("^(/[\\w./_-]*)?$");
-    private static final Map<String, String> CONFLICTING_PATHS_MAP = Stream.of(
-                                                                               new AbstractMap.SimpleEntry<>("/ibm/api", "OpenAPI"),
+    private static final Map<String, String> CONFLICTING_PATHS_MAP = Stream.of(new AbstractMap.SimpleEntry<>("/ibm/api", "OpenAPI"),
                                                                                new AbstractMap.SimpleEntry<>("/health", "mpHealth"),
                                                                                new AbstractMap.SimpleEntry<>("/metrics", "mpMetrics")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -55,7 +59,6 @@ public class OpenAPIEndpointManager {
     private WABConfigManager docWabConfigManager;
 
     @Activate
-    @Modified
     protected void activate(BundleContext context, Map<String, Object> properties) {
         docPath = OPEN_API_DOC_ENDPOINT_PATH;
         uiPath = docPath + OPEN_API_UI_PATH;
@@ -63,28 +66,43 @@ public class OpenAPIEndpointManager {
         if (ProductInfo.getBetaEdition()) {
             //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
             if (Boolean.getBoolean("open_api_path_enabled")) {
-                resolvePathFromProperties(properties);
+                getPathsFromProperties(properties);
             }
         }
-        //If One of the WAB Config Managers exists then we are modifying the configuration therefore we need to unregister the existing WABs
-        if(uiWabConfigManager != null){
-            deactivate();
+
+        uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, "OpenAPI UI");
+        docWabConfigManager = new WABConfigManager(context, OPEN_API_DOC_VAR_NAME, "OpenAPI Doc");
+        uiWabConfigManager.setPath(uiPath);
+        docWabConfigManager.setPath(docPath);
+    }
+
+    @Modified
+    protected void modified(Map<String, Object> properties) {
+        if (ProductInfo.getBetaEdition()) {
+            //check for system property `open_api_path_enabled` as additional guide - getBoolean returns `true` if the value exists and is set to `true`, if the value is `false`
+            if (Boolean.getBoolean("open_api_path_enabled")) {
+                getPathsFromProperties(properties);
+            }
         }
-        uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, uiPath, "OpenAPI UI");
-        docWabConfigManager = new WABConfigManager(context, OPEN_API_DOC_VAR_NAME, docPath, "OpenAPI Doc");
-        uiWabConfigManager.register();
-        docWabConfigManager.register();
+
+        uiWabConfigManager.setPath(uiPath);
+        docWabConfigManager.setPath(docPath);
     }
 
     @Deactivate
     protected void deactivate() {
-        uiWabConfigManager.unregister();
-        docWabConfigManager.unregister();
+        uiWabConfigManager.close();
+        docWabConfigManager.close();
     }
 
-    private void resolvePathFromProperties(Map<String, Object> properties) {
+    /**
+     * Set {@link #docPath} and {@link #uiPath} based on the component properties
+     *
+     * @param properties the component properties
+     */
+    private void getPathsFromProperties(Map<String, Object> properties) {
         docPath = (String) properties.get(OPEN_API_DOC_ENDPOINT_CONFIG_NAME);
-        docPath = resolvePath(docPath);
+        docPath = normalizePath(docPath);
         //If path is not valid revert to default value before we process the UI Path
         if (!validatePath(docPath, EndpointId.DOCUMENT)) {
             Tr.error(tc, "OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E");
@@ -97,7 +115,7 @@ public class OpenAPIEndpointManager {
 
         if (properties.containsKey(OPEN_API_UI_CONFIG_NAME)) {
             uiPath = (String) properties.get(OPEN_API_UI_CONFIG_NAME);
-            uiPath = resolvePath(uiPath);
+            uiPath = normalizePath(uiPath);
             if (uiPath.equals(docPath)) {
                 Tr.error(tc, "OPEN_API_UI_PATH_CONFLICT_CWWKO1672E", uiPath);
                 uiPath = docPath + OPEN_API_UI_PATH;
@@ -113,12 +131,13 @@ public class OpenAPIEndpointManager {
             Tr.info(tc, "OPEN_API_UI_PATH_UPDATE_CWWKO1668I", docPath);
         }
     }
+
     /**
-     * Validate the OpenAPI path to ensure it is Valid, contains only valid characters and mets certain rules.
+     * Validates the OpenAPI path, emits a warning for each validation check failed.
      *
      * @param path Path to be validated
      * @param id   Which OpenAPI bundle we are validating the path for.
-     * @return
+     * @return {@code true} if the path is valid, otherwise {@code false}
      */
     public static boolean validatePath(String path, EndpointId id) {
         boolean valid = true;
@@ -155,12 +174,12 @@ public class OpenAPIEndpointManager {
     }
 
     /**
-     * Resolve the provided path to check and modify the path to meet a basic path structure requirements
+     * Normalize the provided path, removing empty path segments and ensuring it starts with a slash and doesn't end with one.
      *
-     * @param path
-     * @return
+     * @param path the path
+     * @return the normalized path
      */
-    public static String resolvePath(String path) {
+    public static String normalizePath(String path) {
         // Add a forward slash if the path does not already start with one.
         if (!path.startsWith("/")) {
             path = '/' + path;
@@ -175,7 +194,4 @@ public class OpenAPIEndpointManager {
         }
         return path;
     }
-
-
-
 }

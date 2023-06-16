@@ -27,17 +27,17 @@ Import-Package: \
   io.openliberty.microprofile.openapi.internal.common.OpenAPIEndpointManager
 
 Export-Package: \
-	io.openliberty.microprofile.openapi.internal.resources; version="1.0",\
-	io.openliberty.microprofile.openapi.internal.resources.validation; version="1.0",\
+    io.openliberty.microprofile.openapi.internal.resources; version="1.0",\
+    io.openliberty.microprofile.openapi.internal.resources.validation; version="1.0",\
     io.openliberty.microprofile.openapi.internal.common;version="1.0"
 
 Include-Resource: \
-	OSGI-INF=resources/OSGI-INF
+    OSGI-INF=resources/OSGI-INF
 
 WS-TraceGroup: MPOPENAPI
 
 -buildpath: \
-	com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.logging;version=latest,\
     com.ibm.ws.app.manager.wab;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.kernel.boot.core;version=latest,\

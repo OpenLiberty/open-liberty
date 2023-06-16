@@ -10,14 +10,15 @@
 
 package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.fat.util.Props;
-import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
+import static componenttest.selenium.SeleniumWaits.waitForElement;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.time.Duration;
+import java.util.Arrays;
+
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,20 +31,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.Color;
 import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.BrowserWebDriverContainer.VncRecordingMode;
 import org.testcontainers.containers.VncRecordingContainer.VncRecordingFormat;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.fat.util.Props;
 
-import static componenttest.selenium.SeleniumWaits.waitForElement;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
 
 /**
  * A Test of UI Path rewriting
@@ -63,9 +65,11 @@ public class UICustomPathTest {
     public static LibertyServer server;
 
     @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions()).withAccessToHost(true).withRecordingMode(VncRecordingMode.RECORD_FAILING,
-                                                                                                                                                                  Props.getInstance().getFileProperty(Props.DIR_LOG),
-                                                                                                                                                                  VncRecordingFormat.MP4).withLogConsumer(new SimpleLogConsumer(UICustomPathTest.class, "selenium-driver"));
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions()).withAccessToHost(true)
+                                                                                  .withRecordingMode(VncRecordingMode.RECORD_FAILING,
+                                                                                                     Props.getInstance().getFileProperty(Props.DIR_LOG),
+                                                                                                     VncRecordingFormat.MP4)
+                                                                                  .withLogConsumer(new SimpleLogConsumer(UICustomPathTest.class, "selenium-driver"));
 
     private RemoteWebDriver driver;
 
@@ -76,7 +80,7 @@ public class UICustomPathTest {
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
         //Set the new path value
-        server.addEnvVar(PROPERTY_NAME,PATH_VALUE);
+        server.addEnvVar(PROPERTY_NAME, PATH_VALUE);
 
         //Set guards
         server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dopen_api_path_enabled=true"));
@@ -100,7 +104,7 @@ public class UICustomPathTest {
 
         // Check the headerbar colour
         WebElement headerbar = waitForElement(driver, By.cssSelector("div.headerbar"));
-        assertEquals("Headerbar colour", "rgba(25, 28, 44, 1)", headerbar.getCssValue("background-color"));
+        assertEquals("Headerbar colour", Color.fromString("#191c2c"), Color.fromString(headerbar.getCssValue("background-color")));
 
         // Check the headerbar has a background image. It's a data URL, so it's hard to assert it's actually correct, we just assert that there is one
         WebElement headerbarWrapper = waitForElement(headerbar, By.cssSelector("div.headerbar-wrapper"));
