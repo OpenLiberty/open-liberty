@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -282,6 +282,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "openapi")
     private OpenAPIElement openAPIElement;
 
+    @XmlElement(name = "mpOpenAPI")
+    private MpOpenAPIElement mpOpenAPIElement;
+
     @XmlElement(name = "federatedRepository")
     private FederatedRepository federatedRepository;
 
@@ -314,13 +317,13 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "oidcLogin")
     private ConfigElementList<OidcLogin> oidcLogins;
-    
+
     @XmlElement(name = "openidConnectClient")
     private ConfigElementList<OpenidConnectClient> openIdConnectClients;
 
     @XmlElement(name = "jwtBuilder")
     private ConfigElementList<JwtBuilder> jwtBuilders;
-    
+
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -780,6 +783,14 @@ public class ServerConfiguration implements Cloneable {
         }
 
         return this.openAPIElement;
+    }
+
+    public MpOpenAPIElement getMpOpenAPIElement() {
+        if (this.mpOpenAPIElement == null) {
+            this.mpOpenAPIElement = new MpOpenAPIElement();
+        }
+
+        return this.mpOpenAPIElement;
     }
 
     public MPMetricsElement getMPMetricsElement() {
