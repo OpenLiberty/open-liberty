@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -208,6 +210,46 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Query-by-method name repository operation to remove and return one or more entities
+     * where the entity has an IdClass.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteEntityThatHasAnIdClass(HttpServletRequest request, HttpServletResponse response) {
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
+        cities.save(new City("Green Bay", "Wisconsin", 107395, Set.of(920)));
+        cities.save(new City("Superior", "Wisconsin", 26751, Set.of(534, 715)));
+
+        Streamable<City> removed = supportsOrderByForUpdate //
+                        ? cities.removeByStateNameOrderByName("Wisconsin") //
+                        : cities.removeByStateName("Wisconsin");
+
+        Stream<City> stream = removed.stream();
+        if (!supportsOrderByForUpdate)
+            stream = stream.sorted(Comparator.comparing(c -> c.name));
+
+        List<City> list = stream.collect(Collectors.toList());
+        assertEquals(list.toString(), 3, list.size());
+
+        assertEquals("Green Bay", list.get(0).name);
+        assertEquals("Wisconsin", list.get(0).stateName);
+        assertEquals(107395, list.get(0).population);
+        assertIterableEquals(Set.of(920), list.get(0).areaCodes);
+
+        assertEquals("Milwaukee", list.get(1).name);
+        assertEquals("Wisconsin", list.get(1).stateName);
+        assertEquals(577222, list.get(1).population);
+        assertIterableEquals(Set.of(414), list.get(1).areaCodes);
+
+        assertEquals("Superior", list.get(2).name);
+        assertEquals("Wisconsin", list.get(2).stateName);
+        assertEquals(26751, list.get(2).population);
+        assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
     }
 
     /**

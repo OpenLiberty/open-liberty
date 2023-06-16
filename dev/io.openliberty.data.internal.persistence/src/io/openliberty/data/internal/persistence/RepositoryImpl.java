@@ -1136,9 +1136,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
                     }
             }
-            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            boolean isDeleteOnly = queryInfo.hasVoidOrBooleanOrUpdateCountReturnType();
+            if (isDeleteOnly) {
+                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+            } else { // FIND_AND_DELETE
+                if (queryInfo.type != null)
+                    throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
+                                                            " return type is not supported for the " + methodName +
+                                                            " repository method."); // TODO NLS
+                queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                q = generateSelectClause(queryInfo, select);
+                queryInfo.jpqlDelete = new StringBuilder(22 + o.length() * 2 + entityInfo.name.length()) // TODO add length of id attribute
+                                .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
+                                .append(" WHERE ").append(o).append('.').append("id").append("=?") // TODO need name of id attribute
+                                .toString();
+            }
+
+            int orderBy = isDeleteOnly ? -1 : methodName.lastIndexOf("OrderBy");
+            if (orderBy > c || orderBy == -1 && methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+            if (orderBy >= c)
+                parseOrderBy(queryInfo, orderBy, q);
+
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
         } else if (methodName.startsWith("update")) {
             int by = methodName.indexOf("By", 6);
@@ -1910,6 +1931,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                                 List<?> results = query.getResultList();
 
+                                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
+                                    for (Object result : results)
+                                        em.remove(result); // TODO not all results are entity instances
+
                                 if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
                                     returnValue = null;
                                 } else if (multiType == null && (queryInfo.entityInfo.entityClass).equals(singleType)) {
@@ -1997,10 +2022,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
                                 }
-
-                                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
-                                    for (Object result : results)
-                                        em.remove(result); // TODO not all results are entity instances
                             }
                         }
 

@@ -75,6 +75,14 @@ public class DataJPATest extends FATServletClient {
      * This test has conditional logic based on the JDBC driver/database.
      */
     @Test
+    public void testFindAndDeleteEntityThatHasAnIdClass() throws Exception {
+        runTest(server, "DataJPATestApp", "testFindAndDeleteEntityThatHasAnIdClass&jdbcJarName=" + jdbcJarName);
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
     public void testUnannotatedCollection() throws Exception {
         runTest(server, "DataJPATestApp", "testUnannotatedCollection&jdbcJarName=" + jdbcJarName);
     }

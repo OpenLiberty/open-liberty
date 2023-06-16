@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -22,6 +23,7 @@ import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Delete;
@@ -35,6 +37,10 @@ import io.openliberty.data.repository.Update;
  */
 @Repository
 public interface Packages extends PageableRepository<Package, Integer> {
+    Optional<Package> deleteByDescription(String description);
+
+    Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
+
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
@@ -75,6 +81,11 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @Delete
     @Filter(by = "length", op = Compare.Between)
     List<Package> takeWithin(float minLength, float maxLength);
+
+    @Delete
+    @Filter(by = "length", op = Compare.Between)
+    @OrderBy("id")
+    List<Package> takeWithinOrdered(float minLength, float maxLength);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 
