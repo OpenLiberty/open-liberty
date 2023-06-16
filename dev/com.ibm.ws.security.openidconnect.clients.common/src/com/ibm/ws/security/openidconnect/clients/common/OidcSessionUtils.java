@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
@@ -64,7 +65,7 @@ public class OidcSessionUtils {
         }
 
         String configId = sessionInfo.getConfigId();
-        if (!clientConfig.getId().equals(configId)) {
+        if (!HashUtils.digest(clientConfig.getId()).equals(configId)) {
             return;
         }
 
