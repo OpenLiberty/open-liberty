@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.repository.common.enums.InstallPolicy;
+import com.ibm.ws.repository.resolver.internal.ResolutionMode;
 import com.ibm.ws.repository.resources.EsaResource;
 
 /**
@@ -41,12 +42,14 @@ import com.ibm.ws.repository.resources.EsaResource;
 public class KernelResolverEsa implements ProvisioningFeatureDefinition {
 
     private final EsaResource esaResource;
+    private final ResolutionMode resolutionMode;
 
-    public KernelResolverEsa(EsaResource esaResource) {
+    public KernelResolverEsa(EsaResource esaResource, ResolutionMode resolutionMode) {
         if (esaResource == null) {
             throw new NullPointerException();
         }
         this.esaResource = esaResource;
+        this.resolutionMode = resolutionMode;
     }
 
     /**
@@ -79,20 +82,26 @@ public class KernelResolverEsa implements ProvisioningFeatureDefinition {
 
     @Override
     public Visibility getVisibility() {
-        if (esaResource.getVisibility() == null) {
-            return Visibility.PRIVATE;
-        }
-        switch (esaResource.getVisibility()) {
-            case PUBLIC:
-                return Visibility.PUBLIC;
-            case PROTECTED:
-                return Visibility.PROTECTED;
-            case INSTALL:
-                return Visibility.INSTALL;
-            case PRIVATE:
-                return Visibility.PRIVATE;
-            default:
-                throw new IllegalArgumentException("Invalid visibility: " + esaResource.getVisibility());
+        if (resolutionMode == ResolutionMode.DETECT_CONFLICTS) {
+            // When we're installing a set, all features must be public and we must report visibility correctly
+            // as it affects the rules around tolerated features
+            switch (esaResource.getVisibility()) {
+                case PUBLIC:
+                    return Visibility.PUBLIC;
+                case PROTECTED:
+                    return Visibility.PROTECTED;
+                case INSTALL:
+                    return Visibility.INSTALL;
+                case PRIVATE:
+                    return Visibility.PRIVATE;
+                default:
+                    throw new IllegalArgumentException("Invalid visibility: " + esaResource.getVisibility());
+            }
+        } else {
+            // When installing from the command line, we don't care about visibility
+            // However, the kernel resolver requires that the features requested by the user are public
+            // To subvert this check, make all features report as public
+            return Visibility.PUBLIC;
         }
     }
 
