@@ -596,13 +596,10 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        try {
-            System.out.println("findByIdInOrOwner: " + accounts.findByIdInOrOwner(List.of(AccountId.of(1004470, 30372),
-                                                                                          AccountId.of(1006380, 22158)),
-                                                                                  "Emma TestEmbeddedId"));
-        } catch (MappingException x) {
-            // expected
-        }
+        // Varies by database whether MappingException or DatabaseException is raised,
+        // System.out.println("findByIdInOrOwner: " + accounts.findByIdInOrOwner(List.of(AccountId.of(1004470, 30372),
+        //                                                                               AccountId.of(1006380, 22158)),
+        //                                                                       "Emma TestEmbeddedId"));
 
         try {
             System.out.println("findByIdTrue: " + accounts.findByIdTrue());
