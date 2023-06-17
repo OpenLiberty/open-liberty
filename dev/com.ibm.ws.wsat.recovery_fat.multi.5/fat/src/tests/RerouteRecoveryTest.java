@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,8 @@ public class RerouteRecoveryTest extends MultiRecoveryTest1 {
 	
 	@BeforeClass
 	public static void startThirdServer() throws Exception {
-		FATUtils.startServers(server3);
+		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
+		FATUtils.startServers(runner, server3);
 	}
 	
 	@AfterClass

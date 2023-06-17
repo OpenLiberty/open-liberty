@@ -11,7 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package suite;
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,16 +18,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import tests.DBRerouteTest;
+import tests.DBRerouteRecoveryTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	DBRerouteTest.class,
+	DBRerouteRecoveryTest.class,
 })
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DBRerouteTest.serverNames))
-    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(DBRerouteTest.serverNames))
-    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(DBRerouteTest.serverNames));
+    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+    .andWith(FeatureReplacementAction.EE10_FEATURES());
 }

@@ -145,6 +145,7 @@ com.ibm.ws.transaction.hadb_fat.sqlserver.2
 com.ibm.ws.transaction.hadb_fat.sqlserver.lease
 com.ibm.ws.transaction.hadb_fat.sqlserver.retriablecodes
 com.ibm.ws.wsat.migration_fat.6
+com.ibm.ws.wsat.recovery_fat.multi.6
 fattest.simplicity
 io.openliberty.checkpoint_fat_persistence
 io.openliberty.data.internal_fat

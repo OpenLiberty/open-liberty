@@ -22,6 +22,7 @@
 
   <transaction
     backendURL="http://localhost:${bvt.prop.HTTP_default}"
+    dataSourceRef="tranlogDataSource"
     heuristicRetryInterval="10"
     leaseLength="10m"
     recoverOnStartup="true"
@@ -29,6 +30,17 @@
     recoveryIdentity="WSATRecovery1"
     waitForRecovery="false"
   />
+
+  <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
+  <library id="AnonymousJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+
+  <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">
+    <jdbcDriver libraryRef="AnonymousJDBCLib" />
+    <!-- Properties modified by fat for database rotation -->
+    <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
+  </dataSource>
 
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

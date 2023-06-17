@@ -63,7 +63,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
     private boolean activateHasBeenCalled; // Used for eyecatcher in trace for startup ordering.
     private boolean _dataSourceFactorySet;
-    private static boolean _frameworkShutting = false;
+    private static boolean _frameworkShutting;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -85,10 +85,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef;
     private byte[] _applId;
 
-    private boolean _setRetriableSqlcodes = false;
-    private boolean _setNonRetriableSqlcodes = false;
+    private boolean _setRetriableSqlcodes;
+    private boolean _setNonRetriableSqlcodes;
     List<Integer> retriableSqlCodeList;
     List<Integer> nonRetriableSqlCodeList;
+
+    private boolean _recoveryIDisSanitary;
 
     public JTMConfigurationProvider() {
     }
@@ -488,9 +490,18 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public String getRecoveryIdentity() {
 
-        _recoveryIdentity = (String) _props.get("recoveryIdentity");
+        // Make recoveryIdentity suitable for DDL
+        if (!_recoveryIDisSanitary) {
+            _recoveryIdentity = (String) _props.get("recoveryIdentity");
+            if (_recoveryIdentity != null) {
+                _recoveryIdentity = _recoveryIdentity.replaceAll("\\W", "");
+            }
+
+            _recoveryIDisSanitary = true;
+        }
+
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryIdentity " + _recoveryIdentity);
+            Tr.debug(tc, "getRecoveryIdentity {0}", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
