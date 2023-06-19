@@ -18,7 +18,7 @@
 
   <servlet>
     <servlet-name>OpenAPIServlet</servlet-name>
-    <servlet-class>com.ibm.ws.microprofile.openapi.OpenAPIServlet</servlet-class>
+    <servlet-class>com.ibm.ws.microprofile.openapi.servlet.OpenAPIServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   

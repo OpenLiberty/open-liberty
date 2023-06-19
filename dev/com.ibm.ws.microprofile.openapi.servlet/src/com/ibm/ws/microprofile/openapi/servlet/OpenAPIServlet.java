@@ -4,13 +4,13 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.openapi;
+package com.ibm.ws.microprofile.openapi.servlet;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -23,15 +23,15 @@ import javax.ws.rs.core.MediaType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.openapi.ApplicationProcessor;
 import com.ibm.ws.microprofile.openapi.ApplicationProcessor.DocType;
+import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
 public class OpenAPIServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(OpenAPIServlet.class);
-
-    /** {@inheritDoc} */
 
     /** {@inheritDoc} */
     @Override

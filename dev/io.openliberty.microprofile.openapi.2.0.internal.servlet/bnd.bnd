@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+-sub: *.bnd
+
+bVersion=1.0
+
+IBM-Web-Extension-Processing-Disabled: true
+Web-ContextPath: @openAPIDOCPATH
+
+src: src, resources
+
+Private-Package: io.openliberty.microprofile.openapi20.internal.servlet
+
+Import-Package: \
+	io.smallrye.openapi.*;version="[2.0,4.0)",\
+	*
+
+Include-Resource: \
+	WEB-INF=resources/WEB-INF
+
+WS-TraceGroup: MPOPENAPI
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+	io.openliberty.microprofile.openapi.2.0.internal;version=latest,\
+	io.openliberty.org.eclipse.microprofile.openapi.2.0;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
+	io.openliberty.io.smallrye.openapi.core;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.microprofile.openapi.internal.common;version=latest,\
+	io.openliberty.io.smallrye.openapi.core
+

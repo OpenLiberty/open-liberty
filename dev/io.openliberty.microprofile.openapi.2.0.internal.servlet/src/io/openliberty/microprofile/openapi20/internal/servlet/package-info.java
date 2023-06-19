@@ -16,7 +16,7 @@
  */
 @Version(Constants.OSGI_VERSION)
 @TraceOptions(traceGroup = Constants.TRACE_GROUP, messageBundle = Constants.TRACE_OPENAPI)
-package io.openliberty.microprofile.openapi20.internal.servlets;
+package io.openliberty.microprofile.openapi20.internal.servlet;
 
 import org.osgi.annotation.versioning.Version;
 

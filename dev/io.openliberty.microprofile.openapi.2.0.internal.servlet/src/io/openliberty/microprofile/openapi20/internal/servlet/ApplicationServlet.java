@@ -4,13 +4,13 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi20.internal.servlets;
+package io.openliberty.microprofile.openapi20.internal.servlet;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,8 +33,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.microprofile.openapi20.internal.ApplicationRegistry;
-import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
@@ -139,4 +139,5 @@ public class ApplicationServlet extends OpenAPIServletBase {
             writeResponse(response, null, Status.NOT_FOUND, contentType);
         }
     }
+
 }
