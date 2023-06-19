@@ -14,7 +14,6 @@ com.sun.xml.messaging.saaj:saaj-impl:2.0.0
 com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:policy:2.4
 commons-beanutils:commons-beanutils:1.9.4
-commons-digester:commons-digester:1.8
 commons-discovery:commons-discovery:0.2
 commons-httpclient:commons-httpclient:3.1
 commons-io:commons-io:2.6

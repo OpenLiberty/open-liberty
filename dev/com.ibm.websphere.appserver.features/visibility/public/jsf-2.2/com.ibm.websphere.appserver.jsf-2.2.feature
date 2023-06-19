@@ -49,7 +49,6 @@ Subsystem-Name: JavaServer Faces 2.2
  io.openliberty.org.apache.commons.codec, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.cdi.interfaces, \
- com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.appserver.thirdparty.jsf-2.2; location:="dev/api/third-party/"
 kind=ga
 edition=core
