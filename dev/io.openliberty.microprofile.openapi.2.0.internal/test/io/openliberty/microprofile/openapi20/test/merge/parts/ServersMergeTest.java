@@ -25,7 +25,7 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.openliberty.microprofile.openapi20.internal.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 
 public class ServersMergeTest {
 

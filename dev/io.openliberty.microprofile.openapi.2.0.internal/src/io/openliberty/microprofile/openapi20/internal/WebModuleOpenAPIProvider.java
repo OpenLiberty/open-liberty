@@ -20,6 +20,8 @@ import org.eclipse.microprofile.openapi.models.Paths;
 
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
+
 public class WebModuleOpenAPIProvider implements OpenAPIProvider {
 
     // The WebModuleInfo for the application/module that the OpenAPI model was generated from

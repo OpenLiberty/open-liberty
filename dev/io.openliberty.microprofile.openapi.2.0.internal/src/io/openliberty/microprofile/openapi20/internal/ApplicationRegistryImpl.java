@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,13 +40,15 @@ import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.microprofile.openapi20.internal.merge.MergeProcessor;
+import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.internal.utils.ModuleUtils;
 
 /**
- * The ApplicationRegistry class maintains a collection of the applications that are deployed to the OpenLiberty
+ * The {@code ApplicationRegistry} maintains a collection of the applications that are deployed to the OpenLiberty
  * instance. It also tracks the application whose OpenAPI document is currently being returned to clients that request
  * it via the /openapi endpoint.
  * <p>
@@ -54,9 +56,9 @@ import io.openliberty.microprofile.openapi20.internal.utils.ModuleUtils;
  * then documentation is only generated for the first web module found.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationRegistry.class)
-public class ApplicationRegistry {
+public class ApplicationRegistryImpl implements ApplicationRegistry {
 
-    private static final TraceComponent tc = Tr.register(ApplicationRegistry.class);
+    private static final TraceComponent tc = Tr.register(ApplicationRegistryImpl.class);
 
     @Reference
     private ApplicationProcessor applicationProcessor;
@@ -80,6 +82,7 @@ public class ApplicationRegistry {
      * @param newAppInfo
      *     The ApplicationInfo for the application that is starting.
      */
+    @Override
     public void addApplication(ApplicationInfo newAppInfo) {
         ApplicationRecord record = new ApplicationRecord(newAppInfo);
         synchronized (this) {
@@ -122,6 +125,7 @@ public class ApplicationRegistry {
      * @param removedAppInfo
      *     The ApplicationInfo for the application that is stopping.
      */
+    @Override
     public void removeApplication(ApplicationInfo removedAppInfo) {
         synchronized (this) {
             if (LoggingUtils.isEventEnabled(tc)) {
@@ -203,6 +207,7 @@ public class ApplicationRegistry {
      *
      * @return an {@code OpenAPIProvider} holding an OpenAPI model or {@code null} if there are no OpenAPI providers
      */
+    @Override
     public OpenAPIProvider getOpenAPIProvider() {
         synchronized (this) {
             if (cachedProvider != null) {
@@ -257,7 +262,7 @@ public class ApplicationRegistry {
     private ModuleSelectionConfig getModuleSelectionConfig() {
         if (moduleSelectionConfig == null) {
             // Lazy initialization to avoid calling getConfig() before Config is ready
-            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
+            moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistryImpl.class.getClassLoader()));
         }
         return moduleSelectionConfig;
     }

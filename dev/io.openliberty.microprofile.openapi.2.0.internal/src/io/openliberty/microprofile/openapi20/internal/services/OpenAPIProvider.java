@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi20.internal;
+package io.openliberty.microprofile.openapi20.internal.services;
 
 import java.util.List;
 

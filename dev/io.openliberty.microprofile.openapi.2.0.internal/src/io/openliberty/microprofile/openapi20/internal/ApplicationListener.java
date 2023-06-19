@@ -22,11 +22,12 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 
+import io.openliberty.microprofile.openapi20.internal.services.ApplicationRegistry;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 
 /**
  * The ApplicationListener class monitors the OL instance for applications starting/stopping and adds/removes them
- * to/from the {@link ApplicationRegistry}, as appropriate.
+ * to/from the {@link ApplicationRegistryImpl}, as appropriate.
  */
 @Component(service = { ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class ApplicationListener implements ApplicationStateListener {

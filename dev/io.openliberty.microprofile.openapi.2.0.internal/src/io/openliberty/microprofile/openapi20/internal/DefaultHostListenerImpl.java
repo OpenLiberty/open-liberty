@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,33 +28,22 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.http.VirtualHost;
 
+import io.openliberty.microprofile.openapi20.internal.services.DefaultHostListener;
 import io.openliberty.microprofile.openapi20.internal.utils.CloudUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.ServerInfo;
 
 /**
- * The DefaultHostListener class is a singleton OSGi component that listens for changes to the default_host virtual host
+ * The DefaultHostListenerImpl class is a singleton OSGi component that listens for changes to the default_host virtual host
  * and updates a ServerInfo instance with the relevant information. This ServerInfo object is used when generating the
  * server definitions in the OpenAPI document, if required.
  */
 @Component(service = { DefaultHostListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
-public class DefaultHostListener {
+public class DefaultHostListenerImpl implements DefaultHostListener {
 
-    private static final TraceComponent tc = Tr.register(DefaultHostListener.class);
-
-    private static DefaultHostListener instance = null;
+    private static final TraceComponent tc = Tr.register(DefaultHostListenerImpl.class);
 
     private final ServerInfo defaultHostServerInfo = new ServerInfo();
-
-    /**
-     * The getInstance method returns the singleton instance of the DefaultHostListener
-     *
-     * @return DefaultHostListener
-     * The singleton instance
-     */
-    public static DefaultHostListener getInstance() {
-        return instance;
-    }
 
     /**
      * The getDefaultHostServerInfo method returns the ServerInfo object for the default_host virtual host.
@@ -62,6 +51,7 @@ public class DefaultHostListener {
      * @return ServerInfo
      * The ServerInfo object for the default_host virtual host.
      */
+    @Override
     public ServerInfo getDefaultHostServerInfo() {
         synchronized (defaultHostServerInfo) {
             return new ServerInfo(defaultHostServerInfo);
@@ -70,17 +60,15 @@ public class DefaultHostListener {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
-        instance = this;
         if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(this, tc, "Activating DefaultHostListener", properties);
+            Tr.event(this, tc, "Activating DefaultHostListenerImpl", properties);
         }
     }
 
     @Deactivate
     protected void deactivate(ComponentContext context, int reason) {
-        instance = null;
         if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(this, tc, "Deactivating DefaultHostListener, reason=" + reason);
+            Tr.event(this, tc, "Deactivating DefaultHostListenerImpl, reason=" + reason);
         }
     }
 

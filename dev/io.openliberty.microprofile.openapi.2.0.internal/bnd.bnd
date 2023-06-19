@@ -16,11 +16,7 @@
 
 bVersion=1.0
 
-
-IBM-Web-Extension-Processing-Disabled: true
-
-Web-ContextPath: @openAPIDOCPATH
-
+src: src, resources
 
 Import-Package: \
     org.eclipse.microprofile.config.*;version="[1.0,3)",\
@@ -33,26 +29,26 @@ Import-Package: \
 
 Export-Package: \
     com.ibm.ws.microprofile.openapi.servlet.filter, \
-    io.openliberty.microprofile.openapi20.internal.services
+    io.openliberty.microprofile.openapi20.internal.services,\
+    io.openliberty.microprofile.openapi20.internal.utils
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.internal.*
 
 Include-Resource: \
     META-INF/services=resources/META-INF/services,\
-    WEB-INF=resources/WEB-INF,\
     OSGI-INF/wlp=resources/OSGI-INF/wlp
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: io.openliberty.microprofile.openapi20.internal.ApplicationListener,\
-    io.openliberty.microprofile.openapi20.internal.ApplicationRegistry,\
+    io.openliberty.microprofile.openapi20.internal.ApplicationRegistryImpl,\
     io.openliberty.microprofile.openapi20.internal.ApplicationProcessor,\
     io.openliberty.microprofile.openapi20.internal.MergeDisabledAlerter,\
     io.openliberty.microprofile.openapi20.internal.OLOASFactoryResolverImpl,\
     io.openliberty.microprofile.openapi20.internal.css.CustomCSSProcessor,\
-    io.openliberty.microprofile.openapi20.internal.DefaultHostListener,\
+    io.openliberty.microprofile.openapi20.internal.DefaultHostListenerImpl,\
     io.openliberty.microprofile.openapi20.internal.cache.ConfigSerializer
 
 WS-TraceGroup: MPOPENAPI

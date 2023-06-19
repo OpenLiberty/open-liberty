@@ -4,19 +4,21 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi20.internal.servlets;
+package io.openliberty.microprofile.openapi20.internal.servlet;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +28,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.models.servers.Server;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.microprofile.openapi20.internal.DefaultHostListener;
+import io.openliberty.microprofile.openapi20.internal.services.DefaultHostListener;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.OpenAPIUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.ProxySupportUtil;
@@ -39,6 +43,22 @@ import io.smallrye.openapi.runtime.io.Format;
 public abstract class OpenAPIServletBase extends HttpServlet {
 
     private static final long serialVersionUID = -6021365340147075272L;
+
+    private ServiceTracker<DefaultHostListener, DefaultHostListener> defaultHostListenerTracker;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
+        defaultHostListenerTracker = new ServiceTracker<>(bundleContext, DefaultHostListener.class, null);
+        defaultHostListenerTracker.open();
+        super.init(config);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        defaultHostListenerTracker.close();
+    }
 
     /**
      * The getResponseFormat method determines the format of the document that should be sent in the body of the
@@ -78,16 +98,6 @@ public abstract class OpenAPIServletBase extends HttpServlet {
     }
 
     /**
-     * The getDefaultHostServerInfo method returns the ServerInfo object for the default_host virtual host.
-     *
-     * @return ServerInfo
-     * The server info for the default_host virtual host
-     */
-    protected ServerInfo getDefaultHostServerInfo() throws ServletException {
-        return DefaultHostListener.getInstance().getDefaultHostServerInfo();
-    }
-
-    /**
      * The getOpenAPIModelServers method generates a list of servers based on the information available in:
      *
      * - The ServerInfo for the default_host virtual host
@@ -96,6 +106,8 @@ public abstract class OpenAPIServletBase extends HttpServlet {
      *
      * @param request
      *     The HTTPServletRequest
+     * @param serverInfo
+     *     The serverInfo for the default_host virtual host
      * @return List<Server>
      * The list of OpenAPI model servers
      * @throws ServletException
@@ -121,7 +133,12 @@ public abstract class OpenAPIServletBase extends HttpServlet {
      * @throws ServletException
      */
     protected List<Server> getOpenAPIModelServers(final HttpServletRequest request, final String applciationPath) throws ServletException {
-        ServerInfo serverInfo = new ServerInfo(getDefaultHostServerInfo());
+        DefaultHostListener defaultHostListener = defaultHostListenerTracker.getService();
+        if (defaultHostListener == null) {
+            return Collections.emptyList();
+        }
+
+        ServerInfo serverInfo = new ServerInfo(defaultHostListener.getDefaultHostServerInfo());
         ProxySupportUtil.processRequest(request, serverInfo);
         return OpenAPIUtils.getOpenAPIModelServers(serverInfo, applciationPath);
     }
