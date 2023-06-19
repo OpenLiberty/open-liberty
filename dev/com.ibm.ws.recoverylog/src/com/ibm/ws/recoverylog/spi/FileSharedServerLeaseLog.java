@@ -458,12 +458,27 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
                         // Set the string into the LeaseInfo object
                         leaseInfo.setLeaseDetail(new File(line));
+
+                        // Replace second line with our own backendURL
+                        fChannel.truncate(newline + 1);
+                        ByteBuffer myBackendURL = ByteBuffer.wrap(getBackendURL().getBytes());
+                        fChannel.write(myBackendURL, newline + 1);
+                        fChannel.force(false);
+
+                        if (tc.isDebugEnabled()) {
+                            buffer = ByteBuffer.allocate((int) fChannel.size());
+                            fChannel.position(0);
+                            fChannel.read(buffer);
+                            buffer.flip();
+                            line = new String(buffer.array());
+                            Tr.debug(tc, "Lease file now contains " + line);
+                        }
+
                         claimedLease = true;
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Lease Lock's channel was null");
                     }
-
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Failed to lock or read lease file");

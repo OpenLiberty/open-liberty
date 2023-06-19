@@ -1341,7 +1341,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // Construct the UPDATE string
                 String updateString = "UPDATE " + _leaseTableName +
-                                      " SET LEASE_TIME = ?, LEASE_OWNER = ?" +
+                                      " SET LEASE_TIME = ?, LEASE_OWNER = ?, BACKEND_URL = ?" +
                                       " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "'";
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "update lease for " + recoveryIdentityToRecover);
@@ -1353,6 +1353,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 long fir1 = System.currentTimeMillis();
                 _claimPeerUpdateStmt.setLong(1, fir1);
                 _claimPeerUpdateStmt.setString(2, myRecoveryIdentity);
+                _claimPeerUpdateStmt.setString(3, getBackendURL());
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
