@@ -48,6 +48,13 @@ task copyPropertiesToBuildImage (type:Copy) {
            tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
 }
 
+task copyPublicKeyToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp/lib/versions/public_key')
+    include 'libertyKey.asc'
+}
+
 task addServiceFingerprint() {
 
     // Create a File object representing the folder
@@ -133,6 +140,7 @@ assemble {
     dependsOn copyLicenseToBuildImage
     dependsOn copySwidTagToBuildImage
     dependsOn copySwidFixpackTagToBuildImage
+    dependsOn copyPublicKeyToBuildImage
 }
 
 
