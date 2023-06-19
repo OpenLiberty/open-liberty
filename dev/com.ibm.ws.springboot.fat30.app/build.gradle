@@ -63,32 +63,3 @@ dependencies {
 bootJar {
   duplicatesStrategy 'warn'
 }
-
-// https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
-// Problem:
-//
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:19: error: cannot find symbol
-// import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-//                                                                        ^
-//   symbol:   class WebSecurityConfigurerAdapter
-//   location: package org.springframework.security.config.annotation.web.configuration
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:24: error: cannot find symbol
-// public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//                                        ^
-//   symbol: class WebSecurityConfigurerAdapter
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:25: error: method does not override or implement a method from a supertype
-//     @Override
-//     ^
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:29: warning: [deprecation] authorizeRequests() in HttpSecurity has been deprecated
-//          .authorizeRequests()
-//          ^
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:30: error: cannot find symbol
-//          .antMatchers("/hello").fullyAuthenticated()
-//          ^
-//   symbol:   method antMatchers(String)
-//   location: class ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry
-// C:\dev\repos-pub\ol-spring-fat\dev\com.ibm.ws.springboot.fat30.app\src\main\java\com\ibm\ws\springboot\support\version20\test\app\WebSecurityConfig.java:38: warning: [deprecation] authorizeRequests() in HttpSecurity has been deprecated
-//         .authorizeRequests()
-//         ^
-// 4 errors
-// 2 warnings
