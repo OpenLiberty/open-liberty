@@ -12,16 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.provisioning;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
@@ -30,46 +31,49 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
  */
 public class ServiceFingerprint {
     private static volatile File fingerPrintFile;
-    private static Properties props = new Properties();
+    private static Map<String, String> props = new HashMap<>();
 
     public static boolean hasServiceBeenApplied(File installDir, File workarea) {
         boolean result = true; // default to true so we do a clean start if we can't work out if service is applied
 
         fingerPrintFile = new File(workarea, "platform/service.fingerprint");
         if (fingerPrintFile.exists()) {
-            props = new Properties();
-            FileReader reader = null;
-            try {
-                reader = new FileReader(fingerPrintFile);
-                props.load(reader);
+            props = new HashMap<>();
+
+            try (DataInputStream in = new DataInputStream(new FileInputStream(fingerPrintFile))) {
                 MessageDigest digest = null;
                 byte[] buffer = new byte[4096];
                 boolean doClean = false;
                 boolean foundCore = false;
-                for (Map.Entry<Object, Object> entries : props.entrySet()) {
-                    String entryName = entries.getKey().toString();
+                int size = in.readInt();
+
+                for (int i = 0; i < size; i++) {
+                    String entryName = in.readUTF();
+                    String value = in.readUTF();
+                    props.put(entryName, value);
+
                     if (entryName.indexOf(File.separatorChar) != -1) {
                         File file = new File(entryName);
                         if (file.exists()) {
                             long len = file.length();
                             if (len <= 256) {
                                 String content = readBytes(file, (int) len);
-                                if (!!!content.equals(entries.getValue())) {
+                                if (!!!content.equals(value)) {
                                     doClean = true;
                                 }
                             } else {
                                 if (digest == null) {
                                     digest = MessageDigest.getInstance("SHA-256");
                                 }
-                                if (!!!calculateFileHash(digest, buffer, file).equals(entries.getValue())) {
+                                if (!!!calculateFileHash(digest, buffer, file).equals(value)) {
                                     doClean = true;
                                 }
                             }
-                        } else if (!!!"".equals(entries.getValue())) {
+                        } else if (!!!"".equals(value)) {
                             doClean = true;
                         }
                     } else if ("core".equals(entryName)) {
-                        if (!!!installDir.getCanonicalPath().equals(entries.getValue())) {
+                        if (!!!installDir.getCanonicalPath().equals(value)) {
                             doClean = true;
                         }
                         foundCore = true;
@@ -82,13 +86,6 @@ public class ServiceFingerprint {
                 result = doClean || !!!foundCore;
             } catch (IOException e) {
             } catch (NoSuchAlgorithmException e) {
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                    }
-                }
             }
         } else {
             result = false;
@@ -101,10 +98,8 @@ public class ServiceFingerprint {
     }
 
     private static String calculateFileHash(MessageDigest digest, byte[] buffer, File file) throws IOException {
-        FileInputStream fIn = null;
         StringBuilder builder = new StringBuilder();
-        try {
-            fIn = new FileInputStream(file);
+        try (FileInputStream fIn = new FileInputStream(file)) {
             int len;
             while ((len = fIn.read(buffer)) != -1) {
                 digest.update(buffer, 0, len);
@@ -112,13 +107,6 @@ public class ServiceFingerprint {
             byte[] digestBytes = digest.digest();
             for (byte b : digestBytes) {
                 builder.append(toHexString(b));
-            }
-        } finally {
-            if (fIn != null) {
-                try {
-                    fIn.close();
-                } catch (IOException ioe) {
-                }
             }
         }
         return builder.toString();
@@ -154,7 +142,7 @@ public class ServiceFingerprint {
                     hash = calculateFileHash(digest, buffer, file);
                 }
             }
-            props.setProperty(file.getCanonicalPath(), hash);
+            props.put(file.getCanonicalPath(), hash);
         } catch (NoSuchAlgorithmException e) {
         } catch (IOException e) {
         }
@@ -167,10 +155,8 @@ public class ServiceFingerprint {
      * @throws IOException
      */
     private static String readBytes(File file, int bytesToRead) throws IOException {
-        FileInputStream fIn = null;
         StringBuilder builder = new StringBuilder();
-        try {
-            fIn = new FileInputStream(file);
+        try (FileInputStream fIn = new FileInputStream(file)) {
             byte[] buffer = new byte[bytesToRead];
             int len;
             int offset = 0;
@@ -180,13 +166,6 @@ public class ServiceFingerprint {
             }
             for (byte b : buffer) {
                 builder.append(toHexString(b));
-            }
-        } finally {
-            if (fIn != null) {
-                try {
-                    fIn.close();
-                } catch (IOException ioe) {
-                }
             }
         }
         return builder.toString();
@@ -199,26 +178,21 @@ public class ServiceFingerprint {
 
     private static void flush() {
         if (fingerPrintFile != null) {
-            FileWriter writer = null;
-            try {
-                File fingerPrintParent = fingerPrintFile.getParentFile();
-                if (fingerPrintParent != null && !!!fingerPrintParent.exists()) {
-                    //make the necessary directories, if the make fails issue a message
-                    if (!fingerPrintParent.mkdirs()) {
-                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.fingerprintUnableToMkDirs"),
-                                                                fingerPrintParent.getAbsolutePath(), fingerPrintFile.getAbsolutePath()));
-                    }
+            File fingerPrintParent = fingerPrintFile.getParentFile();
+            if (fingerPrintParent != null && !!!fingerPrintParent.exists()) {
+                //make the necessary directories, if the make fails issue a message
+                if (!fingerPrintParent.mkdirs()) {
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.fingerprintUnableToMkDirs"),
+                                                            fingerPrintParent.getAbsolutePath(), fingerPrintFile.getAbsolutePath()));
                 }
-                writer = new FileWriter(fingerPrintFile);
-                props.store(writer, null);
+            }
+            try (DataOutputStream out = new DataOutputStream(new FileOutputStream(fingerPrintFile))) {
+                out.writeInt(props.size());
+                for (Map.Entry<String, String> entries : props.entrySet()) {
+                    out.writeUTF(entries.getKey());
+                    out.writeUTF(entries.getValue());
+                }
             } catch (IOException e) {
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                    }
-                }
             }
         }
     }
@@ -228,13 +202,16 @@ public class ServiceFingerprint {
             name = "core";
         }
 
-        internalPut(new File(installDir, "lib/versions/service.fingerprint"));
-        try {
-            props.setProperty(name, installDir.getCanonicalPath());
-        } catch (IOException ioe) {
-            // ignore this. If it happens for core we will do an auto clean next time, otherwise we don't really care.
+        if (!props.containsKey(name)) {
+            internalPut(new File(installDir, "lib/versions/service.fingerprint"));
+            try {
+                props.put(name, installDir.getCanonicalPath());
+            } catch (IOException ioe) {
+                // ignore this. If it happens for core we will do an auto clean next time, otherwise we don't really care.
+            }
+
+            flush();
         }
-        flush();
     }
 
 }
