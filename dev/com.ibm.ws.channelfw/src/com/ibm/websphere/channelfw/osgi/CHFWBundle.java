@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -553,12 +553,11 @@ public class CHFWBundle implements ServerQuiesceListener {
         return httpVersionSetting;
     }
 
-    public static boolean isHttp2DisabledByDefault() {
-        return versionSet && default20Off;
-    }
-
-    public static boolean isHttp2EnabledByDefault() {
-        return versionSet && default20On;
+    /**
+     * @return null means unknown, Boolean.TRUE means default on and Boolean.FALSE means default off
+     */
+    public static Boolean getHttp2DefaultSetting() {
+        return !versionSet ? null : default20On ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**

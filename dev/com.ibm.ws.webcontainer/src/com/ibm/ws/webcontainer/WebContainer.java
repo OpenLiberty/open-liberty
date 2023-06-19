@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer;
@@ -403,7 +403,7 @@ public abstract class WebContainer extends BaseContainer {
     // 112102 - added method below to fill the cipher to bit size table
     protected void loadCipherToBit() {
         boolean keySizeFromCipherMap =
-                        Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.keysizefromciphermap", "true")).booleanValue();
+                        Boolean.parseBoolean(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.keysizefromciphermap", "true"));
         //721610
         if (keySizeFromCipherMap) {
             this.getKeySizefromCipherMap("toLoad"); // this will load the Map with values
@@ -889,8 +889,8 @@ public abstract class WebContainer extends BaseContainer {
 
                     // 325429 BEGIN
                     if (isTraceOn && logger.isLoggable(Level.FINE)) //306998.15
-                        logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Check if webApp ["+ webApp.getApplicationName()+"] is being destroyed --> " + (webApp.getDestroyed().booleanValue()));
-                    if (webApp.getDestroyed().booleanValue()) { // should be a fast boolean check.
+                        logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Check if webApp ["+ webApp.getApplicationName()+"] is being destroyed --> " + (webApp.getDestroyed()));
+                    if (webApp.getDestroyed()) { // should be a fast boolean check.
                         //no need to invalidate here, this is duplicate of what the destroying webapp will do
                         // wrapper.invalidate();
                         if (isTraceOn && logger.isLoggable(Level.FINE)) //306998.15
@@ -1378,12 +1378,11 @@ public abstract class WebContainer extends BaseContainer {
 
     public static void notifyHttpServletResponseListenersPreHeaderCommit(HttpServletRequest request, HttpServletResponse response) {
         // need to notify listeners registered in the ServletRequestAttributeListener array
-        if (!httpResponseListeners.isEmpty()) {
-            Iterator i = httpResponseListeners.iterator();
-
-            while (i.hasNext()) {
+        int listenerSize = httpResponseListeners.size();
+        if (listenerSize != 0) {
+            for (int i = 0; i < listenerSize; ++i) {
                 // get the listener
-                IHttpServletResponseListener rL = (IHttpServletResponseListener) i.next();
+                IHttpServletResponseListener rL = (IHttpServletResponseListener) httpResponseListeners.get(i);
 
                 // invoke the listener's attr added method
                 rL.preHeaderCommit(request, response);

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -140,15 +140,21 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
         // Check to see if http/2 is enabled for this connection and save the result
         if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-            if (CHFWBundle.isHttp2DisabledByDefault()) {
-                if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
-                    http2Enabled = true;
-                    this.sslChannel.checkandInitALPN();
-                }
-            } else if (CHFWBundle.isHttp2EnabledByDefault()) {
-                if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
-                    http2Enabled = true;
-                    this.sslChannel.checkandInitALPN();
+            Boolean defaultSetting = CHFWBundle.getHttp2DefaultSetting();
+
+            if (defaultSetting != null) {
+                Boolean configSetting = getChannel().getUseH2ProtocolAttribute();
+
+                if (Boolean.FALSE == defaultSetting) {
+                    if (configSetting != null && configSetting.booleanValue()) {
+                        http2Enabled = true;
+                        this.sslChannel.checkandInitALPN();
+                    }
+                } else {
+                    if (configSetting == null || configSetting.booleanValue()) {
+                        http2Enabled = true;
+                        this.sslChannel.checkandInitALPN();
+                    }
                 }
             }
         }
@@ -1029,18 +1035,16 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // PK46069 - use engine that allows session id re-use
 
             // For WebSocket-2.1's SSLContext
-            if(address instanceof SSLContextEnabledAddress && ((SSLContextEnabledAddress) address).getSSLContext() != null ){
-
+            if (address instanceof SSLContextEnabledAddress && ((SSLContextEnabledAddress) address).getSSLContext() != null) {
                 initalizeSSLforWebsocket21(((SSLContextEnabledAddress) address).getSSLContext());
-;
             } else {
                 // Create a new SSL context based on the current properties in the ssl config.
                 this.sslContext = getChannel().getSSLContextForOutboundLink(this, getVirtualConnection(), address);
 
                 this.sslEngine = SSLUtils.getOutboundSSLEngine(sslContext, getLinkConfig(),
-                targetAddress.getRemoteAddress().getHostName(),
-                targetAddress.getRemoteAddress().getPort(),
-                this);
+                                                               targetAddress.getRemoteAddress().getHostName(),
+                                                               targetAddress.getRemoteAddress().getPort(),
+                                                               this);
             }
 
         }
@@ -1055,11 +1059,11 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         }
     }
 
-    private void initalizeSSLforWebsocket21(SSLContext sslContext) throws SSLException{
+    private void initalizeSSLforWebsocket21(SSLContext sslContext) throws SSLException {
 
         this.sslContext = sslContext;
         this.sslEngine = sslContext.createSSLEngine(this.targetAddress.getRemoteAddress().getHostName(), this.targetAddress.getRemoteAddress().getPort());
-        
+
         // custom SSLContext can only be passed in via a websocket client, hence true
         sslEngine.setUseClientMode(true);
 

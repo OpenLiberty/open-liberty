@@ -857,11 +857,11 @@ public class IRequestImpl implements IRequestExtended
 
                   // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
                   if (("https").equalsIgnoreCase(forwardedProto)||("wss").equalsIgnoreCase(forwardedProto)) {
-                      isSSL = true;
+                      isSSL = Boolean.TRUE;
                       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                           Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto or Forwarded proto parameter --> "+ forwardedProto+" ssl --> " + isSSL);
                       }
-                      return isSSL;
+                      return true;
                   }
               }
           }
@@ -872,13 +872,13 @@ public class IRequestImpl implements IRequestExtended
               if (isHttpsIndicatorSecure()) {
                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
                       Tr.debug(tc, " isTrusted --> true, isHttpsIndicatorSecure --> true ssl --> true");
-                  isSSL = true;
-                  return isSSL;
+                  isSSL = Boolean.TRUE;
+                  return true;
               }
               //end  PK12164
               String WSIS_header =  getHeader(HttpHeaderKeys.HDR_$WSIS);
               if (WSIS_header != null) {
-                  isSSL = WSIS_header.equalsIgnoreCase("true");
+                  isSSL = WSIS_header.equalsIgnoreCase("true") ? Boolean.TRUE : Boolean.FALSE;
                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
                       Tr.debug(tc, " isTrusted --> true ssl --> " + isSSL);
                   return isSSL;
@@ -887,14 +887,14 @@ public class IRequestImpl implements IRequestExtended
                   String FORWARDED_PROTO_header = getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                   // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
                   if (FORWARDED_PROTO_header != null && (FORWARDED_PROTO_header.equalsIgnoreCase("https") || FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
-                      isSSL = true;
+                      isSSL = Boolean.TRUE;
                       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                           Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> "+FORWARDED_PROTO_header+" ssl --> " + isSSL);
-                      return isSSL;
+                      return true;
                   }
               }
           }
-          isSSL = (null != this.conn.getSSLContext());
+          isSSL = (this.conn.getSSLContext() != null ? Boolean.TRUE : Boolean.FALSE);
       }
       
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)

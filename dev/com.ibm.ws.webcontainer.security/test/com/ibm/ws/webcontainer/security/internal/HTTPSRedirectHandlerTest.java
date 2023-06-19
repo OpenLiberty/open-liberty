@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,10 +28,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -69,8 +69,6 @@ public class HTTPSRedirectHandlerTest {
     public void shouldRedirectToHttps_insecureRequestSSLNotRequired() {
         mock.checking(new Expectations() {
             {
-                one(webRequest).getHttpServletRequest();
-                will(returnValue(req));
                 one(webRequest).isSSLRequired();
                 will(returnValue(false));
             }
@@ -85,8 +83,6 @@ public class HTTPSRedirectHandlerTest {
     public void shouldRedirectToHttps_secureRequestSSLNotRequired() {
         mock.checking(new Expectations() {
             {
-                one(webRequest).getHttpServletRequest();
-                will(returnValue(req));
                 one(webRequest).isSSLRequired();
                 will(returnValue(false));
             }
@@ -132,7 +128,7 @@ public class HTTPSRedirectHandlerTest {
 
     /**
      * Check the output for the SSL port warning.
-     * 
+     *
      * @param portIsNull TODO
      * @param urlMalformedExc TODO
      */
@@ -151,7 +147,7 @@ public class HTTPSRedirectHandlerTest {
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.HTTPSRedirectHandler#getHTTPSRedirectWebReply(javax.servlet.http.HttpServletRequest)}.
-     * 
+     *
      * In the case where the HttpServletRequest is not what we expect, we fail to 403.
      */
     @Test

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -157,16 +157,9 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                 servletPath = "";
             }
 
-            // Calculate the initial matchValue
-            String matchValue = servletPath + pathInfo;
-
-            // matchValue should not start with "/"
-            if (matchValue.startsWith("/")) {
-                matchValue = matchValue.substring(1, matchValue.length());
-            }
-
             // Initial pattern
             String pattern = "/";
+            String matchValue = null;
 
             switch (dispatchContext.getMappingMatch()) {
                 case CONTEXT_ROOT:
@@ -180,20 +173,36 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                 case EXACT:
                     // matchValue and pattern are the same in this case except matchValue has no leading "/"
                     pattern = servletPath + pathInfo;
+
+                    // matchValue should not start with "/"
+                    if (pattern.startsWith("/")) {
+                        matchValue = pattern.substring(1);
+                    } else {
+                        matchValue = pattern;
+                    }
+
                     returnMapping = new HttpServletMappingImpl(MappingMatch.EXACT, matchValue, pattern, servletName);
                     break;
                 case EXTENSION:
                     // matchValue is everything before the extension (".") and the pattern is "/*" + the extension including (".") taken from the servletPath.
-                    matchValue = matchValue.substring(0, matchValue.indexOf("."));
-                    pattern = "*" + servletPath.substring(servletPath.indexOf("."), servletPath.length());
+                    // matchValue should not start with "/"
+                    matchValue = servletPath.substring(servletPath.startsWith("/") ? 1 : 0, servletPath.indexOf("."));
+
+                    pattern = "*" + servletPath.substring(servletPath.indexOf("."));
                     returnMapping = new HttpServletMappingImpl(MappingMatch.EXTENSION, matchValue, pattern, servletName);
                     break;
                 case PATH:
-                    // the initial matchValue is already calculated earlier without leading slash.
                     // in the case of /* mapping, skip the pathInfo.substring.
                     if (!dispatchContext.hasSlashStarMapping()) {
                         // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
-                        matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1, pathInfo.length());
+                        matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1);
+                    } else {
+                        matchValue = servletPath + pathInfo;
+
+                        // matchValue should not start with "/"
+                        if (matchValue.startsWith("/")) {
+                            matchValue = matchValue.substring(1);
+                        }
                     }
                     pattern = servletPath + "/*";
                     returnMapping = new HttpServletMappingImpl(MappingMatch.PATH, matchValue, pattern, servletName);
