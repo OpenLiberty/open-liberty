@@ -11,8 +11,8 @@ visibility=private
  bin/tools/ws-springbootutil.jar, \
  bin/springBootUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/springBootUtility.bat
-kind=noship
-edition=full
+kind=beta
+edition=core
 singleton=true
 IBM-API-Package: \
  com.ibm.ws.app.manager.springboot.container.config; type="internal", \
