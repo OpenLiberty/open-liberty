@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +20,8 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.KeyStore;
+import com.ibm.websphere.simplicity.config.ORB;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.custom.junit.runner.FATRunner;

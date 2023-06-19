@@ -22,6 +22,7 @@ tested.features: \
   jakartaee-8.0, \
   servlet-6.0, \
   pages-3.1, \
+  websocket-2.0, \
   websocket-2.1, \
   cdi-4.0, \
 \
@@ -32,6 +33,10 @@ tested.features: \
 
 src: \
   fat/src
+
+// websocket 2.1 is a small overlay on websocket 2.0;
+// putting websocket 2.1 on the build path is not sufficient;
+// websocket 2.0 must also be there
 
 -buildpath: \
   io.openliberty.org.apache.commons.logging;version=latest,\
@@ -46,6 +51,7 @@ src: \
   org.brotli:dec;version=0.1.2,\
 \
   io.openliberty.jakarta.servlet.6.0;version=latest, \
+  io.openliberty.jakarta.websocket.2.0;version=latest, \
   io.openliberty.jakarta.websocket.2.1;version=latest, \
 \
   com.ibm.ws.org.apache.httpcomponents;version=latest, \

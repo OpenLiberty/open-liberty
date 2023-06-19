@@ -70,11 +70,6 @@ autoFVT.doLast {
   println 'FAT server [ ' + server + ' ]'
   println 'Auto FVT applications [ ' + appsDir + ' ]'
 
-  copy {
-    from new File(autoFvtDir, 'lib/io.openliberty.springboot.test.version15.app-1.0.0.jar')
-    into appsDir
-  }
-
   appDefs.each { appDef ->
     def appName = appDef[0]
     def appExt = appDef[1]

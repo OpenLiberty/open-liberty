@@ -49,7 +49,7 @@ public class SpringSecurityTests30 extends AbstractSpringTests {
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_20_APP_BASE;
+        return SPRING_BOOT_30_APP_BASE;
     }
 
     @After
