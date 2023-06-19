@@ -16,9 +16,7 @@ Subsystem-Endpoint-Icons: clientManagement=OSGI-INF/clientManagement_142.png,OSG
   com.ibm.websphere.appserver.httpcommons-1.0, \
   io.openliberty.openidConnectServer1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0, 11.0"
 -bundles=\
-  com.ibm.ws.net.oauth.jsontoken.1.1-r42, \
   com.ibm.ws.org.joda.time.1.6.2, \
-  com.ibm.ws.com.google.guava, \
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.security.common.jsonwebkey, \
