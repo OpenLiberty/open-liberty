@@ -355,6 +355,12 @@
             description="%maxFileCount.desc" 
             required="false" type="Integer" default="5000" />
 
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="donotCloseOutputOnForwardForServletError"
+            name="%donotCloseOutputOnForwardForServletError.name"
+            description="%donotCloseOutputOnForwardForServletError.desc"
+            required="false" type="Boolean" />
+
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 
