@@ -23,6 +23,25 @@ import static java.lang.Math.min;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
+
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
+import javax.servlet.WriteListener;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
@@ -41,17 +60,7 @@ import io.grpc.internal.StatsTraceContext;
 import io.grpc.internal.TransportFrameUtil;
 import io.grpc.internal.TransportTracer;
 import io.grpc.internal.WritableBuffer;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
-import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
 
 @Trivial
 final class ServletServerStream extends AbstractServerStream {
@@ -82,14 +91,9 @@ final class ServletServerStream extends AbstractServerStream {
     this.logId = logId;
     this.asyncCtx = asyncCtx;
     this.resp = (HttpServletResponse) asyncCtx.getResponse();
-    // TODO: previously setWriteListener was called before setting this.writer, which created a  
-    // race condition that led to a NPE on the first request.  We should fix this upstream.
     this.writer = new AsyncServletOutputStreamWriter(
-            asyncCtx, resp.getOutputStream(), transportState, logId);
-  }
-
-  public void setWriteListener() throws IOException {
-	      resp.getOutputStream().setWriteListener(new GrpcWriteListener());
+        asyncCtx, transportState, logId);
+    resp.getOutputStream().setWriteListener(new GrpcWriteListener());
   }
 
   
@@ -306,21 +310,18 @@ final class ServletServerStream extends AbstractServerStream {
         return; // let the servlet timeout, the container will sent RST_STREAM automatically
       }
       transportState.runOnTransportThread(() -> transportState.transportReportStatus(status));
-
-      // Liberty change: pass the actual status and skip countdown timer
-      close(status.withCause(status.asRuntimeException()), new Metadata());
       // There is no way to RST_STREAM with CANCEL code, so write trailers instead
-      //close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
-//      CountDownLatch countDownLatch = new CountDownLatch(1);
+      close(Status.CANCELLED.withCause(status.asRuntimeException()), new Metadata());
+      CountDownLatch countDownLatch = new CountDownLatch(1);
       transportState.runOnTransportThread(() -> {
         asyncCtx.complete();
-//        countDownLatch.countDown();
+        countDownLatch.countDown();
       });
-//      try {
-//        countDownLatch.await(5, TimeUnit.SECONDS);
-//      } catch (InterruptedException e) {
-//        Thread.currentThread().interrupt();
-//      }
+      try {
+        countDownLatch.await(5, TimeUnit.SECONDS);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
   }
 
