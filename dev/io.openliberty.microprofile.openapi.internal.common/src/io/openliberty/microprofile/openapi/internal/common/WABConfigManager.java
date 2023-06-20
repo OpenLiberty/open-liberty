@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi.internal.common;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -96,7 +97,7 @@ public class WABConfigManager {
             }
 
             // If path is unchanged, do nothing
-            if (path == this.contextPath) {
+            if (Objects.equals(path, this.contextPath)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, name + " web app bundle path unchanged: " + path);
                 }

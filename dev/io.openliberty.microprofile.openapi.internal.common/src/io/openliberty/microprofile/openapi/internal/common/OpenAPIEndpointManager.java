@@ -122,7 +122,7 @@ public class OpenAPIEndpointManager {
         }
 
         if (!uiPath.equals(OPEN_API_DOC_ENDPOINT_PATH + OPEN_API_UI_PATH)) {
-            Tr.info(tc, "OPEN_API_UI_PATH_UPDATE_CWWKO1668I", docPath);
+            Tr.info(tc, "OPEN_API_UI_PATH_UPDATE_CWWKO1668I", uiPath);
         }
     }
 
