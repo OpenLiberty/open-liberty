@@ -10,6 +10,8 @@
 package com.ibm.ws.microprofile.openapi.fat.config;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -82,6 +84,9 @@ public class OpenAPIConfigTest {
 
         server.startServer();
 
+        assertWebAppStarts("/foo");
+        assertWebAppStarts("/foo/ui");
+
         assertDocumentPath("/foo");
         assertUiPath("/foo/ui");
         assertMissing("/openapi");
@@ -97,6 +102,9 @@ public class OpenAPIConfigTest {
         server.updateServerConfiguration(config);
 
         server.startServer();
+
+        assertWebAppStarts("/openapi");
+        assertWebAppStarts("/bar");
 
         assertDocumentPath("/openapi");
         assertUiPath("/bar");
@@ -115,52 +123,113 @@ public class OpenAPIConfigTest {
         assertDocumentPath("/openapi");
         assertUiPath("/openapi/ui");
 
+        server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setDocPath("/foo");
         config.getMpOpenAPIElement().setUiPath("/bar");
         server.updateServerConfiguration(config);
+
+        assertWebAppStarts("/foo");
+        assertWebAppStarts("/bar");
 
         assertDocumentPath("/foo");
         assertUiPath("/bar");
         assertMissing("/openapi");
         assertMissing("/openapi/ui");
 
+        server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setDocPath("/foo");
         config.getMpOpenAPIElement().setUiPath(null);
         server.updateServerConfiguration(config);
+
+        assertWebAppStarts("/foo/ui");
+        assertNoWebAppStart("/foo");
 
         assertDocumentPath("/foo");
         assertUiPath("/foo/ui");
         assertMissing("/openapi");
         assertMissing("/openapi/ui");
 
+        server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setDocPath(null);
         config.getMpOpenAPIElement().setUiPath("/foo/ui");
         server.updateServerConfiguration(config);
 
+        assertWebAppStarts("/openapi");
+        assertNoWebAppStart("/foo/ui");
+
         assertDocumentPath("/openapi");
         assertUiPath("/foo/ui");
         assertMissing("/openapi/ui");
 
+        server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setDocPath(null);
         config.getMpOpenAPIElement().setUiPath("/baz");
         server.updateServerConfiguration(config);
 
+        assertWebAppStarts("/baz");
+        assertNoWebAppStart("/openapi");
+
         assertDocumentPath("/openapi");
         assertUiPath("/baz");
         assertMissing("/openapi/ui");
 
+        server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setDocPath(null);
         config.getMpOpenAPIElement().setUiPath("/baz");
         server.updateServerConfiguration(config);
 
+        // Check there's no web app start message when the config does not change
+        assertNull("Web app restarted when config was not changed",
+            server.waitForStringInLogUsingMark("CWWKT0016I", 3000));
+
         assertDocumentPath("/openapi");
         assertUiPath("/baz");
         assertMissing("/openapi/ui");
+    }
+
+    /**
+     * Assert that a CWWKT0016I: Web application available message is seen for a web app with the given path
+     *
+     * @param path the path to expect
+     */
+    private void assertWebAppStarts(String path) {
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+
+        if (!path.endsWith("/")) {
+            path = path + "/";
+        }
+
+        // E.g. CWWKT0016I: Web application available (default_host):
+        // http://1.2.3.4:8010/bar/
+        assertNotNull("Web application available message not found for " + path,
+            server.waitForStringInLog("CWWKT0016I:.*:\\d+" + path + "$"));
+    }
+
+    /**
+     * Assert that a CWWKT0016I: Web application available message is not seen for a web app with the given path
+     *
+     * @param path the path to check for
+     */
+    private void assertNoWebAppStart(String path) {
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+
+        if (!path.endsWith("/")) {
+            path = path + "/";
+        }
+
+        // E.g. CWWKT0016I: Web application available (default_host):
+        // http://1.2.3.4:8010/bar/
+        assertNull("Unexpected web application available message found for " + path,
+            server.waitForStringInLog("CWWKT0016I:.*:\\d+" + path + "$", 1000));
     }
 
     /**
