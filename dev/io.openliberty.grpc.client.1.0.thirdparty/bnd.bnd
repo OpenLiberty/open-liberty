@@ -16,7 +16,7 @@
 
 bVersion=1.0
 
-grpcVersion=1.43.2
+grpcVersion=1.56.0
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

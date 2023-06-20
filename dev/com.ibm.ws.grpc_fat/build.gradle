@@ -41,7 +41,7 @@ plugins {
     id "eclipse-wtp"
 }
 
-def grpcVersion = '1.43.2'
+def grpcVersion = '1.56.0'
 def protocVersion = '3.19.6'
 
 // only run the protobuf compilation plugin if the build is run with "-PcompileProtobufs"
@@ -152,7 +152,7 @@ dependencies {
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 
     // provided
-    providedCompile 'com.google.protobuf:protobuf-java:3.19.6'
+    providedCompile 'com.google.protobuf:protobuf-java:3.23.3'
     providedCompile 'javax.annotation:javax.annotation-api:1.2'
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
     providedCompile 'org.eclipse.microprofile:microprofile:3.2'
