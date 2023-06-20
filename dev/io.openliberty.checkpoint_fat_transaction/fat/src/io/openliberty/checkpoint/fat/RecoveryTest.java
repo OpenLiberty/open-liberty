@@ -33,7 +33,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.checkpoint.fat.util.RecoveryUtils;
+import io.openliberty.checkpoint.fat.util.FATUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Mode(TestMode.FULL)
@@ -67,7 +67,7 @@ public class RecoveryTest extends RecoveryTestBase {
                           checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-        server.setServerStartTimeout(RecoveryUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
 
         setUp(server);

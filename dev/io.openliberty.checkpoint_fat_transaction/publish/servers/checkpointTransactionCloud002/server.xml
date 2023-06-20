@@ -1,0 +1,76 @@
+<server>
+
+    <featureManager>
+      <feature>servlet-4.0</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componentTest-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>cdi-2.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml" />
+
+    <httpEndpoint
+        id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"
+    />
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
+    <library id="DerbyLib" filesetRef="DerbyFileset" />
+    <fileset
+        id="DerbyFileset"
+        dir="${shared.resource.dir}derby"
+        includes="derby.jar"
+    />
+
+    <!-- Potential configuration overrides -->
+    <!-- Built-in variable; value is always "" at checkpoint
+    <variable name="HOSTNAME" defaultValue="" />
+    -->
+    <variable name="TX_RETRY_INT" defaultValue="10" />
+    <variable name="TRANLOG_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/tranlogDataSource" />
+    <variable name="APP_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />
+
+    <transaction
+        dataSourceRef="tranlogDataSource"
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        heuristicRetryInterval="${TX_RETRY_INT}"
+        recoveryIdentity="cloud002-1"
+        recoveryGroup="defaultGroup"
+        leaseLength="20"
+        leaseCheckInterval="25"
+    />
+
+    <application location="transactioncloud.war"/>
+
+    <dataSource
+        id="tranlogDataSource"
+        jdbcDriverRef="DerbyEmbedded"
+        jndiName="${TRANLOG_DS_JNDINAME}"
+        transactional="false">
+      <properties
+          databaseName="${shared.resource.dir}/data/tranlogdb"
+          createDatabase="create"
+      />
+    </dataSource>
+
+    <dataSource
+        id="jdbc/derby"
+        jndiName="${APP_DS_JNDINAME}"
+        jdbcDriverRef="DerbyEmbedded">
+      <properties
+          databaseName="${shared.resource.dir}/data/transactionFATCloud"
+          createDatabase="create"
+          user="dbuser1"
+          password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <!-- See bootstrap.properties
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:com.ibm.wsspi.kernel.service.*=all:*=info=enabled"/>
+    -->
+</server>

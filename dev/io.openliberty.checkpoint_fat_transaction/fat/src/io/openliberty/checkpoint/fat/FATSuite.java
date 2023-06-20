@@ -48,7 +48,8 @@ import componenttest.topology.impl.LibertyServer;
                 TransactionLogTest.class,
                 TransactionManagerTest.class,
                 RecoveryTest.class,
-                MockServletTest.class
+                MockServletTest.class,
+                Simple2PCCloudTest.class
 })
 
 public class FATSuite {

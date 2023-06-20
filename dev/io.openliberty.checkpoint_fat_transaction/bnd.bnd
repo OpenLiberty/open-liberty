@@ -20,8 +20,8 @@ src: \
 	test-applications/transactionstartupbean/src,\
 	test-applications/transactionalbean/src,\
 	test-applications/transactionscopedbean/src,\
-	test-applications/transactionrecovery/src
-
+	test-applications/transactionrecovery/src,\
+	test-applications/transactioncloud/src
 
 fat.project: true
 
