@@ -42,11 +42,12 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.PrivateKeyJwtAuthMethod;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+
+import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 /**
  * This class was derived from GoogleLoginConfigImpl, it's purpose is to provide common superclass
@@ -971,12 +972,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public String getPkceCodeChallengeMethod() {
         return pkceCodeChallengeMethod;
-    }
-
-    @Sensitive
-    @Override
-    public PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
-        return PrivateKeyJwtAuthMethod.getPrivateKeyForClientAuthentication(clientId, keyAliasName, getKeyStoreRef(), JwtUtils.getKeyStoreService());
     }
 
 }

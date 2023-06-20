@@ -9,19 +9,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token.auth;
 
+import io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException;
 import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
 
 public abstract class TokenEndpointAuthMethod {
-
-    public static TokenEndpointAuthMethod getInstance(String authMethod, ConvergedClientConfig clientConfig) {
-        if (authMethod == null || authMethod.isEmpty()) {
-            return null;
-        }
-        if (PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(authMethod)) {
-            return new PrivateKeyJwtAuthMethod(clientConfig);
-        }
-        return null;
-    }
 
     public abstract void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException;
 

@@ -27,18 +27,19 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethod;
-import com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException;
 import io.openliberty.security.oidcclientcore.http.BadPostRequestException;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import io.openliberty.security.oidcclientcore.token.TokenRequestor;
 import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
+import io.openliberty.security.oidcclientcore.token.auth.TokenEndpointAuthMethod;
 
 public class AuthorizationCodeHandler {
     private static final TraceComponent tc = Tr.register(AuthorizationCodeHandler.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
@@ -195,11 +196,21 @@ public class AuthorizationCodeHandler {
     }
 
     void setAuthMethodSpecificSettings(Builder tokenRequestBuilder, String tokenEndpointAuthMethod) throws TokenEndpointAuthMethodSettingsException {
-        TokenEndpointAuthMethod authMethod = TokenEndpointAuthMethod.getInstance(tokenEndpointAuthMethod, clientConfig);
+        TokenEndpointAuthMethod authMethod = getTokenEndpointAuthMethodInstance(tokenEndpointAuthMethod, clientConfig);
         if (authMethod == null) {
             return;
         }
         authMethod.setAuthMethodSpecificSettings(tokenRequestBuilder);
+    }
+
+    TokenEndpointAuthMethod getTokenEndpointAuthMethodInstance(String authMethod, ConvergedClientConfig clientConfig) throws TokenEndpointAuthMethodSettingsException {
+        if (authMethod == null || authMethod.isEmpty()) {
+            return null;
+        }
+        if (PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(authMethod)) {
+            return new PrivateKeyJwtAuthMethod(clientId, clientConfig.getTokenEndpointUrl(), clientConfig.getTokenEndpointAuthSigningAlgorithm(), clientConfig.getSslRef(), clientConfig.getKeyAliasName());
+        }
+        return null;
     }
 
     // refactored from Oauth SendErrorJson.  Only usable for sending an http400.

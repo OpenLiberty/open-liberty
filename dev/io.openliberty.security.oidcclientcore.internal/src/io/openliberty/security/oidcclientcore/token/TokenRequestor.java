@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +24,9 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
-import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
-import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
 public class TokenRequestor {
 
@@ -52,9 +48,6 @@ public class TokenRequestor {
     private final List<NameValuePair> params;
     private final HashMap<String, String> customParams;
     private final boolean useSystemPropertiesForHttpClientConnections;
-    private final String clientAssertionSigningAlgorithm;
-    @Sensitive
-    private final Key clientAssertionSigningKey;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
@@ -72,8 +65,6 @@ public class TokenRequestor {
         this.resources = builder.resources;
         this.customParams = builder.customParams;
         this.useSystemPropertiesForHttpClientConnections = builder.useSystemPropertiesForHttpClientConnections;
-        this.clientAssertionSigningAlgorithm = builder.clientAssertionSigningAlgorithm;
-        this.clientAssertionSigningKey = builder.clientAssertionSigningKey;
 
         List<NameValuePair> params = getBasicParams();
         mergeCustomParams(params, customParams);
@@ -96,12 +87,9 @@ public class TokenRequestor {
             params.add(new BasicNameValuePair(TokenConstants.REFRESH_TOKEN, refreshToken));
         }
 
-        TokenEndpointAuthMethod authMethodClass = TokenEndpointAuthMethod.
         if (authMethod.equals(TokenConstants.METHOD_POST) || authMethod.equals(TokenConstants.METHOD_CLIENT_SECRET_POST)) {
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_ID, clientId));
             params.add(new BasicNameValuePair(TokenConstants.CLIENT_SECRET, clientSecret));
-        } else if (authMethod.equals(TokenConstants.METHOD_PRIVATE_KEY_JWT)) {
-            addPrivateKeyJwtParameters(params);
         }
         return params;
     }
@@ -155,9 +143,6 @@ public class TokenRequestor {
         private String resources = null;
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;
-        private String clientAssertionSigningAlgorithm = "RS256";
-        @Sensitive
-        private Key clientAssertionSigningKey = null;
 
         public Builder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String redirectUri, String code) {
             this.tokenEndpoint = tokenEndpoint;
@@ -197,7 +182,7 @@ public class TokenRequestor {
             return this;
         }
 
-        public Builder customParams(HashMap<String, String> customParams) {
+        public Builder customParams(@Sensitive HashMap<String, String> customParams) {
             if (customParams != null && this.customParams != null) {
                 this.customParams.putAll(customParams);
             } else {
@@ -208,16 +193,6 @@ public class TokenRequestor {
 
         public Builder useSystemPropertiesForHttpClientConnections(boolean useSystemPropertiesForHttpClientConnections) {
             this.useSystemPropertiesForHttpClientConnections = useSystemPropertiesForHttpClientConnections;
-            return this;
-        }
-
-        public Builder clientAssertionSigningAlgorithm(String clientAssertionSigningAlgorithm) {
-            this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;
-            return this;
-        }
-
-        public Builder clientAssertionSigningKey(@Sensitive Key clientAssertionSigningKey) {
-            this.clientAssertionSigningKey = clientAssertionSigningKey;
             return this;
         }
 
