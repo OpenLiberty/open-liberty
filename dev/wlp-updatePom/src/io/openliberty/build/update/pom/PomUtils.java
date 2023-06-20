@@ -113,12 +113,13 @@ public class PomUtils {
         return false;
     }
 
-    // TODO: Why these?
+    // Filter known IBM built binaries - not containing any OSS licenses
     private static final String[] FILTERED_ARTIFACTS = { "com.ibm.crypto.CmpCrmf",
                                                          "com.ibm.crypto.ibmjceprovider",
                                                          "com.ibm.crypto.ibmkeycert",
                                                          "com.ibm.crypto.ibmpkcs",
                                                          "com.ibm.mq.commonservices",
+                                                         "com.ibm.ws.ras.instrument",
                                                          "com.ibm.ws.eba.blueprint.extensions.interceptors",
                                                          "com.ibm.ws.eba.blueprint.transform",
                                                          "com.ibm.ws.eba.jpa.container.annotations",
