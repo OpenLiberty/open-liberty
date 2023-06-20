@@ -34,15 +34,15 @@ public abstract class ErrorPageBaseTest extends CommonWebServerTests {
     }
 
     @Test
-    @AllowedFFDC({ "org.springframework.web.util.NestedServletException" })
-    public void testExceptioErrorPage() throws Exception {
+    @AllowedFFDC({ "jakarta.servlet.ServletException" })
+    public void testExceptionErrorPage() throws Exception {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/exception");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_INTERNAL_ERROR, new int[0], 5, HTTPRequestMethod.GET);
         HttpUtils.findStringInHttpConnection(con, "Exception thrown of type IllegalArgumentException");
     }
 
     @Test
-    @AllowedFFDC({ "org.springframework.web.util.NestedServletException" })
+    @AllowedFFDC({ "jakarta.servlet.ServletException" })
     public void testDefaultErrorPage() throws Exception {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/other-exception");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_INTERNAL_ERROR, new int[0], 5, HTTPRequestMethod.GET);

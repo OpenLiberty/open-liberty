@@ -124,18 +124,6 @@ public class InvalidAppTests extends CommonWebServerTests {
     }
 
     @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testNoManifest15() throws Exception {
-        assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
-    }
-
-    @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testNoStartCLass15() throws Exception {
-        assertNotNull("No error message for missing start class.", server.waitForStringInLog("CWWKC0257E"));
-    }
-
-    @Test
     public void testNoManifest30() throws Exception {
         assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
     }

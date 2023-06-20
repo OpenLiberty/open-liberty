@@ -69,13 +69,7 @@ public class MissingSslFeatureTests30 extends AbstractSpringTests {
     }
 
     @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testMissingSslFeatureFor15() throws Exception {
-        testMissingSslFeature();
-    }
-
-    @Test
-    public void testMissingSslFeatureFor20() throws Exception {
+    public void testMissingSslFeatureFor30() throws Exception {
         testMissingSslFeature();
     }
 

@@ -19,15 +19,43 @@ javac.target: 17
 fat.project: true
 
 tested.features: \
-  jakartaee-8.0, \
-  servlet-6.0, \
+  appauthentication-3.0, \
+  appauthorization-2.1, \
+  appclientsupport-2.0, \
+  appsecurity-5.0, \
+  batch-2.1, \
+  beanvalidation-3.0, \
+  cdi-4.0, \
+  concurrent-3.0, \
+  connectors-2.1, \
+  enterprisebeans-4.0, \
+  enterprisebeanshome-4.0, \
+  enterprisebeanslite-4.0, \
+  enterprisebeanspersistenttimer-4.0, \
+  enterprisebeansremote-4.0, \
+  faces-4.0, \
+  jakartaee-10.0, \
+  jsonb-3.0, \
+  jsonp-2.1, \
+  mail-2.1, \
+  managedbeans-2.0, \
+  mdb-4.0, \
+  messaging-3.1, \
+  messagingclient-3.0, \
+  messagingsecurity-3.0, \
+  messagingserver-3.0, \
   pages-3.1, \
+  persistence-3.1, \
+  persistencecontainer-3.1, \
+  restfulws-3.1, \
+  restfulwsclient-3.1, \
+  servlet-6.0, \
+  transportSecurity-1.0, \
+  webprofile-10.0, \
   websocket-2.0, \
   websocket-2.1, \
-  cdi-4.0, \
-\
-  appSecurity-3.0, \
-  transportSecurity-1.0, \
+  xmlbinding-4.0, \
+  xmlws-4.0, \
 \
   springBoot-3.0
 

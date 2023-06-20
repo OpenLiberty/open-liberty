@@ -55,7 +55,7 @@ public class CommonWebServerTests30 extends CommonWebServerTests {
     }
 
     @Test
-    public void testDefaultHostWithAppPort20() throws Exception {
+    public void testDefaultHostWithAppPort30() throws Exception {
         testBasicSpringBootApplication();
     }
 }

@@ -33,7 +33,7 @@ import componenttest.custom.junit.runner.FATRunner;
 public class SpringSecurityTests30 extends AbstractSpringTests {
 
     private static final String TEST_WITH_APPSECURITY = "testSpringSecurityWithAppSecurityEnabled";
-    private static final String FEATURE_APP_SECURITY_2_0 = "appSecurity-2.0";
+    private static final String FEATURE_APP_SECURITY_6_0 = "appSecurity-6.0";
 
     @Override
     public Set<String> getFeatures() {
@@ -42,7 +42,7 @@ public class SpringSecurityTests30 extends AbstractSpringTests {
         String methodName = testName.getMethodName();
 
         if (methodName != null && TEST_WITH_APPSECURITY.equals(methodName)) {
-            result.add(FEATURE_APP_SECURITY_2_0);
+            result.add(FEATURE_APP_SECURITY_6_0);
         }
         return result;
     }

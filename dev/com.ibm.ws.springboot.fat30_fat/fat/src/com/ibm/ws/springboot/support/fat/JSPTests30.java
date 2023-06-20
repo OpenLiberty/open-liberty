@@ -44,7 +44,7 @@ public class JSPTests30 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "pages-3.0"));
+        return new HashSet<>(Arrays.asList("springBoot-3.0", "pages-3.1"));
     }
 
     @Override

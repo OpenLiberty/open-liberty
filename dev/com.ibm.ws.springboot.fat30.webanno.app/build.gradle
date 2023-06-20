@@ -12,7 +12,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '2.7.1'
+  id 'org.springframework.boot' version '3.0.7'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 def sv = springVersions[ '3.0' ]

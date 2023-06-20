@@ -34,13 +34,13 @@ public class JakartaFeatureTests30 extends AbstractSpringTests {
      * Export JavaEE feature API to basic Spring Boot application.
      */
     @Test
-    public void testBasicAppEnableJavaee80() throws Exception {
+    public void testBasicAppEnableJavaee10() throws Exception {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "jakartaee-8.0"));
+        return new HashSet<>(Arrays.asList("springBoot-3.0", "jakartaee-10.0"));
     }
 
     @Override
