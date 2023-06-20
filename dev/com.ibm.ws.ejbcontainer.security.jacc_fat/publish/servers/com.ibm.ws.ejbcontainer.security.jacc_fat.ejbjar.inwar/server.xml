@@ -119,4 +119,6 @@
 
 	<include location="../fatTestPorts.xml"/>
 
+        <logging traceSpecification="*=info:com.ibm.ws.ras.instrument.internal.main*=all">
+
 </server>
