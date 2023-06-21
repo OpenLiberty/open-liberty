@@ -123,10 +123,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         }
 
         try {
-            // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
-            if (instrumenter != null) {
-                instrumenter.end(spanContext, request, response, null);
-            }
+            instrumenter.end(spanContext, request, response, null);
         } finally {
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
