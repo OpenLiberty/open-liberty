@@ -34,8 +34,4 @@ tested.features:\
 	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.concurrency.3.0;version=latest,\
-	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
-        io.opentelemetry:opentelemetry-opentracing-shim;version=1.19.0.alpha,\
-        io.opentracing:opentracing-api;version=0.33.0
-
-
+	io.openliberty.mpTelemetry.1.0.thirdparty;version=latest
