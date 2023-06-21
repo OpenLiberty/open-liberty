@@ -228,6 +228,11 @@
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc.debug</groupId>
+      <artifactId>ojdbc11_g</artifactId>
+      <version>21.8.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle.database.jdbc.debug</groupId>
       <artifactId>ojdbc8_g</artifactId>
       <version>21.8.0.0</version>
     </dependency>
