@@ -50,9 +50,10 @@ tested.features: \
   restfulws-3.1, \
   restfulwsclient-3.1, \
   servlet-6.0, \
+  springBoot-3.0, \
+  ssl-1.0, \
   transportSecurity-1.0, \
   webprofile-10.0, \
-  websocket-2.0, \
   websocket-2.1, \
   xmlbinding-4.0, \
   xmlws-4.0, \

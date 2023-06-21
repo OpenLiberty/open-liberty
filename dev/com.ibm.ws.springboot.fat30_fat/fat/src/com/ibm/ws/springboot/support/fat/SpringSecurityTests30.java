@@ -32,19 +32,30 @@ import componenttest.custom.junit.runner.FATRunner;
 @RunWith(FATRunner.class)
 public class SpringSecurityTests30 extends AbstractSpringTests {
 
-    private static final String TEST_WITH_APPSECURITY = "testSpringSecurityWithAppSecurityEnabled";
-    private static final String FEATURE_APP_SECURITY_6_0 = "appSecurity-6.0";
-
     @Override
     public Set<String> getFeatures() {
-        HashSet<String> result = new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
+        HashSet<String> features = new HashSet<>(3);
+        features.add("springBoot-3.0");
+        features.add("servlet-6.0");
+
+        // 'getFeatures' is invoked during @Before unit test processing.
+        // That is, after the test has been specified and a test name is
+        // known.
+        //
+        // Note that processing within the test method cannot adjust the
+        // features list, since the test method is invoked after the @Before
+        // method is invoked.
+        //
+        // This is a rather obtuse way to specialize the features list, but
+        // it cannot be easily changed with modifying all extenders of
+        // 'AbstractSpringTests'.
 
         String methodName = testName.getMethodName();
-
-        if (methodName != null && TEST_WITH_APPSECURITY.equals(methodName)) {
-            result.add(FEATURE_APP_SECURITY_6_0);
+        if ((methodName != null) && methodName.equals("testSpringWithSecurity")) {
+            features.add("appSecurity-5.0");
         }
-        return result;
+
+        return features;
     }
 
     @Override
@@ -58,12 +69,12 @@ public class SpringSecurityTests30 extends AbstractSpringTests {
     }
 
     @Test
-    public void testSpringSecurityWithoutAppSecurityEnabled() throws Exception {
+    public void testSpringWithSecurity() throws Exception {
         testSpringSecurity();
     }
 
     @Test
-    public void testSpringSecurityWithAppSecurityEnabled() throws Exception {
+    public void testSpringWithoutSecurity() throws Exception {
         testSpringSecurity();
     }
 
