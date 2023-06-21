@@ -90,7 +90,6 @@ import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.kernel.feature.Visibility;
-import com.ibm.ws.kernel.feature.internal.BundleList.RuntimeFeatureResource;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.subsystem.KernelFeatureDefinitionImpl;
@@ -171,6 +170,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     final static String FEATURE_PRODUCT_EXTENSIONS_FILE_EXTENSION = ".properties";
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
+
+    private static Version JAVA_MAJOR_VERSION =  new Version(JavaInfo.majorVersion(), 0, 0);
 
     final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList("com.ibm.websphere.appserver.timedexit-1.0", "com.ibm.websphere.appserver.osgiConsole-1.0");
     final static Collection<String> ALL_ALLOWED_ON_CLIENT_FEATURES;
@@ -2494,9 +2495,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         refreshFeatures();
     }
 
-    public boolean withinJavaRange(FeatureResource fr) {
-        VersionRange range = fr.getJavaRange();
-        return range == null ? true : range.includes(new Version(Integer.toString(JavaInfo.majorVersion())));
+    boolean withinJavaRange(FeatureResource fr) {
+        VersionRange range =  fr.getJavaRange();
+        return range == null ? true :  range.includes(JAVA_MAJOR_VERSION);
     }
 
 }
