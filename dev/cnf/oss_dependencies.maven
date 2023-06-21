@@ -23,6 +23,7 @@ com.github.docker-java:docker-java-transport-zerodep:3.2.13
 com.github.docker-java:docker-java-transport:3.2.13
 com.google.errorprone:error_prone_annotations:2.4.0
 com.google.guava:guava:30.1-android
+com.google.guava:guava:32.0.1-android
 com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
 com.google.protobuf:protobuf-java-util:3.19.6
