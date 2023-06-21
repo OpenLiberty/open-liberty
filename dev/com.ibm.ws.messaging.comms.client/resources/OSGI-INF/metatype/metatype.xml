@@ -39,7 +39,7 @@
         matches the receiving CommsOutboundChain's "id" property.
         -->
         <AD id="secureFacet.target" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="(id=${id})" />
-        <AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="false"/>
+        <AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="true"/>
    </OCD>
 
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">

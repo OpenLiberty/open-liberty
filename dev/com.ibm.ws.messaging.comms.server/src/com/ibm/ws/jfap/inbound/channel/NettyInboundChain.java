@@ -90,9 +90,7 @@ public class NettyInboundChain implements InboundChain{
      */
 //    private ServerBootstrapExtended serverBootstrap;
     /** The bootstrap this object wraps */
-    ServerBootstrapExtended bootstrap = new ServerBootstrapExtended();
-    private EventLoopGroup parentGroup = new NioEventLoopGroup();
-    private EventLoopGroup childGroup = new NioEventLoopGroup();
+    private ServerBootstrapExtended bootstrap;
     private Channel serverChan;
     
     private FutureTask<ChannelFuture> channelFuture;
@@ -100,8 +98,6 @@ public class NettyInboundChain implements InboundChain{
     NettyInboundChain(CommsServerServiceFacade commsServer, boolean isSecureChain) {
         _commsServerFacade = commsServer;
         _isSecureChain = isSecureChain;
-        bootstrap.group(parentGroup,childGroup);
-        bootstrap.channel(NioServerSocketChannel.class);
     }
 
 	public void init(String endpointName, NettyFramework netty) {
@@ -173,40 +169,15 @@ public class NettyInboundChain implements InboundChain{
 			_isChainStarted = false;
 			return;
 		}else {
-			SibTr.debug(tc, "stopChannel","Stopping Channel "+ serverChan +" --- "+ serverChan.localAddress());
-			SibTr.debug(tc, "stopTesting: "+serverChan.isActive()+" "+serverChan.isOpen());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                SibTr.debug(tc, "stopChannel","Stopping Channel "+ serverChan +" --- "+ serverChan.localAddress());
+            }
 	        //stopchain() first quiesce's(invokes chainQuiesced) depending on the chainQuiesceTimeOut
 	        //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
 	        try {
-	            if(NettyNetworkConnectionFactory.USE_BUNDLE) {
-	            	SibTr.debug(tc, "Waiting for server channel: "+serverChan + " to stop.");
-	            	ChannelFuture future = _nettyFramework.stop(serverChan);
-	            	if(future!=null)
-	            		future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
-	            }else {
-	            	ChannelFuture future = serverChan.close().sync();
-		            if(!future.isSuccess()) {
-		            	SibTr.debug(tc, "Failed stopping server channel: "+serverChan);
-		            }else {
-		            	SibTr.debug(tc, "Succesfully stopped server channel: "+serverChan);
-		            }
-		            if(closeGroups) {
-		            	Future<?> parentFuture = parentGroup.shutdownGracefully().sync();
-			            if(!parentFuture.isSuccess()) {
-			            	SibTr.debug(tc, "Error stopping parent channel for: "+serverChan);
-			            }else {
-			            	SibTr.debug(tc, "Succesfully stopped parent channel for: "+serverChan);
-			            }
-			            Future<?> childFuture = childGroup.shutdownGracefully().sync();
-			            if(!childFuture.isSuccess()) {
-			            	SibTr.debug(tc, "Error stopping active channels for: "+serverChan);
-			            }else {
-			            	SibTr.debug(tc, "Succesfully stopped active channels for: "+serverChan);
-			            }
-			            TCPUtils.logChannelStopped(serverChan);
-		            }
-	            }         
-
+                ChannelFuture future = _nettyFramework.stop(serverChan);
+                if(future != null)
+                    future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                SibTr.debug(tc, "Failed in successfully cleaning(i.e stopping/destorying/removing) chain: ", e);
@@ -313,119 +284,63 @@ public class NettyInboundChain implements InboundChain{
             Map<String, Object> options = new HashMap<String, Object>();
             options.putAll(_currentConfig.tcpOptions);
             options.put(ConfigConstants.EXTERNAL_NAME, _endpointName);
-            if(NettyNetworkConnectionFactory.USE_BUNDLE) {
-            	bootstrap = _nettyFramework.createTCPBootstrap(options);
-            	if (_isSecureChain) {
-                	NettyTlsProvider tlsProvider = _commsServerFacade.getNettyTlsProvider();
-    	          	String host = ep.getHost();
-    	          	String port = Integer.toString(ep.getPort());
-    	          	if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
-    	          	context = tlsProvider.getInboundSSLContext(_currentConfig.sslOptions, host, port);
-    	          	if(context == null) {
-    					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
-    		            throw new NettyException("Problems creating SSL context");
-    	          	}
+            bootstrap = _nettyFramework.createTCPBootstrap(options);
+            if (_isSecureChain) {
+                NettyTlsProvider tlsProvider = _commsServerFacade.getNettyTlsProvider();
+                String host = ep.getHost();
+                String port = Integer.toString(ep.getPort());
+                if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
+                context = tlsProvider.getInboundSSLContext(_currentConfig.sslOptions, host, port);
+                if(context == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
+                    throw new NettyException("Problems creating SSL context");
                 }
-            	bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
-            	NettyInboundChain parent = this;
-            	this.channelFuture = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
-            		if (f.isCancelled() || !f.isSuccess()) {
-						SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", (Exception) f.cause());
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
-					}else {
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
-						Channel chan = f.channel();
-						parent.serverChan = chan;
-//						if(!_isChainStarted) {
-//							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//			                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " will be closed because chain was disabled");
-//			                }
-//							quiesceListener(chan);
-//							return;
-//						}
-						f.addListener(innerFuture -> {
-							if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
-								SibTr.debug(this, tc, "Channel exception during connect. Couldn't add quiesce handler: " + f.cause().getMessage());
-								quiesceListener(chan);
-							}else {
-								if(!_isChainStarted) {
-									if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " will be closed because chain was disabled");
-					                }
-									quiesceListener(chan);
-								}else {
-									if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "adding quiesce", f);
-									_nettyFramework.registerEndpointQuiesce(chan, new Callable<Void>() {
-										@Override
-										public Void call() throws Exception {
-											if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-							                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " received quiesce event so running close");
-							                }
-											quiesceListener(chan);
-											return null;
-										}
-										
-									});
-								}
-							}
-						});
-						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
-					}
-            	});
-            	_isChainStarted = true;
-            }else {
-            	// TODO: Hackish way of re-setting group so need to address this later on
-                ServerBootstrapExtended serverBootstrap = _nettyFramework.createTCPBootstrap(options);
-                bootstrap.applyConfiguration(serverBootstrap.getConfiguration());
-                bootstrap.setBaseInitializer(serverBootstrap.getBaseInitializer());
-                if (_isSecureChain) {
-                	NettyTlsProvider tlsProvider = _commsServerFacade.getNettyTlsProvider();
-    	          	String host = ep.getHost();
-    	          	String port = Integer.toString(ep.getPort());
-    	          	if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
-    	          	context = tlsProvider.getInboundSSLContext(_currentConfig.sslOptions, host, port);
-    	          	if(context == null) {
-    					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
-    		            throw new NettyException("Problems creating SSL context");
-    	          	}
+            }
+            bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
+            NettyInboundChain parent = this;
+            this.channelFuture = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
+                if (f.isCancelled() || !f.isSuccess()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", (Exception) f.cause());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
+                }else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
+                    Channel chan = f.channel();
+                    parent.serverChan = chan;
+                    f.addListener(innerFuture -> {
+                        if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                SibTr.debug(this, tc, "Channel exception during connect. Couldn't add quiesce handler: " + f.cause().getMessage());
+                            }
+                            quiesceListener(chan);
+                        }else {
+                            if(!_isChainStarted) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " will be closed because chain was disabled");
+                                }
+                                quiesceListener(chan);
+                            }else {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "adding quiesce", f);
+                                _nettyFramework.registerEndpointQuiesce(chan, new Callable<Void>() {
+                                    @Override
+                                    public Void call() throws Exception {
+                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                            SibTr.debug(this, tc, "Server Channel: " + serverChan + " received quiesce event so running close");
+                                        }
+                                        quiesceListener(chan);
+                                        return null;
+                                    }
+                                    
+                                });
+                            }
+                        }
+                    });
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
                 }
-                bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
-                String inetHost = ep.getHost();
-                if (inetHost.equals("*")) {
-                    inetHost = "0.0.0.0";
-                }
-                serverChan = bootstrap.bind(inetHost, ep.getPort()).sync().channel();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    SibTr.debug(this, tc, "Server Channel: " + serverChan + " handler names: " + serverChan.pipeline().names());
-                }
-                TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-                // set common channel attrs
-                serverChan.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
-                serverChan.attr(ConfigConstants.HOST_KEY).set(inetHost);
-                serverChan.attr(ConfigConstants.PORT_KEY).set(ep.getPort());
-                serverChan.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
-            	_isChainStarted = true;
-            	newConfig.isValidConfig = true;
-
-                // set up the a helpful log message
-                String hostLogString = inetHost == "0.0.0.0" ? "*" : inetHost;
-                SocketAddress addr = serverChan.localAddress();
-                InetSocketAddress inetAddr = (InetSocketAddress)addr;
-                String IPvType = "IPv4";
-                if (inetAddr.getAddress() instanceof Inet6Address) {
-                    IPvType = "IPv6";
-                }
-                if (inetHost == "0.0.0.0") {
-                    hostLogString = "*  (" + IPvType + ")";
-                } else {
-                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
-                               + inetAddr.getAddress().getHostAddress() + ")";
-                }
-
-                TCPUtils.logChannelStarted(serverChan);
-            } 
-
+            });
+            _isChainStarted = true;
 
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

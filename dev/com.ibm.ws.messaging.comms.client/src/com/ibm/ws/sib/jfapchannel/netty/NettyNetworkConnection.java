@@ -233,45 +233,20 @@ public class NettyNetworkConnection implements NetworkConnection{
 
 				NettyNetworkConnection parent = this;
 
+				nettyBundle.startOutbound(this.bootstrap, target.getRemoteAddress().getAddress().getHostAddress(), target.getRemoteAddress().getPort(), f -> {
+					if (f.isCancelled() || !f.isSuccess()) {
+						SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
+						listener.connectRequestFailedNotification((Exception) f.cause());
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
+					}else {
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
+						parent.chan = f.channel();
+						listener.connectRequestSucceededNotification(readyConnection);
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
+					}
 
-				if(NettyNetworkConnectionFactory.USE_BUNDLE) {
-					nettyBundle.startOutbound(this.bootstrap, target.getRemoteAddress().getAddress().getHostAddress(), target.getRemoteAddress().getPort(), f -> {
-						if (f.isCancelled() || !f.isSuccess()) {
-							SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
-							listener.connectRequestFailedNotification((Exception) f.cause());
-							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
-						}else {
-							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
-							parent.chan = f.channel();
-							listener.connectRequestSucceededNotification(readyConnection);
-							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
-						}
-
-					});
-				}else {
-					ChannelFuture oFuture = bootstrap.connect(target.getRemoteAddress());
-					oFuture.addListener(new ChannelFutureListener() {
-
-						@Override
-						public void operationComplete(ChannelFuture f) throws Exception {
-							if (f.isCancelled() || !f.isSuccess()) {
-								SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
-								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "destroy", f.cause());
-								listener.connectRequestFailedNotification((Exception) f.cause());
-								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "destroy");
-							}else {
-								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
-								parent.chan = f.channel();
-								listener.connectRequestSucceededNotification(readyConnection);
-								if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
-							}
-						}
-					});
-				}
-
-
-
+				});
 
 			} catch (Exception e) {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "destroy", e);

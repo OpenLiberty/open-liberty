@@ -10,6 +10,7 @@ Subsystem-Name: JMS 2.0 Client for Message Server
 -features=\
   com.ibm.websphere.appserver.eeCompatible-7.0; ibm.tolerates:="6.0, 8.0", \
   com.ibm.websphere.appserver.channelfw-1.0, \
+  io.openliberty.netty.internal-1.0, \
   com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.internal.jms-2.0
 -bundles=com.ibm.ws.messaging.common, \
@@ -18,10 +19,6 @@ Subsystem-Name: JMS 2.0 Client for Message Server
  com.ibm.ws.messaging.security.common, \
  com.ibm.ws.messaging.jms.common, \
  com.ibm.ws.messaging.jms.2.0, \
- com.ibm.ws.messaging.comms.client, \
- io.openliberty.io.netty, \
- io.openliberty.io.netty.ssl, \
- io.openliberty.netty.internal, \
- io.openliberty.netty.internal.impl
+ com.ibm.ws.messaging.comms.client
 kind=ga
 edition=base

@@ -199,7 +199,7 @@ public class CommsServerServiceFacade implements Singleton {
     @Reference(name = "secureFacet", cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY, unbind = "unbindSecureFacet")
     void bindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindSecureFacet", facet);
-        if(nettyTlsProvider == null) {
+        if(useNetty() && nettyTlsProvider == null) {
         	if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "bindSecureFacet: got SSL Options with No Netty TLS Provider yet set.");
         	this.secureFacetRef.set(facet);
         	awaitingTlsProvider.set(true);

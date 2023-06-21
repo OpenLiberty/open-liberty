@@ -74,9 +74,6 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	public static final String JMS_CLIENT_HANDLER_KEY = "jmsClientHandler";
 	public static final String JMS_SERVER_HANDLER_KEY = "jmsServerHandler";
 
-	//TODO: Temporary internal to choose weather to use the Netty bundle or not to workaround errors on quiesce. https://github.com/OpenLiberty/open-liberty/issues/24817
-	public static final boolean USE_BUNDLE = true;
-
 	/**
 	 * Constructor.
 	 * 
@@ -93,19 +90,8 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 		Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
 		options.put(ConfigConstants.EXTERNAL_NAME, chainName);
 		try {
-			if(USE_BUNDLE) {
-				bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
-				bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
-			}else {
-				BootstrapExtended bundleBootstrap = nettyBundle.createTCPBootstrapOutbound(options);
-				bootstrap = new BootstrapExtended();
-				bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
-				bootstrap.group(workerGroup);
-				bootstrap.channel(NioSocketChannel.class);
-				bootstrap.applyConfiguration(bundleBootstrap.getConfiguration());
-				bootstrap.setBaseInitializer(bundleBootstrap.getBaseInitializer());
-			}
-
+			bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+			bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
 		} catch (NettyException e) {
 			SibTr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
 		}
