@@ -91,8 +91,12 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request) {
+        if (instrumenter == null) {
+            return;
+        }
+
         Context parentContext = Context.current();
-        if (instrumenter != null && instrumenter.shouldStart(parentContext, request)) {
+        if (instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
@@ -109,16 +113,17 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         // Note: for async resource methods, this may not run on the same thread as the other filter method
         // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
 
+        if (instrumenter == null) {
+            return;
+        }
+
         Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
         if (spanContext == null) {
             return;
         }
 
         try {
-            // instrumenter can be null if the filter isn't fully injected yet due to resource methods calls during constructor
-            if (instrumenter != null) {
-                instrumenter.end(spanContext, request, response, null);
-            }
+            instrumenter.end(spanContext, request, response, null);
         } finally {
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
@@ -153,12 +158,12 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
         @Override
         public String hostName(ContainerRequestContext request) {
-            return request.getUriInfo().getBaseUri().getHost();
+            return request.getUriInfo().getRequestUri().getHost();
         }
 
         @Override
         public Integer hostPort(ContainerRequestContext request) {
-            return request.getUriInfo().getBaseUri().getPort();
+            return request.getUriInfo().getRequestUri().getPort();
         }
 
     }
