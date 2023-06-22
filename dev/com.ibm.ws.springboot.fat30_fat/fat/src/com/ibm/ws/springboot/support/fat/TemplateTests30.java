@@ -73,11 +73,13 @@ public class TemplateTests30 {
         templateName = "springBoot3";
 
         templateFeatures = new HashSet<String>();
-        templateFeatures.add("servlet-6.0");
+        templateFeatures.add("expressionLanguage-5.0");
         templateFeatures.add("pages-3.1");
-        templateFeatures.add("websocket-2.1");
-        templateFeatures.add("transportSecurity-1.0");
+        templateFeatures.add("servlet-6.0");
         templateFeatures.add("springBoot-3.0");
+        templateFeatures.add("ssl-1.0");
+        templateFeatures.add("transportSecurity-1.0");
+        templateFeatures.add("websocket-2.1");
 
         serverName = "spring3";
         serverPath = installPath + "/usr/servers/" + serverName;
@@ -113,7 +115,15 @@ public class TemplateTests30 {
 
         verifyCmd("Create server [ " + serverName + " ] using template [ " + templateName + " ]", OK_CODE,
                   "server", "create", serverName, "--template=" + templateName);
+        try {
+            verifyCmd("Start server [ " + serverName + " ]", OK_CODE, "server", "start", serverName);
+            verifyFeatures();
+        } finally {
+            verifyCmd("Stop server [ " + serverName + " ]", OK_CODE, "server", "stop", serverName);
+        }
+    }
 
+    private void verifyFeatures() throws Exception {
         Set<String> installedFeatures = scanFeatures(serverPath);
         Set<String> extraFeatures = new HashSet<>();
         Set<String> missingFeatures = new HashSet<>();
@@ -136,12 +146,6 @@ public class TemplateTests30 {
         int numExpected = templateFeatures.size();
         if ( numMatched != numExpected ) {
             assertEquals("Incorrect installed features", numExpected, numMatched);
-        }
-
-        try {
-            verifyCmd("Start server [ " + serverName + " ]", OK_CODE, "server", "start", serverName);
-        } finally {
-            verifyCmd("Stop server [ " + serverName + " ]", OK_CODE, "server", "stop", serverName);
         }
     }
 
@@ -178,7 +182,7 @@ public class TemplateTests30 {
             }
             String[] packedFeatures = installLine.substring(startPos, endPos).split(",");
             for ( String feature : packedFeatures ) {
-                installed.add(feature);
+                installed.add( feature.trim() );
             }
         }
 

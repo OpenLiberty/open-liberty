@@ -38,7 +38,7 @@ public class CDITests30 extends CommonWebServerTests {
         Set<String> features = new HashSet<>(3);
         features.add("springBoot-3.0");
         features.add("servlet-6.0");
-        features.add("cdi-2.1");
+        features.add("cdi-4.0");
         return features;
     }
 

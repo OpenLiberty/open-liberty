@@ -31,7 +31,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class MultContextTests30 extends AbstractSpringTests {
+public class MultiContextTests30 extends AbstractSpringTests {
     private static final int CHILD1_MAIN_PORT = 8081;
     private static final int CHILD1_ACTUATOR_PORT = 9991;
     private static final int CHILD2_MAIN_PORT = 8082;

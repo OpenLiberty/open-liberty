@@ -33,6 +33,11 @@ public class MissingWebsocketFeatureTests30 extends AbstractSpringTests {
         return false;
     }
 
+    // Caused by: java.lang.IllegalStateException: jakarta.websocket.server.ServerContainer not available
+    // at org.springframework.util.Assert.state(Assert.java:76) ~[spring-core-6.0.9.jar:6.0.9]
+    // at org.springframework.web.socket.server.standard.ServerEndpointExporter.afterPropertiesSet(ServerEndpointExporter.java:107)
+    //   ~[spring-websocket-6.0.9.jar:6.0.9]
+
     @Test
     public void testMissingWebsocketFor30() throws Exception {
         assertNotNull("No error message was found for missing websocket feature ", server.waitForStringInLog("CWWKC0259E"));

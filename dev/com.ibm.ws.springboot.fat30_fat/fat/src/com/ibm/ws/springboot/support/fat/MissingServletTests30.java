@@ -32,6 +32,20 @@ public class MissingServletTests30 extends AbstractSpringTests {
         return false;
     }
 
+    // <featureManager>
+    //   <feature>springBoot-3.0</feature>
+    // </featureManager>
+    //
+    // [6/20/23, 23:47:52:701 EDT] 00000041 SystemOut
+    //   O Using [ com.ibm.ws.classloading.internal.AppClassLoader@5ad3f40f ]
+    // [6/20/23, 23:47:52:701 EDT] 00000041 SystemOut
+    //   O Failed to locate required class [ com.ibm.ws.springboot.support.web.server.version30.container.LibertyConfiguration ]
+    //     for spring boot version [ 3.0.4 ]
+    //
+    // at com.ibm.ws.springboot.support.shutdown.FeatureAuditor$SpringFeatureRequirement.verify(FeatureAuditor.java:153)
+    //
+    // com.ibm.ws.app.manager.springboot.container.ApplicationError: CWWKC0267E: The application failed to start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-3.0 feature to be configured.
+
     @Test
     public void testMissingServletFor30() throws Exception {
         assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
