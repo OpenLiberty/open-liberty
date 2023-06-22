@@ -50,7 +50,7 @@ public class SubscribeToEventTest {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "io.openliberty.org.apache.faces40.fat.subscribe");
 
-        server.startServer(SimpleTest.class.getSimpleName() + ".log");
+        server.startServer(SubscribeToEventTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
