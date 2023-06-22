@@ -130,6 +130,7 @@ io.opentelemetry:opentelemetry-exporter-otlp-common:1.19.0
 io.opentelemetry:opentelemetry-exporter-otlp:1.19.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.19.0
 io.opentelemetry:opentelemetry-extension-trace-propagators:1.19.0
+io.opentelemetry:opentelemetry-opentracing-shim:1.19.0-alpha
 io.opentelemetry:opentelemetry-sdk-common:1.19.0
 io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:1.19.0
 io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.19.0-alpha
