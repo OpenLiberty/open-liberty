@@ -35,9 +35,9 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
  *
  */
 public class WebRequestImpl implements WebRequest {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_AUTHORIZATION_METHOD = "Bearer ";
     private static final String BASIC_AUTHORIZATION_METHOD = "Basic ";
+    private static final String BEARER_COOKIE = "Bearer";
 
     private final HttpServletRequest request;
     private final HttpServletResponse response;
@@ -156,7 +156,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean determineIfRequestHasAuthenticationData() {
         String hdrValue = ISRTServletRequest.getHeader(request, HttpHeaderKeys.HDR_AUTHORIZATION);
         return isBasicOrBearerAuthHeaderInRequest(hdrValue) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request)
-               || spnegoUtil.isSpnegoOrKrb5Token(hdrValue);
+               || isBearerCookieInRequest(request) || spnegoUtil.isSpnegoOrKrb5Token(hdrValue);
     }
 
     private boolean isBasicOrBearerAuthHeaderInRequest(String authHeaderValue) {
@@ -192,6 +192,11 @@ public class WebRequestImpl implements WebRequest {
 
         Cookie[] cookies = request.getCookies();
         return CookieHelper.hasCookie(cookies, jwtCookieName);
+    }
+
+     private boolean isBearerCookieInRequest(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        return CookieHelper.hasCookie(cookies, BEARER_COOKIE);
     }
 
     private boolean canUseLTPATokenFromRequest(HttpServletRequest request) {
