@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
@@ -34,7 +31,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- *  Verifies that the f:selectItemGroup and f:selectItemGroups output the correct selections.
+ * Verifies that the f:selectItemGroup and f:selectItemGroups output the correct selections.
  */
 @RunWith(FATRunner.class)
 public class SelectItemTests {
@@ -51,10 +48,9 @@ public class SelectItemTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", 
-            "io.openliberty.org.apache.faces40.fat.selectitemgroup.beans",
-            "io.openliberty.org.apache.faces40.fat.selectitemgroups.beans");
-
+        ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war",
+                                      "io.openliberty.org.apache.faces40.fat.selectitemgroup.beans",
+                                      "io.openliberty.org.apache.faces40.fat.selectitemgroups.beans");
 
         server.startServer(SelectItemTests.class.getSimpleName() + ".log");
     }
@@ -77,16 +73,16 @@ public class SelectItemTests {
         try (WebClient webClient = new WebClient()) {
 
             URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/selectItemGroup.xhtml");
-            
+
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             Log.info(clazz, name.getMethodName(), page.asXml());
 
-            String[] expected = {"optgroup label=\"Europe\"","Germany","France","optgroup label=\"Asia\"","Japan","South Korea"};
+            String[] expected = { "optgroup label=\"Europe\"", "Germany", "France", "optgroup label=\"Asia\"", "Japan", "South Korea" };
 
             String actual = page.asXml();
 
-            for(String item : expected){
+            for (String item : expected) {
                 assertTrue("Expected value was not found " + item, actual.contains(item));
             }
         }
@@ -102,16 +98,16 @@ public class SelectItemTests {
         try (WebClient webClient = new WebClient()) {
 
             URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/selectItemGroups.xhtml");
-            
+
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             Log.info(clazz, name.getMethodName(), page.asXml());
 
-            String[] expected = {"optgroup label=\"Africa\"","Egypt","Kenya","optgroup label=\"South America\"","Peru","Argentina"};
+            String[] expected = { "optgroup label=\"Africa\"", "Egypt", "Kenya", "optgroup label=\"South America\"", "Peru", "Argentina" };
 
             String actual = page.asXml();
 
-            for(String item : expected){
+            for (String item : expected) {
                 assertTrue("Expected value was not found " + item, actual.contains(item));
             }
         }
