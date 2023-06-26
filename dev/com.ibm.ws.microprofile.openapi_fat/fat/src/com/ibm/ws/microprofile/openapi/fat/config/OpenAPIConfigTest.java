@@ -141,7 +141,7 @@ public class OpenAPIConfigTest {
         //check conflict with default Doc Path
         assertWebAppStarts(DEFAULT_DOC_PATH);
         assertNotNull("UI Web Appplication is not available at /openapi/",
-                server.waitForStringInLog("CWWKO1672E.*$")); // check that error indicating that Doc endpoint conflict error is thrown
+                server.waitForStringInLog("CWWKO1672E")); // check that error indicating that Doc endpoint conflict error is thrown
         assertWebAppStarts(DEFAULT_UI_PATH);
 
         assertDocumentPath(DEFAULT_DOC_PATH);
@@ -155,7 +155,7 @@ public class OpenAPIConfigTest {
         server.updateServerConfiguration(config);
 
         assertNotNull("UI Web Appplication is not available at /foo/",
-                server.waitForStringInLogUsingMark("CWWKO1672E.*$")); // check that error indicating that conflict is thrown
+                server.waitForStringInLogUsingMark("CWWKO1672E")); // check that error indicating that conflict is thrown
 
         assertWebAppStarts("/foo/");
         assertWebAppStarts("/foo/ui/");
@@ -175,13 +175,13 @@ public class OpenAPIConfigTest {
         server.startServer(false);
 
         assertNotNull("Document Web Appplication path contains invalid characters",
-                server.waitForStringInLog("CWWKO1676E.*$")); // check that error indicating that conflict is thrown
+                server.waitForStringInLog("CWWKO1676E")); // check that error indicating that conflict is thrown
         assertNotNull("Document Web Appplication path is invalid",
-                server.waitForStringInLog("CWWKO1671E.*$")); // check that error indicating that conflict is thrown
+                server.waitForStringInLog("CWWKO1671E")); // check that error indicating that conflict is thrown
         assertNotNull("UI Web Appplication path contains invalid characters",
-                server.waitForStringInLog("CWWKO1675E.*$")); // check that error indicates invalid characters is logged
+                server.waitForStringInLog("CWWKO1675E")); // check that error indicates invalid characters is logged
         assertNotNull("UI Web Appplication path is invalid",
-                server.waitForStringInLog("CWWKO1670E.*$")); // check that error indicating that a failure has occurred has been thrown
+                server.waitForStringInLog("CWWKO1670E")); // check that error indicating that a failure has occurred has been thrown
 
         //check paths revert to defaults
         assertWebAppStarts(DEFAULT_DOC_PATH);
@@ -197,13 +197,13 @@ public class OpenAPIConfigTest {
         server.updateServerConfiguration(config);
 
         assertNotNull("UI Web Appplication path is invalid",
-                server.waitForStringInLog("CWWKO1670E.*$")); // check that error indicates invalid characters is logged
+                server.waitForStringInLog("CWWKO1670E")); // check that error indicates invalid characters is logged
         assertNotNull("Document Web Appplication path is invalid",
-                server.waitForStringInLog("CWWKO1671E.*$")); // check that error indicates invalid characters is logged
+                server.waitForStringInLog("CWWKO1671E")); // check that error indicates invalid characters is logged
 
         // both Web Apps will return the same error code for
         assertNotNull("Web Appplication path contains invalid segments",
-                server.waitForStringInLog("CWWKO1677E.*$")); // check that error indicating that a failure has occurred has been thrown
+                server.waitForStringInLog("CWWKO1677E")); // check that error indicating that a failure has occurred has been thrown
 
         assertNull("Web apps not restarted when config set to invalid values ",
                 server.waitForStringInLogUsingMark("CWWKT0016I", 1000));
@@ -223,14 +223,13 @@ public class OpenAPIConfigTest {
         server.updateServerConfiguration(config);
 
         server.startServer(false);
-
-        assertNotNull("Web Application fails to start due to context path conflict with OPENAPIUI bundle", "SRVE0164E.*OpenAPIUI");
+        // Web Application OpenAPIUI uses the context root /mpOpenAPIConfigTest/*, which is already in use by Web Application mpOpenAPIConfigTest. Web Application OpenAPIUI will not be loaded.
+        assertNotNull("Web Application fails to start due to context path conflict with OPENAPIUI bundle", server.waitForStringInLog("SRVE0164E.*OpenAPIUI"));
 
         assertWebAppStarts(DEFAULT_DOC_PATH);
         assertWebAppStarts("/mpOpenAPIConfigTest");
 
         assertDocumentPath(DEFAULT_DOC_PATH);
-        //assertUiPath("/mpOpenAPIConfigTest");
 
         server.stopServer("SRVE0164E","CWWKZ0002E");
 
@@ -251,7 +250,8 @@ public class OpenAPIConfigTest {
         config.getMpOpenAPIElement().setUiPath("/mpOpenAPIConfigTest");
         server.updateServerConfiguration(config);
 
-        assertNotNull("OpenAPI UI bundle fails to start due to context root conflict","CWWKZ0202E.*openapi.ui");
+        // Unable to install bundle com.ibm.ws.microprofile.openapi.ui_* with context root /mpOpenAPIConfigTest into the web container.
+        assertNotNull("OpenAPI UI bundle fails to start due to context root conflict", server.waitForStringInLog("CWWKZ0202E.*openapi.ui"));
 
         assertMissing("/mpOpenAPIConfigTest");
     }
