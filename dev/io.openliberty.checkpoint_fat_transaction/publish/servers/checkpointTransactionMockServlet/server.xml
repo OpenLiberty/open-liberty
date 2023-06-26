@@ -29,18 +29,15 @@
              dir="${shared.resource.dir}derby"
              includes="derby.jar" />
 
-    <!-- Potential overrides to transaction config at restore -->
-    <variable name="TX_LOG_DIR" defaultValue="${server.output.dir}tranlog" />
-    <variable name="TX_RETRY_INT" defaultValue="10" />
+    <variable name="TRANLOG_DIR" defaultValue="${server.output.dir}OVERRIDE_TO_tranlogDir" />
 
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"
-        heuristicRetryInterval="${TX_RETRY_INT}"
-        transactionLogDirectory="${TX_LOG_DIR}"
+        heuristicRetryInterval="10"
+        transactionLogDirectory="${TRANLOG_DIR}"
     />
 
-    <!-- Potential overrides to datasource config at restore -->
     <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
     <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
     <variable name="DERBY_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />

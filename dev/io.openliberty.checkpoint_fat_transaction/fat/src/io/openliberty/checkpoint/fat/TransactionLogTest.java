@@ -62,17 +62,22 @@ public class TransactionLogTest extends FATServletClient {
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    static final int DERBY_TXLOG_PORT = 1619; // Differs from server configuration
-    static final String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server configuration
+    // User sever.env vars to override these config vars in server.xml
+    static final int DERBY_TXLOG_PORT = 1619;
+    static final String DERBY_DS_JNDINAME = "jdbc/derby";
+    static final String TX_LOG_DIR = "${server.config.dir}NEW_TRANLOG_DIR";
+    static final String TX_RETRY_INT = "11";
 
     static LibertyServer serverTranLog;
-    static LibertyServer serverTranDbLog;
+    static LibertyServer serverDbTranLog;
 
     TestMethod testMethod;
+    Consumer<LibertyServer> preRestoreLogic;
 
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
+        preRestoreLogic = null;
         switch (testMethod) {
             case testCheckpointRemovesDefaultTranlogDir:
                 serverTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
@@ -86,30 +91,51 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, null));
                 serverTranLog.startServer();
                 break;
-            case testTransactionDbLogBasicConnection:
+            case testUpdateTranlogDirAtRestore:
+                serverTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
+                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, "servlets.simple.*");
+
+                deleteTranlogDir(serverTranLog); // Clear up
+
+                preRestoreLogic = checkpointServer -> {
+                    // Override the app datasource and transaction configurations for restore.
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("TX_LOG_DIR=" + TX_LOG_DIR);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                };
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic));
+                serverTranLog.startServer();
+                break;
+            case testUpdateTranlogDatasourceAtRestore:
                 DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
 
-                serverTranDbLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
-                ShrinkHelper.defaultApp(serverTranDbLog, APP_NAME, "servlets.simple.*");
+                serverDbTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
+                ShrinkHelper.defaultApp(serverDbTranLog, APP_NAME, "servlets.simple.*");
 
-                Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
-                    // Override the tran log datasource configuration for restore
+                preRestoreLogic = checkpointServer -> {
+                    // Override the app datasource, tranlog datasource, and transactions
+                    // configurations for restore.
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         serverEnvWriter.println("DERBY_TXLOG_PORT=" + DERBY_TXLOG_PORT);
                         serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
                     // Verify the application starts during checkpoint
                     assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                                  serverTranDbLog.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                                  serverDbTranLog.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                                  serverTranDbLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                                  serverDbTranLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranDbLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-                serverTranDbLog.setServerStartTimeout(300000);
-                serverTranDbLog.startServer();
+                serverDbTranLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
+                serverDbTranLog.setServerStartTimeout(300000);
+                serverDbTranLog.startServer();
                 break;
             default:
                 break;
@@ -122,9 +148,12 @@ public class TransactionLogTest extends FATServletClient {
             case testCheckpointRemovesDefaultTranlogDir:
                 stopServer(serverTranLog, "WTRN0017W");
                 break;
-            case testTransactionDbLogBasicConnection:
+            case testUpdateTranlogDirAtRestore:
+                stopServer(serverTranLog, "WTRN0017W");
+                break;
+            case testUpdateTranlogDatasourceAtRestore:
                 try {
-                    stopServer(serverTranDbLog, "WTRN0017W");
+                    stopServer(serverDbTranLog, "WTRN0017W");
                 } finally {
                     DerbyNetworkUtilities.stopDerbyNetwork(DERBY_TXLOG_PORT);
                 }
@@ -155,33 +184,54 @@ public class TransactionLogTest extends FATServletClient {
     }
 
     /**
-     * Verify transactions log to a datasource within a restored server.
-     * The test further ensures the datasource configuration has updated
-     * with config attribute(s) declared in the server.env file.
+     * Verify a restored server logs transactions only to a directory path
+     * overridden by server.env. The test ensures the transaction configuration
+     * updates during checkpoint-restore and starts recovery using the updated
+     * transactionLogDirectory.
      */
     @Test
-    public void testTransactionDbLogBasicConnection() throws Exception {
-        serverTranDbLog.checkpointRestore();
+    public void testUpdateTranlogDirAtRestore() throws Exception {
+        assertTrue("The transaction log directory configured in server.xml should not exist, but it does.",
+                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
 
-        // Exercise a transaction to start tran logging to the datasource.
-        // The server will throw an exception and fail this test the TM cannot
-        // establish a connection to the database.
-        runTest("testLTCAfterGlobalTran", serverTranDbLog);
+        serverTranLog.checkpointRestore();
+        runTest(serverTranLog, "testLTCAfterGlobalTran");
 
+        assertTrue("The server should log transactions to directory ${server.output.dir}NEW_TRANLOG_DIR, but did not.",
+                   serverTranLog.fileExistsInLibertyServerRoot("/NEW_TRANLOG_DIR"));
+
+        assertTrue("The server should not log transactions to the directory configured in server.xml, but did.",
+                   !serverTranLog.fileExistsInLibertyServerRoot("/tranlog"));
     }
 
-    private void runTest(String testName, LibertyServer ls) throws Exception {
+    /**
+     * Verify a restored server logs transactions a data source, where
+     * the data source configuration and the transaction configuration both
+     * update during checkpoint-restore.
+     */
+    @Test
+    public void testUpdateTranlogDatasourceAtRestore() throws Exception {
+        serverDbTranLog.checkpointRestore();
+
+        // Exercise a transaction and start logging to the data source.
+        // The server will throw an exception and fail this test when
+        // the TM cannot establish a connection to the database.
+        runTest(serverDbTranLog, "testLTCAfterGlobalTran");
+    }
+
+    private void runTest(LibertyServer ls, String testName) throws Exception {
         StringBuilder sb = null;
         try {
             sb = runTestWithResponse(ls, SERVLET_NAME, testName);
-        } catch (Throwable e) {
+        } finally {
+            Log.info(this.getClass(), testName, testName + " returned: " + sb);
         }
-        Log.info(this.getClass(), testName, testName + " returned: " + sb);
     }
 
     static enum TestMethod {
         testCheckpointRemovesDefaultTranlogDir,
-        testTransactionDbLogBasicConnection,
+        testUpdateTranlogDirAtRestore,
+        testUpdateTranlogDatasourceAtRestore,
         unknown;
     }
 }

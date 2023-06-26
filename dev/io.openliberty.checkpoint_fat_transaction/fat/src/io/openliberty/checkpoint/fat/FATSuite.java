@@ -47,7 +47,9 @@ import componenttest.topology.impl.LibertyServer;
                 TransactionScopedBeanTest.class,
                 TransactionLogTest.class,
                 TransactionManagerTest.class,
-                RecoveryTest.class
+                RecoveryTest.class,
+                MockServletTest.class,
+                Simple2PCCloudTest.class
 })
 
 public class FATSuite {

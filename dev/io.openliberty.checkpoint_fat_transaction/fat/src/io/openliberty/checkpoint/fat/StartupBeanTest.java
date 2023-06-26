@@ -18,6 +18,13 @@ import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+import java.util.function.Consumer;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -66,6 +73,8 @@ public class StartupBeanTest extends FATServletClient {
     JavaArchive TxStartupBeanJar;
     EnterpriseArchive TxStartupBeanEar;
 
+    static final String TX_RETRY_INT = "11";
+
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
@@ -76,7 +85,18 @@ public class StartupBeanTest extends FATServletClient {
                 TxStartupBeanEar.addAsModule(TxStartupBeanJar);
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
-                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
+                Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
+                    // Env vars that override the application datasource and transaction
+                    // configurations at restore
+                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                        //serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
+                        serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                };
+                server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, preRestoreLogic);
                 break;
             case testStartupBeanRequiresNewAtApplications:
                 TxStartupBeanJar = ShrinkHelper.buildJavaArchive(APP_NAME, "com.ibm.ws.transaction.ejb.first");

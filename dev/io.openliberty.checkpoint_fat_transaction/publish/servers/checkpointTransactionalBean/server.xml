@@ -22,13 +22,16 @@
         <feature>componentTest-1.0</feature>
     </featureManager>
 
+    <variable name="TX_RETRY_INT" defaultValue="10" />
+
     <transaction
            transactionLogDirectory="TransactionalRecoveryLogs"
            recoverOnStartup="true"
            waitForRecovery="false"
-           heuristicRetryInterval="10"
+           heuristicRetryInterval="${TX_RETRY_INT}"
     />
 
+    <!-- See boostrapping.properties
     <logging
           traceSpecification="Transaction=all=enabled"
           traceFileName="trace.log"
@@ -36,5 +39,6 @@
           maxFiles="20"
           traceFormat="BASIC"
     />
+    -->
 
 </server>

@@ -13,7 +13,7 @@
 
 <server>
     <include location="../fatTestPorts.xml"/>
-    
+
     <featureManager>
       <feature>servlet-4.0</feature>
       <feature>componentTest-1.0</feature>
@@ -22,15 +22,18 @@
       <feature>cdi-2.0</feature>
       <feature>ejbLite-3.2</feature>
     </featureManager>
-    
+
 <!--    transactionLogDirectory="custom://com.ibm.ws.recoverylog.custom.jdbc.embeddable.SQLRecoveryLogFactory?Neilparam" -->
 <!--    transactionLogDirectory="TheRecoveryLogsOfJon" -->
- 
+
+    <!-- Potential overrides to transaction config at restore -->
+    <variable name="TX_RETRY_INT" defaultValue="10" />
+
     <transaction
         transactionLogDirectory="TransactionScopedRecoveryLogs"
         recoverOnStartup="true"
         waitForRecovery="false"
-        heuristicRetryInterval="10"
+        heuristicRetryInterval="${TX_RETRY_INT}"
     />
 
     <logging
@@ -46,6 +49,11 @@
     <fileset id="DerbyFileset"
              dir="${shared.resource.dir}derby"
              includes="derby.jar" />
+
+    <!-- Potential overrides to datasource config at restore -->
+    <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
+    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
+    <variable name="DERBY_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />
 
     <dataSource id="jdbc/derby" jndiName="jdbc/derby" jdbcDriverRef="DerbyEmbedded">
       <properties
