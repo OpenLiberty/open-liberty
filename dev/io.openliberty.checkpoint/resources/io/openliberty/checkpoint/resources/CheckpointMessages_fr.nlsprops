@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Un point de contr\u00f4le du serveur a \u00e9t\u00e9 demand\u00e9. Une fois le point de contr\u00f4le termin\u00e9, le serveur s'arr\u00eate.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Un point de contr\u00f4le a \u00e9t\u00e9 demand\u00e9. Le serveur est arr\u00eat\u00e9 et son \u00e9tat en cours est \u00e9crit sur le disque.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Un point de contr\u00f4le de serveur "{0}" a \u00e9t\u00e9 demand\u00e9. Une fois le point de contr\u00f4le termin\u00e9, le serveur s''arr\u00eate.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Un point de contr\u00f4le a \u00e9t\u00e9 demand\u00e9. Le serveur s'est arr\u00eat\u00e9 et son \u00e9tat en cours est \u00e9crit sur le disque.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Le processus du serveur Liberty a repris l''op\u00e9ration \u00e0 partir d''un point de contr\u00f4le dans {0} secondes.

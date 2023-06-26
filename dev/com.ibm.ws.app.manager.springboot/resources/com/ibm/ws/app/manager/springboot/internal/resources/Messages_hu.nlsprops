@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Az alkalmaz\u00e1s nem tudott elindulni, mert a Spring Boot alkalmaz\u00e1s nem tal\u00e1lhat\u00f3 meg a csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlban.
 error.application.not.found.inside.packaged.liberty.jar.explanation=A csomagolt Liberty Server JAR f\u00e1jlnak tartalmaznia kell egy be\u00e1ll\u00edtott Spring Boot rendszerbet\u00f6lt\u00e9si alkalmaz\u00e1st.
 error.application.not.found.inside.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: Az alkalmaz\u00e1s ind\u00edt\u00e1sa meghi\u00fasult, mert a springBoot-1.5 vagy a springBoot-2.0 szolg\u00e1ltat\u00e1s van be\u00e1ll\u00edtva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s azt ig\u00e9nyli, hogy a springBoot-3.0 szolg\u00e1ltat\u00e1s legyen be\u00e1ll\u00edtva.
+error.need.springboot.version.30.explanation=Az alkalmaz\u00e1s a springBoot-3.0 szolg\u00e1ltat\u00e1st ig\u00e9nyli. Ellen\u0151rizze a Spring Boot szolg\u00e1ltat\u00e1s aktu\u00e1lisan be\u00e1ll\u00edtott v\u00e1ltozat\u00e1t a server.xml f\u00e1jlban.  
+error.need.springboot.version.30.useraction=\u00c1ll\u00edtsa be a springBoot-3.0 szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban. T\u00e1vol\u00edtson el minden m\u00e1s Spring Boot szolg\u00e1ltat\u00e1st.

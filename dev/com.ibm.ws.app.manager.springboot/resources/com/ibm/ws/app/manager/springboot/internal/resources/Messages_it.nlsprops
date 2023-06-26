@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Se
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 l'applicazione Spring Boot non \u00e8 stata trovata all'interno del file JAR di Liberty Server compresso.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Il file JAR di Liberty Server compresso deve contenere un'applicazione Spring Boot configurata.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configurare un file JAR Liberty Server compresso valido.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: L'avvio dell'applicazione non \u00e8 riuscito perch\u00e9 nel file server.xml \u00e8 configurata la funzione springBoot-1.5 o springBoot-2.0. L'applicazione richiede la configurazione della funzione springBoot-3.0.
+error.need.springboot.version.30.explanation=L'applicazione richiede la funzione springBoot-3.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
+error.need.springboot.version.30.useraction=Configurare la funzione springBoot-3.0 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.

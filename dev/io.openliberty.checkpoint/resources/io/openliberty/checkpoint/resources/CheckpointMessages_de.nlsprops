@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Ein Serverpr\u00fcfpunkt wurde angefordert. Nach der Ausf\u00fchrung des Pr\u00fcfpunkts wird der Server gestoppt.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Es wurde ein Pr\u00fcfpunkt angefordert. Der Server wird angehalten und sein aktueller Status wird auf Platte geschrieben.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Ein Serverpr\u00fcfpunkt "{0}" wurde angefordert. Nach der Ausf\u00fchrung des Pr\u00fcfpunkts wird der Server gestoppt.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Es wurde ein Pr\u00fcfpunkt angefordert. Der Server wurde gestoppt und sein aktueller Status wird auf Platte geschrieben.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Der Liberty-Serverprozess hat die Operation an einem Pr\u00fcfpunkt in {0} Sekunden wiederaufgenommen.
@@ -32,7 +32,7 @@ CHECKPOINT_RESTORE_CWWKC0452I.explanation=Eine Wiederherstellungsoperation wurde
 CHECKPOINT_RESTORE_CWWKC0452I.useraction=Details zu den Operationen f\u00fcr Pr\u00fcfpunkt und Wiederherstellung finden Sie in der Dokumentation.
 
 CHECKPOINT_FAILED_CWWKC0453E=CWWKC0453E: Die Anforderung an den Pr\u00fcfpunkt des Servers ist mit der folgenden Nachricht fehlgeschlagen: {0}
-CHECKPOINT_FAILED_CWWKC0453E.explanation=Eine Anforderung an den Pr\u00fcfpunkt ist f\u00fcr den Server fehlgeschlagen.  Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\u00fcr den Server erstellt.
+CHECKPOINT_FAILED_CWWKC0453E.explanation=Eine Anforderung an den Pr\u00fcfpunkt ist f\u00fcr den Server fehlgeschlagen.  Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\ufffd\ufffdr den Server erstellt.
 CHECKPOINT_FAILED_CWWKC0453E.useraction=\u00dcberpr\u00fcfen Sie das Pr\u00fcfpunktverzeichnis im Serverprotokollverzeichnis auf weitere Protokolldateien, um festzustellen, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
 
 RESTORE_FAILED_CWWKC0454E=CWWKC0454E: Die Wiederherstellung des Servers von einem Pr\u00fcfpunkt ist mit der folgenden Nachricht fehlgeschlagen: {0}

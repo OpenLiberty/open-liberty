@@ -46,8 +46,8 @@ installFeature.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate f\u00f
 installFeature.option-key.--from=\ \ \ \ --from=Dateipfad
 installFeature.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\tals Quelle anzugeben, in der featureUtility Assets installieren soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
-installFeature.option-desc.--verify=\tVerwenden Sie diese Option, um anzugeben, wie Funktionen \u00fcberpr\u00fcft werden. Die \n Standardoption ist "enforce", mit der die Signaturen aller Liberty\n-Funktionen mit Ausnahme von Benutzerfunktionen \u00fcberpr\u00fcft werden. Die Option "warn" entspricht der Option \n"enforce", aber sie beendet die Installation nicht, wenn \ndie \u00dcberpr\u00fcfung fehlschl\u00e4gt. Die Option "skip" \u00fcberspringt die \u00dcberpr\u00fcfung \nund l\u00e4dt keine Signaturen f\u00fcr Funktionen herunter. Die Option "all" \u00fcberpr\u00fcft \nsowohl Liberty-Funktionen als auch Benutzerfunktionen.                                  
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|skip|all|warn]
+installFeature.option-desc.--verify=\tVerwenden Sie diese Option, um anzugeben, wie Funktionen \u00fcberpr\u00fcft werden. Die \n Standardoption ist "enforce", mit der die Signaturen aller Liberty\n-Funktionen mit Ausnahme von Benutzerfunktionen \u00fcberpr\u00fcft werden. Die Option "skip" \u00fcberspringt die \u00dcberpr\u00fcfung und l\u00e4dt keine Signaturen f\u00fcr Funktionen herunter\n. Die Option "all" \u00fcberpr\u00fcft \nsowohl Liberty-Funktionen als auch Benutzerfunktionen. Die Option "warn" entspricht der Option \n"all", sie wird jedoch nicht beendet, wenn die Pr\u00fcfung fehlschl\u00e4gt.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tZeigt zus\u00e4tzliche Debuginformationen an, w\u00e4hrend die Aktion ausgef\u00fchrt wird.
@@ -69,8 +69,8 @@ installServerFeatures.option-desc.--featuresBom=\tGeben Sie die Maven-Koordinate
 installServerFeatures.option-key.--from=\ \ \ \ --from=Dateipfad
 installServerFeatures.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines Maven-Artefaktrepositorys\n\tals Quelle anzugeben, in der featureUtility Assets installieren soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
-installServerFeatures.option-desc.--verify=\tVerwenden Sie diese Option, um anzugeben, wie Funktionen \u00fcberpr\u00fcft werden. Die \nStandardoption ist "enforce", mit der die Signaturen aller Liberty-Funktionen\n mit Ausnahme von Benutzerfunktionen \u00fcberpr\u00fcft werden. Die Option "warn" entspricht der Option \n"enforce", aber sie beendet die Installation nicht, wenn die \u00dcberpr\u00fcfung fehlschl\u00e4gt.\n\tDie Option "skip" \u00fcberspringt die \u00dcberpr\u00fcfung und l\u00e4dt keine Signaturen f\u00fcr Funktionen herunter\n. Die Option "all" \u00fcberpr\u00fcft sowohl Liberty-Funktionen \nals auch Benutzerfunktionen.                                  
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|skip|all|warn]
+installServerFeatures.option-desc.--verify=\tVerwenden Sie diese Option, um anzugeben, wie Funktionen \u00fcberpr\u00fcft werden. Die \nStandardoption ist "enforce", mit der die Signaturen aller Liberty-Funktionen\n mit Ausnahme von Benutzerfunktionen \u00fcberpr\u00fcft werden. Die Option "skip" \u00fcberspringt die \u00dcberpr\u00fcfung und l\u00e4dt keine Signaturen f\u00fcr Funktionen herunter\n. Die Option "all" \u00fcberpr\u00fcft \nsowohl Liberty-Funktionen als auch Benutzerfunktionen. Die Option "warn" entspricht der Option \n"all", aber sie beendet die Installation nicht, wenn die Pr\u00fcfung fehlschl\u00e4gt.                                
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tZeigt zus\u00e4tzliche Debuginformationen an, w\u00e4hrend die Aktion ausgef\u00fchrt wird.

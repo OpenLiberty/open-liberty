@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Byl po\u017eadov\u00e1n kontroln\u00ed bod serveru. Kdy\u017e je kontroln\u00ed bod dokon\u010den, server se zastav\u00ed.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Byl po\u017eadov\u00e1n kontroln\u00ed bod. Server je zastaven a jeho aktu\u00e1ln\u00ed stav je zaps\u00e1n na disk.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Byl po\u017eadov\u00e1n kontroln\u00ed bod serveru "{0}". Kdy\u017e je kontroln\u00ed bod dokon\u010den, server se zastav\u00ed.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Byl po\u017eadov\u00e1n kontroln\u00ed bod. Server se zastavil a jeho aktu\u00e1ln\u00ed stav je zaps\u00e1n na disk.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Podrobnosti o operac\u00edch kontroln\u00edho bodu a obnovy naleznete v dokumentaci.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Proces serveru Liberty obnovil operaci z kontroln\u00edho bodu za {0} sekund.

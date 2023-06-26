@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltig
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Die Anwendung konnte nicht gestartet werden, weil die Spring Boot-Anwendung nicht in der gepackten Liberty-Server-JAR-Datei gefunden wurde.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Die gepackte Liberty-Server-JAR-Datei muss eine konfigurierte Spring Boot-Anwendung enthalten.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: Die Anwendung konnte nicht gestartet werden, weil das Feature springBoot-1.5 oder springBoot-2.0 in der Datei server.xml konfiguriert ist. F\u00fcr die Anwendung muss das Feature springBoot-3.0 konfiguriert sein.
+error.need.springboot.version.30.explanation=F\u00fcr die Anwendung ist das Feature springBoot-3.0 erforderlich. \u00dcberpr\u00fcfen Sie die Version des Spring Boot-Features, die momentan in der Datei server.xml konfiguriert ist.  
+error.need.springboot.version.30.useraction=Konfigurieren Sie das Feature springBoot-3.0 in der Datei server.xml. Entfernen Sie alle anderen Spring Boot-Features.

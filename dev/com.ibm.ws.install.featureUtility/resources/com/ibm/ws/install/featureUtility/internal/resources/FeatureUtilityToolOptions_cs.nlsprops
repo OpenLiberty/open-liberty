@@ -46,8 +46,8 @@ installFeature.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro sou
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
-installFeature.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "warn" je stejn\u00e1 \njako "enforce", ale p\u0159i selh\u00e1n\u00ed \nov\u011b\u0159en\u00ed se neukon\u010duje instalaci. Volba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed \na nest\u00e1hne \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele.                                  
+installFeature.option-key.--verify=\ \ \ \ --verify=[enforce|skip|all|warn]
+installFeature.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed \na nest\u00e1hne \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele. Volba "warn" je stejn\u00e1 jako\n "all", ale p\u0159i selh\u00e1n\u00ed ov\u011b\u0159en\u00ed neukon\u010d\u00ed instalaci.                                  
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
@@ -69,8 +69,8 @@ installServerFeatures.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven 
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\tMaven jako zdroj pro featureUtility pro instalaci aktiv.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|warn|skip|all]
-installServerFeatures.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "warn" je stejn\u00e1 \njako "enforce", ale p\u0159i selh\u00e1n\u00ed ov\u011b\u0159en\u00ed se neukon\u010duje instalaci.\n\tVolba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed a nest\u00e1hne\n \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele.                                  
+installServerFeatures.option-key.--verify=\ \ \ \ --verify=[enforce|skip|all|warn]
+installServerFeatures.option-desc.--verify=\tTuto volbu pou\u017eijte k uveden\u00ed toho, jak jsou funkce ov\u011b\u0159ov\u00e1ny. V\u00fdchoz\u00ed\n volba je "enforce", kter\u00e1 ov\u011b\u0159uje podpisy v\u0161ech funkc\u00ed serveru Liberty, \ns v\u00fdjimkou funkc\u00ed u\u017eivatele. Volba "skip" vynech\u00e1 ov\u011b\u0159en\u00ed \na nest\u00e1hne \u017e\u00e1dn\u00e9 podpisy funkc\u00ed. Volba "all" ov\u011b\u0159\u00ed funkce serveru Liberty \ni funkce u\u017eivatele. Volba "warn" je stejn\u00e1 jako\n "all", ale p\u0159i selh\u00e1n\u00ed ov\u011b\u0159en\u00ed neukon\u010d\u00ed instalaci.                                
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.

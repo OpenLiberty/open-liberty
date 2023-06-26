@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: \u00c8 stato richiesto un punto di controllo del server. Quando il punto di controllo \u00e8 completo, il server viene arrestato.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=\u00c8 stato richiesto un punto di controllo. Il server viene arrestato e il relativo stato corrente viene scritto su disco.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: \u00c8 stato richiesto un punto di controllo del server "{0}". Quando il punto di controllo \u00e8 completo, il server viene arrestato.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=\u00c8 stato richiesto un punto di controllo. Il server \u00e8 stato arrestato e lo stato corrente \u00e8 stato scritto su disco.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consultare la documentazione per i dettagli delle operazioni del punto di controllo e del ripristino.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Il processo del server Liberty ha ripreso le operazioni da un checkpoint in {0} secondi.

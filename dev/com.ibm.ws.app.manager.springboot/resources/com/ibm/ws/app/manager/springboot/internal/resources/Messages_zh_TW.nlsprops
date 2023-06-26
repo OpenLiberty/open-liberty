@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u76
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5728 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5167\u627e\u4e0d\u5230 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.explanation=Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5fc5\u9808\u5305\u542b\u6240\u914d\u7f6e\u7684 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u7684 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u3002
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e\u4e86 springBoot-1.5 \u6216 springBoot-2.0 \u7279\u6027\u3002 \u61c9\u7528\u7a0b\u5f0f\u9700\u8981\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002
+error.need.springboot.version.30.explanation=\u61c9\u7528\u7a0b\u5f0f\u9700\u8981 springBoot-3.0 \u7279\u6027\u3002 \u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u76ee\u524d\u6240\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002  
+error.need.springboot.version.30.useraction=\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002 \u8acb\u79fb\u9664\u5176\u4ed6\u4efb\u4f55 Spring Boot \u7279\u6027\u3002
