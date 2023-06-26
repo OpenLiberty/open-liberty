@@ -26,24 +26,26 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -55,33 +57,43 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class TransactionLogTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog"))
                     .andWith(new JakartaEE9Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly());
 
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    // User sever.env vars to override these config vars in server.xml
+    // Use sever.env vars to override these config vars in server.xml
     static final int DERBY_TXLOG_PORT = 1619;
     static final String DERBY_DS_JNDINAME = "jdbc/derby";
     static final String TX_LOG_DIR = "${server.config.dir}NEW_TRANLOG_DIR";
     static final String TX_RETRY_INT = "11";
 
-    static LibertyServer serverTranLog;
-    static LibertyServer serverDbTranLog;
+    @Server("checkpointTransactionServlet")
+    public static LibertyServer serverTranLog;
+
+    @Server("checkpointTransactionDbLog")
+    public static LibertyServer serverDbTranLog;
 
     TestMethod testMethod;
-    Consumer<LibertyServer> preRestoreLogic;
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        serverTranLog.saveServerConfiguration();
+        serverDbTranLog.saveServerConfiguration();
+    }
 
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-        preRestoreLogic = null;
+        ShrinkHelper.cleanAllExportedArchives();
+        Consumer<LibertyServer> preRestoreLogic;
         switch (testMethod) {
             case testCheckpointRemovesDefaultTranlogDir:
-                serverTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
-                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, "servlets.simple.*");
+                serverTranLog.restoreServerConfiguration();
+
+                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 // Initialize tran logs in ${server.output.dir}/tranlog
                 deleteTranlogDir(serverTranLog);
@@ -92,10 +104,11 @@ public class TransactionLogTest extends FATServletClient {
                 serverTranLog.startServer();
                 break;
             case testUpdateTranlogDirAtRestore:
-                serverTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
-                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, "servlets.simple.*");
+                serverTranLog.restoreServerConfiguration();
 
-                deleteTranlogDir(serverTranLog); // Clear up
+                ShrinkHelper.defaultApp(serverTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
+
+                deleteTranlogDir(serverTranLog); // Clean up
 
                 preRestoreLogic = checkpointServer -> {
                     // Override the app datasource and transaction configurations for restore.
@@ -113,8 +126,9 @@ public class TransactionLogTest extends FATServletClient {
             case testUpdateTranlogDatasourceAtRestore:
                 DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
 
-                serverDbTranLog = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
-                ShrinkHelper.defaultApp(serverDbTranLog, APP_NAME, "servlets.simple.*");
+                serverDbTranLog.restoreServerConfiguration();
+
+                ShrinkHelper.defaultApp(serverDbTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 preRestoreLogic = checkpointServer -> {
                     // Override the app datasource, tranlog datasource, and transactions
@@ -161,11 +175,6 @@ public class TransactionLogTest extends FATServletClient {
             default:
                 break;
         }
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
     /**

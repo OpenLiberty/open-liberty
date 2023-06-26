@@ -26,25 +26,26 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -56,31 +57,40 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class TransactionManagerTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog"))
                     .andWith(new JakartaEE9Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly());
 
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
 
-    static LibertyServer serverTranLogRecOnStart;
-    static LibertyServer serverTranDbLogNoRecOnStart;
+    @Server("checkpointTransactionServlet")
+    public static LibertyServer serverTranLogRecOnStart;
+
+    @Server("checkpointTransactionDbLog")
+    public static LibertyServer serverTranDbLogNoRecOnStart;
 
     TestMethod testMethod;
-    Transaction tm;
 
     static String DERBY_DS_JNDINAME = "jdbc/derby"; // Differs from server config
     static final int DERBY_TXLOG_PORT = 9099; // Same as server config
 
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        serverTranLogRecOnStart.saveServerConfiguration();
+        serverTranDbLogNoRecOnStart.saveServerConfiguration();
+    }
+
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
+        ShrinkHelper.cleanAllExportedArchives();
         Consumer<LibertyServer> preRestoreLogic;
         switch (testMethod) {
             case testTransactionManagerStartsDuringRestore:
-                serverTranLogRecOnStart = LibertyServerFactory.getLibertyServer("checkpointTransactionServlet");
+                serverTranLogRecOnStart.restoreServerConfiguration();
 
-                ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, "servlets.simple.*");
+                ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 preRestoreLogic = checkpointServer -> {
                     // The datasource jndiName in server.xml is invalid. At restore reconfigure
@@ -105,12 +115,13 @@ public class TransactionManagerTest extends FATServletClient {
             case testRecoveryBeginsAfterStartup:
                 DerbyNetworkUtilities.startDerbyNetwork(DERBY_TXLOG_PORT);
 
-                serverTranDbLogNoRecOnStart = LibertyServerFactory.getLibertyServer("checkpointTransactionDbLog");
+                serverTranDbLogNoRecOnStart.restoreServerConfiguration();
+
                 ServerConfiguration config = serverTranDbLogNoRecOnStart.getServerConfiguration();
                 config.getTransaction().setRecoverOnStartup(false);
                 serverTranDbLogNoRecOnStart.updateServerConfiguration(config);
 
-                ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, "servlets.simple.*");
+                ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
                 preRestoreLogic = checkpointServer -> {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
@@ -149,11 +160,6 @@ public class TransactionManagerTest extends FATServletClient {
             default:
                 break;
         }
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
     /**
