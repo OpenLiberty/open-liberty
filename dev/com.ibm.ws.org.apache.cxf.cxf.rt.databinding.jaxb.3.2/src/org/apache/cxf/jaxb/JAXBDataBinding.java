@@ -103,8 +103,7 @@ import org.apache.cxf.ws.addressing.ObjectFactory;
 
 // Liberty Change: Ensures jaxws-2.2 matches similar performance with XLXP
 @NoJSR250Annotations
-public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
-    implements WrapperCapableDatabinding, InterceptorProvider {
+public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding implements WrapperCapableDatabinding, InterceptorProvider {
 
     public static final String READER_VALIDATION_EVENT_HANDLER = "jaxb-reader-validation-event-handler";
     public static final String VALIDATION_EVENT_HANDLER = "jaxb-validation-event-handler";
@@ -122,13 +121,13 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
     private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
 
-    private static final Class<?>[] SUPPORTED_READER_FORMATS = new Class<?>[] {Node.class,
-                                                                               XMLEventReader.class,
-                                                                               XMLStreamReader.class};
-    private static final Class<?>[] SUPPORTED_WRITER_FORMATS = new Class<?>[] {OutputStream.class,
-                                                                               Node.class,
-                                                                               XMLEventWriter.class,
-                                                                               XMLStreamWriter.class};
+    private static final Class<?>[] SUPPORTED_READER_FORMATS = new Class<?>[] { Node.class,
+                                                                                XMLEventReader.class,
+                                                                                XMLStreamReader.class };
+    private static final Class<?>[] SUPPORTED_WRITER_FORMATS = new Class<?>[] { OutputStream.class,
+                                                                                Node.class,
+                                                                                XMLEventWriter.class,
+                                                                                XMLStreamWriter.class };
     // Liberty change begin
     private static final boolean ENABLE_MARSHALL_POOLING = true;
     private static final boolean ENABLE_UNMARSHALL_POOLING = true;
@@ -138,11 +137,13 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     private static class DelayedDOMResult extends DOMResult {
         private final URL resource;
         private final String publicId;
+
         DelayedDOMResult(URL url, String sysId, String pId) {
             super(null, sysId);
             resource = url;
             publicId = pId;
         }
+
         public synchronized Node getNode() {
             Node nd = super.getNode();
             if (nd == null) {
@@ -160,6 +161,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             return nd;
         }
     }
+
     private static final Map<String, DOMResult> BUILT_IN_SCHEMAS = new HashMap<>();
     static {
         try (URIResolver resolver = new URIResolver()) {
@@ -167,9 +169,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 resolver.resolve("", "classpath:/schemas/wsdl/ws-addr-wsdl.xsd", JAXBDataBinding.class);
                 if (resolver.isResolved()) {
                     resolver.getInputStream().close();
-                    DOMResult dr = new DelayedDOMResult(resolver.getURL(),
-                                                        "classpath:/schemas/wsdl/ws-addr-wsdl.xsd",
-                                                        "http://www.w3.org/2005/02/addressing/wsdl");
+                    DOMResult dr = new DelayedDOMResult(resolver.getURL(), "classpath:/schemas/wsdl/ws-addr-wsdl.xsd", "http://www.w3.org/2005/02/addressing/wsdl");
                     BUILT_IN_SCHEMAS.put("http://www.w3.org/2005/02/addressing/wsdl", dr);
                     resolver.unresolve();
                 }
@@ -180,9 +180,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 resolver.resolve("", "classpath:/schemas/wsdl/ws-addr.xsd", JAXBDataBinding.class);
                 if (resolver.isResolved()) {
                     resolver.getInputStream().close();
-                    DOMResult dr = new DelayedDOMResult(resolver.getURL(),
-                                                        "classpath:/schemas/wsdl/ws-addr.xsd",
-                                                        "http://www.w3.org/2005/08/addressing");
+                    DOMResult dr = new DelayedDOMResult(resolver.getURL(), "classpath:/schemas/wsdl/ws-addr.xsd", "http://www.w3.org/2005/08/addressing");
                     BUILT_IN_SCHEMAS.put("http://www.w3.org/2005/08/addressing", dr);
                     resolver.unresolve();
                 }
@@ -193,9 +191,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 resolver.resolve("", "classpath:/schemas/wsdl/wsrm.xsd", JAXBDataBinding.class);
                 if (resolver.isResolved()) {
                     resolver.getInputStream().close();
-                    DOMResult dr = new DelayedDOMResult(resolver.getURL(),
-                                                        "classpath:/schemas/wsdl/wsrm.xsd",
-                                                        "http://schemas.xmlsoap.org/ws/2005/02/rm");
+                    DOMResult dr = new DelayedDOMResult(resolver.getURL(), "classpath:/schemas/wsdl/wsrm.xsd", "http://schemas.xmlsoap.org/ws/2005/02/rm");
                     BUILT_IN_SCHEMAS.put("http://schemas.xmlsoap.org/ws/2005/02/rm", dr);
                     resolver.unresolve();
                 }
@@ -230,12 +226,9 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     private boolean qualifiedSchemas;
 
     // Liberty change begin
-    private Deque<SoftReference<Marshaller>> escapeMarshallers 
-        = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
-    private Deque<SoftReference<Marshaller>> noEscapeMarshallers 
-        = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
-    private Deque<SoftReference<Unmarshaller>> unmarshallers 
-        = new LinkedBlockingDeque<SoftReference<Unmarshaller>>(MAX_LOAD_FACTOR);
+    private Deque<SoftReference<Marshaller>> escapeMarshallers = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
+    private Deque<SoftReference<Marshaller>> noEscapeMarshallers = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
+    private Deque<SoftReference<Unmarshaller>> unmarshallers = new LinkedBlockingDeque<SoftReference<Unmarshaller>>(MAX_LOAD_FACTOR);
     // Liberty change end
 
     public JAXBDataBinding() {
@@ -249,14 +242,15 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         contextClasses = new LinkedHashSet<>(Arrays.asList(classes));
         setContext(createJAXBContext(contextClasses)); //NOPMD - specifically allow this
     }
+
     public JAXBDataBinding(boolean qualified, Map<String, Object> props) throws JAXBException {
         this(qualified);
         if (props != null && props.get("jaxb.additionalContextClasses") != null) {
             Object o = props.get("jaxb.additionalContextClasses");
             if (o instanceof Class) {
-                o = new Class[] {(Class<?>)o};
+                o = new Class[] { (Class<?>) o };
             }
-            extraClass = (Class[])o;
+            extraClass = (Class[]) o;
         }
 
         // the default for scan packages is true, so the jaxb scan packages
@@ -289,11 +283,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public Object getEscapeHandler() {
         return escapeHandler;
     }
-    
+
     public void setEscapeHandler(Object handler) {
         escapeHandler = handler;
     }
-    
+
     public void applyEscapeHandler(boolean escape, Consumer<Object> consumer) {
         if (escape) {
             consumer.accept(escapeHandler);
@@ -301,29 +295,27 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             consumer.accept(noEscapeHandler);
         }
     }
-    
-    
+
     @SuppressWarnings("unchecked")
     public <T> DataWriter<T> createWriter(Class<T> c) {
 
         Integer mtomThresholdInt = Integer.valueOf(getMtomThreshold());
         if (c == XMLStreamWriter.class) {
-            DataWriterImpl<XMLStreamWriter> r
-                = new DataWriterImpl<>(getBus(), this, true);
+            DataWriterImpl<XMLStreamWriter> r = new DataWriterImpl<>(getBus(), this, true);
             r.setMtomThreshold(mtomThresholdInt);
-            return (DataWriter<T>)r;
+            return (DataWriter<T>) r;
         } else if (c == OutputStream.class) {
             DataWriterImpl<OutputStream> r = new DataWriterImpl<>(getBus(), this, false);
             r.setMtomThreshold(mtomThresholdInt);
-            return (DataWriter<T>)r;
+            return (DataWriter<T>) r;
         } else if (c == XMLEventWriter.class) {
             DataWriterImpl<XMLEventWriter> r = new DataWriterImpl<>(getBus(), this, true);
             r.setMtomThreshold(mtomThresholdInt);
-            return (DataWriter<T>)r;
+            return (DataWriter<T>) r;
         } else if (c == Node.class) {
             DataWriterImpl<Node> r = new DataWriterImpl<>(getBus(), this, false);
             r.setMtomThreshold(mtomThresholdInt);
-            return (DataWriter<T>)r;
+            return (DataWriter<T>) r;
         }
         return null;
     }
@@ -336,11 +328,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public <T> DataReader<T> createReader(Class<T> c) {
         DataReader<T> dr = null;
         if (c == XMLStreamReader.class) {
-            dr = (DataReader<T>)new DataReaderImpl<XMLStreamReader>(this, unwrapJAXBElement);
+            dr = (DataReader<T>) new DataReaderImpl<XMLStreamReader>(this, unwrapJAXBElement);
         } else if (c == XMLEventReader.class) {
-            dr = (DataReader<T>)new DataReaderImpl<XMLEventReader>(this, unwrapJAXBElement);
+            dr = (DataReader<T>) new DataReaderImpl<XMLEventReader>(this, unwrapJAXBElement);
         } else if (c == Node.class) {
-            dr = (DataReader<T>)new DataReaderImpl<Node>(this, unwrapJAXBElement);
+            dr = (DataReader<T>) new DataReaderImpl<Node>(this, unwrapJAXBElement);
         }
 
         return dr;
@@ -364,8 +356,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         contextClasses = new LinkedHashSet<>();
 
         for (ServiceInfo serviceInfo : service.getServiceInfos()) {
-            JAXBContextInitializer initializer = new JAXBContextInitializer(getBus(), serviceInfo, contextClasses,
-                    typeRefs, this.getUnmarshallerProperties());
+            JAXBContextInitializer initializer = new JAXBContextInitializer(getBus(), serviceInfo, contextClasses, typeRefs, this.getUnmarshallerProperties());
             initializer.walk();
             if (serviceInfo.getProperty("extra.class") != null) {
                 Set<Class<?>> exClasses = serviceInfo.getProperty("extra.class", Set.class);
@@ -383,7 +374,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
         final JAXBContext ctx = cachedContextAndSchemas.getContext();
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.log(Level.FINE, "CREATED_JAXB_CONTEXT", new Object[] {ctx, contextClasses});
+            LOG.log(Level.FINE, "CREATED_JAXB_CONTEXT", new Object[] { ctx, contextClasses });
         }
         setContext(ctx);
 
@@ -427,7 +418,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             }
             for (DOMSource r : schemas) {
                 if (bi.contains(r)) {
-                    String ns = ((Document)r.getNode()).getDocumentElement().getAttribute("targetNamespace");
+                    String ns = ((Document) r.getNode()).getDocumentElement().getAttribute("targetNamespace");
                     if (serviceInfo.getSchema(ns) != null) {
                         continue;
                     }
@@ -436,12 +427,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 //System.out.println();
                 addSchemaDocument(serviceInfo,
                                   col,
-                                 (Document)r.getNode(),
+                                  (Document) r.getNode(),
                                   r.getSystemId());
             }
 
-            JAXBSchemaInitializer schemaInit = new JAXBSchemaInitializer(serviceInfo, col, context,
-                                                                         this.qualifiedSchemas, tns);
+            JAXBSchemaInitializer schemaInit = new JAXBSchemaInitializer(serviceInfo, col, context, this.qualifiedSchemas, tns);
             schemaInit.walk();
             if (cachedContextAndSchemas != null && !schemasFromCache) {
                 cachedContextAndSchemas.setSchemas(schemas);
@@ -450,14 +440,15 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     }
 
     protected void justCheckForJAXBAnnotations(ServiceInfo serviceInfo) {
-        for (MessageInfo mi: serviceInfo.getMessages().values()) {
+        for (MessageInfo mi : serviceInfo.getMessages().values()) {
             for (MessagePartInfo mpi : mi.getMessageParts()) {
                 checkForJAXBAnnotations(mpi, serviceInfo.getXmlSchemaCollection(), serviceInfo.getTargetNamespace());
             }
         }
     }
+
     private void checkForJAXBAnnotations(MessagePartInfo mpi, SchemaCollection schemaCollection, String ns) {
-        Annotation[] anns = (Annotation[])mpi.getProperty("parameter.annotations");
+        Annotation[] anns = (Annotation[]) mpi.getProperty("parameter.annotations");
         JAXBContextProxy ctx = JAXBUtils.createJAXBContextProxy(context, schemaCollection, ns);
         XmlJavaTypeAdapter jta = JAXBSchemaInitializer.findFromTypeAdapter(ctx, mpi.getTypeClass(), anns);
         if (jta != null) {
@@ -505,8 +496,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     }
 
     public CachedContextAndSchemas createJAXBContextAndSchemas(Set<Class<?>> classes,
-                                                               String defaultNs)
-        throws JAXBException {
+                                                               String defaultNs) throws JAXBException {
         //add user extra class into jaxb context
         if (extraClass != null && extraClass.length > 0) {
             for (Class<?> clz : extraClass) {
@@ -519,10 +509,9 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         addWsAddressingTypes(classes);
 
         return JAXBContextCache.getCachedContextAndSchemas(classes, defaultNs,
-                                                          contextProperties,
-                                                          typeRefs, true);
+                                                           contextProperties,
+                                                           typeRefs, true);
     }
-
 
     private void addWsAddressingTypes(Set<Class<?>> classes) {
         if (classes.contains(ObjectFactory.class)) {
@@ -595,7 +584,6 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         this.marshallerProperties = marshallerProperties;
     }
 
-
     /**
      * Return a map of properties. These properties are set into the JAXB
      * Unmarshaller (via Unmarshaller.setProperty(...) when the unmarshaller is
@@ -620,6 +608,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
     /**
      * Returns the Unmarshaller.Listener that will be registered on the Unmarshallers
+     * 
      * @return
      */
     public Unmarshaller.Listener getUnmarshallerListener() {
@@ -628,13 +617,16 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
     /**
      * Sets the Unmarshaller.Listener that will be registered on the Unmarshallers
+     * 
      * @param unmarshallerListener
      */
     public void setUnmarshallerListener(Unmarshaller.Listener unmarshallerListener) {
         this.unmarshallerListener = unmarshallerListener;
     }
+
     /**
      * Returns the Marshaller.Listener that will be registered on the Marshallers
+     * 
      * @return
      */
     public Marshaller.Listener getMarshallerListener() {
@@ -643,12 +635,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
     /**
      * Sets the Marshaller.Listener that will be registered on the Marshallers
+     * 
      * @param marshallerListener
      */
     public void setMarshallerListener(Marshaller.Listener marshallerListener) {
         this.marshallerListener = marshallerListener;
     }
-
 
     public ValidationEventHandler getValidationEventHandler() {
         return validationEventHandler;
@@ -657,7 +649,6 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public void setValidationEventHandler(ValidationEventHandler validationEventHandler) {
         this.validationEventHandler = validationEventHandler;
     }
-
 
     public boolean isUnwrapJAXBElement() {
         return unwrapJAXBElement;
@@ -727,7 +718,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 && "boolean".equalsIgnoreCase(elementType)
                 && (elField == null
                     || (!Collection.class.isAssignableFrom(elField.getType())
-                    && !elField.getType().isArray()))) {
+                        && !elField.getType().isArray()))) {
 
                 try {
                     String newAcc = getAccessor.replaceFirst("get", "is");
@@ -744,7 +735,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 } catch (NoSuchMethodException ex) {
                     try {
                         getMethod = valueClass.getMethod("is_return",
-                                                          new Class[0]);
+                                                         new Class[0]);
                     } catch (NoSuchMethodException ex2) {
                         //ignore for now
                     }
@@ -782,14 +773,14 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 Type t = setMethod.getGenericParameterTypes()[0];
                 Class<?> pcls = null;
                 if (t instanceof ParameterizedType) {
-                    t = ((ParameterizedType)t).getActualTypeArguments()[0];
+                    t = ((ParameterizedType) t).getActualTypeArguments()[0];
                 }
                 if (t instanceof Class) {
-                    pcls = (Class<?>)t;
+                    pcls = (Class<?>) t;
                 }
 
                 String methodName = "create" + wrapperType.getSimpleName()
-                    + setMethod.getName().substring(3);
+                                    + setMethod.getName().substring(3);
 
                 for (Method m : allOFMethods) {
                     if (m.getName().equals(methodName)
@@ -831,11 +822,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
 
         return createWrapperHelper(getBus(), wrapperType,
-                                 setMethods.toArray(new Method[0]),
-                                 getMethods.toArray(new Method[0]),
-                                 jaxbMethods.toArray(new Method[0]),
-                                 fields.toArray(new Field[0]),
-                                 objectFactory);
+                                   setMethods.toArray(new Method[0]),
+                                   getMethods.toArray(new Method[0]),
+                                   jaxbMethods.toArray(new Method[0]),
+                                   fields.toArray(new Field[0]),
+                                   objectFactory);
     }
 
     public static boolean isInBuiltInSchemas(DOMResult schema) {
@@ -864,7 +855,6 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         return null;
     }
 
-
     private static WrapperHelper createWrapperHelper(Bus bus, Class<?> wrapperType, Method[] setMethods,
                                                      Method[] getMethods, Method[] jaxbMethods,
                                                      Field[] fields, Object objectFactory) {
@@ -873,8 +863,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                                                 objectFactory);
 
         if (wh == null) {
-            wh = new JAXBWrapperHelper(wrapperType, setMethods, getMethods, jaxbMethods, fields,
-                                       objectFactory);
+            wh = new JAXBWrapperHelper(wrapperType, setMethods, getMethods, jaxbMethods, fields, objectFactory);
         }
         return wh;
     }
@@ -885,14 +874,14 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         try {
             WrapperHelperCreator creator = bus.getExtension(WrapperHelperCreator.class);
             return creator.compile(wrapperType, setMethods, getMethods,
-                    jaxbMethods, fields, objectFactory);
+                                   jaxbMethods, fields, objectFactory);
         } catch (Throwable t) {
             // Some error - probably a bad version of ASM or similar
             return null;
         }
     }
 
-     // Liberty change begin
+    // Liberty change begin
     /**
      * releaseJAXBMarshalller
      * Do not call this method if an exception occurred while using the
@@ -905,7 +894,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
             marshallers.offerFirst(new SoftReference<Marshaller>(marshaller));
         }
-    }    
+    }
 
     /**
      * Get JAXBMarshaller
@@ -917,22 +906,19 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         Marshaller m = null;
 
         if (!ENABLE_MARSHALL_POOLING) {
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.fine("Marshaller created [no pooling]");
-            }
+            addTrace("Marshaller created [no pooling]");
         } else {
             Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
             SoftReference<Marshaller> ref = marshallers.poll();
             while (ref != null && (m = ref.get()) == null) {
                 ref = marshallers.poll();
             }
-            if (LOG.isLoggable(Level.FINE)) {
-                if (m == null) {
-                    LOG.fine("Marshaller created [not in pool]");
-                } else {
-                    LOG.fine("Marshaller obtained [from  pool]");
-                }
+            if (m == null) {
+                addTrace("Marshaller created [not in pool]");
+            } else {
+                addTrace("Marshaller obtained [from  pool]");
             }
+
         }
 
         if (m != null) {
@@ -991,8 +977,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 }
             }
             if (marshallerProperties != null) {
-                for (Map.Entry<String, Object> propEntry
-                    : marshallerProperties.entrySet()) {
+                for (Map.Entry<String, Object> propEntry : marshallerProperties.entrySet()) {
                     try {
                         m.setProperty(propEntry.getKey(), propEntry.getValue());
                     } catch (PropertyException pe) {
@@ -1003,7 +988,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         }
         return m;
     }
-    
+
     /**
      * Get the unmarshaller. You must call releaseUnmarshaller to put it back into the pool
      * 
@@ -1014,20 +999,17 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public Unmarshaller getJAXBUnmarshaller(boolean setEventHandler, ValidationEventHandler veventHandler) throws JAXBException {
         Unmarshaller unm = null;
         if (!ENABLE_UNMARSHALL_POOLING) {
-            if (LOG.isLoggable(Level.FINE)) {
-                LOG.fine("Unmarshaller created [no pooling]");
-            }
+            addTrace("Unmarshaller created [no pooling]");
         } else {
             SoftReference<Unmarshaller> ref = unmarshallers.poll();
             while (ref != null && (unm = ref.get()) == null) {
                 ref = unmarshallers.poll();
             }
-            if (LOG.isLoggable(Level.FINE)) {
-                if (unm == null) {
-                    LOG.fine("Unmarshaller created [not in pool]");
-                } else {
-                    LOG.fine("Unmarshaller obtained [from  pool]");
-                }
+
+            if (unm == null) {
+                addTrace("Unmarshaller created [not in pool]");
+            } else {
+                addTrace("Unmarshaller obtained [from  pool]");
             }
         }
 
@@ -1035,28 +1017,32 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             ValidationEventHandler oldEventHandler = unm.getEventHandler();
             Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
             if (!setEventHandler) {
+                addTrace("setEventHandler is set to false"); // Liberty change
                 if (handlerClass != DefaultValidationEventHandler.class) {
-
+                    addTrace("ValidationEventHandler class is not the default"); // Liberty change
                     // Don't add an eventHandler if the unmarshaller doesn't already have one.
                     // unm.setEventHandler(null);
                 }
             } else {
                 unm.setEventHandler(veventHandler);
+                addTrace("ValidationEventHandler is set"); // Liberty change
             }
         } else {
             unm = context.createUnmarshaller();
+            addTrace("Unmarshaller is created from JAXBContext"); // Liberty change
             if (unmarshallerListener != null) {
                 unm.setListener(unmarshallerListener);
+                addTrace("UnmarshallerListener is set"); // Liberty change
             }
             if (setEventHandler) {
                 unm.setEventHandler(veventHandler);
-                
+                addTrace("ValidationEventHandler is set"); // Liberty change
             }
             if (unmarshallerProperties != null) {
-                for (Map.Entry<String, Object> propEntry
-                    : unmarshallerProperties.entrySet()) {
+                for (Map.Entry<String, Object> propEntry : unmarshallerProperties.entrySet()) {
                     try {
                         unm.setProperty(propEntry.getKey(), propEntry.getValue());
+                        addTrace("Unmarshaller Property key: " + propEntry.getKey() + ", value: " + propEntry.getValue()); // Liberty change        
                     } catch (PropertyException pe) {
                         LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
                     }
@@ -1070,13 +1056,13 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
      * Release Unmarshaller Do not call this method if an exception occurred while using the
      * Unmarshaller. We object my be in an invalid state.
      * 
-     * @param context JAXBContext
+     * @param context      JAXBContext
      * @param unmarshaller Unmarshaller
      */
     public void releaseJAXBUnmarshaller(Unmarshaller unmarshaller) {
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("Unmarshaller placed back into pool");
-        }
+
+        addTrace("Unmarshaller placed back into pool");
+
         if (ENABLE_UNMARSHALL_POOLING && unmarshaller != null) {
             try {
                 //defect 176959
@@ -1084,15 +1070,24 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 //unmarshaller.setEventHandler(null);
                 if (!unmarshallers.offerFirst(new SoftReference<Unmarshaller>(unmarshaller))) {
                     JAXBUtils.closeUnmarshaller(unmarshaller);
+                    addTrace("Pooling enabled unmarshaller is closed"); // Liberty change
                 }
             } catch (Throwable t) {
                 // Log the problem, and continue without pooling
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("The following exception is ignored. Processing continues " + t);
-                }
+                addTrace("The following exception is ignored. Processing continues " + t);
             }
         } else {
             JAXBUtils.closeUnmarshaller(unmarshaller);
+            addTrace("Unmarshaller is closed"); // Liberty change
+        }
+    }
+
+    // Liberty change end
+
+    // Liberty change begin
+    private void addTrace(String message) {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("JAXBDataBinding~" + message);
         }
     }
     // Liberty change end

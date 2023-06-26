@@ -46,7 +46,7 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.MessagePartInfo;
 
 public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
-    private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
+    private static final Logger LOG = LogUtils.getLogger(DataReaderImpl.class);
     JAXBDataBinding databinding;
     boolean unwrapJAXBElement;
     ValidationEventHandler veventHandler;
@@ -64,6 +64,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
 
     private static class WSUIDValidationHandler implements ValidationEventHandler {
         ValidationEventHandler origHandler;
+
         WSUIDValidationHandler(ValidationEventHandler o) {
             origHandler = o;
         }
@@ -77,25 +78,35 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             // hack for CXF-3453
             String msg = event.getMessage();
             return msg != null
-                && msg.contains(":Id")
-                && (msg.startsWith("cvc-type.3.1.1")
-                    || msg.startsWith("cvc-type.3.2.2")
-                    || msg.startsWith("cvc-complex-type.3.1.1")
-                    || msg.startsWith("cvc-complex-type.3.2.2"));
+                   && msg.contains(":Id")
+                   && (msg.startsWith("cvc-type.3.1.1")
+                       || msg.startsWith("cvc-type.3.2.2")
+                       || msg.startsWith("cvc-complex-type.3.1.1")
+                       || msg.startsWith("cvc-complex-type.3.2.2"));
         }
     }
 
     public void setProperty(String prop, Object value) {
+        addTrace("Property to be set: " + prop + ", value: " + value.toString()); // Liberty change
         if (prop.equals(JAXBDataBinding.UNWRAP_JAXB_ELEMENT)) {
             unwrapJAXBElement = Boolean.TRUE.equals(value);
+            addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
         } else if (prop.equals(org.apache.cxf.message.Message.class.getName())) {
-            org.apache.cxf.message.Message m = (org.apache.cxf.message.Message)value;
+            org.apache.cxf.message.Message m = (org.apache.cxf.message.Message) value;
+            if(null==m.getDestination())        // If destination is not null it's an Inbound Web Service
+                addTrace("Outbound Web Service");
+            else
+                addTrace("Inbound Web Service");
+                
+            addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
+            
             veventHandler = getValidationEventHandler(m, JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER);
             if (veventHandler == null) {
                 veventHandler = databinding.getValidationEventHandler();
             }
             setEventHandler = MessageUtils.getContextualBoolean(m,
-                    JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
+                                                                JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
+            addTrace("SetEventHandler is set to: " + setEventHandler + " trough message context"); // Liberty change
 
             Object unwrapProperty = m.get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             if (unwrapProperty == null) {
@@ -103,6 +114,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
             if (unwrapProperty != null) {
                 unwrapJAXBElement = Boolean.TRUE.equals(unwrapProperty);
+                addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough message context"); // Liberty change
             }
         }
     }
@@ -112,32 +124,41 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             // Liberty change begin
             // Move the logic that is 
             Unmarshaller um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
-            /*if (databinding.getUnmarshallerListener() != null) {
-                um.setListener(databinding.getUnmarshallerListener());
-            }
-            if (setEventHandler) {
-                um.setEventHandler(new WSUIDValidationHandler(veventHandler));
-            }
-            if (databinding.getUnmarshallerProperties() != null) {
-                for (Map.Entry<String, Object> propEntry
-                    : databinding.getUnmarshallerProperties().entrySet()) {
-                    try {
-                        um.setProperty(propEntry.getKey(), propEntry.getValue());
-                    } catch (PropertyException pe) {
-                        LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
-                    }
+            if (um == null) {
+                addTrace("Unmarshaller is null"); // Liberty change
+            } else {
+                /*
+                 * if (databinding.getUnmarshallerListener() != null) {
+                 * um.setListener(databinding.getUnmarshallerListener());
+                 * }
+                 * if (setEventHandler) {
+                 * um.setEventHandler(new WSUIDValidationHandler(veventHandler));
+                 * }
+                 * if (databinding.getUnmarshallerProperties() != null) {
+                 * for (Map.Entry<String, Object> propEntry
+                 * : databinding.getUnmarshallerProperties().entrySet()) {
+                 * try {
+                 * um.setProperty(propEntry.getKey(), propEntry.getValue());
+                 * } catch (PropertyException pe) {
+                 * LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
+                 * }
+                 * }
+                 * }
+                 */
+                // Liberty change end
+                um.setSchema(schema);
+                addTrace("Schema is set to Unmarshaller"); // Liberty change
+                um.setAttachmentUnmarshaller(getAttachmentUnmarshaller());
+                addTrace("AttachmentUnmarshaller is set to Unmarshaller"); // Liberty change
+                for (XmlAdapter<?, ?> adapter : databinding.getConfiguredXmlAdapters()) {
+                    um.setAdapter(adapter);
+                    addTrace("XmlAdapter: " + adapter + " is set to Unmarshaller"); // Liberty change
                 }
-            }*/
-            // Liberty change end
-            um.setSchema(schema);
-            um.setAttachmentUnmarshaller(getAttachmentUnmarshaller());
-            for (XmlAdapter<?, ?> adapter : databinding.getConfiguredXmlAdapters()) {
-                um.setAdapter(adapter);
             }
             return um;
+
         } catch (javax.xml.bind.UnmarshalException ex) {
-            throw new Fault(new Message("UNMARSHAL_ERROR", LOG, ex.getLinkedException()
-                .getMessage()), ex);
+            throw new Fault(new Message("UNMARSHAL_ERROR", LOG, ex.getLinkedException().getMessage()), ex);
         } catch (JAXBException ex) {
             throw new Fault(new Message("UNMARSHAL_ERROR", LOG, ex.getMessage()), ex);
         }
@@ -154,11 +175,11 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
                 QName qname = new QName(null, part.getConcreteName().getLocalPart());
 
                 Object obj = JAXBEncoderDecoder.unmarshalWithBridge(qname,
-                                                              part.getTypeClass(),
-                                                              anns,
-                                                              databinding.getContextClasses(),
-                                                              reader,
-                                                              getAttachmentUnmarshaller());
+                                                                    part.getTypeClass(),
+                                                                    anns,
+                                                                    databinding.getContextClasses(),
+                                                                    reader,
+                                                                    getAttachmentUnmarshaller());
 
                 onCompleteUnmarshalling();
 
@@ -170,7 +191,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
         boolean noError = false; // Liberty change
         try {
             Object obj = JAXBEncoderDecoder.unmarshall(um, reader, part,
-                                                 unwrapJAXBElement);
+                                                       unwrapJAXBElement);
             onCompleteUnmarshalling();
             noError = true; // Liberty change
 
@@ -192,8 +213,8 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
         boolean noError = false; // Liberty change
         try {
             Object obj = JAXBEncoderDecoder.unmarshall(um, input,
-                                             name, type,
-                                             unwrapJAXBElement);
+                                                       name, type,
+                                                       unwrapJAXBElement);
             onCompleteUnmarshalling();
             noError = true; // Liberty change
 
@@ -216,11 +237,18 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
                 ((UnmarshallerEventHandler) veventHandler).onUnmarshalComplete();
             } catch (UnmarshalException e) {
                 if (e.getLinkedException() != null) {
-                    throw new Fault(new Message("UNMARSHAL_ERROR", LOG,
-                            e.getLinkedException().getMessage()), e);
+                    throw new Fault(new Message("UNMARSHAL_ERROR", LOG, e.getLinkedException().getMessage()), e);
                 }
                 throw new Fault(new Message("UNMARSHAL_ERROR", LOG, e.getMessage()), e);
             }
         }
     }
+
+    // Liberty change begin
+    private void addTrace(String message) {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("DataReaderImpl~" + message);
+        }
+    }
+    // Liberty change end
 }
