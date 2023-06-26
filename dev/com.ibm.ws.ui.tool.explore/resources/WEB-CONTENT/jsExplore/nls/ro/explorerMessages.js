@@ -1,11 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -259,7 +257,7 @@ define({
 	"NOT_STARTED": "Nepornit",
 	"STOP": "Oprire",
 	"STOPPING": "În oprire",
-	"STOPPED": "Oprit",
+	"STOPPED": "Oprite",
 	"NUM_STOPPED": "{0} oprite",
 	"NOT_RUNNING": "Nu rulează",
 	"RESTART": "Repornire",
