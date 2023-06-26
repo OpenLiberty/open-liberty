@@ -136,10 +136,6 @@ Private-Package:\
    com.ibm.ws.jaxrs20.*
 
 Include-Resource: \
-  @${repo;io.openliberty.org.codehaus.jackson:jackson-xc;1.9.13.1}, \
-  @${repo;io.openliberty.org.codehaus.jackson:jackson-mapper-asl;1.9.13.1}, \
-  @${repo;io.openliberty.org.codehaus.jackson:jackson-jaxrs;1.9.13.1}, \
-  @${repo;io.openliberty.org.codehaus.jackson:jackson-core-asl;1.9.13.1}, \
   @${repo;org.apache.cxf:cxf-rt-rs-service-description;3.1.18;EXACT}, \
   @${repo;org.apache.cxf:cxf-tools-wadlto-jaxrs;3.1.18;EXACT}, \
   @${repo;org.apache.cxf:cxf-tools-common;3.1.18;EXACT}, \
@@ -147,6 +143,7 @@ Include-Resource: \
   @${repo;org.apache.cxf:cxf-rt-rs-client;3.1.18;EXACT}, \
   @${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;3.1.18;EXACT}, \
   @${repo;org.apache.cxf:cxf-core;3.1.18;EXACT}!/!OSGI-INF/*, \
+  @${repo;io.openliberty.org.codehaus.jackson}, \
   META-INF=resources/META-INF, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   org/codehaus/jackson=${bin}/org/codehaus/jackson
@@ -171,10 +168,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 	org.apache.cxf:cxf-tools-common;strategy=exact;version=3.1.18,\
 	org.apache.cxf:cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.18,\
 	org.apache.cxf:cxf-rt-rs-service-description;strategy=exact;version=3.1.18,\
-	io.openliberty.org.codehaus.jackson:jackson-core-asl;strategy=exact;version=1.9.13.1, \
-	io.openliberty.org.codehaus.jackson:jackson-jaxrs;strategy=exact;version=1.9.13.1, \
-	io.openliberty.org.codehaus.jackson:jackson-mapper-asl;strategy=exact;version=1.9.13.1, \
-	io.openliberty.org.codehaus.jackson:jackson-xc;strategy=exact;version=1.9.13.1,\
+	io.openliberty.org.codehaus.jackson;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
