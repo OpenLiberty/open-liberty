@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 
@@ -32,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -48,6 +50,9 @@ public class OpenAPIConfigTest {
 
     private static final String SERVER_NAME = "OpenAPIConfigServer";
 
+    private static String DEFAULT_DOC_PATH = "/openapi";
+    private static String DEFAULT_UI_PATH = DEFAULT_DOC_PATH+"/ui";
+
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
@@ -63,6 +68,8 @@ public class OpenAPIConfigTest {
     public void setup() throws Exception {
         // Set guards
         server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dopen_api_path_enabled=true"));
+        // Test application startup is only checked in one case where is expected to fail to start
+        server.setValidateApps(false);
         // Deploy test app
         WebArchive war = ShrinkWrap.create(WebArchive.class, "mpOpenAPIConfigTest.war")
             .addClass(OpenAPIConfigTestResource.class);
@@ -71,7 +78,17 @@ public class OpenAPIConfigTest {
 
     @After
     public void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                "CWWKO1670E", // Expected
+                "CWWKO1671E", // Expected
+                "CWWKO1672E", // Expected
+                "CWWKO1675E", // Expected
+                "CWWKO1676E", // Expected
+                "CWWKO1677E", // Expected
+                "SRVE0164E", // Expected
+                "CWWKZ0002E", // Expected
+                "CWWKZ0202E" //Expected
+                );
     }
 
     @Mode(TestMode.FULL)
@@ -82,15 +99,15 @@ public class OpenAPIConfigTest {
         config.getMpOpenAPIElement().setUiPath(null);
         server.updateServerConfiguration(config);
 
-        server.startServer();
+        server.startServer(false);
 
         assertWebAppStarts("/foo");
         assertWebAppStarts("/foo/ui");
 
         assertDocumentPath("/foo");
         assertUiPath("/foo/ui");
-        assertMissing("/openapi");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_DOC_PATH);
+        assertMissing(DEFAULT_UI_PATH);
     }
 
     @Mode(TestMode.FULL)
@@ -101,14 +118,142 @@ public class OpenAPIConfigTest {
         config.getMpOpenAPIElement().setUiPath("bar");
         server.updateServerConfiguration(config);
 
-        server.startServer();
+        server.startServer(false);
 
-        assertWebAppStarts("/openapi");
+        assertWebAppStarts(DEFAULT_DOC_PATH);
         assertWebAppStarts("/bar");
 
-        assertDocumentPath("/openapi");
+        assertDocumentPath(DEFAULT_DOC_PATH);
         assertUiPath("/bar");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_UI_PATH);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testConflictingPaths() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getMpOpenAPIElement().setDocPath(null);
+        config.getMpOpenAPIElement().setUiPath(DEFAULT_DOC_PATH);
+        server.updateServerConfiguration(config);
+
+        server.startServer(false);
+
+        //check conflict with default Doc Path
+        assertWebAppStarts(DEFAULT_DOC_PATH);
+        assertNotNull("UI Web Appplication is not available at /openapi/",
+                server.waitForStringInLog("CWWKO1672E.*$")); // check that error indicating that Doc endpoint conflict error is thrown
+        assertWebAppStarts(DEFAULT_UI_PATH);
+
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        assertUiPath(DEFAULT_UI_PATH);
+
+        server.setMarkToEndOfLog();
+
+        //change both Doc and UI paths to be the same
+        config.getMpOpenAPIElement().setDocPath("/foo");
+        config.getMpOpenAPIElement().setUiPath("/foo");
+        server.updateServerConfiguration(config);
+
+        assertNotNull("UI Web Appplication is not available at /foo/",
+                server.waitForStringInLogUsingMark("CWWKO1672E.*$")); // check that error indicating that conflict is thrown
+
+        assertWebAppStarts("/foo/");
+        assertWebAppStarts("/foo/ui/");
+
+        assertDocumentPath("/foo");
+        assertUiPath("/foo/ui");
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testInvalidPaths() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getMpOpenAPIElement().setDocPath("/%4e");
+        config.getMpOpenAPIElement().setUiPath("/foo?bar");
+        server.updateServerConfiguration(config);
+
+        server.startServer(false);
+
+        assertNotNull("Document Web Appplication path contains invalid characters",
+                server.waitForStringInLog("CWWKO1676E.*$")); // check that error indicating that conflict is thrown
+        assertNotNull("Document Web Appplication path is invalid",
+                server.waitForStringInLog("CWWKO1671E.*$")); // check that error indicating that conflict is thrown
+        assertNotNull("UI Web Appplication path contains invalid characters",
+                server.waitForStringInLog("CWWKO1675E.*$")); // check that error indicates invalid characters is logged
+        assertNotNull("UI Web Appplication path is invalid",
+                server.waitForStringInLog("CWWKO1670E.*$")); // check that error indicating that a failure has occurred has been thrown
+
+        //check paths revert to defaults
+        assertWebAppStarts(DEFAULT_DOC_PATH);
+        assertWebAppStarts(DEFAULT_UI_PATH);
+
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        assertUiPath(DEFAULT_UI_PATH);
+
+        server.setMarkToEndOfLog();
+
+        config.getMpOpenAPIElement().setDocPath("/foo/./bar");
+        config.getMpOpenAPIElement().setUiPath("/../bar/foo");
+        server.updateServerConfiguration(config);
+
+        assertNotNull("UI Web Appplication path is invalid",
+                server.waitForStringInLog("CWWKO1670E.*$")); // check that error indicates invalid characters is logged
+        assertNotNull("Document Web Appplication path is invalid",
+                server.waitForStringInLog("CWWKO1671E.*$")); // check that error indicates invalid characters is logged
+
+        // both Web Apps will return the same error code for
+        assertNotNull("Web Appplication path contains invalid segments",
+                server.waitForStringInLog("CWWKO1677E.*$")); // check that error indicating that a failure has occurred has been thrown
+
+        assertNull("Web apps not restarted when config set to invalid values ",
+                server.waitForStringInLogUsingMark("CWWKT0016I", 1000));
+
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        assertUiPath(DEFAULT_UI_PATH);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    @AllowedFFDC
+    public void testApplicationPathConfict() throws Exception {
+        // Test if initial config has a conflict - as Test app starts last, expect it to fail to start
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getMpOpenAPIElement().setDocPath(null);
+        config.getMpOpenAPIElement().setUiPath("/mpOpenAPIConfigTest");
+        server.updateServerConfiguration(config);
+
+        server.startServer(false);
+
+        assertNotNull("Web Application fails to start due to context path conflict with OPENAPIUI bundle", "SRVE0164E.*OpenAPIUI");
+
+        assertWebAppStarts(DEFAULT_DOC_PATH);
+        assertWebAppStarts("/mpOpenAPIConfigTest");
+
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        //assertUiPath("/mpOpenAPIConfigTest");
+
+        server.stopServer("SRVE0164E","CWWKZ0002E");
+
+        // Test if on configuration change such that OpenAPI
+        config.getMpOpenAPIElement().setDocPath(null);
+        config.getMpOpenAPIElement().setUiPath(null);
+        server.updateServerConfiguration(config);
+
+        server.startServer(false);
+
+        assertWebAppStarts(DEFAULT_DOC_PATH);
+        assertWebAppStarts(DEFAULT_UI_PATH);
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        assertUiPath(DEFAULT_UI_PATH);
+
+        // modify UI path to conflict with the running test application
+        config.getMpOpenAPIElement().setDocPath(null);
+        config.getMpOpenAPIElement().setUiPath("/mpOpenAPIConfigTest");
+        server.updateServerConfiguration(config);
+
+        assertNotNull("OpenAPI UI bundle fails to start due to context root conflict","CWWKZ0202E.*openapi.ui");
+
+        assertMissing("/mpOpenAPIConfigTest");
     }
 
     @Test
@@ -118,10 +263,13 @@ public class OpenAPIConfigTest {
         config.getMpOpenAPIElement().setUiPath(null);
         server.updateServerConfiguration(config);
 
-        server.startServer();
+        server.startServer(false);
 
-        assertDocumentPath("/openapi");
-        assertUiPath("/openapi/ui");
+        assertWebAppStarts(DEFAULT_DOC_PATH);
+        assertWebAppStarts(DEFAULT_UI_PATH);
+
+        assertDocumentPath(DEFAULT_DOC_PATH);
+        assertUiPath(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
@@ -134,8 +282,8 @@ public class OpenAPIConfigTest {
 
         assertDocumentPath("/foo");
         assertUiPath("/bar");
-        assertMissing("/openapi");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_DOC_PATH);
+        assertMissing(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
@@ -148,8 +296,8 @@ public class OpenAPIConfigTest {
 
         assertDocumentPath("/foo");
         assertUiPath("/foo/ui");
-        assertMissing("/openapi");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_DOC_PATH);
+        assertMissing(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
@@ -157,12 +305,12 @@ public class OpenAPIConfigTest {
         config.getMpOpenAPIElement().setUiPath("/foo/ui");
         server.updateServerConfiguration(config);
 
-        assertWebAppStarts("/openapi");
+        assertWebAppStarts(DEFAULT_DOC_PATH);
         assertNoWebAppStart("/foo/ui");
 
-        assertDocumentPath("/openapi");
+        assertDocumentPath(DEFAULT_DOC_PATH);
         assertUiPath("/foo/ui");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
@@ -171,11 +319,11 @@ public class OpenAPIConfigTest {
         server.updateServerConfiguration(config);
 
         assertWebAppStarts("/baz");
-        assertNoWebAppStart("/openapi");
+        assertNoWebAppStart(DEFAULT_DOC_PATH);
 
-        assertDocumentPath("/openapi");
+        assertDocumentPath(DEFAULT_DOC_PATH);
         assertUiPath("/baz");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_UI_PATH);
 
         server.setMarkToEndOfLog();
         config = server.getServerConfiguration();
@@ -187,9 +335,9 @@ public class OpenAPIConfigTest {
         assertNull("Web app restarted when config was not changed",
             server.waitForStringInLogUsingMark("CWWKT0016I", 3000));
 
-        assertDocumentPath("/openapi");
+        assertDocumentPath(DEFAULT_DOC_PATH);
         assertUiPath("/baz");
-        assertMissing("/openapi/ui");
+        assertMissing(DEFAULT_UI_PATH);
     }
 
     /**
