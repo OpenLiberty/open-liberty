@@ -92,25 +92,25 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
     @Server("jakartaee10.fat")
     public static LibertyServer server;
 
-    static Set<String> getAllCompatibleFeatures() {
+    static Set<String> getAllCompatibleFeatures(boolean openLibertyOnly) {
         Set<String> allFeatures = new HashSet<>();
         try {
             File installRoot = new File(Bootstrap.getInstance().getValue("libertyInstallPath"));
-            allFeatures.addAll(FeatureUtilities.getFeaturesFromServer(installRoot));
+            allFeatures.addAll(FeatureUtilities.getFeaturesFromServer(installRoot, openLibertyOnly));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return getCompatibleFeatures(allFeatures);
+        return getCompatibleFeatures(allFeatures, openLibertyOnly);
     }
 
-    private static Set<String> getCompatibleFeatures(Set<String> allFeatures) {
+    private static Set<String> getCompatibleFeatures(Set<String> allFeatures, boolean openLibertyOnly) {
         Set<String> compatibleFeatures = new HashSet<>();
 
         // By default, features are assumed to be compatible
         compatibleFeatures.addAll(allFeatures);
 
         // Non-ee10 features are not compatible
-        compatibleFeatures.removeAll(FeatureUtilities.allEeFeatures());
+        compatibleFeatures.removeAll(FeatureUtilities.allEeFeatures(openLibertyOnly));
         compatibleFeatures.addAll(JakartaEE10Action.EE10_FEATURE_SET);
 
         // MP features are only compatible if they're in MP versions which work with EE10
@@ -130,6 +130,34 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-2.0");
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+
+        if (!openLibertyOnly) {
+            // stabilized features
+            compatibleFeatures.remove("apiDiscovery-1.0");
+            compatibleFeatures.remove("blueprint-1.0");
+            compatibleFeatures.remove("httpWhiteboard-1.0");
+            compatibleFeatures.remove("mqtt-3.1");
+            compatibleFeatures.remove("openapi-3.0");
+            compatibleFeatures.remove("osgiAppConsole-1.0");
+            compatibleFeatures.remove("osgiAppIntegration-1.0");
+            compatibleFeatures.remove("osgiBundle-1.0");
+            compatibleFeatures.remove("osgi.jpa-1.0");
+            compatibleFeatures.remove("restConnector-1.0");
+            compatibleFeatures.remove("rtcomm-1.0");
+            compatibleFeatures.remove("rtcommGateway-1.0");
+            compatibleFeatures.remove("scim-1.0");
+            compatibleFeatures.remove("wab-1.0");
+            compatibleFeatures.remove("zosConnect-1.0");
+            compatibleFeatures.remove("zosConnect-1.2");
+
+            // depend on previous EE versions and now uses wmqMessagingClient-3.0 for EE9
+            compatibleFeatures.remove("wmqJmsClient-1.1");
+            compatibleFeatures.remove("wmqJmsClient-2.0");
+
+            // heritage API features
+            compatibleFeatures.remove("heritageAPIs-1.0");
+            compatibleFeatures.remove("heritageAPIs-1.1");
+        }
 
         // Test features may or may not be compatible, we don't want to assert either way
         compatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
@@ -154,8 +182,8 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        allFeatures = FeatureUtilities.getFeaturesFromServer(new File(server.getInstallRoot()));
-        compatibleFeatures = getCompatibleFeatures(allFeatures);
+        allFeatures = FeatureUtilities.getFeaturesFromServer(new File(server.getInstallRoot()), false);
+        compatibleFeatures = getCompatibleFeatures(allFeatures, false);
         incompatibleFeatures = getIncompatibleFeatures(allFeatures, compatibleFeatures);
 
         // Check for typos, every feature we've declared as being compatible or non-compatible should exist
@@ -288,6 +316,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         specialEE10Conflicts.put("servlet-5.0", "com.ibm.websphere.appserver.servlet");
         specialEE10Conflicts.put("servlet-4.0", "com.ibm.websphere.appserver.servlet");
         specialEE10Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
+        specialEE10Conflicts.put("servlet-3.0", "com.ibm.websphere.appserver.servlet");
 
         testCompatibility("servlet-6.0", allFeatures, specialEE10Conflicts);
     }

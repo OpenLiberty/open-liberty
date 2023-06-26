@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.jakartaee10.internal.tests;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -39,8 +40,8 @@ import io.openliberty.jakartaee10.internal.apps.jakartaee10.web.WebProfile10Test
 @RunWith(FATRunner.class)
 public class JakartaEE10Test extends FATServletClient {
 
-    private static Set<String> getCompatFeatures() {
-        Set<String> compatFeatures = EE10FeatureCompatibilityTest.getAllCompatibleFeatures();
+    private static Set<String> getCompatFeatures(boolean openLibertyOnly) {
+        Set<String> compatFeatures = EE10FeatureCompatibilityTest.getAllCompatibleFeatures(openLibertyOnly);
         // remove features so that they don't cause feature conflicts.
         compatFeatures.remove("jdbc-4.0");
         compatFeatures.remove("jdbc-4.1");
@@ -65,6 +66,9 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("noShip-1.0");
         compatFeatures.remove("scim-2.0");
 
+        // remove logAnalysis-1.0.  It depends on hpel being configured
+        compatFeatures.remove("logAnalysis-1.0");
+
         // springBoot-3.0, data-1.0 and nosql-1.0 requires Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             compatFeatures.remove("springBoot-3.0");
@@ -75,24 +79,44 @@ public class JakartaEE10Test extends FATServletClient {
         return compatFeatures;
     }
 
+    private static final String ALL_COMPAT_OL_FEATURES = "AllEE10CompatFeatures_OL_ONLY";
     private static final String ALL_COMPAT_FEATURES = "AllEE10CompatFeatures";
+
     @ClassRule
-    public static RepeatTests repeat = RepeatTests
-                    .with(new FeatureReplacementAction()
-                                    .removeFeature("webProfile-10.0")
-                                    .addFeature("jakartaee-10.0")
-                                    .withID("jakartaee10")
-                                    .fullFATOnly())
-                    .andWith(new FeatureReplacementAction()
-                                    .removeFeature("jakartaee-10.0")
-                                    .addFeature("webProfile-10.0")
-                                    .withID("webProfile10")
-                                    .fullFATOnly())
-                    .andWith(new FeatureReplacementAction()
-                                    .removeFeature("webProfile-10.0")
-                                    .removeFeature("jakartaee-10.0")
-                                    .addFeatures(getCompatFeatures())
-                                    .withID(ALL_COMPAT_FEATURES)); //LITE
+    public static RepeatTests repeat;
+
+    static {
+        Set<String> olCompatFeatures = getCompatFeatures(true);
+        Set<String> allCompatFeatures = getCompatFeatures(false);
+        repeat = RepeatTests
+                        .with(new FeatureReplacementAction()
+                                        .removeFeature("webProfile-10.0")
+                                        .addFeature("jakartaee-10.0")
+                                        .withID("jakartaee10")
+                                        .fullFATOnly())
+                        .andWith(new FeatureReplacementAction()
+                                        .removeFeature("jakartaee-10.0")
+                                        .addFeature("webProfile-10.0")
+                                        .withID("webProfile10")
+                                        .fullFATOnly())
+                        .andWith(new FeatureReplacementAction()
+                                        .removeFeature("webProfile-10.0")
+                                        .removeFeature("jakartaee-10.0")
+                                        .addFeatures(olCompatFeatures)
+                                        .withID(ALL_COMPAT_OL_FEATURES)); //LITE
+        if (!olCompatFeatures.equals(allCompatFeatures)) {
+            Set<String> featuresToAdd = new HashSet<>();
+            for (String feature : allCompatFeatures) {
+                if (!olCompatFeatures.contains(feature)) {
+                    featuresToAdd.add(feature);
+                }
+            }
+            repeat = repeat.andWith(new FeatureReplacementAction()
+                            .addFeatures(featuresToAdd)
+                            .withID(ALL_COMPAT_FEATURES)
+                            .fullFATOnly());
+        }
+    }
 
     public static final String APP_NAME = "webProfile10App";
 
@@ -122,15 +146,25 @@ public class JakartaEE10Test extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         String[] toleratedWarnErrors;
-        if (!RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
-            toleratedWarnErrors = new String[] { "SRVE0280E" };// TODO: SRVE0280E tracked by OpenLiberty issue #4857
-        } else {
+        if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_OL_FEATURES)) {
             toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
                                                  "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
             };
+        } else if (RepeatTestFilter.isRepeatActionActive(ALL_COMPAT_FEATURES)) {
+            toleratedWarnErrors = new String[] { "SRVE0280E", // TODO: SRVE0280E tracked by OpenLiberty issue #4857
+                                                 "CWWKS5207W", // The remaining ones relate to config not done for the server / app
+                                                 "CWWWC0002W",
+                                                 "CWMOT0010W",
+                                                 "CWWKG0033W", // related to missing config for collectives
+                                                 "CWSJY0035E", // wmqJmsClient.rar.location variable not in the server.xml
+                                                 "CWWKE0701E", // wmqJmsClient.rar.location variable not in the server.xml
+                                                 "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
+            };
+        } else {
+            toleratedWarnErrors = new String[] { "SRVE0280E" };// TODO: SRVE0280E tracked by OpenLiberty issue #4857
         }
         server.stopServer(toleratedWarnErrors);
     }

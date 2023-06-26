@@ -21,8 +21,7 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
 
     public static final String ID = "EE6_FEATURES";
 
-    static final String[] EE6_FEATURES_ARRAY = { "javaee-6.0",
-                                                 "webProfile-6.0",
+    static final String[] EE6_FEATURES_ARRAY = { "webProfile-6.0",
                                                  "javaeeClient-6.0",
                                                  "cdi-1.0",
                                                  "appSecurity-2.0",
@@ -38,6 +37,8 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
                                                  "mdb-3.1",
                                                  "jaxrs-1.1",
                                                  "jca-1.6",
+                                                 "jms-1.1",
+                                                 "wasJmsClient-1.1",
                                                  "componenttest-1.0" };
 
     public static final Set<String> EE6_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE6_FEATURES_ARRAY)));
