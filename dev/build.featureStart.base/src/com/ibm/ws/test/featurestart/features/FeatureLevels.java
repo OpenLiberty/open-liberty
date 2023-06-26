@@ -15,6 +15,7 @@ package com.ibm.ws.test.featurestart.features;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -42,12 +43,15 @@ public class FeatureLevels {
         return requiredLevels;
     }
 
-    public static final String REQUIRED_LEVELS_NAME = "/com/ibm/ws/test/featurestart/features/feature-levels.properties";
+    public static final String REQUIRED_LEVELS_NAME = "com/ibm/ws/test/featurestart/features/feature-levels.properties";
 
     protected static void readRequiredLevels(Properties props) throws IOException {
-        URL url = FeatureLevels.class.getResource(REQUIRED_LEVELS_NAME);
-        try (InputStream input = url.openStream()) {
-            props.load(input);
+        Enumeration<URL> urls = FeatureLevels.class.getClassLoader().getResources(REQUIRED_LEVELS_NAME);
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            try (InputStream input = url.openStream()) {
+                props.load(input);
+            }
         }
     }
 }

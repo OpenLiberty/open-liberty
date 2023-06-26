@@ -71,7 +71,7 @@ null componenttest 1.0 # 2.0              # isTest
 null concurrent 1.0 2.0 # 3.0             #
 null connectors 2.0 # 2.1                 #
 null connectorsInboundSecurity # 2.0      #
-null constrainedDelegation # 1.0          #
+null constrainedDelegation # 1.0          # Filtered: Requires spnego-1.0 or OIDC
 null couchdb # 1.0                        #
 null data # 1.0                           #
 null distributedMap # 1.0                 #
@@ -129,7 +129,7 @@ null jwt # 1.0                            #
 null jwtSso # 1.0                         #
 null ldapRegistry # 3.0                   #
 null localConnector # 1.0                 #
-null logstashCollector # 1.0              #
+null logstashCollector # 1.0              # Filtered: Requires Health Center
 null mail 2.0 # 2.1                       #
 null managedBeans # 1.0                   #
 null managedBeans # 2.0                   #
@@ -160,7 +160,7 @@ null netty # 1.0                          #
 null noShip # 1.0                         #
 null nosql # 1.0                          #
 null oauth # 2.0                          #
-null openapi 2.0 3.0 # 3.1                #
+null openapi 2.0 3.0 # 3.1                # isPrivate(2.0); !isPrivate(3.0, 3.1)
 null openid # 2.0                         #
 null openidConnectClient # 1.0            #
 null openidConnectServer # 1.0            #
@@ -196,7 +196,7 @@ null webCache # 1.0                       #
 null webProfile 6.0 7.0 8.0 9.1 # 10.0    #
 null websocket 1.0 1.1 2.0 # 2.1          #
 null wsAtomicTransaction # 1.2            #
-null wsSecurity # 1.1                     #
+null wsSecurity # 1.1                     # Filtered: Cannot start by itself
 null wsSecuritySaml # 1.1                 #
 null xmlBinding 3.0 # 4.0                 #
 null xmlWS 3.0 # 4.0                      #
