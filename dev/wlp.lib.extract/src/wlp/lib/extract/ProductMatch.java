@@ -70,6 +70,11 @@ public final class ProductMatch {
 
     public int matches(Properties props) {
         if (productId.equals(props.getProperty("com.ibm.websphere.productId"))) {
+            
+            if (!!!editions.isEmpty() && !!!editions.contains(props.getProperty("com.ibm.websphere.productEdition"))) {
+                return INVALID_EDITION;
+            }
+
             if (version != null) {
                 String productVersion = props.getProperty("com.ibm.websphere.productVersion");
                 Matcher appliesToMatcher = validNumericVersionOrRange.matcher(version);
@@ -108,10 +113,6 @@ public final class ProductMatch {
                         return INVALID_VERSION;
                     }
                 }
-            }
-
-            if (!!!editions.isEmpty() && !!!editions.contains(props.getProperty("com.ibm.websphere.productEdition"))) {
-                return INVALID_EDITION;
             }
 
             if (licenseType != null && !!!licenseType.equals(props.getProperty("com.ibm.websphere.productLicenseType"))) {
