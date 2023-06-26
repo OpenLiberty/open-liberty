@@ -1,11 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -96,7 +94,7 @@ define({
 	"STATS_SHOW_HIDE_ALERT": "アラート用メトリックの追加",
 	"STATS_SHOW_HIDE_LIST_BUTTON": "リソース・メトリック・リストを表示または非表示にする",
 	"STATS_SHOW_HIDE_BUTTON_TITLE": "グラフの編集",
-	"STATS_SHOW_HIDE_CONFIRM": "保存(S)",
+	"STATS_SHOW_HIDE_CONFIRM": "保存",
 	"STATS_SHOW_HIDE_CANCEL": "キャンセル",
 	"STATS_SHOW_HIDE_DONE": "完了",
 	"STATS_DELETE_GRAPH": "グラフの削除",

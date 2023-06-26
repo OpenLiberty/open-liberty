@@ -1,11 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -307,7 +305,7 @@ define({
 	"RUNTIME_WITH_SOME_SERVERS_RUNNING": "일부 서버가 실행 중인 런타임",
 	"RUNTIME_WITH_ALL_SERVERS_STOPPED": "모든 서버가 중지된 런타임",
 	"RUNTIME_WITH_SERVERS_RUNNING": "서버가 실행 중인 런타임",
-	"START_ALL_APPS": "모든 애플리케이션을 시작하시겠습니까?",
+	"START_ALL_APPS": "모든 애플리케이션을 시작하��겠습니까?",
 	"START_ALL_INSTANCES": "모든 애플리케이션 인스턴스를 시작하시겠습니까?",
 	"START_ALL_SERVERS": "모든 서버를 시작하시겠습니까?",
 	"START_ALL_CLUSTERS": "모든 클러스터를 시작하시겠습니까?",

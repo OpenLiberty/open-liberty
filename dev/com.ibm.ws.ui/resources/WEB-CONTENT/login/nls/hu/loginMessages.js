@@ -15,7 +15,7 @@ define({
 	"LOGIN_TITLE": "Liberty Admin Center",
 	"LOGIN_USER": "Felhasználónév",
 	"LOGIN_PASSWORD": "Jelszó",
-	"LOGIN_COPYRIGHT": "Copyright (c) 2013, 2016 IBM Corporation és mások. Minden jog fenntartva.\nEz a program és a kísérő anyagok az Eclipse nyilvános licenc 2.0 feltételei szerint érhetők el, amely ezt az eloszlást kíséri, és elérhető a http://www.eclipse.org/legal/epl-2.0/ címen.",
+	"LOGIN_COPYRIGHT": "Copyright (c) 2013, 2016 IBM Corporation és mások. Minden jog fenntartva.\nEz a program és a hozzá tartozó anyagok a jelen terjesztéshez tartozó Eclipse Public License 2.0 feltételei szerint érhetők el, amely megtekinthető a http://www.eclipse.org/legal/epl-2.0/ címen.",
 	"LOGIN_ERROR_MESSAGE": "Bejelentkezési hiba: ismeretlen felhasználónév és/vagy jelszó",
 	"ACCESS_ERROR_MESSAGE": "Hozzáférési hiba: a felhasználói fiók nem jogosult az Admin Center elérésére"
 });
