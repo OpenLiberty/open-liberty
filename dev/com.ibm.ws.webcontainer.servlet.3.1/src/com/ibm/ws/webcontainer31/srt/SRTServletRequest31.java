@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -153,15 +153,16 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
         
         // if cdi is enabled and there was an upgrade handler, then remove it from the cdi mapping
         // webapp is null if a request is accepted into WC but fail before any application is located for the request.
-        WebApp31 webapp = (WebApp31) ((WebAppDispatcherContext) this.getDispatchContext()).getWebApp();
-        if (webapp != null && webapp.isCDIEnabled() && httpUpgradeHandlerObject != null) {
-            Map<Object, ManagedObject> contexts = webapp.getCdiContexts();
-            if (contexts != null) {
-                contexts.remove(httpUpgradeHandlerObject);
-            }    
+        if (httpUpgradeHandlerObject != null) {
+            WebApp31 webapp = (WebApp31) ((WebAppDispatcherContext) this.getDispatchContext()).getWebApp();
+            if (webapp != null && webapp.isCDIEnabled()) {
+                Map<Object, ManagedObject> contexts = webapp.getCdiContexts();
+                if (contexts != null) {
+                    contexts.remove(httpUpgradeHandlerObject);
+                }
+            }
+            this.httpUpgradeHandlerObject = null;
         }
-
-        this.httpUpgradeHandlerObject = null;
     }
 
 

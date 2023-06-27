@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,22 +47,27 @@ public class JaspiRequest {
         this.wac = wac;
     }
 
+    public static String getAppContext(WebAppConfig wac) {
+        String vHost = null;
+        String contextRoot = null;
+        WebAppConfig appCfg = WebConfigUtils.getWebAppConfig();
+        if (appCfg != null) {
+            vHost = appCfg.getVirtualHostName();
+            contextRoot = appCfg.getContextRoot();
+            return vHost + " " + contextRoot;
+        } else {
+            if (wac != null) {
+                vHost = wac.getVirtualHostName();
+                contextRoot = wac.getContextRoot();
+                return vHost + " " + contextRoot;
+            }
+        }
+        return null;
+    }
+
     public String getAppContext() {
         if (appContext == null) {
-            String vHost = null;
-            String contextRoot = null;
-            WebAppConfig appCfg = WebConfigUtils.getWebAppConfig();
-            if (appCfg != null) {
-                vHost = appCfg.getVirtualHostName();
-                contextRoot = appCfg.getContextRoot();
-                appContext = vHost + " " + contextRoot;
-            } else {
-                if (wac != null) {
-                    vHost = wac.getVirtualHostName();
-                    contextRoot = wac.getContextRoot();
-                    appContext = vHost + " " + contextRoot;
-                }
-            }
+            appContext = getAppContext(wac);
         }
         return appContext;
     }

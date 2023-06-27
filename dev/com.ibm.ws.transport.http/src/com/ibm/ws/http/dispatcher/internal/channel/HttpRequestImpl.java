@@ -140,7 +140,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
         } else if (size == 1) {
             values = Collections.singletonList(hdrs.get(0).asString());
         } else {
-            values = new ArrayList<String>(hdrs.size());
+            values = new ArrayList<String>(size);
             for (HeaderField header : hdrs) {
                 values.add(header.asString());
             }

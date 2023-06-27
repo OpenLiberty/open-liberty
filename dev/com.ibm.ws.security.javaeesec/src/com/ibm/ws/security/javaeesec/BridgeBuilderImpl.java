@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,7 +31,9 @@ import org.osgi.service.component.annotations.Deactivate;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.jaspi.BridgeBuilderService;
+import com.ibm.ws.security.jaspi.JaspiRequest;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 @Component(service = { BridgeBuilderService.class },
            name = "com.ibm.ws.security.javaeesec",
@@ -45,19 +47,22 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
     private static final String JASPIC_LAYER_HTTP_SERVLET = "HttpServlet";
 
     @Activate
-    protected void activate(ComponentContext cc) {}
+    protected void activate(ComponentContext cc) {
+    }
 
     @Deactivate
-    protected void deactivate(ComponentContext cc) {}
+    protected void deactivate(ComponentContext cc) {
+    }
 
     @Override
-    public void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory) {
+    public void buildBridgeIfNeeded(WebAppConfig wac, AuthConfigFactory providerFactory) {
 
         if (!getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
             }
         } else {
+            String appContext = JaspiRequest.getAppContext(wac);
             AuthConfigProvider authConfigProvider = providerFactory.getConfigProvider(JASPIC_LAYER_HTTP_SERVLET, appContext, (RegistrationListener) null);
             if (authConfigProvider == null) {
                 // Synchronized since checking if there is a provider and registering one need to be done as a single atomic operation.
@@ -71,7 +76,7 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
                     }
                 }
             }
-        }        
+        }
     }
 
     @Override

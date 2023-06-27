@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -615,13 +615,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             // Authentication and authorization are not required
             // for servlet init or destroy and, per spec, should
             // not be done for forward or include paths.
+            SecurityMetadata securityMetadata;
             if (req != null) {
-                performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
+                setModuleMetaDataToThreadLocal(webSecurityContext);
+                securityMetadata = getSecurityMetadata();
+                performSecurityChecks(req, resp, receivedSubject, webSecurityContext, securityMetadata);
+            } else {
+                securityMetadata = getSecurityMetadata();
             }
 
             //auditManager.setHttpServletRequest(req);
 
-            performDelegation(req, servletName);
+            performDelegation(req, servletName, securityMetadata);
 
             syncToOSThread(webSecurityContext);
         }
@@ -661,21 +666,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     private void performSecurityChecks(HttpServletRequest req, HttpServletResponse resp, Subject receivedSubject,
-                                       WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
+                                       WebSecurityContext webSecurityContext, SecurityMetadata securityMetadata) throws SecurityViolationException, IOException {
         String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
-        setModuleMetaDataToThreadLocal(webSecurityContext);
-        SecurityMetadata securityMetadata = getSecurityMetadata();
 
         savedSubject = receivedSubject;
 
-        MatchResponse matchResponse = getMatchResponse(req);
+        MatchResponse matchResponse = getMatchResponse(req, uriName, securityMetadata);
         WebRequest webRequest = new WebRequestImpl(req, resp, getApplicationName(), webSecurityContext, securityMetadata, matchResponse, webAppSecConfig);
-        if (webRequest.getRequiredRoles() != null) {
-            ArrayList<String> rolesList = new ArrayList<String>();
-            for (String role : webRequest.getRequiredRoles()) {
-                rolesList.add(role);
-            }
-        }
 
         WebReply webReply = null;
 
@@ -720,7 +717,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return webReply;
         }
 
-        webReply = unprotectedSpecialURI(webRequest, uriName, req.getMethod());
+        webReply = unprotectedSpecialURI(webRequest, uriName, req);
         if (webReply != null) {
             logAuditEntriesBeforeAuthn(webReply, receivedSubject, uriName, webRequest);
         } else {
@@ -948,11 +945,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, outcome, success ? Integer.valueOf(200) : Integer.valueOf(401));
     }
 
-    private void performDelegation(HttpServletRequest req, String servletName) {
+    private void performDelegation(HttpServletRequest req, String servletName, SecurityMetadata secMetadata) {
 
         Subject callerSubject = subjectManager.getCallerSubject();
 
-        SecurityMetadata secMetadata = getSecurityMetadata();
         String roleName = secMetadata == null ? null : secMetadata.getRunAsRoleForServlet(servletName);
 
         Subject delegationSubject = callerSubject;
@@ -1344,7 +1340,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return new DenyReply("Invalid URI passed to Security Collaborator.");
         }
 
-        if (unsupportedAuthMech() == true) {
+        if (unsupportedAuthMech(webRequest.getSecurityMetadata()) == true) {
             return new DenyReply("Authentication Failed : DIGEST not supported");
         }
 
@@ -1353,7 +1349,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return httpsRedirectHandler.getHTTPSRedirectWebReply(req);
         }
 
-        webReply = unprotectedSpecialURI(webRequest, uriName, req.getMethod());
+        webReply = unprotectedSpecialURI(webRequest, uriName, req);
         if (webReply != null) {
             return webReply;
         }
@@ -1381,9 +1377,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     /**
      * @return true when challenge type is DIGEST, otherwise false.
      */
-    public boolean unsupportedAuthMech() {
+    public boolean unsupportedAuthMech(SecurityMetadata sm) {
         boolean result = false;
-        SecurityMetadata sm = getSecurityMetadata();
         if (sm != null) {
             LoginConfiguration lc = sm.getLoginConfiguration();
             if (lc != null) {
@@ -1396,26 +1391,23 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         return result;
     }
 
-    private MatchResponse getMatchResponse(HttpServletRequest req) throws SecurityViolationException {
+    private MatchResponse getMatchResponse(HttpServletRequest req, String uriName, SecurityMetadata securityMetadata) throws SecurityViolationException {
         MatchResponse matchResponse = MatchResponse.NO_MATCH_RESPONSE;
 
         if (req != null) {
-            String method = req.getMethod();
-            String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
-
-            SecurityMetadata securityMetadata = getSecurityMetadata();
             SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
             if (null != collection) {
+                String method = req.getMethod();
                 matchResponse = collection.getMatchResponse(uriName, method);
-            }
-            if (MatchResponse.CUSTOM_NO_MATCH_RESPONSE.equals(matchResponse)) {
-                String url = getRequestURL(req);
-                String formattedMessage = TraceNLS.getFormattedMessage(this.getClass(),
-                                                                       TraceConstants.MESSAGE_BUNDLE,
-                                                                       "SEC_WEB_ILLEGAL_REQUEST",
-                                                                       new Object[] { method, url },
-                                                                       "CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting.");
-                throw convertWebSecurityException(new WebSecurityCollaboratorException(formattedMessage, DENY_AUTHZ_FAILED));
+                if (MatchResponse.CUSTOM_NO_MATCH_RESPONSE.equals(matchResponse)) {
+                    String url = getRequestURL(req);
+                    String formattedMessage = TraceNLS.getFormattedMessage(this.getClass(),
+                                                                           TraceConstants.MESSAGE_BUNDLE,
+                                                                           "SEC_WEB_ILLEGAL_REQUEST",
+                                                                           new Object[] { method, url },
+                                                                           "CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting.");
+                    throw convertWebSecurityException(new WebSecurityCollaboratorException(formattedMessage, DENY_AUTHZ_FAILED));
+                }
             }
         }
         return matchResponse;
@@ -1463,17 +1455,20 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      *
      * @param webRequest
      * @param uriName
-     * @param methodName
+     * @param req
      * @return Non-null WebReply if the URI is not special, or a PERMIT_REPLY if it is.
      */
-    private WebReply unprotectedSpecialURI(WebRequest webRequest, String uriName, String methodName) {
+    private WebReply unprotectedSpecialURI(WebRequest webRequest, String uriName, HttpServletRequest req) {
         LoginConfiguration loginConfig = webRequest.getLoginConfig();
         if (loginConfig == null)
             return null;
 
-        String authenticationMethod = loginConfig.getAuthenticationMethod();
         FormLoginConfiguration formLoginConfig = loginConfig.getFormLoginConfiguration();
-        if (formLoginConfig == null || authenticationMethod == null)
+        if (formLoginConfig == null)
+            return null;
+
+        String authenticationMethod = loginConfig.getAuthenticationMethod();
+        if (authenticationMethod == null)
             return null;
 
         String loginPage = formLoginConfig.getLoginPage();
@@ -1492,7 +1487,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                     Tr.debug(tc, "authorize, login or error page[" + uriName + "]  requested, permit: ", PERMIT_REPLY);
                 return PERMIT_REPLY;
             } else if ((uriName != null && uriName.equals("/j_security_check")) &&
-                       (methodName != null && methodName.equals("POST"))) {
+                       "POST".equals(req.getMethod())) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "authorize, login or error page[" + uriName + "]  requested, permit: ", PERMIT_REPLY);
                 return PERMIT_REPLY;
@@ -1650,12 +1645,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         } else if (MatchResponse.DENY_MATCH_RESPONSE.equals(webRequest.getMatchResponse())) {
             webReply = new DenyReply("Http uncovered method found, denying reply.");
         } else {
-            HttpServletRequest req = webRequest.getHttpServletRequest();
             List<String> requiredRoles = webRequest.getRequiredRoles();
-
-            String defaultMethod = (String) req.getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
-            if ("TRACE".equals(defaultMethod) && requiredRoles.isEmpty()) {
-                webReply = new DenyReply("Illegal request. Default implementation of TRACE not allowed.");
+            if (requiredRoles.isEmpty()) {
+                HttpServletRequest req = webRequest.getHttpServletRequest();
+                String defaultMethod = (String) req.getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
+                if ("TRACE".equals(defaultMethod)) {
+                    webReply = new DenyReply("Illegal request. Default implementation of TRACE not allowed.");
+                }
             }
         }
         return webReply;
@@ -1738,15 +1734,17 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     // no null check for webReply object, so make sure it is not null upon calling this method.
     private void logAuditEntriesBeforeAuthn(WebReply webReply, Subject receivedSubject, String uriName, WebRequest webRequest) {
-        AuthenticationResult authResult;
-        if (webReply instanceof PermitReply) {
-            authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, null, null, AuditEvent.OUTCOME_SUCCESS);
-        } else {
-            authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, null, null, AuditEvent.OUTCOME_FAILURE);
+        if (Audit.isAuditServiceEnabled()) {
+            AuthenticationResult authResult;
+            if (webReply instanceof PermitReply) {
+                authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, null, null, AuditEvent.OUTCOME_SUCCESS);
+            } else {
+                authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, null, null, AuditEvent.OUTCOME_FAILURE);
+            }
+            Integer statusCode = Integer.valueOf(webReply.getStatusCode());
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
+            Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, statusCode);
         }
-        int statusCode = Integer.valueOf(webReply.getStatusCode());
-        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
-        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, statusCode);
     }
 
     /**

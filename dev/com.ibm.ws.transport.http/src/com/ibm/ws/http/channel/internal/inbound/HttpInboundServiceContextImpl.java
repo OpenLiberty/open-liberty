@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1223,7 +1223,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         // request is not lost.
         if (!this.myLink.getChannel().isRunning()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Channel " + (this.myLink.getChannel().isStopped()? "stopped":"stopping") + ", sending error instead of 100-continue");
+                Tr.debug(tc, "Channel " + (this.myLink.getChannel().isStopped() ? "stopped" : "stopping") + ", sending error instead of 100-continue");
             }
             try {
                 sendError(StatusCodes.UNAVAILABLE.getHttpError());
@@ -2121,17 +2121,21 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         boolean isHTTP2Enabled = false;
 
-        //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
-        if (CHFWBundle.isHttp2DisabledByDefault()) {
-            //If so, check if the httpEndpoint was configured for HTTP/2
-            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() != null && getHttpConfig().getUseH2ProtocolAttribute());
-        }
+        Boolean defaultSetting = CHFWBundle.getHttp2DefaultSetting();
 
-        //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
-        else if (CHFWBundle.isHttp2EnabledByDefault()) {
-            //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
-            //to use HTTP/2.
-            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() == null || getHttpConfig().getUseH2ProtocolAttribute());
+        if (defaultSetting != null) {
+            Boolean configSetting = getHttpConfig().getUseH2ProtocolAttribute();
+
+            //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
+            if (Boolean.FALSE == defaultSetting) {
+                //If so, check if the httpEndpoint was configured for HTTP/2
+                isHTTP2Enabled = configSetting != null && configSetting.booleanValue();
+            } else {
+                //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
+                //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
+                //to use HTTP/2.
+                isHTTP2Enabled = configSetting == null || configSetting.booleanValue();
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

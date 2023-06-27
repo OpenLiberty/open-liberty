@@ -580,7 +580,6 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                     if (null != this.output[i]) {
                         // mark them empty so later writes don't mistake them
                         // as having content
-                        this.output[i].position(0);
                         this.output[i].limit(0);
                     }
                 }

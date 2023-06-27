@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,12 +57,12 @@ public class SecurityConstraintCollectionImpl implements SecurityConstraintColle
      */
     @Override
     public List<MatchResponse> getMatchResponses(String resourceName, String... methods) {
-        List<MatchResponse> matchResponses = new ArrayList<MatchResponse>();
-        Set<String> methodList = new HashSet<String>();
         if (securityConstraints == null || securityConstraints.isEmpty()) {
             return null;
         }
 
+        List<MatchResponse> matchResponses = new ArrayList<MatchResponse>();
+        Set<String> methodList = new HashSet<String>();
         if (methods == null || (methods.length == 0) || (methods.length == 1 && methods[0].isEmpty())) {
             // fill in code to get list of all methods here start with standard list then add in custom methods
             methodList.addAll(STANDARD_METHODS);
@@ -82,7 +82,7 @@ public class SecurityConstraintCollectionImpl implements SecurityConstraintColle
         }
 
         for (String method : methodList) {
-            MatchResponse match = getMatchResponse(resourceName, method);
+            MatchResponse match = MatchingStrategy.match(this, resourceName, method);
             matchResponses.add(match);
         }
         return matchResponses;
