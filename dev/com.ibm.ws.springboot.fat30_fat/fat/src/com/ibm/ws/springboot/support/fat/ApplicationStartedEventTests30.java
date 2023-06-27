@@ -27,27 +27,83 @@ import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class ApplicationStartedEventTests30 extends CommonWebServerTests {
-    @Override
-    public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
-    }
 
-    @Override
-    public String getApplication() {
-        return SPRING_BOOT_30_APP_BASE;
-    }
-
+    /**
+     * Override: Add state change service trace enablement to
+     * the bootstrap properties.
+     *
+     * @return The bootstrap properties used by this test class.
+     */
     @Override
     public Map<String, String> getBootStrapProperties() {
         Map<String, String> result = super.getBootStrapProperties();
-        result.put("com.ibm.ws.logging.trace.specification", "com.ibm.ws.container.service.state.internal.StateChangeServiceImpl=FINEST");
+        result.put("com.ibm.ws.logging.trace.specification",
+                   "com.ibm.ws.container.service.state.internal.StateChangeServiceImpl=FINEST");
         return result;
     }
 
+    //
+
+    /**
+     * Test method: Verify that the application and then the module started.
+     */
     @Test
     public void testApplicationStartedAfterModuleStarted() throws Exception {
-        assertNotNull("No ApplicationStarted event.", server.waitForStringInTraceUsingLastOffset("fireApplicationStarted Entry"));
-        assertNull("ModuleStarted event fired after ApplicationStarted event", server.waitForStringInTraceUsingLastOffset("fireModuleStarted Entry", 10000));
+        requireServerTrace("No ApplicationStarted event.",
+                           "fireApplicationStarted Entry");
+
+        forbidServerTrace("ModuleStarted event fired after ApplicationStarted event",
+                          "fireModuleStarted Entry", 10000);
     }
 
+    // Full expected event pattern:
+    // StateChangeServiceImpl > fireApplicationStarting Entry
+    //   ApplicationInfoImpl@1247d83e[com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT]
+    // StateChangeServiceImpl < fireApplicationStarting Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStarting Entry
+    //   SpringBootModuleInfo@defffa41
+    // StateChangeServiceImpl < fireModuleStarting Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStarted Entry
+    //   SpringBootModuleInfo@defffa41
+    // StateChangeServiceImpl < fireModuleStarted Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStarting Entry
+    //   com.ibm.ws.app.manager.module.internal.WebModuleInfoImpl@9ba3d5d7
+    // StateChangeServiceImpl < fireModuleStarting Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStarted Entry
+    //   com.ibm.ws.app.manager.module.internal.WebModuleInfoImpl@9ba3d5d7
+    // StateChangeServiceImpl < fireModuleStarted Exit
+    // 
+    // StateChangeServiceImpl > fireApplicationStarted Entry
+    //   ApplicationInfoImpl@1247d83e[com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT]
+    // StateChangeServiceImpl < fireApplicationStarted Exit
+    // 
+    // --
+    // 
+    // StateChangeServiceImpl > fireApplicationStopping Entry
+    //   ApplicationInfoImpl@1247d83e[com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT]
+    // StateChangeServiceImpl < fireApplicationStopping Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStopping Entry
+    //   SpringBootModuleInfo@defffa41
+    // StateChangeServiceImpl < fireModuleStopping Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStopping Entry
+    //   WebModuleInfoImpl@9ba3d5d7
+    // StateChangeServiceImpl < fireModuleStopping Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStopped Entry
+    //   WebModuleInfoImpl@9ba3d5d7
+    // StateChangeServiceImpl < fireModuleStopped Exit
+    // 
+    // StateChangeServiceImpl > fireModuleStopped Entry
+    //   SpringBootModuleInfo@defffa41
+    // StateChangeServiceImpl < fireModuleStopped Exit
+    // 
+    // StateChangeServiceImpl > fireApplicationStopped Entry
+    //   ApplicationInfoImpl@1247d83e[com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT]
+    // StateChangeServiceImpl < fireApplicationStopped Exit
 }

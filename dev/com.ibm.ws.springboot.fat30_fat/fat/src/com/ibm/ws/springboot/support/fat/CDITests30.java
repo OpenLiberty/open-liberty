@@ -28,6 +28,11 @@ import componenttest.custom.junit.runner.Mode;
 @Mode(FULL)
 public class CDITests30 extends CommonWebServerTests {
 
+    @After
+    public void stopTestServer() throws Exception {
+        super.stopServer(true);
+    }
+
     @Override
     public String getApplication() {
         return SPRING_BOOT_30_APP_BASE;
@@ -35,17 +40,12 @@ public class CDITests30 extends CommonWebServerTests {
 
     @Override
     public Set<String> getFeatures() {
-        Set<String> features = new HashSet<>(3);
-        features.add("springBoot-3.0");
-        features.add("servlet-6.0");
+        Set<String> features = getWebFeatures();
         features.add("cdi-4.0");
         return features;
     }
 
-    @After
-    public void stopTestServer() throws Exception {
-        super.stopServer(true);
-    }
+    //
 
     @Test
     public void testSpringBootApp30WithCDIFeatureEnabled() throws Exception {

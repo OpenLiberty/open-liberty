@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,28 +22,34 @@ import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
 
+/**
+ * Run the basic web application tests on the base application.
+ */
 @RunWith(FATRunner.class)
 public class ApplicationArgsTests30 extends CommonWebServerTests {
     private static int TEST_PORT = 8082;
 
     @BeforeClass
-    public static void setExtraArguments() {
-        extraServerArgs.addAll(Arrays.asList("--", "--server.liberty.useDefaultHost=false", "--server.port=" + TEST_PORT));
+    public static void setupTest() {
+        server.setHttpDefaultPort(TEST_PORT);
+
+        setExtraArguments();
     }
 
+    public static void setExtraArguments() {
+        extraServerArgs.add("--");
+        extraServerArgs.add("--server.liberty.useDefaultHost=false");
+        extraServerArgs.add("--server.port=" + TEST_PORT);
+    }
+
+    //
+
+    /**
+     * Test method: Verify that the spring boot application
+     * answers the expected message for the default request.
+     */
     @Test
     public void testServerAppArgs() throws Exception {
-        server.setHttpDefaultPort(TEST_PORT);
         testBasicSpringBootApplication();
-    }
-
-    @Override
-    public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
-    }
-
-    @Override
-    public String getApplication() {
-        return SPRING_BOOT_30_APP_BASE;
     }
 }

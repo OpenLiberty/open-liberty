@@ -26,7 +26,7 @@ import componenttest.topology.utils.HttpUtils;
 public class ConfigDropinRootTests30 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
+        return getWebFeatures();
     }
 
     @Override
@@ -38,6 +38,8 @@ public class ConfigDropinRootTests30 extends AbstractSpringTests {
     public AppConfigType getApplicationConfigType() {
         return AppConfigType.DROPINS_ROOT;
     }
+
+    //
 
     @Test
     public void testDropinsRoot() throws Exception {

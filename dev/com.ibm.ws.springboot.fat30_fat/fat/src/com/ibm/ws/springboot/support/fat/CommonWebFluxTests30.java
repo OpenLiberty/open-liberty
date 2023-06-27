@@ -26,27 +26,19 @@ import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
 public class CommonWebFluxTests30 extends CommonWebFluxTests {
-    @Test
-    public void testBasicWebFluxtAppServlet60() throws Exception {
-        testBasicSpringBootApplication();
-    }
 
     @Override
     public Map<String, String> getBootStrapProperties() {
         Map<String, String> properties = new HashMap<>();
         // add channel trace for RTC defect 266559
-        properties.put("com.ibm.ws.logging.trace.specification", "*=info:HTTPChannel=all:TCPChannel=all:GenericBNF=all:ChannelFramework=all");
+        properties.put("com.ibm.ws.logging.trace.specification",
+                       "*=info:HTTPChannel=all:TCPChannel=all:GenericBNF=all:ChannelFramework=all");
         return properties;
-    }
-
-    @Test
-    public void testBlockingIOServlet60() throws IOException, InterruptedException {
-        testBlockingIO();
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
+        return getWebFeatures();
     }
 
     @Override
@@ -54,4 +46,15 @@ public class CommonWebFluxTests30 extends CommonWebFluxTests {
         return SPRING_BOOT_30_APP_WEBFLUX;
     }
 
+    //
+
+    @Test
+    public void testBasicWebFluxtAppServlet60() throws Exception {
+        testBasicSpringBootApplication();
+    }
+
+    @Test
+    public void testBlockingIOServlet60() throws IOException, InterruptedException {
+        testBlockingIO();
+    }
 }

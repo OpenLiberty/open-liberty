@@ -39,20 +39,33 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
-    private static final int APP_MAIN_PORT = 8095;
-    private static final int APP_ACTUATOR_PORT = 8096;
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
+        Map<String, String> properties = new HashMap<>();
+        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
+            properties.put("bvt.prop.HTTP_default", "-1");
+            properties.put("bvt.prop.HTTP_default.secure", "-1");
+        }
+        return properties;
+    }
 
-    private static final int OVERRIDE_MAIN_PORT = 9095;
-    private static final int OVERRIDE_ACTUATOR_PORT = 9096;
-
-    private static final String DEFAULT_MAIN_CONFIG_ACTUATOR = "useDefaultHostForMainConfigActuatorPorts";
-    private static final String DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR = "useDefaultHostWithAppPortForMainConfigActuatorPorts";
-    private static final String CONFIG_MAIN_CONFIG_ACTUATOR = "useConfigForMainAndActuatorPorts";
-    private static final String OVERRIDE_MAIN_OVERRIDE_ACTUATOR = "useOverrideForMainAndActuatorPorts";
+    @Override
+    public boolean useDefaultVirtualHost() {
+        String methodName = testName.getMethodName();
+        if ( methodName == null ) {
+            return true;
+        } else if ( methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) ||
+                    methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR) ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
+        return getWebFeatures();
     }
 
     @Override
@@ -65,31 +78,13 @@ public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
-    @Override
-    public Map<String, String> getBootStrapProperties() {
-        String methodName = testName.getMethodName();
-        Map<String, String> properties = new HashMap<>();
-        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
-            properties.put("bvt.prop.HTTP_default", "-1");
-            properties.put("bvt.prop.HTTP_default.secure", "-1");
-        }
-        return properties;
-    }
+    private static final String DEFAULT_MAIN_CONFIG_ACTUATOR = "useDefaultHostForMainConfigActuatorPorts";
+    private static final String DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR = "useDefaultHostWithAppPortForMainConfigActuatorPorts";
+    private static final String CONFIG_MAIN_CONFIG_ACTUATOR = "useConfigForMainAndActuatorPorts";
+    private static final String OVERRIDE_MAIN_OVERRIDE_ACTUATOR = "useOverrideForMainAndActuatorPorts";
 
-    @Override
-    public boolean useDefaultVirtualHost() {
-        String methodName = testName.getMethodName();
-        if (methodName == null) {
-            return true;
-        }
-
-        if (methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) || //
-            methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
-            return false;
-        }
-
-        return true;
-    }
+    private static final int APP_MAIN_PORT = 8095;
+    private static final int APP_ACTUATOR_PORT = 8096;
 
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
@@ -98,24 +93,28 @@ public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
         appArgs.add("--endpoints.sensitive=false");
 
         String methodName = testName.getMethodName();
-        if (methodName == null) {
+        if ( methodName == null ) {
             return;
         }
 
-        if (methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR) || //
-            methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) || //
-            methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR) ||
-            methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+        if ( methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR) ||
+             methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) ||
+             methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR) ||
+             methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
             appArgs.add("--management.server.port=" + APP_ACTUATOR_PORT);
         }
     }
 
+    private static final int OVERRIDE_MAIN_PORT = 9095;
+    private static final int OVERRIDE_ACTUATOR_PORT = 9096;
+
     @Override
     public void modifyServerConfiguration(ServerConfiguration config) {
         String methodName = testName.getMethodName();
-        if (methodName == null) {
+        if ( methodName == null ) {
             return;
         }
+
         List<VirtualHost> virtualHosts = config.getVirtualHosts();
         virtualHosts.clear();
         List<HttpEndpoint> endpoints = config.getHttpEndpoints();
@@ -125,7 +124,7 @@ public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();
 
-        if (methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
+        if ( methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR) ) {
             VirtualHost mainHost = new VirtualHost();
             virtualHosts.add(mainHost);
             mainHost.setId(ID_VIRTUAL_HOST + APP_MAIN_PORT);
@@ -150,25 +149,23 @@ public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
 
     @Override
     public List<String> getExpectedWebApplicationEndpoints() {
+        List<String> expectedEndpoints = new ArrayList<String>( super.getExpectedWebApplicationEndpoints() );
+
         String methodName = testName.getMethodName();
-        List<String> expectedEndpoints = new ArrayList<String>(super.getExpectedWebApplicationEndpoints());
-        if (methodName != null) {
-
-            if (methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR)) {
+        if ( methodName != null ) {
+            if ( methodName.equals(DEFAULT_MAIN_CONFIG_ACTUATOR) ) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
-
-            } else if (methodName.equals(DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR)) {
+            } else if ( methodName.equals(DEFAULT_APP_PORT_MAIN_CONFIG_ACTUATOR) ) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
-
-            } else if (methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR)) {
+            } else if ( methodName.equals(CONFIG_MAIN_CONFIG_ACTUATOR) ) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
-
-            } else if (methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR)) {
+            } else if ( methodName.equals(OVERRIDE_MAIN_OVERRIDE_ACTUATOR) ) {
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_MAIN_PORT);
                 expectedEndpoints.add(ID_VIRTUAL_HOST + APP_ACTUATOR_PORT);
             }
         }
+
         return expectedEndpoints;
     }
 
@@ -180,18 +177,19 @@ public class ConfigActuatorXMLOverrideTests30 extends AbstractSpringTests {
     @After
     public void stopTestServer() throws Exception {
         String methodName = testName.getMethodName();
-        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
             super.stopServer(true, "CWWKT0015W");
         } else {
             super.stopServer();
         }
     }
 
+    //
+
     @Test
     public void useDefaultHostForMainAndActuatorPorts() throws Exception {
         server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
-
         HttpUtils.findStringInUrl(server, "actuator/health", "UP");
     }
 

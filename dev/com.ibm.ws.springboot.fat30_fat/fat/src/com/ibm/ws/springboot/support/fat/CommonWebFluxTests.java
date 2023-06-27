@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class CommonWebFluxTests extends CommonWebServerTests {
+public abstract class CommonWebFluxTests extends CommonWebServerTests {
 
     @Override
     public String getApplication() {

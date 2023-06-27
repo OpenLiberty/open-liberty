@@ -41,17 +41,11 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
-    private static final String OVERRIDE_VIRTUAL_HOST = "OverrideVirtualHost";
-    private static final String OVERRIDE_HTTP_ENDPOINT = "OverrideHttpEndpoint";
-    private static final String OVERRIDE_SSL = "OverrideSSL";
-    private static final String OVERRIDE_KEYSTORES = "OverrideKeyStores";
-
-    private static final int REQUESTED_PORT = 8095;
-    private static final int TEST_PORT = 8083;
-
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0", "transportSecurity-1.0"));
+        Set<String> features = getWebFeatures();
+        features.add("transportSecurity-1.0");
+        return features;
     }
 
     @Override
@@ -68,7 +62,7 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
     public Map<String, String> getBootStrapProperties() {
         String methodName = testName.getMethodName();
         Map<String, String> properties = new HashMap<>();
-        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
             properties.put("bvt.prop.HTTP_default", "-1");
             properties.put("bvt.prop.HTTP_default.secure", "-1");
         }
@@ -78,21 +72,27 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
     @Override
     public boolean useDefaultVirtualHost() {
         String methodName = testName.getMethodName();
-        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
             return true;
         }
         return false;
     }
 
+    private static final String OVERRIDE_VIRTUAL_HOST = "OverrideVirtualHost";
+    private static final String OVERRIDE_HTTP_ENDPOINT = "OverrideHttpEndpoint";
+    private static final String OVERRIDE_SSL = "OverrideSSL";
+    private static final String OVERRIDE_KEYSTORES = "OverrideKeyStores";
+
     @Override
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
         List<String> appArgs = appConfig.getApplicationArguments();
         appArgs.add("--server.port=" + REQUESTED_PORT);
+
         String methodName = testName.getMethodName();
-        if (methodName == null) {
+        if ( methodName == null ) {
             return;
         }
-        if (methodName.endsWith(OVERRIDE_SSL) || methodName.endsWith(OVERRIDE_KEYSTORES)) {
+        if ( methodName.endsWith(OVERRIDE_SSL) || methodName.endsWith(OVERRIDE_KEYSTORES) ) {
             appArgs.add("--server.ssl.key-store=classpath:server-keystore.jks");
             appArgs.add("--server.ssl.key-store-password=secret");
             appArgs.add("--server.ssl.key-password=secret");
@@ -101,12 +101,16 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
         }
     }
 
+    private static final int REQUESTED_PORT = 8095;
+    private static final int TEST_PORT = 8083;
+
     @Override
     public void modifyServerConfiguration(ServerConfiguration config) {
         String methodName = testName.getMethodName();
-        if (methodName == null) {
+        if ( methodName == null ) {
             return;
         }
+
         List<VirtualHost> virtualHosts = config.getVirtualHosts();
         virtualHosts.clear();
         List<HttpEndpoint> endpoints = config.getHttpEndpoints();
@@ -116,7 +120,7 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();
 
-        if (methodName.endsWith(OVERRIDE_VIRTUAL_HOST)) {
+        if ( methodName.endsWith(OVERRIDE_VIRTUAL_HOST) ) {
             VirtualHost virtualHost = new VirtualHost();
             virtualHosts.add(virtualHost);
             virtualHost.setId(ID_VIRTUAL_HOST + REQUESTED_PORT);
@@ -127,7 +131,7 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
             endpoint.setHttpPort(Integer.toString(TEST_PORT));
         }
 
-        else if (methodName.endsWith(OVERRIDE_HTTP_ENDPOINT)) {
+        else if ( methodName.endsWith(OVERRIDE_HTTP_ENDPOINT) ) {
 
             // the test overrides the http endpoint, but to verify we also
             // configure that endpoint to use ssl
@@ -157,7 +161,7 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
             trustStore.setPassword("secret");
         }
 
-        else if (methodName.endsWith(OVERRIDE_SSL)) {
+        else if ( methodName.endsWith(OVERRIDE_SSL) ) {
             SSL ssl = new SSL();
             ssls.add(ssl);
             ssl.setId(ID_SSL + REQUESTED_PORT);
@@ -177,7 +181,7 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
             trustStore.setPassword("secret");
         }
 
-        else if (methodName.endsWith(OVERRIDE_KEYSTORES)) {
+        else if ( methodName.endsWith(OVERRIDE_KEYSTORES) ) {
             KeyStore keyStore = new KeyStore();
             keystores.add(keyStore);
             keyStore.setId(ID_KEY_STORE + REQUESTED_PORT);
@@ -206,6 +210,8 @@ public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
             super.stopServer();
         }
     }
+
+    //
 
     @Test
     public void configServerXMLOverrideVirtualHost() throws Exception {

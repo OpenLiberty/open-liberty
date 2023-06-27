@@ -195,6 +195,12 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             System.out.println("The Spring Servlet function was not located.");
         }
 
+        // if ( isClassAvailable("org.springframework.web.socket.WebSocketHandler") ) {
+        //     if ( !isClassAvailable("javax.websocket.WebSocketContainer") ) {
+        //         throw new ApplicationError(Type.ERROR_MISSING_WEBSOCKET_FEATURE);
+        //     }
+        // }
+
         String webSocketHandlerClassName = "org.springframework.web.socket.WebSocketHandler";
 
         if ( isClassAvailable(webSocketHandlerClassName) ) {

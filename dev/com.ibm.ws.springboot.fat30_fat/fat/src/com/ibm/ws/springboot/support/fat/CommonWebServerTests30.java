@@ -32,7 +32,7 @@ public class CommonWebServerTests30 extends CommonWebServerTests {
     @After
     public void stopTestServer() throws Exception {
         String methodName = testName.getMethodName();
-        if (methodName != null && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
             super.stopServer(true, "CWWKT0015W");
         } else {
             super.stopServer();
@@ -40,14 +40,11 @@ public class CommonWebServerTests30 extends CommonWebServerTests {
     }
 
     @Override
-    public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
-    }
-
-    @Override
     public String getApplication() {
         return SPRING_BOOT_30_APP_BASE;
     }
+
+    //
 
     @Test
     public void testBasicSpringBootApplication30Servlet60() throws Exception {
@@ -56,6 +53,8 @@ public class CommonWebServerTests30 extends CommonWebServerTests {
 
     @Test
     public void testDefaultHostWithAppPort30() throws Exception {
+        // A variation of 'testBasicSpringBootApplication30Servlet60'.
+        // The different behavior is triggered by the test name.
         testBasicSpringBootApplication();
     }
 }
