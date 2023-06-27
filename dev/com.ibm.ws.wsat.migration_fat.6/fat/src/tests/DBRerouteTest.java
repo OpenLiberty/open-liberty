@@ -12,48 +12,34 @@
  *******************************************************************************/
 package tests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import suite.FATSuite;
 
 @RunWith(FATRunner.class)
 public class DBRerouteTest extends SimpleTest {
-
     private static final String POSTGRES_DB = "testdb";
     private static final String POSTGRES_USER = "postgresUser";
     private static final String POSTGRES_PASS = "superSecret";
-    public static PostgreSQLContainer testContainer;
+
+    public static JdbcDatabaseContainer<?> testContainer;
 
 	@Server("MigrationServer3")
 	public static LibertyServer server3;
@@ -78,14 +64,12 @@ public class DBRerouteTest extends SimpleTest {
 	        }
 	    };
 
-	    // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-	    testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
-	                    .withDatabaseName(POSTGRES_DB)
-	                    .withUsername(POSTGRES_USER)
-	                    .withPassword(POSTGRES_PASS)
-	                    .withSSL()
-	                    .withLogConsumer(new SimpleLogConsumer(DBRerouteTest.class, "postgre-ssl"));
-
+        testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
+                .withDatabaseName(POSTGRES_DB)
+                .withUsername(POSTGRES_USER)
+                .withPassword(POSTGRES_PASS)
+                .withSSL()
+                .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
         testContainer.setStartupAttempts(2);
         testContainer.start();
 

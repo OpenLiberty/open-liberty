@@ -359,7 +359,7 @@ public class ProtocolImpl {
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_REC_REF, String.class, wrapper.getRecoveryID()));
 
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "{0} needs to go to\n{1}", messageType, DebugUtils.printEPR(toEpr));
+            Tr.debug(TC, "REROUTE {0} needs to go to\n{1}", messageType, DebugUtils.printEPR(toEpr));
         }
 
         WSATCoordinator coord = new WSATCoordinator(globalId, toEpr);

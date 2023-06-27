@@ -45,7 +45,7 @@ public class WSATUtil {
         try {
             URL origURL = new URL(origAddr);
             URL recoveryURL = new URL(newAddr);
-            redirectURL = new URL(origURL.getProtocol(), recoveryURL.getHost(), recoveryURL.getPort(), origURL.getFile());
+            redirectURL = new URL(recoveryURL.getProtocol(), recoveryURL.getHost(), recoveryURL.getPort(), origURL.getFile());
         } catch (MalformedURLException e) {
             return null;
         }

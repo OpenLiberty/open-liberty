@@ -42,11 +42,11 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class LPSTest {
-	@Server("WSATRecovery1")
+	@Server("WSATRecoveryClient1")
 	public static LibertyServer server1;
 	private static String BASE_URL;
 
-	@Server("WSATRecovery2")
+	@Server("WSATRecoveryServer1")
 	public static LibertyServer server2;
 	private static String BASE_URL2;
 

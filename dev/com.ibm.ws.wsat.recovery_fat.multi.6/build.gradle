@@ -10,34 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
-
-configurations {
-    postgres
-}
-
 dependencies {
   requiredLibs project(":com.ibm.ws.wsat.recovery_fat.lps"),
                project(":com.ibm.ws.wsat.recovery_fat.multi.1"),
                project(":com.ibm.ws.transaction.fat.util")
-}
-
-dependencies {
-  postgres 'org.postgresql:postgresql:42.4.2'
-}
-
-task copySharedPostgres(type: Copy) {
-  mustRunAfter jar
-  from configurations.postgres
-  into new File(autoFvtDir, 'publish/shared/resources/postgres')
-  rename 'postgresql-.*.jar', 'postgresql.jar'
-}
-
-task copyAnonymousPostgres(type: Copy) {
-  mustRunAfter jar
-  from configurations.postgres
-  into new File(autoFvtDir, 'publish/servers/ssl-recovery/jdbc')
-  rename 'postgresql-.*.jar', 'driver.jar'
 }
 
 autoFVT.doLast {
@@ -50,7 +26,6 @@ autoFVT.doLast {
 
 autoFVT.dependsOn project(':com.ibm.ws.wsat.recovery_fat.lps').autoFVT
 
-addRequiredLibraries.dependsOn copySharedPostgres
-addRequiredLibraries.dependsOn copyAnonymousPostgres
+addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer

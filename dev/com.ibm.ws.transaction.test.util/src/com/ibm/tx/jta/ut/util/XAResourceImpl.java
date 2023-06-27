@@ -1351,25 +1351,25 @@ public class XAResourceImpl implements XAResource, Serializable {
 
         if (committed > 0) {
             if (committed != numResources) {
-                return "Unatomic";
+                return "Unatomic ("+numResources+")";
             }
 
-            return "allCommitted";
+            return "allCommitted ("+numResources+")";
         }
 
         if (rolledback > 0) {
             if (rolledback != numResources) {
-                return "Unatomic";
+                return "Unatomic ("+numResources+")";
             }
 
-            return "allRollback";
+            return "allRollback ("+numResources+")";
         }
 
         if (prepared > 0) {
-            return "Unatomic";
+            return "Unatomic ("+numResources+")";
         }
 
-        return "allRollback";
+        return "allRollback ("+numResources+")";
     }
 
     public static boolean checkForgotten() {

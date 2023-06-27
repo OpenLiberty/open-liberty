@@ -27,7 +27,7 @@
     leaseLength="10m"
     recoverOnStartup="true"
     recoveryGroup="recovery-group-1"
-    recoveryIdentity="WSATRecovery1"
+    recoveryIdentity="WSATRecoveryClient1"
     waitForRecovery="false"
   />
 

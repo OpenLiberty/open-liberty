@@ -47,7 +47,7 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	@Server("WSATRecovery3")
 	public static LibertyServer server3;
 
-	public static String[] serverNames = new String[] {"WSATRecovery1", "WSATRecovery2", "WSATRecovery3"};
+	public static String[] serverNames = new String[] {"WSATRecoveryClient1", "WSATRecoveryServer1", "WSATRecovery3"};
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {

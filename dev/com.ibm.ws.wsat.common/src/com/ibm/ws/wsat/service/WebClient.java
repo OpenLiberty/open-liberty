@@ -29,7 +29,7 @@ import com.ibm.ws.wsat.service.impl.WebClientImpl;
  */
 public abstract class WebClient {
 
-    private static WebClient testClient = null;
+    private static WebClient testClient;
 
     public static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
     public static final String DEFAULT_ASYNC_TIMEOUT = "30000";
@@ -41,14 +41,7 @@ public abstract class WebClient {
         }
     });
 
-    /*
-     * Factory to return WebClient instances. This allows us to consider caching the clients
-     * (if that makes sense) and allows for overriding for unit tests.
-     */
     public static WebClient getWebClient(WSATEndpoint toEpr, WSATEndpoint fromEpr) {
-        if (testClient != null) {
-            return testClient;
-        }
         return new WebClientImpl(toEpr, fromEpr);
     }
 

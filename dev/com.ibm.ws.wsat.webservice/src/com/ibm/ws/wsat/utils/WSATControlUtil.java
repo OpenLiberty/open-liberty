@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.service.Protocol;
 import com.ibm.ws.wsat.service.ProtocolServiceWrapper;
@@ -46,6 +47,7 @@ public class WSATControlUtil {
 
     private static WSATControlUtil instance = null;
 
+    @Trivial
     public static WSATControlUtil getInstance() {
         if (instance == null) {
             instance = new WSATControlUtil();
