@@ -18,15 +18,15 @@ public class PrivateKeyJwtAuthMissingKeyException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final String clientId;
+    private final String configurationId;
 
-    public PrivateKeyJwtAuthMissingKeyException(String clientId) {
-        this.clientId = clientId;
+    public PrivateKeyJwtAuthMissingKeyException(String configurationId) {
+        this.configurationId = configurationId;
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_SIGNING_KEY", clientId);
+        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_SIGNING_KEY", configurationId);
     }
 
 }

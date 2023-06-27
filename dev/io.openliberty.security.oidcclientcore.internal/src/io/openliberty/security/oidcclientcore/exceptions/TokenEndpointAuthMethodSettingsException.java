@@ -18,19 +18,19 @@ public class TokenEndpointAuthMethodSettingsException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final String clientId;
+    private final String configurationId;
     private final String authMethod;
     private final String nlsMessage;
 
-    public TokenEndpointAuthMethodSettingsException(String clientId, String authMethod, String nlsMessage) {
-        this.clientId = clientId;
+    public TokenEndpointAuthMethodSettingsException(String configurationId, String authMethod, String nlsMessage) {
+        this.configurationId = configurationId;
         this.authMethod = authMethod;
         this.nlsMessage = nlsMessage;
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR", clientId, authMethod, nlsMessage);
+        return Tr.formatMessage(tc, "TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR", configurationId, authMethod, nlsMessage);
     }
 
 }

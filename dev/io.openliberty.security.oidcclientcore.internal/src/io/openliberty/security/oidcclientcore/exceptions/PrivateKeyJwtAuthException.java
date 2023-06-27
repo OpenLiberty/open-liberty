@@ -18,17 +18,17 @@ public class PrivateKeyJwtAuthException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final String clientId;
+    private final String configurationId;
     private final String nlsMessage;
 
-    public PrivateKeyJwtAuthException(String clientId, String nlsMessage) {
-        this.clientId = clientId;
+    public PrivateKeyJwtAuthException(String configurationId, String nlsMessage) {
+        this.configurationId = configurationId;
         this.nlsMessage = nlsMessage;
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_AUTH_ERROR", clientId, nlsMessage);
+        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_AUTH_ERROR", configurationId, nlsMessage);
     }
 
 }

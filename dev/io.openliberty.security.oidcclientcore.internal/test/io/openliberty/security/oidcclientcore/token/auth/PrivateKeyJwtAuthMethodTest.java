@@ -62,6 +62,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
     private final SSLSupport sslSupport = mockery.mock(SSLSupport.class);
     private final JSSEHelper jsseHelper = mockery.mock(JSSEHelper.class);
 
+    private final String configurationId = "myOidcClientConfig";
     private String clientId;
     private final String tokenEndpointUrl = "https://somehost/path/to/token";
     private final String clientAssertionSigningAlgorithm = "RS256";
@@ -90,7 +91,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         SecuritySSLUtils sslUtils = new SecuritySSLUtils();
         sslUtils.setSslSupport(sslSupport);
 
-        authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, keyAliasName) {
+        authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, keyAliasName) {
             @Override
             String getX5tForPublicKey() throws Exception {
                 return "x5t_" + testName.getMethodName();
@@ -115,7 +116,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
     @Test
     public void test_constructor_missingKeyAliasNAme() throws Exception {
         try {
-            authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, null);
+            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, null);
             fail("Should have thrown an exception, but didn't.");
         } catch (TokenEndpointAuthMethodSettingsException e) {
             verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME);
@@ -129,7 +130,8 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
             authMethod.setAuthMethodSpecificSettings(tokenRequestBuilder);
             fail("Should have thrown an exception, but didn't.");
         } catch (TokenEndpointAuthMethodSettingsException e) {
-            verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR + ".+" + CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY);
+            verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR + ".+"
+                               + CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY);
         }
     }
 
@@ -139,8 +141,10 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         getPrivateKeyFromKeystoreExpectations(privateKey);
 
         HashMap<String, String> parameters = authMethod.getPrivateKeyJwtParameters();
-        assertEquals(TokenConstants.CLIENT_ASSERTION_TYPE + " paramter value did not match expected value.", TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER, parameters.get(TokenConstants.CLIENT_ASSERTION_TYPE));
-        assertTrue("Parameters did not include the required " + TokenConstants.CLIENT_ASSERTION + " parameter. Parameters were: " + parameters, parameters.containsKey(TokenConstants.CLIENT_ASSERTION));
+        assertEquals(TokenConstants.CLIENT_ASSERTION_TYPE + " paramter value did not match expected value.", TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER,
+                     parameters.get(TokenConstants.CLIENT_ASSERTION_TYPE));
+        assertTrue("Parameters did not include the required " + TokenConstants.CLIENT_ASSERTION + " parameter. Parameters were: " + parameters,
+                   parameters.containsKey(TokenConstants.CLIENT_ASSERTION));
         String jwt = parameters.get(TokenConstants.CLIENT_ASSERTION);
         verifyPrivateKeyJwt(jwt);
     }

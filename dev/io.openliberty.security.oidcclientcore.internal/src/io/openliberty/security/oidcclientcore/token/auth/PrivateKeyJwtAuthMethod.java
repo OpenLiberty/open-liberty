@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -57,6 +58,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
 
     private static boolean issuedBetaMessage = false;
 
+    private String configurationId;
     private String clientId;
     private String tokenEndpoint;
     private String clientAssertionSigningAlgorithm;
@@ -69,20 +71,22 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     public PrivateKeyJwtAuthMethod() {
     }
 
-    public PrivateKeyJwtAuthMethod(String clientId, String tokenEndpoint, String clientAssertionSigningAlgorithm, String sslRef,
-                                   String keyAliasName) throws TokenEndpointAuthMethodSettingsException {
+    public PrivateKeyJwtAuthMethod(String configurationId, String clientId, String tokenEndpoint, String clientAssertionSigningAlgorithm,
+                                   String sslRef, String keyAliasName) throws TokenEndpointAuthMethodSettingsException {
+        this.configurationId = configurationId;
         this.clientId = clientId;
         this.tokenEndpoint = tokenEndpoint;
         this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;
         this.sslRef = sslRef;
         this.keyAliasName = keyAliasName;
         if (keyAliasName == null || keyAliasName.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME", clientId);
-            throw new TokenEndpointAuthMethodSettingsException(clientId, AUTH_METHOD, errorMsg);
+            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME", configurationId);
+            throw new TokenEndpointAuthMethodSettingsException(configurationId, AUTH_METHOD, errorMsg);
         }
     }
 
     @Override
+    @FFDCIgnore(PrivateKeyJwtAuthException.class)
     public void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException {
         if (!isRunningBetaMode()) {
             return;
@@ -90,8 +94,8 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         try {
             HashMap<String, String> customParams = getPrivateKeyJwtParameters();
             tokenRequestBuilder.customParams(customParams);
-        } catch (Exception e) {
-            throw new TokenEndpointAuthMethodSettingsException(clientId, AUTH_METHOD, e.getMessage());
+        } catch (PrivateKeyJwtAuthException e) {
+            throw new TokenEndpointAuthMethodSettingsException(configurationId, AUTH_METHOD, e.getMessage());
         }
     }
 
@@ -116,13 +120,14 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         return parameters;
     }
 
+    @FFDCIgnore(Exception.class)
     public String createPrivateKeyJwt() throws PrivateKeyJwtAuthException {
         String jwt = null;
         try {
             JwtClaims claims = populateJwtClaims();
             jwt = getSignedJwt(claims);
         } catch (Exception e) {
-            throw new PrivateKeyJwtAuthException(clientId, e.getMessage());
+            throw new PrivateKeyJwtAuthException(configurationId, e.getMessage());
         }
         return jwt;
     }
@@ -141,7 +146,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     private String getSignedJwt(JwtClaims claims) throws Exception {
         PrivateKey clientAssertionSigningKey = getPrivateKeyForClientAuthentication();
         if (clientAssertionSigningKey == null) {
-            throw new PrivateKeyJwtAuthMissingKeyException(clientId);
+            throw new PrivateKeyJwtAuthMissingKeyException(configurationId);
         }
 
         JsonWebSignature jws = new JsonWebSignature();
@@ -159,10 +164,15 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     PrivateKey getPrivateKeyForClientAuthentication() throws Exception {
         String keyStoreRef = sslUtils.getKeyStoreRef(sslRef);
         if (keyStoreRef == null || keyStoreRef.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF", clientId);
+            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF", configurationId);
             throw new Exception(errorMsg);
         }
-        return keyStoreService.getPrivateKeyFromKeyStore(keyStoreRef, keyAliasName, null);
+        try {
+            return keyStoreService.getPrivateKeyFromKeyStore(keyStoreRef, keyAliasName, null);
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY", keyAliasName, keyStoreRef, e.getMessage());
+            throw new Exception(errorMsg, e);
+        }
     }
 
     private void setHeaderValues(JsonWebSignature jws) throws Exception {
@@ -176,8 +186,13 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         if (storeRef == null || storeRef.isEmpty()) {
             storeRef = sslUtils.getKeyStoreRef(sslRef);
         }
-        X509Certificate x509Cert = keyStoreService.getX509CertificateFromKeyStore(storeRef, keyAliasName);
-        return X509Util.x5t(x509Cert);
+        try {
+            X509Certificate x509Cert = keyStoreService.getX509CertificateFromKeyStore(storeRef, keyAliasName);
+            return X509Util.x5t(x509Cert);
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY", keyAliasName, storeRef, e.getMessage());
+            throw new Exception(errorMsg, e);
+        }
     }
 
 }
