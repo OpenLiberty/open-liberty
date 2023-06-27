@@ -137,7 +137,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (defaultEntityClass.isRecord())
             try {
                 recordClass = defaultEntityClass;
-                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Record");
+                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
             } catch (ClassNotFoundException x) {
                 // TODO figure out how to best report this error to the user
                 throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
@@ -2392,7 +2392,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             try {
                 final Object recordObj = o;
                 entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Record");
+                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
                     Constructor<?> ctor = entityClass.getConstructor(oClass);
                     return ctor.newInstance(recordObj);
                 });
