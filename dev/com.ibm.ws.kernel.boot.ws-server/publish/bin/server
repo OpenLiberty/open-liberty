@@ -1046,7 +1046,12 @@ javaCmd()
     # trap on the signals here to ensure the background tail process ends.
     trap "exit" INT TERM
     trap "killSilent $TAIL_PID" EXIT
-    "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
+    #On some shells (bash) the shell will issue an ugly message to STDERR when criu kills the process.
+    # We direct STDERR to /dev/null to avoid that noise.
+    {
+      #  Launch with stdin set to /dev/null to avoid file-handle complications on criu restore
+      "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
+    } 2> /dev/null
     rc=$?
     if [ $rc -eq 20 ]; then
       # bad checkpoint arg; sleep to allow the message to go to tail
