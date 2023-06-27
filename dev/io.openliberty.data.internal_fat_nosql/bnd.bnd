@@ -33,4 +33,3 @@ fat.project: true
 	io.openliberty.jakarta.servlet.6.0,\
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.org.eclipse.microprofile.config.3.0,\
-	io.openliberty.org.eclipse.jnosql.1.0

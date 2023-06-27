@@ -26,9 +26,21 @@
   <include location="../fatTestPorts.xml"/>
 
 
-  <application location="DataNoSQLApp.war"/>
+  <application location="DataNoSQLApp.war">
+  	<classloader commonLibraryRef="jnosql"/>
+  </application>
+
+
+  <library id="jnosql">
+    <fileset dir="${shared.resource.dir}/jnosql" includes="*.jar" />
+  </library>
+  
+  
   
   <variable name="jnosql.document.database" value="testDb"/>
   <variable name="jnosql.mongodb.host" value="localhost:27017"/>
+  
+  <!-- TODO: Should we still be testing with Java Security on Java 17+ since it's being deprecated? -->
+  <javaPermission codeBase="${shared.resource.dir}/jnosql/classgraph-4.8.151.jar" className="java.security.AllPermission"/>
 
 </server>

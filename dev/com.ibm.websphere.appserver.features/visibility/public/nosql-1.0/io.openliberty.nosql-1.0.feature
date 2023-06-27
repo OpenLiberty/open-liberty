@@ -13,12 +13,10 @@ Subsystem-Name: Jakarta NoSQL 1.0
 -features=\
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.jakarta.nosql-1.0
+
 -bundles=\
   io.openliberty.java17.internal, \
-  io.openliberty.org.eclipse.jnosql.1.0,\
-  io.openliberty.jakarta.data.1.0; location:="dev/api/spec/",\
-  io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/",\
-  io.openliberty.org.eclipse.microprofile.config.3.0; location:="dev/api/stable/"
+
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
