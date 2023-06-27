@@ -18,6 +18,10 @@ Export-Package: \
   io.openliberty.microprofile.reactive.streams.operators30.cdi*
     
 Import-Package: \
+  jakarta.enterprise.context; version="[3.0,5)",\
+  jakarta.enterprise.event;version="[3.0,5)",\
+  jakarta.enterprise.inject.spi;version="[3.0,5)",\
+  jakarta.enterprise.inject;version="[3.0,5)",\
   *
     
 Include-Resource: \

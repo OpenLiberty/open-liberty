@@ -58,7 +58,7 @@ public class ReactiveConcurrentWorkTest extends FATServletClient {
     public static final String SERVER_NAME = "ReactiveStreamsConcurrentWorkServer";
 
     @ClassRule
-    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30);
+    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30_MP50, FATSuite.MPRS30_MP60);
 
     public static final String APP_NAME = "ReactiveConcurrentWorkTest";
 
