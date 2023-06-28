@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.security.auth.Subject;
@@ -571,7 +572,7 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
             if (samlRequest != null) {
                 samlRequest.setLocationAdminRef(locationAdminRef); // locationAdminRef is needed for get SpCookieName
                 if (isSamlSingleLogoutInProgress(request) || servletLogoutPerformsSLO(samlRequest)) { // check whether the new configuration attribute spLogout is set or the IdP initiated logout is taking place)
-                    return handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, bSetSubject);
+                    return handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest), bSetSubject);
                 }
 
             } else {
@@ -582,40 +583,98 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
                     if (samlRequest != null) {
                         samlRequest.setLocationAdminRef(locationAdminRef); // locationAdminRef is needed for get SpCookieName
                         if (servletLogoutPerformsSLO(samlRequest)) {
-                            return handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, bSetSubject);
+                            return handleSpCookie((IExtendedRequest) request, response, samlRequest, userName,new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest), bSetSubject);
                         }
                     }
                 }
             }
-            // Search all services and
-            // 1) setSubject if subject matches
-            // 2) remove the spCookie and its cached subject
+
+            // saml provider can initiate SLO if other providers such as OIDC (and if it's authorize ep is protected by saml sp) has received logout request and if we have a valid saml SP cookie in the request
             Iterator<SsoSamlService> services = reqSsoSamlServiceRef.getServices();
-            SsoSamlService ssoSamlService = null;
-            boolean logError = false;
-            StringBuffer spList = new StringBuffer(0);
-            services = reqSsoSamlServiceRef.getServices();
+            SsoSamlService ssoSamlService = null;           
+            boolean delegatedLogout = false;                     
             while (services.hasNext()) {
                 ssoSamlService = services.next();
                 samlRequest = new SsoRequest(ssoSamlService.getProviderId(), Constants.EndpointType.LOGOUT, request, Constants.SamlSsoVersion.SAMLSSO20, ssoSamlService);
-                if (servletLogoutPerformsSLO(samlRequest)) {
-                    // we need to log an error message in this case
-                    spList.append(", ");
-                    logError = true;
-                    spList.append(samlRequest.getProviderName());
-                }
                 samlRequest.setLocationAdminRef(locationAdminRef); // locationAdminRef is needed for get SpCookieName
-                if (handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, bSetSubject)) {
-                    bSetSubject = true;
+                if (servletLogoutPerformsSLO(samlRequest)) {
+                    delegatedLogout = isDelegatedLogoutInProgress(request, response, samlRequest);
+                    if (delegatedLogout) {
+                        request.setAttribute(Constants.ATTRIBUTE_SAML20_REQUEST, samlRequest);
+                        request.setAttribute(Constants.HTTP_ATTRIBUTE_SP_INITIATOR, samlRequest.getProviderName()); // this is needed later in postLogout
+                        if (handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest), bSetSubject)) {
+                            bSetSubject = true;
+                        }
+                            break;
+                    }
+                } 
+            }
+            // Search all services and
+            // 1) setSubject if subject matches
+            // 2) remove the spCookie and its cached subject
+            if (!delegatedLogout) { // existing function
+                services = reqSsoSamlServiceRef.getServices();
+                boolean logError = false;
+                StringBuffer spList = new StringBuffer(0);
+                while (services.hasNext()) {
+                    ssoSamlService = services.next();
+                    samlRequest = new SsoRequest(ssoSamlService.getProviderId(), Constants.EndpointType.LOGOUT, request, Constants.SamlSsoVersion.SAMLSSO20, ssoSamlService);
+                    if (servletLogoutPerformsSLO(samlRequest)) {
+                        // we need to log an error message in this case
+                        spList.append(", ");
+                        logError = true;
+                        spList.append(samlRequest.getProviderName());
+                    }
+                    samlRequest.setLocationAdminRef(locationAdminRef); // locationAdminRef is needed for get SpCookieName
+                    if (handleSpCookie((IExtendedRequest) request, response, samlRequest, userName, new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest), bSetSubject)) {
+                        bSetSubject = true;
+                    }
+                }
+                if (logError) {
+                    spList.delete(0, 1); // remove first comma
+                    Tr.error(tc, "LOGOUT_CANNOT_PERFORM_SLO", new Object[] { spList.toString() });
                 }
             }
-            if (logError) {
-                spList.delete(0, 1); // remove first comma
-                Tr.error(tc, "LOGOUT_CANNOT_PERFORM_SLO", new Object[] { spList.toString() });
-            }
-
         }
         return bSetSubject;
+    }
+
+
+    private boolean isDelegatedLogoutInProgress(HttpServletRequest request, HttpServletResponse response, SsoRequest samlRequest) {
+        boolean delegated = false;
+        SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), (IExtendedRequest) request, samlRequest);
+        Subject subject = getSubjectFromSPCookieRetriever(spCookieRetriever);
+        String samlServiceProvider = null;
+        if (subject != null) {
+            samlServiceProvider = getPropertyFromCallerSubjectPrivateCredentials(subject, com.ibm.ws.security.sso.common.Constants.WSCREDENTIAL_SAML_IDP_USED);
+        }
+        if (samlServiceProvider != null && samlServiceProvider.equals(samlRequest.getProviderName())) {
+            String oidcProvider = getPropertyFromCallerSubjectPrivateCredentials(subject, com.ibm.ws.security.sso.common.Constants.WSCREDENTIAL_OIDC_OP_USED);
+            String requestUri = request.getRequestURI();
+            if (oidcProvider != null && (requestUri.endsWith("/" + oidcProvider + "/" + "end_session")
+                            || requestUri.endsWith("/" + oidcProvider + "/" + "logout"))) {
+                delegated = true;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "delegated logout from other local providers , saml SP : " + samlServiceProvider + ", other provider : " + oidcProvider);
+                }
+            }
+        }
+        return delegated;
+    }
+
+
+    private String getPropertyFromCallerSubjectPrivateCredentials(Subject subject, String providerKey) {      
+        Set<Hashtable> hashtableCreds = subject.getPrivateCredentials(Hashtable.class);
+        if (hashtableCreds != null) {
+            for (Hashtable hashtable : hashtableCreds) {
+                String propertyValue = (String) hashtable.get(providerKey);
+                if (propertyValue != null) {
+                    return propertyValue;
+                }
+            }
+        }
+ 
+        return null;
     }
 
     /**
@@ -683,6 +742,15 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
     private boolean servletLogoutPerformsSLO(SsoRequest samlRequest) {
         return samlRequest.getSsoConfig().isServletRequestLogoutPerformsSamlLogout();
     }
+    
+    private Subject getSubjectFromSPCookieRetriever(SpCookieRetriver spCookieRetriever) {
+        //SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), req, samlRequest);
+        Subject subject = spCookieRetriever.getSubjectFromSpCookie();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "subject from spCookie is:" + subject);
+        }
+        return subject;
+    }
 
     /**
      * When we get a valid SP Cookie, authenticate it
@@ -696,15 +764,16 @@ public class SAMLRequestTAI implements TrustAssociationInterceptor, UnprotectedR
     boolean handleSpCookie(IExtendedRequest req,
                            HttpServletResponse response,
                            SsoRequest samlRequest,
-                           String userName,
+                           String userName, 
+                           SpCookieRetriver spCookieRetriever,
                            boolean bSetSubjectAlready) {
         boolean bSetSubject = false;
         // find a valid spCookie and get its subject, otherwise call SAMLRequestTAI directly
-        SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), req, samlRequest);
-        Subject subject = spCookieRetriever.getSubjectFromSpCookie();
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "subject from spCookie is:" + subject);
-        }
+        //SpCookieRetriver spCookieRetriever = new SpCookieRetriver(authCacheServiceRef.getService(), req, samlRequest);
+        Subject subject = getSubjectFromSPCookieRetriever(spCookieRetriever);//spCookieRetriever.getSubjectFromSpCookie();
+        //if (tc.isDebugEnabled()) {
+        //    Tr.debug(tc, "subject from spCookie is:" + subject);
+        //}
         if (subject == null) {
             String spCookieName = samlRequest.getSpCookieName();
             RequestUtil.removeCookie(req, response, spCookieName);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -122,12 +122,8 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                                          cookieValue);
             }
             //@AV999-092821 TODO: save this in another form also
-            if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_END_SESSION_REDIRECT attribute");
-                }
-                req.removeAttribute("OIDC_END_SESSION_REDIRECT");
-            }
+            processDelegatedLogoutRequest(req);
+
 
             // HTTP 1.1.
             resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");
@@ -203,6 +199,25 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         } catch (IOException e) {
             // Error handling , in case
             throw new SamlException(e); // Let the SamlException handle the unexpected Exception
+        }
+    }
+
+    private void processDelegatedLogoutRequest(HttpServletRequest req) {
+        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_END_SESSION_REDIRECT attribute");
+            }
+            req.removeAttribute("OIDC_END_SESSION_REDIRECT");
+        } else if(req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_LOGOUT_REDIRECT_URL attribute");
+            }
+            req.removeAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
+        } else if (req.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, removing OIDC_LOGOUT_REDIRECT_PAGE attribute");
+            }
+            req.removeAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
         }
     }
 
