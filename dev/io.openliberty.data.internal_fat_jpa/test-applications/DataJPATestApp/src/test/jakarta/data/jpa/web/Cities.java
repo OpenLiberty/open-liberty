@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -24,6 +25,7 @@ import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 
 import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
@@ -47,6 +49,12 @@ public interface Cities {
     void deleteAll(Iterable<City> list); // copied from CrudRepository
 
     long deleteByIdOrId(CityId id1, CityId id2);
+
+    LinkedList<CityId> deleteByStateName(String state);
+
+    @Delete
+    @Filter(by = "population", op = Compare.Between)
+    CityId[] deleteWithinPopulationRange(int min, int max);
 
     boolean existsById(CityId id);
 

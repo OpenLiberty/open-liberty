@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -250,6 +251,83 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Wisconsin", list.get(2).stateName);
         assertEquals(26751, list.get(2).population);
         assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
+    }
+
+    /**
+     * Annotatively-defined repository operation to remove and return one or more IdClass
+     * instances corresponding to the removed entities.
+     */
+    @Test
+    public void testFindAndDeleteReturningIdClassArray(HttpServletRequest request, HttpServletResponse response) {
+
+        cities.save(new City("Bloomington", "Minnesota", 89987, Set.of(952)));
+        cities.save(new City("Plymouth", "Minnesota", 79828, Set.of(763)));
+        cities.save(new City("Woodbury", "Minnesota", 75102, Set.of(651)));
+        cities.save(new City("Brooklyn Park", "Minnesota", 86478, Set.of(763)));
+
+        CityId[] removed = cities.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 4, removed.length);
+
+        Arrays.sort(removed, Comparator.comparing(CityId::toString));
+
+        assertEquals("Bloomington", removed[0].name);
+        assertEquals("Minnesota", removed[0].stateName);
+
+        assertEquals("Brooklyn Park", removed[1].name);
+        assertEquals("Minnesota", removed[1].stateName);
+
+        assertEquals("Plymouth", removed[2].name);
+        assertEquals("Minnesota", removed[2].stateName);
+
+        assertEquals("Woodbury", removed[3].name);
+        assertEquals("Minnesota", removed[3].stateName);
+
+        removed = cities.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 0, removed.length);
+
+        // Ensure non-matching entities remain in the database
+        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
+    }
+
+    /**
+     * Query-by-method name repository operation to remove and return one or more IdClass
+     * instances corresponding to the removed entities.
+     */
+    @Test
+    public void testFindAndDeleteReturningIdClassList(HttpServletRequest request, HttpServletResponse response) {
+
+        cities.save(new City("Davenport", "Iowa", 101724, Set.of(563)));
+        cities.save(new City("Sioux City", "Iowa", 85797, Set.of(712)));
+        cities.save(new City("Iowa City", "Iowa", 74828, Set.of(319)));
+
+        LinkedList<CityId> removed = cities.deleteByStateName("Iowa");
+
+        assertEquals(removed.toString(), 3, removed.size());
+
+        Collections.sort(removed, Comparator.comparing(CityId::toString));
+
+        Iterator<CityId> ids = removed.iterator();
+
+        CityId id = ids.next();
+        assertEquals("Davenport", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        id = ids.next();
+        assertEquals("Iowa City", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        id = ids.next();
+        assertEquals("Sioux City", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        removed = cities.deleteByStateName("Iowa");
+
+        assertEquals(removed.toString(), 0, removed.size());
+
+        // Ensure non-matching entities remain in the database
+        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
     }
 
     /**
@@ -1944,7 +2022,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // Derby & Oracle  does not support comparisons of BLOB values
-        // Derby JDBC Jar Nake : derby.jar 
+        // Derby JDBC Jar Name : derby.jar
         // Oracle JDBC Jar Name : ojdbc8_g.jar
         // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
