@@ -67,6 +67,7 @@ public class HttpRequestInfo implements Serializable {
     @SuppressWarnings("rawtypes")
     Map savedPostParams = null;
     String redirectAfterSPLogout = null;
+    String redirectPageAfterSPLogout = null;
 
     // same package can access to it
     HttpRequestInfo() {
@@ -103,15 +104,33 @@ public class HttpRequestInfo implements Serializable {
             }
         }
         //@AV999-092821
+        processDelegatedLogoutRequest(request);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
+        }
+    }
+
+    /**
+     * @param request
+     */
+    private void processDelegatedLogoutRequest(HttpServletRequest request) {
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             redirectAfterSPLogout = (String) request.getAttribute("OIDC_END_SESSION_REDIRECT");
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, save OIDC_END_SESSION_REDIRECT uri : " + redirectAfterSPLogout);
             }
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
-        }
+        } else if (request.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
+            redirectAfterSPLogout = (String) request.getAttribute("OIDC_LOGOUT_REDIRECT_URL");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, save OIDC_LOGOUT_REDIRECT_URL uri : " + redirectAfterSPLogout);
+            }
+        } else if (request.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
+            redirectPageAfterSPLogout = (String) request.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SP Initiated SLO Request, save OIDC_LOGOUT_REDIRECT_PAGE  : " + redirectPageAfterSPLogout);
+            }
+        }      
     }
 
     public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
@@ -139,6 +158,10 @@ public class HttpRequestInfo implements Serializable {
 
     public String getRedirectAfterSPLogout() {
         return this.redirectAfterSPLogout;
+    }
+    
+    public String getRedirectPageAfterSPLogout() {
+        return this.redirectPageAfterSPLogout;
     }
 
     /**

@@ -432,6 +432,16 @@ public class OAuth20EndpointServices {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Processing logout");
         }
+        // not part of spec: logout url defined in config, not client-specific
+        String logoutRedirectURL = provider.getLogoutRedirectURL();
+        String encodedURL = null;
+        if (logoutRedirectURL != null) {
+            encodedURL = URLEncodeParams(logoutRedirectURL);
+            // set this attribute here. so if other provider such as saml redirects to IdP, then it should take care of this redirect also
+            request.setAttribute("OIDC_LOGOUT_REDIRECT_URL", encodedURL);
+        } else {
+            request.setAttribute("OIDC_LOGOUT_REDIRECT_PAGE", new LogoutPages().getDefaultLogoutPage(request.getLocales()));
+        }
         try {
             request.logout(); // ltpa cookie removed if present. No exception if not.
         } catch (ServletException e) {
@@ -443,16 +453,20 @@ public class OAuth20EndpointServices {
         }
 
         // not part of spec: logout url defined in config, not client-specific
-        String logoutRedirectURL = provider.getLogoutRedirectURL();
+        //String logoutRedirectURL = provider.getLogoutRedirectURL();
         try {
-            if (logoutRedirectURL != null) {
-                String encodedURL = URLEncodeParams(logoutRedirectURL);
+            if (encodedURL != null && request.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null) {
+                request.removeAttribute("OIDC_LOGOUT_REDIRECT_URL");
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "], url encoded to [" + encodedURL + "]");
                 }
                 response.sendRedirect(encodedURL);
                 return;
-            } else {
+            } else if (request.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
+                request.removeAttribute("OIDC_LOGOUT_REDIRECT_PAGE");
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to default logout page");
+                }
                 // send default logout page
                 new LogoutPages().sendDefaultLogoutPage(request, response);
             }
