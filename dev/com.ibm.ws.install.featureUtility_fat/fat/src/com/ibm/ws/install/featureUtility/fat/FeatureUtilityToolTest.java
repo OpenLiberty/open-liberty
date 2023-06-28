@@ -62,6 +62,7 @@ public abstract class FeatureUtilityToolTest {
     private static String originalWlpVersion;
     private static String originalWlpEdition;
     private static String originalWlpInstallType;
+    private static String originalWlpPublicKeyId;
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
@@ -92,9 +93,6 @@ public abstract class FeatureUtilityToolTest {
         if(!new File(minifiedRoot).exists()){
             throw new Exception("The minified root does not exist!");
         }
-
-	// beta
-	copyFileToMinifiedRoot("lib/versions/public_key", "publish/tmp/libertyKey.asc");
 
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
@@ -255,11 +253,14 @@ public abstract class FeatureUtilityToolTest {
             originalWlpVersion = wlpVersionProps.getProperty("com.ibm.websphere.productVersion");
             originalWlpEdition = wlpVersionProps.getProperty("com.ibm.websphere.productEdition");
             originalWlpInstallType = wlpVersionProps.getProperty("com.ibm.websphere.productInstallType");
+	    originalWlpPublicKeyId = wlpVersionProps.getProperty("com.ibm.websphere.productPublicKeyId");
+
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productVersion : " + originalWlpVersion);
             Log.info(c, "getWlpVersion",
                     "com.ibm.websphere.productId : " + wlpVersionProps.getProperty("com.ibm.websphere.productId"));
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
+	    Log.info(c, "getWlpVersion", "com.ibm.websphere.productPublicKeyId : " + originalWlpPublicKeyId);
         } finally {
             try {
                 assert fIn != null;
@@ -343,7 +344,6 @@ public abstract class FeatureUtilityToolTest {
 	    // beta
 	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
 	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
-
             wlpVersionProps.store(os, null);
             os.close();
         } finally {
