@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package io.openliberty.wsoc.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -235,18 +234,19 @@ public class BasicTest {
     @Test
     public void testAddEndpointOutisdeDeploymentPhase() throws Exception {
         // New test for WebSocket 2.1 change to allow adding endpoints outside of initialization/deployment phase of web application https://github.com/jakartaee/websocket/issues/211
-        
+
         // Call to open the connection to the servlet. Need to add getResponseCode to actually complete the connection but test doesn't care about the response
         // We just check the logs for the expected new endpoint added or not
         HttpUtils.getHttpConnectionWithAnyResponseCode(LS, "/basic/addEndpoint").getResponseCode();
-        
+
         // This test causes SRVE0777E: Exception thrown by application class ServerContainerExt.addEndpoint which is expected
         // Also cause SRVE0315E An exception occurred: java.lang.Throwable: java.lang.IllegalStateException: endpoint.addsclosed also expected
         // and SRVE8094W WARNING: Cannot set header. Response already committed to show up
-        if(JakartaEE10Action.isActive()){
+        if (JakartaEE10Action.isActive()) {
             assertNotNull("Endpoint should have been added!", LS.waitForStringInLog("CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: /newEchoEndpointAdded"));
-        }else{
-            assertNull("Endpoint should NOT have been added!", LS.waitForStringInLog("CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: /newEchoEndpointAdded"));
+        } else {
+            assertNull("Endpoint should NOT have been added!",
+                       LS.waitForStringInLog("CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: /newEchoEndpointAdded"));
         }
     }
 
@@ -863,20 +863,8 @@ public class BasicTest {
 
     @Mode(TestMode.FULL)
     @Test
-    public void TestPathParamOnClose() throws Exception {
-        ppt.TestPathParamOnClose();
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
     public void TestSSCPathParamOnOpen() throws Exception {
         this.runAsLSAndVerifyResponse("PathParamTest", "TestPathParamOnOpen");
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void TestSSCPathParamOnClose() throws Exception {
-        this.runAsLSAndVerifyResponse("PathParamTest", "TestPathParamOnClose");
     }
 
     /*

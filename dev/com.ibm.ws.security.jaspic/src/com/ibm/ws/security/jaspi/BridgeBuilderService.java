@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,8 @@ package com.ibm.ws.security.jaspi;
 
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 /**
  * Bridge to create the AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule needed for JSR-375.
@@ -27,7 +29,7 @@ public interface BridgeBuilderService {
      * @param providerFactory
      *
      */
-    void buildBridgeIfNeeded(String appContext, AuthConfigFactory providerFactory);
+    void buildBridgeIfNeeded(WebAppConfig wac, AuthConfigFactory providerFactory);
 
     /**
      * returns true if JSR-375 HttpAuthenticationMechansim is available and newAuthentication attribute is set as true in AuthenticationParameters.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.filter;
@@ -1114,9 +1114,14 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         boolean h2InUse = false;
         
         //Servlet 6.0
-        boolean alreadyVerifiedEncodedChar = false;
-        String reqURI = httpServletReq.getRequestURI();
-        boolean isSkipVerifyEncodedCharInURI = dispatchContext.getWebApp().getConfiguration().isSkipVerifyEncodedCharInURI();
+        // If this is not a request or is not servlet 6.0 or above, just act as if it was already verified to skip the later logic.
+        // If is skip verify setting is set, do the same.  The reqURI is only used for verify so no need to get it if we are never going to verify.
+        boolean alreadyVerifiedEncodedChar = !isRequest || !WebContainer.isServlet60orAbove;
+        boolean isSkipVerifyEncodedCharInURI = alreadyVerifiedEncodedChar ? false : dispatchContext.getWebApp().getConfiguration().isSkipVerifyEncodedCharInURI();
+        if (isSkipVerifyEncodedCharInURI) {
+            alreadyVerifiedEncodedChar = true;
+        }
+        String reqURI = alreadyVerifiedEncodedChar ? null : httpServletReq.getRequestURI();
 
         try {
             if (requestProcessor != null) {
@@ -1142,20 +1147,17 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                     }
                     dispatchContext.pushServletReference(servletWrapper);
 
-                    // let the servlet warrper know that the request is about to start.
+                    // let the servlet wrapper know that the request is about to start.
                     if (servletWrapper instanceof ServletWrapper) {
 
                         //Servlet 6.0 - It is a servlet; verify that no invalid encoded character in URI
                         //              only check if direct request
                         //This can be checked earlier in WebApp before invokeFilters; but do the check here 
                         //so alreadyVerifiedEncodedChar flag can skip in case the app has definedFilter
-                        if (isRequest && WebContainer.isServlet60orAbove) {
+                        if (!alreadyVerifiedEncodedChar) {
                             try {
-                                if (!isSkipVerifyEncodedCharInURI) {
-                                    verifyEncodedCharacter(reqURI);
-                                }
-
-                                alreadyVerifiedEncodedChar = true;        //either way, skip subsequent check in filterDefined
+                                verifyEncodedCharacter(reqURI);
+                                alreadyVerifiedEncodedChar = true;        //skip subsequent check in filterDefined
                             }
                             catch (IOException ioe) {
                                 if (isTraceOn && logger.isLoggable(Level.FINE)) 
@@ -1169,12 +1171,9 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                     //PI08268 - start - disable JSP and Static default methods (i.e TRACE, PUT, DELETE...)
                     else {
                         //Servlet 6.0 - JSPExtensionServletWrapper is GenericServletWrapper
-                        if (isRequest && WebContainer.isServlet60orAbove && (servletWrapper instanceof GenericServletWrapper)){
+                        if (!alreadyVerifiedEncodedChar && (servletWrapper instanceof GenericServletWrapper)){
                             try {
-                                if (!isSkipVerifyEncodedCharInURI) {
-                                    verifyEncodedCharacter(reqURI);
-                                }
-
+                                verifyEncodedCharacter(reqURI);
                                 alreadyVerifiedEncodedChar = true;        //to skip check in filterDefined later on
                             }
                             catch (IOException ioe) {
@@ -1242,12 +1241,9 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             if (context.isFiltersDefined()) {
                 //Servlet 6.0 - Filter path - if not alreadyVerifiedEncodedChar (i.e neither ServletWrapper or JSPExtension found),
                 //              verify that no invalid encoded character in direct request URI
-                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
+                if (!alreadyVerifiedEncodedChar) {
                     try {
-                        if (!isSkipVerifyEncodedCharInURI) {
-                            verifyEncodedCharacter(reqURI);
-                        }
-
+                        verifyEncodedCharacter(reqURI);
                         alreadyVerifiedEncodedChar = true;      // skip checking in the DefaultExtension
                     }
                     catch (IOException ioe) {
@@ -1350,20 +1346,15 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                             try {
                                 //Servlet 6.0 - no filter, servlet/jsp found. DefaultExtensionProcessor is most likely it.
                                 //              Last check encodedCharacter for direct request.
-                                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
-                                    if (requestProcessor instanceof DefaultExtensionProcessor){
-                                        try {
-                                            if (!isSkipVerifyEncodedCharInURI) {
-                                                verifyEncodedCharacter(reqURI);
-                                            }
-
-                                            alreadyVerifiedEncodedChar = true;  //nothing after this, but just incase
-                                        }
-                                        catch (IOException ioe) {
-                                            if (isTraceOn && logger.isLoggable(Level.FINE)) 
-                                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
-                                            throw ioe;
-                                        }
+                                if (!alreadyVerifiedEncodedChar && requestProcessor instanceof DefaultExtensionProcessor) {
+                                    try {
+                                        verifyEncodedCharacter(reqURI);
+                                        alreadyVerifiedEncodedChar = true;  //nothing after this, but just in case
+                                    }
+                                    catch (IOException ioe) {
+                                        if (isTraceOn && logger.isLoggable(Level.FINE)) 
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                        throw ioe;
                                     }
                                 }
 

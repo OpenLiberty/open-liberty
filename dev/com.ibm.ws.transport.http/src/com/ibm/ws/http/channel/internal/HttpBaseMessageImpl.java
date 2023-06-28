@@ -2590,7 +2590,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     }
 
     /**
-     * Search for a cookie under the input header name that matchs the target
+     * Search for a cookie under the input header name that matches the target
      * cookie name.
      *
      * @param name
@@ -2599,32 +2599,37 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *         NULL will be returned if it does not exist.
      */
     protected HttpCookie getCookie(String name, HttpHeaderKeys header) {
-        CookieCacheData cache = getCookieCache(header);
-        HttpCookie cookie = cache.getCookie(name);
-        if (null != cookie) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found " + name + " in cache");
+        if (cookieCacheExists(header) || containsHeader(header)) {
+            CookieCacheData cache = getCookieCache(header);
+            HttpCookie cookie = cache.getCookie(name);
+            if (null != cookie) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found " + name + " in cache");
+                }
+                return cookie;
             }
-            return cookie;
-        }
 
-        // Now search the cookie header instances in storage and add them
-        // to the parsed list
-        List<HeaderField> vals = getHeaders(header);
-        for (int i = cache.getHeaderIndex(), end = vals.size(); i < end; i++) {
-            List<HttpCookie> list = getCookieParser().parse(vals.get(i).asBytes(), header);
-            cache.addParsedCookies(list);
-            cache.incrementHeaderIndex();
-            // search the list of new cookies from this header instance
-            Iterator<HttpCookie> it = list.iterator();
-            while (it.hasNext()) {
-                cookie = it.next();
-                // cookie names are case-sensitive
-                if (cookie.getName().equals(name)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found parsed Cookie-->" + name);
+            // Now search the cookie header instances in storage and add them
+            // to the parsed list
+            List<HeaderField> vals = getHeaders(header);
+            int size = vals.size();
+            if (size != 0) {
+                for (int i = cache.getHeaderIndex(); i < size; i++) {
+                    List<HttpCookie> list = getCookieParser().parse(vals.get(i).asBytes(), header);
+                    cache.addParsedCookies(list);
+                    cache.incrementHeaderIndex();
+                    // search the list of new cookies from this header instance
+                    Iterator<HttpCookie> it = list.iterator();
+                    while (it.hasNext()) {
+                        cookie = it.next();
+                        // cookie names are case-sensitive
+                        if (cookie.getName().equals(name)) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Found parsed Cookie-->" + name);
+                            }
+                            return cookie;
+                        }
                     }
-                    return cookie;
                 }
             }
         }
@@ -2650,9 +2655,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
         List<HeaderField> vals = getHeaders(header);
-        for (int i = cache.getHeaderIndex(), end = vals.size(); i < end; i++) {
-            cache.addParsedCookies(getCookieParser().parse(vals.get(i).asBytes(), header));
-            cache.incrementHeaderIndex();
+        int size = vals.size();
+        if (size != 0) {
+            for (int i = cache.getHeaderIndex(); i < size; i++) {
+                cache.addParsedCookies(getCookieParser().parse(vals.get(i).asBytes(), header));
+                cache.incrementHeaderIndex();
+            }
         }
     }
 
@@ -2732,16 +2740,16 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @return boolean
      */
     protected boolean cookieCacheExists(HttpHeaderKeys header) {
-        if (header.equals(HttpHeaderKeys.HDR_COOKIE)) {
+        if (header == HttpHeaderKeys.HDR_COOKIE) {
             return (null != this.cookieCache);
         }
-        if (header.equals(HttpHeaderKeys.HDR_COOKIE2)) {
+        if (header == HttpHeaderKeys.HDR_COOKIE2) {
             return (null != this.cookie2Cache);
         }
-        if (header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
+        if (header == HttpHeaderKeys.HDR_SET_COOKIE) {
             return (null != this.setCookieCache);
         }
-        if (header.equals(HttpHeaderKeys.HDR_SET_COOKIE2)) {
+        if (header == HttpHeaderKeys.HDR_SET_COOKIE2) {
             return (null != this.setCookie2Cache);
         }
         return false;

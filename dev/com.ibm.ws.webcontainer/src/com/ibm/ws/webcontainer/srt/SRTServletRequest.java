@@ -2037,7 +2037,11 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         
         // Begin PK06988, strip session id of when url rewriting is enabled
         if (localThreadData.getPathInfo()==null){
-            String aPathInfo = ((WebAppDispatcherContext) this.getDispatchContext()).getPathInfo();
+            WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) localThreadData.getDispatchContext();
+            if (dispatchContext == null) {
+                dispatchContext = _dispatchContext;
+            }
+            String aPathInfo = dispatchContext.getPathInfo();
             if (aPathInfo == null)
                 return null;
             else { // Do not strip based on ? again, it was already done and we don't want to strip '%3f's that have since been decoded to ?'s
@@ -2901,8 +2905,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         IWebAppSecurityCollaborator webAppSec=null;
-        if (getDispatchContext()!=null && getDispatchContext().getWebApp() != null) {
-            webAppSec = CollaboratorHelperImpl.getCurrentSecurityCollaborator(getDispatchContext().getWebApp());
+        WebAppDispatcherContext dispatchContext = getDispatchContext();
+        WebApp webApp = null;
+        if (dispatchContext != null && (webApp = dispatchContext.getWebApp()) != null) {
+            webAppSec = CollaboratorHelperImpl.getCurrentSecurityCollaborator(webApp);
         } else {
             webAppSec = CollaboratorHelperImpl.getCurrentSecurityCollaborator();           
         } 
@@ -3342,15 +3348,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
+        WebAppDispatcherContext dispatchContext = getDispatchContext();
+        String uri = dispatchContext == null ? _request.getRequestURI() : dispatchContext.getRequestURI();
+
         // 321485
-        String uri = null;
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"getEncodedRequestURI", "");
-        }
-        if (getDispatchContext() == null)
-            uri = _request.getRequestURI();
-        else
-            uri = getDispatchContext().getRequestURI();
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getEncodedRequestURI", " uri --> " + uri);
         }
@@ -3449,48 +3450,46 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     private class SRTServletRequestHelper implements Cloneable{
         // objects requiring cloning
         // ==========================
-        private Hashtable _privateAttributes = null; //268366, PERF: 3% regression in PingServlet
-        private Map _attributes = new HashMap();
+        Hashtable _privateAttributes = null; //268366, PERF: 3% regression in PingServlet
+        Map _attributes = new HashMap();
         // ==========================
 
         // instance variables not needing cloning
         // ==========================
-        private boolean _cookiesParsed = false;
-        private String _updatedSessionId;
-        private Object _sessionAffinityContext; // cmd LIDB4395
-        private Cookie[] _cookies;
-        private boolean _localesProcessed = false;
-        private String _readerEncoding = null;
-        private String _readerEncodingInvalidIgnored = null;
-        private String _characterEncoding = null;
-        private boolean _gotReader = false;
-        private boolean _gotInputStream = false;
-        private boolean _InputStreamClosed = false; // MultiRead
-        private String _method = null;
-        private boolean _parametersRead = false;                            //PM03928
-        private DispatcherType dispatcherType = DispatcherType.REQUEST;
+        boolean _cookiesParsed = false;
+        String _updatedSessionId;
+        Object _sessionAffinityContext; // cmd LIDB4395
+        Cookie[] _cookies;
+        boolean _localesProcessed = false;
+        String _readerEncoding = null;
+        String _readerEncodingInvalidIgnored = null;
+        String _characterEncoding = null;
+        boolean _gotReader = false;
+        boolean _gotInputStream = false;
+        boolean _InputStreamClosed = false; // MultiRead
+        String _method = null;
+        boolean _parametersRead = false;                            //PM03928
+        DispatcherType dispatcherType = DispatcherType.REQUEST;
         
         //Add for servlet 6.0
-        private String _requestID = null; 
-        private Object _servletConnection = null;       //instanceof ServletConnection
+        String _requestID = null; 
+        Object _servletConnection = null;       //instanceof ServletConnection
 
         // ==========================
 
         // other objects not needing cloning
         // =================================
-        private BufferedReader _reader = null;
-        private LinkedList _locales = null;
+        BufferedReader _reader = null;
+        LinkedList _locales = null;
 
-        private boolean asyncSupported=true;
-        private com.ibm.wsspi.webcontainer.servlet.AsyncContext asyncContext;
-        private List<AsyncListenerEntry> asyncListenerEntryList;
-        public long _asyncTimeout=0;
-        public boolean multipartRequestInputStreamRead = false;
-        public Exception multipartException=null;
-        public boolean multipartISEException=false;
-        public LinkedHashMap<String, ArrayList<Part>> multipartPartsHashMap = null; //91002
-        private boolean asyncStarted=false;
-        private List<String> resourcesNotSupportAsync = null;    //141092
+        boolean asyncSupported=true;
+        com.ibm.wsspi.webcontainer.servlet.AsyncContext asyncContext;
+        boolean multipartRequestInputStreamRead = false;
+        Exception multipartException=null;
+        boolean multipartISEException=false;
+        LinkedHashMap<String, ArrayList<Part>> multipartPartsHashMap = null; //91002
+        boolean asyncStarted=false;
+        List<String> resourcesNotSupportAsync = null;    //141092
         // =================================
 
         protected Object clone() throws CloneNotSupportedException {

@@ -27,6 +27,29 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  */
 def appBuildDir = "${buildDir}/test-application"
 
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** ltpaTest.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task ltpaTest(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "ltpaTest.zip"
+  
+  from('test-applications/ltpaTest/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/token/ltpa/servlet/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+assemble.dependsOn ltpaTest
+
 /******************************************************************
  ******************************************************************
  **
@@ -39,8 +62,10 @@ autoFVT.doLast {
   /*
    * Copy basicauth.war into test servers.
    * Copy formlogin.war into test servers.
+   * Copy ltpaTest.war into test servers.
    */
   def servers = [
+    'com.ibm.ws.security.token.ltpa.fat',
     'com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer'
   ]
   servers.each { server ->
@@ -54,14 +79,27 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
-  }
+    copy {
+      from new File(project(':com.ibm.ws.security.token.ltpa_fat').buildDir, 'test-application/ltpaTest.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'ltpaTest.zip', 'ltpaTest.war'
+  	}
   
-  /*
-   * Copy select server.xml files.
-   */
-  copy { 
-    from new File(projectDir, 'publish/servers/com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer/server.xml')
-    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
-    rename 'server.xml', 'contextRootCookiePathTestServer.server.orig.xml'
+    /*
+    * Copy select server.xml files.
+    */
+    copy { 
+      from new File(projectDir, 'publish/servers/com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer/server.xml')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+      rename 'server.xml', 'contextRootCookiePathTestServer.server.orig.xml'
+    }
+    copy { 
+      from new File(projectDir, 'publish/files/server.xml')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    }
+    copy { 
+      from new File(projectDir, 'publish/files/alternate/server.xml')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles/alternate')
+    }
   }
 }

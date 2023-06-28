@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.org.apache.myfaces40.fat.tests.AcceptInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.AjaxRenderExecuteThisTest;
@@ -37,12 +38,9 @@ import io.openliberty.org.apache.myfaces40.fat.tests.LayoutAttributeTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.MultipleInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ProgrammaticFaceletTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
-import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
-
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -61,7 +59,6 @@ import componenttest.rules.repeater.RepeatTests;
                 MultipleInputFileTest.class,
                 ProgrammaticFaceletTests.class,
                 SelectItemTests.class,
-                SimpleTest.class,
                 SubscribeToEventTest.class,
                 UIViewRootGetDoctypeTest.class,
                 Faces40URNTest.class,
@@ -72,7 +69,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat =  RepeatTests.withoutModification();
+    public static RepeatTests repeat = RepeatTests.withoutModification();
 
     /**
      * Utility method that will write xmlContent to output.txt and

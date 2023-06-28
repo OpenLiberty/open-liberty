@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -278,7 +278,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     protected ArrayList servletRequestLAttrListeners = new ArrayList();
     
     protected static boolean prependSlashToResource = false; // 263020
-    private Boolean destroyed = Boolean.FALSE;// 325429
+    private volatile boolean destroyed = false;// 325429
     protected IWebAppNameSpaceCollaborator webAppNameSpaceCollab;
     private IWebAppTransactionCollaborator txCollab;
 
@@ -2801,20 +2801,18 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             logger.logp(Level.FINE, CLASS_NAME, "notifyServletRequestCreated", "ENTRY"); //PI26908
 
         boolean servletRequestListenerCreated = false;
-        if (!servletRequestListeners.isEmpty())
-        {
+        int listenerSize = servletRequestListeners.size();
+        if (listenerSize != 0) {
             WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
             if (reqState.getAttribute("com.ibm.ws.webcontainer.invokeListenerRequest") == null)
             {
-                reqState.setAttribute("com.ibm.ws.webcontainer.invokeListenerRequest", false);
+                reqState.setAttribute("com.ibm.ws.webcontainer.invokeListenerRequest", Boolean.FALSE);
 
-                Iterator i = servletRequestListeners.iterator();
                 ServletRequestEvent sEvent = new ServletRequestEvent(this.getFacade(), request);
 
-                while (i.hasNext())
-                {
+                for (int i = 0; i < listenerSize; ++i) {
                     // get the listener
-                    ServletRequestListener sL = (ServletRequestListener) i.next();
+                    ServletRequestListener sL = (ServletRequestListener) servletRequestListeners.get(i);
 
                     // invoke the listener's request initd method
                     sL.requestInitialized(sEvent);
@@ -2837,11 +2835,12 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
             logger.logp(Level.FINE, CLASS_NAME, "notifyServletRequestDestroyed", "ENTRY"); //PI26908
 
-        if (!servletRequestListeners.isEmpty()) {
+        int listenerSize = servletRequestListeners.size();
+        if (listenerSize != 0) {
             ServletRequestEvent sEvent = new ServletRequestEvent(this.getFacade(), request);
 
             // listeners must be notified in reverse order of definition
-            for (int listenerIndex = servletRequestListeners.size() - 1; listenerIndex > -1; listenerIndex--) {
+            for (int listenerIndex = listenerSize - 1; listenerIndex > -1; listenerIndex--) {
                 // get the listener
                 ServletRequestListener sL = (ServletRequestListener) servletRequestListeners.get(listenerIndex);
 
@@ -2858,13 +2857,13 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         // need to notify listeners registered in the
         // ServletRequestAttributeListener array
-        if (!servletRequestLAttrListeners.isEmpty()) {
-            Iterator i = servletRequestLAttrListeners.iterator();
+        int listenerSize = servletRequestLAttrListeners.size();
+        if (listenerSize != 0) {
             ServletRequestAttributeEvent sEvent = new ServletRequestAttributeEvent(this.getFacade(), request, name, value);
 
-            while (i.hasNext()) {
+            for (int i = 0; i < listenerSize; ++i) {
                 // get the listener
-                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) i.next();
+                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) servletRequestLAttrListeners.get(i);
 
                 // invoke the listener's attr added method
                 sL.attributeAdded(sEvent);
@@ -2879,15 +2878,15 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         // need to notify listeners registered in the
         // ServletRequestAttributeListener array
-        if (!servletRequestLAttrListeners.isEmpty()) {
-            Iterator i = servletRequestLAttrListeners.iterator();
+        int listenerSize = servletRequestLAttrListeners.size();
+        if (listenerSize != 0) {
             ServletRequestAttributeEvent sEvent = new ServletRequestAttributeEvent(this.getFacade(), request, name, value);
 
-            while (i.hasNext()) {
+            for (int i = 0; i < listenerSize; ++i) {
                 // get the listener
-                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) i.next();
+                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) servletRequestLAttrListeners.get(i);
 
-                // invoke the listener's attr added method
+                // invoke the listener's attr replaced method
                 sL.attributeReplaced(sEvent);
             }
         }
@@ -2900,15 +2899,15 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         // need to notify listeners registered in the
         // ServletRequestAttributeListener array
-        if (!servletRequestLAttrListeners.isEmpty()) {
-            Iterator i = servletRequestLAttrListeners.iterator();
+        int listenerSize = servletRequestLAttrListeners.size();
+        if (listenerSize != 0) {
             ServletRequestAttributeEvent sEvent = new ServletRequestAttributeEvent(this.getFacade(), request, name, value);
 
-            while (i.hasNext()) {
+            for (int i = 0; i < listenerSize; ++i) {
                 // get the listener
-                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) i.next();
+                ServletRequestAttributeListener sL = (ServletRequestAttributeListener) servletRequestLAttrListeners.get(i);
 
-                // invoke the listener's attr added method
+                // invoke the listener's attr removed method
                 sL.attributeRemoved(sEvent);
             }
         }
@@ -3956,12 +3955,12 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                     logger.logp(Level.FINE, CLASS_NAME, "destroy", "WebApp {0} has not been initialized", applicationName);
             }
             // 325429 BEGIN
-            if (destroyed.booleanValue()) {
+            if (destroyed) {
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                     logger.logp(Level.FINE, CLASS_NAME, "destroy", "WebApp {0} is already destroyed", applicationName);
                 return;
             }
-            destroyed = Boolean.TRUE;
+            destroyed = true;
             // 325429 END
             try {
 /*
@@ -4544,7 +4543,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      */
     public RequestDispatcher getErrorPageDispatcher(ServletRequest req, ServletErrorReport ser) {
 
-        if (this.getDestroyed().booleanValue()) { // should be a fast boolean check.
+        if (this.getDestroyed()) { // should be a fast boolean check.
             throw new MajorHandlingRuntimeException("WebContainer can not handle the request");
         }
 
@@ -5824,7 +5823,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     }
 
     // 325429
-    public Boolean getDestroyed() {
+    public boolean getDestroyed() {
         return this.destroyed;
     }
 

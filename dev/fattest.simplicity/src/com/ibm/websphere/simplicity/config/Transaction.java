@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ public class Transaction extends ConfigElement {
     private Boolean enableLogRetries;
     private String retriableSqlCodes;
     private String nonRetriableSqlCodes;
+    private String recoveryIdentity;
 
     @XmlAttribute(name = "acceptHeuristicHazard")
     public void setAcceptHeuristicHazard(Boolean acceptHeuristicHazard) {
@@ -189,6 +190,15 @@ public class Transaction extends ConfigElement {
         return this.nonRetriableSqlCodes;
     }
 
+    @XmlAttribute(name = "recoveryIdentity")
+    public void setRecoveryIdentity(String recoveryIdentity) {
+        this.recoveryIdentity = recoveryIdentity;
+    }
+
+    public String getRecoveryIdentity() {
+        return this.recoveryIdentity;
+    }
+
     /**
      * Returns a String listing the properties and their values used on this
      * transaction element.
@@ -230,7 +240,10 @@ public class Transaction extends ConfigElement {
             buf.append("retriableSqlCodes=\"" + retriableSqlCodes + "\" ");
         if (nonRetriableSqlCodes != null)
             buf.append("nonRetriableSqlCodes=\"" + nonRetriableSqlCodes + "\" ");
+        if (recoveryIdentity != null)
+            buf.append("recoveryIdentity=\"" + recoveryIdentity + "\" ");
         buf.append("}");
         return buf.toString();
     }
+
 }

@@ -1,0 +1,61 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+      <feature>servlet-4.0</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componentTest-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>cdi-2.0</feature>
+    </featureManager>
+
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
+    <library id="DerbyLib" filesetRef="DerbyFileset" />
+    <fileset
+        id="DerbyFileset"
+        dir="${shared.resource.dir}derby"
+        includes="derby.jar"
+    />
+
+    <transaction
+        dataSourceRef="tranlogDataSource"
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        heuristicRetryInterval="10"
+        recoveryIdentity="cloud001-1" 
+        recoveryGroup="defaultGroup"
+        leaseLength="300"
+        leaseCheckInterval="25"
+    />
+
+    <application location="transactioncloud.war"/>
+
+    <dataSource
+        id="tranlogDataSource" 
+        jdbcDriverRef="DerbyEmbedded"
+        jndiName="jdbc/tranlogDataSource" 
+        transactional="false"> 
+      <properties
+          databaseName="${shared.resource.dir}/data/tranlogdb"
+          createDatabase="create"
+      />
+    </dataSource>
+
+    <dataSource
+        id="jdbc/derby"
+        jndiName="jdbc/derby"
+        jdbcDriverRef="DerbyEmbedded">
+      <properties
+          databaseName="${shared.resource.dir}/data/transactionFATCloud"
+          createDatabase="create"
+          user="dbuser1"
+          password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <!-- See bootstrap.properties
+    <logging traceSpecification="com.ibm.tx.jta.util.TxTMHelper=all=enabled"/>
+    -->
+</server>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="LTPATestServlet" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+  <display-name>LTPATestServlet Servlet</display-name>
+  <description>This servlet is designed to test the Token Manager framework.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>LTPATestServlet</servlet-name>
+    <display-name>LTPA Test Servlet</display-name>
+    <description>This servlet is designed to test the LTPA token service.</description>
+    <servlet-class>com.ibm.ws.security.token.ltpa.servlet.LTPATestServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="TokenAPI">
+    <servlet-name>TokenAPIServlet</servlet-name>
+    <display-name>Token API Servlet</display-name>
+    <description>This servlet is designed to test the token API.</description>
+    <servlet-class>com.ibm.ws.security.token.ltpa.servlet.TokenAPIServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>LTPATestServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>TokenAPIServlet</servlet-name>
+    <url-pattern>/TokenAPIServlet/*</url-pattern>
+  </servlet-mapping>
+</web-app>

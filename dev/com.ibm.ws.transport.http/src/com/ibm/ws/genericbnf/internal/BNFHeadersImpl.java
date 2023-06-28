@@ -991,16 +991,28 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == key) {
             throw new IllegalArgumentException("Null input provided");
         }
-        List<HeaderField> list = new ArrayList<HeaderField>();
+        List<HeaderField> list;
         int ord = key.getOrdinal();
         if ((ord > maxHeadersAdded) || headersAdded.get(ord)) {
             HeaderElement elem = findHeader(key);
-            while (null != elem) {
-                if (!elem.wasRemoved()) {
-                    list.add(elem);
-                }
+            if (elem == null) {
+                list = Collections.emptyList();
+            } else if (elem.nextInstance == null) {
+                list = Collections.singletonList(elem);
+            } else {
+                list = new ArrayList<HeaderField>();
+                // The first one returned will not be marked removed.
+                list.add(elem);
                 elem = elem.nextInstance;
+                while (null != elem) {
+                    if (!elem.wasRemoved()) {
+                        list.add(elem);
+                    }
+                    elem = elem.nextInstance;
+                }
             }
+        } else {
+            list = Collections.emptyList();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getHeaders(h): " + key.getName() + " " + list.size());
@@ -1023,19 +1035,18 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == elem) {
             list = Collections.emptyList();
         } else if (elem.nextInstance == null) {
-            if (elem.wasRemoved()) {
-                list = Collections.emptyList();
-            } else {
-                list = Collections.singletonList(elem);
-            }
+            list = Collections.singletonList(elem);
         } else {
             list = new ArrayList<HeaderField>();
-            do {
+            // The first one returned will not be marked removed.
+            list.add(elem);
+            elem = elem.nextInstance;
+            while (null != elem) {
                 if (!elem.wasRemoved()) {
                     list.add(elem);
                 }
                 elem = elem.nextInstance;
-            } while (null != elem);
+            }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getHeaders(s): " + header + " " + list.size());
@@ -2955,11 +2966,11 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
     }
 
-    public static void setCharacterValidation(Boolean value) { //PI45266
+    public static void setCharacterValidation(boolean value) { //PI45266
         bCharacterValidation = value;
     }
 
-    public Boolean getCharacterValidation() { //PI45266
+    public boolean getCharacterValidation() { //PI45266
         return bCharacterValidation;
     }
 
@@ -2970,85 +2981,57 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             return checkHeaderCharacters(data);
     }
 
-    public static void setRemoteIp(Boolean value) {
+    public static void setRemoteIp(boolean value) {
         bRemoteIp = value;
     }
 
-    public Boolean getRemoteIp() {
+    public boolean getRemoteIp() {
         return bRemoteIp;
     }
 
     /**
-     * Check the input header value for CRLF and non ascii char that can retult in crlfs.
+     * Check the input header value for CRLF and non ascii char that can result in crlfs.
      * checkHeaderCharacters
      *
      * @param data
      * @exception IllegalArgumentException if invalid
-     * @return Boolean
+     * @return boolean
      */
-    private Boolean isGoodCharacters(String data) { //PI57228
+    private boolean isGoodCharacters(String data) { //PI57228
         // if the last character is a CR or LF, then this fails
         int index = data.length() - 1;
         if (index < 0) {
             // empty string, quit now with success
             return true;
         }
-        String error = null;
         char c = data.charAt(index);
         if (BNFHeaders.LF == c || BNFHeaders.CR == c) {
-            error = "Illegal trailing EOL";
-        }
-
-        // scan through the data now for invalid CRLF presence. Note that CRLFs
-        // may be followed by whitespace for valid multiline headers.
-        for (int i = 0; null == error && i <= index; i++) {
-            c = data.charAt(i);
-            if (i < index) {
-                if (BNFHeaders.CR == c) {
-                    // next char must be an LF
-                    if (BNFHeaders.LF != data.charAt(i + 1)) {
-                        error = "Invalid CR not followed by LF";
-                    }
-                } else if (BNFHeaders.LF == c) {
-                    char x = data.charAt(i + 1);
-
-                    // if it is not followed by whitespace then this value is bad
-                    if (BNFHeaders.TAB != x && BNFHeaders.SPACE != x) {
-                        error = "Invalid LF not followed by whitespace";
-                    } else {
-                        return false;
-                    }
-                }
-            }
-            if (c >= 32 && c < 127) {
-                //Do nothing as this is a good Character
-            } else if (c == BNFHeaders.LF || c == BNFHeaders.CR) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Found a CR or LF");
-                }
-                return false;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "The Character: " + c + " is not printable");
-                }
-                final int maskedCodePoint = c & 0xFF;
-                if (maskedCodePoint == BNFHeaders.LF || maskedCodePoint == BNFHeaders.CR) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Character: " + c + " unicode ends with a 0a or 0d");
-                        Tr.debug(tc, "The Unicode is: " + (char) maskedCodePoint);
-                    }
-                    return false;
-                }
-                return false;
-            }
-        }
-
-        // if we found an error, throw the exception now
-        if (null != error) {
-            IllegalArgumentException iae = new IllegalArgumentException(error);
+            IllegalArgumentException iae = new IllegalArgumentException("Illegal trailing EOL");
             FFDCFilter.processException(iae, getClass().getName() + ".isGoodCharacters(String)", "1", this);
             throw iae;
         }
+
+        // scan through the data now for non ascii characters.
+        for (int i = 0; i <= index; i++) {
+            c = data.charAt(i);
+            // if is not a good Character
+            if (c < 32 || c >= 127) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    if (c == BNFHeaders.LF || c == BNFHeaders.CR) {
+                        Tr.debug(tc, "Found a CR or LF");
+                    } else {
+                        Tr.debug(tc, "The Character: " + c + " is not printable");
+                        final int maskedCodePoint = c & 0xFF;
+                        if (maskedCodePoint == BNFHeaders.LF || maskedCodePoint == BNFHeaders.CR) {
+                            Tr.debug(tc, "Character: " + c + " unicode ends with a 0a or 0d");
+                            Tr.debug(tc, "The Unicode is: " + (char) maskedCodePoint);
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
         return true; //If we get here without returning it means all characters are good.
     }
 
@@ -3075,7 +3058,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
         // scan through the data now for invalid CRLF presence. Note that CRLFs
         // may be followed by whitespace for valid multiline headers.
-        StringBuilder sb = new StringBuilder(); //PI57228
+        StringBuilder sb = new StringBuilder(index + 1); //PI57228
         for (int i = 0; null == error && i <= index; i++) {
             c = data.charAt(i);
             if (i < index) {

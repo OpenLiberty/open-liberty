@@ -202,9 +202,9 @@ public class TransactionManagerTest extends FATServletClient {
         StringBuilder sb = null;
         try {
             sb = runTestWithResponse(ls, SERVLET_NAME, testName);
-        } catch (Throwable e) {
+        } finally {
+            Log.info(this.getClass(), testName, testName + " returned: " + sb);
         }
-        Log.info(this.getClass(), testName, testName + " returned: " + sb);
     }
 
     static enum TestMethod {

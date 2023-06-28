@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.collaborator.WebAppSecurityCollaborator;
+import com.ibm.ws.webcontainer.collaborator.WebAppTransactionCollaborator;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -49,6 +50,7 @@ import com.ibm.wsspi.webcontainer.collaborator.CollaboratorInvocationEnum;
 import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
 import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorMetaData;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
+import com.ibm.wsspi.webcontainer.collaborator.IWebAppTransactionCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInvocationCollaborator;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
@@ -82,8 +84,9 @@ public class CollaboratorHelperImpl extends CollaboratorHelper
    * SecurityDomain specified by the application.  If no collaborator has been registered for
    * that domain then the super class provides a default security collaborator implementation.
    */
-  
-  private static WebAppSecurityCollaborator staticDefaultSecurityCollaborator = new WebAppSecurityCollaborator();
+
+  private static final WebAppSecurityCollaborator staticDefaultSecurityCollaborator = new WebAppSecurityCollaborator();
+
   @Override
   public IWebAppSecurityCollaborator getSecurityCollaborator() {
       // Security service may have been added or removed since app was installed so get 'live' collab service
@@ -102,7 +105,21 @@ public class CollaboratorHelperImpl extends CollaboratorHelper
       }
   }
 
- 
+  /*
+   * Return the registered instance of the IWebAppTransactionCollaborator service as the
+   * WebAppTransactionService component may update after the application has installed.
+   */
+
+  private static final WebAppTransactionCollaborator staticDefaultWebAppTransactionCollaborator = new WebAppTransactionCollaborator();
+
+  @Override
+  public IWebAppTransactionCollaborator getWebAppTransactionCollaborator() {
+      IWebAppTransactionCollaborator service = CollaboratorServiceImpl.getWebAppTransactionCollaborator();
+      return transactionCollaborator = (service != null)
+                     ? service // Set for use by super class on pre/postInvoke calls
+                     : staticDefaultWebAppTransactionCollaborator; // Reset to static stub with no-op methods
+  }
+
   /*
    * LIBERTY: collaborators are not passed through each web app but are managed within this class
    * (so ignore the null arg and use the local list)
@@ -269,6 +286,7 @@ public class CollaboratorHelperImpl extends CollaboratorHelper
   IOException, Exception {
       // refresh dynamic collaborators before using
       getSecurityCollaborator();
+      getWebAppTransactionCollaborator();
       super.preInvokeCollaborators(collabMetaData, colEnum);
   }
   
@@ -277,6 +295,7 @@ public class CollaboratorHelperImpl extends CollaboratorHelper
   IOException, Exception {
    // refresh dynamic collaborators before using
       getSecurityCollaborator();
+      getWebAppTransactionCollaborator();
       super.postInvokeCollaborators(collabMetaData, colEnum);
   }
   

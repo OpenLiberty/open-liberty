@@ -24,9 +24,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-public class RecoveryUtils {
+public class FATUtils {
 
-    private static final Class<RecoveryUtils> c = RecoveryUtils.class;
+    private static final Class<FATUtils> c = FATUtils.class;
 
     public static final Duration TESTCONTAINER_STARTUP_TIMEOUT = Duration.ofMinutes(5);
     public static final int LOG_SEARCH_TIMEOUT = 300000;
@@ -49,14 +49,14 @@ public class RecoveryUtils {
             restartServer(crashingServer);
             fail(crashingServer.getServerName() + " did not crash as expected");
         } catch (Exception e) {
-            Log.info(RecoveryUtils.class, method, "setupRec" + id + " crashed as expected");
+            Log.info(FATUtils.class, method, "setupRec" + id + " crashed as expected");
         }
 
         assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State: "));
 
         crashingServer.postStopServerArchive(); // must explicitly collect since server start failed
 
-        RecoveryUtils.startServers(recoveringServer);
+        FATUtils.startServers(recoveringServer);
 
         // Server appears to have started ok
         assertNotNull(recoveringServer.getServerName() + " didn't recover properly",
@@ -64,13 +64,13 @@ public class RecoveryUtils {
 
         int attempt = 0;
         while (true) {
-            Log.info(RecoveryUtils.class, method, "calling checkRec" + id);
+            Log.info(FATUtils.class, method, "calling checkRec" + id);
             try {
                 final StringBuilder sb = fsc.runTestWithResponse(recoveringServer, servletName, "checkRec" + id);
-                Log.info(RecoveryUtils.class, method, "checkRec" + id + " returned: " + sb);
+                Log.info(FATUtils.class, method, "checkRec" + id + " returned: " + sb);
                 break;
             } catch (Exception e) {
-                Log.error(RecoveryUtils.class, method, e);
+                Log.error(FATUtils.class, method, e);
                 if (++attempt < 5) {
                     Thread.sleep(10000);
                 } else {
@@ -85,11 +85,11 @@ public class RecoveryUtils {
 
     private static void restartServer(LibertyServer s) {
         try {
-            RecoveryUtils.stopServers(new String[] { ".*" }, s);
-            RecoveryUtils.startServers(s);
+            FATUtils.stopServers(new String[] { ".*" }, s);
+            FATUtils.startServers(s);
             s.printProcessHoldingPort(s.getHttpDefaultPort());
         } catch (Exception e) {
-            Log.error(RecoveryUtils.class, "restartServer", e);
+            Log.error(FATUtils.class, "restartServer", e);
         }
     }
 
@@ -273,7 +273,7 @@ public class RecoveryUtils {
             try {
                 return r.execute();
             } catch (Exception e) {
-                Log.error(RecoveryUtils.class, "runWithRetries", e);
+                Log.error(FATUtils.class, "runWithRetries", e);
                 if (++attempt < retryCount) {
                     Thread.sleep(retryInterval);
                 } else {

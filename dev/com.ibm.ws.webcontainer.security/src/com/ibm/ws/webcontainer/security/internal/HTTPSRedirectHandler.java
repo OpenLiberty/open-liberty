@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,8 +34,7 @@ public class HTTPSRedirectHandler {
      * @return {@code true} if the request requires SSL but the request is not secure, {@code false} otherwise.
      */
     public boolean shouldRedirectToHttps(WebRequest webRequest) {
-        HttpServletRequest req = webRequest.getHttpServletRequest();
-        return webRequest.isSSLRequired() && !req.isSecure();
+        return webRequest.isSSLRequired() && !webRequest.getHttpServletRequest().isSecure();
     }
 
     /**

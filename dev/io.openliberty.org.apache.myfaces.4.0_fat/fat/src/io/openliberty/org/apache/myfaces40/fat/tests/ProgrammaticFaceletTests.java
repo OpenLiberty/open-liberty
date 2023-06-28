@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
@@ -38,7 +35,8 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class ProgrammaticFaceletTests {
 
-    private static final Logger LOG = Logger.getLogger(SimpleTest.class.getName());
+    private static final Class<?> c = ProgrammaticFaceletTests.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
     private static final String PROGRAMMATIC_FACELET_TEST_APP_NAME = "ProgrammaticFaceletTests";
 
     @Server("faces40_programmaticFaceletServer")
@@ -49,7 +47,7 @@ public class ProgrammaticFaceletTests {
         ShrinkHelper.defaultDropinApp(server, PROGRAMMATIC_FACELET_TEST_APP_NAME + ".war",
                                       "io.openliberty.org.apache.faces40.fat.programmaticfacelettests");
 
-        server.startServer(SimpleTest.class.getSimpleName() + ".log");
+        server.startServer(c.getSimpleName() + ".log");
     }
 
     @AfterClass

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -76,7 +76,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
             LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[GET_REQUESTED_SESSION_ID_FROM_URL],"force="+force);
         }
         String sessionID = null;
-        if (_smc.getEnableUrlRewriting() || force) {
+        if (force || _smc.getEnableUrlRewriting()) {
             String requestURI = ((IExtendedRequest) request).getEncodedRequestURI();
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[GET_REQUESTED_SESSION_ID_FROM_URL], "request uri:" + requestURI);
@@ -147,8 +147,10 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
             return sessionAffinityContext;
         }
 
+        final boolean enableCookies = _smc.getEnableCookies();
+
         // try a non-SSL request
-        if (_smc.getEnableCookies()) {
+        if (enableCookies) {
             // allSessionIds =
             // ((IExtendedRequest)request).getAllCookieValues(_smc.getSessionCookieName());
             byte[] byteSessId = ((IExtendedRequest) request).getCookieValueAsBytes(_smc.getSessionCookieName());
@@ -197,7 +199,7 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
         // Maybe a cookie was sent using the wrong means - ok it should be treated as
         // invalid but should be returned from ServletRequest.getRequestedSessionId()
         if (!reqFromCookie && !reqFromURL) {            
-            if (_smc.getEnableCookies()) {
+            if (enableCookies) {
                 // If cookies were enable now look in the URL
                 sessionID = getRequestedSessionIdFromURL(request,true);
                 if (sessionID != null) {

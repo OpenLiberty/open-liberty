@@ -27,7 +27,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
 public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
