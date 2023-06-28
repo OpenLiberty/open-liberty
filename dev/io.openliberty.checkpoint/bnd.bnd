@@ -40,7 +40,8 @@ WS-TraceGroup: checkpoint
 
 -testpath: 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
-	com.ibm.ws.logging;version=latest
+	com.ibm.ws.logging;version=latest, \
+	org.eclipse.osgi;version=latest
 
 -dsannotations: \
     io.openliberty.checkpoint.internal.CheckpointImpl, \

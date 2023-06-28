@@ -55,8 +55,10 @@ import org.osgi.service.condition.Condition;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -74,17 +76,7 @@ import io.openliberty.checkpoint.internal.openj9.J9CRIUSupport;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Component(
-           reference = { @Reference(name = CheckpointImpl.HOOKS_REF_NAME_MULTI_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
-                                    policy = ReferencePolicy.DYNAMIC,
-                                    policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(" + CheckpointHook.MULTI_THREADED_HOOK + "=true)"),
-                         @Reference(name = CheckpointImpl.HOOKS_REF_NAME_SINGLE_THREAD, service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
-                                    policy = ReferencePolicy.DYNAMIC,
-                                    policyOption = ReferencePolicyOption.GREEDY,
-                                    target = "(|(!(" + CheckpointHook.MULTI_THREADED_HOOK + "=*))(" + CheckpointHook.MULTI_THREADED_HOOK + "=false))")
-           },
-           property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
+@Component(property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
            // use immediate component to avoid lazy instantiation and deactivate
            immediate = true)
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
@@ -97,8 +89,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final String CHECKPOINT_ALLOWED_FEATURES_ALL = "ALL_FEATURES";
     static final String CHECKPOINT_PAUSE_RESTORE = "io.openliberty.checkpoint.pause.restore";
 
-    static final String HOOKS_REF_NAME_SINGLE_THREAD = "hooksSingleThread";
-    static final String HOOKS_REF_NAME_MULTI_THREAD = "hooksMultiThread";
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
     private static final String FILE_RESTORE_FAILED_MARKER = DIR_CHECKPOINT + ".restoreFailedMarker";
@@ -121,7 +111,52 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final ExecuteCRIU criu;
     private final long pauseRestore;
     private final CheckpointFailedException forceFail;
+    private final List<CheckpointHookService> hooksMultiThreaded = Collections.synchronizedList(new ArrayList<>());
+    private final List<CheckpointHookService> hooksSingleThreaded = Collections.synchronizedList(new ArrayList<>());
+
     private static volatile CheckpointImpl INSTANCE = null;
+
+    static class CheckpointHookService implements Comparable<CheckpointHookService> {
+        final CheckpointHook hook;
+        private final ServiceReference<CheckpointHook> hookRef;
+        private final boolean isCracHooks;
+
+        @Trivial
+        public CheckpointHookService(CheckpointHook hook, ServiceReference<CheckpointHook> hookRef) {
+            this.hook = hook;
+            this.hookRef = hookRef;
+            this.isCracHooks = isCracHooks(hookRef);
+        }
+
+        @Override
+        @Trivial
+        public int compareTo(CheckpointHookService o) {
+            if (this.isCracHooks == o.isCracHooks) {
+                return hookRef.compareTo(o.hookRef);
+            }
+            return this.isCracHooks ? 1 : -1;
+        }
+
+        boolean isCracHooks(ServiceReference<CheckpointHook> hookRef) {
+            Boolean isCracHooks = (Boolean) hookRef.getProperty("io.openliberty.crac.hooks");
+            if (isCracHooks != null && isCracHooks) {
+                debug(tc, () -> "Found CRaC hook:" + hookRef);
+                return true;
+            }
+            return false;
+        }
+
+        @Trivial
+        boolean isHookReference(ServiceReference<CheckpointHook> oHookRef) {
+            return hookRef.getProperty(Constants.SERVICE_ID).equals(oHookRef.getProperty(Constants.SERVICE_ID));
+        }
+
+        @Trivial
+        @Override
+        public String toString() {
+            return hook.toString() + ": " + hookRef.toString();
+        }
+    }
 
     @Activate
     public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin,
@@ -162,15 +197,44 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
         // until the constructor exits here given that this is an immediate component and activated early,
         // long before applications are started.
+        INSTANCE = this;
         if (this.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             this.transformerReg = cc.getBundleContext().registerService(ClassFileTransformer.class, new CheckpointTransformer(),
                                                                         FrameworkUtil.asDictionary(Collections.singletonMap("io.openliberty.classloading.system.transformer",
                                                                                                                             true)));
-            INSTANCE = this;
         } else {
             this.transformerReg = null;
-            INSTANCE = null;
         }
+    }
+
+    @Reference(service = CheckpointHook.class, cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               unbind = "removeHook")
+    void addHook(CheckpointHook hook, ServiceReference<CheckpointHook> hookRef) {
+        CheckpointHookService hookService = new CheckpointHookService(hook, hookRef);
+        boolean isMultiThreaded = isMultiThreaded(hookRef);
+        debug(tc, () -> "Adding " + (isMultiThreaded ? "multi-threaded" : "single-threaded") + "hook: " + hookService);
+        if (isMultiThreaded) {
+            hooksMultiThreaded.add(hookService);
+        } else {
+            hooksSingleThreaded.add(hookService);
+        }
+    }
+
+    void removeHook(ServiceReference<CheckpointHook> hookRef) {
+        boolean isMultiThreaded = isMultiThreaded(hookRef);
+        debug(tc, () -> "Removing " + (isMultiThreaded ? "multi-threaded" : "single-threaded") + "hook: " + hookRef);
+        if (isMultiThreaded) {
+            hooksMultiThreaded.removeIf(h -> h.isHookReference(hookRef));
+        } else {
+            hooksSingleThreaded.removeIf(h -> h.isHookReference(hookRef));
+        }
+    }
+
+    private boolean isMultiThreaded(ServiceReference<CheckpointHook> hookRef) {
+        Object multiThreaded = hookRef.getProperty(CheckpointHook.MULTI_THREADED_HOOK);
+        return Boolean.TRUE.equals(multiThreaded);
     }
 
     private CheckpointFailedException getForceFailCheckpointCode(String property) {
@@ -237,21 +301,23 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void check() {
-        // This gets called once once the server is "ready" before the ports will be opened.
-        // This is typically used for the "applications" checkpoint phase.  But if any other
+        debug(tc, () -> "Initiating checkpoint from server ready event.");
+        // This gets called once the server is "ready" before the ports will be opened.
+        // This is typically used for the "afterAppStart" checkpoint phase.  But if any other
         // phase is specified and they haven't caused a checkpoint yet this is the catch all.
-        // This catch all is necessary because it is possible that "features" and "deployment"
+        // This catch all is necessary because it is possible that "beforeAppStart"
         // triggers may not fire for certain applications/configuration.  For example,
-        // if while deploying an application no application classes are initialized.
+        // if while starting an application no application classes are initialized.
         checkpointOrExitOnFailure();
     }
 
+    @FFDCIgnore(CheckpointFailedException.class)
     void checkpointOrExitOnFailure() {
         try {
             checkpoint();
         } catch (CheckpointFailedException e) {
-            // Allow auto FFDC here to capture the causing exception (if any)
-
+            // FFDC here to capture the causing exception (if any)
+            FFDCFilter.processException(e, getClass().getName(), "checkpointOrExitOnFailure", this);
             if (e.isRestore()) {
                 // create restore failed marker with return code
                 createRestoreFailedMarker(e);
@@ -286,17 +352,34 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
         checkSupportedFeatures();
 
-        List<CheckpointHook> multiThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_MULTI_THREAD));
-        List<CheckpointHook> singleThreadPrepareHooks = getHooks(cc.locateServices(HOOKS_REF_NAME_SINGLE_THREAD));
+        // sorting is lowest to highest for restore
+        List<CheckpointHookService> multiThreadRestoreHooks = getHooks(this.hooksMultiThreaded);
+        List<CheckpointHookService> singleThreadRestoreHooks = getHooks(this.hooksSingleThreaded);
 
-        // reverse prepare hook order for restore hooks
-        List<CheckpointHook> multiThreadRestoreHooks = new ArrayList<>(multiThreadPrepareHooks);
-        Collections.reverse(multiThreadRestoreHooks);
-        List<CheckpointHook> singleThreadRestoreHooks = new ArrayList<>(singleThreadPrepareHooks);
-        Collections.reverse(singleThreadRestoreHooks);
+        // reverse restore hook order for prepare hooks
+        List<CheckpointHookService> multiThreadPrepareHooks = new ArrayList<>(multiThreadRestoreHooks);
+        Collections.reverse(multiThreadPrepareHooks);
+        List<CheckpointHookService> singleThreadPrepareHooks = new ArrayList<>(singleThreadRestoreHooks);
+        Collections.reverse(singleThreadPrepareHooks);
+
+        debug(tc, () -> "Multi-threaded prepare order: " + multiThreadPrepareHooks);
+        debug(tc, () -> "Single-threaded prepare order: " + singleThreadPrepareHooks);
+        debug(tc, () -> "Multi-threaded restore order: " + multiThreadRestoreHooks);
+        debug(tc, () -> "Single-threaded restore order: " + singleThreadRestoreHooks);
 
         //map phase back to the documented command line argument.
-        String phaseName = CheckpointPhase.getPhase() == CheckpointPhase.BEFORE_APP_START ? "beforeAppStart" : "afterAppStart";
+        String phaseName;
+        switch (checkpointAt) {
+            case AFTER_APP_START:
+                phaseName = "afterAppStart";
+                break;
+            case BEFORE_APP_START:
+                phaseName = "beforeAppStart";
+                break;
+            default:
+                phaseName = checkpointAt.name();
+                break;
+        }
         Tr.audit(tc, "CHECKPOINT_DUMP_INITIATED_CWWKC0451", phaseName);
 
         if (forceFail != null && !forceFail.isRestore()) {
@@ -360,7 +443,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         createRestoreMarker();
     }
 
-    private void callHooksOnFailure(List<CheckpointHook> singleThreadRestoreHooks, List<CheckpointHook> multiThreadRestoreHooks) {
+    private void callHooksOnFailure(List<CheckpointHookService> singleThreadRestoreHooks, List<CheckpointHookService> multiThreadRestoreHooks) {
         callHooks("checkpointFailed", singleThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
         callHooks("checkpointFailed", multiThreadRestoreHooks, CheckpointHook::checkpointFailed, null);
     }
@@ -469,35 +552,32 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         return locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_ENV_PROPERTIES).asFile();
     }
 
-    List<CheckpointHook> getHooks(Object[] hooks) {
-        if (hooks == null) {
+    List<CheckpointHookService> getHooks(List<CheckpointHookService> hookServices) {
+        if (hookServices.isEmpty()) {
             debug(tc, () -> "No checkpoint hooks.");
             return Collections.emptyList();
         }
-        debug(tc, () -> "Found checkpoint hooks: " + hooks);
-        List<CheckpointHook> hookList = new ArrayList<>(hooks.length);
-        for (Object o : hooks) {
-            // if o is anything other than a CheckpointHook then
-            // there is a bug in SCR
-            CheckpointHook hook = (CheckpointHook) o;
-            hookList.add(hook);
 
-        }
-        return hookList;
+        // using forEach to ensure synchronized copy.
+        List<CheckpointHookService> sortedHooks = new ArrayList<>(hookServices.size());
+        hookServices.forEach(h -> sortedHooks.add(h));
+        Collections.sort(sortedHooks);
+
+        return sortedHooks;
     }
 
     @FFDCIgnore(Throwable.class)
     @Trivial
     private void callHooks(String operation,
-                           List<CheckpointHook> checkpointHooks,
+                           List<CheckpointHookService> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            Function<Throwable, CheckpointFailedException> failed) throws CheckpointFailedException {
-        for (CheckpointHook checkpointHook : checkpointHooks) {
+        for (CheckpointHookService checkpointHookService : checkpointHooks) {
             try {
-                debug(tc, () -> operation + " operation on hook: " + checkpointHook);
-                perform.accept(checkpointHook);
+                debug(tc, () -> operation + " operation on hook: " + checkpointHookService);
+                perform.accept(checkpointHookService.hook);
             } catch (Throwable abortCause) {
-                debug(tc, () -> operation + " failed on hook: " + checkpointHook);
+                debug(tc, () -> operation + " failed on hook: " + checkpointHookService);
                 if (failed != null) {
                     throw failed.apply(abortCause);
                 }
@@ -506,7 +586,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     @Trivial
-    private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
+    private void prepare(List<CheckpointHookService> checkpointHooks) throws CheckpointFailedException {
+        debug(tc, () -> "Calling prepare hooks on this list: " + checkpointHooks);
         callHooks("prepare",
                   checkpointHooks,
                   CheckpointHook::prepare,
@@ -518,9 +599,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     @Trivial
-    private void restore(List<CheckpointHook> checkpointHooks) throws CheckpointFailedException {
+    private void restore(List<CheckpointHookService> checkpointHooks) throws CheckpointFailedException {
         // The first thing is to set the jvmRestore flag
         jvmRestore.set(true);
+        debug(tc, () -> "Calling restore hooks on this list: " + checkpointHooks);
         callHooks("restore",
                   checkpointHooks,
                   CheckpointHook::restore,
@@ -540,8 +622,9 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         checkpointCalled.set(false);
     }
 
-    public static void deployCheckpoint() {
+    public static void beforeAppStartCheckpoint() {
         CheckpointImpl current = INSTANCE;
+        debug(tc, () -> "Initiating checkpoint from beforeAppStart: " + current);
         if (current != null && current.checkpointAt == CheckpointPhase.BEFORE_APP_START) {
             current.checkpointOrExitOnFailure();
         }
