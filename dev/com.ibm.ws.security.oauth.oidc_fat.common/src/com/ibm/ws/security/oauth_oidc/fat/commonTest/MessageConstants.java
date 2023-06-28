@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
@@ -177,6 +177,10 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2416E_TOKEN_REQUEST_ERROR = "CWWKS2416E";
 
     public static final String CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH = "CWWKS2430E";
+    public static final String CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR = "CWWKS2432E";
+    public static final String CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME = "CWWKS2433E";
+    public static final String CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF = "CWWKS2434E";
+    public static final String CWWKS2435E_PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY = "CWWKS2435E";
 
     public static final String CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES = "CWWKS5207W";
 
