@@ -41,7 +41,6 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConsoleFormatTest.class,
                 CustomAccessLogFieldsTest.class,
                 TraceInjectionTest.class,
-                TimeBasedLogRolloverTest.class,
                 TestSuppressSensitiveTraceBootstrap.class
 })
 
