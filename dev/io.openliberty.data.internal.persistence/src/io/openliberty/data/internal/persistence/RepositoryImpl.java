@@ -347,11 +347,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                     Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                     q = generateSelectClause(queryInfo, select);
-                    String idName = entityInfo.attributeNames.get("id"); // TODO IdClass
-                    queryInfo.jpqlDelete = new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
-                                    .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                                    .append(" WHERE ").append(o).append('.').append(idName).append("=?1") //
-                                    .toString();
+                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
                 }
                 if (whereClause != null)
                     q.append(whereClause);
@@ -691,6 +687,31 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
         }
         return foundStart ? findIn.substring(startAt) : null;
+    }
+
+    /**
+     * Generates JQPL for deletion by id, for find-and-delete repository operations.
+     */
+    private String generateDeleteById(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        StringBuilder q;
+        if (entityInfo.idClass == null) {
+            String idAttrName = entityInfo.attributeNames.get("id");
+            q = new StringBuilder(24 + entityInfo.name.length() + o.length() * 2 + idAttrName.length()) //
+                            .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ") //
+                            .append(o).append('.').append(idAttrName).append("=?1");
+        } else {
+            q = new StringBuilder(200) //
+                            .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ");
+            int count = 0;
+            for (String idClassAttrName : entityInfo.idClassAttributeAccessors.keySet()) {
+                if (++count != 1)
+                    q.append(" AND ");
+                q.append(o).append('.').append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
+            }
+        }
+        return q.toString();
     }
 
     /**
@@ -1149,11 +1170,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                 Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                 q = generateSelectClause(queryInfo, select);
-                String idName = entityInfo.attributeNames.get("id"); // TODO IdClass
-                queryInfo.jpqlDelete = idName == null ? null : new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
-                                .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                                .append(" WHERE ").append(o).append('.').append(idName).append("=?1") //
-                                .toString();
+                queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             }
 
             int orderBy = isDeleteOnly ? -1 : methodName.lastIndexOf("OrderBy");
@@ -1950,10 +1967,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             // TODO meaningful error if accessor does not apply to result type
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
+                                            if (trace && tc.isDebugEnabled())
+                                                Tr.debug(this, tc, queryInfo.jpqlDelete,
+                                                         "set ?1 " + (value == null ? null : value.getClass().getSimpleName()));
                                             delete.setParameter(1, value);
                                             delete.executeUpdate();
                                         } else {
-                                            throw new UnsupportedOperationException(); // TODO: IdClass
+                                            jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
+                                            int numParams = 0;
+                                            for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                                                Object value = accessor instanceof Method ? ((Method) accessor).invoke(result) : ((Field) accessor).get(result);
+                                                if (trace && tc.isDebugEnabled())
+                                                    Tr.debug(this, tc, queryInfo.jpqlDelete,
+                                                             "set ?" + (numParams + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
+                                                delete.setParameter(++numParams, value);
+                                            }
+                                            delete.executeUpdate();
                                         }
 
                                 if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
