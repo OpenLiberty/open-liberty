@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,11 @@ package com.ibm.ws.kernel.boot;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -50,8 +51,8 @@ public class ServerEnvTest {
     private static final String OS = System.getProperty("os.name").toLowerCase();
     private static Locale saveLocale;
     private static final String BACKUP_EXT = ".backup";
-    private static boolean FIRST_TEST_CASE = true;
-    private String tempConsoleLogName_fullPath; // This is global because we can't delete the log file until the 'after' method.
+
+    private File tempConsoleLog; // This is global because we can't delete the log file until the 'after' method.
 
     private static LibertyServer server;
 
@@ -84,11 +85,8 @@ public class ServerEnvTest {
     @Before
     public void before() {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        if (FIRST_TEST_CASE) {
-            // Save the original server.env files to be restored when we are finished.
-            backupServerEnvFiles();
-            FIRST_TEST_CASE = false;
-        }
+        Log.info(c, "before", "server hash code: " + server.hashCode());
+        backupServerEnvFiles();
     }
 
     @AfterClass
@@ -102,25 +100,36 @@ public class ServerEnvTest {
 
     @After
     public void after() throws Exception {
+        String METHOD_NAME = "after";
 
-
+        String consoleLogName = null;
+        try {
+            consoleLogName = server.getConsoleLogFile().getName();
+        } catch (Exception e) {
+            Log.info(c, METHOD_NAME, "Caught Exception: [" + e.getMessage() + "]");
+            e.printStackTrace();
+        }
+        Log.info(c, METHOD_NAME, "Logs dir =[" + server.getLogsRoot() + "] log file name [" + consoleLogName + "]");
 
         if (server.isStarted()) {
             // Set the console.log file name in the server so that it knows which logs to search for messages
             // during the server stop.   This avoids a 30 second delay caused by searching the wrong log file.
-            if (tempConsoleLogName_fullPath != null) {
-               server.setConsoleLogName(tempConsoleLogName_fullPath);
+            if (tempConsoleLog != null) {
+                server.setConsoleLogName(tempConsoleLog.getName());
             }
-            displayDirectoryContents("after", new File(server.getLogsRoot())); // DEBUG
+            displayDirectoryContents(METHOD_NAME, new File(server.getLogsRoot()));
+
             server.stopServer();
         }
+
         restoreServerEnvFiles();
 
-        // Some tests create a log file other than console.log.  Delete these as part of clean up.
-        if (tempConsoleLogName_fullPath != null) {
-            deleteFile(tempConsoleLogName_fullPath);
-            tempConsoleLogName_fullPath = null;
+        // Some tests create a log file other than "console.log".  Delete these as part of clean up.
+        if (tempConsoleLog != null) {
+            deleteFile(tempConsoleLog);
+            tempConsoleLog = null;
         }
+        displayDirectoryContents(METHOD_NAME, new File(server.getLogsRoot()));
     }
 
     /**
@@ -130,9 +139,9 @@ public class ServerEnvTest {
         final String METHOD_NAME = "backupServerEnvFiles";
 
         try {
-            File etc_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.ETC);
-            File shared_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.SHARED);
-            File server_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.SERVER);
+            File etc_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.ETC.path);
+            File shared_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.SHARED.path);
+            File server_ServerEnv_File = new File(server.getInstallRoot() + "/" + ServerEnvType.SERVER.path);
             backup_etc_ServerEnv_FileName = etc_ServerEnv_File.getAbsolutePath() + BACKUP_EXT;
             backup_shared_ServerEnv_FileName = shared_ServerEnv_File.getAbsolutePath() + BACKUP_EXT;
             backup_server_ServerEnv_FileName = server_ServerEnv_File.getAbsolutePath() + BACKUP_EXT;
@@ -159,9 +168,9 @@ public class ServerEnvTest {
      */
     private void restoreServerEnvFiles() {
         final String METHOD_NAME = "restoreServerEnvFiles";
-        String etc_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.ETC;
-        String shared_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.SHARED;
-        String server_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.SERVER;
+        String etc_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.ETC.path;
+        String shared_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.SHARED.path;
+        String server_ServerEnv_Path = server.getInstallRoot() + "/" + ServerEnvType.SERVER.path;
 
         File etc_ServerEnv_File = new File(etc_ServerEnv_Path);
         File shared_ServerEnv_File = new File(shared_ServerEnv_Path);
@@ -178,15 +187,21 @@ public class ServerEnvTest {
 
         try {
             if (backup_etc_ServerEnv_File.exists()) {
+                Log.info(c, METHOD_NAME, "restoring " + etc_ServerEnv_Path);
                 copyFile(backup_etc_ServerEnv_File, etc_ServerEnv_Path);
+                displayFile(etc_ServerEnv_Path);
             }
 
             if (backup_shared_ServerEnv_File.exists()) {
+                Log.info(c, METHOD_NAME, "restoring " + shared_ServerEnv_Path);
                 copyFile(backup_etc_ServerEnv_File, shared_ServerEnv_Path);
+                displayFile(shared_ServerEnv_Path);
             }
 
             if (backup_server_ServerEnv_File.exists()) {
+                Log.info(c, METHOD_NAME, "restoring " + server_ServerEnv_Path);
                 copyFile(backup_etc_ServerEnv_File, server_ServerEnv_Path);
+                displayFile(server_ServerEnv_Path);
             }
         } catch (IOException ioe) {
             Log.warning(c, METHOD_NAME + " Failed to backup server.env files");
@@ -195,6 +210,8 @@ public class ServerEnvTest {
     }
 
     public static void copyFile(File sourceFile, String destinationFilePath) throws IOException {
+        final String METHOD_NAME = "copyFile";
+        Log.info(c, METHOD_NAME, "ENTER \n[" + sourceFile.getAbsolutePath() + "]\n[" + destinationFilePath + "]");
         try (
                         FileInputStream inputStream = new FileInputStream(sourceFile);
                         FileOutputStream outputStream = new FileOutputStream(destinationFilePath)) {
@@ -225,14 +242,14 @@ public class ServerEnvTest {
     @Test
     public void testVariableExpansionInServerEnv() throws Exception {
         final String METHOD_NAME = "testVariableExpansionInServerEnv";
-        Log.info(c, METHOD_NAME, "ENTER");
+        Log.info(c, METHOD_NAME, "ENTER ==============================");
 
         if (OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
             return;
         }
         varsExpandInServerEnv(true, ServerEnvType.ETC);
 
-        Log.exiting(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, "EXIT");
     }
 
     /**
@@ -254,13 +271,13 @@ public class ServerEnvTest {
     @Test
     public void testVariableExpansionInServerEnvWhenExpansionNotEnabled() throws Exception {
         final String METHOD_NAME = "testVariableExpansionInServerEnvWhenExpansionNotEnabled";
-        Log.info(c, METHOD_NAME, "ENTER");
+        Log.info(c, METHOD_NAME, "ENTER ==============================");
         if (OS.contains("win") || OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
             return;
         }
         varsExpandInServerEnv(false, ServerEnvType.ETC);
 
-        Log.exiting(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, "EXIT");
     }
 
     /**
@@ -278,7 +295,7 @@ public class ServerEnvTest {
 
         final String METHOD_NAME = "testVersionCommandReadsServerEnvOfServer";
         final boolean EXPANSION_ENABLED = true; // ensures server.env will be execute
-        Log.info(c, METHOD_NAME, "ENTER");
+        Log.info(c, METHOD_NAME, "ENTER ==============================");
 
         // Implementation will not work on Windows because server.env is not executed on Windows.
         // There are some ASCII - EBCDIC issues that would have to be worked out for Z/OS.
@@ -287,6 +304,10 @@ public class ServerEnvTest {
             Log.exiting(c, METHOD_NAME);
             return;
         }
+        Log.info(c, METHOD_NAME, "ETC server.env ---");
+        displayFile(server.getInstallRoot() + "/" + ServerEnvType.ETC.path);
+        Log.info(c, METHOD_NAME, "SERVER server.env ---");
+        displayFile(server.getInstallRoot() + "/" + ServerEnvType.SERVER.path);
 
         // Start the server passing null for the environment variable properties.
         // We don't need the properties set for this test.
@@ -298,7 +319,11 @@ public class ServerEnvTest {
         String fileContents = createFileContentsForServerEnv(EXPANSION_ENABLED, "echo " + HELLO_WORLD);
 
         // Create server.env in the server directory.
-        File serverEnvFile = createServerEnvFile(fileContents, ServerEnvType.SERVER.path);
+        File serverEnvFile = createFile(server.getInstallRoot() + "/" + ServerEnvType.SERVER.path,
+                                        fileContents);
+        Log.info(c, METHOD_NAME, "SERVER server.env +++");
+        displayFile(server.getInstallRoot() + "/" + ServerEnvType.SERVER.path);
+
         assertNotNull("The server.env file was not created. Null returned.", serverEnvFile);
         assertTrue("The server.env file was not created.", serverEnvFile.exists());
 
@@ -307,7 +332,7 @@ public class ServerEnvTest {
         assertTrue("The server's server.env did not get invoked as expected. "
                    + HELLO_WORLD + "not found in output", output.contains(HELLO_WORLD));
 
-        Log.exiting(c, METHOD_NAME);
+        Log.info(c, METHOD_NAME, "EXIT");
     }
 
     // End tests methods ---------- Begin Utility Methods --------
@@ -344,7 +369,8 @@ public class ServerEnvTest {
         // This should cause the name of the "console.log" to be something different.
         String fileContents = createFileContentsForServerEnv(expansionEnabled, "LOG_FILE=" + envVarReferenceSyntax);
 
-        File serverEnvFile = createServerEnvFile(fileContents, envType.path);
+        File serverEnvFile = createFile(server.getInstallRoot() + "/" + envType.path,
+                                        fileContents);
         assertNotNull("The server.env file was not created. Null returned.", serverEnvFile);
         assertTrue("The server.env file was not created.", serverEnvFile.exists());
 
@@ -355,14 +381,15 @@ public class ServerEnvTest {
 
         // The temporary log file name will depend on whether variables are expanded in server.env
         if (expansionEnabled) {
-            tempConsoleLogName_fullPath = server.getLogsRoot() + "/" + newLogFileName; // store name for clean up later.
+            tempConsoleLog = new File(server.getLogsRoot() + newLogFileName); // store name for clean up later.
         } else {
-            tempConsoleLogName_fullPath = server.getLogsRoot() + "/" + newLogFileName; // store name for clean up later.
+            tempConsoleLog = new File(server.getLogsRoot() + envVarReferenceSyntax); // store name for clean up later.
         }
 
         executeStartServerCommand(envVars);
         assertTrue("The server should have been started", server.isStarted());
 
+        Log.info(c, METHOD_NAME, "About to display directory contents.  server.getLogsRoot()[" + server.getLogsRoot() + "]");
         displayDirectoryContents(METHOD_NAME, new File(server.getLogsRoot())); // DEBUG
 
         // Finally, verify that the log file with the new name exists when expansion is enabled
@@ -468,18 +495,21 @@ public class ServerEnvTest {
 
     /**
      *
-     * @param fileContents          - contents to put in the newly created server.env file
-     * @param serverEnvRelativePath - relative path, below "wlp", to server.env file to create
+     * @param filePath     - absolute path of file to create
+     * @param fileContents - contents to put in the newly created server.env file
      * @return
      */
-    private File createServerEnvFile(String fileContents, String serverEnvRelativePath) {
-        final String METHOD_NAME = "createServerEnvFile";
-        Log.info(c, METHOD_NAME, "ENTER serverEnvRelativePath[{0}]\n", serverEnvRelativePath);
+    private File createFile(String filePath, String fileContents) {
+        final String METHOD_NAME = "createFile";
+        Log.info(c, METHOD_NAME, "ENTER, file to create [{0}]\n", filePath);
 
-        String serverEnvPath = server.getInstallRoot() + "/" + serverEnvRelativePath;
-        File serverEnvFile = new File(serverEnvPath);
-        File parentDir = serverEnvFile.getParentFile();
-        String path = serverEnvFile.getAbsolutePath();
+        File fileToCreate = new File(filePath);
+        File parentDir = fileToCreate.getParentFile();
+        if (parentDir == null) {
+            String parentDirFromPath = extractParentDirFromPath(filePath);
+            parentDir = new File(parentDirFromPath);
+        }
+        String path = fileToCreate.getAbsolutePath();
         Log.info(c, METHOD_NAME, "Creating file [{0}] with contents \n[\n{1}\n]", new Object[] { path, fileContents });
 
         if (!parentDir.exists()) {
@@ -488,7 +518,7 @@ public class ServerEnvTest {
 
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(serverEnvFile);
+            fos = new FileOutputStream(fileToCreate);
             fos.write(fileContents.getBytes());
         } catch (IOException ioe) {
             Log.info(c, METHOD_NAME, "Caught exception while writing the file " + path);
@@ -502,7 +532,15 @@ public class ServerEnvTest {
             }
         }
 
-        return serverEnvFile;
+        return fileToCreate;
+    }
+
+    private String extractParentDirFromPath(String filePath) {
+        int lastSlashIndex = filePath.lastIndexOf('/');
+        if (lastSlashIndex != -1) {
+            return filePath.substring(0, lastSlashIndex);
+        }
+        return "";
     }
 
     /**
@@ -520,6 +558,9 @@ public class ServerEnvTest {
             Log.info(c, "deleteFile", "Failed to delete : " + file.getAbsolutePath());
         }
 
+        if (file.exists()) {
+            Log.info(c, "deleteFile", "File exists after delete : " + file.getAbsolutePath());
+        }
         return;
     }
 
@@ -542,7 +583,7 @@ public class ServerEnvTest {
     @Test
     public void testAlternateLocaleServerEnv() throws Exception {
         final String METHOD_NAME = "testAlternateLocaleServerEnv";
-        Log.info(c, METHOD_NAME, "ENTER");
+        Log.info(c, METHOD_NAME, "ENTER ==============================");
         //Set Locale to turkish
         Locale.setDefault(new Locale("tr"));
 
@@ -551,10 +592,11 @@ public class ServerEnvTest {
         // This should cause the name of the "console.log" to be something different.
         String fileContents;
         String logFileName = "default.log";
-        tempConsoleLogName_fullPath = server.getLogsRoot() + "/" + logFileName; // store name for clean up later.
+        tempConsoleLog = new File(server.getLogsRoot() + logFileName); // store name for clean up later.
 
         fileContents = "LOG_FILE=" + logFileName;
-        File serverEnvFile = createServerEnvFile(fileContents, ServerEnvType.ETC.path);
+        File serverEnvFile = createFile(server.getInstallRoot() + "/" + ServerEnvType.ETC.path,
+                                        fileContents);
         assertNotNull("The server.env file was not created. Null returned.", serverEnvFile);
         assertTrue("The server.env file was not created.", serverEnvFile.exists());
 
@@ -571,59 +613,7 @@ public class ServerEnvTest {
         Log.exiting(c, METHOD_NAME);
     }
 
-    /**
-     * Creates an empty file.
-     *
-     * @param fileToCreate
-     * @throws IOException
-     */
-    public static void createFile(final String fileName) {
-        String METHOD_NAME = "createFile";
-        File fileToCreate = new File(fileName);
 
-        FileOutputStream fos = null;
-        try {
-
-            if (!fileToCreate.getParentFile().exists()) {
-                Log.info(c, METHOD_NAME, "Making dirs");
-                if (!fileToCreate.getParentFile().mkdirs()) {
-                    throw new FileNotFoundException();
-                }
-            }
-
-            Log.info(c, METHOD_NAME, "Creating outputStream");
-            fos = new FileOutputStream(fileToCreate);
-            if (!fileToCreate.exists()) {
-                fileToCreate.createNewFile();
-            }
-
-        } catch (Throwable ioe) {
-            Log.info(c, METHOD_NAME, "Caught exception while creating file [{0}]\n exception [{1}]\n", new String[] { fileName, ioe.toString() });
-
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (Throwable ioe) {
-                    Log.info(c, METHOD_NAME, "Caught exception while closing file [{0}]\n exception [{1}]\n", new String[] { fileName, ioe.toString() });
-                }
-            }
-        }
-    }
-
-//    public static void renameFileTo(File originalFile, String newFileName) {
-//        final String METHOD_NAME = "renameFileTo";
-//        Log.info(c, METHOD_NAME, "renaming:\n[{0}]\n to\n[{1}]", new String[] { originalFile.getAbsolutePath(), newFileName });
-//        File newFile = new File(newFileName);
-//        assertTrue("Original file [ " + originalFile.getAbsolutePath() + " ] does not exist.", originalFile.exists());
-//        assertFalse("File [ " + newFileName + " ] already exists", newFile.exists());
-//
-//        boolean renameSucceeded = originalFile.renameTo(newFile);
-//        assertFalse("Original file [ " + originalFile.getAbsolutePath() + " ] still exists after rename.", originalFile.exists());
-//        assertTrue("File [ " + newFileName + " ] does not exist after rename", newFile.exists());
-//
-//        Log.info(c, METHOD_NAME, "renameSucceeded[{0}]", renameSucceeded);
-//    }
 
     /**
      * @param methodName
@@ -646,5 +636,28 @@ public class ServerEnvTest {
         }
         sb.append("]\n");
         Log.info(c, methodName, sb.toString());
+    }
+
+    public static void displayFile(String filePath) {
+        final String METHOD_NAME = "displayFile";
+        File file = new File(filePath);
+        if (!file.exists()) {
+            Log.info(c, METHOD_NAME, "FILE DOES NOT EXIST: [ " + filePath + "]");
+            return;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("Contents of " + filePath + ": \n[\n");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sb.append("\n]\n");
+        Log.info(c, METHOD_NAME, sb.toString());
     }
 }
