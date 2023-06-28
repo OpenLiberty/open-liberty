@@ -1150,7 +1150,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                 q = generateSelectClause(queryInfo, select);
                 String idName = entityInfo.attributeNames.get("id"); // TODO IdClass
-                queryInfo.jpqlDelete = new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
+                queryInfo.jpqlDelete = idName == null ? null : new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
                                 .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
                                 .append(" WHERE ").append(o).append('.').append(idName).append("=?1") //
                                 .toString();
