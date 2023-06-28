@@ -20,8 +20,8 @@ Subsystem-Name: MicroProfile Rest Client 3.0
 -features=\
   io.openliberty.jsonp-2.0; ibm.tolerates:="2.1", \
   io.openliberty.restfulWSClient-3.0; ibm.tolerates:="3.1", \
-  io.openliberty.mpConfig-3.0, \
-  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0", \
+  io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1", \
   io.openliberty.mpRestClient.internal.cdi-3.0; ibm.tolerates:="4.0", \
   io.openliberty.org.eclipse.microprofile.rest.client-3.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
