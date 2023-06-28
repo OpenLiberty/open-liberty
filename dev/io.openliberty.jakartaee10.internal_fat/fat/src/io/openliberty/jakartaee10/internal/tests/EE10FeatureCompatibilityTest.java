@@ -129,7 +129,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-1.5"); // springBoot 3.0 only supports EE10
         compatibleFeatures.remove("springBoot-2.0");
 
-        compatibleFeatures.remove("mpReactiveStreams-3.0"); //still in development
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
 
         // Test features may or may not be compatible, we don't want to assert either way
@@ -145,7 +144,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         incompatibleFeatures.addAll(allFeatures);
         incompatibleFeatures.removeAll(compatibleFeatures);
 
-        incompatibleFeatures.remove("mpReactiveStreams-3.0"); //still in development
         incompatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
 
         // Test features may or may not be compatible, we don't want to assert either way
