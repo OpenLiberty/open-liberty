@@ -165,19 +165,17 @@ public class WebRequestImpl implements WebRequest {
     }
 
     private boolean isClientCertHeaderInRequest(HttpServletRequest request) {
-        boolean hasClientCertHeader = false;
         LoginConfiguration loginConfig = getLoginConfig();
-        String authenticationMethod = null;
 
         if (loginConfig != null) {
-            authenticationMethod = loginConfig.getAuthenticationMethod();
+            String authenticationMethod = loginConfig.getAuthenticationMethod();
+            if (LoginConfiguration.CLIENT_CERT.equals(authenticationMethod)) {
+                X509Certificate certChain[] = (X509Certificate[]) request.getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
+                return certChain != null && certChain.length > 0;
+            }
         }
 
-        if (LoginConfiguration.CLIENT_CERT.equals(authenticationMethod)) {
-            X509Certificate certChain[] = (X509Certificate[]) request.getAttribute(CertificateLoginAuthenticator.PEER_CERTIFICATES);
-            hasClientCertHeader = certChain != null && certChain.length > 0;
-        }
-        return hasClientCertHeader;
+        return false;
     }
 
     private boolean isSSOCookieInRequest(HttpServletRequest request) {

@@ -184,16 +184,14 @@
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
-                        <tck_hostname>${tck_hostname}</tck_hostname>
-                        <tck_username>${tck_username}</tck_username>
-                        <tck_password>${tck_password}</tck_password>
                         <tck_port>${tck_port}</tck_port>
-                        <tck_port>${tck_port_secure}</tck_port>
                         <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
+                        <java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile> <!-- provided by MvnUtils.runTCKMvnCmd -->
                     </suiteXmlFiles>
+                    <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>
             </plugin>

@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Para obter informa\u00e
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Um token de logout do back-channel que \u00e9 baseado em um token de ID armazenado em cache com reclama\u00e7\u00f5es [{0}] para o cliente {1} n\u00e3o pode ser criado devido ao erro a seguir: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Ocorreu um erro no desenvolvimento da sequ\u00eancia do token de logout. Alternativamente, o emissor do token de ID armazenado em cache pode n\u00e3o corresponder a este provedor OpenID Connect, ou o token de ID armazenado em cache pode estar faltando algumas reclama\u00e7\u00f5es que s\u00e3o necess\u00e1rias.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Para obter informa\u00e7\u00f5es adicionais, consulte o erro inclu\u00eddo na mensagem.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: A solicita\u00e7\u00e3o aud [{0}] no par\u00e2metro id_token_hint n\u00e3o corresponde ao valor [{1}] para o par\u00e2metro de solicita\u00e7\u00e3o client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Quando os par\u00e2metros client_id e id_token_hint est\u00e3o presentes, o identificador de cliente no token de ID deve corresponder ao valor fornecido para o par\u00e2metro client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Assegure-se de que o valor do par\u00e2metro client_id corresponda \u00e0 solicita\u00e7\u00e3o aud no token de ID.

@@ -4,9 +4,9 @@
 symbolicName=io.openliberty.jsonbImpl-3.0.0
 singleton=true
 visibility=private
--features=com.ibm.websphere.appserver.eeCompatible-10.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   com.ibm.websphere.appserver.bells-1.0, \
-  io.openliberty.jakarta.cdi-4.0, \
+  io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1", \
   io.openliberty.jsonp-2.1
 -bundles=\
   io.openliberty.jakarta.jsonb.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json.bind:jakarta.json.bind-api:3.0.0"

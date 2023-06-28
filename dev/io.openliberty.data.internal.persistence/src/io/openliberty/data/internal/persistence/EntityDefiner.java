@@ -20,7 +20,7 @@ import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V11; // TODO Java 17
+import static org.objectweb.asm.Opcodes.V17;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -32,6 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.RecordComponent;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -167,21 +168,11 @@ public class EntityDefiner implements Runnable {
         mg.loadThis();
         mg.invokeConstructor(org.objectweb.asm.Type.getType(Object.class), org.objectweb.asm.commons.Method.getMethod("void <init> ()"));
 
-        // TODO enable once compiling against Java 17:
-        //for (RecordComponent component : recordClass.getRecordComponents()) {
-        //    String componentName = component.getName();
-        //    String typeDesc = component.getType().getTypeName();
-        //    String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-        //    int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(component.getType()));
-        // Temporarily hard-coding Receipt(long purchaseId, String customer, float total)
-        String[] componentNames = new String[] { "purchaseId", "customer", "total" };
-        Class<?>[] componentTypes = new Class<?>[] { long.class, String.class, float.class };
-        for (int i = 0; i < componentNames.length; i++) {
-            String componentName = componentNames[i];
-            String typeDesc = componentTypes[i].getTypeName();
+        for (RecordComponent component : recordClass.getRecordComponents()) {
+            String componentName = component.getName();
+            String typeDesc = component.getType().getTypeName();
             String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
-            int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(componentTypes[i]));
-            // End of temporary code
+            int componentValue = mg.newLocal(org.objectweb.asm.Type.getType(component.getType()));
 
             mg.loadArg(0);
             mg.invokeVirtual(org.objectweb.asm.Type.getType(recordClass),
@@ -211,7 +202,7 @@ public class EntityDefiner implements Runnable {
         String internal_entityClassName = entityClassName.replace('.', '/');
 
         // Define the Entity Class object
-        cw.visit(V11, ACC_PUBLIC + ACC_SUPER,
+        cw.visit(V17, ACC_PUBLIC + ACC_SUPER,
                  internal_entityClassName,
                  null,
                  "java/lang/Object",
@@ -225,18 +216,9 @@ public class EntityDefiner implements Runnable {
         addDefaultCtor(cw, null);
 
         FieldVisitor fv;
-        // TODO enable once compiling against Java 17:
-        //for (RecordComponent component : recordClass.getRecordComponents()) {
-        //    String componentName = component.getName();
-        //    String typeDesc = org.objectweb.asm.Type.getDescriptor(component.getType());
-        // Temporarily hard-coding Receipt(long purchaseId, String customer, float total)
-        String[] componentNames = new String[] { "purchaseId", "customer", "total" };
-        Class<?>[] componentTypes = new Class<?>[] { long.class, String.class, float.class };
-        for (int i = 0; i < componentNames.length; i++) {
-            String componentName = componentNames[i];
-            Class<?> componentType = componentTypes[i];
-            String typeDesc = org.objectweb.asm.Type.getDescriptor(componentTypes[i]);
-            // End of temporary code
+        for (RecordComponent component : recordClass.getRecordComponents()) {
+            String componentName = component.getName();
+            String typeDesc = org.objectweb.asm.Type.getDescriptor(component.getType());
 
             // --------------------------------------------------------------------
             // public <FieldType> <FieldName>;
@@ -255,18 +237,18 @@ public class EntityDefiner implements Runnable {
             // --------------------------------------------------------------------
             // public setter...
             // --------------------------------------------------------------------
-//            if (trace && tc.isEntryEnabled())
-//                Tr.debug(tc, "     " + "adding field : " +
-//                             component.getName() + " " +
-//                             component.getType().descriptorString());
+            if (trace && tc.isEntryEnabled())
+                Tr.debug(tc, "     " + "adding field : " +
+                             component.getName() + " " +
+                             component.getType().descriptorString());
             String methodName = "set" + componentName.substring(0, 1).toUpperCase() + componentName.substring(1);
             MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, methodName, "(" + typeDesc + ")V", null, null);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(org.objectweb.asm.Type.getType(componentType).getOpcode(ILOAD), 1);
+            mv.visitVarInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(ILOAD), 1);
             mv.visitFieldInsn(PUTFIELD, internal_entityClassName, componentName, typeDesc);
             mv.visitInsn(RETURN);
             mv.visitMaxs(1, 1);
-//            mv.visitEnd();
+            mv.visitEnd();
 
             // --------------------------------------------------------------------
             // public getter...
@@ -275,24 +257,19 @@ public class EntityDefiner implements Runnable {
             mv = cw.visitMethod(ACC_PUBLIC, methodName, "()" + typeDesc, null, null);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, internal_entityClassName, componentName, typeDesc);
-            mv.visitInsn(org.objectweb.asm.Type.getType(componentType).getOpcode(Opcodes.IRETURN));
+            mv.visitInsn(org.objectweb.asm.Type.getType(component.getType()).getOpcode(Opcodes.IRETURN));
             mv.visitMaxs(1, 1);
-//            mv.visitEnd();
+            mv.visitEnd();
         }
 
         // Add constructor that will invoke all setters with data from a Record
         addRecordCtor(recordClass, internal_entityClassName, cw, null);
-
-        //
-        //end
-        //
 
         // Mark the end of the generated wrapper class
         cw.visitEnd();
 
         // Dump the class bytes out to a byte array.
         byte[] classBytes = cw.toByteArray();
-//        generatedEntities.add(new InMemoryMappingFile(classBytes, entityClassName));
 
         if (trace && tc.isEntryEnabled()) {
             if (tc.isDebugEnabled())
@@ -390,7 +367,7 @@ public class EntityDefiner implements Runnable {
                 if (c.isAnnotationPresent(Entity.class)) {
                     annotatedEntityClassQueue.add(c);
                 } else {
-                    if (c.getName().equals("test.jakarta.data.web.Receipt")) { // TODO c.isRecord()
+                    if (c.isRecord()) {
                         String entityClassName = c.getName() + "Record"; // TODO: come up with a more unique identifier than "Record".
                         byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));

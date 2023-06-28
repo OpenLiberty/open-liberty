@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
@@ -102,6 +103,7 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
         }
     }
 
+    @FFDCIgnore(SocialLoginException.class)
     private void logoutIfSessionInvalidated(HttpServletRequest request) {
         SocialTaiRequest socialTaiRequest = (SocialTaiRequest) request.getAttribute(Constants.ATTRIBUTE_TAI_REQUEST);
         if (socialTaiRequest == null) {

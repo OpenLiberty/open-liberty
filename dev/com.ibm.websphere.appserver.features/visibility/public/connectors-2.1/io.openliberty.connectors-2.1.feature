@@ -6,7 +6,7 @@ IBM-ShortName: connectors-2.1
 WLP-AlsoKnownAs: jca-2.1
 Subsystem-Name: Jakarta Connectors 2.1
 Subsystem-Category: JakartaEE10Application
--features= com.ibm.websphere.appserver.eeCompatible-10.0, \
+-features= com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.appserver.connectors-2.1, \
   io.openliberty.connectors-2.1.internal, \

@@ -142,12 +142,8 @@ public class AccessTokenCacheHelper {
             return newSubject;
         }
         Set<Object> newPRCreds = newSubject.getPrivateCredentials();
-        Set<Object> cachedPRCreds = cachedSubject.getPrivateCredentials();
-        for (Object cachedPRCred : cachedPRCreds) {
-            if (cachedPRCred instanceof OidcTokenImpl || cachedPRCred instanceof Hashtable) {
-                newPRCreds.add(cachedPRCred);
-            }
-        }
+        newPRCreds.addAll(cachedSubject.getPrivateCredentials(OidcTokenImpl.class));
+        newPRCreds.addAll(cachedSubject.getPrivateCredentials(Hashtable.class));
         return newSubject;
     }
 

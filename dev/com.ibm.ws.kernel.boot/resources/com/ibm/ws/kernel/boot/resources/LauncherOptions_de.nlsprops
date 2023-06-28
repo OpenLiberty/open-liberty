@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tMit dieser JVM-Option wird ein Agent f\u00fcr die Instrumentierung angegeben.   \n\tDie Laufzeitumgebung verwendet Instrumentierung f\u00fcr die Erfassung von Trace- und anderen\n\tDebuginformationen. Die Datei bootstrap-agent.jar befindet sich in demselben Verzeichnis wie\n\tdie JAR-Datei, die zum Starten der Laufzeitumgebung verwendet wird.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tSetzen Sie einen Pr\u00fcfpunkt f\u00fcr den benannten Server in der angegebenen Pr\u00fcfpunktphase. Verwenden Sie \n die Option --at, um die Pr\u00fcfpunktphase anzugeben. Nach Abschluss des Pr\u00fcfpunkts \nwird der Server gestoppt und sein aktueller Status wird auf \nPlatte geschrieben. Dieser Pr\u00fcfpunkt stellt InstantOn-Verhalten bereit, wenn der Server \ngestartet wird. Nach Abschluss des Pr\u00fcfpunkts k\u00f6nnen Sie den Server\n mit InstantOn starten, indem Sie die Ausf\u00fchrungs- oder Startaktion verwenden.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tNeue Server erstellen, wenn der angegebene Server nicht vorhanden ist. Die Option \n\t--template kann verwendet werden, um eine Vorlage anzugeben, die zum Erstellen eines \n\tneuen Servers verwendet werden soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tAlle Komponenten im Server anhalten, die angehalten werden k
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tAusf\u00fchrung aller angehaltenen Komponenten im Server \n\tfortsetzen. Mit der Option --target k\u00f6nnen Sie bestimmte \n\tangehaltene Komponenten angeben, deren Ausf\u00fchrung\n\tfortgesetzt werden soll.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="Pr\u00fcfpunktphase"
+option-desc.checkpoint.at=\tGibt die Pr\u00fcfpunktphase an. G\u00fcltige Werte: beforeApp Start \noder afterApp Start.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\tdie sich auf diese Serverinstanz beziehen.

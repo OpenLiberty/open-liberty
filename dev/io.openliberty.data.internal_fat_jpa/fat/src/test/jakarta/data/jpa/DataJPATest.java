@@ -34,7 +34,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.jpa.web.DataJPATestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) // TODO 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataJPATest extends FATServletClient {
     private static String jdbcJarName;
 
@@ -69,6 +69,14 @@ public class DataJPATest extends FATServletClient {
         server.stopServer("DSRA8020E.*data.createTables",
                           "DSRA8020E.*data.dropTables",
                           "DSRA8020E.*data.tablePrefix");
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testFindAndDeleteEntityThatHasAnIdClass() throws Exception {
+        runTest(server, "DataJPATestApp", "testFindAndDeleteEntityThatHasAnIdClass&jdbcJarName=" + jdbcJarName);
     }
 
     /**

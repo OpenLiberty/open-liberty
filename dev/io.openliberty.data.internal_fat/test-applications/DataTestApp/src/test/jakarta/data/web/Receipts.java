@@ -16,8 +16,7 @@ import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Repository;
 
 /**
- * Repository interface for the Receipt entity,
- * which simulates an entity being a record and will later be switched to an actual record // TODO
+ * Repository interface for the Receipt entity which is a record
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {

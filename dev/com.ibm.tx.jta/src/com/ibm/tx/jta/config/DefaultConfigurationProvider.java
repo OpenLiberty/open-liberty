@@ -1,17 +1,16 @@
-package com.ibm.tx.jta.config;
-
 /*******************************************************************************
- * Copyright (c) 2007, 2021 IBM Corporation and others.
+ * Copyright (c) 2007, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.config;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -461,5 +460,10 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public boolean isForcePrepare() {
         return false;
+    }
+
+    @Override
+    public String getBackendURL() {
+        return null;
     }
 }

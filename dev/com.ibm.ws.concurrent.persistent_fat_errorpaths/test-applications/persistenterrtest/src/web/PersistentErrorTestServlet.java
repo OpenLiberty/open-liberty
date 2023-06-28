@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.NotSerializableException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -991,6 +992,14 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * but the task should be retried and succeed on the next attempt.
      */
     public void testShutDownDerbyDuringTaskExecution(HttpServletRequest request, PrintWriter out) throws Exception {
+    	//Ensure database is available prior to testing
+    	DataSource schedDBCreate = (DataSource) new InitialContext().lookup("jdbc/schedDBCreate");
+    	try (Connection con = schedDBCreate.getConnection()) {
+    		//pass
+    	} catch (SQLException e) {
+    		throw new Exception("Could not create derby database required for testing", e);
+    	}
+    	
         DerbyShutdownTask task = new DerbyShutdownTask(); // auto-purges upon successful completion
         DerbyShutdownTask.counter.set(0);
 

@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Pour plus d'information
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Un jeton de d\u00e9connexion de canal arri\u00e8re bas\u00e9 sur un jeton d''ID mis en cache avec des r\u00e9clamations [{0}] pour le client {1} ne peut pas \u00eatre cr\u00e9\u00e9 en raison de l''erreur suivante : {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Une erreur s'est produite lors de la g\u00e9n\u00e9ration de la cha\u00eene de jeton de d\u00e9connexion. Sinon, l'\u00e9metteur du jeton d'ID mis en cache risque de ne pas correspondre \u00e0 ce fournisseur OpenID Connect, ou le jeton d'ID mis en cache peut manquer certaines r\u00e9clamations requises.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Pour plus d'informations, voir l'erreur incluse dans le message.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: La demande aud [{0}] dans le param\u00e8tre id_token_hint ne correspond pas \u00e0 la valeur [{1}] du param\u00e8tre de demande client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Lorsque les param\u00e8tres client_id et id_token_hint sont pr\u00e9sents, l'identificateur de client dans le jeton d'ID doit correspondre \u00e0 la valeur fournie pour le param\u00e8tre client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=V\u00e9rifiez que la valeur du param\u00e8tre client_id correspond \u00e0 la demande aud dans le jeton d'ID.

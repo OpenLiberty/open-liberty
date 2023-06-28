@@ -11,7 +11,6 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// TODO - Client tests
 package com.ibm.ws.security.social.fat.LibertyOP;
 
 import java.util.ArrayList;
@@ -33,8 +32,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- * This is the test class that will run PKCE client tests - end to end tests using and OIDC client and an OP with
- * proofKeyForCodeExchange set to true or not set (uses the default value of false)
+ * This is the test class that will run PKCE client tests - end to end tests
+ * using and OIDC client and an OP with proofKeyForCodeExchange set to true or
+ * not set (uses the default value of false)
  *
  **/
 
@@ -72,11 +72,10 @@ public class LibertyOP_Social_PKCETests extends PKCEClientTests {
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.op.pkce", "op_server_PKCE.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
-        //Start the OIDC RP server and setup default values
+        // Start the Social client server and setup default values
         clientServer = commonSetUp("com.ibm.ws.security.social_fat.LibertyOP.social.pkce", "server_LibertyOP_PKCE.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         testSettings.setFlowType(SocialConstants.SOCIAL);
-
     }
 
 }

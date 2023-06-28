@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.security.jwt.Claims;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -955,9 +956,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         Map<String, OidcSessionsStore> subToSessionsMap = new HashMap<>();
         if (sub != null || sid != null) {
             OidcSessionsStore sessionStore = new OidcSessionsStore();
-            OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(CONFIG_ID, ISSUER, sub, sid, "1234", clientConfig);
-            sessionStore.insertSession(sid, oidcSessionInfo);
-            subToSessionsMap.put(sub, sessionStore);
+            OidcSessionInfo oidcSessionInfo = new OidcSessionInfo(HashUtils.digest(CONFIG_ID), HashUtils.digest(ISSUER), HashUtils.digest(sub), HashUtils.digest(sid), "1234", clientConfig);
+            sessionStore.insertSession(HashUtils.digest(sid), oidcSessionInfo);
+            subToSessionsMap.put(HashUtils.digest(sub), sessionStore);
         }
         return subToSessionsMap;
     }

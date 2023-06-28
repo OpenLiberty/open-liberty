@@ -25,6 +25,7 @@ Export-Package: \
   io.openliberty.netty.internal.udp
 
 Import-Package: \
+  com.ibm.ws.channelfw.internal.chains, \
   com.ibm.ws.bytebuffer.internal, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.exception, \
@@ -39,23 +40,24 @@ Private-Package: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
 
 -buildpath: \
-    com.ibm.ws.channelfw,\
-    com.ibm.ws.logging,\
-    com.ibm.ws.event,\
-    com.ibm.websphere.org.osgi.core,\
-    com.ibm.websphere.org.osgi.service.component,\
-    com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.kernel.feature,\
-    com.ibm.ws.kernel.feature.core,\
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.timer;version=latest,\
-    com.ibm.ws.kernel.security.thread,\
-    com.ibm.ws.kernel.boot.core;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.ws.wsbytebuffer,\
-    io.openliberty.accesslists.internal,\
-    io.openliberty.io.netty;version=latest,\
-    io.openliberty.netty.internal;version=latest
+	com.ibm.ws.channelfw,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.event,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.kernel.feature.core,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.timer;version=latest,\
+	com.ibm.ws.kernel.security.thread,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.wsbytebuffer,\
+	io.openliberty.accesslists.internal,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.endpoint
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

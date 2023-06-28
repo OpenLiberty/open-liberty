@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Wi\u0119cej informacji 
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Nie mo\u017cna utworzy\u0107 tokenu wylogowania z kana\u0142u zaplecza opartego na tokenie identyfikatora zapisanym w pami\u0119ci podr\u0119cznej z roszczeniami [{0}] dla klienta {1} z powodu wyst\u0105pienia nast\u0119puj\u0105cego b\u0142\u0119du: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas budowania \u0142a\u0144cucha tokenu wylogowania. Alternatywnie wystawca tokenu identyfikatora zapisanego w pami\u0119ci podr\u0119cznej mo\u017ce nie by\u0107 zgodny z tym dostawc\u0105 OpenID Connect, albo w tokenie identyfikatora w pami\u0119ci podr\u0119cznej mo\u017ce brakowa\u0107 niekt\u00f3rych wymaganych roszcze\u0144.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d umieszczony w komunikacie.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: Roszczenie [{0}] aud w parametrze id_token_hint nie jest zgodne z warto\u015bci\u0105 [{1}] dla parametru \u017c\u0105dania client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Je\u015bli obecne s\u0105 parametry client_id oraz id_token_hint, identyfikator klienta w tokenie identyfikatora musi by\u0107 zgodny z warto\u015bci\u0105 parametru client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 parametru client_id jest zgodna z roszczeniem aud w tokenie identyfikatora.

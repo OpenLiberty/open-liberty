@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Illeg\u00e1lis argumentum kiv\u00e9tel: Pr\u00f3b\u00e1lkoz\u00e1s 0-t\u00f3l kevesebb karakter \u00edr\u00e1s\u00e1ra.
 Illegal.Argument.Trying.to.write.chars.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt 0-t\u00f3l kisebb m\u00e9ret\u0171 puffer ki\u00edr\u00e1s\u00e1ra. Ez egy alkalmaz\u00e1shiba.

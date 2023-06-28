@@ -20,8 +20,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PortType;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -54,23 +52,8 @@ public class ConcurrentTckLauncherWeb {
 //        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
 //        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT");
 
-        //username and password for Arquillian to authenticate to restConnect
-        additionalProps.put("tck_username", "arquillian");
-        additionalProps.put("tck_password", "arquillianPassword");
-
-        //Logging properties for java.util.logging to use for mvn output
-        additionalProps.put("java.util.logging.config.file", server.getServerRoot() + "/resources/logging/logging.properties");
-
-        //username and password to set on quickStartSecurity
-        server.addEnvVar("tck_username", "arquillian");
-        server.addEnvVar("tck_password", "arquillianPassword");
-
-        //Ports liberty should be using for testing
-        server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
-        server.addEnvVar("tck_port_secure", "" + server.getPort(PortType.WC_defaulthost_secure));
-
-        Map<String, String> opts = server.getJvmOptionsAsMap();
         //Path that jimage will output modules for signature testing
+        Map<String, String> opts = server.getJvmOptionsAsMap();
         opts.put("-Djimage.dir", server.getServerSharedPath() + "jimage/output/");
         server.setJvmOptions(opts);
 

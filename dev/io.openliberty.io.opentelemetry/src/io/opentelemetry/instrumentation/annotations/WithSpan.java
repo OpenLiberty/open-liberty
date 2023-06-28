@@ -11,6 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import io.opentelemetry.api.trace.SpanKind;
+import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
 /**
@@ -28,7 +29,7 @@ import jakarta.interceptor.InterceptorBinding;
  *      OpenTelemetry Instrumentation for Java</a>
  */
 
-//Adds ElementType.TYPE to target and interceptor binding
+//Adds ElementType.TYPE to target, @InterceptorBinding annotation and @Nonbinding annotations
 @InterceptorBinding
 @Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
@@ -39,8 +40,10 @@ public @interface WithSpan {
      * <p>If not specified, an appropriate default name should be created by auto-instrumentation.
      * E.g. {@code "className"."method"}
      */
+    @Nonbinding
     String value() default "";
 
     /** Specify the {@link SpanKind} of span to be created. Defaults to {@link SpanKind#INTERNAL}. */
+    @Nonbinding
     SpanKind kind() default SpanKind.INTERNAL;
 }

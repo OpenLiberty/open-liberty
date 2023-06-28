@@ -37,7 +37,7 @@ cd concurrency-api
 mvn clean install
 ```
 
-The API and TCK libraries will be tagged with the `3.0.2-SNAPSHOT` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
+The API and TCK libraries will be tagged with the `3.0.2` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
 
 ### Getting Open Liberty
 
@@ -96,8 +96,6 @@ Navigate to this directory and start your server:
 cd io.openliberty.jakarta.concurrency.3.0_fat_tck/wlp
 
 ./bin/server start ConcurrentTCKServer \
--Denv.tck_username=arquillian \
--Denv.tck_password=arquillianPassword \
 -Denv.tck_port=9080 \
 -Denv.tck_port_secure=9443 \
 -Djimage.dir=$PWD/usr/shared/jimage/output
@@ -110,17 +108,13 @@ Now you can run the TCK tests.
 mvn clean test -B \
 -Dwlp=$PWD \
 -Dtck_server=ConcurrentTCKServer \
--Dtck_hostname=localhost \
 -Dtck_failSafeUndeployment=true \
 -Dtck_appDeployTimeout=180 \
 -Dtck_appUndeployTimeout=60 \
 -Dtck_port=9080 \
--Dtck_port_secure=9443 \
--Dtck_username=arquillian \
--Dtck_password=arquillianPassword \
 -Dsun.rmi.transport.tcp.responseTimeout=60000 \
 -DsuiteXmlFile=tck-suite.xml \
--Djava.util.logging.config.file=$PWD/usr/servers/ConcurrentTCKServer/resources/logging/logging.properties
+-Djava.util.logging.config.file=$PWD/logging.properties
 ```
 
 By default the TCK will run against a staged version of Jakarta API and TCK uploaded to sonatype.

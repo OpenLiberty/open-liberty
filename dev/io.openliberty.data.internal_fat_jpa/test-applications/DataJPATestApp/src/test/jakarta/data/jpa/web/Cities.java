@@ -21,6 +21,7 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Streamable;
 
 import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Exists;
@@ -100,6 +101,10 @@ public interface Cities {
     Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
 
     boolean remove(City city);
+
+    Streamable<City> removeByStateName(String state);
+
+    Streamable<City> removeByStateNameOrderByName(String state);
 
     @Filter(by = "id")
     @Update(attr = "id")

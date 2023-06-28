@@ -9,7 +9,7 @@ WLP-AlsoKnownAs: ejbLite-4.0
 IBM-API-Package: com.ibm.websphere.ejbcontainer.mbean; type="ibm-api", \
  com.ibm.websphere.ejbcontainer; type="ibm-api"
 Subsystem-Category: JakartaEE9Application
--features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
+-features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.ejbLiteCore-2.0, \
   io.openliberty.jakarta.interceptor-2.0; ibm.tolerates:="2.1", \

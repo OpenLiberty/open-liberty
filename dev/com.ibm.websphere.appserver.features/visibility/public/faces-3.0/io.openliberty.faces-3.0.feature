@@ -52,7 +52,6 @@ Subsystem-Name: Jakarta Server Faces 3.0
  com.ibm.ws.jsf.jsp.shared.jakarta, \
  io.openliberty.faces.internal.jakarta, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- com.ibm.ws.org.apache.commons.digester.1.8, \
  io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0", \
  io.openliberty.faces.3.0.thirdparty; location:="dev/api/third-party/"
 kind=ga

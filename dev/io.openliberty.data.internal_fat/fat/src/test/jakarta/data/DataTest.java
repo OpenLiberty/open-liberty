@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -39,8 +40,9 @@ import test.jakarta.data.inmemory.web.ProviderTestServlet;
 import test.jakarta.data.web.DataTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11) // TODO 17
+@MinimumJavaLevel(javaLevel = 17)
 public class DataTest extends FATServletClient {
+    private static String jdbcJarName;
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -54,7 +56,7 @@ public class DataTest extends FATServletClient {
     public static void setUp() throws Exception {
         // Get driver type
         DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        server.addEnvVar("DB_DRIVER", jdbcJarName = type.getDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
 
@@ -79,5 +81,21 @@ public class DataTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testFindAndDelete() throws Exception {
+        runTest(server, "DataTestApp", "testFindAndDelete&jdbcJarName=" + jdbcJarName);
+    }
+
+    /**
+     * This test has conditional logic based on the JDBC driver/database.
+     */
+    @Test
+    public void testFindAndDeleteMultipleAnnotated() throws Exception {
+        runTest(server, "DataTestApp", "testFindAndDeleteMultipleAnnotated&jdbcJarName=" + jdbcJarName);
     }
 }

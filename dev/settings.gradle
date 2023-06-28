@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -177,15 +177,17 @@ pluginManagement {
   }
 }
 
-// Require Java 11
-if (!JavaVersion.current().isJava11Compatible()) {
-  println "ERROR: Building this repository requires Java 11. To use Java 11 follow these steps:\n" + 
+// Require Java 17
+int javaVersion = Integer.parseInt(JavaVersion.current().getMajorVersion())
+
+if (javaVersion < 17) {
+  println "ERROR: Building this repository requires Java 17. To use Java 17 follow these steps:\n" + 
                             "  1) You can download a copy for your OS here if you don't already have it: " + 
                             "http://ibm.biz/GetSemeru\n" + 
-                            "  2) run 'export JAVA_HOME=/path/to/your/java11' in the shell, or set in ~/.bashrc\n" + 
+                            "  2) run 'export JAVA_HOME=/path/to/your/java17' in the shell, or set in ~/.bashrc\n" + 
                             "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" + 
                             "  4) Restart your gradle daemon with './gradlew --stop'\n";
-        throw new GradleException('Current Java version is not 11 or higher.')
+        throw new GradleException('Current Java version is not 17 or higher.')
 
 }
 

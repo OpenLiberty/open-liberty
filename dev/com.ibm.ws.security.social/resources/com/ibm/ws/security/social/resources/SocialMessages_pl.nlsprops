@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: \u017b\u0105danie wylogowan
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=Konfiguracja logowania do medi\u00f3w spo\u0142eczno\u015bciowych nie jest klientem OpenID Connect, wi\u0119c nie obs\u0142uguje wylogowania przez kana\u0142 zwrotny.
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Nale\u017cy u\u017cy\u0107 punktu ko\u0144cowego wylogowania, kt\u00f3ry jest odpowiedni dla konfiguracji logowania do medi\u00f3w spo\u0142eczno\u015bciowych.
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Klient {0} OpenID Connect u\u017cywa metody uwierzytelniania punktu ko\u0144cowego tokenu {1}. Ta metoda uwierzytelniania wymaga danych niejawnych klienta, ale dane te nie s\u0105 skonfigurowane.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Metoda uwierzytelniania punktu ko\u0144cowego tokenu, kt\u00f3ra jest okre\u015blona w komunikacie, wymaga danych niejawnych klienta do uwierzytelnienia w punkcie ko\u0144cowym tokenu dostawcy OpenID Connect.
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Skonfiguruj dane niejawne dla klienta OpenID Connect lub prze\u0142\u0105cz metod\u0119 uwierzytelniania punktu ko\u0144cowego tokenu klienta na tak\u0105, kt\u00f3ra nie wymaga danych niejawnych klienta.

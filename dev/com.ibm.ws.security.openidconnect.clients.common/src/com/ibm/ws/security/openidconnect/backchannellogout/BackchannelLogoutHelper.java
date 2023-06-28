@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.oauth20.util.HashUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.internal.LogoutTokenValidator;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
@@ -89,8 +90,8 @@ public class BackchannelLogoutHelper {
 
     void performLogout(JwtClaims logoutTokenClaims) throws BackchannelLogoutException {
         try {
-            String sub = logoutTokenClaims.getSubject();
-            String sid = logoutTokenClaims.getClaimValue("sid", String.class);
+            String sub = HashUtils.digest(logoutTokenClaims.getSubject());
+            String sid = HashUtils.digest(logoutTokenClaims.getClaimValue("sid", String.class));
 
             OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
             if (sid != null && !sid.isEmpty()) {

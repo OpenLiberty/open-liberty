@@ -20,12 +20,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.PortType;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
@@ -37,6 +37,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  * generates the html report - so there is detailed information on individual
  * tests as if they were running as simplicity junit FAT tests in the standard location.
  */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
 public class ConcurrentTckLauncherFull {
@@ -53,21 +54,6 @@ public class ConcurrentTckLauncherFull {
         //UNCOMMENT - To test against a local snapshot of TCK
 //        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
 //        additionalProps.put("jakarta.concurrent.tck.version", "3.0.2-SNAPSHOT");
-
-        //username and password for Arquillian to authenticate to restConnect
-        additionalProps.put("tck_username", "arquillian");
-        additionalProps.put("tck_password", "arquillianPassword");
-
-        //Logging properties for java.util.logging to use for mvn output
-        additionalProps.put("java.util.logging.config.file", server.getServerRoot() + "/resources/logging/logging.properties");
-
-        //username and password to set on quickStartSecurity
-        server.addEnvVar("tck_username", "arquillian");
-        server.addEnvVar("tck_password", "arquillianPassword");
-
-        //Ports liberty should be using for testing
-        server.addEnvVar("tck_port", "" + server.getPort(PortType.WC_defaulthost));
-        server.addEnvVar("tck_port_secure", "" + server.getPort(PortType.WC_defaulthost_secure));
 
         Map<String, String> opts = server.getJvmOptionsAsMap();
         //Path that jimage will output modules for signature testing

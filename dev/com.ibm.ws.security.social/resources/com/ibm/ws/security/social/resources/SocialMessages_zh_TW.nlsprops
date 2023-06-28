@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2016, 2020 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
@@ -655,3 +652,6 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG=CWWKS2350E: \u793e\u4ea4\u5a92\u9ad4\u7
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.explanation=\u793e\u4ea4\u5a92\u9ad4\u767b\u5165\u914d\u7f6e\u4e0d\u662f OpenID Connect \u7528\u6236\u7aef\uff0c\u56e0\u6b64\u4e0d\u652f\u63f4\u5f8c\u7aef\u901a\u9053\u767b\u51fa\u3002
 BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=\u8acb\u4f7f\u7528\u9069\u7528\u65bc\u793e\u4ea4\u5a92\u9ad4\u767b\u5165\u914d\u7f6e\u7684\u767b\u51fa\u7aef\u9ede\u3002
 
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: {0} OpenID Connect \u7528\u6236\u7aef\u4f7f\u7528 {1} \u8a18\u865f\u7aef\u9ede\u9451\u5225\u65b9\u6cd5\u3002 \u6b64\u9451\u5225\u65b9\u6cd5\u9700\u8981\u7528\u6236\u7aef\u5bc6\u78bc\uff0c\u4f46\u672a\u914d\u7f6e\u7528\u6236\u7aef\u5bc6\u78bc\u3002
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u8a18\u865f\u7aef\u9ede\u9451\u5225\u65b9\u6cd5\u9700\u8981\u7528\u6236\u7aef\u5bc6\u78bc\uff0c\u624d\u80fd\u5411 OpenID Connect \u63d0\u4f9b\u8005\u7684\u8a18\u865f\u7aef\u9ede\u9032\u884c\u9451\u5225\u3002
+CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=\u914d\u7f6e OpenID Connect \u7528\u6236\u7aef\u7684\u7528\u6236\u7aef\u5bc6\u78bc\uff0c\u6216\u5c07\u7528\u6236\u7aef\u7684\u8a18\u865f\u7aef\u9ede\u9451\u5225\u65b9\u6cd5\u5207\u63db\u81f3\u4e0d\u9700\u8981\u7528\u6236\u7aef\u5bc6\u78bc\u7684\u65b9\u6cd5\u3002

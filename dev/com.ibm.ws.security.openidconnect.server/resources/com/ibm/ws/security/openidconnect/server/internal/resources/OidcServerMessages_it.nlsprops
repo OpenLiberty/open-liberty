@@ -240,3 +240,8 @@ ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN.useraction=Per ulteriori informazi
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS=CWWKS1953E: Un token di disconnessione di back-channel che si basa su un token ID memorizzato con attestazioni [{0}] per il client {1} non pu\u00f2 essere creato a causa del seguente errore: {2}
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.explanation=Si \u00e8 verificato un errore nella costruzione della stringa del token di disconnessione. In alternativa, l'emittente del token ID memorizzato nella cache, potrebbe non corrispondere a questo provider OpenID Connect, oppure al token ID memorizzato nella cache potrebbero mancare alcune attestazioni necessarie.
 ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS.useraction=Per ulteriori informazioni, vedere l'errore incluso nel messaggio.
+
+# Do not translate aud
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER=CWWKS1954E: L''attestazione aud [{0}] all''interno del parametro id_token_hint non corrisponde al valore [{1}] per il parametro di attestazione client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.explanation=Quando sono presenti entrambi i parametri client_id e id_token_hint, l'identificativo del client all'interno del token ID deve corrispondere al valore fornito per il parametro client_id.
+ID_TOKEN_HINT_CLIENT_ID_DOES_NOT_MATCH_REQUEST_PARAMETER.useraction=Verificare che il valore del parametro client_id corrisponda all'attestazione aud nel token ID.

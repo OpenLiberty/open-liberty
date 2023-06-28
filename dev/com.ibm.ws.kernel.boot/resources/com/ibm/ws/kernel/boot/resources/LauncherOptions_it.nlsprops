@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tOpzione JVM utilizzata per specificare un agent per la strumentazione.   \n\tIl runtime utilizza la strumentazione per raccogliere informazioni \n\tsulla traccia ed altre informazioni di debug. bootstrap-agent.jar \n\tdeve essere nella stessa directory del jar utilizzato per avviare il runtime.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --checkpoint
+action-desc.checkpoint=\tEseguire il checkpoint del server indicato nella fase di checkpoint specificata. Utilizzare   \nl'opzione --at per specificare la fase di checkpoint. Una volta completato \nil checkpoint, il server si arresta e il relativo stato corrente viene scritto sul      \ndisco. Questo checkpoint attua il funzionamento InstantOn quando il server    \nsi avvia. Una volta completato il checkpoint, \u00e8 possibile avviare il server   \ncon InstantOn utilizzando l'azione di esecuzione o di avvio.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tCrea un nuovo server se il server specificato non esiste. L'opzione      \n\t--template pu\u00f2 essere utilizzata per specificare un template da utilizzare quando      \n\tsi crea un nuovo server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tMette in pausa tutti i componenti nel server che possono ess
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tRiattiva tutti i componenti messi in pausa nel server. \u00c8 possibile specificare l'opzione \n\t--target per riattivare i componenti in pausa specifici.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="checkpoint phase"
+option-desc.checkpoint.at=\tSpecifica la fase del checkpoint. I valori validi sono: beforeAppStart \no afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tElimina tutte le informazioni memorizzate nella cache relative a questa istanza del server.             

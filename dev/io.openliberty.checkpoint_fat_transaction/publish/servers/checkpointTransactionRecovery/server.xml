@@ -31,10 +31,12 @@
       <feature>osgiconsole-1.0</feature>
     </featureManager>
 
+    <variable name="TX_RETRY_INT" defaultValue="10" />
+
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"
-        heuristicRetryInterval="10"
+        heuristicRetryInterval="${TX_RETRY_INT}"
     />
 
     <application location="transactionrecovery.war"/>

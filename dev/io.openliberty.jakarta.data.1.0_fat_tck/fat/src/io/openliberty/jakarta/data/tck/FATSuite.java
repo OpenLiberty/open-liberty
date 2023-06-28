@@ -12,11 +12,14 @@
  *******************************************************************************/
 package io.openliberty.jakarta.data.tck;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.topology.database.container.DatabaseContainerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -25,4 +28,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 DataWebTckLauncher.class //full mode
 })
 public class FATSuite {
+    @ClassRule
+    public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.create();
 }

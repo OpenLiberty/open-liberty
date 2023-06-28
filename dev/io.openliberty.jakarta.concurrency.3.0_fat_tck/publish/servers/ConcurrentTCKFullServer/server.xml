@@ -22,26 +22,16 @@
 		 -->
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
-        <feature>restConnector-2.0</feature>
     </featureManager>
+    
+    <include location="../fatTestPorts.xml" />
 
     <!-- Use logging instead of bootstrap for standalone WLP case -->
-    <logging traceSpecification="*=info:concurrent=all:concurrencyPolicy=all:context=all:EJBContainer=all" />
+    <logging traceSpecification="*=info:concurrent=all:org.jboss.arquillian=all:ee.jakarta.tck.concurrency=all" />
 
     <!-- Allow Arquillian to monitor application -->
     <applicationMonitor updateTrigger="mbean"/>
-
-    <!-- Allow Arquillian remote access to server -->
-    <quickStartSecurity userName="${env.tck_username}" userPassword="${env.tck_password}" />
-
-    <!-- Allow Arquillian to participate in TLS handshake with server -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
     <keyStore id="defaultKeyStore" password="libertyPassword"/>
-
-    <!-- Allow Arquillian to create a secure connection -->
-    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${env.tck_port}" httpsPort="${env.tck_port_secure}">
-        <sslOptions sslRef="defaultKeyStore"/>
-    </httpEndpoint>
 
     <!-- Allow Arquillian access to dropins directory for application installation -->
     <remoteFileAccess>

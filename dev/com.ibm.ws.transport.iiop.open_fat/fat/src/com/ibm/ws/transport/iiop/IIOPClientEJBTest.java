@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2015-2023 IBM Corporation and others.
+/*
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 package com.ibm.ws.transport.iiop;
 
 import org.jboss.shrinkwrap.api.Archive;
@@ -24,13 +24,13 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import test.corba.web.war.MyDelegatingIIOPClientServlet;
+import test.corba.web.war.IIOPDelegatingServlet;
 
 @RunWith(FATRunner.class)
 public class IIOPClientEJBTest extends FATServletClient {
-	@Server("buckyball")
-	@TestServlet(servlet = MyDelegatingIIOPClientServlet.class, contextRoot = "test.corba.web")
-	public static LibertyServer server;
+    @Server("buckyball")
+    @TestServlet(servlet = IIOPDelegatingServlet.class, contextRoot = "test.corba.web")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -40,6 +40,6 @@ public class IIOPClientEJBTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-	server.stopServer();
+        server.stopServer();
     }
 }

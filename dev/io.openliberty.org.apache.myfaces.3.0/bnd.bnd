@@ -13,7 +13,7 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.org.apache.myfaces.3.0
 Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 Implementation
 
-Implementation-Version: 3.0.1
+Implementation-Version: 3.0.2
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -25,6 +25,7 @@ Include-Resource: \
   @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.3.0}!/META-INF/internal-resources/**, \
+  @${repo;commons-digester:commons-digester;2.1}!/!META-INF/**, \
   META-INF=@src/META-INF
 
 Service-Component: \
@@ -121,6 +122,7 @@ Import-Package: \
 -buildpath: \
   org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.3.0;version=latest,\
+  commons-digester:commons-digester;version=2.1, \
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
   com.ibm.ws.serialization;version=latest,\

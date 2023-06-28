@@ -607,7 +607,7 @@
 
 7342=Il valore booleano specificato [{0}] per l''impostazione che consente le query SQL native non \u00e8 valido, il valore deve essere "true" o "false".
 
-7343=Sono stati specificati pi\u00f9 identificativi VPD (propriet\u00e0 contesto discriminatore titolare). L''entit\u00e0 [{1}] utilizza [{0}] e l''entit\u00e0 [{3}] utilizza [{2}]. Quando si utilizza una strategia VPD multititolare, pu\u00f2 esserci solo una colonna discriminatore titolare per entit\u00e0 e la relativa propriet\u00e0 di contesto deve essere congruente in tutte le entit\u00e0 VPD multititolare.
+7343=Sono stati specificati pi\u00f9 identificativi VPD (propriet\u00e0 contesto discriminatore titolare). L''entit\u00e0 [{1}] utilizza [{0}] e l''entit\u00e0 [{3}] utilizza [{2}]. La strategia VPD multititolare consente solo una colonna discriminatore titolare per ogni entit\u00e0 e la relativa propriet\u00e0 di contesto deve essere congruente tra tutte le entit\u00e0 VPD multititolare.
 
 7344=VPD (connessioni e generazione DDL) non \u00e8 supportato per la piattaforma: [{0}].
 

@@ -1,0 +1,70 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Bundle-Name: WebSphere Spring Boot 3.0 Web Server Support
+Bundle-SymbolicName: io.openliberty.springboot.support.web.server.version30
+Bundle-Description: WebSphere Spring Boot 3.0 Web Server Support, version ${bVersion}
+
+Private-Package: io.openliberty.springboot.support.web.server.version30.osgi.*
+
+Import-Package: \
+    com.ibm.ws.app.manager.module.internal, \
+    *
+
+Include-Resource: springBoot30Server.jar
+
+instrument.disabled: true
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Provide-Capability: spring.boot.support; jars:List<String>=springBoot30Server.jar; version:Version=3.0
+
+-buildpath: \
+	org.springframework:spring-web;strategy=exact;version=6.0.6, \
+	org.springframework:spring-core;strategy=exact;version=6.0.6, \
+	org.springframework:spring-context;strategy=exact;version=6.0.6, \
+	org.springframework:spring-aop;strategy=exact;version=6.0.6, \
+	org.springframework:spring-expression;strategy=exact;version=6.0.6, \
+	org.springframework:spring-beans;strategy=exact;version=6.0.6, \
+	org.springframework.boot:spring-boot-autoconfigure;strategy=exact;version=3.0.4, \
+	org.springframework.boot:spring-boot;strategy=exact;version=3.0.4, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.app.manager.springboot.jakarta, \
+	io.openliberty.jakarta.servlet.6.0, \
+	com.ibm.ws.webcontainer,\
+	com.ibm.ws.org.osgi.annotation.versioning,\
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.springboot.support.web.server.jakarta;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1
+
+-dsannotations: io.openliberty.springboot.support.web.server.version30.osgi.SpringBoot30Support
+-dsannotations-inherit: true
+
+-make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"

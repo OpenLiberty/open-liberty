@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: La demande de point de contr
 error.checkpoint.failed.selinux.netdiag.explanation=Une demande de point de contr\u00f4le pour le serveur a \u00e9chou\u00e9 car les appels syst\u00e8me netlink ont \u00e9chou\u00e9.
 error.checkpoint.failed.selinux.netdiag.useraction=Si SELinux est activ\u00e9 en mode d'application, les appels syst\u00e8me netlink peuvent \u00eatre bloqu\u00e9s par le param\u00e8tre de r\u00e8gle SELinux "virt_sandbox_use_netlink". D\u00e9sactivez SELinux ou activez les appels syst\u00e8me netlink \u00e0 l'aide de la commande "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: La restauration du processus du serveur de point de contr\u00f4le a \u00e9chou\u00e9. Consultez le journal {0} pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n''a pas \u00e9t\u00e9 restaur\u00e9. Le serveur n''a pas \u00e9t\u00e9 lanc\u00e9 car la reprise de la restauration de point de contr\u00f4le est d\u00e9sactiv\u00e9e.
+error.checkpoint.restore.failed.no.recovery.explanation=Une erreur s'est produite lors de la restauration d'un processus serveur de point de contr\u00f4le. Le serveur n'a pas \u00e9t\u00e9 lanc\u00e9 car la reprise de la restauration de point de contr\u00f4le est d\u00e9sactiv\u00e9e.
+error.checkpoint.restore.failed.no.recovery.useraction=Consultez les journaux pour d\u00e9terminer pourquoi le processus de point de contr\u00f4le n'a pas \u00e9t\u00e9 restaur\u00e9. Pour activer la reprise apr\u00e8s incident de la restauration, d\u00e9finissez la variable d'environnement CRIU_RESTORE_DISABLE_RECOVERY sur true.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.

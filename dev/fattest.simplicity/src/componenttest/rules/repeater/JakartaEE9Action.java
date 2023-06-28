@@ -139,6 +139,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
+        removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

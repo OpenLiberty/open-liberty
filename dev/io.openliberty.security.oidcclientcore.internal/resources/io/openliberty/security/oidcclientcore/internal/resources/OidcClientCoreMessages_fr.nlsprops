@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Il manque au moins un param\u00e8tr
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Le fournisseur OpenID Connect n'a pas renvoy\u00e9 un param\u00e8tre obligatoire ou n'a pas trait\u00e9 la demande de jeton.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=V\u00e9rifiez que le noeud final de jeton configur\u00e9 est correct et qu'il est capable de r\u00e9pondre aux demandes de jeton OAuth.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: Le client [{0}] OpenID Connect n''a pas r\u00e9ussi \u00e0 g\u00e9n\u00e9rer un jeton Web JSON \u00e0 utiliser pour l''authentification client. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Le client OpenID Connect est configur\u00e9 pour utiliser des jetons Web JSON pour l'authentification client, mais une erreur s'est produite lors de la cr\u00e9ation du jeton.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Pour plus d'informations, voir l'erreur dans le message.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Le client [{0}] OpenID Connect ne poss\u00e8de pas la cl\u00e9 n\u00e9cessaire pour signer le jeton pour l''authentification client.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=Des donn\u00e9es sont manquantes dans la configuration du client OpenID Connect ou une cl\u00e9 est introuvable avec le nom d'alias de cl\u00e9 dans la configuration SSL pour le client OpenID Connect.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=V\u00e9rifiez que le client OpenID Connect poss\u00e8de un nom d'alias de cl\u00e9 et une r\u00e9f\u00e9rence SSL configur\u00e9s. V\u00e9rifiez que le magasin de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par la configuration SSL contient une cl\u00e9 dont l'alias correspond au nom d'alias de cl\u00e9 dans la configuration du client OpenID Connect.

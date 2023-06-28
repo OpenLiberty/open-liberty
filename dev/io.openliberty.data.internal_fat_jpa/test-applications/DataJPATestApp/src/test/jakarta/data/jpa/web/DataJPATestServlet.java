@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.OffsetDateTime;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -41,13 +43,14 @@ import java.util.stream.StreamSupport;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -207,6 +210,46 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Query-by-method name repository operation to remove and return one or more entities
+     * where the entity has an IdClass.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteEntityThatHasAnIdClass(HttpServletRequest request, HttpServletResponse response) {
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
+        cities.save(new City("Green Bay", "Wisconsin", 107395, Set.of(920)));
+        cities.save(new City("Superior", "Wisconsin", 26751, Set.of(534, 715)));
+
+        Streamable<City> removed = supportsOrderByForUpdate //
+                        ? cities.removeByStateNameOrderByName("Wisconsin") //
+                        : cities.removeByStateName("Wisconsin");
+
+        Stream<City> stream = removed.stream();
+        if (!supportsOrderByForUpdate)
+            stream = stream.sorted(Comparator.comparing(c -> c.name));
+
+        List<City> list = stream.collect(Collectors.toList());
+        assertEquals(list.toString(), 3, list.size());
+
+        assertEquals("Green Bay", list.get(0).name);
+        assertEquals("Wisconsin", list.get(0).stateName);
+        assertEquals(107395, list.get(0).population);
+        assertIterableEquals(Set.of(920), list.get(0).areaCodes);
+
+        assertEquals("Milwaukee", list.get(1).name);
+        assertEquals("Wisconsin", list.get(1).stateName);
+        assertEquals(577222, list.get(1).population);
+        assertIterableEquals(Set.of(414), list.get(1).areaCodes);
+
+        assertEquals("Superior", list.get(2).name);
+        assertEquals("Wisconsin", list.get(2).stateName);
+        assertEquals(26751, list.get(2).population);
+        assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
     }
 
     /**
@@ -553,13 +596,10 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
-        try {
-            System.out.println("findByIdInOrOwner: " + accounts.findByIdInOrOwner(List.of(AccountId.of(1004470, 30372),
-                                                                                          AccountId.of(1006380, 22158)),
-                                                                                  "Emma TestEmbeddedId"));
-        } catch (MappingException x) {
-            // expected
-        }
+        // Varies by database whether MappingException or DatabaseException is raised,
+        // System.out.println("findByIdInOrOwner: " + accounts.findByIdInOrOwner(List.of(AccountId.of(1004470, 30372),
+        //                                                                               AccountId.of(1006380, 22158)),
+        //                                                                       "Emma TestEmbeddedId"));
 
         try {
             System.out.println("findByIdTrue: " + accounts.findByIdTrue());
@@ -634,7 +674,7 @@ public class DataJPATestServlet extends FATServlet {
             try {
                 orders.delete(o1);
                 fail("Deletion must be rejected when the version doesn't match.");
-            } catch (DataException x) {
+            } catch (OptimisticLockingFailureException x) {
                 System.out.println("Deletion was rejected as it ought to be when the version does not match.");
             }
 
@@ -643,9 +683,43 @@ public class DataJPATestServlet extends FATServlet {
             tran.rollback();
         }
 
+        Order o2old = new Order();
+        o2old.id = o2.id;
+        o2old.purchasedBy = o2.purchasedBy;
+        o2old.purchasedOn = o2.purchasedOn;
+        o2old.total = o2.total;
+        o2old.versionNum = o2.versionNum;
+
         // increment version of second entity
         o2.total = 22.99f;
         o2 = orders.save(o2);
+
+        // attempt to save second entity at an old version
+        o2old.total = 99.22f;
+        try {
+            Order unexpected = orders.save(o2old);
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        // attempt to save second entity at an old version in combination with addition of another entity
+        Order o6 = new Order();
+        o6.purchasedBy = "testEntitiesAsParameters-Customer6";
+        o6.purchasedOn = OffsetDateTime.now();
+        o6.total = 60.99f;
+        try {
+            Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
+            fail("Should not be able to update old version of entity: " + unexpected);
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        // verify that the second entity remains at its second version (22.99) and that the addition of the sixth entity was rolled back
+        List<Float> orderTotals = orders.findTotalByPurchasedByIn(List.of("testEntitiesAsParameters-Customer2",
+                                                                          "testEntitiesAsParameters-Customer6"));
+        assertEquals(orderTotals.toString(), 1, orderTotals.size());
+        assertEquals(22.99f, orderTotals.get(0), 0.001f);
 
         orders.deleteAll(List.of(o3, o2));
 
@@ -1789,8 +1863,59 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an Entity which has a version attribute of type Timestamp.
+     */
+    @Test
+    public void testTimestampAsVersion(HttpServletRequest request, HttpServletResponse response) {
+        assertEquals(0, counties.deleteByNameIn(List.of("Dodge", "Mower")));
+
+        int[] dodgeZipCodes = new int[] { 55924, 55927, 55940, 55944, 55955, 55985 };
+        int[] mowerZipCodes = new int[] { 55912, 55917, 55918, 55926, 55933, 55936, 55950, 55951, 55961, 55953, 55967, 55970, 55973, 55975, 55982 };
+
+        County dodge = new County("Dodge", "Minnesota", 20867, dodgeZipCodes, "Mantorville", "Blooming Prairie", "Claremont", "Dodge Center", "Hayfield", "Kasson", "West Concord");
+        County mower = new County("Mower", "Minnesota", 49671, mowerZipCodes, "Austin", "Adams", "Brownsdale", "Dexter", "Elkton", "Grand Meadow", "Le Roy", "Lyle", "Mapleview", "Racine", "Rose Creek", "Sargeant", "Taopi", "Waltham");
+
+        counties.save(dodge, mower);
+
+        dodge = counties.findByName("Dodge").orElseThrow();
+
+        assertEquals(true, counties.updateByNameSetZipCodes("Dodge",
+                                                            dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 }));
+
+        // Try to update with outdated version/timestamp:
+        try {
+            dodge.population = 20873;
+            counties.save(dodge);
+            fail("Should not be able to save using old version: " + dodge.lastUpdated);
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        // Update the version/timestamp and retry:
+        Timestamp timestamp = dodge.lastUpdated = counties.findLastUpdatedByName("Dodge");
+        dodge.population = 20981;
+        counties.save(dodge);
+
+        // Try to delete by previous version/timestamp,
+        assertEquals(false, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Should be able to delete with latest version/timestamp,
+        timestamp = counties.findLastUpdatedByName("Dodge");
+        assertEquals(true, counties.deleteByNameAndLastUpdated("Dodge", timestamp));
+
+        // Try to delete with wrong version/timestamp (from other entity),
+        mower.lastUpdated = timestamp;
+        assertEquals(false, counties.remove(mower));
+
+        // Use correct version/timestamp,
+        mower = counties.findByName("Mower").orElseThrow();
+        assertEquals(true, counties.remove(mower));
+    }
+
+    /**
      * Use an Entity which has an attribute which is a collection that is not annotated with the JPA ElementCollection annotation.
      */
+    // Test annotation is present on corresponding method in DataJPATest
     public void testUnannotatedCollection(HttpServletRequest request, HttpServletResponse response) {
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
@@ -1818,9 +1943,12 @@ public class DataJPATestServlet extends FATServlet {
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        // Derby does not support comparisons of BLOB values
+        // Derby & Oracle  does not support comparisons of BLOB values
+        // Derby JDBC Jar Nake : derby.jar 
+        // Oracle JDBC Jar Name : ojdbc8_g.jar
+        // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
-        if (!jdbcJarName.startsWith("derby")) {
+        if (!(jdbcJarName.startsWith("derby") || jdbcJarName.startsWith("ojdbc8_g"))) {
             // find one entity by zipcodes as Optional
             c = counties.findByZipCodes(wabashaZipCodes).orElseThrow();
             assertEquals("Wabasha", c.name);

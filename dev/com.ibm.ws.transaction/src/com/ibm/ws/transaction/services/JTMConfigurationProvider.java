@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.osgi.framework.Bundle;
@@ -100,6 +101,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         activateHasBeenCalled = true;
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
+        if (inCheckpointRestore()) {
+            // Reset tranlog dir when reactivated during restore
+            // REVIEWER Why are logDir, _isSQLRecoveryLog static? Complicates update.
+            logDir = null;
+        }
+
         // Irrespective of the logtype we need to get the properties
 
         // Make a copy of the properties and store it in a unmodifiable Map.
@@ -119,8 +126,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
-
-        addTransactionLogDirCheckpointHook();
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
@@ -155,13 +160,15 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
             }
         } else {
-            getTransactionLogDirectory();
+            getTransactionLogDirectory(); // Sets logDir
             if (tmsRef != null)
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  retrieved datasourceFactory is " + _theDataSourceFactory);
+
+        addTransactionLogDirCheckpointHook(logDir);
 
         // Configuration has changed, may need to reset the lists of sqlcodes
         _setRetriableSqlcodes = false;
@@ -332,6 +339,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    public String getBackendURL() {
+        return (String) _props.get("backendURL");
+    }
+
+    @Override
     public int getLeaseCheckInterval() {
         Number num = (Number) _props.get("leaseCheckInterval");
         return num.intValue();
@@ -412,10 +424,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             return false;
         }
         return isRoS;
-    }
-
-    boolean checkpointWaitForConfig() {
-        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && _runningCondition == null;
     }
 
     @Override
@@ -540,14 +548,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /*
      * Dynamically set by DS. CheckpointImpl registers the RunningCondition service (property)
-     * immediately after completing all config updates during checkpoint restore. When 
+     * immediately after completing all config updates during checkpoint restore. When
      * recoverOnStartup is enabled, use this condition to start recovery immediately after
      * all resource factories and transaction services have updated.
      */
     protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
             _runningCondition = runningCondition;
-            if (isRecoverOnStartup() && tmsRef != null) {
+            if (tmsRef != null) {
                 tmsRef.doDeferredRecoveryAtRestore(this);
             }
         }
@@ -904,21 +912,29 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return _dataSourceFactorySet;
     }
 
+    protected boolean inCheckpointRestore() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored();
+    }
+
+    protected boolean inCheckpoint() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored();
+    }
+
+    protected boolean checkpointWaitForConfig() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && _runningCondition == null;
+    }
+
+    AtomicBoolean addHook = new AtomicBoolean(true);
+
     /**
-     * Fail checkpoint whenever the default or configured transaction log
-     * directory exists and cannot be deleted, including the case where
-     * the directory path is unexpectedly a file.
+     * Add a hook that fails checkpoint whenever the default or configured
+     * transaction log directory exists and cannot be deleted, including the
+     * case where the directory path is unexpectedly a file.
+     *
+     * @param logDir A directory path that exists and contains transaction logs.
      */
-    protected void addTransactionLogDirCheckpointHook() {
-        if (!CheckpointPhase.getPhase().restored()) {
-            final String logDir = (String) _props.get("transactionLogDirectory");
-
-            if (logDir == null)
-                return;
-
-            // logDir is correctly formatted path string, but may contain unresolved
-            // variables or may be a file rather than directory.
-
+    private void addTransactionLogDirCheckpointHook(final String logDir) {
+        if (logDir != null && inCheckpoint() && addHook.compareAndSet(true, false)) {
             CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
                 @Override
                 public void prepare() {

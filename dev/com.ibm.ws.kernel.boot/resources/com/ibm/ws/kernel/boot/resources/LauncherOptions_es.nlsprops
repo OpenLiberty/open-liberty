@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -43,6 +43,8 @@ javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
 javaAgent.desc=\tEsta es una opci\u00f3n de JVM utilizada para especificar un agente para la instrumentaci\u00f3n.   \n\tEl tiempo de ejecuci\u00f3n utiliza la instrumentaci\u00f3n para recopilar informaci\u00f3n de \n\trastreo y de depuraci\u00f3n. Bootstrap-agent.jar est\u00e1 en el mismo directorio que \n \tel jar utilizado para iniciar el tiempo de ejecuci\u00f3n.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
+action-key.checkpoint=\ \ \ \ --punto de comprobaci\u00f3n
+action-desc.checkpoint=\tEstablezca el punto de comprobaci\u00f3n del servidor especificado en la fase de punto de comprobaci\u00f3n especificada. Utilice \n    la opci\u00f3n --at para especificar la fase de punto de comprobaci\u00f3n. Cuando se completa el punto de comprobaci\u00f3n\n, el servidor se detiene y su estado actual se graba en el \ndisco. Este punto de comprobaci\u00f3n proporciona el comportamiento de InstantOn cuando se \ninicia el servidor. Cuando se complete el punto de comprobaci\u00f3n, puede iniciar el servidor \n con InstantOn utilizando la acci\u00f3n de ejecuci\u00f3n o inicio.
 action-key.create=\ \ \ \ --create
 action-desc.create=\tCrear un nuevo servidor si el servidor especificado no existe. Puede      \n\tutilizarse la opci\u00f3n --template para especificar la plantilla que      \n\tse utiliza cuando se crea un nuevo servidor.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -96,6 +98,9 @@ action-desc.pause=\tPoner en pausa todos los componentes del servidor que se pue
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
 action-desc.resume=\tReanudar todos los componentes puestos en pausa en el servidor. Se puede especificar la   \n\topci\u00f3n --target para reanudar componentes concretos puestos en pausa.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.at=\ \ \ \ --at="fase de punto de comprobaci\u00f3n"
+option-desc.checkpoint.at=\tEspecifica la fase de punto de comprobaci\u00f3n. Los valores v\u00e1lidos son: beforeAppStart \no afterAppStart.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tLimpiar toda la informaci\u00f3n almacenada en memoria cach\u00e9 relacionada con esta instancia de servidor.             

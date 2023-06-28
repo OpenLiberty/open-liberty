@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams.test.suite;
 
@@ -17,6 +14,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -26,6 +24,8 @@ import com.ibm.ws.microprofile.reactive.streams.test.context.ReactiveStreamsCont
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,9 +45,14 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class ReactiveStreamsContextTest extends FATServletClient {
 
+    public static final String SERVER_NAME = "ReactiveStreamsContextServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30_MP50, FATSuite.MPRS30_MP60);
+
     public static final String APP_NAME = "ReactiveStreamsContextTest";
 
-    @Server("ReactiveStreamsContextServer")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = ReactiveStreamsContextTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 

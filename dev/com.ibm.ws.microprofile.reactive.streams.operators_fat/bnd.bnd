@@ -24,10 +24,36 @@ src: \
 fat.project: true
 
 tested.features: mpReactiveStreams-1.0, \
+                 mpreactivestreams-3.0,\
                  cdi-1.2,\
                  cdi-2.0,\
+                 cdi-3.0,\
+                 cdi-4.0,\
                  servlet-3.1,\
-                 servlet-4.0
+                 servlet-4.0,\
+                 servlet-5.0,\
+                 servlet-6.0,\
+                 appsecurity-3.0,\
+                 appsecurity-4.0,\
+                 appsecurity-5.0,\
+                 el-3.0,\
+                 expressionlanguage-4.0,\
+                 expressionlanguage-5.0,\
+                 restfulws-3.0,\
+                 restfulws-3.1,\
+                 restfulwsclient-3.0,\
+                 restfulwsclient-3.1,\
+                 mprestclient-3.0,\
+                 transportsecurity-1.0,\
+                 mpconfig-3.0,\
+                 concurrent-2.0,\
+                 concurrent-3.0,\
+                 jsonb-1.0,\
+                 jsonb-2.0,\
+                 jsonb-3.0,\
+                 jsonp-2.0,\
+                 jsonp-2.1
+
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\

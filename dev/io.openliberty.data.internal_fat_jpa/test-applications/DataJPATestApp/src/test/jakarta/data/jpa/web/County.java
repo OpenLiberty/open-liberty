@@ -10,11 +10,13 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 
 /**
  * An entity with a collection attribute that is not annotated as ElementCollection.
@@ -22,6 +24,9 @@ import jakarta.persistence.Id;
 @Entity
 public class County {
     public Set<CityId> cities;
+
+    @Version
+    public Timestamp lastUpdated;
 
     @Id
     public String name;

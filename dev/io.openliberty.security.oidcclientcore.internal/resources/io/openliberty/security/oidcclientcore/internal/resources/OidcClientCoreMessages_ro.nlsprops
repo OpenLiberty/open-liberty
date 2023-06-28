@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: \u00cen r\u0103spunsul jetonului de
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Fie furnizorul OpenID Connect nu a returnat un parametru necesar, fie nu a reu\u0219it s\u0103 proceseze cererea jetonului.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verifica\u021bi dac\u0103 punctul final de jeton configurat este corect \u0219i capabil s\u0103 r\u0103spund\u0103 la cererile de jeton OAuth.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: Clientul OpenID Connect [{0}] nu a reu\u0219it s\u0103 construiasc\u0103 un JSON Web Token pentru a utiliza autentificarea de client. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Clientul OpenID Connect este configurat astfel \u00eenc\u00e2t s\u0103 utilizeze jetoane JSON Web Token pentru autentificarea clientului, dar a ap\u0103rut o eroare la crearea jetonului.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Clientului OpenID Connect [{0}] \u00eei lipse\u0219te cheia necesar\u0103 pentru a semna jetonul pentru autentificarea clientului.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=\u00cen configura\u021bia clientului OpenID Connect lipsesc date sau nu poate fi g\u0103sit\u0103 o cheie cu numele alias de cheie \u00een configura\u021bia SSL pentru clientul OpenID Connect.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Asigura\u021bi-v\u0103 c\u0103 clientul OpenID Connect are un nume alias de cheie \u0219i este configurat\u0103 referin\u021ba SSL. Verifica\u021bi dac\u0103 depozitul de chei la care se face referire \u00een configura\u021bia SSL con\u021bine o cheie al c\u0103rei alias se potrive\u0219te cu numele alias de cheie din configura\u021bia clientului OpenID Connect.

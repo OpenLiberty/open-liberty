@@ -15,13 +15,13 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  jakarta.transaction.TransactionSynchronizationRegistry, \
  jakarta.transaction.UserTransaction
 Subsystem-Name: Jakarta Transactions 2.0
--features=io.openliberty.servlet.api-5.0; apiJar=false; ibm.tolerates:="6.0", \
+-features=io.openliberty.servlet.api-5.0; apiJar=false; ibm.tolerates:="6.0, 6.1", \
   io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1"; apiJar=false, \
-  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
+  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
   io.openliberty.jta-2.0, \
   com.ibm.websphere.appserver.injection-2.0, \
   com.ibm.websphere.appserver.anno-2.0, \
-  io.openliberty.jakarta.cdi-3.0; apiJar=false; ibm.tolerates:="4.0", \
+  io.openliberty.jakarta.cdi-3.0; apiJar=false; ibm.tolerates:="4.0, 4.1", \
   io.openliberty.jakarta.connectors-2.0; ibm.tolerates:="2.1"
 -bundles=com.ibm.ws.tx.jta.extensions.jakarta, \
  com.ibm.ws.transaction.jakarta; start-phase:=CONTAINER_LATE, \

@@ -2,7 +2,7 @@
 symbolicName = io.openliberty.socialLogin1.0.internal.ee-10.0
 singleton=true
 visibility = private
--features=com.ibm.websphere.appserver.servlet-6.0, \
+-features=com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1", \
   io.openliberty.jsonp-2.1
 -bundles=\
   io.openliberty.security.social.internal,\

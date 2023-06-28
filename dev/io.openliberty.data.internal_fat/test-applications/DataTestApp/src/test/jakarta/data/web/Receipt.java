@@ -11,37 +11,8 @@
 package test.jakarta.data.web;
 
 /**
- * Entity that simulates a Java record, but usable on Java 11. // TODO switch to Java 17+
+ * Entity that is a Java record
+ * TODO add more fields
  */
-public class Receipt {
-    public Receipt(long purchaseId,
-                   String customer,
-                   float total) { // TODO more fields
-
-        // TODO The remainder of the class would be unnecessary if it were actually a record
-        this.purchaseId = purchaseId;
-        this.customer = customer;
-        this.total = total;
-    }
-
-    private final String customer;
-    private final long purchaseId;
-    private final float total;
-
-    public long purchaseId() {
-        return purchaseId;
-    }
-
-    public String customer() {
-        return customer;
-    }
-
-    public float total() {
-        return total;
-    }
-
-    @Override
-    public String toString() {
-        return "Receipt[productId=" + purchaseId + ", customer=" + customer + ", total=" + total + "]";
-    }
+public record Receipt(long purchaseId, String customer, float total) {
 }

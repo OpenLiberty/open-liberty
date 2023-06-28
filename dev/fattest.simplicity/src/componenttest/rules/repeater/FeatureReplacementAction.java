@@ -133,6 +133,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Remove the EE7, EE8, EE9, and EE10 features; replace them with the EE11 features
+     */
+    public static FeatureReplacementAction EE11_FEATURES() {
+        return new JakartaEE11Action();
+    }
+
+    /**
      * Adds beta option to all the servers and clients
      */
     public static FeatureReplacementAction BETA_OPTION() {

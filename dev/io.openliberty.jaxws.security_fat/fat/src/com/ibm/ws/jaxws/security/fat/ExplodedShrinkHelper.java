@@ -113,6 +113,13 @@ public class ExplodedShrinkHelper {
     }
 
     private static void copyFile(LibertyServer server, File file, String dir) throws Exception {
+
+        // String dir literal can't be found on Windows platform since it contains different File.separator
+        if (server.getMachine().getOSVersion().toLowerCase().contains("windows")) {
+            dir = dir.replaceAll("/", "\\\\");
+
+        }
+
         String path = file.getAbsolutePath().substring(file.getAbsolutePath().indexOf(dir));
         path = path.substring(0, path.lastIndexOf(file.getName()));
         LOG.info("copyFile path=" + path);

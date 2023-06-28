@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -290,6 +287,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u017b\u0105danie sk
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re zawiera zniekszta\u0142cone informacje cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Nieprawid\u0142owy format informacji cookie mo\u017ce wynika\u0107 z modyfikacji informacji cookie przez agenta u\u017cytkownika poprzez u\u017cycie nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy. Je\u015bli oczekiwana jest nazwa hosta, nale\u017cy doda\u0107 j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w pliku server.xml.
 
-# 1533-1544 used in clients.common bundle, do not use here.
+# 1533-1556 used in clients.common bundle, do not use here.
+
+REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: \u017b\u0105danie uwierzytelnienia si\u0119 nie powiod\u0142o, poniewa\u017c dostawca OpenID Connect zwr\u00f3ci\u0142 nast\u0119puj\u0105cy b\u0142\u0105d {0}: {1}
+REDIRECT_URI_CONTAINED_ERROR.explanation=Okre\u015blony status odpowiedzi wskazuje, \u017ce uwierzytelnianie nie powiod\u0142o si\u0119. Informacje dodatkowe zawieraj\u0105 b\u0142\u0105d i jego opis, kt\u00f3ry jest podany w komunikacie.
+REDIRECT_URI_CONTAINED_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

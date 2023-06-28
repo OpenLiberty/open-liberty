@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,13 +11,13 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+bVersion=2.0
 
 Fragment-Host: io.openliberty.org.apache.myfaces.3.0;bundle-version=1.0
 
 Bundle-Name: Open Liberty Jakarta MyFaces Third Party API
 Bundle-SymbolicName: io.openliberty.faces.3.0.thirdparty
-Implementation-Version: 3.0.1
+Implementation-Version: 3.0.2
 
 #Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is from myfaces-builder-annotations-1.0.9.jar

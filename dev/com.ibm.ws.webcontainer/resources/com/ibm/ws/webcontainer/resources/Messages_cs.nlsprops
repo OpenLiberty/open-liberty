@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: V\u00fdjimka - nepovolen\u00fd argument: Do\u0161lo k pokusu o z\u00e1pis m\u00e9n\u011b ne\u017e 0 znak\u016f.
 Illegal.Argument.Trying.to.write.chars.explanation=Do\u0161lo k pokusu o v\u00fdstup pro vyrovn\u00e1vac\u00ed pam\u011b\u0165 o velikosti men\u0161\u00ed ne\u017e 0. Jde o chybu aplikace.

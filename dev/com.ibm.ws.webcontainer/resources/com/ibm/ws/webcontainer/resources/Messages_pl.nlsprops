@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Wyj\u0105tek niedozwolonego argumentu: pr\u00f3ba zapisania liczby znak\u00f3w mniejszej od 0.
 Illegal.Argument.Trying.to.write.chars.explanation=Pr\u00f3ba wygenerowania buforu o wielko\u015bci mniejszej od 0. Jest to b\u0142\u0105d aplikacji.

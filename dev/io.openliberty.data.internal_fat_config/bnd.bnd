@@ -17,11 +17,10 @@ src: \
   fat/src,\
   test-applications/DataConfigTestApp/src
 
-# TODO 17
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
-fat.minimum.java.level: 11
+fat.minimum.java.level: 17
 fat.project: true
 
 -buildpath: \

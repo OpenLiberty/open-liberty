@@ -58,6 +58,7 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -70,6 +71,8 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.HeuristicMixedException;
 import jakarta.transaction.HeuristicRollbackException;
 import jakarta.transaction.InvalidTransactionException;
@@ -1047,6 +1050,142 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(),
                              primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
+    }
+
+    /**
+     * Query-by-method name repository operation to remove and return one or more entities.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDelete(HttpServletRequest request, HttpServletResponse response) {
+        packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
+        packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
+        packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
+        packages.save(new Package(40013, 43.0f, 13.0f, 3.0f, "testFindAndDelete#4001x"));
+
+        Optional<Package> none = packages.deleteByDescription("testFindAndDelete#40000");
+        assertEquals(true, none.isEmpty());
+
+        Package p1 = packages.deleteByDescription("testFindAndDelete#40001").orElseThrow();
+        assertEquals(40001, p1.id);
+        assertEquals(41.0f, p1.length, 0.01f);
+        assertEquals(14.0f, p1.width, 0.01f);
+        assertEquals(4.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDelete#40001", p1.description);
+
+        try {
+            Optional<Package> p = packages.deleteByDescription("testFindAndDelete#4001x");
+            fail("Should get NonUniqueResultException when there are multiple results but a singular return type. Instead, result is: " + p);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+        Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.asc("id") } : null;
+
+        Package[] p = packages.deleteByDescriptionEndsWith("#4001x", sorts);
+        assertEquals(Arrays.toString(p), 2, p.length);
+
+        if (!supportsOrderByForUpdate) {
+            System.out.println("Sorting results in test code.");
+            p = Stream.of(p)
+                            .sorted(Comparator.comparing(pkg -> pkg.id))
+                            .collect(Collectors.toList())
+                            .toArray(new Package[2]);
+        }
+
+        assertEquals(40012, p[0].id);
+        assertEquals(42.0f, p[0].length, 0.01f);
+        assertEquals(12.0f, p[0].width, 0.01f);
+        assertEquals(2.0f, p[0].height, 0.01f);
+        assertEquals("testFindAndDelete#4001x", p[0].description);
+
+        assertEquals(40013, p[1].id);
+        assertEquals(43.0f, p[1].length, 0.01f);
+        assertEquals(13.0f, p[1].width, 0.01f);
+        assertEquals(3.0f, p[1].height, 0.01f);
+        assertEquals("testFindAndDelete#4001x", p[1].description);
+
+        p = packages.deleteByDescriptionEndsWith("#40000");
+        assertEquals(Arrays.toString(p), 0, p.length);
+
+        p = packages.deleteByDescriptionEndsWith("#40004");
+        assertEquals(Arrays.toString(p), 1, p.length);
+
+        assertEquals(40004, p[0].id);
+        assertEquals(44.0f, p[0].length, 0.01f);
+        assertEquals(40.4f, p[0].width, 0.01f);
+        assertEquals(4.4f, p[0].height, 0.01f);
+        assertEquals("testFindAndDelete#40004", p[0].description);
+    }
+
+    /**
+     * Annotated repository operation to remove and return a single entity.
+     */
+    @Test
+    public void testFindAndDeleteAnnotated() {
+        packages.save(new Package(50001, 51.0f, 31.0f, 21.0f, "testFindAndDeleteAnnotated#50001"));
+        packages.save(new Package(50002, 52.0f, 32.0f, 22.0f, "testFindAndDeleteAnnotated#50002"));
+
+        Package p1 = packages.take(50001);
+        assertEquals(50001, p1.id);
+        assertEquals(51.0f, p1.length, 0.01f);
+        assertEquals(31.0f, p1.width, 0.01f);
+        assertEquals(21.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDeleteAnnotated#50001", p1.description);
+
+        try {
+            p1 = packages.take(50001);
+            fail("Should get EmptyResultException when there is no result. Instead, result is: " + p1);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        Package p2 = packages.take(50002);
+        assertEquals(50002, p2.id);
+        assertEquals(52.0f, p2.length, 0.01f);
+        assertEquals(32.0f, p2.width, 0.01f);
+        assertEquals(22.0f, p2.height, 0.01f);
+        assertEquals("testFindAndDeleteAnnotated#50002", p2.description);
+    }
+
+    /**
+     * Annotated repository operation to remove and return a single entity.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
+        packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated#60001"));
+        packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated#60002"));
+
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        List<Package> list = supportsOrderByForUpdate //
+                        ? packages.takeWithinOrdered(60.0f, 65.0f) //
+                        : packages.takeWithin(60.0f, 65.0f);
+        assertEquals(list.toString(), 2, list.size());
+
+        if (!supportsOrderByForUpdate) {
+            System.out.println("Sorting results in test code.");
+            list.sort(Comparator.comparing(p -> p.id));
+        }
+
+        Package p0 = list.get(0);
+        Package p1 = list.get(1);
+
+        assertEquals(60001, p0.id);
+        assertEquals(61.0f, p0.length, 0.01f);
+        assertEquals(41.0f, p0.width, 0.01f);
+        assertEquals(26.0f, p0.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated#60001", p0.description);
+
+        assertEquals(60002, p1.id);
+        assertEquals(62.0f, p1.length, 0.01f);
+        assertEquals(42.0f, p1.width, 0.01f);
+        assertEquals(25.0f, p1.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated#60002", p1.description);
+
+        assertEquals(Collections.EMPTY_LIST, packages.takeWithin(60.0f, 65.0f));
     }
 
     /**
@@ -2543,7 +2682,6 @@ public class DataTestServlet extends FATServlet {
 
     /**
      * Tests all CrudRepository methods with a record as the entity.
-     * TODO use a real record once compiling against Java 17
      */
     @Test
     public void testRecordCrudRepositoryMethods() {
@@ -4563,7 +4701,7 @@ public class DataTestServlet extends FATServlet {
         try {
             products.save(prod1a);
             fail("Able to update using old version.");
-        } catch (DataException x) {
+        } catch (OptimisticLockingFailureException x) {
             if (x.getCause() != null && "jakarta.persistence.OptimisticLockException".equals(x.getCause().getClass().getName()))
                 ; // expected;
             else

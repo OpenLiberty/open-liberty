@@ -21,8 +21,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-
-
 # --------------------------------
 Illegal.Argument.Trying.to.write.chars=SRVE0011E: Eccezione argomento non valido: tentativo di scrittura numero di caratteri < 0
 Illegal.Argument.Trying.to.write.chars.explanation=Tentativo di produrre un buffer di dimensioni inferiori a 0. Questo \u00e8 un errore dell'applicazione.

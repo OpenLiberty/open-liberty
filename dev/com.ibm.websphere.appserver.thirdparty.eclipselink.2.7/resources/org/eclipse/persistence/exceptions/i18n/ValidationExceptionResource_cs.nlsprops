@@ -607,7 +607,7 @@
 
 7342=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro nastaven\u00ed povolen\u00ed nativn\u00edch dotaz\u016f SQL je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true", nebo "false".
 
-7343=Bylo ur\u010deno v\u00edce identifik\u00e1tor\u016f VPD (vlastnost kontextu diskrimin\u00e1toru n\u00e1jemce). Entita [{1}] pou\u017e\u00edv\u00e1 [{0}] a entita [{3}] pou\u017e\u00edv\u00e1 [{2}]. P\u0159i pou\u017eit\u00ed strategie VPD s v\u00edce n\u00e1jemci m\u016f\u017ee pro ka\u017edou entitu existovat pouze jeden sloupec diskrimin\u00e1toru n\u00e1jemce a jeho vlastnost kontextu mus\u00ed b\u00fdt konzistentn\u00ed v r\u00e1mci v\u0161ech entit VPD s v\u00edce n\u00e1jemci.
+7343=Bylo ur\u010deno v\u00edce identifik\u00e1tor\u016f VPD (vlastnost kontextu diskrimin\u00e1toru n\u00e1jemce). Entita [{1}] pou\u017e\u00edv\u00e1 [{0}] a entita [{3}] pou\u017e\u00edv\u00e1 [{2}]. Strategie VPD s v\u00edce n\u00e1jemci umo\u017e\u0148uje pouze jeden sloupec diskrimin\u00e1toru tenant\u016f pro ka\u017edou entitu a jeho kontextov\u00e1 vlastnost mus\u00ed b\u00fdt konzistentn\u00ed nap\u0159\u00ed\u010d v\u0161emi entitami VPD s v\u00edce n\u00e1jemci.
 
 7344=VPD (p\u0159ipojen\u00ed a generov\u00e1n\u00ed DDL) nen\u00ed podporov\u00e1no pro platformu: [{0}].
 

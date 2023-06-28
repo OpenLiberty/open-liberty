@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -107,7 +107,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private SubjectManager subjectManager = null;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
-    public JaspiServiceImpl() {}
+    public JaspiServiceImpl() {
+    }
 
     @Reference(name = KEY_UNAUTHENTICATED_SUBJECT_SERVICE,
                service = UnauthenticatedSubjectService.class,
@@ -1096,17 +1097,15 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         AuthConfigFactory providerFactory = getAuthConfigFactory();
         BridgeBuilderService bridgeBuilderService = bridgeBuilderServiceRef.getService();
         if (bridgeBuilderService != null) {
-            JaspiRequest jaspiRequest = new JaspiRequest(webRequest, null); //TODO: Some paths have a WebAppConfig that should be taken into accounnt when getting the appContext
-            String appContext = jaspiRequest.getAppContext();
-            bridgeBuilderService.buildBridgeIfNeeded(appContext, providerFactory);
+            bridgeBuilderService.buildBridgeIfNeeded(null, providerFactory); //TODO: Some paths have a WebAppConfig that should be taken into account when getting the appContext
         }
 
         if (providerFactory != null && providerFactory instanceof ProviderRegistry) {
             // if the user defined feature provider came or went, process that 1st
             if (providerConfigModified) {
                 ((ProviderRegistry) providerFactory).setProvider(jaspiProviderServiceRef.getService());
+                providerConfigModified = false;
             }
-            providerConfigModified = false;
             result = ((ProviderRegistry) providerFactory).isAnyProviderRegistered();
         }
         return result;

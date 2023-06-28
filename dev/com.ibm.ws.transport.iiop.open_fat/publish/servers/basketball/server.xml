@@ -1,0 +1,17 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>test.iiop-1.0</feature>
+        <feature>test.user.feature-1.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+    </featureManager>
+    <!--  to avoid port conflict, specify secondary ports for this server's endpoints -->
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_secondary}" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secondary.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+    
+</server>

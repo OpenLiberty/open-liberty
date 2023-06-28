@@ -112,7 +112,7 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Il validationEndpointUrl speci
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aggiornare la configurazione del client OpenID Connect modificando il validationMethod o il validationEndpointUrl.
  
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributo di configurazione [{1}] non \u00e8 valido. 
+PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Il server delle risorse ha fallito la richiesta di autenticazione poich\u00e9 il tipo di dati della richiesta [{0}] nel token di accesso associato all''attributoo di configurazione [{1}] non \u00e8 valido. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Il token di accesso fornito ha un tipo di dati della richiesta non valido e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Verificare che la configurazione del client OpenID Connect specifichi il nome richiesta corretto per l'attributo.
 
@@ -309,6 +309,20 @@ NO_RECENT_SESSIONS_WITH_CLAIMS.useraction=Assicurarsi che le richieste specifica
 ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Il client OpenID Connect {0} ha rilevato un errore durante l''invio di una richiesta di autorizzazione al provider OpenID Connect. {1}
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=La configurazione del client OpenID Connect potrebbe avere un'informazione mancante oppure il client ha rilevato un errore durante la comunicazione con il provider OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: Il client [{0}] OpenID Connect ha rilevato un errore durante l''impostazione dell''autenticazione client per l''endpoint del token per il metodo di autenticazione [{1}]. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=L'endpoint del token OpenID Connect richiede l'autenticazione client, ma il client OpenID Connect potrebbe essere privo di informazioni oppure il client ha riscontrato un altro errore durante l'impostazione dei dati di autenticazione.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: Nel client [{0}] OpenID Connect non \u00e8 configurato un nome alias chiave, quindi, il client non \u00e8 in grado di individuare la chiave da utilizzare per firmare il JWT (JSON Web Token) per l''autenticazione client.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Il client OpenID Connect deve configurare un nome alias chiave per definire la chiave da utilizzare per firmare il JWT.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verificare che per il client OpenID Connect sia configurato un nome alias chiave.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: Nel client [{0}] OpenID Connect non \u00e8 configurato un riferimento keystore, quindi, il client non pu\u00f2 individuare la chiave da utilizzare per firmare il JWT (JSON Web Token) per l''autenticazione client.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Per il client OpenID Connect \u00e8 necessario configurare un riferimento keystore per definire dove trovare la chiave da utilizzare per firmare il JWT.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verificare che per il client OpenID Connect sia configurato un riferimento keystore.
+
+#CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
 

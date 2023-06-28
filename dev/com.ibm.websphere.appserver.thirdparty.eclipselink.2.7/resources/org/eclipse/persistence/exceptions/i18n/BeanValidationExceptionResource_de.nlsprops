@@ -31,10 +31,9 @@
 # -------------------------------------------------------------------------------------------------
 7500=Bean-Validierungsmodus f\u00fcr {0}Marshaller ist auf ON gesetzt, aber es wurde kein Bean-Validierungsprovider gefunden.
 
-7501=Bean-Validierungsmodus f\u00fcr {0}Marshaller wurde auf einen unzul\u00e4ssigen Wert ("{1}") gesetzt.
+7501=Bean-Validierungsmodus f\u00fcr {0}Marshaller wurde auf einen nicht unterst\u00fctzten Wert ("{1}") gesetzt.
 
-7510=Nicht eingehaltene Bedingungen f\u00fcr {0}Marshalling-Bean:
-{1}{2}
+7510=Einschr\u00e4nkungen f\u00fcr {0}-Marshaling-Bean verletzt: {1}{2}
 
-7525=Die Eigenschaft {0} kann nicht geparst werden, weil sie die Annotation @NotNull und das Attribut "xs:nillable=true" enth\u00e4lt.
+7525=Es ist nicht m\u00f6glich, ein Parsing f\u00fcr die Eigenschaft "{0}" durchzuf\u00fchren, da sie sowohl mit @NotNull annotiert ist als auch das Attribut "xs:nillable=true" aufweist.
 

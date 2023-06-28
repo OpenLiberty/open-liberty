@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: io.openliberty.microprofile.reactive.streams.operators30.cdi 
+Bundle-SymbolicName: io.openliberty.microprofile.reactive.streams.operators30.cdi
+
+Export-Package: \
+  io.openliberty.microprofile.reactive.streams.operators30.cdi*
+    
+Import-Package: \
+  jakarta.enterprise.context; version="[3.0,5)",\
+  jakarta.enterprise.event;version="[3.0,5)",\
+  jakarta.enterprise.inject.spi;version="[3.0,5)",\
+  jakarta.enterprise.inject;version="[3.0,5)",\
+  *
+    
+Include-Resource: \
+  META-INF=resources/META-INF
+
+WS-TraceGroup: REACTIVESTREAMS
+
+-cdiannotations:
+
+-dsannotations-inherit: true
+-dsannotations: io.openliberty.microprofile.reactive.streams.operators30.cdi.ReactiveStreamsEngineInjectionExtension
+
+
+src: src
+  
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	io.openliberty.io.smallrye.reactive.streams-operators-jakarta;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest, \
+	com.ibm.ws.logging.core;version=latest,\
+	io.openliberty.microprofile.reactive.streams.operators30.internal;version=latest

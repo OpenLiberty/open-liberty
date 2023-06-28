@@ -750,6 +750,10 @@ error.checkpoint.failed.selinux.netdiag=CWWKE0963E: Die Pr\u00fcfpunktanforderun
 error.checkpoint.failed.selinux.netdiag.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen, da Netlink-Systemaufrufe nicht erfolgreich waren.
 error.checkpoint.failed.selinux.netdiag.useraction=Wenn SELinux im restriktiven Modus aktiviert ist, werden Netlink-Systemaufrufe m\u00f6glicherweise durch die SELinux-Richtlinieneinstellung "virt_sandbox_use_netlink" blockiert. Inaktivieren Sie SELinux oder aktivieren Sie die Netlink-Systemaufrufe mit dem Befehl "setsebool virt_sandbox_use_netlink 1".
 
+error.checkpoint.restore.failed.no.recovery=CWWKE0964E: Die Wiederherstellung des Pr\u00fcfpunktserverprozesses ist fehlgeschlagen. \u00dcberpr\u00fcfen Sie das Protokoll {0}, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Der Server wurde nicht gestartet, da die Wiederherstellung der Pr\u00fcfpunktrestore deaktiviert ist.
+error.checkpoint.restore.failed.no.recovery.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten. Der Server wurde nicht gestartet, da die Wiederherstellung der Pr\u00fcfpunktrestore deaktiviert ist.
+error.checkpoint.restore.failed.no.recovery.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde. Um die Wiederherstellung nach einem Wiederherstellungsfehler zu aktivieren, setzen Sie die Umgebungsvariable CRIU_RESTORE_DISABLE_RECOVERY auf 'wahr'.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
@@ -23,6 +20,7 @@ public interface TCPMessageConstants {
     String TCP_BUNDLE = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
     /** RAS trace group name */
     String NETTY_TRACE_NAME = "Netty";
+    String TCP_TRACE_NAME = "TCPChannel";
     // -------------------------------------------------------------------------
     // NLS Messages
     // -------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 <server>
     <include location="../fatTestPorts.xml"/>
     <featureManager>
-        <feature>osgiconsole-1.0</feature>
         <feature>concurrent-1.0</feature>
         <feature>test.iiop.interceptor-1.0</feature>
     </featureManager>

@@ -87,7 +87,7 @@ steps:
 - stepName: compile
   workType: RTC
   projectName: "Liberty Personal Build - EBC"
-  timeoutInMinutes: 1440
+  timeoutInMinutes: 2160
   dependsOn:
   - stepName: pr-changes
     awaitOutputProperties: true

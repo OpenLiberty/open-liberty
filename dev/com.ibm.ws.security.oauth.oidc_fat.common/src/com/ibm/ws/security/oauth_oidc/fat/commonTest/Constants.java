@@ -662,6 +662,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String HEADER_X509_CERT = "x5c";
     public static final String HEADER_CRITICAL = "crit";
     public static final String HEADER_DEFAULT_KEY_ID = "autokeyid";
+    public static final String HEADER_JWT_TYPE = "JWT";
 
     /************************ jwt_bearer payload from PayloadConstants ************************/
     public static final String PAYLOAD_EXPIRATION_TIME_IN_SECS = "exp";
@@ -862,4 +863,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PROVIDER_HINT = "oidcAuthnHint";
     public static final String OIDC_CLIENT = "oidc_client";
 
+    /*********************************** Private Key Jwt ***************************************/
+    public static final String CLIENT_ASSERTION = "client_assertion";
+    public static final String CLIENT_ASSERTION_TYPE = "client_assertion_type";
+    public static final String PRIVATE_KEY_JWT_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
 }

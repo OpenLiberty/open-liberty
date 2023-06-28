@@ -1,0 +1,567 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="filter_client_RS256_RS256">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_RS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_RS256"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_RS256"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+
+	<authFilter id="filter_client_RS256_RS384">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_RS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_RS384"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_RS384"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS384"
+		keyAliasName="rs384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_RS512">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_RS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_RS512"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_RS512"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS512"
+		keyAliasName="rs512"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_ES256">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_ES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_ES256"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_ES256"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES256"
+		keyAliasName="es256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_ES384">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_ES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_ES384"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_ES384"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES384"
+		keyAliasName="es384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_ES512">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_ES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_ES512"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_ES512"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES512"
+		keyAliasName="es512"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+
+	<authFilter id="filter_client_HS256_RS256">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_RS256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_RS256"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_RS256"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+
+	<authFilter id="filter_client_HS256_RS384">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_RS384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_RS384"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_RS384"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS384"
+		keyAliasName="rs384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_HS256_RS512">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_RS512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_RS512"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_RS512"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS512"
+		keyAliasName="rs512"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_HS256_ES256">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_ES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_ES256"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_ES256"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES256"
+		keyAliasName="es256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_HS256_ES384">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_ES384"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_ES384"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_ES384"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES384"
+		keyAliasName="es384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_HS256_ES512">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_HS256_ES512"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_HS256_ES512"
+		scope="openid profile"
+		clientId="client_HS256"
+		signatureAlgorithm="HS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_HS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_HS256_ES512"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="ES512"
+		keyAliasName="es512"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	
+
+	<authFilter id="filter_client_RS256_BadKeyAlias">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_badKeyAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_badKeyAlias"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		trustAliasName="RS256"
+		sslRef="ssl_allSigAlg"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_BadKeyAlias"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="badKeyAlias"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_OmittedKeyAlias">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_omittedKeyAlias"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_omittedKeyAlias"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_OmittedKeyAlias"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_RS256_AuthMethodPost">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_authMethodPost"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_authMethodPost"
+		scope="openid profile"
+		clientId="client_RS256"
+		clientSecret="{xor}LDo8LTor"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_AuthMethodPost"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>	
+	
+	<authFilter id="filter_client_RS256_OmittedAuthSingingAlg">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_RS256_omittedAuthSingingAlg"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_RS256_omittedAuthSingingAlg"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_RS256_OmittedAuthSingingAlg"
+		tokenEndpointAuthMethod="private_key_jwt"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_Private_key_mismatch1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_private_key_mismatch1"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_private_key_mismatch1"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_Private_key_mismatch1"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="es384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+	
+	<authFilter id="filter_client_Private_key_mismatch2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_private_key_mismatch2"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_private_key_mismatch2"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_Private_key_mismatch2"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs384"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+
+	<authFilter id="filter_client_withRealTokenEndpoint">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_withRealTokenEndpoint"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_withRealTokenEndpoint"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		sslRef="ssl_allSigAlg"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_withRealTokenEndpoint"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>
+
+	<authFilter id="filter_client_noClientSSLRef">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/client_noClientSSLRef"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="client_noClientSSLRef"
+		scope="openid profile"
+		clientId="client_RS256"
+		signatureAlgorithm="RS256"
+		trustAliasName="RS256"
+		mapToUserRegistry="false"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PrivateKeyJwtTokenEndpoint/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_RS256/userinfo"
+		userInfoEndpointEnabled="true"
+		authFilterRef="filter_client_noClientSSLRef"
+		tokenEndpointAuthMethod="private_key_jwt"
+		tokenEndpointAuthSigningAlgorithm="RS256"
+		keyAliasName="rs256"
+		userNameAttribute="sub"
+	>
+	</oidcLogin>		
+
+</server>

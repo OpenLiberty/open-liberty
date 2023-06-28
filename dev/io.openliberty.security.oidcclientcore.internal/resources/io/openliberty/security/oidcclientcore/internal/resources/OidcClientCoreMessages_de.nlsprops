@@ -139,3 +139,10 @@ TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: In der Tokenantwort des OpenID Conn
 TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Der OpenID Connect-Provider hat einen erforderlichen Parameter nicht zur\u00fcckgegeben oder die Tokenanforderung konnte nicht verarbeitet werden.
 TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Stellen Sie sicher, dass der konfigurierte Tokenendpunkt korrekt ist und auf OAuth-Tokenanforderungen antworten kann.
 
+PRIVATE_KEY_JWT_AUTH_ERROR=CWWKS2430E: Der OpenID Connect-Client [{0}] konnte kein JSON-Web-Token f\u00fcr die Clientauthentifizierung erstellen. {1}
+PRIVATE_KEY_JWT_AUTH_ERROR.explanation=Der OpenID Connect-Client ist f\u00fcr die Verwendung von JSON Web Tokens f\u00fcr die Clientauthentifizierung konfiguriert, aber beim Erstellen des Tokens ist ein Fehler aufgetreten.
+PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Dem [{0}] OpenID Connect-Client fehlt der Schl\u00fcssel, der zum Signieren des Tokens f\u00fcr die Clientauthentifizierung erforderlich ist.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=In der OpenID Connect-Clientkonfiguration fehlen Daten oder es wurde kein Schl\u00fcssel mit dem Schl\u00fcsselaliasnamen in der SSL-Konfiguration f\u00fcr den OpenID Connect-Client gefunden.
+PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Stellen Sie sicher, dass f\u00fcr den OpenID Connect-Client ein Schl\u00fcsselaliasname und eine SSL-Referenz konfiguriert sind. Vergewissern Sie sich, dass der Keystore, auf den die SSL-Konfiguration verweist, einen Schl\u00fcssel enth\u00e4lt, dessen Alias dem Schl\u00fcsselaliasnamen in der OpenID Connect-Clientkonfiguration entspricht.

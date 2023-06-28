@@ -16,6 +16,12 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -67,15 +73,24 @@ public class TransactionalBeanTest extends FATServletClient {
     @TestServlet(servlet = TransactionalBeanServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    static final String TX_RETRY_INT = "11";
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.transactional.web.*");
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-                             server -> {
+                             checkpointServer -> {
+                                 // Env var change that triggers transaction config update at restore
+                                 File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+                                 try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                                     serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+                                 } catch (FileNotFoundException e) {
+                                     throw new UncheckedIOException(e);
+                                 }
                                  assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                                               server.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+                                               checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
                                  assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                                               server.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+                                               checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                              });
         server.setServerStartTimeout(300000);
         server.startServer();

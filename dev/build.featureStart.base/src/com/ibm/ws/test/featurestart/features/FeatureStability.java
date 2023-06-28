@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -38,52 +39,55 @@ public class FeatureStability {
         return new FeatureStability(stableFeatureData);
     }
 
-    public static final String STABLE_FEATURES_NAME = "/com/ibm/ws/test/featurestart/features/feature-stable.txt";
+    public static final String STABLE_FEATURES_NAME = "com/ibm/ws/test/featurestart/features/feature-stable.txt";
 
     protected static List<List<String>> readStableFeatureData() throws IOException {
         List<List<String>> featureData = new ArrayList<>();
 
-        URL url = FeatureStability.class.getResource(STABLE_FEATURES_NAME);
-        try (InputStream featuresStream = url.openStream();
-                        Scanner scanner = new Scanner(featuresStream)) {
+        Enumeration<URL> urls = FeatureStability.class.getClassLoader().getResources(STABLE_FEATURES_NAME);
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            try (InputStream featuresStream = url.openStream();
+                            Scanner scanner = new Scanner(featuresStream)) {
 
-            while (scanner.hasNextLine()) {
-                List<String> data = new ArrayList<>();
+                while (scanner.hasNextLine()) {
+                    List<String> data = new ArrayList<>();
 
-                String line = scanner.nextLine().trim();
-                if (line.isEmpty() || line.charAt(0) == '#') {
-                    continue;
-                }
-                int commentOffset = line.indexOf('#');
-                if (commentOffset != -1) {
-                    line = line.substring(0, commentOffset).trim();
-                }
-                if (line.isEmpty()) {
-                    continue;
-                }
+                    String line = scanner.nextLine().trim();
+                    if (line.isEmpty() || line.charAt(0) == '#') {
+                        continue;
+                    }
+                    int commentOffset = line.indexOf('#');
+                    if (commentOffset != -1) {
+                        line = line.substring(0, commentOffset).trim();
+                    }
+                    if (line.isEmpty()) {
+                        continue;
+                    }
 
-                int nextStart = 0;
-                int nextSpace;
-                while ((nextSpace = line.indexOf(' ', nextStart)) != -1) {
-                    String text = line.substring(nextStart, nextSpace).trim();
+                    int nextStart = 0;
+                    int nextSpace;
+                    while ((nextSpace = line.indexOf(' ', nextStart)) != -1) {
+                        String text = line.substring(nextStart, nextSpace).trim();
+                        if (!text.isEmpty()) {
+                            if (text.equals("null")) {
+                                text = null;
+                            }
+                            data.add(text);
+                        }
+                        nextStart = nextSpace + 1;
+                    }
+
+                    String text = line.substring(nextStart).trim();
                     if (!text.isEmpty()) {
                         if (text.equals("null")) {
                             text = null;
                         }
                         data.add(text);
                     }
-                    nextStart = nextSpace + 1;
-                }
 
-                String text = line.substring(nextStart).trim();
-                if (!text.isEmpty()) {
-                    if (text.equals("null")) {
-                        text = null;
-                    }
-                    data.add(text);
+                    featureData.add(data);
                 }
-
-                featureData.add(data);
             }
         }
 

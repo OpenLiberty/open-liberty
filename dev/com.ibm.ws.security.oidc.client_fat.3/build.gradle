@@ -10,9 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../com.ibm.ws.security.fat.common.SSO.clientTests/CommonPKCE.gradle'
+apply from: '../com.ibm.ws.security.fat.common.SSO.clientTests/CommonTests.gradle'
 
-addRequiredLibraries.dependsOn copyGenericServer
+addRequiredLibraries.dependsOn copyPKCEOPServer, copyPrivateKeyJwtOPServer, copyPKCEAndPrivateKeyJwtOPServer
 
 repositories {
   if (isUsingArtifactory) {
@@ -78,7 +78,9 @@ autoFVT.doLast {
    * Copy common artifacts to test servers.
    */
   def servers = [
-    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkce'
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkce',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.privateKeyJwt',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkceAndPrivateKeyJwt'
   ]
   servers.each { server ->
     copy { 
@@ -121,4 +123,20 @@ autoFVT.doLast {
     }
   }
 
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.privateKeyJwt',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.rp.pkceAndPrivateKeyJwt'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.SSO.clientTests').buildDir, 'test-application/privateKeyJwtTokenEndpoint.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.fat.common.SSO.clientTests').projectDir, 'publish/shared/config/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'privateKeyJwtTokenEndpointApp.xml'
+    }  
+  
+  }
 }
