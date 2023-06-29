@@ -1298,6 +1298,15 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find method that includes "First" but doesn't include "By" because there are no conditions.
+     */
+    @Test
+    public void testFindFirstWithoutBy() {
+        Prime first = primes.findFirst(Sort.asc("numberId"));
+        assertEquals(2, first.numberId);
+    }
+
+    /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
     @Test
@@ -1413,6 +1422,22 @@ public class DataTestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals(1, found.size());
         assertEquals(jude.ssn_id, found.get(0).ssn_id);
+    }
+
+    /**
+     * Find a subset of attributes of the entity.
+     */
+    @Test
+    public void testFindSubsetOfAttributes() {
+        List<Object[]> all = primes.findIdAndName(Sort.asc("numberId"));
+
+        Object[] idAndName = all.get(5);
+        assertEquals(13L, idAndName[0]);
+        assertEquals("thirteen", idAndName[1]);
+
+        idAndName = all.get(8);
+        assertEquals(23L, idAndName[0]);
+        assertEquals("twenty-three", idAndName[1]);
     }
 
     /**
