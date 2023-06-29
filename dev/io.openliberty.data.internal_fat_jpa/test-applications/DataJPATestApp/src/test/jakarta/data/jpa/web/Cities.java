@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
@@ -51,6 +52,16 @@ public interface Cities {
     long deleteByIdOrId(CityId id1, CityId id2);
 
     LinkedList<CityId> deleteByStateName(String state);
+
+    CityId deleteByStateName(String state, Limit limitOf1);
+
+    Optional<CityId> deleteFirstByStateName(String state, Sort... sorts);
+
+    Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
+
+    @Delete
+    @Filter(by = "stateName")
+    Streamable<CityId> deleteSome(String state, Limit limit);
 
     @Delete
     @Filter(by = "population", op = Compare.Between)

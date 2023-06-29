@@ -1166,6 +1166,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             " return type is not supported for the " + methodName +
                                                             " repository method."); // TODO NLS
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                parseDeleteBy(queryInfo, by);
                 Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                 q = generateSelectClause(queryInfo, select);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
@@ -1927,10 +1928,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             : pagination != null ? computeOffset(pagination) //
                                                             : 0;
 
-                            if (maxResults > 0)
+                            if (maxResults > 0) {
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "limit max results to " + maxResults);
                                 query.setMaxResults(maxResults);
-                            if (startAt > 0)
+                            }
+                            if (startAt > 0) {
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "start at (0-based) position " + startAt);
                                 query.setFirstResult(startAt);
+                            }
 
                             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
@@ -2208,6 +2215,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Parses and handles the text between delete___By of a repository method.
+     * Currently this is only "First" or "First#".
+     *
+     * @param queryInfo partially complete query information to populate with a maxResults value for deleteFirst(#)By...
+     * @param by        index of first occurrence of "By" in the method name. -1 if "By" is absent.
+     */
+    private void parseDeleteBy(QueryInfo queryInfo, int by) {
+        String methodName = queryInfo.method.getName();
+        if (methodName.regionMatches(6, "First", 0, 5)) {
+            int endBefore = by == -1 ? methodName.length() : by;
+            parseFirst(queryInfo, 11, endBefore);
+        }
+    }
+
+    /**
      * Parses and handles the text between find___By of a repository method.
      * Currently this is only "First" or "First#" and entity property names to select.
      * "Distinct" is reserved for future use.
@@ -2221,32 +2243,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void parseFindBy(QueryInfo queryInfo, String methodName, int by, List<String> selections) {
         int start = 4;
         int endBefore = by == -1 ? methodName.length() : by;
-        //int length = s.length(); // s = methodName.substring(4, endBefore)
+
         for (boolean first = methodName.regionMatches(start, "First", 0, 5), distinct = !first && methodName.regionMatches(start, "Distinct", 0, 8); //
                         first || distinct;)
             if (first) {
-                start += 5;
-                int num = start == endBefore ? 1 : 0;
-                if (num == 0)
-                    for (int c = start; c < endBefore; c++) {
-                        char ch = methodName.charAt(c);
-                        if (ch >= '0' && ch <= '9') {
-                            start++;
-                            if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
-                                num = num * 10 + (ch - '0');
-                            else
-                                throw new UnsupportedOperationException(methodName.substring(4, endBefore) + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
-                        } else {
-                            if (c == start)
-                                num = 1;
-                            break;
-                        }
-                    }
-                if (num == 0)
-                    throw new DataException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
-                else
-                    queryInfo.maxResults = num;
-
+                start = parseFirst(queryInfo, start += 5, endBefore);
                 first = false;
                 distinct = methodName.regionMatches(start, "Distinct", 0, 8);
             } else if (distinct) {
@@ -2280,6 +2281,40 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                            ". The following are valid property names for the entity: " +
                                            queryInfo.entityInfo.attributeTypes.keySet()); // TODO NLS
         }
+    }
+
+    /**
+     * Parses the number (if any) following findFirst or deleteFirst.
+     *
+     * @param queryInfo partially complete query information to populate with a maxResults value for find/deleteFirst(#)By...
+     * @param start     starting position after findFirst or deleteFirst
+     * @param endBefore index of first occurrence of "By" in the method name, or otherwise the method name length.
+     * @return next starting position after the find/deleteFirst(#).
+     */
+    private int parseFirst(QueryInfo queryInfo, int start, int endBefore) {
+        String methodName = queryInfo.method.getName();
+        int num = start == endBefore ? 1 : 0;
+        if (num == 0)
+            while (start < endBefore) {
+                char ch = methodName.charAt(start);
+                if (ch >= '0' && ch <= '9') {
+                    if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
+                        num = num * 10 + (ch - '0');
+                    else
+                        throw new UnsupportedOperationException(methodName.substring(0, endBefore) + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+                    start++;
+                } else {
+                    if (num == 0)
+                        num = 1;
+                    break;
+                }
+            }
+        if (num == 0)
+            throw new DataException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
+        else
+            queryInfo.maxResults = num;
+
+        return start;
     }
 
     /**

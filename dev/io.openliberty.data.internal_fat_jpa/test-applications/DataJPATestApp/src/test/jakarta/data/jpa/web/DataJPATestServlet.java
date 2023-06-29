@@ -48,6 +48,7 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
@@ -226,6 +227,15 @@ public class DataJPATestServlet extends FATServlet {
         cities.save(new City("Green Bay", "Wisconsin", 107395, Set.of(920)));
         cities.save(new City("Superior", "Wisconsin", 26751, Set.of(534, 715)));
 
+        cities.save(new City("Sioux Falls", "South Dakota", 192517, Set.of(605)));
+        cities.save(new City("Rapid City", "South Dakota", 74703, Set.of(605)));
+        cities.save(new City("Brookings", "South Dakota", 23377, Set.of(605)));
+        cities.save(new City("Watertown", "South Dakota", 22655, Set.of(605)));
+        cities.save(new City("Spearfish", "South Dakota", 12193, Set.of(605)));
+        cities.save(new City("Aberdeen", "South Dakota", 28324, Set.of(605)));
+        cities.save(new City("Mitchell", "South Dakota", 15660, Set.of(605)));
+        cities.save(new City("Pierre", "South Dakota", 14091, Set.of(605)));
+
         Streamable<City> removed = supportsOrderByForUpdate //
                         ? cities.removeByStateNameOrderByName("Wisconsin") //
                         : cities.removeByStateName("Wisconsin");
@@ -251,6 +261,84 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Wisconsin", list.get(2).stateName);
         assertEquals(26751, list.get(2).population);
         assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
+
+        Set<String> cityNames = new TreeSet<>();
+        cityNames.add("Sioux Falls");
+        cityNames.add("Rapid City");
+        cityNames.add("Brookings");
+        cityNames.add("Watertown");
+        cityNames.add("Spearfish");
+        cityNames.add("Aberdeen");
+        cityNames.add("Mitchell");
+        cityNames.add("Pierre");
+
+        Sort[] orderByCityName = supportsOrderByForUpdate ? new Sort[] { Sort.asc("name") } : null;
+        Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
+        CityId id;
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Aberdeen", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Brookings", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Mitchell", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
+
+        Sort[] orderByPopulation = supportsOrderByForUpdate ? new Sort[] { Sort.asc("population") } : null;
+        id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Pierre", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        id = cities.deleteByStateName("South Dakota", Limit.of(1));
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        Streamable<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
+        ids = some.iterator();
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
+
+        // Should only have 1 left:
+        some = cities.deleteSome("South Dakota", Limit.of(5));
+        ids = some.iterator();
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
     }
 
     /**
