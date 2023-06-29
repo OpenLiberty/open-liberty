@@ -54,8 +54,10 @@ import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
 public class UICustomPathTest {
 
     public static final String APP_NAME = "app";
-    public static final String PROPERTY_NAME = "customUIPath";
-    public static final String PATH_VALUE = "/foo/bar";
+    public static final String UI_PROPERTY_NAME = "customUIPath";
+    public static final String DOC_PROPERTY_NAME = "customDocPath";
+    public static final String UI_PATH_VALUE = "/foo/bar";
+    public static final String DOC_PATH_VALUE = "/bar/foo";
     /**
      * Wait for "long" tasks like initial page load or making a test request to the server
      */
@@ -80,7 +82,8 @@ public class UICustomPathTest {
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
         //Set the new path value
-        server.addEnvVar(PROPERTY_NAME, PATH_VALUE);
+        server.addEnvVar(UI_PROPERTY_NAME, UI_PATH_VALUE);
+        server.addEnvVar(DOC_PROPERTY_NAME, DOC_PATH_VALUE);
 
         //Set guards
         server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dopen_api_path_enabled=true"));
@@ -92,7 +95,7 @@ public class UICustomPathTest {
     @Before
     public void setupTest() {
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
-        driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + PATH_VALUE);
+        driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + UI_PATH_VALUE);
     }
 
     @Test

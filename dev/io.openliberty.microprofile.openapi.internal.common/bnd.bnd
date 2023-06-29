@@ -29,7 +29,8 @@ Import-Package: \
 Export-Package: \
     io.openliberty.microprofile.openapi.internal.resources; version="1.0",\
     io.openliberty.microprofile.openapi.internal.resources.validation; version="1.0",\
-    io.openliberty.microprofile.openapi.internal.common;version="1.0"
+    io.openliberty.microprofile.openapi.internal.common;version="1.0",\
+    io.openliberty.microprofile.openapi.internal.common.services;version="1.0"
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF

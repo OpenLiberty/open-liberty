@@ -16,6 +16,6 @@
     
     <include location="../fatTestPorts.xml" />
 
-    <mpOpenAPI uiPath="${customUIPath}"/>
+    <mpOpenAPI uiPath="${customUIPath}" docPath="${customDocPath}"/>
 
 </server>
