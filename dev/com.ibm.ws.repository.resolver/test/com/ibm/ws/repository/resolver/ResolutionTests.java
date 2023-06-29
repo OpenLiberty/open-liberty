@@ -1196,8 +1196,8 @@ public class ResolutionTests {
         Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, toResolve);
         assertThat(resolvedResources, containsInAnyOrder(contains(featureA),
                                                          contains(featureB),
-                                                         contains(featureB, featureA, featureC, autoAB),
-                                                         contains(featureC, featureA, autoAC)));
+                                                         contains(featureC, featureA, featureB, autoAB),
+                                                         contains(featureA, featureC, autoAC)));
     }
 
     /**
@@ -2082,7 +2082,7 @@ public class ResolutionTests {
                                                     contains(featureI10, featureY)));
         } else {
             assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX),
-                                                    contains(featureI10, featureI11, featureY)));
+                                                    contains(featureI11, featureI10, featureY)));
         }
 
     }
@@ -2153,7 +2153,7 @@ public class ResolutionTests {
         } else {
             Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
             assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX, featureA),
-                                                    contains(featureI10, featureI11, featureY, featureB)));
+                                                    contains(featureI11, featureI10, featureY, featureB)));
         }
 
     }
@@ -2220,7 +2220,7 @@ public class ResolutionTests {
                                                     contains(featureI10, featureY, featureB)));
         } else {
             assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX, featureA),
-                                                    contains(featureI10, featureI11, featureY, featureB)));
+                                                    contains(featureI11, featureI10, featureY, featureB)));
         }
 
     }
@@ -2291,7 +2291,7 @@ public class ResolutionTests {
                                                     contains(featureI11, featureY, featureB)));
         } else {
             assertThat(resolved, containsInAnyOrder(contains(featureI11, featureX, featureA),
-                                                    contains(featureI11, featureI10, featureY, featureB)));
+                                                    contains(featureI10, featureI11, featureY, featureB)));
         }
 
     }

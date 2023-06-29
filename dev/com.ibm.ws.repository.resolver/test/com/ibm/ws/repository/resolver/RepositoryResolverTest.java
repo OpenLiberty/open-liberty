@@ -109,8 +109,8 @@ public class RepositoryResolverTest {
 
         List<RepositoryResource> installList = resolver.createInstallList("com.example.featureA-1.0");
         assertThat(installList, contains(featureD, // Note that featureD is first because featureC depends on it, even though featureA also depends directly on it
-                                         featureC15, // Note we get both featureC-1.2 and 1.5 as both are tolerated and both are resolved features
-                                         featureC12,
+                                         featureC12, // Note we get both featureC-1.2 and 1.5 as both are tolerated and both are resolved features
+                                         featureC15,
                                          featureB, // Note we've picked featureB-2.0 and not worried that featureB-1.0 and 1.5 aren't present
                                          featureA));
     }

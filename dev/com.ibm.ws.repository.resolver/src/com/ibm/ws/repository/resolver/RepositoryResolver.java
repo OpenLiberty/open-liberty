@@ -12,18 +12,20 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -692,14 +694,10 @@ public class RepositoryResolver {
     List<RepositoryResource> createInstallList(SampleResource resource) {
         List<MissingRequirement> missingRequirements = new ArrayList<>();
 
-        // Map from a feature to the position it should appear in the install list
-        HashMap<RepositoryResource, Integer> positionMap = new HashMap<>();
-        AtomicInteger nextPosition = new AtomicInteger(0);
         AtomicBoolean allDependenciesResolved = new AtomicBoolean(true);
+        List<ProvisioningFeatureDefinition> rootFeatures = new ArrayList<>();
 
         if (resource.getRequireFeature() != null) {
-
-            List<ProvisioningFeatureDefinition> rootFeatures = new ArrayList<>();
 
             for (String featureName : resource.getRequireFeature()) {
                 // Check that the sample actually exists
@@ -715,26 +713,20 @@ public class RepositoryResolver {
                 }
             }
 
-            // We do a breadth first walk, collecting features for the list. If we find a feature a second time, we update the position to move it
-            // to the end of the list so far.
-            // This means the features can be ordered by their deepest occurrence in the tree which ensures that all dependencies of a feature come after
-            // it in the list.
-            // Note: Building a map of feature to position index is faster than building a list as we go and moving features to the end of the list if we find them twice.
-            FeatureTreeWalker.walkOver(resolvedFeatures)
-                             .forEach(f -> {
-                                 RepositoryResource r = getResource(f);
-                                 if (r != null) {
-                                     positionMap.put(r, nextPosition.getAndIncrement());
-                                 }
-                             })
-                             .onMissingDependency((f, dependency) -> {
-                                 if (featuresMissing.contains(dependency.getSymbolicName())) {
-                                     // The dependency was totally missing, add it to the list of missing requirements
-                                     missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(f)));
-                                 }
-                                 allDependenciesResolved.set(false);
-                             })
-                             .walkBreadthFirst(rootFeatures);
+            // Identify any missing requirements for this sample
+            FeatureTreeWalker missingDepWalker = FeatureTreeWalker.walkOver(resolvedFeatures)
+                                                                  .onMissingDependency((f, dependency) -> {
+                                                                      if (featuresMissing.contains(dependency.getSymbolicName())) {
+                                                                          // The dependency was totally missing, add it to the list of missing requirements
+                                                                          missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), getResource(f)));
+                                                                      }
+                                                                      allDependenciesResolved.set(false);
+                                                                  })
+                                                                  .walkEachFeatureOnlyOnce();
+
+            for (ProvisioningFeatureDefinition feature : rootFeatures) {
+                missingDepWalker.walkDepthFirst(feature);
+            }
         }
 
         if (!allDependenciesResolved.get()) {
@@ -742,19 +734,7 @@ public class RepositoryResolver {
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Take the positionMap and convert it to an install list
-        // Put features in reverse order based on their position from the map so that all dependencies of a feature come before it in the list
-        ArrayList<RepositoryResource> resourceInstallList = new ArrayList<>(positionMap.size() + 1);
-        positionMap.entrySet()
-                   .stream()
-                   .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                   .map(Map.Entry::getKey)
-                   .forEachOrdered(resourceInstallList::add);
-
-        // Add the sample itself to the end of the install list
-        resourceInstallList.add(resource);
-
-        return resourceInstallList;
+        return createInstallList(rootFeatures, resource);
     }
 
     /**
@@ -786,22 +766,7 @@ public class RepositoryResolver {
         List<MissingRequirement> missingRequirements = new ArrayList<>();
         AtomicBoolean foundAll = new AtomicBoolean(true);
 
-        // Map from a feature to the position it should appear in the install list
-        HashMap<RepositoryResource, Integer> positionMap = new HashMap<>();
-        AtomicInteger nextPosition = new AtomicInteger(0);
-
-        // We do a breadth first walk, collecting features for the list. If we find a feature a second time, we update the position to move it
-        // to the end of the list so far.
-        // This means the features can be ordered by their deepest occurrence in the tree which ensures that all dependencies of a feature come after
-        // it in the list.
-        // Note: Building a map of feature to position index is faster than building a list as we go and moving features to the end of the list if we find them twice.
         FeatureTreeWalker.walkOver(resolvedFeatures)
-                         .forEach(f -> {
-                             RepositoryResource r = getResource(f);
-                             if (r != null) {
-                                 positionMap.put(r, nextPosition.getAndIncrement());
-                             }
-                         })
                          .onMissingDependency((f, dependency) -> {
                              if (featuresMissing.contains(dependency.getSymbolicName())) {
                                  // The dependency was totally missing, add it to the list of missing requirements
@@ -809,22 +774,100 @@ public class RepositoryResolver {
                              }
                              foundAll.set(false);
                          })
-                         .walkBreadthFirst(feature);
+                         .walkEachFeatureOnlyOnce()
+                         .walkDepthFirst(feature);
 
         if (!foundAll.get()) {
             missingTopLevelRequirements.add(featureName);
             this.missingRequirements.addAll(missingRequirements);
         }
 
-        // Take the positionMap and convert it to an install list
-        // Put features in reverse order based on their position from the map so that all dependencies of a feature come before it in the list
-        List<RepositoryResource> installList = positionMap.entrySet()
-                                                          .stream()
-                                                          .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                                                          .map(Map.Entry::getKey)
-                                                          .collect(toList());
+        return createInstallList(singletonList(feature), null);
+    }
+
+    /**
+     * Create the install list for a requested feature or sample
+     *
+     * @param featureRoots a singleton list to create the install list for a feature, or the list of sample dependencies for a sample
+     * @param sampleRoot   the sample, or {@code null} if creating an install list for a feature
+     * @return the install list
+     */
+    private List<RepositoryResource> createInstallList(Collection<ProvisioningFeatureDefinition> featureRoots, SampleResource sampleRoot) {
+        Map<ProvisioningFeatureDefinition, List<ProvisioningFeatureDefinition>> reverseDependencyMap = new HashMap<>();
+        List<ProvisioningFeatureDefinition> dependentFeatures = new ArrayList<>();
+
+        // Compute the reverse dependency map and the list of features to be installed for this install list
+        FeatureTreeWalker walker = FeatureTreeWalker.walkOver(resolvedFeatures)
+                                                    .forEach(dependentFeatures::add)
+                                                    .forEachLink((parent, feature) -> reverseDependencyMap.computeIfAbsent(feature, f -> new ArrayList<>()).add(parent))
+                                                    .walkEachFeatureOnlyOnce();
+
+        for (ProvisioningFeatureDefinition feature : featureRoots) {
+            walker.walkDepthFirst(feature);
+        }
+
+        // Compute a map of feature to the length of the longest chain from it to one of the install roots
+        // Use linked hash map to get a consistent ordering across runs
+        Map<ProvisioningFeatureDefinition, Integer> distanceMap = new LinkedHashMap<>();
+        for (ProvisioningFeatureDefinition feature : dependentFeatures) {
+            computeDistance(feature, reverseDependencyMap, distanceMap);
+        }
+
+        // Sort by longest distance from a feature root, longest distance first
+        // This means every feature will appear before any features which depend on it
+        List<RepositoryResource> installList = new ArrayList<>();
+        distanceMap.entrySet()
+                   .stream()
+                   .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                   .map(Map.Entry::getKey)
+                   .map(this::getResource)
+                   .filter(Objects::nonNull)
+                   .forEachOrdered(installList::add);
+
+        // If this is an install list for a sample, add it to the end of the install list
+        if (sampleRoot != null) {
+            installList.add(sampleRoot);
+        }
 
         return installList;
+    }
+
+    private static final Integer IN_PROGRESS = -1;
+
+    /**
+     * Compute the longest dependency chain from a set of root features to this feature
+     *
+     * @param feature              the feature to check
+     * @param reverseDependencyMap a map from a feature to the features which depend on it. Only features which are dependencies of the root features should be in this map.
+     * @param distanceMap          a map to store results in
+     * @return the length of the longest dependency chain
+     */
+    private int computeDistance(ProvisioningFeatureDefinition feature,
+                                Map<ProvisioningFeatureDefinition, List<ProvisioningFeatureDefinition>> reverseDependencyMap,
+                                Map<ProvisioningFeatureDefinition, Integer> distanceMap) {
+
+        Integer result = distanceMap.get(feature);
+
+        if (result == IN_PROGRESS) {
+            return 0; // We've hit a loop, don't recurse any further
+        }
+
+        if (result == null) {
+            distanceMap.put(feature, IN_PROGRESS); // Sentinel value to mark that computation is in progress
+
+            int longest = 0;
+            for (ProvisioningFeatureDefinition dependor : reverseDependencyMap.getOrDefault(feature, emptyList())) {
+                int dependorDistance = computeDistance(dependor, reverseDependencyMap, distanceMap);
+                if (dependorDistance > longest) {
+                    longest = dependorDistance;
+                }
+            }
+
+            result = longest + 1;
+            distanceMap.put(feature, result);
+        }
+
+        return result;
     }
 
     /**

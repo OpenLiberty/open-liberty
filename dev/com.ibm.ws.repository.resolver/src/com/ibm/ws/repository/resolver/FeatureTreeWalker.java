@@ -42,6 +42,7 @@ public class FeatureTreeWalker {
     private final Function<String, ProvisioningFeatureDefinition> getFeatureByNameFunction;
     /** If {@link #walkEachFeatureOnlyOnce()} was called, this is the set of features we have already walked. Otherwise {@code null}. */
     private HashSet<ProvisioningFeatureDefinition> seenFeatures;
+    private DependencyConsumer forEachLink;
 
     /**
      * Create a FeatureTreeWalker for walking feature dependencies for features in the repository
@@ -108,6 +109,17 @@ public class FeatureTreeWalker {
      */
     public FeatureTreeWalker forEach(Consumer<? super ProvisioningFeatureDefinition> forEach) {
         this.forEach = forEach;
+        return this;
+    }
+
+    /**
+     * Supply a function to be called when visiting a dependency link between two features
+     *
+     * @param forEachLink the function to call
+     * @return {@code this} to allow chaining
+     */
+    public FeatureTreeWalker forEachLink(DependencyConsumer forEachLink) {
+        this.forEachLink = forEachLink;
         return this;
     }
 
@@ -210,7 +222,10 @@ public class FeatureTreeWalker {
         }
     }
 
-    private WalkDecision visitFeature(ProvisioningFeatureDefinition feature) {
+    private WalkDecision visitFeature(ProvisioningFeatureDefinition parent, ProvisioningFeatureDefinition feature) {
+        if (forEachLink != null) {
+            forEachLink.accept(parent, feature);
+        }
         if (seenFeatures != null) {
             if (seenFeatures.contains(feature)) {
                 // If we're recording seen features and we've seen this one before, bail out now and don't walk its children
@@ -242,6 +257,20 @@ public class FeatureTreeWalker {
         } else {
             return nameAndVersion;
         }
+    }
+
+    /**
+     * Functional interface for consuming dependency links from a parent feature to a child feature
+     */
+    @FunctionalInterface
+    public interface DependencyConsumer {
+        /**
+         * Accepts a dependency link
+         *
+         * @param parent the feature which has a dependency on {@code child}
+         * @param child  the feature which is depended on
+         */
+        public void accept(ProvisioningFeatureDefinition parent, ProvisioningFeatureDefinition child);
     }
 
 }
