@@ -84,7 +84,7 @@ public class PalindromeExtension implements Extension {
             if (entityAnno == null) {
                 Repository repository = repositoryType.getAnnotation(Repository.class);
                 if (!Repository.ANY_PROVIDER.equals(repository.provider()))
-                    throw new MappingException("The Palindrom mock Jakarta Data provider cannot provide the " +
+                    throw new MappingException("The Palindrome mock Jakarta Data provider cannot provide the " +
                                                repositoryType.getJavaClass().getName() + " repository because the repository's " +
                                                entityClass.getName() + " entity class is not annotated with " + PalindromicEntity.class.getName());
             } else {

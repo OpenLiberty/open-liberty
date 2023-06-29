@@ -137,7 +137,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (defaultEntityClass.isRecord())
             try {
                 recordClass = defaultEntityClass;
-                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Record");
+                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
             } catch (ClassNotFoundException x) {
                 // TODO figure out how to best report this error to the user
                 throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
@@ -347,9 +347,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                     Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                     q = generateSelectClause(queryInfo, select);
-                    queryInfo.jpqlDelete = new StringBuilder(22 + o.length() * 2 + entityInfo.name.length()) // TODO add length of id attribute
+                    String idName = entityInfo.attributeNames.get("id"); // TODO IdClass
+                    queryInfo.jpqlDelete = new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
                                     .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                                    .append(" WHERE ").append(o).append('.').append("id").append("=?") // TODO need name of id attribute
+                                    .append(" WHERE ").append(o).append('.').append(idName).append("=?1") //
                                     .toString();
                 }
                 if (whereClause != null)
@@ -1148,9 +1149,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                 Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
                 q = generateSelectClause(queryInfo, select);
-                queryInfo.jpqlDelete = new StringBuilder(22 + o.length() * 2 + entityInfo.name.length()) // TODO add length of id attribute
+                String idName = entityInfo.attributeNames.get("id"); // TODO IdClass
+                queryInfo.jpqlDelete = idName == null ? null : new StringBuilder(24 + o.length() * 2 + idName.length() + entityInfo.name.length()) //
                                 .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o) //
-                                .append(" WHERE ").append(o).append('.').append("id").append("=?") // TODO need name of id attribute
+                                .append(" WHERE ").append(o).append('.').append(idName).append("=?1") //
                                 .toString();
             }
 
@@ -1764,6 +1766,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
             QueryInfo queryInfo = queryInfoFuture.join();
+            EntityInfo entityInfo = queryInfo.entityInfo;
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, queryInfo.toString());
@@ -1793,7 +1796,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 switch (queryInfo.type) {
                     case MERGE: {
-                        em = queryInfo.entityInfo.persister.createEntityManager();
+                        em = entityInfo.persister.createEntityManager();
 
                         if (queryInfo.saveParamType.isArray()) {
                             ArrayList<Object> results = new ArrayList<>();
@@ -1887,10 +1890,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
-                            em = queryInfo.entityInfo.persister.createEntityManager();
+                            em = entityInfo.persister.createEntityManager();
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "createQuery", queryInfo.jpql, queryInfo.entityInfo.entityClass.getName());
+                                Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
                             // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
                             final QueryInfo qi = queryInfo;
@@ -1933,11 +1936,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                                 if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
                                     for (Object result : results)
-                                        em.remove(result); // TODO not all results are entity instances
+                                        if (result == null) {
+                                            throw new DataException("Unable to delete from the database when the query result includes a null value."); // TODO NLS
+                                        } else if (entityInfo.entityClass.isInstance(result)) {
+                                            em.remove(result);
+                                        } else if (entityInfo.idClassAttributeAccessors == null) {
+                                            List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get("id"));
+                                            if (accessors == null || accessors.isEmpty())
+                                                throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
+                                            Object value = result;
+                                            for (Member accessor : accessors)
+                                                value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
+                                            // TODO meaningful error if accessor does not apply to result type
+
+                                            jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
+                                            delete.setParameter(1, value);
+                                            delete.executeUpdate();
+                                        } else {
+                                            throw new UnsupportedOperationException(); // TODO: IdClass
+                                        }
 
                                 if (results.isEmpty() && queryInfo.getOptionalResultType() != null) {
                                     returnValue = null;
-                                } else if (multiType == null && (queryInfo.entityInfo.entityClass).equals(singleType)) {
+                                } else if (multiType == null && (entityInfo.entityClass).equals(singleType)) {
                                     returnValue = oneResult(results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
@@ -2037,7 +2058,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case DELETE:
                     case UPDATE: {
-                        em = queryInfo.entityInfo.persister.createEntityManager();
+                        em = entityInfo.persister.createEntityManager();
 
                         jakarta.persistence.Query update = em.createQuery(queryInfo.jpql);
                         queryInfo.setParameters(update, args);
@@ -2048,8 +2069,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case DELETE_WITH_ENTITY_PARAM: {
-                        em = queryInfo.entityInfo.persister.createEntityManager();
-                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
+                        em = entityInfo.persister.createEntityManager();
+                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
 
                         int updateCount = 0;
                         if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
@@ -2062,7 +2083,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case COUNT: {
-                        em = queryInfo.entityInfo.persister.createEntityManager();
+                        em = entityInfo.persister.createEntityManager();
 
                         TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
                         queryInfo.setParameters(query, args);
@@ -2094,7 +2115,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case EXISTS: {
-                        em = queryInfo.entityInfo.persister.createEntityManager();
+                        em = entityInfo.persister.createEntityManager();
 
                         jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
                         query.setMaxResults(1);
@@ -2371,7 +2392,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             try {
                 final Object recordObj = o;
                 entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Record");
+                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
                     Constructor<?> ctor = entityClass.getConstructor(oClass);
                     return ctor.newInstance(recordObj);
                 });

@@ -26,6 +26,7 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -1186,6 +1187,66 @@ public class DataTestServlet extends FATServlet {
         assertEquals("testFindAndDeleteMultipleAnnotated#60002", p1.description);
 
         assertEquals(Collections.EMPTY_LIST, packages.takeWithin(60.0f, 65.0f));
+    }
+
+    /**
+     * Find-and-delete returning a record.
+     */
+    @Test
+    public void testFindAndDeleteRecord() {
+        assertEquals(false, receipts.deleteByPurchaseId(600L).isPresent());
+
+        receipts.save(new Receipt(600L, "C1510-13-600", 6.89f));
+
+        Receipt r = receipts.deleteByPurchaseId(600L).orElseThrow();
+        assertEquals(600L, r.purchaseId());
+        assertEquals("C1510-13-600", r.customer());
+        assertEquals(6.89f, r.total(), 0.001f);
+    }
+
+    /**
+     * Find-and-delete returning multiple records.
+     */
+    @Test
+    public void testFindAndDeleteRecords() {
+        assertIterableEquals(Collections.EMPTY_SET, receipts.deleteFor("C1510-13-999"));
+
+        receipts.save(new Receipt(909L, "C1510-13-999", 9.09f));
+        receipts.save(new Receipt(900L, "C1510-13-900", 9.00f));
+        receipts.save(new Receipt(999L, "C1510-13-999", 9.99f));
+        receipts.save(new Receipt(990L, "C1510-13-999", 9.90f));
+
+        Collection<Receipt> deleted = receipts.deleteFor("C1510-13-999");
+
+        assertEquals(deleted.toString(), 3, deleted.size());
+
+        List<Receipt> list = deleted.stream()
+                        .sorted(Comparator.comparing(Receipt::purchaseId))
+                        .toList();
+
+        Receipt r = list.get(0);
+        assertEquals(909, r.purchaseId());
+        assertEquals("C1510-13-999", r.customer());
+        assertEquals(9.09f, r.total(), 0.001f);
+
+        r = list.get(1);
+        assertEquals(990, r.purchaseId());
+        assertEquals("C1510-13-999", r.customer());
+        assertEquals(9.90f, r.total(), 0.001f);
+
+        r = list.get(2);
+        assertEquals(999, r.purchaseId());
+        assertEquals("C1510-13-999", r.customer());
+        assertEquals(9.99f, r.total(), 0.001f);
+
+        deleted = receipts.deleteFor("C1510-13-900");
+
+        assertEquals(deleted.toString(), 1, deleted.size());
+
+        r = deleted.iterator().next();
+        assertEquals(900, r.purchaseId());
+        assertEquals("C1510-13-900", r.customer());
+        assertEquals(9.00f, r.total(), 0.001f);
     }
 
     /**

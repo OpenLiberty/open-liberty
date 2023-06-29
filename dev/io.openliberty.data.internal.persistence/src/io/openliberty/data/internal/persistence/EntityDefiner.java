@@ -368,7 +368,7 @@ public class EntityDefiner implements Runnable {
                     annotatedEntityClassQueue.add(c);
                 } else {
                     if (c.isRecord()) {
-                        String entityClassName = c.getName() + "Record"; // TODO: come up with a more unique identifier than "Record".
+                        String entityClassName = c.getName() + "Entity"; // an entity class is generated for the record
                         byte[] generatedEntityBytes = generateEntityClassBytes(c, entityClassName);
                         generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, entityClassName.replace('.', '/') + ".class"));
                         Class<?> generatedEntity = classDefiner.findLoadedOrDefineClass(loader, entityClassName, generatedEntityBytes);
