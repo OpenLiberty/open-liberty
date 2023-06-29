@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Za\u017c\u0105dano punktu kontrolnego serwera. Po zako\u0144czeniu punktu kontrolnego serwer zostanie zatrzymany.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Za\u017c\u0105dano punktu kontrolnego. Serwer zosta\u0142 zatrzymany, a jego bie\u017c\u0105cy stan zapisany na dysku.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Za\u017c\u0105dano punktu kontrolnego serwera "{0}". Po zako\u0144czeniu punktu kontrolnego serwer zostanie zatrzymany.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Za\u017c\u0105dano punktu kontrolnego. Serwer zosta\u0142 zatrzymany, a jego bie\u017c\u0105cy stan jest zapisany na dysku.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Szczeg\u00f3\u0142owe informacje na temat operacji punktu kontrolnego i odtwarzania mo\u017cna znale\u017a\u0107 w dokumentacji.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Proces serwera Liberty wznowi\u0142 dzia\u0142anie z punktu kontrolnego w ci\u0105gu {0} sek.

@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Se ha solicitado un punto de comprobaci\u00f3n de servidor. Cuando finaliza el punto de comprobaci\u00f3n, el servidor se detiene.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Se ha solicitado un punto de comprobaci\u00f3n. El servidor se detiene y su estado actual se escribe en disco.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Se ha solicitado un punto de comprobaci\u00f3n de servidor "{0}". Cuando finaliza el punto de comprobaci\u00f3n, el servidor se detiene.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Se ha solicitado un punto de comprobaci\u00f3n. El servidor se ha detenido y su estado actual se graba en disco.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Consulte la documentaci\u00f3n para obtener detalles de las operaciones de punto de comprobaci\u00f3n y restauraci\u00f3n.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: El proceso del servidor Liberty ha reanudado la operaci\u00f3n desde un punto de comprobaci\u00f3n en {0} segundos.

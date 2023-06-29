@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: K\u00e9r\u00e9s \u00e9rkezett egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1s\u00e1ra. Amikor az ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sra ker\u00fcl, a kiszolg\u00e1l\u00f3 le\u00e1ll.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1s\u00e1ra \u00e9rkezett k\u00e9r\u00e9s. A kiszolg\u00e1l\u00f3 le\u00e1llt, \u00e9s az aktu\u00e1lis \u00e1llapota lemezre \u00edr\u00f3dott.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: K\u00e9r\u00e9s \u00e9rkezett egy kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont "{0}" ir\u00e1nt. Amikor az ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sra ker\u00fcl, a kiszolg\u00e1l\u00f3 le\u00e1ll.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1s\u00e1ra \u00e9rkezett k\u00e9r\u00e9s. A kiszolg\u00e1l\u00f3 le\u00e1llt \u00e9s a jelenlegi \u00e1llapota lemezre van \u00edrva.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Az ellen\u0151rz\u00e9si pont \u00e9s a vissza\u00e1ll\u00edt\u00e1si m\u0171veletek r\u00e9szleteit ellen\u0151rizze a dokument\u00e1ci\u00f3ban.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: A Liberty kiszolg\u00e1l\u00f3 folyamat \u00fajraindult egy ellen\u0151rz\u0151pontb\u00f3l {0} m\u00e1sodperc alatt.

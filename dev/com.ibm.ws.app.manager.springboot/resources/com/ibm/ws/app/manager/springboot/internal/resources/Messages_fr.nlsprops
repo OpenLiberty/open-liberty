@@ -98,3 +98,9 @@ error.invalid.packaged.liberty.jar.useraction=Configurez un fichier JAR de serve
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: L'application n'a pas pu d\u00e9marrer car l'application Spring Boot est introuvable dans le fichier JAR de serveur Liberty conditionn\u00e9.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Le fichier JAR de serveur Liberty conditionn\u00e9 doit contenir une application Spring Boot configur\u00e9e.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configurez un fichier JAR de serveur Liberty conditionn\u00e9 valide.
+
+#SB3
+
+error.need.springboot.version.30=CWWKC0267E: Le d\u00e9marrage de l'application a \u00e9chou\u00e9 car la fonction springBoot-1.5 ou springBoot-2.0 est configur\u00e9e dans le fichier server.xml. L'application requiert la configuration de la fonction springBoot-3.0.
+error.need.springboot.version.30.explanation=L'application requiert la fonction springBoot-3.0. V\u00e9rifiez la version de la fonction Spring Boot actuellement configur\u00e9e dans le fichier server.xml.  
+error.need.springboot.version.30.useraction=Configurez la fonction springBoot-3.0 dans le fichier server.xml. Retirez toute autre fonction Spring Boot.

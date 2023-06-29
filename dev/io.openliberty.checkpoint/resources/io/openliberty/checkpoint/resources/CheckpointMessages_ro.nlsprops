@@ -23,8 +23,8 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A fost solicitat un punct de control server. C\u00e2nd punctul de control finalizeaz\u0103, serverul se opre\u0219te.
-CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=S-a cerut un punct de control. Serverul este oprit \u0219i starea sa actual\u0103 este scris\u0103 pe disc.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: A fost solicitat un punct de control al serverului "{0}". C\u00e2nd punctul de control finalizeaz\u0103, serverul se opre\u0219te.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=S-a cerut un punct de control. Serverul s-a oprit \u0219i starea sa curent\u0103 este scris\u0103 pe disc.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Verifica\u021bi documenta\u021bia pentru detaliile punctului de control \u0219i restaura\u021bi opera\u021biile.
 
 CHECKPOINT_RESTORE_CWWKC0452I=CWWKC0452I: Procesul serverului Liberty \u0219i-a reluat activitatea de la un punct de control \u00een {0} secunde.

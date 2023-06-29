@@ -23,7 +23,7 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Um ponto de verifica\u00e7\u00e3o do servidor foi solicitado. Quando o ponto de verifica\u00e7\u00e3o for conclu\u00eddo, o servidor ser\u00e1 interrompido.
+CHECKPOINT_DUMP_INITIATED_CWWKC0451=CWWKC0451I: Foi solicitado um ponto de verifica\u00e7\u00e3o do servidor "{0}". Quando o ponto de verifica\u00e7\u00e3o for conclu\u00eddo, o servidor ser\u00e1 interrompido.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.explanation=Um ponto de verifica\u00e7\u00e3o foi solicitado. O servidor foi interrompido e seu estado atual \u00e9 gravado no disco.
 CHECKPOINT_DUMP_INITIATED_CWWKC0451.useraction=Verifique a documenta\u00e7\u00e3o para obter detalhes das opera\u00e7\u00f5es de ponto de verifica\u00e7\u00e3o e de restaura\u00e7\u00e3o.
 
