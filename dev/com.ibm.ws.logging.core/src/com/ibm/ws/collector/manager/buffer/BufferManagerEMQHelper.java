@@ -15,7 +15,7 @@ public class BufferManagerEMQHelper {
     }
 
     public static void removeEMQByTimer(){
-        new java.util.Timer().schedule(
+        new java.util.Timer(true).schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
