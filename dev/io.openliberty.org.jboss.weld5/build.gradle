@@ -1,0 +1,89 @@
+import org.gradle.api.java.archives.internal.DefaultManifest
+import org.gradle.api.internal.file.IdentityFileResolver
+
+import java.util.HashMap;
+import java.util.Map;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+////// Update me when updating weld ////
+def weldVersion = "5.1.1.Final"     ////
+////////////////////////////////////////
+
+def manifestDir = "${buildDir}/ManifestMagic" 
+def oldManifestPath = "${manifestDir}/old/MANIFEST.MF"
+def newManifestPath = "${manifestDir}/new/MANIFEST.MF"
+def builtJarFile = "${buildDir}/io.openliberty.org.jboss.weld5.jar" 
+
+def additionalExports = """\
+org.jboss.weldx.transaction;version=${weldVersion},
+org.jboss.weld.bean.proxy.util;version=${weldVersion},
+org.jboss.weld.annotated.enhanced;version=${weldVersion},
+org.jboss.weld.executor;version=${weldVersion},
+org.jboss.weld.metadata;version=${weldVersion},
+org.jboss.weld.resolution;version=${weldVersion},
+org.jboss.weld.resources;version=${weldVersion},
+org.jboss.weld.util.collections;version=${weldVersion}
+""".replaceAll("\\s","") //multiple lines are for human readability, strip them out
+
+def additionalImports = """\
+javax.security.auth,
+jakarta.xml.ws;version=\"[4.0,5)\"
+""".replaceAll("\\s","") //multiple lines are for human readability, strip them out
+
+jar {
+    //java zip code adapted from https://stackoverflow.com/a/36088523/54645
+    doLast {
+        //First take the manifest file we already built.
+
+        /* Define ZIP File System Properies in HashMap */    
+        Map<String, String> zip_properties = new HashMap<>()
+        /* We want to read an existing ZIP File, so we set this to False */
+        zip_properties.put("create", "false");
+
+        /* Specify the path to the ZIP File that you want to read as a File System */
+        URI zip_disk = URI.create("jar:file:" + builtJarFile)
+        try (FileSystem zipfs = FileSystems.newFileSystem(zip_disk, zip_properties)) {
+
+            Path pathInZipfile = zipfs.getPath("META-INF/MANIFEST.MF")
+            Files.createDirectories(Paths.get(oldManifestPath).getParent())
+            Files.move(pathInZipfile, Paths.get(oldManifestPath), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        
+
+            //Next create a new manifest with the attributes of the old, but manually extended imports and exports
+            def oldManifest = new DefaultManifest(new IdentityFileResolver())
+            oldManifest.from("${oldManifestPath}")
+        
+            def openSourceExports = oldManifest.getEffectiveManifest().getAttributes().get("Export-Package")
+            def combinedExports = additionalExports + "," + openSourceExports
+
+            def openSourceImports = oldManifest.getEffectiveManifest().getAttributes().get("Import-Package")
+            def combinedImports = additionalImports + "," + openSourceImports
+
+            def combinedManifest = new DefaultManifest(new IdentityFileResolver())
+
+            //If we use from() to merge the manifests directly the original attributes from  oldManifest always overwrite the combinedManifest. 
+            for (String key :  oldManifest.getEffectiveManifest().getAttributes().keySet()) {
+                if (! key.equals("Import-Package") && ! key.equals("Export-Package")) {
+                    combinedManifest.getAttributes().put(key,  oldManifest.getEffectiveManifest().getAttributes().get(key))
+                }
+            }
+
+            combinedManifest.getAttributes().put("Export-Package", combinedExports)
+            combinedManifest.getAttributes().put("Import-Package", combinedImports)
+
+            combinedManifest.writeTo("${newManifestPath}")
+
+            //Finally copy the new manifest back in.
+            Files.copy(Paths.get(newManifestPath), pathInZipfile, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        }
+    }
+}
+
+
+
