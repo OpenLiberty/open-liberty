@@ -29,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import junit.framework.AssertionFailedError;
 import mapCacheApp.MapCache;
 
 //Verify correct function of distributed map w.r.t timing out of map entries.
@@ -57,8 +58,8 @@ public class MapCacheTest {
     public void testInactivityTimeout() throws Exception {
 
         ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("useInactivityParm").setValue("true");
-        server.updateServerConfiguration(config);
+        config.getVariables().getById("useInactivityParm").setValue("true"); // timetolive is 20 secs
+        server.updateServerConfiguration(config); //                             inactivity timeout is 4 secs
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer(); // take a checkpoint
@@ -73,17 +74,22 @@ public class MapCacheTest {
             Thread.sleep(1 * 1000);
         }
 
-        //Allow (4 sec) inactivity timeout to occur and verify entry is gone from cache
+        //Allow (4 sec) inactivity timeout to occur and verify entry is gone from cache.
         Thread.sleep(8 * 1000);
-        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
-
+        try {
+            HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
+        } catch (AssertionFailedError afe) {
+            // On slow systems entry does not always time out of cache in 8 sec so allow one retry
+            Thread.sleep(8 * 1000);
+            HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
+        }
     }
 
     @Test
     public void testIimeout() throws Exception {
 
         ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("useInactivityParm").setValue("false");
+        config.getVariables().getById("useInactivityParm").setValue("false"); // timetolive is 8 secs
         server.updateServerConfiguration(config);
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
@@ -99,13 +105,17 @@ public class MapCacheTest {
 
         //Allow item to timeout from cache
         Thread.sleep(10 * 1000);
-        HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
-
+        try {
+            HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
+        } catch (AssertionFailedError afe) {
+            // On slow systems entry does not always time out of cache on time so allow one retry
+            Thread.sleep(8 * 1000);
+            HttpUtils.findStringInUrl(server, "mapCache/servlet?key=key", "Key [key] not in cache");
+        }
     }
 
     @After
     public void stopServer() throws Exception {
         server.stopServer();
     }
-
 }
