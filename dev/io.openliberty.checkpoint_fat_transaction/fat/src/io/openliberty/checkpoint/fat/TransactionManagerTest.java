@@ -14,6 +14,7 @@ package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -83,16 +84,16 @@ public class TransactionManagerTest extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        testMethod = getTestMethod(TestMethod.class, testName);
         ShrinkHelper.cleanAllExportedArchives();
-        Consumer<LibertyServer> preRestoreLogic;
+
+        testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
             case testTransactionManagerStartsDuringRestore:
                 serverTranLogRecOnStart.restoreServerConfiguration();
 
                 ShrinkHelper.defaultApp(serverTranLogRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                preRestoreLogic = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
                     // The datasource jndiName in server.xml is invalid. At restore reconfigure
                     // the jndiName to that used by SimpleServlet
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
@@ -108,8 +109,8 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranLogRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-                serverTranLogRecOnStart.setServerStartTimeout(300000);
+                serverTranLogRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1);
+                serverTranLogRecOnStart.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverTranLogRecOnStart.startServer();
                 break;
             case testRecoveryBeginsAfterStartup:
@@ -123,7 +124,7 @@ public class TransactionManagerTest extends FATServletClient {
 
                 ShrinkHelper.defaultApp(serverTranDbLogNoRecOnStart, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                preRestoreLogic = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         serverEnvWriter.println("DERBY_DS_JNDINAME=" + DERBY_DS_JNDINAME);
@@ -135,8 +136,8 @@ public class TransactionManagerTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverTranDbLogNoRecOnStart.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-                serverTranDbLogNoRecOnStart.setServerStartTimeout(300000);
+                serverTranDbLogNoRecOnStart.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic2);
+                serverTranDbLogNoRecOnStart.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverTranDbLogNoRecOnStart.startServer();
                 break;
             default:

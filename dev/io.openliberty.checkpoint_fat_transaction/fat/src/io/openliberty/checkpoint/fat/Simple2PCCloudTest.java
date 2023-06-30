@@ -13,6 +13,8 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +33,7 @@ import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
@@ -41,7 +44,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.fat.util.FATUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -53,16 +55,20 @@ public class Simple2PCCloudTest extends FATServletClient {
     public static final String APP_NAME = "transactioncloud";
     public static final String SERVLET_NAME = APP_NAME + "/Simple2PCCloudServlet";
     protected static final int cloud2ServerPort = 9992;
-    private static final long LOG_SEARCH_TIMEOUT = 300000;
 
-    public static LibertyServer cloud1ServerInstantOn; // checkpointTransactionCloud001
+    @Server("checkpointTransactionCloud001")
+    public static LibertyServer cloud1ServerInstantOn;
 
-    public static LibertyServer cloud2ServerInstantOn; // checkpointTransactionCloud001
+    @Server("checkpointTransactionCloud002")
+    public static LibertyServer cloud2ServerInstantOn;
 
-    public static LibertyServer cloud1Server; // checkpointTransactionCloud001
+    @Server("checkpointTransactionCloud001")
+    public static LibertyServer cloud1Server;
 
     @Server("checkpointTransactionLongLeaseServer")
     public static LibertyServer cloud1LongLeaseServer;
+
+    TestMethod testMethod;
 
     // Potential datasource and transaction config overrides
     static final String HOSTNAME001 = "HOSTNAME001";
@@ -71,31 +77,37 @@ public class Simple2PCCloudTest extends FATServletClient {
     static final String APP_DS_JNDINAME = "jdbc/derby";
 
     @BeforeClass
-    public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(cloud1LongLeaseServer, APP_NAME, "servlets.cloud.*");
+    public static void setUpClass() throws Exception {
+        cloud1ServerInstantOn.saveServerConfiguration();
+        cloud2ServerInstantOn.saveServerConfiguration();
+        cloud1Server.saveServerConfiguration();
+
         cloud1LongLeaseServer.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        cloud1LongLeaseServer.saveServerConfiguration();
+        ShrinkHelper.defaultApp(cloud1LongLeaseServer, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.cloud.*");
     }
 
     @Before
     public void setupTest() throws Exception {
         cleanupSharedResources();
+        ShrinkHelper.cleanAllExportedArchives();
 
-        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
+        testMethod = getTestMethod(TestMethod.class, testName);
         try {
             Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
             switch (testMethod) {
                 case testLeaseTableAccess:
                 case testDBBaseRecovery:
                     // Checkpoint server1 (cloud1)
-                    cloud1ServerInstantOn = LibertyServerFactory.getLibertyServer("checkpointTransactionCloud001");
-                    ShrinkHelper.defaultApp(cloud1ServerInstantOn, APP_NAME, "servlets.cloud.*");
-                    Consumer<LibertyServer> preRestoreLogic1 = checkpointServer1 -> {
+                    cloud1ServerInstantOn.restoreServerConfiguration();
+                    ShrinkHelper.defaultApp(cloud1ServerInstantOn, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.cloud.*");
+                    Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
                         // Env vars that override the application datasource and transaction
                         // configurations at restore
-                        File serverEnvFile1 = new File(cloud1ServerInstantOn.getServerRoot() + "/server.env");
-                        try (PrintWriter serverEnvWriter1 = new PrintWriter(new FileOutputStream(serverEnvFile1))) {
-                            serverEnvWriter1.println("HOSTNAME=" + HOSTNAME001);
-                            serverEnvWriter1.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
+                        File serverEnvFile = new File(cloud1ServerInstantOn.getServerRoot() + "/server.env");
+                        try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                            serverEnvWriter.println("HOSTNAME=" + HOSTNAME001);
+                            serverEnvWriter.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
                         } catch (FileNotFoundException e) {
                             throw new UncheckedIOException(e);
                         }
@@ -107,25 +119,25 @@ public class Simple2PCCloudTest extends FATServletClient {
                 case testDBRecoveryTakeover:
                 case testDBRecoveryCompeteForLog:
                     // Normal server1 (cloud1)
-                    cloud1Server = LibertyServerFactory.getLibertyServer("checkpointTransactionCloud001");
-                    ShrinkHelper.defaultApp(cloud1Server, APP_NAME, "servlets.cloud.*");
-                    File serverEnvFile3 = new File(cloud1Server.getServerRoot() + "/server.env");
-                    try (PrintWriter serverEnvWriter3 = new PrintWriter(new FileOutputStream(serverEnvFile3))) {
+                    cloud1Server.restoreServerConfiguration();
+                    ShrinkHelper.defaultApp(cloud1Server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.cloud.*");
+                    File serverEnvFile = new File(cloud1Server.getServerRoot() + "/server.env");
+                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
                         // Use the server's built-in HOSTNAME env var
-                        //serverEnvWriter3.println("HOSTNAME=" + HOSTNAME001);
-                        serverEnvWriter3.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
+                        //serverEnvWriter.println("HOSTNAME=" + HOSTNAME001);
+                        serverEnvWriter.println("APP_DS_JNDINAME=" + APP_DS_JNDINAME);
                     } catch (FileNotFoundException e) {
                         throw new UncheckedIOException(e);
                     }
                     cloud1Server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
 
                     // Checkpoint server2 (cloud2)
-                    cloud2ServerInstantOn = LibertyServerFactory.getLibertyServer("checkpointTransactionCloud002");
-                    ShrinkHelper.defaultApp(cloud2ServerInstantOn, APP_NAME, "servlets.cloud.*");
-                    Consumer<LibertyServer> preRestoreLogic2 = checkpointServer2 -> {
+                    cloud2ServerInstantOn.restoreServerConfiguration();
+                    ShrinkHelper.defaultApp(cloud2ServerInstantOn, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.cloud.*");
+                    Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
                         // Env vars that override the application datasource and transaction
                         // configurations at restore
-                        File serverEnvFile2 = new File(checkpointServer2.getServerRoot() + "/server.env");
+                        File serverEnvFile2 = new File(checkpointServer.getServerRoot() + "/server.env");
                         try (PrintWriter serverEnvWriter2 = new PrintWriter(new FileOutputStream(serverEnvFile2))) {
                             serverEnvWriter2.println("TRANLOG_DS_JNDINAME=" + TRANLOG_DS_JNDINAME);
                             serverEnvWriter2.println("TX_RETRY_INT=" + TX_RETRY_INT);
@@ -162,7 +174,7 @@ public class Simple2PCCloudTest extends FATServletClient {
     public void teardownTest() throws Exception {
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
         try {
-            Log.info(getClass(), testName.getMethodName(), "Configuring: " + testMethod);
+            Log.info(getClass(), testName.getMethodName(), "Tearing down: " + testMethod);
 
             // Ensure no server is running in the event a test fails
             switch (testMethod) {
@@ -183,16 +195,6 @@ public class Simple2PCCloudTest extends FATServletClient {
             }
         } catch (Exception e) {
             throw new AssertionError("Unexpected error during teardownTest.", e);
-        }
-    }
-
-    void stopServer(LibertyServer server) {
-        if (server.isStarted()) {
-            try {
-                server.stopServer();
-            } catch (Exception e) {
-                // Don't interrupt the test tear down
-            }
         }
     }
 

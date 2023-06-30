@@ -16,7 +16,6 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-//import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
@@ -33,6 +32,7 @@ import io.openliberty.checkpoint.fat.util.FATUtils;
 @SkipIfCheckpointNotSupported
 public class RecoveryTestBase extends FATServletClient {
 
+    static final String SERVER_NAME = "checkpointTransactionRecovery";
     public static final String APP_NAME = "transactionrecovery";
     public static final String SERVLET_NAME = APP_NAME + "/RecoveryServlet";
 
@@ -48,7 +48,7 @@ public class RecoveryTestBase extends FATServletClient {
         //ShrinkHelper.defaultApp(server, APP_NAME, "servlets.recovery.*");
 
         // Restore the server
-        //server.setServerStartTimeout(RecoveryUtils.LOG_SEARCH_TIMEOUT);
+        //server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         FATUtils.startServers(server);
     }
 

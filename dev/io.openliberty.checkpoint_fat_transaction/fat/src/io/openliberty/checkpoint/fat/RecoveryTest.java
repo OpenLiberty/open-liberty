@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -22,9 +23,11 @@ import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -32,8 +35,9 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.checkpoint.fat.util.FATUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @Mode(TestMode.FULL)
@@ -41,7 +45,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @SkipIfCheckpointNotSupported
 public class RecoveryTest extends RecoveryTestBase {
 
-    @Server("checkpointTransactionRecovery")
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME));
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     static final String TX_RETRY_INT = "11";
@@ -50,7 +57,9 @@ public class RecoveryTest extends RecoveryTestBase {
     public static void setUpClass() throws Exception {
         Log.info(RecoveryTest.class, "subBefore", server.getServerName());
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.recovery.*");
+        ShrinkHelper.cleanAllExportedArchives();
+
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.recovery.*");
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
             // Env var change that triggers the transaction config to update at restore
@@ -67,7 +76,7 @@ public class RecoveryTest extends RecoveryTestBase {
                           checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
         };
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
 
         setUp(server);
