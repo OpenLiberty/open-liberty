@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,7 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Pageable.Cursor;
 import jakarta.data.repository.Sort;
@@ -225,6 +227,15 @@ public class DataJPATestServlet extends FATServlet {
         cities.save(new City("Green Bay", "Wisconsin", 107395, Set.of(920)));
         cities.save(new City("Superior", "Wisconsin", 26751, Set.of(534, 715)));
 
+        cities.save(new City("Sioux Falls", "South Dakota", 192517, Set.of(605)));
+        cities.save(new City("Rapid City", "South Dakota", 74703, Set.of(605)));
+        cities.save(new City("Brookings", "South Dakota", 23377, Set.of(605)));
+        cities.save(new City("Watertown", "South Dakota", 22655, Set.of(605)));
+        cities.save(new City("Spearfish", "South Dakota", 12193, Set.of(605)));
+        cities.save(new City("Aberdeen", "South Dakota", 28324, Set.of(605)));
+        cities.save(new City("Mitchell", "South Dakota", 15660, Set.of(605)));
+        cities.save(new City("Pierre", "South Dakota", 14091, Set.of(605)));
+
         Streamable<City> removed = supportsOrderByForUpdate //
                         ? cities.removeByStateNameOrderByName("Wisconsin") //
                         : cities.removeByStateName("Wisconsin");
@@ -250,6 +261,161 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Wisconsin", list.get(2).stateName);
         assertEquals(26751, list.get(2).population);
         assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
+
+        Set<String> cityNames = new TreeSet<>();
+        cityNames.add("Sioux Falls");
+        cityNames.add("Rapid City");
+        cityNames.add("Brookings");
+        cityNames.add("Watertown");
+        cityNames.add("Spearfish");
+        cityNames.add("Aberdeen");
+        cityNames.add("Mitchell");
+        cityNames.add("Pierre");
+
+        Sort[] orderByCityName = supportsOrderByForUpdate ? new Sort[] { Sort.asc("name") } : null;
+        Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
+        CityId id;
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Aberdeen", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Brookings", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Mitchell", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
+
+        Sort[] orderByPopulation = supportsOrderByForUpdate ? new Sort[] { Sort.asc("population") } : null;
+        id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
+        assertEquals("South Dakota", id.stateName);
+        if (supportsOrderByForUpdate)
+            assertEquals("Pierre", id.name);
+        // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        id = cities.deleteByStateName("South Dakota", Limit.of(1));
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        Streamable<CityId> some = cities.deleteSome("South Dakota", Limit.of(2));
+        ids = some.iterator();
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
+
+        // Should only have 1 left:
+        some = cities.deleteSome("South Dakota", Limit.of(5));
+        ids = some.iterator();
+
+        assertEquals(true, ids.hasNext());
+        id = ids.next();
+        assertEquals("South Dakota", id.stateName);
+        assertEquals("Found " + id, true, cityNames.remove(id.name));
+
+        assertEquals(false, ids.hasNext());
+    }
+
+    /**
+     * Annotatively-defined repository operation to remove and return one or more IdClass
+     * instances corresponding to the removed entities.
+     */
+    @Test
+    public void testFindAndDeleteReturningIdClassArray(HttpServletRequest request, HttpServletResponse response) {
+
+        cities.save(new City("Bloomington", "Minnesota", 89987, Set.of(952)));
+        cities.save(new City("Plymouth", "Minnesota", 79828, Set.of(763)));
+        cities.save(new City("Woodbury", "Minnesota", 75102, Set.of(651)));
+        cities.save(new City("Brooklyn Park", "Minnesota", 86478, Set.of(763)));
+
+        CityId[] removed = cities.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 4, removed.length);
+
+        Arrays.sort(removed, Comparator.comparing(CityId::toString));
+
+        assertEquals("Bloomington", removed[0].name);
+        assertEquals("Minnesota", removed[0].stateName);
+
+        assertEquals("Brooklyn Park", removed[1].name);
+        assertEquals("Minnesota", removed[1].stateName);
+
+        assertEquals("Plymouth", removed[2].name);
+        assertEquals("Minnesota", removed[2].stateName);
+
+        assertEquals("Woodbury", removed[3].name);
+        assertEquals("Minnesota", removed[3].stateName);
+
+        removed = cities.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 0, removed.length);
+
+        // Ensure non-matching entities remain in the database
+        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
+    }
+
+    /**
+     * Query-by-method name repository operation to remove and return one or more IdClass
+     * instances corresponding to the removed entities.
+     */
+    @Test
+    public void testFindAndDeleteReturningIdClassList(HttpServletRequest request, HttpServletResponse response) {
+
+        cities.save(new City("Davenport", "Iowa", 101724, Set.of(563)));
+        cities.save(new City("Sioux City", "Iowa", 85797, Set.of(712)));
+        cities.save(new City("Iowa City", "Iowa", 74828, Set.of(319)));
+
+        LinkedList<CityId> removed = cities.deleteByStateName("Iowa");
+
+        assertEquals(removed.toString(), 3, removed.size());
+
+        Collections.sort(removed, Comparator.comparing(CityId::toString));
+
+        Iterator<CityId> ids = removed.iterator();
+
+        CityId id = ids.next();
+        assertEquals("Davenport", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        id = ids.next();
+        assertEquals("Iowa City", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        id = ids.next();
+        assertEquals("Sioux City", id.name);
+        assertEquals("Iowa", id.stateName);
+
+        removed = cities.deleteByStateName("Iowa");
+
+        assertEquals(removed.toString(), 0, removed.size());
+
+        // Ensure non-matching entities remain in the database
+        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
     }
 
     /**
@@ -1944,7 +2110,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // Derby & Oracle  does not support comparisons of BLOB values
-        // Derby JDBC Jar Nake : derby.jar 
+        // Derby JDBC Jar Name : derby.jar
         // Oracle JDBC Jar Name : ojdbc8_g.jar
         // This value is passed as HTTP request Parameter(eg: http://{host}/DataJPATestApp?testMethod=testUnannotatedCollection&jdbcJarName=ojdbc8_g.jar)
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();

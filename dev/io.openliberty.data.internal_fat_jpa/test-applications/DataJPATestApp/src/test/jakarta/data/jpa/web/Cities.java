@@ -10,12 +10,14 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
+import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
@@ -24,6 +26,7 @@ import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 
 import io.openliberty.data.repository.Compare;
+import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Function;
@@ -47,6 +50,22 @@ public interface Cities {
     void deleteAll(Iterable<City> list); // copied from CrudRepository
 
     long deleteByIdOrId(CityId id1, CityId id2);
+
+    LinkedList<CityId> deleteByStateName(String state);
+
+    CityId deleteByStateName(String state, Limit limitOf1);
+
+    Optional<CityId> deleteFirstByStateName(String state, Sort... sorts);
+
+    Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
+
+    @Delete
+    @Filter(by = "stateName")
+    Streamable<CityId> deleteSome(String state, Limit limit);
+
+    @Delete
+    @Filter(by = "population", op = Compare.Between)
+    CityId[] deleteWithinPopulationRange(int min, int max);
 
     boolean existsById(CityId id);
 

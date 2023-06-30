@@ -175,12 +175,16 @@ public interface Primes {
     @OrderBy("name")
     Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable pagination);
 
+    Prime findFirst(Sort sort);
+
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
     @OrderBy(value = "name", descending = true)
     Prime[] findFirst5ByIdLessThanEqual(long maxNumber);
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
+
+    List<Object[]> findIdAndName(Sort... sort);
 
     @OrderBy(value = "id", descending = true)
     Set<Long> findIdByIdBetween(long min, long max);
