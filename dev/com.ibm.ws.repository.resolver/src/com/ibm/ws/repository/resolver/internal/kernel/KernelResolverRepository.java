@@ -58,6 +58,8 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
     private final Collection<ProductDefinition> productDefinitions;
     private final RepositoryConnectionList repositoryConnection;
 
+    private Collection<ProvisioningFeatureDefinition> allFeatureCache = null;
+
     public KernelResolverRepository(Collection<ProductDefinition> productDefinitions, RepositoryConnectionList repositoryConnection) {
         this.repositoryConnection = repositoryConnection;
 
@@ -124,6 +126,8 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
         if (feature.isAutoFeature()) {
             autoFeatures.add(feature);
         }
+
+        allFeatureCache = null;
     }
 
     /**
@@ -302,9 +306,13 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * @return a collection features
      */
     public Collection<ProvisioningFeatureDefinition> getAllFeatures() {
-        List<ProvisioningFeatureDefinition> result = new ArrayList<>();
-        for (Entry<String, List<ProvisioningFeatureDefinition>> entry : symbolicNameToFeature.entrySet()) {
-            result.add(getPreferredVersion(entry.getKey(), entry.getValue()));
+        Collection<ProvisioningFeatureDefinition> result = allFeatureCache;
+        if (result == null) {
+            result = new ArrayList<>();
+            for (Entry<String, List<ProvisioningFeatureDefinition>> entry : symbolicNameToFeature.entrySet()) {
+                result.add(getPreferredVersion(entry.getKey(), entry.getValue()));
+            }
+            allFeatureCache = result;
         }
         return result;
     }
