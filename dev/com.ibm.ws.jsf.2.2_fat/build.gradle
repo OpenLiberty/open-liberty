@@ -11,9 +11,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-    requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+    requiredLibs 'org.seleniumhq.selenium:selenium-java:4.8.3',
+      "com.google.guava:guava:32.0.1-jre",
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
       'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
@@ -40,7 +43,7 @@ dependencies {
       project(':io.openliberty.org.apache.xercesImpl'),
       'xalan:xalan:2.7.2',
       'xml-apis:xml-apis:1.4.01'
-    }
+}
 
 addRequiredLibraries.dependsOn addJakartaTransformer
-
+addRequiredLibraries.dependsOn copyTestContainers

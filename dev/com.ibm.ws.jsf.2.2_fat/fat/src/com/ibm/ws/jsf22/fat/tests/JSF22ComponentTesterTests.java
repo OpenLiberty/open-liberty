@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -20,18 +20,26 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jsf22.fat.FATSuite;
 import com.ibm.ws.jsf22.fat.JSFUtils;
+import com.ibm.ws.jsf22.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -57,6 +65,11 @@ public class JSF22ComponentTesterTests {
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
 
+    @Rule
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(JSF22ComponentTesterTests.class, "selenium-driver"));
+
     @BeforeClass
     public static void setup() throws Exception {
         boolean isEE10 = JakartaEE10Action.isActive();
@@ -66,6 +79,8 @@ public class JSF22ComponentTesterTests {
                                       "com.ibm.ws.jsf22.fat.componenttester");
 
         jsfTestServer2.startServer(c.getSimpleName() + ".log");
+
+        Testcontainers.exposeHostPorts(jsfTestServer2.getHttpDefaultPort(), jsfTestServer2.getHttpDefaultSecurePort());
     }
 
     @AfterClass
@@ -226,30 +241,21 @@ public class JSF22ComponentTesterTests {
      * </h:commandLink>
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void JSF22ComponentTester_TestCommandLinkOrder() throws Exception {
-        try (WebClient webClient = getWebClient()) {
 
-            URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
 
-            if (page == null) {
-                Assert.fail("JSF22ComponentTester_TestDocTag.xhtml did not render properly.");
-            }
+        String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "testActionListenerOrder.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            assertTrue(page.getWebResponse().getContentAsString().contains("Action-Listener order page"));
+        assertTrue(page.isInPage("Action-Listener order page"));
 
-            // Click the link to execute the methods and update the page
-            HtmlAnchor anchor = page.getAnchorByName("form:testLink");
-            page = anchor.click();
-
-            HtmlElement output = (HtmlElement) page.getElementById("testOutput");
-
-            if (!output.asText().contains("test action called")) {
-                Assert.fail("JSF22ComponentTester_TestCommandLinkOrder: test output is not correct: "
-                            + output.asText());
-            }
-        }
+        page.findElement(By.id("form:testLink")).click();
+        page.waitForCondition(driver1 -> page.isInPage("test action called")); 
+        
+        assertEquals(page.findElement(By.id("testOutput")).getText(), "test action called");
     }
 
     /**

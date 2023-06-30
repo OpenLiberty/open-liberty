@@ -10,6 +10,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+fat.test.container.images: \
+    seleniarm/standalone-chromium:4.8.3,\
+    selenium/standalone-chrome:4.8.3,\
+    alpine:3.16
+
 src: \
     fat/src,\
     test-applications/TestJSF2.2.war/src,\
@@ -84,7 +89,13 @@ tested.features: \
 
 
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    io.openliberty.org.testcontainers;version=latest,\
+    org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
     net.sourceforge.htmlunit:webdriver;version=2.6,\
@@ -105,4 +116,5 @@ tested.features: \
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
-    io.openliberty.org.apache.xercesImpl;version=latest
+    io.openliberty.org.apache.xercesImpl;version=latest,\
+    com.google.guava:guava;version=latest

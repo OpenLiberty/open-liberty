@@ -25,20 +25,29 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jsf22.fat.FATSuite;
 import com.ibm.ws.jsf22.fat.JSFUtils;
+import com.ibm.ws.jsf22.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -68,6 +77,11 @@ public class JSF22MiscellaneousTests {
 
     @Server("jsf22MiscellaneousServer")
     public static LibertyServer jsf22MiscellaneousServer;
+
+    @Rule
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                                                                                  .withAccessToHost(true)
+                                                                                  .withLogConsumer(new SimpleLogConsumer(JSF22ResetValuesAndAjaxDelayTests.class, "selenium-driver"));
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -105,6 +119,8 @@ public class JSF22MiscellaneousTests {
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_MYFACES_4512 + ".war", "com.ibm.ws.jsf22.fat.myfaces4512.viewhandler");
 
         jsf22MiscellaneousServer.startServer(c.getSimpleName() + ".log");
+
+        Testcontainers.exposeHostPorts(jsf22MiscellaneousServer.getHttpDefaultPort(), jsf22MiscellaneousServer.getHttpDefaultSecurePort());
     }
 
     @AfterClass
@@ -192,46 +208,33 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatibility (New JS in RC5)
     public void testResetValues() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            // Use a synchronizing ajax controller to allow proper ajax updating
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
-            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testResetValues.xhtml");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
 
-            // Make sure the page initially renders correctly
-            if (page == null) {
-                Assert.fail("test ResetValues page was not available.");
-            }
+            String url = JSFUtils.createSeleniumURLString(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testResetValues.xhtml");
+            WebPage page = new WebPage(driver);
+            Log.info(c, name.getMethodName(), "Navigating to: /" + APP_NAME_MISCELLANEOUS + "/testResetValues.jsf");
+            page.get(url);
+            page.waitForPageToLoad();
+            assertTrue(page.isInPageText("JSF 2.2 Test ResetValues"));
 
-            assertTrue(page.asText().contains("JSF 2.2 Test ResetValues"));
+            WebElement firstNameInupt = page.findElement(By.id("form1:firstName"));
+            firstNameInupt.sendKeys("John");
 
-            // Fill in the FirstName, but not the LastName.   Click "Save", which should
-            //   respond w/ an error.    The first name and last name are both REQUIRED.
-            //   Click "Reset" and this should reset the first name.    Prior to JSF2.2, the
-            //   first name still held the text.
-            HtmlTextInput firstName = (HtmlTextInput) page.getElementById("form1:firstName");
-            firstName.type("John");
+            page.findElement(By.id("form1:save")).click();
+            page.waitReqJs();
+            assertTrue(page.findElement(By.id("form1:firstName")).getAttribute("value").contains("John"));
 
-            //  Save the form which should cause an error to be reported.
-            HtmlElement button = (HtmlElement) page.getElementById("form1:save");
-            page = button.click();
+            WebElement reset = page.findElement(By.id("form1:reset"));
+            Log.info(c, name.getMethodName(), "Clicking Reset...");
+            reset.click();
+            page.waitReqJs();
 
-            if (!page.asText().contains("John")) {
-                Assert.fail("Invalid response from server.  First Name is NOT set to <John>  = " + page.asXml());
-            }
+            String input = page.findElement(By.id("form1:firstName")).getAttribute("value");
+            Log.info(c, name.getMethodName(), "form1:firstName value (expecting empty string) = " + input);
 
-            //  Click "reset", which should remove "John" from the form.
-            button = (HtmlElement) page.getElementById("form1:reset");
-            page = button.click();
-
-            // Look for the correct results.   The "John" text should not exist in the page.
-            if (page.asText().contains("John")) {
-                Assert.fail("Invalid response from server.  First Name is still set to <John>  = " + page.asXml());
-            }
-        }
+            assertFalse(input.contains("John"));
     }
 
     /**
