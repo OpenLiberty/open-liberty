@@ -1,0 +1,23 @@
+Summery: If you want to build this project but not modify it the changes to the build should be completely invisible to you.
+
+-------------------
+
+The build system for this project is unusual, but not complicated.
+
+When you compile the code with the gradle task compileJava it will automatically execute a prerequisite task that:
+
+1. Downloads and extracts weld-osgi-bundle from artifactory and extracts it to build/lib/unzip
+2. Reads the MANIFEST.MF file to generate a list of imports and a list of exports
+3. Applies modifications to those lists - the rules for modifications are found in build.gradle
+4. Creates a new bnd file from template.bnd and those updated lists.
+5. Checks if the new bnd file has any differences to check-me-in-if-i-change.bnd, and if so replaces check-me-in-if-i-change.bnd
+
+-------------------
+
+If you want to update weld to a new version all you have to do is update the variable "weldVersion" in build.gradle (and in dev/cnf as usual)
+
+If you want to add a new import or export to the manifest modify the variable "additionalExports" or "additionalImports"
+
+If you want to add a new property to an export (e.g. we add "thread-context=true" to the export "org.jboss.weld.event") add an entry to the map "additionalPropertiesForExports"
+
+(There is no code for adding properties to imports, but it would be trivial to write some based on the code for adding properties to imports) 
