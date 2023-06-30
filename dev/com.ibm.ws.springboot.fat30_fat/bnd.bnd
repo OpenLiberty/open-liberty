@@ -1,0 +1,95 @@
+#*******************************************************************************
+# Copyright (c) 2018,2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+fat.project: true
+
+tested.features: \
+  appauthentication-3.0, \
+  appauthorization-2.1, \
+  appclientsupport-2.0, \
+  appsecurity-5.0, \
+  batch-2.1, \
+  beanvalidation-3.0, \
+  cdi-4.0, \
+  concurrent-3.0, \
+  connectors-2.1, \
+  enterprisebeans-4.0, \
+  enterprisebeanshome-4.0, \
+  enterprisebeanslite-4.0, \
+  enterprisebeanspersistenttimer-4.0, \
+  enterprisebeansremote-4.0, \
+  faces-4.0, \
+  jakartaee-10.0, \
+  jsonb-3.0, \
+  jsonp-2.1, \
+  mail-2.1, \
+  managedbeans-2.0, \
+  mdb-4.0, \
+  messaging-3.1, \
+  messagingclient-3.0, \
+  messagingsecurity-3.0, \
+  messagingserver-3.0, \
+  pages-3.1, \
+  persistence-3.1, \
+  persistencecontainer-3.1, \
+  restfulws-3.1, \
+  restfulwsclient-3.1, \
+  servlet-6.0, \
+  springBoot-3.0, \
+  ssl-1.0, \
+  transportSecurity-1.0, \
+  webprofile-10.0, \
+  websocket-2.1, \
+  xmlbinding-4.0, \
+  xmlws-4.0, \
+\
+  springBoot-3.0
+
+src: \
+  fat/src
+
+// websocket 2.1 is a small overlay on websocket 2.0;
+// putting websocket 2.1 on the build path is not sufficient;
+// websocket 2.0 must also be there
+
+-buildpath: \
+  io.openliberty.org.apache.commons.logging;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
+  io.openliberty.org.apache.xercesImpl;version=latest, \
+\
+  net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+  net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
+  net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
+  net.sourceforge.htmlunit:webdriver;version=2.6,\
+  org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+  org.brotli:dec;version=0.1.2,\
+\
+  io.openliberty.jakarta.servlet.6.0;version=latest, \
+  io.openliberty.jakarta.websocket.2.0;version=latest, \
+  io.openliberty.jakarta.websocket.2.1;version=latest, \
+\
+  com.ibm.ws.org.apache.httpcomponents;version=latest, \
+\
+  com.ibm.ws.springboot.fat30.actuator.app;version=latest,\
+  com.ibm.ws.springboot.fat30.app;version=latest,\
+  com.ibm.ws.springboot.fat30.java.app;version=latest,\
+  com.ibm.ws.springboot.fat30.multicontext.app;version=latest,\
+  com.ibm.ws.springboot.fat30.war.app;version=latest,\
+  com.ibm.ws.springboot.fat30.webanno.app;version=latest,\
+  com.ibm.ws.springboot.fat30.webflux.app;version=latest,\
+  com.ibm.ws.springboot.fat30.websocket.app;version=latest

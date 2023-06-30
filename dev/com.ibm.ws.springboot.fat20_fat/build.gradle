@@ -1,0 +1,90 @@
+/*******************************************************************************
+ * Copyright (c) 2018,2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+ dependencies {
+  requiredLibs 'io.openliberty.springboot.test:io.openliberty.springboot.test.version15.app:1.0.0',
+    'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+    'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+    'net.sourceforge.htmlunit:htmlunit:2.44.0',
+    'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+    'net.sourceforge.htmlunit:webdriver:2.6',
+    'org.apache.commons:commons-lang3:3.8',
+    'org.apache.httpcomponents:httpmime:4.3.1',
+    'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23',
+    'org.brotli:dec:0.1.2',
+    'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+    'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+    'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+    'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+    'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+    'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+    'xalan:xalan:2.7.2',
+    'xml-apis:xml-apis:1.4.01',
+    project(':com.ibm.ws.org.apache.commons.io'),
+    project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':io.openliberty.org.apache.commons.codec'),
+    project(':io.openliberty.org.apache.commons.logging'),
+    project(':io.openliberty.org.apache.xercesImpl')
+}
+
+def appDefs =
+  [ [ 'com.ibm.ws.springboot.fat20.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.war.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.java.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.webanno.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.websocket.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.actuator.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.webflux.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.multicontext.app', '.jar' ] ]
+
+autoFVT.dependsOn ':wlp.lib.extract:build'
+appDefs.each { appDef ->
+  autoFVT.dependsOn ':' + appDef[0] + ':build'
+}
+
+autoFVT.doLast {
+  // Copy wlp.lib.extract.jar for doing bin/server package command
+  copy {
+    from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
+
+  task copySpringBootArtifacts(type: Copy) {
+    into 'lib'
+    include 'io-openliberty-springboot-test-*'
+  }
+
+  def server = 'SpringBootTests'
+  def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+
+  println 'Auto FVT directory [ ' + autoFvtDir + ' ]'
+  println 'FAT server [ ' + server + ' ]'
+  println 'Auto FVT applications [ ' + appsDir + ' ]'
+
+  copy {
+    from new File(autoFvtDir, 'lib/io.openliberty.springboot.test.version15.app-1.0.0.jar')
+    into appsDir
+  }
+
+  appDefs.each { appDef ->
+    def appName = appDef[0]
+    def appExt = appDef[1]
+
+    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
+
+    copy {
+      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-0.0.1-SNAPSHOT' + appDef[1] )
+      into appsDir
+    }
+  }
+}

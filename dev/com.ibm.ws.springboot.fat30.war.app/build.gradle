@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ ********************************************************************************/
+
+// https://plugins.gradle.org/plugin/org.springframework.boot
+plugins {
+  id 'org.springframework.boot' version '3.0.7'
+}
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+def sv = springVersions[ '3.0' ]
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 17
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+// Note the particular dependency of 'module' of *THIS PROJECT*.
+// This forces an include of the dependency in 'wlp-gradle/bndSettings.gradle',
+// essentially:
+//
+// if ( allProjectNames.contains('com.ibm.ws.springboot.fat30.war.app') ) {
+//   include ':com.ibm.ws.springboot.fat30.war.app:module'
+// }
+//
+// If the depencency is not included, a build error results:
+//
+//   Project with path ':com.ibm.ws.springboot.fat30.war.app:module'
+//   could not be found in project ':com.ibm.ws.springboot.fat30.war.app'.
+
+// Per: https://mvnrepository.com/artifact/javax.servlet/jstl
+// javax.servlet:jstl was moved to:
+// javax.servlet.jsp.jstl » jstl
+//
+// That seems to be:
+// https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
+
+dependencies {
+  implementation project(':com.ibm.ws.springboot.fat30.war.app:module')
+  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
+
+  providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+  providedCompile 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
+  providedCompile 'org.apache.tomcat.embed:tomcat-embed-jasper'
+}

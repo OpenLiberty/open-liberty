@@ -1,0 +1,260 @@
+Test project: open-liberty/dev/com.ibm.ws.springboot.fat30_fat
+
+79 tests / 66 successful / 9 failed / 4 disabled / 1210 seconds
+
+Current failing or disabled tests:
+
+Group 1: Tests of failure modes.
+EnableSpringBootTraceTests30.java
+X testEnableSpringBootTraceFor30()
+MissingServletTests30.java
+X testMissingServletFor30()
+MissingWebsocketFeatureTests30.java
+X testMissingWebsocketFor30()
+MultipleApplicationsNotSupported30.java
+X testMultipleApplicationsNotSupported()
+NeedSpringBootFeatureTests30.java
+X testNeedSpringBootFeature30()
+NoServletRequiredAppTests30.java
+X testNoServletRequiredFor30()
+
+Group 2: Security tests.
+SpringSecurityTests30.java
+X  testSpringWithSecurity()
+X  testSpringWithoutSecurity()
+
+Group 3: WebSocket implementation.
+WebSocketTests30.java
+X testEchoWebSocket30()
+
+Group 4: "UBER" jar disabled tests.
+utility/SpringBootUtilityThinTest.java
+X testLibertyUberJarThinning()
+X testDefaultHostWithAppPortRunLibertyUberJarWithSSL()
+X testInvalidLibertyUberJar()
+X testErrorOccursWhenAppNotConfiguredInLibertyUberJar()
+
+---
+
+AbstractSpringTests.java
+  X
+ApplicationArgsTests30.java
+  testServerAppArgs()
+ApplicationStartedEventTests30.java
+  testApplicationStartedAfterModuleStarted()
+CDITests30.java
+  testSpringBootApp30WithCDIFeatureEnabled()
+CommonWebFluxTests.java
+  X
+CommonWebFluxTests30.java
+  testBasicWebFluxtAppServlet60()
+  testBlockingIOServlet60()
+CommonWebServerTests.java
+  X
+CommonWebServerTests30.java
+  testBasicSpringBootApplication30Servlet60()
+  testDefaultHostWithAppPort30()
+ConfigActuatorXMLOverrideTests30.java
+  useDefaultHostForMainAndActuatorPorts()
+  useDefaultHostForMainConfigActuatorPorts()
+  useDefaultHostWithAppPortForMainConfigActuatorPorts()
+  useConfigForMainAndActuatorPorts()
+  useOverrideForMainAndActuatorPorts()
+ConfigDropinRootTests30.java
+  testDropinsRoot()
+ConfigServerXMLOverrideTests30.java
+  configServerXMLOverrideVirtualHost()
+  configServerXMLOverrideHttpEndpoint()
+  configureServerXMLOverrideSSL()
+  configureServerXMLOverrideKeyStores()
+  testDefaultHostWithAppPortconfigureServerXMLOverrideSSL()
+  testDefaultHostWithAppPortconfigureServerXMLOverrideKeyStores()
+ConfigSpringBootApplicationClassloaderTests30.java
+  testSpringBootApplicationClassloaderDefaultVisibility()
+  testSpringBootApplicationClassloaderDefaultNoIbmApiVisibility()
+ConfigSpringBootApplicationTagTests30.java
+  testSpringBootApplicationTag()
+  testContextParams()
+  testServerHeader()
+ConfigSpringBootApplicationWithArgsTests30.java
+  testSpringAppArg1()
+  testSpringAppArg2()
+EnableSpringBootTraceTests30.java
+X testEnableSpringBootTraceFor30()
+-- 2023-06-21-15:51:41:646 There were 2 errors: java.lang.AssertionError(The application was not
+   installed) java.lang.Exception(Errors/warnings were found in server SpringBootTests logs:
+   <br>[6/21/23, 15:51:12:554 EDT] 00000037 s.app.manager.springboot.internal.SpringBootRuntimeContainer
+   E CWWKC0267E: The application failed to start because the springBoot-1.5 or springBoot-2.0 feature is
+   configured in the server.xml file. The application requires the springBoot-3.0 feature to be
+   configured. <br>[6/21/23, 15:51:12:557 EDT] 00000039 com.ibm.ws.app.manager.AppMessageHelper E
+   CWWKZ0002E: An exception occurred while starting the application
+   com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT. The exception message was:
+   com.ibm.ws.app.manager.springboot.container.ApplicationError: CWWKC0267E: The application failed to
+   start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The
+   application requires the springBoot-3.0 feature to be configured.)
+ErrorPage30Test.java
+  X
+ErrorPageBaseTest.java
+  test404ErrorPage()
+  testExceptionErrorPage()
+  testDefaultErrorPage()
+ExceptionOccuredAfterAppIsAvailableTest30.java
+  testSpringAppWithExceptionInMainMethod()
+ExtractedAppTests30.java
+  testExtractedThinApp()
+  testExtractedFatApp()
+  testLooseApp()
+FATSuite.java
+GenerateWebServerPluginTests30.java
+  testPluginCfgGeneratedUsingDefaultVirtualHost()
+  testPluginCfgGeneratedUsingSpringBootVirtualHost()
+InvalidAppTests.java
+  testNoManifest30()
+  testNoStartCLass30()
+JSPTests30.java
+  testJSP()
+  testWelcomePage()
+  testWelcomePageOnDefaultHost()
+JakartaFeatureTests30.java
+  testBasicAppEnableJavaee10()
+MimeMapping30.java
+  X
+MimeMappingBaseTest.java
+  testMimeMapping()
+MissingServletTests30.java
+X testMissingServletFor30()
+  -- 2023-06-21-15:45:23:221 No error message was found for missing servlet feature
+     junit.framework.AssertionFailedError: 2023-06-21-15:45:23:221 No error message was found for missing servlet feature
+       at com.ibm.ws.springboot.support.fat.MissingServletTests30.testMissingServletFor30(MissingServletTests30.java:51)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  -- com.ibm.ws.app.manager.springboot.container.ApplicationError: CWWKC0267E: The application failed to start because
+     the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The application requires the
+     springBoot-3.0 feature to be configured.
+       at com.ibm.ws.springboot.support.shutdown.FeatureAuditor$SpringFeatureRequirement.verify(FeatureAuditor.java:153)
+MissingSslFeatureTests30.java
+  testMissingSslFeatureFor30()
+MissingWebsocketFeatureTests30.java
+X testMissingWebsocketFor30()
+  -- 2023-06-21-15:46:11:617 No error message was found for missing websocket feature
+     junit.framework.AssertionFailedError: 2023-06-21-15:46:11:617 No error message was found for missing websocket feature
+       at com.ibm.ws.springboot.support.fat.MissingWebsocketFeatureTests30.testMissingWebsocketFor30(MissingWebsocketFeatureTests30.java:43)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) 
+  -- Caused by: java.lang.IllegalStateException: jakarta.websocket.server.ServerContainer not available
+      at org.springframework.util.Assert.state(Assert.java:76) ~[spring-core-6.0.9.jar:6.0.9]
+      at org.springframework.web.socket.server.standard.ServerEndpointExporter.afterPropertiesSet(ServerEndpointExporter.java:107) ~[spring-websocket-6.0.9.jar:6.0.9]
+      at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1816) ~[spring-beans-6.0.9.jar:6.0.9]
+      at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766) ~[spring-beans-6.0.9.jar:6.0.9]
+      ... 25 common frames omitted
+MultiContextTests30.java
+  useDefaultHostPorts()
+  useDefaultHostWithAppPort()
+  useAppConfigPorts()
+MultiModuleProjectTests30.java
+  testBeanInRootInitialized()
+  testBeanInModuleInitialized()
+MultipleApplicationsNotSupported30.java
+X testMultipleApplicationsNotSupported()
+  -- 2023-06-21-15:47:18:608 Count of installed applications expected:<1> but was:<0>
+     junit.framework.AssertionFailedError: 2023-06-21-15:47:18:608 Count of installed applications expected:<1> but was:<0>
+       at com.ibm.ws.springboot.support.fat.MultipleApplicationsNotSupported30.checkOneInstalledApp(MultipleApplicationsNotSupported30.java:103)
+       at com.ibm.ws.springboot.support.fat.MultipleApplicationsNotSupported30.testMultipleApplicationsNotSupported(MultipleApplicationsNotSupported30.java:91)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+       at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+       at componenttest.custom.junit.runner.FATRunner$1.evaluate(FATRunner.java:204)
+       at componenttest.custom.junit.runner.FATRunner$2.evaluate(FATRunner.java:364)
+       at componenttest.custom.junit.runner.FATRunner.run(FATRunner.java:178) 
+NeedSpringBootFeatureTests30.java
+X testNeedSpringBootFeature30()
+  -- 2023-06-21-15:47:54:026 No error message was found to enable springBoot-3.0 feature
+     junit.framework.AssertionFailedError: 2023-06-21-15:47:54:026 No error message was found to enable springBoot-3.0 feature
+       at com.ibm.ws.springboot.support.fat.NeedSpringBootFeatureTests30.testNeedSpringBootFeature30(NeedSpringBootFeatureTests30.java:38)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+       at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+       at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+       at componenttest.custom.junit.runner.FATRunner$1.evaluate(FATRunner.java:204)
+       at componenttest.custom.junit.runner.FATRunner$2.evaluate(FATRunner.java:364)
+       at componenttest.custom.junit.runner.FATRunner.run(FATRunner.java:178) 
+NoServletRequiredAppTests30.java
+X testNoServletRequiredFor30()
+  -- 2023-06-21-15:48:43:160 The application was not installed
+     junit.framework.AssertionFailedError: 2023-06-21-15:48:43:160 The application was not installed
+       at com.ibm.ws.springboot.support.fat.AbstractSpringTests.configureServer(AbstractSpringTests.java:264)
+       at jdk.internal.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
+       at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+       at componenttest.custom.junit.runner.FATRunner$1.evaluate(FATRunner.java:204)
+       at componenttest.custom.junit.runner.FATRunner$2.evaluate(FATRunner.java:364)
+       at componenttest.custom.junit.runner.FATRunner.run(FATRunner.java:178) 
+  -- Errors/warnings were found in server SpringBootTests logs: <br>[6/21/23, 15:48:17:135 EDT] 0000003f
+     s.app.manager.springboot.internal.SpringBootRuntimeContainer E CWWKC0267E: The application failed to
+     start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The
+     application requires the springBoot-3.0 feature to be configured. <br>[6/21/23, 15:48:17:135 EDT]
+     00000037 com.ibm.ws.app.manager.AppMessageHelper E CWWKZ0002E: An exception occurred while starting
+     the application com.ibm.ws.springboot.fat30.java.app-0.0.1-SNAPSHOT. The exception message was:
+     com.ibm.ws.app.manager.springboot.container.ApplicationError: CWWKC0267E: The application failed to
+     start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The
+     application requires the springBoot-3.0 feature to be configured.
+NonZipExtensionFilesInBootInfLibTests30.java
+  expectServerStartFailureWhenANonZipLibraryExistsInAppArchive()
+  expectServerStartSuccessWhenAZipLibraryWithNonZipExtensionExistsInAppArchive()
+PreThinnedSpringBootTests30.java
+  testWithSharedCache()
+SSLCommonTests.java
+  X
+SSLMutualAuthTests30.java
+  testClientAuthNeedWithClientSideKeyStoreFor30()
+  testClientAuthNeedWithoutClientSideKeyStoreFor30()
+  testClientAuthWantWithoutClientSideKeyStoreFor30()
+SSLTests30.java
+  testSSLSpringBootApplication30()
+  testSSLDefaultHostWithAppPort30()
+SpringSecurityTests30.java
+X  testSpringWithSecurity()
+X  testSpringWithoutSecurity()
+   -- Caused by: org.springframework.expression.spel.SpelEvaluationException: EL1007E: Property or field 'remoteUser' cannot be found on null
+      at org.springframework.expression.spel.ast.PropertyOrFieldReference.readProperty(PropertyOrFieldReference.java:218)
+      at org.springframework.expression.spel.ast.PropertyOrFieldReference.getValueInternal(PropertyOrFieldReference.java:105)
+      at org.springframework.expression.spel.ast.PropertyOrFieldReference$AccessorLValue.getValue(PropertyOrFieldReference.java:410)
+      at org.springframework.expression.spel.ast.CompoundExpression.getValueInternal(CompoundExpression.java:93)
+      at org.springframework.expression.spel.ast.SpelNodeImpl.getValue(SpelNodeImpl.java:114)
+      at org.springframework.expression.spel.standard.SpelExpression.getValue(SpelExpression.java:338)
+      at org.thymeleaf.spring6.expression.SPELVariableExpressionEvaluator.evaluate(SPELVariableExpressionEvaluator.java:265)
+      ... 114 more
+TemplateTests30.java
+  testCreateSpringBoot3()
+UnsupportedConfigWarningTest30.java
+  X
+UnsupportedConfigWarningTestBase.java
+  testUnsupportedSessionConfigWarning()
+  testUnsupportedCompressionWarning()
+UseDefaultHostTest30.java
+  testUseDefaultHost30()
+WarmStartTests30.java
+  testWarmStartConfig()
+WebAnnotationTests30.java
+  testWebAnnotations()
+WebSocketTests30.java
+X testEchoWebSocket30()
+  -- 2023-06-21-15:50:30:185 Could not find an implementation class.
+     java.lang.RuntimeException: 2023-06-21-15:50:30:185 Could not find an implementation class.
+     at jakarta.websocket.ContainerProvider.getWebSocketContainer(ContainerProvider.java:59)
+     at com.ibm.ws.springboot.support.fat.WebSocketTests30.setUp(WebSocketTests30.java:71)
+     at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+     at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+     at componenttest.custom.junit.runner.FATRunner$1.evaluate(FATRunner.java:204)
+     at componenttest.custom.junit.runner.FATRunner$2.evaluate(FATRunner.java:364)
+     at componenttest.custom.junit.runner.FATRunner.run(FATRunner.java:178) 
+WebSocketTests30EndpointEcho.java
+  X
+utility/SpringBootUtilityScriptUtils.java
+utility/SpringBootUtilityThinTest.java
+  testDefaultTargets()
+  testSetTargets()
+X testLibertyUberJarThinning()
+X testDefaultHostWithAppPortRunLibertyUberJarWithSSL()
+X testInvalidLibertyUberJar()
+X testErrorOccursWhenAppNotConfiguredInLibertyUberJar()
+  -- disable test until uber jar creating works reliably
+  testParentCache()
+  testThinWarRemovesLibProvided()

@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+# BND properties for gradle projects (used in -testpath):
+
+# Versions obtained from:
+#
+# https://spring.io/projects
+# https://spring.io/projects/spring-boot#learn
+# https://spring.io/projects/spring-framework#learn
+# https://spring.io/projects/spring-security#learn
+#
+# Linked: 
+#   wlp-gradle/subprojects/spring.gradle
+#   cnf/oss_dependencies.maven
+#
+# All versions listed here MUST be listed in oss_dependencies.
+# Target 'cnf:init' populates '${USER_HOME}/.ibmartifactory/repository/org/springframework'
+# with the versions versions specified in oss_dependencies.
+
+springBootVersion15=strategy=exact;version=1.5.9.RELEASE
+springVersion15=strategy=exact;version=4.3.13.RELEASE
+springSecurityVersion15=strategy=exact;version=4.2.3.RELEASE
+
+springBootVersion20=strategy=exact;version=2.2.5.RELEASE
+springVersion20=strategy=exact;version=5.2.4.RELEASE
+springSecurityVersion20=strategy=exact;version=5.2.2.RELEASE
+
+springAOPVersion20=strategy=exact;version=5.3.21
+springExpressionVersion20=strategy=exact;version=5.3.21
+springWebFluxVersion20=strategy=exact;version=5.3.21
+springWebSocketVersion20=strategy=exact;version=5.0.8.RELEASE
+springSecurityCryptoVersion20=strategy=exact;version=5.6.2
+
+springBootVersion30=strategy=exact;version=3.0.4
+springVersion30=strategy=exact;version=6.0.6
+springSecurityVersion30=strategy=exact;version=6.0.3
+
+# https://mvnrepository.com/artifact/org.springframework.security
+# org.springframework.security » spring-security-core
+# org.springframework.security » spring-security-web 
+# org.springframework.security » spring-security-config 
+# org.springframework.security » spring-security-crypto 
