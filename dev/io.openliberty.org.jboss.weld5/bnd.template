@@ -1,5 +1,4 @@
 bVersion=1.0
-weldVersion=5.1.1.Final
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld5; singleton:=true
 
@@ -34,3 +33,11 @@ Service-Component: \
         |org.jboss.weld.serialization\
         |org.jboss.weld.util.bean\
         |org.jboss.weld.util.collections"
+
+# Automatically filled in by build.gradle
+Export-Package: \
+#INSERTEXPORTS
+
+# Automatically filled in by build.gradle
+Import-Package: \
+#INSERTIMPORTS

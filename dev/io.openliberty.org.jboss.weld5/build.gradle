@@ -1,89 +1,161 @@
 import org.gradle.api.java.archives.internal.DefaultManifest
 import org.gradle.api.internal.file.IdentityFileResolver
 
-import java.util.HashMap;
-import java.util.Map;
-import java.net.URI;
+import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 ////// Update me when updating weld ////
 def weldVersion = "5.1.1.Final"     ////
 ////////////////////////////////////////
 
-def manifestDir = "${buildDir}/ManifestMagic" 
-def oldManifestPath = "${manifestDir}/old/MANIFEST.MF"
-def newManifestPath = "${manifestDir}/new/MANIFEST.MF"
-def builtJarFile = "${buildDir}/io.openliberty.org.jboss.weld5.jar" 
+def unzippDir = "${buildDir}/unzip"
+def pathToOSManifest = "${unzippDir}/META-INF/MANIFEST.MF"
+def pathToTemplateManifest = "${buildDir}/../../bnd.template"
+def tempPathToNewManifest = "${buildDir}/check-me-in-if-i-change.bnd"
+def pathToNewManifest = "${buildDir}/../../check-me-in-if-i-change.bnd"
+
+
+/////// Modifications to the bnd begin here ///////////////////
 
 def additionalExports = """\
-org.jboss.weldx.transaction;version=${weldVersion},
-org.jboss.weld.bean.proxy.util;version=${weldVersion},
-org.jboss.weld.annotated.enhanced;version=${weldVersion},
-org.jboss.weld.executor;version=${weldVersion},
-org.jboss.weld.metadata;version=${weldVersion},
-org.jboss.weld.resolution;version=${weldVersion},
-org.jboss.weld.resources;version=${weldVersion},
-org.jboss.weld.util.collections;version=${weldVersion}
-""".replaceAll("\\s","") //multiple lines are for human readability, strip them out
+ org.jboss.weldx.transaction;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.bean.proxy.util;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.annotated.enhanced;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.executor;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.metadata;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.resolution;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.resources;version=\\"${weldVersion}\\",\\\\
+ org.jboss.weld.util.collections;version=\\"${weldVersion}\\",\\\\
+"""
 
 def additionalImports = """\
-javax.security.auth,
-jakarta.xml.ws;version=\"[4.0,5)\"
-""".replaceAll("\\s","") //multiple lines are for human readability, strip them out
+ javax.security.auth,\\\\
+ jakarta.xml.ws;version="[4.0,5)",\\\\
+"""
 
-jar {
-    //java zip code adapted from https://stackoverflow.com/a/36088523/54645
-    doLast {
-        //First take the manifest file we already built.
+// Key is a property, value is an addition.
+def additionalPropertiesForExports = [
+  "org.jboss.weld.event": "thread-context=true"
+]
 
-        /* Define ZIP File System Properies in HashMap */    
-        Map<String, String> zip_properties = new HashMap<>()
-        /* We want to read an existing ZIP File, so we set this to False */
-        zip_properties.put("create", "false");
+//////// Modifications end here ////////////////
 
-        /* Specify the path to the ZIP File that you want to read as a File System */
-        URI zip_disk = URI.create("jar:file:" + builtJarFile)
-        try (FileSystem zipfs = FileSystems.newFileSystem(zip_disk, zip_properties)) {
 
-            Path pathInZipfile = zipfs.getPath("META-INF/MANIFEST.MF")
-            Files.createDirectories(Paths.get(oldManifestPath).getParent())
-            Files.move(pathInZipfile, Paths.get(oldManifestPath), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
-        
+configurations {
+  weld {
+    transitive = false
+  }
+}
 
-            //Next create a new manifest with the attributes of the old, but manually extended imports and exports
-            def oldManifest = new DefaultManifest(new IdentityFileResolver())
-            oldManifest.from("${oldManifestPath}")
-        
-            def openSourceExports = oldManifest.getEffectiveManifest().getAttributes().get("Export-Package")
-            def combinedExports = additionalExports + "," + openSourceExports
+dependencies {
+  weld "org.jboss.weld:weld-osgi-bundle:${weldVersion}"
+}
 
-            def openSourceImports = oldManifest.getEffectiveManifest().getAttributes().get("Import-Package")
-            def combinedImports = additionalImports + "," + openSourceImports
+task bndMagic {
 
-            def combinedManifest = new DefaultManifest(new IdentityFileResolver())
+    doFirst{
+        copy {   
+            configurations.weld.asFileTree.each {
+               from(zipTree(it))
+            }
+            into unzippDir
+        }
 
-            //If we use from() to merge the manifests directly the original attributes from  oldManifest always overwrite the combinedManifest. 
-            for (String key :  oldManifest.getEffectiveManifest().getAttributes().keySet()) {
-                if (! key.equals("Import-Package") && ! key.equals("Export-Package")) {
-                    combinedManifest.getAttributes().put(key,  oldManifest.getEffectiveManifest().getAttributes().get(key))
+        def upstreamExports = extractFromManifest("Export-Package:")
+        def upstreamImports = extractFromManifest("Import-Package:")
+
+        //Make updates to existing exports (currently we have no updates for imports)
+        for (int i = 0; i < upstreamExports.size(); i++) {
+            for (String key : additionalPropertiesForExports.keySet()) {
+                String[] split = upstreamExports.get(i).split(";")
+                if (split[0].equals(key)) {                  
+                    split[0] = split[0] + ";" + additionalPropertiesForExports.get(key)
+                    String updatedEntry = String.join(";", split)
+                    upstreamExports.set(i, updatedEntry)
                 }
             }
+        }
 
-            combinedManifest.getAttributes().put("Export-Package", combinedExports)
-            combinedManifest.getAttributes().put("Import-Package", combinedImports)
+        // Compile the full exports string. Consisting of: 
+        // 1) The new exports we add - a trailing new line char is included in the string
+        // A single whitespace charachter because String.join won't do a prefix to the first entry.
+        // Every entry followed by a ',\' a line break, and a whitespace to start the next line.
+        String exportsBndFormat = additionalExports + " " + String.join(",\\\\" + System.lineSeparator() + " ", upstreamExports)
 
-            combinedManifest.writeTo("${newManifestPath}")
+        // The input string uses the same format
+        String importsBndFormat = additionalImports + " " + String.join(",\\\\" + System.lineSeparator() + " ", upstreamImports)
 
-            //Finally copy the new manifest back in.
-            Files.copy(Paths.get(newManifestPath), pathInZipfile, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        String templateFile = Files.readString(Paths.get("${pathToTemplateManifest}"));
+        templateFile = templateFile.replaceAll("#INSERTEXPORTS", exportsBndFormat).replaceAll("#INSERTIMPORTS", importsBndFormat)
+
+        try (PrintWriter out = new PrintWriter("${tempPathToNewManifest}")) {
+            out.print(templateFile)
+            out.flush()
+        }
+
+        // To avoid even touching the file if we do not need to, check we don't have an identical file already
+        if (! Files.exists(Paths.get(pathToNewManifest)) || Files.mismatch(Paths.get(tempPathToNewManifest), Paths.get(pathToNewManifest)) != -1L) {
+            //but if we spot a difference in an automated build we throw an exception
+            if (isAutomatedBuild) {
+                throw new GradleException('The generated bnd file did not mach the pre-existing bnd file. Did you check in check-me-in-if-i-change.bnd?')
+            }
+            Files.copy(Paths.get(tempPathToNewManifest), Paths.get(pathToNewManifest), StandardCopyOption.REPLACE_EXISTING)
         }
     }
 }
 
+//Valid inputs: "Export-Package:", "Import-Package:"
+ext.extractFromManifest = { sectionHeader ->
+    def returnArray = new ArrayList<String>()
 
+    //First put all the exports/imports into one big string.
+    String bigImportExportString = ""
+    try (BufferedReader br = new BufferedReader(new FileReader("${pathToOSManifest}"))) {
+        String line = br.readLine()
+        boolean foundSection = false
+        while (line != null) {
+            if (foundSection && !line.startsWith(" ")) { //The first line that does not start with a whitespace will be the end of a section
+                break
+            } else if (foundSection) {
+                bigImportExportString = bigImportExportString + line
+            } else if (line.contains(sectionHeader)) {
+                bigImportExportString = bigImportExportString + line.replaceAll(sectionHeader, "")
+                foundSection = true;
+            }
+            line = br.readLine()
+        }
+    }
 
+    //now remove all the whitespace and split into individual imports.
+    bigImportExportString=bigImportExportString.replaceAll("\s","")
+
+    int copyStartIndex = 0
+    boolean insideQuote = false
+
+    int index = 0
+    while (index < bigImportExportString.size()) {
+       char c = bigImportExportString.charAt(index)
+       if (c == '"') { 
+           insideQuote = !insideQuote
+       }
+       if (c == ',' && !insideQuote) {
+           returnArray.add(bigImportExportString.substring(copyStartIndex, index))
+           copyStartIndex = index+1 //This +1  skips over the ',' seperating two entries. As a seperator they're not part of either.
+       }
+       if (index == bigImportExportString.size() -1) {
+           returnArray.add(bigImportExportString.substring(copyStartIndex))
+       }
+       index++
+    }
+
+    return returnArray
+}
+
+compileJava {
+    dependsOn bndMagic
+}
