@@ -11,6 +11,7 @@ package io.openliberty.security.oidcclientcore.token.auth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -91,7 +93,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         SecuritySSLUtils sslUtils = new SecuritySSLUtils();
         sslUtils.setSslSupport(sslSupport);
 
-        authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, keyAliasName) {
+        authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, null, sslRef, keyAliasName) {
             @Override
             String getX5tForPublicKey() throws Exception {
                 return "x5t_" + testName.getMethodName();
@@ -116,7 +118,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
     @Test
     public void test_constructor_missingKeyAliasNAme() throws Exception {
         try {
-            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, null);
+            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, null, sslRef, null);
             fail("Should have thrown an exception, but didn't.");
         } catch (TokenEndpointAuthMethodSettingsException e) {
             verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME);
@@ -197,6 +199,12 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
         PrivateKey returnedKey = authMethod.getPrivateKeyForClientAuthentication();
         assertEquals(privateKey, returnedKey);
+    }
+
+    @Test
+    public void test_getX509CertificateFromTrustStoreRef_noTrustStoreRef() throws Exception {
+        X509Certificate returnedKey = authMethod.getX509CertificateFromTrustStoreRef();
+        assertNull("Should not have returned a key, but did: " + returnedKey, returnedKey);
     }
 
     @SuppressWarnings("unchecked")

@@ -62,6 +62,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     private String clientId;
     private String tokenEndpoint;
     private String clientAssertionSigningAlgorithm;
+    private String trustStoreRef;
     private String sslRef;
     private String keyAliasName;
 
@@ -72,11 +73,12 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     }
 
     public PrivateKeyJwtAuthMethod(String configurationId, String clientId, String tokenEndpoint, String clientAssertionSigningAlgorithm,
-                                   String sslRef, String keyAliasName) throws TokenEndpointAuthMethodSettingsException {
+                                   String trustStoreRef, String sslRef, String keyAliasName) throws TokenEndpointAuthMethodSettingsException {
         this.configurationId = configurationId;
         this.clientId = clientId;
         this.tokenEndpoint = tokenEndpoint;
         this.clientAssertionSigningAlgorithm = clientAssertionSigningAlgorithm;
+        this.trustStoreRef = trustStoreRef;
         this.sslRef = sslRef;
         this.keyAliasName = keyAliasName;
         if (keyAliasName == null || keyAliasName.isEmpty()) {
@@ -182,13 +184,36 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     }
 
     String getX5tForPublicKey() throws Exception {
+        // trustStoreRef takes precedence over the sslRef
+        X509Certificate x509Cert = getX509CertificateFromTrustStoreRef();
+        if (x509Cert == null) {
+            x509Cert = getX509CertificateFromSslRef();
+        }
+        return X509Util.x5t(x509Cert);
+    }
+
+    @FFDCIgnore(Exception.class)
+    X509Certificate getX509CertificateFromTrustStoreRef() throws Exception {
+        if (trustStoreRef == null || trustStoreRef.isEmpty()) {
+            return null;
+        }
+        try {
+            return keyStoreService.getX509CertificateFromKeyStore(trustStoreRef, keyAliasName);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Encountered an error loading the [{0}] key from the [{1}] trustStoreRef: {2}", keyAliasName, trustStoreRef, e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    X509Certificate getX509CertificateFromSslRef() throws Exception {
         String storeRef = sslUtils.getTrustStoreRef(sslRef);
         if (storeRef == null || storeRef.isEmpty()) {
             storeRef = sslUtils.getKeyStoreRef(sslRef);
         }
         try {
-            X509Certificate x509Cert = keyStoreService.getX509CertificateFromKeyStore(storeRef, keyAliasName);
-            return X509Util.x5t(x509Cert);
+            return keyStoreService.getX509CertificateFromKeyStore(storeRef, keyAliasName);
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY", keyAliasName, storeRef, e.getMessage());
             throw new Exception(errorMsg, e);
