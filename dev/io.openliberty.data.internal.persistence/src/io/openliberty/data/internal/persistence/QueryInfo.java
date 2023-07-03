@@ -44,6 +44,15 @@ class QueryInfo {
     }
 
     /**
+     * Return types for deleteBy that distinguish delete-only from find-and-delete.
+     */
+    private static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = Set.of(void.class, Void.class,
+                                                                             boolean.class, Boolean.class,
+                                                                             int.class, Integer.class,
+                                                                             long.class, Long.class,
+                                                                             Number.class);
+
+    /**
      * Information about the type of entity to which the query pertains.
      */
     EntityInfo entityInfo;
@@ -359,24 +368,42 @@ class QueryInfo {
     }
 
     /**
-     * Determines whether a delete operation is a delete only (returning void or an update count)
-     * or find-and-delete (returning the deleted entity).
+     * Determines whether a delete operation is find-and-delete (true) or delete only (false).
+     * The determination is made based on the return type, with multiple and Optional results
+     * indicating find-and-delete, and void or singular results that are boolean or a numeric
+     * type compatible with an update count indicating delete only. Singular results that are
+     * the entity type, record type, or id type other than the delete-only types indicate
+     * find-and-delete.
      *
      * @return true if the return type is void or is the type of an update count.
+     * @throws MappingException if the repository method return type is incompatible with both
+     *                              delete-only and find-and-delete.
      */
-    boolean hasVoidOrBooleanOrUpdateCountReturnType() {
-        boolean returnsVoidOrBooleanOrUpdateCount;
-        if (getMultipleResultType() == null) {
-            Class<?> singleType = getSingleResultType();
-            returnsVoidOrBooleanOrUpdateCount = void.class.equals(singleType) || Void.class.equals(singleType) //
-                                                || boolean.class.equals(singleType) || Boolean.class.equals(singleType) //
-                                                || int.class.equals(singleType) || Integer.class.equals(singleType) //
-                                                || long.class.equals(singleType) || Long.class.equals(singleType) //
-                                                || Number.class.equals(singleType);
-        } else {
-            returnsVoidOrBooleanOrUpdateCount = false;
+    @Trivial
+    boolean isFindAndDelete() {
+        boolean isFindAndDelete = true;
+
+        boolean isMultiple, isOptional;
+        int d;
+        Class<?> type = returnTypeAtDepth.get(d = 0);
+        if (CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
+            type = returnTypeAtDepth.get(++d);
+        if (isOptional = Optional.class.equals(type))
+            type = returnTypeAtDepth.get(++d);
+        if (isMultiple = d < returnTypeAtDepth.size() - 1)
+            type = returnTypeAtDepth.get(++d);
+
+        isFindAndDelete = isOptional || isMultiple || !RETURN_TYPES_FOR_DELETE_ONLY.contains(type);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isFindAndDelete? " + isFindAndDelete + " isOptional? " + isOptional + " isMultiple? " + isMultiple +
+                               " type: " + (type == null ? null : type.getName()));
+
+        if (isFindAndDelete) {
+            // TODO validation of types; must be entity, record, or id/IdClass type.
         }
-        return returnsVoidOrBooleanOrUpdateCount;
+
+        return isFindAndDelete;
     }
 
     /**

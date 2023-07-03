@@ -1250,6 +1250,46 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteReturnsIds(HttpServletRequest request, HttpServletResponse response) {
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        packages.deleteAll();
+
+        packages.save(new Package(80081, 18.0f, 18.1f, 8.8f, "testFindAndDeleteReturnsIds#80081"));
+        packages.save(new Package(80080, 80.0f, 80.0f, 8.0f, "testFindAndDeleteReturnsIds#80080"));
+        packages.save(new Package(80088, 88.0f, 18.8f, 8.8f, "testFindAndDeleteReturnsIds#80088"));
+        packages.save(new Package(80008, 80.0f, 10.8f, 0.8f, "testFindAndDeleteReturnsIds#80008"));
+
+        Set<Integer> remaining = new TreeSet<>();
+        remaining.addAll(Set.of(80008, 80080, 80081, 80088));
+
+        Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
+        Integer id = packages.deleteFirst(sort).orElseThrow();
+        if (supportsOrderByForUpdate)
+            assertEquals(Integer.valueOf(80080), id);
+        assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
+
+        Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
+        int[] ids = packages.deleteFirst2(sorts);
+        assertEquals(Arrays.toString(ids), 2, ids.length);
+        if (supportsOrderByForUpdate) {
+            assertEquals(80081, ids[0]);
+            assertEquals(80088, ids[1]);
+        }
+        assertEquals("Found " + ids[0] + "; expected one of " + remaining, true, remaining.remove(ids[0]));
+        assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
+
+        // should have only 1 remaining
+        ids = packages.deleteFirst2(sorts);
+        assertEquals(Arrays.toString(ids), 1, ids.length);
+        assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
+    }
+
+    /**
      * Search for missing item. Insert it. Search again.
      */
     @Test

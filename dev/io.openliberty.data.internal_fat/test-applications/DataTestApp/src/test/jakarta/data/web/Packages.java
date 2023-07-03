@@ -41,6 +41,10 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
 
+    Optional<Integer> deleteFirst(Sort sorts);
+
+    int[] deleteFirst2(Sort... sorts);
+
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
