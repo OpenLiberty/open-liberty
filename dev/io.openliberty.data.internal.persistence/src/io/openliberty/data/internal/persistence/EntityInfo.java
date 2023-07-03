@@ -42,7 +42,7 @@ class EntityInfo {
     final Map<String, Class<?>> collectionElementTypes;
 
     final Class<?> entityClass; // will be a generated class for entity records
-    final Class<?> idClass; // null if no IdClass
+    final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     final String name;
@@ -63,7 +63,7 @@ class EntityInfo {
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
-               Class<?> idClass,
+               Class<?> idType,
                SortedMap<String, Member> idClassAttributeAccessors,
                String versionAttributeName,
                PersistenceServiceUnit persister) {
@@ -74,7 +74,7 @@ class EntityInfo {
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
-        this.idClass = idClass;
+        this.idType = idType;
         this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
         this.recordClass = recordClass;
@@ -90,7 +90,7 @@ class EntityInfo {
             if ("All".equals(name))
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             else if ("id".equals(lowerName))
-                if (idClass == null && failIfNotFound)
+                if (idClassAttributeAccessors == null && failIfNotFound)
                     throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                " or which is designated as the @Id."); // TODO NLS
                 else

@@ -18,6 +18,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -51,6 +52,19 @@ class QueryInfo {
                                                                              int.class, Integer.class,
                                                                              long.class, Long.class,
                                                                              Number.class);
+
+    /**
+     * Mapping of Java primitive class to wrapper class.
+     */
+    private static final Map<Class<?>, Class<?>> WRAPPER_CLASSES = Map.of(boolean.class, Boolean.class,
+                                                                          byte.class, Byte.class,
+                                                                          char.class, Character.class,
+                                                                          double.class, Double.class,
+                                                                          float.class, Float.class,
+                                                                          int.class, Integer.class,
+                                                                          long.class, Long.class,
+                                                                          short.class, Short.class,
+                                                                          void.class, Void.class);
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -192,7 +206,7 @@ class QueryInfo {
      */
     @Trivial
     void addSort(boolean ignoreCase, String attribute, boolean descending) {
-        Set<String> names = entityInfo.idClass != null && "id".equalsIgnoreCase(attribute) //
+        Set<String> names = entityInfo.idClassAttributeAccessors != null && "id".equalsIgnoreCase(attribute) //
                         ? entityInfo.idClassAttributeAccessors.keySet() //
                         : Set.of(attribute);
 
@@ -222,7 +236,7 @@ class QueryInfo {
      */
     @Trivial
     List<Sort> combineSorts(List<Sort> combined, List<Sort> additional) {
-        boolean hasIdClass = entityInfo.idClass != null;
+        boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && !additional.isEmpty())
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort sort : additional) {
@@ -248,7 +262,7 @@ class QueryInfo {
      */
     @Trivial
     List<Sort> combineSorts(List<Sort> combined, Sort... additional) {
-        boolean hasIdClass = entityInfo.idClass != null;
+        boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort sort : additional) {
@@ -400,7 +414,14 @@ class QueryInfo {
                                " type: " + (type == null ? null : type.getName()));
 
         if (isFindAndDelete) {
-            // TODO validation of types; must be entity, record, or id/IdClass type.
+            if (type != null
+                && !type.equals(entityInfo.entityClass)
+                && !type.equals(entityInfo.recordClass)
+                && !type.equals(Object.class)
+                && !wrapperClassIfPrimitive(type).equals(wrapperClassIfPrimitive(entityInfo.idType)))
+                throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+                                           entityInfo.entityClass.getName() + ") or the id class (" +
+                                           entityInfo.idType + "), not the " + type.getName() + " class."); // TODO NLS
         }
 
         return isFindAndDelete;
@@ -435,7 +456,7 @@ class QueryInfo {
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
                         if (++paramNum - paramCount > sorts.size())
@@ -457,7 +478,7 @@ class QueryInfo {
         else // named parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
                         if (++paramNum - paramCount > sorts.size())
@@ -497,14 +518,14 @@ class QueryInfo {
                                        " parameters, but requires " + methodParamForQueryCount +
                                        " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
 
-        if (entityInfo.idClass == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
+        if (entityInfo.idClassAttributeAccessors == null || type != Type.DELETE_WITH_ENTITY_PARAM) {
             int namedParamCount = paramNames == null ? 0 : paramNames.size();
             for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
                 Object arg = type == Type.DELETE_WITH_ENTITY_PARAM && i == 0 //
                                 ? toEntityId(args[i]) //
                                 : args[i];
 
-                if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
+                if (arg == null || entityInfo.idClassAttributeAccessors == null || !entityInfo.idType.isInstance(arg)) {
                     if (p < namedParamCount) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
@@ -644,5 +665,17 @@ class QueryInfo {
         q.sorts = sorts;
         q.type = type;
         return q;
+    }
+
+    /**
+     * Returns the wrapper class if a primitive class, otherwise the same class.
+     *
+     * @param c class that is possibly a primitive class.
+     * @return wrapper class for a primitive, otherwise the same class that was supplied as a parameter.
+     */
+    @Trivial
+    static final Class<?> wrapperClassIfPrimitive(Class<?> c) {
+        Class<?> w = WRAPPER_CLASSES.get(c);
+        return w == null ? c : w;
     }
 }

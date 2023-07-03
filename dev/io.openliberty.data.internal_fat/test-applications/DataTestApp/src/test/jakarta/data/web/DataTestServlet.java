@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -1287,6 +1288,64 @@ public class DataTestServlet extends FATServlet {
         ids = packages.deleteFirst2(sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
+    }
+
+    /**
+     * Find-and-delete repository operations that return one or more objects, corresponding to removed entities.
+     */
+    // Test annotation is present on corresponding method in DataTest
+    public void testFindAndDeleteReturnsObjects(HttpServletRequest request, HttpServletResponse response) {
+        String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
+        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        packages.deleteAll();
+
+        packages.save(new Package(70071, 17.0f, 17.1f, 7.7f, "testFindAndDeleteReturnsObjects#70071"));
+        packages.save(new Package(70070, 70.0f, 70.0f, 7.0f, "testFindAndDeleteReturnsObjects#70070"));
+        packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#70077"));
+        packages.save(new Package(70007, 70.0f, 10.7f, 0.7f, "testFindAndDeleteReturnsObjects#70007"));
+
+        Set<Integer> remaining = new TreeSet<>();
+        remaining.addAll(Set.of(70007, 70070, 70071, 70077));
+
+        Sort sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
+        Object[] deleted = packages.delete(Limit.of(1), sort);
+        assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
+        Package p = (Package) deleted[0];
+        if (supportsOrderByForUpdate) {
+            assertEquals(70070, p.id);
+            assertEquals(70.0f, p.length, 0.001f);
+            assertEquals(70.0f, p.width, 0.001f);
+            assertEquals(7.0f, p.height, 0.001f);
+            assertEquals("testFindAndDeleteReturnsObjects#70070", p.description);
+        }
+        assertEquals("Found " + p.id + "; expected one of " + remaining, true, remaining.remove(p.id));
+
+        Sort[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
+        LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, sorts);
+        assertEquals("Deleted " + deletesList, 2, deletesList.size());
+        Package p0 = (Package) deletesList.get(0);
+        Package p1 = (Package) deletesList.get(1);
+        if (supportsOrderByForUpdate) {
+            assertEquals(70071, p0);
+            assertEquals(17.0f, p.length, 0.001f);
+            assertEquals(17.1f, p.width, 0.001f);
+            assertEquals(7.7f, p.height, 0.001f);
+            assertEquals("testFindAndDeleteReturnsObjects#70071", p.description);
+            assertEquals(70077, p1);
+            assertEquals(77.0f, p.length, 0.001f);
+            assertEquals(17.7f, p.width, 0.001f);
+            assertEquals(7.7f, p.height, 0.001f);
+            assertEquals("testFindAndDeleteReturnsObjects#70077", p.description);
+        }
+        assertEquals("Found " + p0.id + "; expected one of " + remaining, true, remaining.remove(p0.id));
+        assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));
+
+        // TODO test for Number return type could be added here
+        // should have only 1 remaining
+        deleted = packages.delete(Limit.of(4), sort);
+        assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
+        assertEquals(remaining.iterator().next(), Integer.valueOf(((Package) deleted[0]).id));
     }
 
     /**

@@ -359,7 +359,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
-                String name = entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
                 String attrName = entityInfo.getAttributeName(name, true);
                 q = new StringBuilder(15 + 2 * o.length() + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT ").append(o).append('.').append(attrName) //
@@ -448,8 +448,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (param != null) {
                     if (queryInfo.paramNames == null)
                         queryInfo.paramNames = new ArrayList<>();
-                    if (paramType.equals(queryInfo.entityInfo.idClass))
-                        for (int p = 1, numIdClassParams = queryInfo.entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
+                    if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                        for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
                             queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
                             if (p > 1) {
                                 queryInfo.paramCount++;
@@ -695,7 +695,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
         StringBuilder q;
-        if (entityInfo.idClass == null) {
+        if (entityInfo.idClassAttributeAccessors == null) {
             String idAttrName = entityInfo.attributeNames.get("id");
             q = new StringBuilder(24 + entityInfo.name.length() + o.length() * 2 + idAttrName.length()) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ") //
@@ -883,7 +883,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (where + 8 == len)
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
                 queryInfo.hasWhere = false;
-            } else if (queryInfo.entityInfo.idClass != null && attribute.equalsIgnoreCase("id")) {
+            } else if (queryInfo.entityInfo.idClassAttributeAccessors != null && attribute.equalsIgnoreCase("id")) {
                 generateConditionsForIdClass(queryInfo, null, condition, ignoreCase, negated, q);
             }
             return;
@@ -1134,7 +1134,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             int c = by < 0 ? methodName.length() : by + 2;
             if (by > 6) {
                 if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(queryInfo.method.getParameterTypes()[0]))
-                    if (entityInfo.idClass == null)
+                    if (entityInfo.idClassAttributeAccessors == null)
                         methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
                     else
                         throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
@@ -1148,7 +1148,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else if (methodName.length() == 9 && methodName.endsWith("All")) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
                 if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
-                    if (entityInfo.idClass == null) {
+                    if (entityInfo.idClassAttributeAccessors == null) {
                         methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
                         queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.deleteAll(Iterable), one at a time
                         c = 8;
@@ -1194,7 +1194,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
-            String name = entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
@@ -1267,7 +1267,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> singleType = queryInfo.getSingleResultType();
 
         if (singleType.isPrimitive())
-            singleType = toWrapperClass(singleType);
+            singleType = QueryInfo.wrapperClassIfPrimitive(singleType);
 
         q.append("SELECT ");
 
@@ -1283,7 +1283,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
                     Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
                     if (attributeType.isPrimitive())
-                        attributeType = toWrapperClass(attributeType);
+                        attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType)) {
                         singleAttributeName = entry.getKey();
                         q.append(distinct ? "DISTINCT " : "").append(o).append('.').append(singleAttributeName);
@@ -1298,7 +1298,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q.append("NEW ").append(singleType.getName()).append('(');
                     List<String> relAttrNames;
                     boolean first = true;
-                    if (singleType.equals(entityInfo.idClass))
+                    if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
                         for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
                             String name = entityInfo.getAttributeName(idClassAttributeName, true);
                             generateSelectExpression(q, first, function, distinct, o, name);
@@ -1975,24 +1975,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             delete.executeUpdate();
                                         } else { // is return value the entity or id?
                                             Object value = result;
-                                            List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get("id"));
-                                            if (accessors == null || accessors.isEmpty())
-                                                throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
                                             if (entityInfo.entityClass.isInstance(result) ||
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
+                                                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get("id"));
+                                                if (accessors == null || accessors.isEmpty())
+                                                    throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
                                                 for (Member accessor : accessors)
                                                     value = accessor instanceof Method ? ((Method) accessor).invoke(value) : ((Field) accessor).get(value);
-                                            } else {
-                                                Member accessor = accessors.get(0);
-                                                Class<?> idType = accessor instanceof Method ? ((Method) accessor).getReturnType() : ((Field) accessor).getType();
-                                                if (!idType.isInstance(value)) {
-                                                    value = to(idType, result, false);
-                                                    if (value == result) // unable to convert value
-                                                        throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                                                                   entityInfo.entityClass.getName() + ") or the id class (" +
-                                                                                   (entityInfo.idClass == null ? idType.getName() : entityInfo.idClass.getName()) +
-                                                                                   ")."); // TODO NLS
-                                                }
+                                            } else if (!entityInfo.idType.isInstance(value)) {
+                                                value = to(entityInfo.idType, result, false);
+                                                if (value == result) // unable to convert value
+                                                    throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
+                                                                               entityInfo.entityClass.getName() + ") or the id class (" +
+                                                                               entityInfo.idType + "), not the " + result.getClass().getName() + " class."); // TODO NLS
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);
@@ -2550,35 +2545,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
-    }
-
-    /**
-     * Returns the wrapper class for a primitive class.
-     *
-     * @param primitiveClass primitive class.
-     * @return wrapper class. If the parameter wasn't a primitive, returns the original type.
-     */
-    @Trivial
-    private static Class<?> toWrapperClass(Class<?> primitiveClass) {
-        if (int.class.equals(primitiveClass))
-            return Integer.class;
-        if (long.class.equals(primitiveClass))
-            return Long.class;
-        if (float.class.equals(primitiveClass))
-            return Float.class;
-        if (double.class.equals(primitiveClass))
-            return Double.class;
-        if (char.class.equals(primitiveClass))
-            return Character.class;
-        if (boolean.class.equals(primitiveClass))
-            return Boolean.class;
-        if (short.class.equals(primitiveClass))
-            return Short.class;
-        if (byte.class.equals(primitiveClass))
-            return Byte.class;
-        if (void.class.equals(primitiveClass))
-            return Void.class;
-        return primitiveClass;
     }
 
     /**
