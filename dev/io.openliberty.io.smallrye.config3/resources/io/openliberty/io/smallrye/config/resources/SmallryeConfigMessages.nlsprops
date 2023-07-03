@@ -23,6 +23,6 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: The MicroProfile configuration value for the key {0} has changed since the checkpoint action completed on the server. If the value of the key changes after the checkpoint action, the application might not use the updated value.
-WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=The configuration value was accessed during a checkpoint action and updated before the server process got restored. Depending on how the application accesses the configuration the updated value might not be used.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: The MicroProfile configuration value for the {0} key has changed since the checkpoint action completed on the server. If the value of the key changes after the checkpoint action, the application might not use the updated value.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=The configuration value was accessed during a checkpoint action and updated before the server process got restored. Depending on how the application accesses the configuration, the updated value might not be used.
 WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Avoid accessing configuration properties during checkpoint.
