@@ -19,7 +19,13 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class InstrumenterActivator implements BundleActivator {
+
+    private static final TraceComponent tc = Tr.register(InstrumenterActivator.class);
+
     //The J2S exception occurs due to a call during the initialization of Instrumenter and InstrumenterBuilder
     @Override
     public void start(BundleContext ctx) throws Exception {

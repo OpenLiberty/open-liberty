@@ -17,74 +17,142 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.StatusCode;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * This proxy class redirects method calls to Span.current(), by doing so it allows people to use @Inject Span and get an object which will not become obsolete.
  */
 public class SpanProxy implements Span {
 
+    private static final TraceComponent tc = Tr.register(SpanProxy.class);
+
     @Override
     public <T> Span setAttribute(AttributeKey<T> key, T value) {
-        return Span.current().setAttribute(key, value);
+        try {
+            return Span.current().setAttribute(key, value);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public Span addEvent(String name, Attributes attributes) {
-        return Span.current().addEvent(name, attributes);
+        try {
+            return Span.current().addEvent(name, attributes);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public Span addEvent(String name, Attributes attributes, long timestamp, TimeUnit unit) {
-        return Span.current().addEvent(name, attributes, timestamp, unit);
+        try {
+            return Span.current().addEvent(name, attributes, timestamp, unit);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public Span setStatus(StatusCode statusCode, String description) {
-        return Span.current().setStatus(statusCode, description);
+        try {
+            return Span.current().setStatus(statusCode, description);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public Span recordException(Throwable exception, Attributes additionalAttributes) {
-        return Span.current().recordException(exception, additionalAttributes);
+        try {
+            return Span.current().recordException(exception, additionalAttributes);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public Span updateName(String name) {
-        return Span.current().updateName(name);
+        try {
+            return Span.current().updateName(name);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return this;
+        }
     }
 
     @Override
     public void end() {
-        Span.current().end();
+        try {
+            Span.current().end();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+        }
     }
 
     @Override
     public void end(long timestamp, TimeUnit unit) {
-        Span.current().end(timestamp, unit);
+        try {
+            Span.current().end(timestamp, unit);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+        }
     }
 
     @Override
     public SpanContext getSpanContext() {
-        return Span.current().getSpanContext();
+        try {
+            return Span.current().getSpanContext();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return null;
+        }
     }
 
     @Override
     public boolean isRecording() {
-        return Span.current().isRecording();
+        try {
+            return Span.current().isRecording();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return false;
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
-        return Span.current().equals(obj);
+        try {
+            return Span.current().equals(obj);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return false;
+        }
     }
 
     @Override
     public int hashCode() {
-        return Span.current().hashCode();
+        try {
+            return Span.current().hashCode();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return -1;
+        }
     }
 
     @Override
     public String toString() {
-        return Span.current().toString();
+        try {
+            return Span.current().toString();
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return "";
+        }
     }
 
 }

@@ -21,27 +21,47 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import io.openliberty.restfulWS.client.ClientAsyncTaskWrapper;
 import io.opentelemetry.context.Context;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Ensures that the OTel context is used when either JAX-RS client or MP Rest Client makes an async request.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class TelemetryClientAsyncTaskWrapper implements ClientAsyncTaskWrapper {
 
+    private static final TraceComponent tc = Tr.register(TelemetryClientAsyncTaskWrapper.class);
+
     /** {@inheritDoc} */
     @Override
     public Runnable wrap(Runnable r) {
-        return Context.current().wrap(r);
+        try {
+            return Context.current().wrap(r);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return r;
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> Callable<T> wrap(Callable<T> c) {
-        return Context.current().wrap(c);
+        try {
+            return Context.current().wrap(c);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return c;
+        }
     }
 
     @Override
     public <T> Supplier<T> wrap(Supplier<T> s) {
-        return Context.current().wrapSupplier(s);
+        try {
+            return Context.current().wrapSupplier(s);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
+            return s;
+        }
     }
 
 }
