@@ -66,6 +66,10 @@ public class OpenAPIUIBundlesUpdater {
 
         //Retrieve all OpenAPI-UI Bundles from the BundleContext
         final Set<Bundle> allOpenAPIUIBundles = getOpenAPIUIBundles();
+        //check if bundles is empty, as can exit early as there is nothing to update
+        if(allOpenAPIUIBundles.isEmpty()){
+            return;
+        }
 
         //this will block until all bundles have started
         boolean result = waitForBundlesToStart(allOpenAPIUIBundles);
@@ -296,7 +300,12 @@ public class OpenAPIUIBundlesUpdater {
     @SuppressWarnings({ "unchecked", "restriction" })
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         try {
-            new OpenAPIUIBundlesListener(openAPIUIBundles).await();
+            BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
+            if(bundleContext != null){
+                new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             if (OpenAPIUtils.isDebugEnabled(tc)) {
                 Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", e.getMessage());

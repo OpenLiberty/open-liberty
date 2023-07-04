@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -34,8 +33,8 @@ public class OpenAPIUIBundlesListener implements ServiceListener {
     private final CountDownLatch countDownLatch;
     private final BundleContext bundleContext;
 
-    public OpenAPIUIBundlesListener(Set<Bundle> openAPIUIBundles) throws InvalidSyntaxException {
-        this.bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
+    public OpenAPIUIBundlesListener(Set<Bundle> openAPIUIBundles, BundleContext context) throws InvalidSyntaxException {
+        this.bundleContext = context;
         ConcurrentHashMap<String, Boolean> expectedBundleNames = new ConcurrentHashMap<>();
         for (Bundle bundle : openAPIUIBundles) {
             expectedBundleNames.put(bundle.getSymbolicName(), Boolean.TRUE);

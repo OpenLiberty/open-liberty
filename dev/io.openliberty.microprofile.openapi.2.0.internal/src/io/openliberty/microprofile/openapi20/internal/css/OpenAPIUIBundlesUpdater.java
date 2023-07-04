@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,38 +12,24 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.css;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.kernel.service.utils.FileUtils;
+import io.openliberty.microprofile.openapi20.internal.utils.CloudUtils;
+import io.openliberty.microprofile.openapi20.internal.utils.Constants;
+import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.wsspi.kernel.service.utils.FileUtils;
-
-import io.openliberty.microprofile.openapi20.internal.utils.CloudUtils;
-import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Update all OpenAPI-UI bundles
@@ -66,6 +52,9 @@ public class OpenAPIUIBundlesUpdater {
 
         //Retrieve all OpenAPI-UI Bundles from the BundleContext
         final Set<Bundle> allOpenAPIUIBundles = getOpenAPIUIBundles();
+        if(allOpenAPIUIBundles.isEmpty()){
+            return;
+        }
 
         //this will block until all bundles have started
         boolean result = waitForBundlesToStart(allOpenAPIUIBundles);
@@ -295,7 +284,12 @@ public class OpenAPIUIBundlesUpdater {
 
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         try {
-            new OpenAPIUIBundlesListener(openAPIUIBundles).await();
+            BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
+            if(bundleContext != null){
+                new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed waiting for OpenAPI bundles before update failed with :", e.getMessage());
