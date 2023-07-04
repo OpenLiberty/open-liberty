@@ -402,8 +402,8 @@ public class MicroProfileActions {
      * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return                          A RepeatTests instance
      */
-    private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
-                                      Collection<FeatureSet> otherFeatureSets) {
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                     Collection<FeatureSet> otherFeatureSets) {
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();

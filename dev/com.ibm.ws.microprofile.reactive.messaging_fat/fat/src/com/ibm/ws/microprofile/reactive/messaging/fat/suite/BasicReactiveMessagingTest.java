@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -25,6 +26,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.apps.simple.SimpleReactive
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -33,6 +35,10 @@ public class BasicReactiveMessagingTest extends FATServletClient {
 
     public static final String APP_NAME = "simple";
     public static final String SERVER_NAME = "SimpleRxMessagingServer";
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60,
+                                                                  ReactiveMessagingActions.MP61);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = SimpleReactiveMessagingServlet.class, contextRoot = APP_NAME)
