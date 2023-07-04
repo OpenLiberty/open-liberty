@@ -56,6 +56,7 @@ generate.replacement: true
 	org.testcontainers:jdbc;version=${testContainerVersion},\
 	org.testcontainers:db2;version=${testContainerVersion},\
 	org.testcontainers:kafka;version=${testContainerVersion},\
+	org.testcontainers:mongodb;version=${testContainerVersion},\
 	org.testcontainers:mssqlserver;version=${testContainerVersion},\
 	org.testcontainers:oracle-xe;version=${testContainerVersion},\
 	org.testcontainers:postgresql;version=${testContainerVersion},\

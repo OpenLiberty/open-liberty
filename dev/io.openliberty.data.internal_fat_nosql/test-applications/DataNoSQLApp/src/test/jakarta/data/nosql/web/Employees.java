@@ -12,15 +12,13 @@
  *******************************************************************************/
 package test.jakarta.data.nosql.web;
 
+import java.util.stream.Stream;
+
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Repository;
 
 @Repository
 public interface Employees extends CrudRepository<Employee, Long> {
-    public long deleteByLocationLike(String locationPattern);
 
-    public Employee[] findByWageLessThanEqual(float maxWage);
-
-    @Override
-    public Employee save(Employee e);
+    Stream<Employee> findByWageLessThanEqual(float maxWage);
 }

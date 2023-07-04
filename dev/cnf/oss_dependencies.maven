@@ -806,6 +806,7 @@ org.testcontainers:database-commons:1.17.4
 org.testcontainers:db2:1.17.4
 org.testcontainers:jdbc:1.17.4
 org.testcontainers:kafka:1.17.4
+org.testcontainers:mongodb:1.17.4
 org.testcontainers:mssqlserver:1.17.4
 org.testcontainers:oracle-xe:1.17.4
 org.testcontainers:postgresql:1.17.4

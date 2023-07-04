@@ -10,10 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  jnosqlVersion = '1.0.0-b6'
-  mongoVersion  = '4.8.2'
+  jnosqlVersion = '1.0.0'
 }
 
 configurations {
@@ -21,20 +21,7 @@ configurations {
 }
 
 dependencies {
-  jnosql "org.eclipse.jnosql.communication:jnosql-communication-core:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.communication:jnosql-communication-document:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.communication:jnosql-communication-driver-commons:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.communication:jnosql-communication-query:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.communication:jnosql-mongodb-driver:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.mapping:jnosql-mapping-core:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.mapping:jnosql-mapping-document:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.mapping:jnosql-metamodel-processor-extension:${jnosqlVersion}"
-  jnosql "org.eclipse.jnosql.mapping:jnosql-mongodb-extension:${jnosqlVersion}"
-  jnosql "org.mongodb:bson:${mongoVersion}"
-  jnosql "org.mongodb:mongodb-driver-core:${mongoVersion}"
-  jnosql "org.mongodb:mongodb-driver-sync:${mongoVersion}"
-  jnosql "io.github.classgraph:classgraph:4.8.151"
-
+  jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}"
 }
 
 
@@ -46,4 +33,5 @@ task addJNoSQL(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addJNoSQL
+  dependsOn copyTestContainers
 }
