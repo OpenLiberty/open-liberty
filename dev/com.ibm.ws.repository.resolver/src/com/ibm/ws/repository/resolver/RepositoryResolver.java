@@ -392,7 +392,7 @@ public class RepositoryResolver {
         // and then resolve is used to install more features in the same server
         computeAdditionalInstallListRoots();
 
-        Collection<List<RepositoryResource>> installLists = createInstallLists();
+        Collection<List<RepositoryResource>> installLists = checkDependenciesAndCreateInstallLists();
 
         reportErrors();
         return installLists;
@@ -648,21 +648,23 @@ public class RepositoryResolver {
     }
 
     /**
-     * Create the install lists for the resources which we were asked to resolve
+     * Check for missing dependencies and create the install lists for the resources which we were asked to resolve
+     * <p>
+     * Populates {@link #missingTopLevelRequirements} and updates {@link #missingRequirements}.
      *
      * @return the install lists
      */
-    List<List<RepositoryResource>> createInstallLists() {
+    List<List<RepositoryResource>> checkDependenciesAndCreateInstallLists() {
         List<List<RepositoryResource>> installLists = new ArrayList<>();
 
         // Create install list for each sample
         for (SampleResource sample : samplesToInstall) {
-            installLists.add(createInstallList(sample));
+            installLists.add(checkDependenciesAndCreateInstallList(sample));
         }
 
         // Create install list for each requested feature
         for (String featureName : requestedFeatureNames) {
-            List<RepositoryResource> installList = createInstallList(featureName);
+            List<RepositoryResource> installList = checkDependenciesAndCreateInstallList(featureName);
             // May get an empty list if the requested feature is already installed
             if (!installList.isEmpty()) {
                 installLists.add(installList);
@@ -672,26 +674,29 @@ public class RepositoryResolver {
         // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
         for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
             if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
-                installLists.add(createInstallList(feature.getSymbolicName()));
+                installLists.add(checkDependenciesAndCreateInstallList(feature.getSymbolicName()));
             }
         }
 
+        // Create an install list for any features which need to be installed but aren't covered by any of the cases above
         for (ProvisioningFeatureDefinition feature : additionalInstallListRoots) {
-            installLists.add(createInstallList(feature.getSymbolicName()));
+            installLists.add(checkDependenciesAndCreateInstallList(feature.getSymbolicName()));
         }
 
         return installLists;
     }
 
     /**
-     * Create a list of resources which should be installed in order to install the given sample.
+     * Check for missing dependencies and create a list of resources which should be installed in order to install the given sample.
      * <p>
      * The install list consists of all the dependencies which are needed by {@code resource}, ordered so that each resource in the list comes after its dependencies.
+     * <p>
+     * Updates {@link #missingTopLevelRequirements} and {@link #missingRequirements} if any dependencies were not found within the dependency tree for this sample.
      *
      * @param resource the resource which is to be installed
      * @return the ordered list of resources to install
      */
-    List<RepositoryResource> createInstallList(SampleResource resource) {
+    List<RepositoryResource> checkDependenciesAndCreateInstallList(SampleResource resource) {
         List<MissingRequirement> missingRequirements = new ArrayList<>();
 
         AtomicBoolean allDependenciesResolved = new AtomicBoolean(true);
@@ -738,14 +743,16 @@ public class RepositoryResolver {
     }
 
     /**
-     * Create a list of resources which should be installed in order to install the given featutre.
+     * Check for missing dependencies and create a list of resources which should be installed in order to install the given feature.
      * <p>
      * The install list consists of all the dependencies which are needed by {@code esa}, ordered so that each resource in the list comes after its dependencies.
+     * <p>
+     * Updates {@link #missingTopLevelRequirements} and {@link #missingRequirements} if any dependencies were not found within the dependency tree for this sample.
      *
      * @param featureName the feature name (as provided to {@link #resolve(Collection)}) for which to create an install list
      * @return the ordered list of resources to install, will be empty if the feature cannot be found or is already installed
      */
-    List<RepositoryResource> createInstallList(String featureName) {
+    List<RepositoryResource> checkDependenciesAndCreateInstallList(String featureName) {
         // Find the feature by name (featureName may be the short or the symbolic name, so we need to use resolverRepository)
         ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
 
@@ -815,13 +822,14 @@ public class RepositoryResolver {
 
         // Sort by longest distance from a feature root, longest distance first
         // This means every feature will appear before any features which depend on it
+        // Filter out features which are already installed
         List<RepositoryResource> installList = new ArrayList<>();
         distanceMap.entrySet()
                    .stream()
                    .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
                    .map(Map.Entry::getKey)
-                   .map(this::getResource)
-                   .filter(Objects::nonNull)
+                   .map(this::getResource) // returns null for installed features
+                   .filter(Objects::nonNull) // filter out all the nulls to leave the features to be installed
                    .forEachOrdered(installList::add);
 
         // If this is an install list for a sample, add it to the end of the install list

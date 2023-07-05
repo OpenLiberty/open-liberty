@@ -107,7 +107,7 @@ public class RepositoryResolverTest {
 
         RepositoryResolver resolver = testResolver().withResolvedFeature(featureA, featureB, featureC12, featureC15, featureD, featureE).build();
 
-        List<RepositoryResource> installList = resolver.createInstallList("com.example.featureA-1.0");
+        List<RepositoryResource> installList = resolver.checkDependenciesAndCreateInstallList("com.example.featureA-1.0");
         assertThat(installList, contains(featureD, // Note that featureD is first because featureC depends on it, even though featureA also depends directly on it
                                          featureC12, // Note we get both featureC-1.2 and 1.5 as both are tolerated and both are resolved features
                                          featureC15,
@@ -143,12 +143,12 @@ public class RepositoryResolverTest {
 
         RepositoryResolver resolver = testResolver().withResolvedFeature(featureA, featureB, featureC, featureD, featureE).build();
 
-        assertThat(resolver.createInstallList(featureA.getProvideFeature()), contains((RepositoryResource) featureD, featureC, featureB, featureA));
-        assertThat(resolver.createInstallList(featureC.getProvideFeature()), contains((RepositoryResource) featureD, featureC));
-        assertThat(resolver.createInstallList(sampleA), contains(Matchers.<RepositoryResource> is(featureD),
-                                                                 anyOf(Matchers.<RepositoryResource> is(featureC), Matchers.<RepositoryResource> is(featureE)),
-                                                                 anyOf(Matchers.<RepositoryResource> is(featureC), Matchers.<RepositoryResource> is(featureE)),
-                                                                 Matchers.<RepositoryResource> is(sampleA)));
+        assertThat(resolver.checkDependenciesAndCreateInstallList(featureA.getProvideFeature()), contains((RepositoryResource) featureD, featureC, featureB, featureA));
+        assertThat(resolver.checkDependenciesAndCreateInstallList(featureC.getProvideFeature()), contains((RepositoryResource) featureD, featureC));
+        assertThat(resolver.checkDependenciesAndCreateInstallList(sampleA), contains(Matchers.<RepositoryResource> is(featureD),
+                                                                                     anyOf(Matchers.<RepositoryResource> is(featureC), Matchers.<RepositoryResource> is(featureE)),
+                                                                                     anyOf(Matchers.<RepositoryResource> is(featureC), Matchers.<RepositoryResource> is(featureE)),
+                                                                                     Matchers.<RepositoryResource> is(sampleA)));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class RepositoryResolverTest {
 
         RepositoryResolver resolver = testResolver().withResolvedFeature(featureA, featureB, autoFeature).build();
 
-        assertThat(resolver.createInstallList(autoFeature.getProvideFeature()), contains((RepositoryResource) featureB, featureA, autoFeature));
+        assertThat(resolver.checkDependenciesAndCreateInstallList(autoFeature.getProvideFeature()), contains((RepositoryResource) featureB, featureA, autoFeature));
     }
 
     /**
@@ -197,7 +197,7 @@ public class RepositoryResolverTest {
                                                     .withResolvedFeature(internalA20, featureB)
                                                     .build();
 
-        assertThat(resolver.createInstallList("com.example.featureA"), contains(internalA20));
+        assertThat(resolver.checkDependenciesAndCreateInstallList("com.example.featureA"), contains(internalA20));
     }
 
     private static ResolverBuilder testResolver() {
