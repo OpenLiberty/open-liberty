@@ -34,37 +34,57 @@ public class OpenAPIEndpointFilter implements Filter {
 
     @Override
     public void init(FilterConfig config) throws ServletException {
-        BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
-        openAPIEndpointTracker = new ServiceTracker<>(bundleContext, OpenAPIEndpointProvider.class, null);
-        openAPIEndpointTracker.open();
+        initializeTracker(config.getServletContext());
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+        initializeTracker(req.getServletContext());
 
-        HttpServletResponse httpServletResp = (HttpServletResponse) resp;
-        //ensure browsers don't store the result of any requests that go via the filter
-        //Filter url mapping should ensure only HTML pages go via the fitler
-        //setHeader after filter throws Response already sent errors
-        httpServletResp.setHeader("cache-control", "no-store");
-        //Wrap request so that we can update the response content when it comes back
-        HtmlResponseWrapper wrapper = new HtmlResponseWrapper(httpServletResp);
+        if (resp instanceof HttpServletResponse) {
+            HttpServletResponse httpServletResp = (HttpServletResponse) resp;
+            //ensure browsers don't store the result of any requests that go via the filter
+            //Filter url mapping should ensure only HTML pages go via the fitler
+            httpServletResp.setHeader("cache-control", "no-store");
+            //Wrap request so that we can update the response content when it comes back
+            HtmlResponseWrapper wrapper = new HtmlResponseWrapper(httpServletResp);
 
-        chain.doFilter(req, wrapper);
+            chain.doFilter(req, wrapper);
 
-        //Modify Response
-        if (resp.getContentType() != null && resp.getContentType().contains("text/html")) {
-            String content = wrapper.getContentAsString();
-            //replace the default URL for the document endpoint with the value that is being used
-            content = content.replaceAll("/openapi", openAPIEndpointTracker.getService().getOpenAPIDocUrl());
-
-            resp.getWriter().write(content);
+            //Modify Response
+            if (resp.getContentType() != null && resp.getContentType().contains("text/html")) {
+                String content = wrapper.getContentAsString();
+                // in case we have had a issue creating the tracker earlier - if so leave content as-is
+                if(openAPIEndpointTracker != null) {
+                    // replace the default URL for the document endpoint with the value that is being used
+                    content = content.replaceAll("/openapi", openAPIEndpointTracker.getService().getOpenAPIDocUrl());
+                }
+                resp.getWriter().write(content);
+            }
         }
-
     }
 
     @Override
     public void destroy() {
-        openAPIEndpointTracker.close();
+        if(openAPIEndpointTracker != null) {
+            openAPIEndpointTracker.close();
+        }
+    }
+
+    /**
+     * Initialize the ServiceTracker for the OpenAPIEndpointProvider
+     *
+     * @param context the Servlet Context
+     */
+    private void initializeTracker(ServletContext context){
+        // If we have not previously configured the tracker, create one
+        if(openAPIEndpointTracker == null){
+            BundleContext bundleContext = (BundleContext) context.getAttribute("osgi-bundlecontext");
+            // make sure we have a context before trying to use it to create the tracker for the OpenAPI doc endpoint
+            if(bundleContext != null) {
+                openAPIEndpointTracker = new ServiceTracker<>(bundleContext, OpenAPIEndpointProvider.class, null);
+                openAPIEndpointTracker.open();
+            }
+        }
     }
 }

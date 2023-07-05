@@ -301,6 +301,8 @@ public class OpenAPIUIBundlesUpdater {
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         try {
             BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
+            // If the bundle context null, then the bundle is in a STOPPED state and we should not be waiting for other
+            // bundles if this is STOPPED. Returning false, means we stop any unnecessary processing
             if(bundleContext != null){
                 new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
             } else {

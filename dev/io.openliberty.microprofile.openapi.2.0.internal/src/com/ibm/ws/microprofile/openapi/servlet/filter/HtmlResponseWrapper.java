@@ -35,6 +35,10 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public ServletOutputStream getOutputStream() {
+        if (writer != null){
+            throw new IllegalStateException("Writer already exists for this response");
+        }
+
         if (outputStream == null) {
             outputStream = new ServletOutputStream() {
                 @Override
@@ -64,6 +68,10 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 
     @Override
     public PrintWriter getWriter() throws IOException {
+        if (outputStream != null){
+            throw new IllegalStateException("Output Stream already exists for this response.");
+        }
+
         if (writer == null) {
             writer = new PrintWriter(new OutputStreamWriter(baos, getCharacterEncoding()));
         }

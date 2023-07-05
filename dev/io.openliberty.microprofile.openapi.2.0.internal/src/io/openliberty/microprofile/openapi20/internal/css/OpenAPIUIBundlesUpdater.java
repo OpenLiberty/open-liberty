@@ -12,24 +12,38 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.css;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.wsspi.kernel.service.utils.FileUtils;
-import io.openliberty.microprofile.openapi20.internal.utils.CloudUtils;
-import io.openliberty.microprofile.openapi20.internal.utils.Constants;
-import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.kernel.service.utils.FileUtils;
+
+import io.openliberty.microprofile.openapi20.internal.utils.CloudUtils;
+import io.openliberty.microprofile.openapi20.internal.utils.Constants;
+import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
 
 /**
  * Update all OpenAPI-UI bundles
@@ -285,6 +299,8 @@ public class OpenAPIUIBundlesUpdater {
     private static boolean waitForBundlesToStart(Set<Bundle> openAPIUIBundles) {
         try {
             BundleContext bundleContext = FrameworkUtil.getBundle(OpenAPIUIBundlesUpdater.class).getBundleContext();
+            // If the bundle context null, then the bundle is in a STOPPED state and we should not be waiting for other
+            // bundles if this is STOPPED. Returning false, means we stop any unnecessary processing
             if(bundleContext != null){
                 new OpenAPIUIBundlesListener(openAPIUIBundles, bundleContext).await();
             } else {
