@@ -10,8 +10,8 @@
 -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-config-3.0-tck" verbose="2" configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.config30.tck">
+<suite name="microprofile-config-3.1-tck" verbose="2" configfailurepolicy="continue">
+    <test name="tck-package-org.eclipse.microprofile.config31.tck">
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
