@@ -21,8 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
-import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
-
 /**
  * Helper functions used by oidc client and social login
  * to logout invalidated oidc sessions and cleanup logged out oidc sessions
@@ -32,11 +30,6 @@ public class OidcSessionUtils {
     private static TraceComponent tc = Tr.register(OidcSessionUtils.class);
 
     public static void logoutIfSessionInvalidated(HttpServletRequest request, OidcSessionInfo sessionInfo, ConvergedClientConfig clientConfig) {
-        // don't logout if state exists (hasn't authenticated yet)
-        if (requestHasStateCookie(request)) {
-            return;
-        }
-
         OidcSessionCache oidcSessionCache = clientConfig.getOidcSessionCache();
         if (!oidcSessionCache.isSessionInvalidated(sessionInfo)) {
             return;
@@ -49,10 +42,6 @@ public class OidcSessionUtils {
                 Tr.debug(tc, "Could not logout invalidated session. An exception is caught : " + e);
             }
         }
-    }
-
-    private static boolean requestHasStateCookie(HttpServletRequest request) {
-        return CookieHelper.getCookie(request.getCookies(), OidcClientStorageConstants.WAS_OIDC_STATE_KEY) != null;
     }
 
     public static void removeOidcSession(

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +59,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionUtils;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.webcontainer.security.AuthResult;
+import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -69,6 +71,8 @@ import com.ibm.wsspi.security.oauth20.UserCredentialResolver;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
+
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 
 /**
  * This class is the OSGI service that is invoked from the main line Liberty
@@ -443,6 +447,11 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             return;
         }
 
+        // don't logout if state exists (hasn't authenticated yet)
+        if (requestHasStateCookie(req)) {
+            return;
+        }
+
         String provider = getOidcProvider(req);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
@@ -454,8 +463,12 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
         if (sessionInfo == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Session info could not be retrieved from client cookies.");
+            try {
+                req.logout();
+            } catch (ServletException e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Could not logout request with no session info. An exception is caught : " + e);
+                }
             }
             return;
         }
@@ -474,6 +487,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             }
             return true;
         }
+    }
+
+    private static boolean requestHasStateCookie(HttpServletRequest request) {
+        return CookieHelper.getCookie(request.getCookies(), OidcClientStorageConstants.WAS_OIDC_STATE_KEY) != null;
     }
 
     private boolean requestHasOidcCookie(HttpServletRequest req) {
