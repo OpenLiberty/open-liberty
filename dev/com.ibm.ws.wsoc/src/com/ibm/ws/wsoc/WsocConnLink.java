@@ -146,22 +146,41 @@ public class WsocConnLink {
         deviceConnLink = access.getDeviceConnLink();
         vConnection = access.getVirtualConnection();
 
-        TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
-        tcpReadContext = tcpConnection.getReadInterface();
-        linkWrite = new LinkWrite();
-        linkRead = new LinkRead();
+        if (!useNetty()) {
+            TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
+            tcpReadContext = tcpConnection.getReadInterface();
+            linkWrite = new LinkWrite();
+            linkRead = new LinkRead();
 
-        wrc = new WsocReadCallback();
-        wrc.setConnLinkCallback(this);
+            wrc = new WsocReadCallback();
+            wrc.setConnLinkCallback(this);
 
-        if (clientSide) {
-            linkWrite.initialize(tcpWriteContext, epc, this, true);
-            linkRead.initialize(tcpReadContext, epc, ep, this, false);
+            if (clientSide) {
+                linkWrite.initialize(tcpWriteContext, epc, this, true);
+                linkRead.initialize(tcpReadContext, epc, ep, this, false);
+            } else {
+                linkWrite.initialize(tcpWriteContext, epc, this, false);
+                linkRead.initialize(tcpReadContext, epc, ep, this, true);
+            }
+
         } else {
-            linkWrite.initialize(tcpWriteContext, epc, this, false);
-            linkRead.initialize(tcpReadContext, epc, ep, this, true);
+            TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
+            tcpReadContext = tcpConnection.getReadInterface();
+            linkWrite = new NettyLinkWrite();
+            linkRead = new NettyLinkRead();
 
+            wrc = new NettyWsocReadCallback();
+            wrc.setConnLinkCallback(this);
+
+            if (clientSide) {
+                linkWrite.initialize(tcpWriteContext, epc, this, true);
+                linkRead.initialize(tcpReadContext, epc, ep, this, false);
+            } else {
+                linkWrite.initialize(tcpWriteContext, epc, this, false);
+                linkRead.initialize(tcpReadContext, epc, ep, this, true);
+            }
         }
+
     }
 
     public void setParametersOfInterest(ParametersOfInterest value) {

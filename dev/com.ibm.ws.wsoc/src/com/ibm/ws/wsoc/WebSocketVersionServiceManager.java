@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wsoc.external.WebSocketFactory;
-import com.ibm.ws.wsoc.outbound.HttpRequestor;
 import com.ibm.ws.wsoc.outbound.HttpRequestorFactory;
 import com.ibm.ws.wsoc.outbound.HttpRequestorWsoc10FactoryImpl;
 import com.ibm.ws.wsoc.servercontainer.ServletContainerFactory;
@@ -31,6 +30,8 @@ import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+import io.openliberty.netty.internal.NettyFramework;
 
 /**
  * Provides various services for differnet features.
@@ -42,6 +43,8 @@ public class WebSocketVersionServiceManager {
     /** CHFWBundle service reference -- required */
     private static final AtomicServiceReference<CHFWBundle> cfwBundleRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
 
+    private static final AtomicServiceReference<NettyFramework> _nettyRef = new AtomicServiceReference<NettyFramework>("nettyBundle");
+
     //websocket 1.1 SessionExt for WebSocket 1.1 API support
     private static final AtomicServiceReference<WebSocketFactory> websocketFactoryServiceRef = new AtomicServiceReference<WebSocketFactory>("websocketFactoryService");
 
@@ -51,11 +54,9 @@ public class WebSocketVersionServiceManager {
 
     private static final ServletContainerFactory DEFAULT_SERVLET_CONTAINER_FACTORY = new ServerContainerImplFactory10();
 
-    private static final AtomicServiceReference<HttpRequestorFactory> httpRequestorFactoryServiceRef =
-                    new AtomicServiceReference<HttpRequestorFactory>("httpRequestorFactoryService");
+    private static final AtomicServiceReference<HttpRequestorFactory> httpRequestorFactoryServiceRef = new AtomicServiceReference<HttpRequestorFactory>("httpRequestorFactoryService");
 
-    private static final AtomicServiceReference<ClientEndpointConfigCopyFactory> clientEndpointConfigCopyFactoryServiceRef =
-                    new AtomicServiceReference<ClientEndpointConfigCopyFactory>("clientEndpointConfigCopyFactoryService");
+    private static final AtomicServiceReference<ClientEndpointConfigCopyFactory> clientEndpointConfigCopyFactoryServiceRef = new AtomicServiceReference<ClientEndpointConfigCopyFactory>("clientEndpointConfigCopyFactoryService");
 
     private static final HttpRequestorFactory DEFAULT_HTTPREQUESTOR_FACTORY = new HttpRequestorWsoc10FactoryImpl();
 
@@ -70,6 +71,7 @@ public class WebSocketVersionServiceManager {
      */
     protected synchronized void activate(ComponentContext context) {
         cfwBundleRef.activate(context);
+        _nettyRef.activate(context);
         websocketFactoryServiceRef.activate(context);
         servletContainerFactorySRRef.activate(context);
         httpRequestorFactoryServiceRef.activate(context);
@@ -83,6 +85,7 @@ public class WebSocketVersionServiceManager {
      */
     protected synchronized void deactivate(ComponentContext context) {
         cfwBundleRef.deactivate(context);
+        _nettyRef.deactivate(context);
         websocketFactoryServiceRef.deactivate(context);
         servletContainerFactorySRRef.deactivate(context);
         httpRequestorFactoryServiceRef.deactivate(context);
@@ -112,6 +115,19 @@ public class WebSocketVersionServiceManager {
      */
     public static ChannelFramework getCfw() {
         return cfwBundleRef.getServiceWithException().getFramework();
+    }
+
+    protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
+        _nettyRef.setReference(ref);
+    }
+
+    protected void unsetNettyBundle(ServiceReference<NettyFramework> ref) {
+        _nettyRef.unsetReference(ref);
+    }
+
+    public static NettyFramework getNettyBundle() {
+        // TODO Verify this later on
+        return _nettyRef.getService();
     }
 
     /**
@@ -193,7 +209,7 @@ public class WebSocketVersionServiceManager {
         clientEndpointConfigCopyFactoryServiceRef.unsetReference(ref);
     }
 
-    private static synchronized String loadWsocVersion(){
+    private static synchronized String loadWsocVersion() {
 
         try (InputStream input = WebSocketVersionServiceManager.class.getClassLoader().getResourceAsStream("io/openliberty/wsoc/speclevel/wsocSpecLevel.properties")) {
 

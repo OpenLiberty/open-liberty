@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ Import-Package: \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   io.openliberty.wsoc.ssl, \
+  io.openliberty.netty.internal*, \
   *
 
 Private-Package: \
@@ -53,6 +54,7 @@ Service-Component: \
     properties:="service.vendor=IBM,service.ranking:Integer=150", \
   com.ibm.ws.wsoc.manager;\
     implementation:=com.ibm.ws.wsoc.ServiceManager; \
+    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     configuration-policy:=ignore;\
     immediate:=true;\
@@ -77,6 +79,7 @@ Service-Component: \
     properties:="service.vendor=IBM", \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
+    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
@@ -116,10 +119,16 @@ instrument.classesExcludes: \
 	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-        io.openliberty.wsoc.ssl.internal;version=latest
-
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.wsoc.ssl.internal;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.io.netty.ssl,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.boot
+	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,13 +16,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64.Decoder;
 
-import javax.websocket.ClientEndpoint; 
+import javax.websocket.ClientEndpoint;
 import javax.websocket.ClientEndpointConfig;
-import javax.websocket.ClientEndpointConfig.Builder;
-import javax.websocket.Decoder;
 import javax.websocket.DeploymentException;
-import javax.websocket.Encoder;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
@@ -65,21 +63,20 @@ public class ClientConnector {
     }
 
     public Session connectClass(Object clazz, URI path, ClientEndpointConfig config, WebSocketContainer wsc) throws DeploymentException, IOException {
-       
+
         WsocAddress endpointAddress;
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
-            endpointAddress  = new Wsoc21Address(path);
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
+            endpointAddress = new Wsoc21Address(path);
         } else {
             endpointAddress = new Wsoc10Address(path);
         }
-        
-        
+
         endpointAddress.validateURI();
 
         ParametersOfInterest things = new ParametersOfInterest();
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
             config = WebSocketVersionServiceManager.getClientEndpointConfigCopyFactory().getClientEndpointConfig(config);
             things.setUserProperties(config.getUserProperties());
         }

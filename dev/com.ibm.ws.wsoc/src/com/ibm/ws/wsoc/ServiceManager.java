@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,8 @@ import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import io.openliberty.netty.internal.NettyFramework;
+
 /**
  *
  */
@@ -43,6 +45,8 @@ public class ServiceManager {
     /** CHFWBundle service reference -- required */
     private static final AtomicServiceReference<CHFWBundle> cfwBundleRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
 
+    private static final AtomicServiceReference<NettyFramework> nettyRef = new AtomicServiceReference<NettyFramework>("nettyBundle");
+
     private static final AtomicServiceReference<InjectionService> injectionServiceSRRef = new AtomicServiceReference<InjectionService>("injectionService");
 
     private static final AtomicServiceReference<InjectionService12> injectionService12SRRef = new AtomicServiceReference<InjectionService12>("injectionService12");
@@ -50,19 +54,18 @@ public class ServiceManager {
     private static final AtomicServiceReference<InjectionEngine> injectionEngineSRRef = new AtomicServiceReference<InjectionEngine>("injectionEngine");
 
     //JDK's Executor service to be used in SessionIdleTimeout functionality
-    private static final AtomicServiceReference<ScheduledExecutorService> scheduledExecSvcRef =
-                    new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
+    private static final AtomicServiceReference<ScheduledExecutorService> scheduledExecSvcRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
-    private static final AtomicServiceReference<ExecutorService> executorServiceRef =
-                    new AtomicServiceReference<ExecutorService>("executorService");
+    private static final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
 
     /**
      * DS method for activating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void activate(ComponentContext context) {
         cfwBundleRef.activate(context);
+        nettyRef.activate(context);
         scheduledExecSvcRef.activate(context);
         injectionServiceSRRef.activate(context);
         injectionService12SRRef.activate(context);
@@ -72,11 +75,12 @@ public class ServiceManager {
 
     /**
      * DS method for deactivating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void deactivate(ComponentContext context) {
         cfwBundleRef.deactivate(context);
+        nettyRef.deactivate(context);
         scheduledExecSvcRef.deactivate(context);
         injectionServiceSRRef.deactivate(context);
         injectionService12SRRef.deactivate(context);
@@ -86,7 +90,7 @@ public class ServiceManager {
 
     /**
      * DS method for setting the event reference.
-     * 
+     *
      * @param service
      */
     protected void setChfwBundle(ServiceReference<CHFWBundle> service) {
@@ -95,11 +99,24 @@ public class ServiceManager {
 
     /**
      * DS method for removing the event reference.
-     * 
+     *
      * @param service
      */
     protected void unsetChfwBundle(ServiceReference<CHFWBundle> service) {
         cfwBundleRef.unsetReference(service);
+    }
+
+    protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
+        nettyRef.setReference(ref);
+    }
+
+    protected void unsetNettyBundle(ServiceReference<NettyFramework> ref) {
+        nettyRef.unsetReference(ref);
+    }
+
+    public static NettyFramework getNettyBundle() {
+        // TODO Verify this later on
+        return _nettyRef.getService();
     }
 
     protected void setInjectionService(ServiceReference<InjectionService> ref) {
@@ -170,7 +187,7 @@ public class ServiceManager {
 
     /**
      * Access the current reference to the bytebuffer pool manager from channel frame work.
-     * 
+     *
      * @return WsByteBufferPoolManager
      */
     public static WsByteBufferPoolManager getBufferPoolManager() {
@@ -182,7 +199,7 @@ public class ServiceManager {
 
     /**
      * Declarative Services method for setting the (unmanaged) scheduled executor service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
@@ -191,7 +208,7 @@ public class ServiceManager {
 
     /**
      * Declarative Services method for unsetting the (unmanaged) scheduled executor service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
@@ -204,7 +221,7 @@ public class ServiceManager {
 
     /**
      * Declarative Services method for setting the (unmanaged) scheduled executor service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
@@ -213,7 +230,7 @@ public class ServiceManager {
 
     /**
      * Declarative Services method for unsetting the (unmanaged) scheduled executor service reference
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetExecutorService(ServiceReference<ExecutorService> ref) {

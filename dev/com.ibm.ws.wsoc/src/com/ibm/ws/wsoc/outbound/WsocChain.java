@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,10 +43,11 @@ public class WsocChain {
     private String httpName;
     private String chainName;
     private ChannelFramework cfw;
+    private boolean useNetty = false;
 
     /**
      * Will set the chain to enabled after a custoemr needs a wsoc outbound chain - so when they use the JSR 356 API
-     * 
+     *
      */
     private volatile boolean enabled = false;
 
@@ -63,13 +64,14 @@ public class WsocChain {
 
     /**
      * Create the new chain with it's parent endpoint
-     * 
+     *
      * @param httpEndpointImpl the owning endpoint: used for notifications
-     * @param isHttps true if this is to be an https chain.
+     * @param isHttps          true if this is to be an https chain.
      */
     public WsocChain(WsocOutboundChain owner, boolean isHttps) {
         this.owner = owner;
         this.isHttps = isHttps;
+        this.useNetty = useNetty;
         if (!isHttps) {
             configured = true;
         }
@@ -79,17 +81,18 @@ public class WsocChain {
      * Initialize this chain manager: Channel and chain names shouldn't fluctuate as config changes,
      * so come up with names associated with this set of channels/chains that will be reused regardless
      * of start/stop/enable/disable/modify
-     * 
+     *
      * @param endpointId The id of the httpEndpoint
-     * @param cfw Channel framework
+     * @param cfw        Channel framework
      */
-    public void init(String chainId, ChannelFramework cfw) {
+    public void init(String chainId, ChannelFramework cfw, boolean useNetty) {
 
         tcpName = "TCP-" + chainId;
         sslName = "SSL-" + chainId;
         httpName = "HTTP-" + chainId;
         chainName = chainId;
         this.cfw = cfw;
+        this.useNetty = useNetty;
 
         // If there is a chain that is in the CFW with this name, it was potentially
         // left over from a previous instance of the endpoint. There is no way to get
@@ -100,7 +103,6 @@ public class WsocChain {
             ChainData cd = cfw.getChain(chainName);
             if (cd != null) {
                 cfw.removeChain(cd);
-
             }
 
         } catch (ChainException e) {
@@ -159,7 +161,7 @@ public class WsocChain {
         if (currentConfig == null)
             return;
 
-        // Quiesce and then stop the chain. The CFW internally uses a StopTimer for 
+        // Quiesce and then stop the chain. The CFW internally uses a StopTimer for
         // the quiesce/stop operation-- the listener method will be called when the chain
         // has stopped. So to see what happens next, visit chainStopped
         try {
@@ -184,7 +186,7 @@ public class WsocChain {
             Tr.event(this, tc, "update chain " + this);
         }
 
-        // Don't update or start the chain if it is disabled or the framework is stopping.. 
+        // Don't update or start the chain if it is disabled or the framework is stopping..
         if (!enabled || !configured || FrameworkState.isStopping())
             return;
 
@@ -206,6 +208,7 @@ public class WsocChain {
 
             // Stop the chain-- will have to be recreated when port is updated
             // notification/follow-on of stop operation is in the chainStopped listener method
+            // TODO LLA not sure what to do here
             try {
                 ChainData cd = cfw.getChain(chainName);
                 if (cd != null) {
@@ -232,7 +235,7 @@ public class WsocChain {
                     cfw.removeChain(cd);
                 }
 
-                // Remove any channels that have to be rebuilt.. 
+                // Remove any channels that have to be rebuilt..
                 if (newConfig.tcpChanged(oldConfig)) {
                     removeChannel(tcpName);
                 }
@@ -316,9 +319,9 @@ public class WsocChain {
 
     @FFDCIgnore({ ChannelException.class, ChainException.class })
     private void removeChannel(String name) {
-        // Neither of the thrown exceptions are permanent failures: 
+        // Neither of the thrown exceptions are permanent failures:
         // they usually indicate that we're the victim of a race.
-        // If the CFW is also tearing down the chain at the same time 
+        // If the CFW is also tearing down the chain at the same time
         // (for example, the SSL feature was removed), then this could
         // fail.
         try {
