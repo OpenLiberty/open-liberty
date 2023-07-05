@@ -409,7 +409,7 @@ public class RecoveryManager implements Runnable {
     protected boolean handleTranRecord(RecoverableUnit ru, boolean recoveredTransactions,
                                        LogCursor recoverableUnits) throws SystemException, NotSupportedException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "handleTranRecord", new Object[] { ru, recoveredTransactions, recoverableUnits, new Exception("handleTranRecord Stack") });
+            Tr.entry(tc, "handleTranRecord", ru, recoveredTransactions, recoverableUnits, new Exception("handleTranRecord Stack"));
 
         final TransactionImpl tx = new TransactionImpl(_failureScopeController);
         if (tx.reconstruct(ru, _tranLog)) {
@@ -609,7 +609,7 @@ public class RecoveryManager implements Runnable {
 
     public void postShutdown(boolean partnersLeft) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "postShutdown", new Object[] { this, partnersLeft });
+            Tr.entry(tc, "postShutdown", this, partnersLeft);
 
         try {
             // If the partner log is null then we're using in memory logging and
@@ -650,7 +650,6 @@ public class RecoveryManager implements Runnable {
                         if (_partnerServiceData != null) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Erasing service data from partner log");
-
                             try {
                                 _xaLog.removeRecoverableUnit(_partnerServiceData.identity());
                             } catch (PeerLostLogOwnershipException ple) {
@@ -675,8 +674,7 @@ public class RecoveryManager implements Runnable {
                     // If this is a local log or an opened peer partner log then it can be closed
                     if (tc.isDebugEnabled())
                         Tr.debug(tc,
-                                 "Close partner log if it is local " + _failureScopeController.localFailureScope() +
-                                     " or is a peer log that was opened " + _peerXaLogEverOpened);
+                                 "Close partner log if it is local {0} or is a peer log that was opened {1}", _failureScopeController.localFailureScope(), _peerXaLogEverOpened);
                     if (_failureScopeController.localFailureScope() || _peerXaLogEverOpened) {
                         _xaLog.closeLog();
                         _peerXaLogEverOpened = false;
@@ -702,12 +700,16 @@ public class RecoveryManager implements Runnable {
      * @param recoveryIdentity
      */
     public void deleteServerLease(String recoveryIdentity) {
+        deleteServerLease(recoveryIdentity, false);
+    }
+
+    public void deleteServerLease(String recoveryIdentity, boolean isPeerServer) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity);
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
         try {
             if (_leaseLog != null) {
                 _leaseLog.releasePeerLease(recoveryIdentity);
-                _leaseLog.deleteServerLease(recoveryIdentity);
+                _leaseLog.deleteServerLease(recoveryIdentity, isPeerServer);
             }
         } catch (Exception e) {
             // Unless server is stopping, FFDC exception but allow processing to continue
@@ -732,10 +734,10 @@ public class RecoveryManager implements Runnable {
 
         if (_leaseLog != null && _localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "The recovery logs of home Server " + _failureScopeController.serverName() + " with identity " + _localRecoveryIdentity + " are being processed");
+                Tr.debug(tc, "The recovery logs of home server {0} with identity {1} are being processed", _failureScopeController.serverName(), _localRecoveryIdentity);
 
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+                Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
             if (!_retainHomeLogs) {
                 // Delete the home server's recovery logs.
                 if (_tranLog.delete()) {
@@ -806,7 +808,7 @@ public class RecoveryManager implements Runnable {
                     final RecoverableUnit ru = (RecoverableUnit) recoverableUnits.next();
                     final long id = ru.identity();
                     if (tc.isEventEnabled())
-                        Tr.event(tc, "Replaying record " + id + " from the partner log");
+                        Tr.event(tc, "Replaying record {0} from the partner log", id);
                     byte[] xaLogData = null;
                     int xaPriority = JTAResource.DEFAULT_COMMIT_PRIORITY;
 
@@ -953,7 +955,7 @@ public class RecoveryManager implements Runnable {
                                 if (logData != null && logData.length > 3) {
                                     _recoveredEpoch = Util.getIntFromBytes(logData, 0, 4);
                                     if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "Recovered epoch: " + _recoveredEpoch);
+                                        Tr.debug(tc, "Recovered epoch: {0}", _recoveredEpoch);
                                 }
                                 break;
                             case TransactionImpl.LOW_WATERMARK_SECTION:
@@ -1075,7 +1077,7 @@ public class RecoveryManager implements Runnable {
 
     protected boolean handleXAResourceRecord(RecoveryLog currentLog, byte[] xaLogData, long id, int xaPriority) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "handleXAResourceRecord", new Object[] { currentLog, xaLogData, id, xaPriority });
+            Tr.entry(tc, "handleXAResourceRecord", currentLog, xaLogData, id, xaPriority);
 
         // If we have a XA Resources record, process it with any priority from the log.
         if (xaLogData != null) {
@@ -1560,7 +1562,7 @@ public class RecoveryManager implements Runnable {
                         while (!_shutdownInProgress) {
                             try {
                                 if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Resync retry in " + timeout + " milliseconds");
+                                    Tr.debug(tc, "Resync retry in {0} milliseconds", timeout);
                                 _recoveryMonitor.wait(timeout);
                             } catch (InterruptedException e) {
                                 // No FFDC Code Needed.
@@ -1642,11 +1644,11 @@ public class RecoveryManager implements Runnable {
                     // This is a noop if peer recovery is not enabled.
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+                            Tr.debug(tc, "Server with identity {0} has recovered the logs of server {1}", _localRecoveryIdentity, _failureScopeController.serverName());
                         deleteServerLease(_failureScopeController.serverName());
 
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+                            Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
                         if (!_retainPeerLogs) {
                             // Delete the peer recovery logs.
                             // Don't delete the partner log if the tranlog delete faileded
@@ -1771,7 +1773,7 @@ public class RecoveryManager implements Runnable {
      */
     protected void closeLogs() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "closeLogs", new Object[] { this });
+            Tr.entry(tc, "closeLogs", this);
 
         if ((_tranLog != null) && (_tranLog instanceof DistributedRecoveryLog)) {
             try {
@@ -1810,7 +1812,7 @@ public class RecoveryManager implements Runnable {
         try {
 
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Performing recovery for " + serverName);
+                Tr.debug(tc, "Performing recovery for {0}", serverName);
 
             // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
             _agent.setReplayThread();
@@ -2294,7 +2296,7 @@ public class RecoveryManager implements Runnable {
      */
     public void registerTransaction(TransactionImpl tran) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "registerTransaction", new Object[] { this, tran });
+            Tr.entry(tc, "registerTransaction", this, tran);
 
         _recoveringTransactions.add(tran);
 
@@ -2310,7 +2312,7 @@ public class RecoveryManager implements Runnable {
      */
     public void deregisterTransaction(TransactionImpl tran) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deregisterTransaction", new Object[] { this, tran });
+            Tr.entry(tc, "deregisterTransaction", this, tran);
 
         _recoveringTransactions.remove(tran);
 
@@ -2370,7 +2372,7 @@ public class RecoveryManager implements Runnable {
 
     public void configurePeerRecovery(SharedServerLeaseLog leaseLog, String recoveryGroup, String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "configurePeerRecovery", new Object[] { leaseLog, recoveryGroup, recoveryIdentity });
+            Tr.entry(tc, "configurePeerRecovery", leaseLog, recoveryGroup, recoveryIdentity);
 
         _leaseLog = leaseLog;
         _recoveryGroup = recoveryGroup;
@@ -2420,9 +2422,9 @@ public class RecoveryManager implements Runnable {
         }
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+            Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+            Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
 
         if (_retainHomeLogs || _retainPeerLogs) {
             if (_tranLog != null)

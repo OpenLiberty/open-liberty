@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014,2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  *
@@ -27,23 +28,11 @@ public class PeerLeaseTable {
     protected final ArrayList<PeerLeaseData> _peerLeaseTable;
 
     public PeerLeaseTable() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseTable");
-
         _peerLeaseTable = new ArrayList<PeerLeaseData>();
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "PeerLeaseTable");
     }
 
     public void addPeerEntry(PeerLeaseData leaseData) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "addPeerEntry", leaseData);
-
         _peerLeaseTable.add(leaseData);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "addPeerEntry");
     }
 
     public ArrayList<String> getExpiredPeers() {
@@ -63,6 +52,7 @@ public class PeerLeaseTable {
         return peersToRecover;
     }
 
+    @Trivial
     public int size() {
         return _peerLeaseTable.size();
     }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -914,10 +915,10 @@ class LogFileHandle {
      *
      * @return String The name of the file associated with this LogFileHandle instance
      */
+    @Trivial
     public String fileName() {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "fileName", this);
-            Tr.exit(tc, "fileName", _fileName);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "fileName {0} {1}", _fileName, this);
         }
         return _fileName;
     }

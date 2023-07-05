@@ -85,16 +85,16 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      */
     private final String genericTablePreString = "CREATE TABLE ";
     private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                                  "LEASE_TIME BIGINT, BACKEND_URL VARCHAR(128)) ";
+                                                  "LEASE_TIME BIGINT) ";
 
     private final String oracleTablePreString = "CREATE TABLE ";
     private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                                 "LEASE_TIME NUMBER(19), BACKEND_URL VARCHAR(128)) ";
+                                                 "LEASE_TIME NUMBER(19)) ";
 
     private final String postgreSQLTablePreString = "CREATE TABLE ";
     private final String postgreSQLTablePostString = "( SERVER_IDENTITY VARCHAR (128) UNIQUE NOT NULL, RECOVERY_GROUP VARCHAR (128) NOT NULL, LEASE_OWNER VARCHAR (128) NOT NULL, "
                                                      +
-                                                     "LEASE_TIME BIGINT, BACKEND_URL VARCHAR(128));";
+                                                     "LEASE_TIME BIGINT);";
 
     /**
      * We only want one client at a time to attempt to create a new
@@ -621,7 +621,19 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             if (_updatelockingRS.next()) {
                 // We found the Server row
                 long storedLease = _updatelockingRS.getLong(1);
-                String storedLeaseOwner = _updatelockingRS.getString(2);
+                String storedLeaseOwner = "";
+                String columnString = _updatelockingRS.getString(2);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Column contained " + columnString);
+                int commaPos = columnString.indexOf(",");
+
+                // extract the stored lease owner
+                if (commaPos > 0) {
+                    storedLeaseOwner = columnString.substring(0, commaPos);
+                } else {
+                    storedLeaseOwner = columnString;
+                }
+
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Acquired lock row, stored lease value is: " + Utils.traceTime(storedLease) + ", stored owner is: " + storedLeaseOwner);
 
@@ -659,7 +671,11 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 long fir1 = System.currentTimeMillis();
                 updateStmt.setLong(1, fir1);
                 updateStmt.setString(2, recoveryGroup);
-                updateStmt.setString(3, recoveryIdentity);
+                // Overload the LEASE_OWNER column with both the owner and the BackendURL, separated by a comma
+                columnString = recoveryIdentity + "," + getBackendURL();
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Update combined string " + columnString + " into LEASE_OWNER column");
+                updateStmt.setString(3, columnString);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
@@ -699,8 +715,8 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         short serviceId = (short) 1;
         String insertString = "INSERT INTO " +
                               _leaseTableName +
-                              " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME, BACKEND_URL)" +
-                              " VALUES (?,?,?,?,?)";
+                              " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                              " VALUES (?,?,?,?)";
 
         PreparedStatement specStatement = null;
         long fir1 = System.currentTimeMillis();
@@ -712,9 +728,12 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             specStatement = conn.prepareStatement(insertString);
             specStatement.setString(1, recoveryIdentity);
             specStatement.setString(2, recoveryGroup);
-            specStatement.setString(3, recoveryIdentity);
+            // Overload the LEASE_OWNER column with both the owner and the BackendURL, separated by a comma
+            String columnString = recoveryIdentity + "," + getBackendURL();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Insert combined string " + columnString + " into LEASE_OWNER column");
+            specStatement.setString(3, columnString);
             specStatement.setLong(4, fir1);
-            specStatement.setString(5, getBackendURL());
 
             int ret = specStatement.executeUpdate();
 
@@ -969,6 +988,48 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.exit(tc, "createLeaseTable");
     }
 
+    private void dropLeaseTableIfEmpty(Connection conn) throws SQLException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "dropLeaseTableIfEmpty", conn, this);
+
+        Statement dropTableStmt = null;
+        Exception currentEx = null;
+        int rowCount = 99;
+        try {
+            dropTableStmt = conn.createStatement();
+            try {
+                String queryString = "SELECT COUNT(*) AS recordCount FROM " + _leaseTableName;
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Attempt to check for an empty table using - " + queryString);
+                _updatelockingRS = dropTableStmt.executeQuery(queryString);
+                _updatelockingRS.next();
+                rowCount = _updatelockingRS.getInt("recordCount");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Number of rows in table is " + rowCount);
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Query failed with exception: " + e);
+                currentEx = e;
+            }
+
+            if (rowCount == 0 && currentEx == null) {
+                // we should drop the table
+                String dropTableString = "DROP TABLE " + _leaseTableName;
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Drop table using: " + dropTableString);
+                dropTableStmt.executeUpdate(dropTableString);
+            }
+
+        } finally {
+            if (dropTableStmt != null && !dropTableStmt.isClosed()) {
+                dropTableStmt.close();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "dropLeaseTableIfEmpty");
+    }
+
     /*
      * This method supports the deletion of a server's lease. We have to be a little careful as we may be deleting the lease for a peer
      * and that peer may have restarted. In this case we should test that the lease is
@@ -983,9 +1044,9 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 //TODO:is deleted by a peer, could the original server not simply (re)insert its own row?
     @FFDCIgnore({ SQLException.class, SQLRecoverableException.class })
     @Override
-    public synchronized void deleteServerLease(String recoveryIdentity) throws Exception {
+    public synchronized void deleteServerLease(String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", recoveryIdentity, this);
+            Tr.entry(tc, "deleteServerLease", recoveryIdentity, isPeerServer, this);
 
         Connection conn = null;
 
@@ -1101,6 +1162,14 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 } else {
                     Tr.audit(tc, "WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity " + recoveryIdentity);
                 }
+
+                // If this is the last server in the lease log, then the table can be dropped
+                if (!isPeerServer)
+                    dropLeaseTableIfEmpty(conn);
+            } else {
+                // If this is the last server in the lease log, then the table can be dropped
+                if (!isPeerServer)
+                    dropLeaseTableIfEmpty(conn);
             }
 
             if (_deleteStmt != null && !_deleteStmt.isClosed())
@@ -1341,7 +1410,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // Construct the UPDATE string
                 String updateString = "UPDATE " + _leaseTableName +
-                                      " SET LEASE_TIME = ?, LEASE_OWNER = ?, BACKEND_URL = ?" +
+                                      " SET LEASE_TIME = ?, LEASE_OWNER = ?" +
                                       " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "'";
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "update lease for " + recoveryIdentityToRecover);
@@ -1352,8 +1421,11 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 //TODO:
                 long fir1 = System.currentTimeMillis();
                 _claimPeerUpdateStmt.setLong(1, fir1);
-                _claimPeerUpdateStmt.setString(2, myRecoveryIdentity);
-                _claimPeerUpdateStmt.setString(3, getBackendURL());
+                // Overload the LEASE_OWNER column with both the owner and the BackendURL, separated by a comma
+                String columnString = myRecoveryIdentity + "," + getBackendURL();
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Insert combined string " + columnString + " into LEASE_OWNER column");
+                _claimPeerUpdateStmt.setString(2, columnString);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
@@ -1707,22 +1779,29 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     }
 
     @Override
-    public String getBackendURL(String recoveryId) {
+    public String getBackendURL(String recoveryId) throws Exception {
+        String URLString = null;
         try (Connection conn = getConnection();
                         Statement stmt = conn.createStatement()) {
-            String queryString = "SELECT BACKEND_URL" +
+            String queryString = "SELECT LEASE_OWNER" +
                                  " FROM " + _leaseTableName +
                                  " WHERE SERVER_IDENTITY = '" + recoveryId + "'";
 
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
-                return rs.getString(1);
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "getBackendURL", e);
-        }
+                String columnString = rs.getString(1);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Column contained " + columnString);
+                int commaPos = columnString.indexOf(",");
 
-        return null; // for now
+                // extract the backend URL
+                if (commaPos > 0)
+                    URLString = columnString.substring(commaPos + 1);
+
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "URLString is " + URLString);
+            }
+        }
+        return URLString;
     }
 }

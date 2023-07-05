@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: FileFailureScope
@@ -62,6 +63,7 @@ public class FileFailureScope implements FailureScope {
     /**
      * @return the _leaseInfo
      */
+    @Trivial
     public LeaseInfo getLeaseInfo() {
         return _leaseInfo;
     }
@@ -218,11 +220,10 @@ public class FileFailureScope implements FailureScope {
      * @return String server name
      */
     @Override
+    @Trivial
     public String serverName() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "serverName", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "serverName", _serverName);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "serverName: {0}", _serverName);
         return _serverName;
     }
 

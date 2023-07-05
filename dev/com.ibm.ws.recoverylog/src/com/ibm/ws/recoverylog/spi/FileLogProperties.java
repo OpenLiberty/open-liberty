@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: FileLogProperties
@@ -299,9 +300,10 @@ public class FileLogProperties implements LogProperties {
      *
      * @return String The stem of the log directory path
      */
+    @Trivial
     public String logDirectoryStem() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logDirectoryStem", this, _logDirectoryStem);
+            Tr.debug(tc, "logDirectoryStem {0} {1}", this, _logDirectoryStem);
         return _logDirectoryStem;
     }
 

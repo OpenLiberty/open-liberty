@@ -17,6 +17,7 @@ import java.net.URL;
 
 import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
 
 import com.ibm.websphere.ras.Tr;
@@ -57,5 +58,21 @@ public class WSATUtil {
         }
 
         return ret;
+    }
+
+    /**
+     * @param endpointReference
+     * @return
+     */
+    public static EndpointReferenceType cloneEPR(EndpointReferenceType epr) {
+        EndpointReferenceType newEpr = EndpointReferenceUtils.duplicate(epr);
+        // duplicate doesn't seem to copy the ReferenceParams?, so add
+        // back the originals plus our new participant id.
+        ReferenceParametersType refs = new ReferenceParametersType();
+        for (Object ref : epr.getReferenceParameters().getAny()) {
+            refs.getAny().add(ref);
+        }
+        newEpr.setReferenceParameters(refs);
+        return newEpr;
     }
 }

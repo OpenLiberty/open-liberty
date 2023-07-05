@@ -35,6 +35,7 @@ import com.ibm.ws.wsat.service.ProtocolServiceWrapper;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.ws.wsat.service.WebClient;
+import com.ibm.ws.wsat.tm.impl.ParticipantFactoryService;
 import com.ibm.ws.wsat.tm.impl.TranManagerImpl;
 
 /**
@@ -166,7 +167,14 @@ public class ProtocolImpl {
         String globalId = wrapper.getTxID();
 
         // Need to construct an EPR for the participant
-        String newAddr = tranService.getAddress(wrapper.getRecoveryID());
+        String newAddr;
+        try {
+            newAddr = tranService.getAddress(wrapper.getRecoveryID());
+        } catch (Exception e) {
+            WSATException e1 = new WSATException(e.getLocalizedMessage());
+            e1.initCause(e);
+            throw e1;
+        }
         String toAddr = WSATUtil.createRedirectAddr(wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 
@@ -312,8 +320,10 @@ public class ProtocolImpl {
                 // During participant recovery we might receive an unexpected 'prepared' if the participant
                 // wants a re-send of the final commit/rollback state.
                 if (TC.isDebugEnabled()) {
-                    Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}/{2}. Replaying completion", wrapper.getTxID(), wrapper.getPartID(), wrapper.getResponseEpr().getAddress());
+                    Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}/{2}. Replaying completion", wrapper.getTxID(), wrapper.getPartID(),
+                             wrapper.getResponseEpr().getAddress().getValue());
                 }
+                ParticipantFactoryService.putRecoveryAddress(wrapper.getTxID(), wrapper.getPartID(), wrapper.getResponseEpr());
                 if (!tranService.replayCompletion(wrapper.getTxID())) {
                     // Couldn't find the tran. Probably never got logged. Send a rollback
                     if (TC.isDebugEnabled()) {
@@ -348,7 +358,14 @@ public class ProtocolImpl {
         String globalId = wrapper.getTxID();
 
         // Need to construct an EPR for the coordinator
-        String newAddr = tranService.getAddress(wrapper.getRecoveryID());
+        String newAddr;
+        try {
+            newAddr = tranService.getAddress(wrapper.getRecoveryID());
+        } catch (Exception e) {
+            WSATException e1 = new WSATException(e.getLocalizedMessage());
+            e1.initCause(e);
+            throw e1;
+        }
         String toAddr = WSATUtil.createRedirectAddr(wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 

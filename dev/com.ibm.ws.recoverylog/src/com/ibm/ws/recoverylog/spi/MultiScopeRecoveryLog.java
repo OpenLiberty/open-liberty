@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.utils.DirUtils;
 import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
@@ -2078,6 +2079,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * @return true if a serious internal error has occured, otherwise false.
      */
     @Override
+    @Trivial
     public boolean failed() {
         if (tc.isDebugEnabled() && _failed)
             Tr.debug(tc, "failed: RecoveryLog has been marked as failed. [" + this + "]");
@@ -2098,6 +2100,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return true if the recovery log has been marked as incompatible otherwise false.
      */
+    @Trivial
     protected boolean incompatible() {
         if (tc.isDebugEnabled() && _incompatible)
             Tr.debug(tc, "incompatible: RecoveryLog has been marked as incompatible. [" + this + "]");
@@ -2299,6 +2302,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return String The server name
      */
+    @Trivial
     String serverName() {
         return _serverName;
     }
@@ -2311,6 +2315,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return String The client name.
      */
+    @Trivial
     String clientName() {
         return _clientName;
     }
@@ -2323,6 +2328,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return int The client version number
      */
+    @Trivial
     public int clientVersion() {
         return _clientVersion;
     }
@@ -2335,6 +2341,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return String The log name
      */
+    @Trivial
     public String logName() {
         return _logName;
     }
@@ -2347,6 +2354,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      *
      * @return int The log identifier
      */
+    @Trivial
     public int logIdentifier() {
         return _logIdentifier;
     }
@@ -2354,6 +2362,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     /**
      * @return the _logDirectory
      */
+    @Trivial
     public String getLogDirectory() {
         return _logDirectory;
     }

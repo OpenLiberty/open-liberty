@@ -130,6 +130,7 @@ public class WSATControlUtil {
      * @param ele
      * @return
      */
+    @Trivial
     public QName createQNameFromElement(Element ele) {
         if (ele.getLocalName() == null) {
             return null;

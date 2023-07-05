@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.recoverylog.spi;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 //------------------------------------------------------------------------------
 // Class: Configuration
@@ -335,8 +336,7 @@ public class Configuration {
      */
     public static final void HAEnabled(boolean HAEnabled) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "HAEnabled", HAEnabled);
-
+            Tr.debug(tc, "Setting HAEnabled: {0}", HAEnabled);
         _HAEnabled = HAEnabled;
     }
 
@@ -348,9 +348,10 @@ public class Configuration {
      *
      * @return boolean name The HAEnabled flag
      */
+    @Trivial
     public static final boolean HAEnabled() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "HAEnabled", _HAEnabled);
+            Tr.debug(tc, "HAEnabled: {0}", _HAEnabled);
         return _HAEnabled;
     }
 

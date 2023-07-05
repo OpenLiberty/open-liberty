@@ -132,11 +132,15 @@ public class XAResourceFactoryImpl implements XAResourceFactory {
         return XAResourceImpl.getXAResourceImpl(((XAResourceInfoImpl) xaresinfo).getKey());
     }
 
-    public LastingXAResourceImpl getLastingXAResourceImpl() throws XAResourceNotAvailableException {
-        return LastingXAResourceImpl.getLastingXAResourceImpl();
+    public LastingXAResourceImpl getLastingXAResourceImpl(int i) throws XAResourceNotAvailableException {
+        return LastingXAResourceImpl.getLastingXAResourceImpl(i);
     }
     
     public AbortableXAResourceImpl getAbortableXAResourceImpl(Serializable xaresinfo) throws XAResourceNotAvailableException {
         return AbortableXAResourceImpl.getAbortableXAResourceImpl(((XAResourceInfoImpl) xaresinfo).getKey());
     }
+
+	public LastingXAResourceImpl getLastingXAResourceImpl() {
+        return LastingXAResourceImpl.getLastingXAResourceImpl();
+	}
 }

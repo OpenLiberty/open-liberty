@@ -6,7 +6,7 @@ package com.ibm.ws.Transaction.JTS;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,7 @@ public final class Configuration {
      */
     public static final void setServerName(String name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setServerName", name);
+            Tr.debug(tc, "setServerName: {0}", name);
 
         // Store the server name.
         serverName = name;
@@ -59,7 +59,7 @@ public final class Configuration {
      */
     public static final String getServerName() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getServerName", serverName);
+            Tr.debug(tc, "getServerName {0}", serverName);
         return serverName;
     }
 

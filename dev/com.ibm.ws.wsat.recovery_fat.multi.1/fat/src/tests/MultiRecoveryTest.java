@@ -121,13 +121,15 @@ public class MultiRecoveryTest {
 		}
 
 		// Start the ones that need restarting
-		if ("both".equals(restartingServers) || restartingServers.equals("server1")) {
-			FATUtils.startServers(runner, server);
+		if (!"none".equals(restartingServers)) {
+			if ("both".equals(restartingServers) || restartingServers.equals("server1")) {
+				FATUtils.startServers(runner, server);
+			}
+			if ("both".equals(restartingServers) || restartingServers.equals("server2")) {
+				FATUtils.startServers(runner, server2);
+			}
 		}
-		if ("both".equals(restartingServers) || restartingServers.equals("server2")) {
-			FATUtils.startServers(runner, server2);
-		}
-		
+
 		// Wait for the relevant server to have done its stuff
 		if (crashingServers.equals(restartingServers)) {
 			// This is traditional recovery
@@ -148,15 +150,12 @@ public class MultiRecoveryTest {
 			// This is peer recovery
 			checkPeerRecovery(server, server2, crashingServers, restartingServers, id);
 			
+			// Restart servers for the next test
 			if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
-				if (!"both".equals(restartingServers) && !"server1".equals(restartingServers)) {
-					FATUtils.startServers(runner, server);
-				}
+				FATUtils.startServers(runner, server);
 			}
 			if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
-				if (!"both".equals(restartingServers) && !"server2".equals(restartingServers)) {
-					FATUtils.startServers(runner, server2);
-				}
+				FATUtils.startServers(runner, server2);
 			}
 		}
 

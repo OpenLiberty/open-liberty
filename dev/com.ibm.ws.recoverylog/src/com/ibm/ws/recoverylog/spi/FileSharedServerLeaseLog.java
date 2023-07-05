@@ -277,9 +277,9 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#deleteServerLease(java.lang.String)
      */
     @Override
-    public void deleteServerLease(final String recoveryIdentity) throws Exception {
+    public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", recoveryIdentity, this);
+            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity, isPeerServer });
 
         // Is a lease file (equivalent to a record in the DB table) available for deletion
         final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
@@ -376,27 +376,6 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             Tr.exit(tc, "deleteServerLease", this);
     }
 
-    @Override
-    @FFDCIgnore(IOException.class)
-    public String getBackendURL(String recoveryId) {
-        // Want the second line out of the file
-        while (true) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId))) {
-                // discard first line
-                reader.readLine();
-                // return the second
-                return reader.readLine();
-            } catch (IOException e) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "must have been locked", e);
-            }
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-            }
-        }
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -475,7 +454,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                             filePos = newline + 1;
                         } else {
                             myBackendURL = ByteBuffer.wrap(("\n" + getBackendURL()).getBytes());
-                            filePos = fileSize + 1;
+                            filePos = fileSize;
                         }
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Write in our own backendURL " + myBackendURL + " from file position " + filePos);
@@ -899,5 +878,15 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
 
+    }
+
+    @Override
+    public String getBackendURL(String recoveryId) throws Exception {
+        // Want the second line out of the file
+        BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId));
+        // discard first line
+        reader.readLine();
+        // return the second
+        return reader.readLine();
     }
 }

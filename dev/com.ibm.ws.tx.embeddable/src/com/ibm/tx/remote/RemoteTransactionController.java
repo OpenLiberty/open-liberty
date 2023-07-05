@@ -56,5 +56,5 @@ public interface RemoteTransactionController {
 
     public String getRecoveryId();
 
-    public String getAddress(String recoveryId);
+    public String getAddress(String recoveryId) throws Exception;
 }

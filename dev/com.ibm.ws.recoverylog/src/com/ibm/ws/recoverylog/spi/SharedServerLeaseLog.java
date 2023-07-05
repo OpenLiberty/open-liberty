@@ -25,7 +25,7 @@ package com.ibm.ws.recoverylog.spi;
 public interface SharedServerLeaseLog {
     public void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception;
 
-    public void deleteServerLease(String recoveryIdentity) throws Exception;
+    public void deleteServerLease(String recoveryIdentity, boolean isPeerServer) throws Exception;
 
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception;
 
@@ -41,5 +41,5 @@ public interface SharedServerLeaseLog {
 
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout);
 
-    public String getBackendURL(String recoveryId);
+    public String getBackendURL(String recoveryId) throws Exception;
 }

@@ -20,6 +20,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 
 /**
@@ -42,6 +43,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the service
      */
+    @Trivial
     public Protocol getService() {
         return service;
     }
@@ -49,6 +51,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param service the service to set
      */
+    @Trivial
     public ProtocolServiceWrapper setService(Protocol service) {
         this.service = service;
         return this;
@@ -57,6 +60,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the txID
      */
+    @Trivial
     public String getTxID() {
         return txID;
     }
@@ -64,6 +68,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param txID the txID to set
      */
+    @Trivial
     public ProtocolServiceWrapper setTxID(String txID) {
         this.txID = txID;
         return this;
@@ -72,6 +77,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the partID
      */
+    @Trivial
     public String getPartID() {
         return partID;
     }
@@ -79,6 +85,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the partID
      */
+    @Trivial
     public String getRecoveryID() {
         return recoveryID;
     }
@@ -86,6 +93,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param txID the txID to set
      */
+    @Trivial
     public ProtocolServiceWrapper setPartID(String partID) {
         this.partID = partID;
         return this;
@@ -94,6 +102,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the faultTo
      */
+    @Trivial
     public EndpointReferenceType getFaultTo() {
         return faultTo;
     }
@@ -101,6 +110,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param faultTo the faultTo to set
      */
+    @Trivial
     public ProtocolServiceWrapper setFaultTo(EndpointReferenceType faultTo) {
         this.faultTo = faultTo;
         return this;
@@ -109,6 +119,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the replyTo
      */
+    @Trivial
     public EndpointReferenceType getReplyTo() {
         return replyTo;
     }
@@ -116,6 +127,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param replyTo the replyTo to set
      */
+    @Trivial
     public ProtocolServiceWrapper setReplyTo(EndpointReferenceType replyTo) {
         this.replyTo = replyTo;
         return this;
@@ -124,6 +136,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the from
      */
+    @Trivial
     public EndpointReferenceType getFrom() {
         return from;
     }
@@ -131,6 +144,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param from the from to set
      */
+    @Trivial
     public ProtocolServiceWrapper setFrom(EndpointReferenceType from) {
         this.from = from;
         return this;
@@ -139,6 +153,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the nextStepEPR
      */
+    @Trivial
     public EndpointReferenceType getNextStepEPR() {
         return nextStepEPR;
     }
@@ -146,6 +161,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param nextStepEPR the nextStepEPR to set
      */
+    @Trivial
     public ProtocolServiceWrapper setNextStepEPR(EndpointReferenceType nextStepEPR) {
         this.nextStepEPR = nextStepEPR;
         return this;
@@ -154,6 +170,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the migrationHeaders
      */
+    @Trivial
     public List<Header> getMigrationHeaders() {
         return migrationHeaders;
     }
@@ -161,6 +178,7 @@ public class ProtocolServiceWrapper {
     /**
      * @param migrationHeaders the migrationHeaders to set
      */
+    @Trivial
     public ProtocolServiceWrapper setMigrationHeaders(List<Header> migrationHeaders) {
         this.migrationHeaders = migrationHeaders;
         return this;
@@ -170,6 +188,7 @@ public class ProtocolServiceWrapper {
      * @param recoveryID
      * @return
      */
+    @Trivial
     public ProtocolServiceWrapper setRecoveryID(String recoveryID) {
         this.recoveryID = recoveryID;
         return this;
@@ -215,6 +234,7 @@ public class ProtocolServiceWrapper {
     /**
      * @return the tc
      */
+    @Trivial
     public static TraceComponent getTc() {
         return TC;
     }

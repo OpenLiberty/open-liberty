@@ -73,7 +73,7 @@ public abstract class WSATEndpoint implements Serializable {
     }
 
     // Initialization of transient fields called from constructor and deserializer
-    private void init(EndpointReferenceType epr) {
+    public void init(EndpointReferenceType epr) {
         // Apache CXF form of the EPR
         endpointRef = epr;
         if (epr != null) {
@@ -104,9 +104,6 @@ public abstract class WSATEndpoint implements Serializable {
             try {
                 misRoute(testRef);
             } catch (MalformedURLException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                e.printStackTrace();
             }
             testEpr = AccessController.doPrivileged(new PrivilegedAction<EndpointReference>() {
                 @Override
@@ -145,18 +142,22 @@ public abstract class WSATEndpoint implements Serializable {
         }
     }
 
+    @Trivial
     public EndpointReferenceType getEndpointReference() {
         return endpointRef;
     }
 
+    @Trivial
     public EndpointReference getWsEpr() {
         return wsEpr;
     }
 
+    @Trivial
     public EndpointReference getTestEpr() {
         return testEpr;
     }
 
+    @Trivial
     public boolean isSecure() {
         return isSecure;
     }
@@ -221,5 +222,4 @@ public abstract class WSATEndpoint implements Serializable {
         newEpr.setReferenceParameters(refs);
         return newEpr;
     }
-
 }

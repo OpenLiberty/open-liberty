@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,12 +51,12 @@ public class LastingXAResourceImpl extends XAResourceImpl {
         stateKeeper = new LastingStateKeeperImpl();
     }
   
-    public static LastingXAResourceImpl getLastingXAResourceImpl() {
-        return new LastingXAResourceImpl();
+    public static LastingXAResourceImpl getLastingXAResourceImpl(int i) {
+        return new LastingXAResourceImpl(i);
     }
     
-    public LastingXAResourceImpl() {
-        super();
+    public LastingXAResourceImpl(int i) {
+        super(i);
 
         if (STORE_STATE_IN_DATABASE) {
             if (_dbStore == null) {
@@ -81,7 +81,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
      */
     private void resetFile() {}
 
-    public LastingXAResourceImpl(int i) throws Exception {
+    public LastingXAResourceImpl(String i) throws Exception {
         super(i);
         if (STORE_STATE_IN_DATABASE) {
             if (_dbStore == null) {
@@ -96,7 +96,28 @@ public class LastingXAResourceImpl extends XAResourceImpl {
         }
     }
 
-    @Override
+    public LastingXAResourceImpl() {
+        super();
+
+        if (STORE_STATE_IN_DATABASE) {
+            if (_dbStore == null) {
+                try {
+					_dbStore = new dbStore();
+	                _dbStore.clear();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        } else if (!_attemptedFileInit) {
+            // Storing state data in a file
+            _attemptedFileInit = true;
+
+            resetFile();
+        }
+    }
+
+	@Override
     public Xid[] recover(int flag) throws XAException {
         Xid[] theXids = null;
         try {
@@ -241,7 +262,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                         System.out.println("Execute a query to determine if we need to create a table");
                     stmtBasic.executeQuery("SELECT RESOURCE_ID, DATA" +
                                            " FROM WAS_XA_RESOURCES" +
-                                           " WHERE RESOURCE_ID=1");
+                                           " WHERE RESOURCE_ID='1'");
                 } catch (Exception e) {
                     if (DEBUG_OUTPUT)
                         System.out.println("couldn't find the table ... so create it");
@@ -249,7 +270,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     Statement stmt2 = con1.createStatement();
 
                     stmt2.executeUpdate("CREATE TABLE WAS_XA_RESOURCES( " +
-                                        "RESOURCE_ID SMALLINT, " +
+                                        "RESOURCE_ID VARCHAR(60), " +
                                         "DATA LONG VARCHAR FOR BIT DATA) ");
                     if (DEBUG_OUTPUT)
                         System.out.println("Have created the table");
@@ -294,7 +315,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                                                  " FROM WAS_XA_RESOURCES");
                 // Now process through the rows we need to handle
                 while (rsBasic.next()) {
-                    final int resId = rsBasic.getInt(1);
+                    final String resId = rsBasic.getString(1);
                     final byte[] data = rsBasic.getBytes(2);
                     if (DEBUG_OUTPUT) {
                         System.out.println("Resource Table: read rid: " + resId);
@@ -302,7 +323,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     }
                     
                     // Test for presence of special key
-                    if(resId == -99) {
+                    if(resId.equals("-99")) {
                         if (DEBUG_OUTPUT)
                         	System.out.println("getXAResources found special interrupt key");
                     	INTERRUPT_IN_RECOVERY = true;
@@ -312,11 +333,8 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     	if (data != null)
                     		objectIn = new ObjectInputStream(new ByteArrayInputStream(data));
                     	final XAResourceData xares = (XAResourceData) objectIn.readObject();
-
+                    	System.out.println("_resources.put(\""+resId+"\", "+xares+")");
                     	_resources.put(resId, xares);
-                    	if (resId >= _nextKey.get()) {
-                    		_nextKey.set(resId + 1);
-                    	}
                     	resourceCount++;
                     }
                 }
@@ -473,7 +491,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                 if (DEBUG_OUTPUT)
                     System.out.println("putXAResources prepare to insert " + _resources.size() + " resources");
                 for (XAResourceData xares : _resources.values()) {
-                    int resKey = xares.key;
+                    String resKey = xares.key;
                     if (DEBUG_OUTPUT) {
                         System.out.println("putXAResources Insert row for key: " + resKey);
                         System.out.println("And data with XID: " + xares.getXid());
@@ -496,7 +514,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     oos.writeObject(xares);
                     byte[] data = baos.toByteArray();
 
-                    insertStatement.setInt(1, resKey);
+                    insertStatement.setString(1, resKey);
                     insertStatement.setBytes(2, data);
 
                     int ret = insertStatement.executeUpdate();
@@ -572,4 +590,8 @@ public class LastingXAResourceImpl extends XAResourceImpl {
             return ds;
         }
     }
+
+	public static LastingXAResourceImpl getLastingXAResourceImpl() {
+        return new LastingXAResourceImpl();
+	}
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,8 @@ import java.security.PrivilegedAction;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
+
+import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,6 +38,7 @@ public class ParticipantResource implements XAResource {
 
     private static final String CLASS_NAME = ParticipantResource.class.getName();
     private static final TraceComponent TC = Tr.register(ParticipantResource.class);
+    private final static TranManagerImpl tranService = TranManagerImpl.getInstance();
 
     private WSATParticipant participant;
     private long timeoutMillis;
@@ -100,6 +103,7 @@ public class ParticipantResource implements XAResource {
      */
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
+        reroute(participant);
         WebClient webClient = WebClient.getWebClient(participant, participant.getCoordinator());
         try {
             participant.setState(WSATParticipantState.COMMIT);
@@ -112,9 +116,27 @@ public class ParticipantResource implements XAResource {
                 throw new XAException(XAException.XA_RBTIMEOUT);
             }
         } catch (WSATException e) {
-            throw new XAException(XAException.XA_RBROLLBACK);
+            XAException e1 = new XAException(XAException.XA_RBROLLBACK);
+            e1.initCause(e);
+            throw e1;
         } finally {
             participant.remove();
+        }
+    }
+
+    /**
+     * @param participant
+     */
+    private void reroute(WSATParticipant participant) {
+
+        EndpointReferenceType recoveryAddress = ParticipantFactoryService.getRecoveryAddress(participant.getGlobalId(), participant.getId());
+
+        if (recoveryAddress != null) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Rerouting to: {0}", recoveryAddress.getAddress().getValue());
+            }
+
+            participant.init(recoveryAddress);
         }
     }
 

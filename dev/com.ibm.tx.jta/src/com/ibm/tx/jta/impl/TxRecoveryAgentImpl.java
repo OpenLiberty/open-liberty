@@ -13,6 +13,7 @@
 package com.ibm.tx.jta.impl;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -193,7 +195,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
                 } else {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Recovery initiated for server -  ", recoveredServerIdentity);
+                        Tr.debug(tc, "Recovery initiated for server {0}", recoveredServerIdentity);
                 }
 
                 // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
@@ -348,7 +350,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
                     // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Test to see if peer recovery is supported -  ", _isPeerRecoverySupported);
+                        Tr.debug(tc, "Test to see if peer recovery is supported - {0}", _isPeerRecoverySupported);
                     cp = ConfigurationProviderManager.getConfigurationProvider();
                     if (cp == null) {
                         if (tc.isEntryEnabled())
@@ -777,7 +779,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         if (_leaseLog != null) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "work with leaseLog " + _leaseLog);
+                Tr.debug(tc, "work with leaseLog {0}", _leaseLog);
 
             try {
                 // Retrieve peers in the recovery group from lease table
@@ -833,27 +835,27 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      */
     private TranLogConfiguration createCustomTranLogConfiguration(String recoveredServerIdentity, String logDir, boolean isPeerRecoverySupported) throws URISyntaxException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createCustomTranLogConfiguration", new java.lang.Object[] { recoveredServerIdentity, logDir, this });
+            Tr.entry(tc, "createCustomTranLogConfiguration", recoveredServerIdentity, logDir, this);
 
         TranLogConfiguration tlc = null;
-        final java.util.Properties props = new java.util.Properties();
-        java.net.URI logSettingURI = new java.net.URI(logDir);
+        final Properties props = new Properties();
+        URI logSettingURI = new URI(logDir);
         String scheme = logSettingURI.getScheme();
         String logSetting = logSettingURI.getAuthority();
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Scheme read from URI " + scheme + ", log setting" + logSetting);
+            Tr.debug(tc, "Scheme read from URI {0}, log setting {1}", scheme, logSetting);
         // For the cloud and peer recovery scenarios, we'll automatically add a suffix that matches the recoveryIdentity
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Test to see if peer recovery is supported -  ", isPeerRecoverySupported);
+            Tr.debug(tc, "Test to see if peer recovery is supported - {0}", isPeerRecoverySupported);
         if (isPeerRecoverySupported) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Work with server recovery identity -  " + recoveredServerIdentity + ", reset current logdir");
+                Tr.debug(tc, "Work with server recovery identity - {0}, reset current logdir", recoveredServerIdentity);
 
             if (recoveredServerIdentity != null) {
                 logDir = "custom://com.ibm.rls.jdbc.SQLRecoveryLogFactory?datasource=Liberty" +
                          ",tablesuffix=" + recoveredServerIdentity;
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "log dir is now -  ", logDir);
+                    Tr.debug(tc, "log dir is now - {0}", logDir);
             }
         }
         props.setProperty("LOG_DIRECTORY", logDir);
@@ -882,12 +884,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                                 int logSize,
                                                                 boolean isPeerRecoverySupported) throws URISyntaxException, RecoveryFailedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createFileTranLogConfiguration", new java.lang.Object[] { recoveredServerIdentity, fs, logDir, logSize, this });
+            Tr.entry(tc, "createFileTranLogConfiguration", recoveredServerIdentity, fs, logDir, logSize, this);
 
         TranLogConfiguration tlc = null;
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "Work with server recovery identity -  ", recoveredServerIdentity);
+            Tr.debug(tc, "Work with server recovery identity - {0}", recoveredServerIdentity);
         // Do we need to reset the logdir?
         if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
             if (tc.isDebugEnabled())
@@ -932,7 +934,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                                                public Boolean run() {
                                                                                    Boolean theResult = Boolean.getBoolean("com.ibm.ws.recoverylog.spi.DoNotShutdownOnRecoveryFailure");
                                                                                    if (tc.isDebugEnabled())
-                                                                                       Tr.debug(tc, "Have retrieved jvm property with result, " + theResult.booleanValue());
+                                                                                       Tr.debug(tc, "Have retrieved jvm property with result, {0}", theResult.booleanValue());
                                                                                    return theResult;
                                                                                }
                                                                            });
@@ -981,7 +983,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
         try {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "getHeartbeatLog for server -  ", recoveredServerIdentity);
+                Tr.debug(tc, "getHeartbeatLog for server - {0}", recoveredServerIdentity);
 
             cp = ConfigurationProviderManager.getConfigurationProvider();
             // Big message if Peer recovering, just debug otherwise
@@ -1034,7 +1036,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // specific SQLNonTransactionalDataSource class, which overrides the tWAS equivalent.
                         ResourceFactory nontranDSResourceFactory = cp.getResourceFactory();
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
+                            Tr.debug(tc, "Retrieved non tran DS Resource Factory {0}", nontranDSResourceFactory);
 
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
 
@@ -1045,7 +1047,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
+                            Tr.debug(tc, "Custom PartnerLog is set - {0}", partnerLog);
 
                         if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
                             if (tc.isDebugEnabled())

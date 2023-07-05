@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -332,9 +333,8 @@ public class LogCursorImpl implements LogCursor {
      *         return.
      */
     @Override
+    @Trivial
     public boolean hasNext() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "hasNext", this);
 
         boolean hasNext = false;
 
@@ -344,8 +344,6 @@ public class LogCursorImpl implements LogCursor {
             hasNext = true;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "hasNext", new Boolean(hasNext));
         return hasNext;
     }
 

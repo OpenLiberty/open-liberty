@@ -185,7 +185,14 @@ public class RegistrationImpl {
         }
 
         String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
-        String newAddr = tranService.getAddress(recoveryId);
+        String newAddr;
+        try {
+            newAddr = tranService.getAddress(recoveryId);
+        } catch (Exception e) {
+            WSATException e1 = new WSATException(e.getLocalizedMessage());
+            e1.initCause(e);
+            throw e1;
+        }
         String toAddr = WSATUtil.createRedirectAddr(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 

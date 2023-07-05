@@ -30,6 +30,7 @@ import org.apache.cxf.ws.addressing.JAXWSAConstants;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
 import com.ibm.ws.wsat.service.WSATException;
@@ -255,6 +256,7 @@ public class WebClientImpl extends WebClient {
     // to something that seems to keep jaxws/apache CXF happy.  Not sure why we need to do
     // this but it seems some threads (maybe worker threads processing inbound web service
     // calls?) do not get all the necessary jaxws classes on their classpath.
+    @Trivial
     private <T> T invoke(final Callable<T> action) throws WSATException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
