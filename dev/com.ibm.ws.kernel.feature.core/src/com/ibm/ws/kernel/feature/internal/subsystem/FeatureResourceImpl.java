@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.VersionRange;
+import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -290,7 +291,7 @@ public class FeatureResourceImpl implements FeatureResource {
                && Objects.equals(getLocation(), other.getLocation())
                && Objects.equals(getOsList(), other.getOsList())
                && Objects.equals(getTolerates(), other.getTolerates())
-               && Objects.equals(getRequireJava(), other.getRequireJava());
+               && Objects.equals(getJavaRange(), other.getJavaRange());
     }
 
     /** {@inheritDoc} */
@@ -334,10 +335,10 @@ public class FeatureResourceImpl implements FeatureResource {
     }
 
     @Override
-    public Integer getRequireJava() {
+    public VersionRange getJavaRange() {
         // Directive names are in the attributes map, but end with a colon
-        String requireJava = _rawAttributes.get("require-java:");
-        return requireJava == null ? null : Integer.valueOf(requireJava);
+        String javaRange = _rawAttributes.get("require-java:");
+        return javaRange == null ? null : new VersionRange(javaRange);
     }
 
     @Override
