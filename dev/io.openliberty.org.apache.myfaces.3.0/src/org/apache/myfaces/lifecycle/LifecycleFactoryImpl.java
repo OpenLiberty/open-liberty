@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.faces.FacesException;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
+import jakarta.faces.FacesException;
+import jakarta.faces.lifecycle.Lifecycle;
+import jakarta.faces.lifecycle.LifecycleFactory;
 import org.apache.myfaces.util.Purgeable;
 
 /**
- * @author Manfred Geiler (latest modification by $Author: bommel $)
+ * @author Manfred Geiler (latest modification by $Author$)
  * @author Anton Koinov
- * @version $Revision: 1187701 $ $Date: 2011-10-22 12:21:54 +0000 (Sat, 22 Oct 2011) $
+ * @version $Revision$ $Date$
  */
 public class LifecycleFactoryImpl extends LifecycleFactory implements Purgeable
 {

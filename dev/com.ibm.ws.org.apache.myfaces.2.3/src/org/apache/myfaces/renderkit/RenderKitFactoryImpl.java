@@ -33,12 +33,11 @@ import org.apache.myfaces.util.Purgeable;
 /**
  * RenderKitFactory implementation as defined in Spec. JSF.7.3
  * 
- * @author Manfred Geiler (latest modification by $Author: struberg $)
- * @version $Revision: 1188235 $ $Date: 2011-10-24 17:09:33 +0000 (Mon, 24 Oct 2011) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public class RenderKitFactoryImpl extends RenderKitFactory implements Purgeable
 {
-    //private static final Log log = LogFactory.getLog(RenderKitFactoryImpl.class);
     private static final Logger log = Logger.getLogger(RenderKitFactoryImpl.class.getName());
 
     private Map<String, RenderKit> _renderkits = new HashMap<String, RenderKit>();

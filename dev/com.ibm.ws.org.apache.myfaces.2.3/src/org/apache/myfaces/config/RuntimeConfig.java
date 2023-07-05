@@ -28,18 +28,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.VariableResolver;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.config.element.ComponentTagDeclaration;
 import org.apache.myfaces.config.element.FaceletsProcessing;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
 import org.apache.myfaces.config.element.ManagedBean;
 import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -52,13 +54,12 @@ import org.apache.myfaces.util.Purgeable;
  * information in this class is only available to the MyFaces core implementation classes (i.e. the myfaces source
  * tree). See MyfacesConfig for config parameters that can be used for shared or component classes.
  * 
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
- * @version $Revision: 1645094 $ $Date: 2014-12-12 23:37:31 +0000 (Fri, 12 Dec 2014) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
 public class RuntimeConfig implements Purgeable
 {
-    //private static final Log log = LogFactory.getLog(RuntimeConfig.class);
     private static final Logger log = Logger.getLogger(RuntimeConfig.class.getName());
 
     private static final String APPLICATION_MAP_PARAM_NAME = RuntimeConfig.class.getName();
@@ -85,7 +86,7 @@ public class RuntimeConfig implements Purgeable
     
     private Comparator<ELResolver> _elResolverComparator;
     
-    private Predicate _elResolverPredicate;
+    private Predicate<ELResolver> _elResolverPredicate;
 
     private final Map<String, org.apache.myfaces.config.element.Converter> _converterClassNameToConfigurationMap =
         new ConcurrentHashMap<String, org.apache.myfaces.config.element.Converter>();
@@ -122,6 +123,12 @@ public class RuntimeConfig implements Purgeable
     private Map<String, Integer> _idByNamespace = new HashMap<String, Integer>();
     
     private List<ViewPoolMapping> _viewPoolMappings = new ArrayList<ViewPoolMapping>();
+    
+    private List<FaceletsTemplateMapping> _faceletsTemplateMappings = new ArrayList<FaceletsTemplateMapping>();
+    
+    private List<SearchKeywordResolver> _searchExpressionResolvers = new ArrayList<SearchKeywordResolver>();
+    
+    private List<String> _faceletTemplates = new ArrayList<String>();
 
     public static RuntimeConfig getCurrentInstance(ExternalContext externalContext)
     {
@@ -149,6 +156,7 @@ public class RuntimeConfig implements Purgeable
         _resourceLibraryContracts.clear();
         _injectedObjects.clear();
         _faceletTagLibraries.clear();
+        _faceletTemplates.clear();
         
         _resourceBundles.clear();
         if (facesConfigElResolvers != null)
@@ -166,6 +174,7 @@ public class RuntimeConfig implements Purgeable
         _namespaceById = new HashMap<Integer, String>();
         _idByNamespace = new HashMap<String, Integer>();
         _viewPoolMappings.clear();
+        _faceletsTemplateMappings.clear();
     }
 
     /**
@@ -426,12 +435,12 @@ public class RuntimeConfig implements Purgeable
         _elResolverComparator = elResolverComparator;
     }
     
-    public Predicate getELResolverPredicate()
+    public Predicate<ELResolver> getELResolverPredicate()
     {
         return _elResolverPredicate;
     }
     
-    public void setELResolverPredicate(Predicate elResolverPredicate)
+    public void setELResolverPredicate(Predicate<ELResolver> elResolverPredicate)
     {
         _elResolverPredicate = elResolverPredicate;
     }
@@ -517,10 +526,7 @@ public class RuntimeConfig implements Purgeable
             contractsList = new ArrayList<String>();
             _contractMappings.put(urlPattern, contractsList);
         }
-        for (String contract : contracts)
-        {
-            contractsList.add(contract);
-        }
+        Collections.addAll(contractsList, contracts);
     }
     
     public void addContractMapping(String urlPattern, String contract)
@@ -585,5 +591,29 @@ public class RuntimeConfig implements Purgeable
     public void addViewPoolMapping(ViewPoolMapping mapping)
     {
         _viewPoolMappings.add(mapping);
+    }
+    
+    public void addApplicationSearchExpressionResolver(SearchKeywordResolver resolver)
+    {
+        if (_searchExpressionResolvers == null)
+        {
+            _searchExpressionResolvers = new ArrayList<SearchKeywordResolver>();
+        }
+        _searchExpressionResolvers.add(resolver);
+    }
+
+    public List<SearchKeywordResolver> getApplicationSearchExpressionResolvers()
+    {
+        return _searchExpressionResolvers;
+    }
+    
+    public List<FaceletsTemplateMapping> getFaceletsTemplateMappings()
+    {
+        return _faceletsTemplateMappings;
+    }
+    
+    public void addFaceletsTemplateMapping(FaceletsTemplateMapping mapping)
+    {
+        _faceletsTemplateMappings.add(mapping);
     }
 }

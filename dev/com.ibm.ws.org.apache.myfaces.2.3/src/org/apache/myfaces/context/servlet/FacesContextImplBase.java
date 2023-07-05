@@ -41,18 +41,17 @@ import javax.faces.render.RenderKitFactory;
 import org.apache.myfaces.context.ReleaseableExternalContext;
 import org.apache.myfaces.el.unified.FacesELContext;
 import org.apache.myfaces.util.Purgeable;
+import org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage;
 
 /**
  * Provides a base implementation of the FacesContext for the use
  * in FacesContextImpl and StartupFacesContextImpl.
  * 
- * @author Jakob Korherr (latest modification by $Author: lu4242 $)
- * @version $Revision: 1645094 $ $Date: 2014-12-12 23:37:31 +0000 (Fri, 12 Dec 2014) $
+ * @author Jakob Korherr (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 public abstract class FacesContextImplBase extends FacesContext implements Purgeable
 {
-    public final static String SKIP_CLEAR_VIEW_MAP_HINT = "oam.fc.skipClearViewMapHint";
-
     private Application _application;
     private ExternalContext _externalContext;
     private ReleaseableExternalContext _defaultExternalContext;
@@ -243,10 +242,10 @@ public abstract class FacesContextImplBase extends FacesContext implements Purge
 
     /**
      * Returns a mutable map of attributes associated with this faces context when
-     * {@link javax.faces.context.FacesContext.release} is called the map must be cleared!
+     * {@link javax.faces.context.FacesContext#release()} is called the map must be cleared!
      * 
      * Note this map is not associated with the request map the request map still is accessible via the
-     * {@link javax.faces.context.FacesContext.getExternalContext.getRequestMap} method!
+     * {@link javax.faces.context.ExternalContext#getRequestMap()} method!
      * 
      * Also the scope is different to the request map, this map has the scope of the context, and is cleared once the
      * release method on the context is called!
@@ -292,7 +291,8 @@ public abstract class FacesContextImplBase extends FacesContext implements Purge
         // the clear method must be called on the Map returned from UIViewRoot.getViewMap().
         if (_viewRoot != null && !_viewRoot.equals(viewRoot))
         {
-            if (!Boolean.TRUE.equals(getAttributes().get(SKIP_CLEAR_VIEW_MAP_HINT)))
+            // if we're currently building view metadata, skip clearing the view map
+            if (!Boolean.TRUE.equals(getAttributes().get(FaceletViewDeclarationLanguage.BUILDING_VIEW_METADATA)))
             {
                 //call getViewMap(false) to prevent unnecessary map creation
                 Map<String, Object> viewMap = _viewRoot.getViewMap(false);

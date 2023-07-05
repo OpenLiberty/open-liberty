@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +52,8 @@ import javax.faces.application.ProjectStage;
 import javax.faces.application.ResourceHandler;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.el.PropertyResolver;
@@ -72,10 +75,8 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.validator.BeanValidator;
 import javax.faces.webapp.FacesServlet;
 
-import org.apache.commons.collections.Predicate;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.application.BackwardsCompatibleNavigationHandlerWrapper;
-import org.apache.myfaces.cdi.dependent.BeanEntry;
 import org.apache.myfaces.component.visit.VisitContextFactoryImpl;
 import org.apache.myfaces.config.annotation.AnnotationConfigurator;
 import org.apache.myfaces.config.annotation.LifecycleProvider;
@@ -102,8 +103,6 @@ import org.apache.myfaces.config.element.NavigationRule;
 import org.apache.myfaces.config.element.Renderer;
 import org.apache.myfaces.config.element.ResourceBundle;
 import org.apache.myfaces.config.element.SystemEventListener;
-import org.apache.myfaces.config.element.ViewPoolMapping;
-import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigDispenserImpl;
 import org.apache.myfaces.config.impl.digester.DigesterFacesConfigUnmarshallerImpl;
 import org.apache.myfaces.context.ExceptionHandlerFactoryImpl;
@@ -114,6 +113,7 @@ import org.apache.myfaces.context.servlet.ServletFlashFactoryImpl;
 import org.apache.myfaces.el.DefaultPropertyResolver;
 import org.apache.myfaces.el.VariableResolverImpl;
 import org.apache.myfaces.el.unified.ResolverBuilderBase;
+import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
 import org.apache.myfaces.flow.FlowCallNodeImpl;
 import org.apache.myfaces.flow.FlowHandlerFactoryImpl;
 import org.apache.myfaces.flow.FlowImpl;
@@ -124,10 +124,7 @@ import org.apache.myfaces.flow.SwitchCaseImpl;
 import org.apache.myfaces.flow.SwitchNodeImpl;
 import org.apache.myfaces.flow.ViewNodeImpl;
 import org.apache.myfaces.flow.impl.AnnotatedFlowConfigurator;
-import org.apache.myfaces.lifecycle.ClientWindowFactoryImpl;
 import org.apache.myfaces.lifecycle.LifecycleFactoryImpl;
-import org.apache.myfaces.lifecycle.LifecycleImpl;
-import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.renderkit.RenderKitFactoryImpl;
 import org.apache.myfaces.renderkit.html.HtmlRenderKitImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
@@ -138,6 +135,13 @@ import org.apache.myfaces.shared.util.StringUtils;
 import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.shared_impl.util.serial.DefaultSerialFactory;
 import org.apache.myfaces.shared_impl.util.serial.SerialFactory;
+import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
+import org.apache.myfaces.config.element.FaceletsTemplateMapping;
+import org.apache.myfaces.config.element.ViewPoolMapping;
+import org.apache.myfaces.config.element.facelets.FaceletTagLibrary;
+import org.apache.myfaces.lifecycle.LifecycleImpl;
+import org.apache.myfaces.renderkit.LazyRenderKit;
 import org.apache.myfaces.spi.FacesConfigurationMerger;
 import org.apache.myfaces.spi.FacesConfigurationMergerFactory;
 import org.apache.myfaces.spi.InjectionProvider;
@@ -156,16 +160,12 @@ import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
-import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
-import com.ibm.ws.jsf.spi.WASInjectionProvider;
-import com.ibm.ws.managedobject.ManagedObject;
-
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
  * lie behind FacesConfigUnmarshaller and FacesConfigDispenser.
  *
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
- * @version $Revision: 1645094 $ $Date: 2014-12-12 23:37:31 +0000 (Fri, 12 Dec 2014) $
+ * @author Manfred Geiler (latest modification by $Author$)
+ * @version $Revision$ $Date$
  */
 @SuppressWarnings("deprecation")
 public class FacesConfigurator
@@ -173,7 +173,6 @@ public class FacesConfigurator
     private final Class<?>[] NO_PARAMETER_TYPES = new Class[]{};
     private final Object[] NO_PARAMETERS = new Object[]{};
 
-    //private static final Log log = LogFactory.getLog(FacesConfigurator.class);
     private static final Logger log = Logger.getLogger(FacesConfigurator.class.getName());
 
     private static final String DEFAULT_RENDER_KIT_CLASS = HtmlRenderKitImpl.class.getName();
@@ -192,10 +191,11 @@ public class FacesConfigurator
     private static final String DEFAULT_FLASH_FACTORY = ServletFlashFactoryImpl.class.getName();
     private static final String DEFAULT_CLIENT_WINDOW_FACTORY = ClientWindowFactoryImpl.class.getName();
     private static final String DEFAULT_FLOW_FACTORY = FlowHandlerFactoryImpl.class.getName();
+    private static final String DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY = 
+            SearchExpressionContextFactoryImpl.class.getName();
     private static final String DEFAULT_FACES_CONFIG = "/WEB-INF/faces-config.xml";
 
-    // Make public for use by WASCDIAnnotationInjectionProvider
-    public static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
+    private static final String INJECTED_BEAN_STORAGE_KEY = "org.apache.myfaces.spi.BEAN_ENTRY_STORAGE";
 
     /**
      * Set this attribute if the current configuration requires enable window mode
@@ -228,15 +228,15 @@ public class FacesConfigurator
             throw new IllegalArgumentException("external context must not be null");
         }
         _externalContext = externalContext;
-               
+
         // In dev mode a new Faces Configurator is created for every request so only
         // create a new bean storage list if we don't already have one which will be
         // the case first time through during init.
-        if (_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY) == null) {
-                _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
-        }              
+        if (_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY) == null) 
+        {
+            _externalContext.getApplicationMap().put(INJECTED_BEAN_STORAGE_KEY, new CopyOnWriteArrayList());
+        }
     }
-        
 
     /**
      * @param unmarshaller
@@ -401,7 +401,7 @@ public class FacesConfigurator
                 PARAMS_FACELETS_LIBRARIES);
         if (faceletsFiles != null)
         {
-            String[] faceletFilesList = faceletsFiles.split(";");
+            String[] faceletFilesList = StringUtils.trim(faceletsFiles.split(";"));
             for (int i = 0, size = faceletFilesList.length; i < size; i++)
             {
                 String systemId = faceletFilesList[i];
@@ -461,7 +461,6 @@ public class FacesConfigurator
         
         return lastModified;
     }
-
 
     public void update()
     {
@@ -643,6 +642,9 @@ public class FacesConfigurator
                 DEFAULT_CLIENT_WINDOW_FACTORY);
         setFactories(FactoryFinder.FLOW_HANDLER_FACTORY, dispenser.getFlowHandlerFactoryIterator(),
                 DEFAULT_FLOW_FACTORY);
+        setFactories(FactoryFinder.SEARCH_EXPRESSION_CONTEXT_FACTORY, 
+                dispenser.getSearchExpressionContextFactoryIterator(),
+                DEFAULT_SEARCH_EXPRESSION_CONTEXT_FACTORY);
     }
 
     private void setFactories(String factoryName, Collection<String> factories, String defaultFactory)
@@ -664,10 +666,8 @@ public class FacesConfigurator
 
         FacesConfigData dispenser = getDispenser();
         ActionListener actionListener = ClassUtils.buildApplicationObject(ActionListener.class,
-                dispenser.getActionListenerIterator(), null,this);
-        
-        // injectAndPostConstruct now driven by ClassUtils.
-        // _callInjectAndPostConstruct(actionListener);
+                dispenser.getActionListenerIterator(), null);
+        _callInjectAndPostConstruct(actionListener);
         application.setActionListener(actionListener);
 
         if (dispenser.getDefaultLocale() != null)
@@ -685,27 +685,32 @@ public class FacesConfigurator
             application.setMessageBundle(dispenser.getMessageBundle());
         }
         
+        // First build the object
         NavigationHandler navigationHandler = ClassUtils.buildApplicationObject(NavigationHandler.class,
+                ConfigurableNavigationHandler.class, null,
+                dispenser.getNavigationHandlerIterator(),
+                application.getNavigationHandler());
+        // Invoke inject and post construct
+        _callInjectAndPostConstruct(navigationHandler);
+        // Finally wrap the object with the BackwardsCompatibleNavigationHandlerWrapper if it is not assignable
+        // from ConfigurableNavigationHandler
+        navigationHandler = ClassUtils.wrapBackwardCompatible(NavigationHandler.class,
                 ConfigurableNavigationHandler.class,
                 BackwardsCompatibleNavigationHandlerWrapper.class,
-                dispenser.getNavigationHandlerIterator(),
-                application.getNavigationHandler(),this);
-        // injectAndPostConstruct now driven by ClassUtils.
-        //_callInjectAndPostConstruct(navigationHandler);
+                application.getNavigationHandler(),
+                navigationHandler);
         application.setNavigationHandler(navigationHandler);
 
         StateManager stateManager = ClassUtils.buildApplicationObject(StateManager.class,
                 dispenser.getStateManagerIterator(),
-                application.getStateManager(),this);
-        // injectAndPostConstruct now driven by ClassUtils.
-        //_callInjectAndPostConstruct(stateManager);
+                application.getStateManager());
+        _callInjectAndPostConstruct(stateManager);
         application.setStateManager(stateManager);
 
         ResourceHandler resourceHandler = ClassUtils.buildApplicationObject(ResourceHandler.class,
                 dispenser.getResourceHandlerIterator(),
-                application.getResourceHandler(),this);
-        // injectAndPostConstruct now driven by ClassUtils.
-        //_callInjectAndPostConstruct(resourceHandler);
+                application.getResourceHandler());
+        _callInjectAndPostConstruct(resourceHandler);
         application.setResourceHandler(resourceHandler);
 
         List<Locale> locales = new ArrayList<Locale>();
@@ -719,6 +724,10 @@ public class FacesConfigurator
         application.setViewHandler(ClassUtils.buildApplicationObject(ViewHandler.class,
                 dispenser.getViewHandlerIterator(),
                 application.getViewHandler()));
+        
+        application.setSearchExpressionHandler(ClassUtils.buildApplicationObject(SearchExpressionHandler.class,
+                dispenser.getSearchExpressionHandlerIterator(),
+                application.getSearchExpressionHandler()));
         
         RuntimeConfig runtimeConfig = getRuntimeConfig();
         
@@ -736,10 +745,9 @@ public class FacesConfigurator
                         ? systemEventListener.getSystemEventClass()
                         : SystemEvent.class.getName());
 
-                // For CDI 1.2 use injectAndPostConstruct to create the class instance
-                Class s = ClassUtils.classForName(systemEventListener.getSystemEventListenerClass());
-                javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) this.injectAndPostConstruct(s);
-                
+                javax.faces.event.SystemEventListener listener = (javax.faces.event.SystemEventListener) 
+                        ClassUtils.newInstance(systemEventListener.getSystemEventListenerClass());
+                _callInjectAndPostConstruct(listener);
                 runtimeConfig.addInjectedObject(listener);
                 if (systemEventListener.getSourceClass() != null && systemEventListener.getSourceClass().length() > 0)
                 {
@@ -758,10 +766,6 @@ public class FacesConfigurator
             catch (ClassNotFoundException e)
             {
                 log.log(Level.SEVERE, "System event listener could not be initialized, reason:", e);
-            }
-            catch (InjectionProviderException ipe) 
-            {
-                log.log(Level.SEVERE, "System event listener could not be initialized, reason:", ipe);
             }
         }
 
@@ -890,49 +894,37 @@ public class FacesConfigurator
                     }
                 }
             }
-
         }
-        JSFExtensionFactory.initializeCDI(application);
         
         this.setApplication(application);
     }
     
-    // CDI 1.2 injectAndPostConstruct takes the class to be created as a parameter and returns an instance of the class.
-    // Made public for use by ClassUtils.
-    public Object injectAndPostConstruct(Class<?> Klass) throws InjectionProviderException
+    private void _callInjectAndPostConstruct(Object instance)
     {
-        Object instance = null;
-
-        ManagedObject mo = (ManagedObject) ((WASInjectionProvider) getInjectionProvider()).inject(Klass, true, _externalContext);
-        instance = mo.getObject();
-        
-        if (instance instanceof FacesWrapper)
+        try
         {
-            Object innerInstance = ((FacesWrapper)instance).getWrapped();
-            if (innerInstance != null)
+            //invoke the injection over the inner one first
+            if (instance instanceof FacesWrapper)
             {
-                injectAndPostConstruct(innerInstance);
+                Object innerInstance = ((FacesWrapper)instance).getWrapped();
+                if (innerInstance != null)
+                {
+                    _callInjectAndPostConstruct(innerInstance);
+                }
             }
+            List<BeanEntry> injectedBeanStorage =
+                    (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
+            Object creationMetaData = getInjectionProvider().inject(instance);
+
+            injectedBeanStorage.add(new BeanEntry(instance, creationMetaData));
+
+            getInjectionProvider().postConstruct(instance, creationMetaData);
         }
-
-        return instance;
-    }
-
-    // Used when CDI injection is required for an object which has already been created which happens
-    // when a specific constructor is used. Made public for use by ClassUtils.
-    public void injectAndPostConstruct(Object instance) throws InjectionProviderException
-    {
-        //invoke the injection over the inner one first
-        if (instance instanceof FacesWrapper)
+        catch (InjectionProviderException ex)
         {
-            Object innerInstance = ((FacesWrapper)instance).getWrapped();
-            if (innerInstance != null)
-            {
-                injectAndPostConstruct(innerInstance);
-            }
+            log.log(Level.INFO, "Exception on PreDestroy", ex);
         }
-        ((WASInjectionProvider) getInjectionProvider()).inject(instance, true, _externalContext);
-
     }
 
     /**
@@ -1028,22 +1020,28 @@ public class FacesConfigurator
 
         for (String className : dispenser.getElResolvers())
         {
-            ELResolver elResolver = null;
+            ELResolver elResolver = (ELResolver) ClassUtils.newInstance(className, ELResolver.class);
             try
             {
-                // For CDI 1.2 use injectAndPostConstruct to create the class instance
-                Class Klass = ClassUtils.classForName(className);
-                elResolver = (ELResolver) this.injectAndPostConstruct(Klass);
+                Object creationMetaData = getInjectionProvider().inject(elResolver);
+
+                injectedBeansAndMetaData.add(new BeanEntry(elResolver, creationMetaData));
+
+                getInjectionProvider().postConstruct(elResolver, creationMetaData);
             }
             catch (InjectionProviderException e)
             {
                 log.log(Level.SEVERE, "Error while injecting ELResolver", e);
             }
-            catch (ClassNotFoundException e) 
-            {
-                log.log(Level.SEVERE, "Error while injecting ELResolver", e);
-            }
             runtimeConfig.addFacesConfigElResolver(elResolver);
+        }
+        
+        for (String className : dispenser.getSearchKeywordResolvers())
+        {
+            SearchKeywordResolver searchKeywordResolver = (SearchKeywordResolver) ClassUtils.newInstance(
+                    className, SearchKeywordResolver.class);
+            
+            runtimeConfig.addApplicationSearchExpressionResolver(searchKeywordResolver);
         }
 
         runtimeConfig.setFacesVersion(dispenser.getFacesVersion());
@@ -1063,26 +1061,23 @@ public class FacesConfigurator
             }
         }
 
-        String comparatorClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
-
-        if (comparatorClass != null && !"".equals(comparatorClass))
+        String elResolverComparatorClass =
+                _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_COMPARATOR);
+        if (elResolverComparatorClass != null && !elResolverComparatorClass.isEmpty())
         {
-            // get the comparator class
-            Class<Comparator<ELResolver>> clazz;
             try
             {
-                clazz = (Class<Comparator<ELResolver>>) ClassUtils.classForName(comparatorClass);
-                // create the instance
+                Class<Comparator<ELResolver>> clazz =
+                        (Class<Comparator<ELResolver>>) ClassUtils.classForName(elResolverComparatorClass);
                 Comparator<ELResolver> comparator = ClassUtils.newInstance(clazz);
-
                 runtimeConfig.setELResolverComparator(comparator);
             }
             catch (Exception e)
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + comparatorClass
-                            + " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. "
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + elResolverComparatorClass
+                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_COMPARATOR + " web config param. "
                             + "Initialization continues with no comparator used.", e);
                 }
             }
@@ -1093,26 +1088,34 @@ public class FacesConfigurator
         }
 
         String elResolverPredicateClass = _externalContext.getInitParameter(ResolverBuilderBase.EL_RESOLVER_PREDICATE);
-
-        if (elResolverPredicateClass != null && !"".equals(elResolverPredicateClass))
+        if (elResolverPredicateClass != null && !elResolverPredicateClass.isEmpty())
         {
-            // get the comparator class
-            Class<Predicate> clazz;
             try
             {
-                clazz = (Class<Predicate>) ClassUtils.classForName(elResolverPredicateClass);
-                // create the instance
-                Predicate elResolverPredicate = ClassUtils.newInstance(clazz);
-
-                runtimeConfig.setELResolverPredicate(elResolverPredicate);
+                Class<?> clazz = ClassUtils.classForName(elResolverPredicateClass);
+                Object elResolverPredicate = ClassUtils.newInstance(clazz);
+                if (elResolverPredicate instanceof Predicate)
+                {
+                    runtimeConfig.setELResolverPredicate((Predicate) elResolverPredicate);
+                }
+                else
+                {
+                    if (log.isLoggable(Level.SEVERE))
+                    {
+                        log.log(Level.SEVERE, "EL Resolver Predicate " + elResolverPredicateClass
+                                + " must implement " + Predicate.class.getName()
+                                + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
+                                + "Initialization continues with no predicate used.");
+                    }
+                }
             }
             catch (Exception e)
             {
                 if (log.isLoggable(Level.SEVERE))
                 {
-                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Comparator " + comparatorClass
-                            + " . Check org.apache.myfaces.EL_RESOLVER_COMPARATOR web config param. "
-                            + "Initialization continues with no comparator used.", e);
+                    log.log(Level.SEVERE, "Cannot instantiate EL Resolver Predicate " + elResolverPredicateClass
+                            + " . Check " + ResolverBuilderBase.EL_RESOLVER_PREDICATE + " web config param. "
+                            + "Initialization continues with no predicate used.", e);
                 }
             }
         }
@@ -1141,7 +1144,7 @@ public class FacesConfigurator
             runtimeConfig.setClassLoaderResourceLibraryContracts(
                 rlcp.getClassloaderResourceLibraryContracts(_externalContext));
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             if (log.isLoggable(Level.SEVERE))
             {
@@ -1225,6 +1228,11 @@ public class FacesConfigurator
         for (ViewPoolMapping viewPoolMapping : dispenser.getViewPoolMappings())
         {
             runtimeConfig.addViewPoolMapping(viewPoolMapping);
+        }
+        
+        for (FaceletsTemplateMapping faceletsTemplateMapping : dispenser.getFaceletsTemplateMappings())
+        {
+            runtimeConfig.addFaceletsTemplateMapping(faceletsTemplateMapping);
         }
     }
 
@@ -1360,6 +1368,9 @@ public class FacesConfigurator
         LifecycleFactory lifecycleFactory
                 = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
 
+        List<BeanEntry> injectedBeanStorage =
+                (List<BeanEntry>)_externalContext.getApplicationMap().get(INJECTED_BEAN_STORAGE_KEY);
+
         //Lifecycle lifecycle = lifecycleFactory.getLifecycle(getLifecycleId());
         for (Iterator<String> it = lifecycleFactory.getLifecycleIds(); it.hasNext();)
         {
@@ -1370,10 +1381,14 @@ public class FacesConfigurator
             {
                 try
                 {
-                    // For CDI 1.2 use injectAndPostConstruct to create the class instance
-                    Class Klass = ClassUtils.classForName(listenerClassName);
-                    PhaseListener listener = (PhaseListener) this.injectAndPostConstruct(Klass);
+                    PhaseListener listener = (PhaseListener)
+                            ClassUtils.newInstance(listenerClassName, PhaseListener.class);
 
+                    Object creationMetaData = getInjectionProvider().inject(listener);
+
+                    injectedBeanStorage.add(new BeanEntry(listener, creationMetaData));
+
+                    getInjectionProvider().postConstruct(listener, creationMetaData);
                     lifecycle.addPhaseListener(listener);
                 }
                 catch (ClassCastException e)
@@ -1382,9 +1397,6 @@ public class FacesConfigurator
                 }
                 catch (InjectionProviderException e)
                 {
-                    log.log(Level.SEVERE, "Error while injecting PhaseListener", e);
-                }
-                catch (ClassNotFoundException e) {
                     log.log(Level.SEVERE, "Error while injecting PhaseListener", e);
                 }
             }
@@ -1482,9 +1494,12 @@ public class FacesConfigurator
         }
         else
         {
-            log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
-                    + "@PreDestroy methods won't get called in every case. "
-                    + "This instance needs to be published before configuration is started.");
+            if (MyfacesConfig.getCurrentInstance(externalContext).isSupportManagedBeans())
+            {
+                log.log(Level.SEVERE, "No ManagedBeanDestroyerListener instance found, thus "
+                        + "@PreDestroy methods won't get called in every case. "
+                        + "This instance needs to be published before configuration is started.");
+            }
         }
     }
     
