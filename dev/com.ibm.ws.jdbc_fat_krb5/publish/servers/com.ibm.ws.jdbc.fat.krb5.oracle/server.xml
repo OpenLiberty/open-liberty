@@ -8,7 +8,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <library id="OracleLib">
-    <file name="${shared.resource.dir}/jdbc/ojdbc8_g.jar"/>
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.ORACLE_DRIVER}"/>
   </library>
   
   <kerberos keytab="${server.config.dir}security/oracle_client.keytab" configFile="${KRB5_CONF}"/>
