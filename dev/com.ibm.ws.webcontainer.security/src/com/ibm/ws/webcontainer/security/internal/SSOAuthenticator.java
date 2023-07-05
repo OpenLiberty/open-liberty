@@ -97,7 +97,7 @@ public class SSOAuthenticator implements WebAuthenticator {
         HttpServletResponse res = webRequest.getHttpServletResponse();
         AuthenticationResult authResult = handleSSO(req, res);
         if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
-            ssoCookieHelper.addJwtSsoCookiesToResponse(authResult.getSubject(), req, res);
+            ssoCookieHelper.addJwtSsoCookiesToResponse(authResult.getSubject(), req, res, null);
         }
         return authResult;
     }
@@ -281,7 +281,7 @@ public class SSOAuthenticator implements WebAuthenticator {
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND,
                                                                      authenticationData, null);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject, "jwtToken", null, AuditEvent.OUTCOME_SUCCESS);
-            ssoCookieHelper.addJwtSsoCookiesToResponse(new_subject, req, res);
+            ssoCookieHelper.addJwtSsoCookiesToResponse(new_subject, req, res, null);
         } catch (AuthenticationException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "authenticateWithJwt exception: ", new Object[] { e });

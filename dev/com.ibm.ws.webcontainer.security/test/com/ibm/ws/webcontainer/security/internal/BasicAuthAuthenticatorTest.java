@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,6 @@ import org.junit.Test;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
-import com.ibm.ws.security.authentication.PasswordExpiredException;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -102,7 +101,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -116,7 +115,6 @@ public class BasicAuthAuthenticatorTest {
         assertEquals("Status should be SUCCESS.", AuthResult.SUCCESS, authResult.getStatus());
         assertEquals("Subject sould be the authenticated subject.", authSubject, authResult.getSubject());
     }
-
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator#authenticate(com.ibm.ws.webcontainer.security.WebRequest)} .
@@ -141,7 +139,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(returnValue(authSubject));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -223,7 +221,7 @@ public class BasicAuthAuthenticatorTest {
      */
     @Test
     public void testAuthenticate_authnFailure() {
-        
+
         authData.set(AuthenticationData.USERNAME, user);
         authData.set(AuthenticationData.PASSWORD, password.toCharArray());
         try {
@@ -245,6 +243,7 @@ public class BasicAuthAuthenticatorTest {
         AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
         assertEquals("Status should be SEND_401.", AuthResult.SEND_401, authResult.getStatus());
     }
+
     @Test
     public void testAuthenticate_passwordExpired() throws Exception {
         final Subject authSubject = new Subject();
@@ -261,7 +260,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(throwException(new com.ibm.ws.security.authentication.PasswordExpiredException("authn failed")));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -272,6 +271,7 @@ public class BasicAuthAuthenticatorTest {
         AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
         assertEquals("PasswordExpired", true, authResult.getPasswordExpired());
     }
+
     @Test
     public void testAuthenticate_userRevoked() throws Exception {
         final Subject authSubject = new Subject();
@@ -288,7 +288,7 @@ public class BasicAuthAuthenticatorTest {
                 allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
                                                     with(equal((Subject) null)));
                 will(throwException(new com.ibm.ws.security.authentication.UserRevokedException("authn failed")));
-                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp, null);
                 allowing(webRequest).getSecurityMetadata();
                 allowing(loginConfiguration).getRealmName();
                 allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
@@ -299,6 +299,7 @@ public class BasicAuthAuthenticatorTest {
         AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
         assertEquals("PasswordExpired", true, authResult.getUserRevoked());
     }
+
     /**
      * Test for null request
      */

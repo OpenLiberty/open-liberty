@@ -137,6 +137,9 @@
      			<Option label="%sameSiteCookieNone" value="None"/>
      			<Option label="%sameSiteCookieStrict" value="Strict"/>
         </AD>    
+        
+        <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
+            required="false" type="Boolean" default="false" ibm:beta="true"/>
      			
         <!-- 
               JCache configuration.

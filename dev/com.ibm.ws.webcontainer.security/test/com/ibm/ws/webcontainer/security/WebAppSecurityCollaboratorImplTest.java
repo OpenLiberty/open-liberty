@@ -1386,6 +1386,7 @@ public class WebAppSecurityCollaboratorImplTest {
         });
 
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_SINGLE_SIGN_ON_ENABLED, false);
+        configProps.put(WebAppSecurityConfigImpl.CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, false);
 
         setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble2(), cc, configProps);
 

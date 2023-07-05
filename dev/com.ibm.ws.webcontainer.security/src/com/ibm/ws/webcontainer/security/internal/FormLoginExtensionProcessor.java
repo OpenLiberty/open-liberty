@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -225,7 +225,7 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
                 ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
                                                              webAppSecConfig.getWASReqURLRedirectDomainNames());
             }
-            ssoCookieHelper.addSSOCookiesToResponse(subject, req, res);
+            ssoCookieHelper.addSSOCookiesToResponse(subject, req, res, wac.getContextRoot());
             referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
             if (!res.isCommitted()) {
                 res.sendRedirect(res.encodeURL(storedReq));
@@ -370,7 +370,7 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
     }
 
     private boolean isPostLoginProcessDone(HttpServletRequest req) {
-        Boolean result = (Boolean)req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+        Boolean result = (Boolean) req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
         if (result != null && result) {
             return true;
         }
