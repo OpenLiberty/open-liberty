@@ -7,6 +7,7 @@ Subsystem-Name: gRPC internal 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common, \
   io.openliberty.grpc.1.0.internal, \
+  com.ibm.ws.com.google.guava, \
   com.ibm.ws.security.authorization.util
 kind=ga
 edition=core

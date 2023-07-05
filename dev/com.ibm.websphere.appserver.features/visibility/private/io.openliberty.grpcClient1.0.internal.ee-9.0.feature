@@ -8,6 +8,7 @@ Subsystem-Name: Jakarta gRPC Client 1.0
   com.ibm.websphere.appserver.servlet-5.0; ibm.tolerates:="6.0, 6.1"
 -bundles=\
   io.openliberty.grpc.1.0.internal.common.jakarta, \
+  com.ibm.ws.com.google.guava, \
   io.openliberty.grpc.1.0.internal.client.jakarta
 kind=ga
 edition=core

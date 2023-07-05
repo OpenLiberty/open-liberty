@@ -8,6 +8,7 @@ Subsystem-Name: gRPC Client 1.0
   com.ibm.websphere.appserver.servlet-4.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common, \
+  com.ibm.ws.com.google.guava, \
   io.openliberty.grpc.1.0.internal.client
 kind=ga
 edition=core

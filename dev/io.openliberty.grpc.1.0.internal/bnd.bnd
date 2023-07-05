@@ -31,6 +31,11 @@ Import-Package: !sun.*,\
   !org.checkerframework,\
   javax.annotation;version=!,\
   !com.ibm.websphere.monitor.jmx,\
+  !javax.annotation.meta,\
+  !com.google.appengine.api,\
+  !com.google.apphosting.api,\
+  !com.google.errorprone.annotations,\
+  !com.google.errorprone.annotations.concurrent,\
   *
 
 Export-Package: \
@@ -68,7 +73,7 @@ Include-Resource: \
   com.ibm.ws.webcontainer,\
   com.ibm.ws.managedobject,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=30.1,\
+  com.google.guava:guava;version=latest,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\
