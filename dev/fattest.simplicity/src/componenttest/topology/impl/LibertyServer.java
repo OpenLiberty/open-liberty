@@ -7070,6 +7070,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void setConsoleLogName(String consoleLogName) {
         this.consoleFileName = consoleLogName;
+        this.consoleAbsPath = logsRoot + consoleLogName;
     }
 
     public void setAdditionalSystemProperties(Map<String, String> additionalSystemProperties) {
