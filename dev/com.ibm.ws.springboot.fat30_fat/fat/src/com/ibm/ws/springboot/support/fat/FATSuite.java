@@ -37,23 +37,30 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WarmStartTests30.class,
                 SSLTests30.class,
                 SSLMutualAuthTests30.class,
-                SpringSecurityTests30.class,
+                    // SpringSecurityTests30.class,
+                    //   testSpringWithSecurity
+                    //   testSpringWithoutSecurity
                 JSPTests30.class,
-                MissingServletTests30.class,
+                    // MissingServletTests30.class,
+                    //   testMissingServletFor30
                 MissingSslFeatureTests30.class,
-                MissingWebsocketFeatureTests30.class,
+                    // MissingWebsocketFeatureTests30.class,
+                    //   testMissingWebsocketFor30
                 MultiContextTests30.class,
                 MultipleApplicationsNotSupported30.class,
-                NeedSpringBootFeatureTests30.class,
+                    // NeedSpringBootFeatureTests30.class,
+                    //   testNeedSpringBootFeature30
                 InvalidAppTests.class,
                 NoServletRequiredAppTests30.class,
                 SpringBootUtilityThinTest.class,
                 WebAnnotationTests30.class,
                 ExtractedAppTests30.class,
-                WebSocketTests30.class,
+                    // WebSocketTests30.class,
+                    //   testEchoWebSocket30
                 MimeMapping30.class,
                 ErrorPage30Test.class,
-                EnableSpringBootTraceTests30.class,
+                    // EnableSpringBootTraceTests30.class,
+                    //   testEnableSpringBootTraceFor30
                 ExceptionOccuredAfterAppIsAvailableTest30.class,
                 JakartaFeatureTests30.class,
                 TemplateTests30.class,

@@ -264,12 +264,6 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         // is provided, and means that the class availability test must not be coded
         // with reference the target class.
 
-        // if ( isClassAvailable("org.springframework.web.WebApplicationInitializer") ) {
-        //     if ( !isClassAvailable("javax.servlet.Servlet") ) {
-        //         throw new ApplicationError(Type.ERROR_MISSING_SERVLET_FEATURE);
-        //     }
-        // }
-
         if ( isClassAvailable("org.springframework.web.WebApplicationInitializer") ) {
             String servletClassName =
                 ( springIsAtLeast30 ? "jakarta.servlet.Servlet" : "javax.servlet.Servlet");
@@ -283,12 +277,6 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         } else {
             System.out.println("The Spring Servlet function was not located.");
         }
-
-        // if ( isClassAvailable("org.springframework.web.socket.WebSocketHandler") ) {
-        //     if ( !isClassAvailable("javax.websocket.WebSocketContainer") ) {
-        //         throw new ApplicationError(Type.ERROR_MISSING_WEBSOCKET_FEATURE);
-        //     }
-        // }
 
         String webSocketHandlerClassName = "org.springframework.web.socket.WebSocketHandler";
 

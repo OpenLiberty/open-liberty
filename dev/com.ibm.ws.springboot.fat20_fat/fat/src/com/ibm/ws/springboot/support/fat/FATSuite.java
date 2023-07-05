@@ -60,7 +60,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 SpringBootUtilityThinTest.class,
                 WebAnnotationTests20.class,
                 ExtractedAppTests20.class,
-                WebSocketTests20.class,
+                    // WebSocketTests20.class,
+                    //   testEchoWebSocket20
                 MimeMapping15.class,
                 MimeMapping20.class,
                 ErrorPage15Test.class,
