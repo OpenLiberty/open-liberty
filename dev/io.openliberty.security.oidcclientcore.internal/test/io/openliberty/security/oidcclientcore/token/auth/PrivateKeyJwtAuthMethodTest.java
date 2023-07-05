@@ -11,12 +11,20 @@ package io.openliberty.security.oidcclientcore.token.auth;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
+import org.jmock.Expectations;
 import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.lang.JoseException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,9 +32,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ssl.JSSEHelper;
+import com.ibm.websphere.ssl.SSLConfigChangeListener;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.ws.ssl.KeyStoreService;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException;
+import io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException;
+import io.openliberty.security.oidcclientcore.token.TokenConstants;
+import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
 import test.common.SharedOutputManager;
 
 public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
@@ -35,27 +52,52 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
     private static final String CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR = "CWWKS2430E";
     private static final String CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY = "CWWKS2431E";
+    private static final String CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR = "CWWKS2432E";
+    private static final String CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME = "CWWKS2433E";
+    private static final String CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF = "CWWKS2434E";
 
     private static KeyPair keyPair;
 
+    private final KeyStoreService keyStoreService = mockery.mock(KeyStoreService.class);
+    private final SSLSupport sslSupport = mockery.mock(SSLSupport.class);
+    private final JSSEHelper jsseHelper = mockery.mock(JSSEHelper.class);
+
+    private final String configurationId = "myOidcClientConfig";
     private String clientId;
     private final String tokenEndpointUrl = "https://somehost/path/to/token";
     private final String clientAssertionSigningAlgorithm = "RS256";
+    private final String sslRef = "referenceToSslConfig";
+    private final String keyAliasName = "aliasForTheKeyToUse";
+    private final String keyStoreName = "nameOfKeyStore";
 
     PrivateKeyJwtAuthMethod authMethod;
+
+    Builder tokenRequestBuilder;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr.captureStreams();
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(4096);
         keyPair = keyGen.generateKeyPair();
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws TokenEndpointAuthMethodSettingsException {
         clientId = testName.getMethodName();
-        authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, keyPair.getPrivate());
+        tokenRequestBuilder = new Builder(tokenEndpointUrl, clientId, null, null, null);
+
+        SecuritySSLUtils sslUtils = new SecuritySSLUtils();
+        sslUtils.setSslSupport(sslSupport);
+
+        authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, keyAliasName) {
+            @Override
+            String getX5tForPublicKey() throws Exception {
+                return "x5t_" + testName.getMethodName();
+            }
+        };
+        authMethod.setKeyStoreService(keyStoreService);
     }
 
     @After
@@ -66,51 +108,125 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
     }
 
     @Test
-    public void test_createPrivateKeyJwt_missingKey() {
-        authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, null);
+    public void test_constructor_missingKeyAliasNAme() throws Exception {
         try {
-            String jwt = authMethod.createPrivateKeyJwt();
-            fail("Should have thrown an exception but got: " + jwt);
-        } catch (PrivateKeyJwtAuthException e) {
-            verifyException(e, CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR + ".+" + CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY);
+            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, sslRef, null);
+            fail("Should have thrown an exception, but didn't.");
+        } catch (TokenEndpointAuthMethodSettingsException e) {
+            verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME);
         }
     }
 
     @Test
-    public void test_createPrivateKeyJwt_algorithmNotValidForKeyType() {
-        authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, "HS256", keyPair.getPrivate());
+    public void test_setAuthMethodSpecificSettings_missingKey() throws Exception {
+        getPrivateKeyFromKeystoreExpectations(null);
+        try {
+            authMethod.setAuthMethodSpecificSettings(tokenRequestBuilder);
+            fail("Should have thrown an exception, but didn't.");
+        } catch (TokenEndpointAuthMethodSettingsException e) {
+            verifyException(e, CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR + ".+"
+                               + CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY);
+        }
+    }
 
+    @Test
+    public void test_getPrivateKeyJwtParameters() throws Exception {
+        PrivateKey privateKey = keyPair.getPrivate();
+        getPrivateKeyFromKeystoreExpectations(privateKey);
+
+        HashMap<String, String> parameters = authMethod.getPrivateKeyJwtParameters();
+        assertEquals(TokenConstants.CLIENT_ASSERTION_TYPE + " paramter value did not match expected value.", TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER,
+                     parameters.get(TokenConstants.CLIENT_ASSERTION_TYPE));
+        assertTrue("Parameters did not include the required " + TokenConstants.CLIENT_ASSERTION + " parameter. Parameters were: " + parameters,
+                   parameters.containsKey(TokenConstants.CLIENT_ASSERTION));
+        String jwt = parameters.get(TokenConstants.CLIENT_ASSERTION);
+        verifyPrivateKeyJwt(jwt);
+    }
+
+    @Test
+    public void test_createPrivateKeyJwt_missingKey() throws Exception {
+        getPrivateKeyFromKeystoreExpectations(null);
         try {
             String jwt = authMethod.createPrivateKeyJwt();
             fail("Should have thrown an exception but got: " + jwt);
         } catch (PrivateKeyJwtAuthException e) {
-            verifyException(e, CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR);
+            verifyException(e, CWWKS2430E_PRIVATE_KEY_JWT_AUTH_ERROR + ".*" + CWWKS2431E_PRIVATE_KEY_JWT_MISSING_SIGNING_KEY);
         }
     }
 
     @Test
     public void test_createPrivateKeyJwt() throws Exception {
-        authMethod = new PrivateKeyJwtAuthMethod(clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, keyPair.getPrivate());
+        PrivateKey privateKey = keyPair.getPrivate();
+        getPrivateKeyFromKeystoreExpectations(privateKey);
 
         String jwt = authMethod.createPrivateKeyJwt();
 
+        verifyPrivateKeyJwt(jwt);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void test_getPrivateKeyForClientAuthentication_missingKeystoreRef() throws Exception {
+        Properties sslProps = new Properties();
+        mockery.checking(new Expectations() {
+            {
+                one(sslSupport).getJSSEHelper();
+                will(returnValue(jsseHelper));
+                one(jsseHelper).getProperties(with(any(String.class)), with(any(Map.class)), with(any(SSLConfigChangeListener.class)), with(any(Boolean.class)));
+                will(returnValue(sslProps));
+            }
+        });
+        try {
+            authMethod.getPrivateKeyForClientAuthentication();
+            fail("Should have thrown an exception, but didn't.");
+        } catch (Exception e) {
+            verifyException(e, CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF);
+        }
+    }
+
+    @Test
+    public void test_getPrivateKeyForClientAuthentication() throws Exception {
+        PrivateKey privateKey = keyPair.getPrivate();
+        getPrivateKeyFromKeystoreExpectations(privateKey);
+
+        PrivateKey returnedKey = authMethod.getPrivateKeyForClientAuthentication();
+        assertEquals(privateKey, returnedKey);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getPrivateKeyFromKeystoreExpectations(PrivateKey privateKey) throws Exception {
+        Properties sslProps = new Properties();
+        sslProps.put(com.ibm.websphere.ssl.Constants.SSLPROP_KEY_STORE_NAME, keyStoreName);
+        mockery.checking(new Expectations() {
+            {
+                one(sslSupport).getJSSEHelper();
+                will(returnValue(jsseHelper));
+                one(jsseHelper).getProperties(with(any(String.class)), with(any(Map.class)), with(any(SSLConfigChangeListener.class)), with(any(Boolean.class)));
+                will(returnValue(sslProps));
+                one(keyStoreService).getPrivateKeyFromKeyStore(keyStoreName, keyAliasName, null);
+                will(returnValue(privateKey));
+            }
+        });
+    }
+
+    private void verifyPrivateKeyJwt(String jwt) throws JoseException, IOException {
         JsonWebSignature jws = (JsonWebSignature) JsonWebSignature.fromCompactSerialization(jwt);
         assertEquals("JWT's alg header did not match expected value.", clientAssertionSigningAlgorithm, jws.getAlgorithmHeaderValue());
         assertEquals("JWT's typ header did not match expected value.", "JWT", jws.getHeader("typ"));
-        // TODO - Decide how to correctly verify this value
-        assertNotNull("Expected JWT to include an x5t header, but it did not.", jws.getX509CertSha1ThumbprintHeaderValue());
+        assertEquals("JWT's x5t header did not match expected value.", "x5t_" + testName.getMethodName(), jws.getHeader("x5t"));
 
         String rawPayload = jws.getUnverifiedPayload();
         JSONObject jsonPayload = JSONObject.parse(rawPayload);
         // Verify required claims
         assertEquals("JWT's iss claim did not match expected value.", clientId, jsonPayload.get("iss"));
-        assertEquals("JWT's iss claim did not match expected value.", clientId, jsonPayload.get("sub"));
-        assertEquals("JWT's iss claim did not match expected value.", tokenEndpointUrl, jsonPayload.get("aud"));
+        assertEquals("JWT's sub claim did not match expected value.", clientId, jsonPayload.get("sub"));
+        assertEquals("JWT's aud claim did not match expected value.", tokenEndpointUrl, jsonPayload.get("aud"));
         long exp = (long) jsonPayload.get("exp");
         assertNotNull("Expected JWT to include an exp claim, but it did not.", exp);
         // Verify optional claims

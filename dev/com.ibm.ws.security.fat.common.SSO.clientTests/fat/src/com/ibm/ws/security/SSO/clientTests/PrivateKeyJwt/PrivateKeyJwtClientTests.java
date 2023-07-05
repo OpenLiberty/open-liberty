@@ -301,14 +301,14 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="badKeyAlias"
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
     @Test
     public void PrivateKeyJwtClientTests_badKeyAliasName() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_RS256_badKeyAlias");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".*" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".*" + MessageConstants.CWWKS2435E_PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -320,7 +320,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthMethod="private_key_jwt"
      * tokenEndpointAuthSigningAlgorithm="RS256"
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.lang.Exception" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException" })
     @Mode(TestMode.LITE)
     @Test
     public void PrivateKeyJwtClientTests_ommittedKeyAliasName() throws Exception {
@@ -328,7 +328,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_RS256_omittedKeyAlias");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2433E_PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -400,15 +400,14 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="es384"
      */
-    @ExpectedFFDC({ "org.jose4j.lang.InvalidKeyException", "io.openliberty.security.oidcclientcore.exceptions.PrivateKeyJwtAuthException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException" })
     @Test
     public void PrivateKeyJwtClientTests_sigAlgMistmatchKeyAlias_RsVsEsTypes() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_private_key_mismatch1");
 
         List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the JWT could not be build for client authentication.", MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH);
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was a problem reaching the token endpoint.", MessageConstants.CWWKS2416E_TOKEN_REQUEST_ERROR);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the JWT could not be build for client authentication.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -457,21 +456,16 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="rs256"
      */
-    @AllowedFFDC({ "java.lang.Exception", "com.ibm.ws.security.openidconnect.clients.common.token.auth.TokenEndpointAuthMethodSettingsException", "java.io.IOException" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.io.IOException" })
     @Test
     public void PrivateKeyJwtClientTests_noClientSSLRef() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_noClientSSLRef");
 
-        if (testSettings.getFlowType().equals(Constants.RP_FLOW)) {
-            List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was no keystore in the config.", MessageConstants.CWWKS1556E_KEYSTORE_MISSING_IN_CONFIG);
-            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1554E_PRIVATE_KEY_JWT_MISSING_ALIAS);
+        List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that there was no keystore in the config.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".+" + MessageConstants.CWWKS2434E_PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF);
 
-            negativeTestWithPrivateKey(updatedTestSettings, expectations);
-        } else {
-            positiveTestWithPrivateKey(updatedTestSettings);
-        }
+        negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
     }
 

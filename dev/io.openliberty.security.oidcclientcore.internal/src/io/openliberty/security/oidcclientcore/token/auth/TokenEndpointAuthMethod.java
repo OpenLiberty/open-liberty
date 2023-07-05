@@ -7,12 +7,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
-package com.ibm.ws.security.openidconnect.clients.common.token.auth;
+package io.openliberty.security.oidcclientcore.token.auth;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
-import com.ibm.ws.security.openidconnect.clients.common.TraceConstants;
+import io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException;
+import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
+
+public abstract class TokenEndpointAuthMethod {
+
+    public abstract void setAuthMethodSpecificSettings(Builder tokenRequestBuilder) throws TokenEndpointAuthMethodSettingsException;
+
+}

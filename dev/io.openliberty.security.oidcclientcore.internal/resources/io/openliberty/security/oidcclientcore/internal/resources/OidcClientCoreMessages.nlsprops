@@ -146,3 +146,23 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=For more information, see the error in the
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: The [{0}] OpenID Connect client is missing the key that is needed to sign the token for client authentication.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=The OpenID Connect client configuration is missing data, or a key cannot be found with the key alias name in the SSL configuration for the OpenID Connect client.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Ensure that the OpenID Connect client has a key alias name and SSL reference configured. Verify that the keystore that the SSL configuration references contains a key whose alias matches the key alias name in the OpenID Connect client configuration.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: The [{0}] OpenID Connect client encountered an error while setting up client authentication for the token endpoint for the [{1}] authentication method. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=The OpenID Connect token endpoint requires client authentication, but the OpenID Connect client might be missing information, or the client encountered another error while setting up the authentication data.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=See the error in the message for more information.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: The [{0}] OpenID Connect client does not have a key alias name configured, so the client cannot locate the keys that are needed to create the JSON Web Token for client authentication.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=The OpenID Connect client must configure a key alias name to define the key to use to sign the JWT. The same key alias must be used for both the private key that is used to sign the JWT and the corresponding public key.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verify that the OpenID Connect client has a key alias name configured.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: The [{0}] OpenID Connect client does not have a keystore reference configured, so the client cannot locate the key to use to sign the JSON Web Token for client authentication.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=The OpenID Connect client must configure a keystore reference to define where to find the key to use to sign the JWT.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verify that the OpenID Connect client has a keystore reference configured.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: The client cannot retrieve the [{0}] private key from the [{1}] keystore to sign the JSON Web Token. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=The OpenID Connect client must use a private key to sign the JSON Web Token for client authentication. The client encountered an error while retrieving the private key.
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=See the error in the message for more information.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: The client cannot retrieve the [{0}] public key from the [{1}] keystore to calculate the x5t header for the JSON Web Token. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=The x5t header is the certificate thumbprint of the public key that corresponds to the private key that is used to sign the JSON Web Token. The x5t header helps OpenID Connect providers identify which certificate to use to verify the signature of the JWT. The client encountered an error while retrieving the public key.
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=See the error in the message for more information.

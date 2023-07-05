@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,17 +18,17 @@ public class PrivateKeyJwtAuthException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    private final String clientId;
+    private final String configurationId;
     private final String nlsMessage;
 
-    public PrivateKeyJwtAuthException(String clientId, String nlsMessage) {
-        this.clientId = clientId;
+    public PrivateKeyJwtAuthException(String configurationId, String nlsMessage) {
+        this.configurationId = configurationId;
         this.nlsMessage = nlsMessage;
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_AUTH_ERROR", clientId, nlsMessage);
+        return Tr.formatMessage(tc, "PRIVATE_KEY_JWT_AUTH_ERROR", configurationId, nlsMessage);
     }
 
 }

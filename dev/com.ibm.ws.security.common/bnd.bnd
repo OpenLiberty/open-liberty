@@ -41,7 +41,10 @@ Import-Package: \
 Private-Package: \
     com.ibm.ws.security.common.internal.*
 
--dsannotations: com.ibm.ws.security.common.token.propagation.TokenPropagationHelper
+-dsannotations: \
+    com.ibm.ws.security.common.ssl.SecuritySSLUtils, \
+    com.ibm.ws.security.common.token.propagation.TokenPropagationHelper
+    
 -dsannotations-inherit = true
 
 instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.class

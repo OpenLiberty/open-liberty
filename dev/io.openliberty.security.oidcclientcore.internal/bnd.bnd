@@ -39,7 +39,8 @@ Export-Package: \
 
 -dsannotations: \
 	io.openliberty.security.oidcclientcore.config.MetadataUtils,\
-	io.openliberty.security.oidcclientcore.config.OidcMetadataService
+	io.openliberty.security.oidcclientcore.config.OidcMetadataService,\
+	io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
