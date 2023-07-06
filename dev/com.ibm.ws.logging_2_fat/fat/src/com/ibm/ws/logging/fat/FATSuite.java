@@ -22,7 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 
 @SuiteClasses({
-                FfdcCleanupTest.class
+                FfdcCleanupTest.class,
+                TimeBasedLogRolloverTest.class
 })
 
 public class FATSuite {
