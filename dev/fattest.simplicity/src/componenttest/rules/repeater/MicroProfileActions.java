@@ -232,6 +232,21 @@ public class MicroProfileActions {
                                                           "mpTelemetry-1.0",
                                                           "mpRestClient-3.0" };
 
+    private static final String[] MP61_FEATURES_ARRAY = { "microProfile-6.1",
+                                                          "cdi-4.0",
+                                                          "restfulWS-3.1",
+                                                          "restfulWSClient-3.1",
+                                                          "jsonb-3.0",
+                                                          "jsonp-2.1",
+                                                          "mpConfig-3.1",
+                                                          "mpFaultTolerance-4.0",
+                                                          "mpHealth-4.0",
+                                                          "mpJwt-2.1",
+                                                          "mpOpenAPI-3.1",
+                                                          "mpMetrics-5.1",
+                                                          "mpTelemetry-1.1",
+                                                          "mpRestClient-3.0" };
+
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
     private static final Set<String> MP13_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP13_FEATURES_ARRAY)));
@@ -246,6 +261,7 @@ public class MicroProfileActions {
     private static final Set<String> MP41_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP41_FEATURES_ARRAY)));
     private static final Set<String> MP50_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP50_FEATURES_ARRAY)));
     private static final Set<String> MP60_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP60_FEATURES_ARRAY)));
+    private static final Set<String> MP61_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP61_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
@@ -262,6 +278,7 @@ public class MicroProfileActions {
     public static final String MP41_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_41";
     public static final String MP50_ID = JakartaEE9Action.ID + "_MicroProfile_50";
     public static final String MP60_ID = JakartaEE10Action.ID + "_MicroProfile_60";
+    public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
 
     //The MicroProfile FeatureSets
     public static final FeatureSet MP10 = new FeatureSet(MP10_ID, MP10_FEATURE_SET, EEVersion.EE7);
@@ -278,9 +295,10 @@ public class MicroProfileActions {
     public static final FeatureSet MP41 = new FeatureSet(MP41_ID, MP41_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP50 = new FeatureSet(MP50_ID, MP50_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet MP60 = new FeatureSet(MP60_ID, MP60_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP61 = new FeatureSet(MP61_ID, MP61_FEATURE_SET, EEVersion.EE10);
 
     //All MicroProfile FeatureSets, needs to be in order for repeat(String, TestMode, Set, FeatureSet, Set)
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50, MP60 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41, MP50, MP60, MP61 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
     //TODO: These feature sets are only used by the EE Compatibility Tests and don't make sense in other contexts. We should move them to those tests.

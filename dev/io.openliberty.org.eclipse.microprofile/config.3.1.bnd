@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.config.3.1; singleton:=true
+
+Import-Package: \
+  *
+
+Export-Package: \
+  org.eclipse.microprofile.config;version=3.0, \
+  org.eclipse.microprofile.config.inject;version=2.0, \
+  org.eclipse.microprofile.config.spi;version=3.0
+
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.config:microprofile-config-api;3.0.2;EXACT}
+
+-maven-dependencies: \
+   dep1;groupId=org.eclipse.microprofile.config;artifactId=microprofile-config-api;version=3.0.2;scope=runtime
+
+WS-TraceGroup: APPCONFIG
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"

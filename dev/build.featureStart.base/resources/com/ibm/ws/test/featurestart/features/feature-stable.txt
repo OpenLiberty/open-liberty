@@ -138,10 +138,10 @@ null messaging 3.0 # 3.1                  #
 null messagingClient # 3.0                #
 null messagingSecurity # 3.0              #
 null messagingServer # 3.0                #
-null microProfile 1.0 1.2 1.3 1.4 2.0 2.1 2.2 3.0 3.2 3.3 4.0 4.1 5.0 # 6.0 #
+null microProfile 1.0 1.2 1.3 1.4 2.0 2.1 2.2 3.0 3.2 3.3 4.0 4.1 5.0 6.0 # 6.1 #
 null mongodb # 2.0                        #
 null monitor # 1.0                        #
-null mpConfig 1.1 1.2 1.3 1.4 2.0 # 3.0   #
+null mpConfig 1.1 1.2 1.3 1.4 2.0 3.0 # 3.1 #
 null mpContextPropagation 1.0 1.2 # 1.3   #
 null mpFaultTolerance 1.0 1.1 2.0 2.1 3.0 # 4.0 #
 null mpGraphQL 1.0 # 2.0                  #
@@ -149,13 +149,13 @@ null mpHealth 1.0 2.0 2.1 2.2 3.0 3.1 # 4.0 #
 null mpJwt 1.0 1.1 1.2 2.0 # 2.1          #
 null mpLRA # 1.0                          #
 null mpLRACoordinator # 1.0               #
-null mpMetrics 1.0 1.1 2.0 2.2 2.3 3.0 4.0 # 5.0 #
+null mpMetrics 1.0 1.1 2.0 2.2 2.3 3.0 4.0 5.0 # 5.1 #
 null mpOpenAPI 1.0 1.1 2.0 3.0 # 3.1      #
 null mpOpenTracing 1.0 1.1 1.2 1.3 2.0 # 3.0 #
 null mpReactiveMessaging # 1.0            #
-null mpReactiveStreams # 1.0              #
+null mpReactiveStreams 1.0 # 3.0          #
 null mpRestClient 1.0 1.1 1.2 1.31. 2.0 # 3.0 #
-null mpTelemetry # 1.0                    #
+null mpTelemetry 1.0 # 1.1                #
 null netty # 1.0                          #
 null noShip # 1.0                         #
 null nosql # 1.0                          #

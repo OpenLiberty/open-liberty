@@ -53,6 +53,12 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("passwordUtilities-1.1");
         compatFeatures.remove("persistenceContainer-3.1");
 
+        //remove MP 6.0 features which would conflict with MP 6.1 features
+        compatFeatures.remove("microProfile-6.0");
+        compatFeatures.remove("mpConfig-3.0");
+        compatFeatures.remove("mpTelemetry-1.0");
+        compatFeatures.remove("mpMetrics-5.0");
+
         // remove client features
         compatFeatures.remove("jakartaeeClient-10.0");
         compatFeatures.remove("appSecurityClient-1.0");
@@ -65,6 +71,10 @@ public class JakartaEE10Test extends FATServletClient {
         compatFeatures.remove("netty-1.0");
         compatFeatures.remove("noShip-1.0");
         compatFeatures.remove("scim-2.0");
+
+        // noship, still in development
+        compatFeatures.remove("mpReactiveStreams-3.0");
+        compatFeatures.remove("mpReactiveMessaging-3.0");
 
         // remove logAnalysis-1.0.  It depends on hpel being configured
         compatFeatures.remove("logAnalysis-1.0");
