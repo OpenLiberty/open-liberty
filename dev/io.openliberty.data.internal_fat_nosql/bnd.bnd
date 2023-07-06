@@ -23,6 +23,8 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
+fat.test.container.images: mongo:6.0.6
+
 -buildpath: \
 	com.ibm.ws.componenttest.2.0,\
 	io.openliberty.jakarta.annotation.2.1,\

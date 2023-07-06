@@ -21,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
@@ -28,7 +29,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class,
                 DataNoSQLTest.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
