@@ -65,8 +65,7 @@ Include-Resource: \
     @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
     @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
     @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
-    init-sqlserver.sql=resources/init-sqlserver.sql, \
-	META-INF=resources/META-INF
+    init-sqlserver.sql=resources/init-sqlserver.sql
 
 test.project: true
 

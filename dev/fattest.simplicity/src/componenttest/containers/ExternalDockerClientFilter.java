@@ -39,7 +39,10 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
      */
     private static final String FORCE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
 
-    private DefaultDockerClientConfig config;
+    private boolean valid;
+    private String host;
+    private String verify;
+    private String certPath;
 
     //Singleton class
     private static ExternalDockerClientFilter instance;
@@ -51,10 +54,6 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             instance = new ExternalDockerClientFilter();
         }
         return instance;
-    }
-
-    public DefaultDockerClientConfig getConfig() {
-        return config; //TODO prevent null
     }
 
     public boolean isForced() {
@@ -96,9 +95,9 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         writeFile(new File(certDir, "cert.pem"), cert);
         writeFile(new File(certDir, "key.pem"), key);
 
-        System.setProperty("DOCKER_HOST", dockerHostURL);
-        System.setProperty("DOCKER_TLS_VERIFY", "1");
-        System.setProperty("DOCKER_CERT_PATH", certDir.getAbsolutePath());
+        host = dockerHostURL;
+        verify = "1";
+        certPath = certDir.getAbsolutePath();
 
         try {
             test();
@@ -107,16 +106,17 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
                                dockerService.getProperties() + " failed with " + e.getLocalizedMessage());
             throw e;
         }
+
         Log.info(c, m, "Docker host " + dockerHostURL + " is healthy.");
 
         // Provide information on how to manually connect to the machine if running locally
         if (FATRunner.FAT_TEST_LOCALRUN) {
             Log.info(c, m, "If you need to connect to any currently running docker containers manually, export the following environment variables in your terminal:\n" +
-                           "export DOCKER_HOST=" + dockerHostURL + "\n" +
-                           "export DOCKER_TLS_VERIFY=1\n" +
-                           "export DOCKER_CERT_PATH=" + certDir.getAbsolutePath());
+                           "export DOCKER_HOST=" + host + "\n" +
+                           "export DOCKER_TLS_VERIFY= " + verify + "\n" +
+                           "export DOCKER_CERT_PATH=" + certPath);
         }
-        return true;
+        return valid = true;
     }
 
     /**
@@ -130,11 +130,11 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
     private void test() throws InvalidConfigurationException {
         final String m = "test";
 
-        config = DefaultDockerClientConfig.createDefaultConfigBuilder() //
+        DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder() //
                         .withRegistryUsername(null) //
-                        .withDockerHost(System.getProperty("DOCKER_HOST")) //
-                        .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY")) //
-                        .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH")) //
+                        .withDockerHost(host) //
+                        .withDockerTlsVerify(verify) //
+                        .withDockerCertPath(certPath) //
                         .build();
 
         try {
@@ -163,5 +163,23 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             throw new RuntimeException(e);
         }
         Log.info(c, "writeFile", "Wrote property to: " + outFile.getAbsolutePath());
+    }
+
+    //GETTERS
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getVerify() {
+        return verify;
+    }
+
+    public String getCertPath() {
+        return certPath;
     }
 }
