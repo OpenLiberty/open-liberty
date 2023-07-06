@@ -6,11 +6,11 @@ The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 
 TABLE OF CONTENTS
 
-APACHE V1.1
 APACHE V2
 BSD
 BSD-2-CLAUSE  
-BSD-3-CLAUSE  
+BSD-3-CLAUSE
+BSD-EQUIVALENT  
 CDDL V1  
 CDDL V1.1
 CPL  
@@ -27,71 +27,6 @@ W3C
 OTHER KNOWN LICENSE  
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-APACHE SOFTWARE LICENSE 1.1
-
-The Program includes some or all of the following that IBM obtained
-under the Apache License Version 1.1:
-
-BCPG-JDK15ON
-
-
-Apache Software License
-Version 1.1
-
-Copyright (c) 2000 The Apache Software Foundation.  All rights reserved.
- 
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met:
- 
-1. Redistributions of source code must retain the above copyright 
-notice, this list of conditions and the following disclaimer.
- 
-2. Redistributions in binary form must reproduce the above copyright 
-notice, this list of conditions and the following disclaimer in the 
-documentation and/or other materials provided with the distribution.
-
-3. The end-user documentation included with the redistribution,
-if any, must include the following acknowledgment:
-"This product includes software developed by the
-Apache Software Foundation (http://www.apache.org/)."
-Alternately, this acknowledgment may appear in the software itself,
-if and wherever such third-party acknowledgments normally appear.
-
-4. The names "Apache" and "Apache Software Foundation" must 
-not be used to endorse or promote products derived from this
-software without prior written permission. For written
-permission, please contact apache@apache.org.
-
-5. Products derived from this software may not be called "Apache",
-nor may "Apache" appear in their name, without prior written
-permission of the Apache Software Foundation.
-
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-=================================================================
-
-This software consists of voluntary contributions made by many
-individuals on behalf of the Apache Software Foundation.  For more
-information on the Apache Software Foundation, please see
-<http://www.apache.org/>.
-
-Portions of this software are based upon public domain software
-originally written at the National Center for Supercomputing 
-Applications, University of Illinois, Urbana-Champaign.
-
-END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 APACHE SOFTWARE LICENSE 2.0
 
 The Program includes some or all of the following that IBM obtained
@@ -359,7 +294,6 @@ Corportation), FIREBUG-LITE [Lodash] (Copyright (c) 2007, Parakey Inc.
 All rights reserved.)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 BSD-2-CLAUSE
 The Program includes some or all of the following packages that IBM 
 obtained under the BSD-2-Clause License:
@@ -526,6 +460,33 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 END OF BSD-4-CLAUSE LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+BSD-EQUIVALENT
+
+The Program includes some or all of the following that IBM obtained
+under a BSD-EQUIVALENT license:
+
+BCPG-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCPKIX-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCPROV-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+BCUTIL-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+
+Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+
+
+END OF BSD-EQUIVALENT NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
@@ -717,7 +678,8 @@ https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.30
 ORG.ECLIPSE.PERSISTENCE.JPA
 (https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
 ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1)
+(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1),
+
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
