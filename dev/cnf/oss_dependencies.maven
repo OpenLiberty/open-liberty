@@ -422,8 +422,11 @@ org.apache.xbean:xbean-asm8-shaded:4.17
 org.bitbucket.b_c:jose4j:0.9.3
 org.bouncycastle:bcpg-jdk15on:1.69
 org.bouncycastle:bcpkix-jdk15on:1.69
+org.bouncycastle:bcpkix-jdk18on:1.75
 org.bouncycastle:bcprov-jdk15on:1.69
+org.bouncycastle:bcprov-jdk18on:1.75
 org.bouncycastle:bcutil-jdk15on:1.69
+org.bouncycastle:bcutil-jdk18on:1.75
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2
 org.codehaus.jackson:jackson-core-asl:1.6.2
