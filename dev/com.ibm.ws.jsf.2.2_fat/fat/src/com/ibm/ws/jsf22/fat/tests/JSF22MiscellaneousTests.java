@@ -27,6 +27,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -61,6 +62,7 @@ public class JSF22MiscellaneousTests {
     private static final String APP_NAME_FUNCTION_MAPPER = "FunctionMapper";
     private static final String APP_NAME_OLGH22397 = "OLGH22397";
     private static final String APP_NAME_FACES_CONFIX_MISSING_XMLNS = "FacesConfigMissingXmlns";
+    private static final String APP_NAME_MYFACES_4512 = "MYFACES-4512";
 
     protected static final Class<?> c = JSF22MiscellaneousTests.class;
 
@@ -99,6 +101,8 @@ public class JSF22MiscellaneousTests {
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_VIEW_SCOPE_LEAK + ".war", "com.ibm.ws.jsf22.fat.viewscopedleak");
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_OLGH22397 + ".war");
+
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, APP_NAME_MYFACES_4512 + ".war", "com.ibm.ws.jsf22.fat.myfaces4512.viewhandler");
 
         jsf22MiscellaneousServer.startServer(c.getSimpleName() + ".log");
     }
@@ -188,7 +192,7 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatibility (New JS in RC5)
     public void testResetValues() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -630,6 +634,23 @@ public class JSF22MiscellaneousTests {
                 assertTrue("Failed to render expected attribute: \n" + attribute, page.asXml().contains(attribute));
             }
 
+        }
+    }
+
+    @Test
+    public void testMyFaces4512() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, APP_NAME_MYFACES_4512, "index.xhtml");
+
+            Log.info(c, name.getMethodName(), "MYFACES-4512: Making a request to " + url);
+            Page page = webClient.getPage(url);
+
+            int statusCode = page.getWebResponse().getStatusCode();
+            Log.info(c, name.getMethodName(), "Page xml: " + ((HtmlPage) page).asXml());
+
+            assertTrue("The status code was not 200 but was: " + statusCode, statusCode == 200);
+
+            assertTrue("The MyFaces4512ViewHandler was not invoked!", !jsf22MiscellaneousServer.waitForStringInLog("MyFaces4512ViewHandler was invoked!").isEmpty());
         }
     }
 }
