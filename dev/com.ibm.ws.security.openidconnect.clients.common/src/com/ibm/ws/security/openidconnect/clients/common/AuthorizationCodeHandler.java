@@ -208,7 +208,7 @@ public class AuthorizationCodeHandler {
             return null;
         }
         if (PrivateKeyJwtAuthMethod.AUTH_METHOD.equals(authMethod)) {
-            return new PrivateKeyJwtAuthMethod(clientConfig.getId(), clientId, clientConfig.getTokenEndpointUrl(), clientConfig.getTokenEndpointAuthSigningAlgorithm(), clientConfig.getSslRef(), clientConfig.getKeyAliasName());
+            return new PrivateKeyJwtAuthMethod(clientConfig.getId(), clientId, clientConfig.getTokenEndpointUrl(), clientConfig.getTokenEndpointAuthSigningAlgorithm(), clientConfig.getTrustStoreRef(), clientConfig.getSslRef(), clientConfig.getKeyAliasName());
         }
         return null;
     }
