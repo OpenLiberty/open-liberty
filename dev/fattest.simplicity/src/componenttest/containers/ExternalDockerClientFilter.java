@@ -113,7 +113,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         if (FATRunner.FAT_TEST_LOCALRUN) {
             Log.info(c, m, "If you need to connect to any currently running docker containers manually, export the following environment variables in your terminal:\n" +
                            "export DOCKER_HOST=" + host + "\n" +
-                           "export DOCKER_TLS_VERIFY= " + verify + "\n" +
+                           "export DOCKER_TLS_VERIFY=" + verify + "\n" +
                            "export DOCKER_CERT_PATH=" + certPath);
         }
         return valid = true;

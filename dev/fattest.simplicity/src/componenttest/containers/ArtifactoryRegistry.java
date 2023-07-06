@@ -158,7 +158,7 @@ public class ArtifactoryRegistry {
 
         //If existing config contains correct registry and auth token combination, return original file.
         try {
-            if (root.get("auths").get(registry).get("auth").textValue() == authToken) {
+            if (root.get("auths").get(registry).get("auth").textValue().equals(authToken)) {
                 Log.info(c, m, "Config already contains the correct auth token");
                 return configFile;
             }

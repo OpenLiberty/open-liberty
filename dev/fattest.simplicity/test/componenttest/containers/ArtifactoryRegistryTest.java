@@ -53,7 +53,7 @@ public class ArtifactoryRegistryTest {
                           tab + "}" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals("", expected, actual, m);
     }
 
     /**
@@ -62,6 +62,7 @@ public class ArtifactoryRegistryTest {
     @Test
     public void testExistingEmptyConfig() throws Exception {
         final String m = "testExistingEmptyConfig";
+        String existingConfig = "{" + nl + "}";
         ArtifactoryRegistry.writeFile(TESTFILE, "{" + nl + "}");
         getGenerateDockerConfig().invoke(null, TESTREGISTRY, TESTAUTHTOKEN, TESTDIR);
 
@@ -74,7 +75,7 @@ public class ArtifactoryRegistryTest {
                           tab + "}" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(existingConfig, expected, actual, m);
     }
 
     /**
@@ -102,7 +103,7 @@ public class ArtifactoryRegistryTest {
                           tab + "\"currentContext\" : \"desktop-linux\"" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(existingConfig, expected, actual, m);
     }
 
     /**
@@ -134,7 +135,7 @@ public class ArtifactoryRegistryTest {
                           tab + "}" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(existingConfig, expected, actual, m);
     }
 
     /**
@@ -170,7 +171,7 @@ public class ArtifactoryRegistryTest {
                           tab + "}" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(existingConfig, expected, actual, m);
     }
 
     /**
@@ -210,7 +211,7 @@ public class ArtifactoryRegistryTest {
                           tab + "\"currentContext\" : \"desktop-linux\"" + nl +
                           "}";
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(existingConfig, expected, actual, m);
     }
 
     /**
@@ -231,11 +232,12 @@ public class ArtifactoryRegistryTest {
         getGenerateDockerConfig().invoke(null, TESTREGISTRY, TESTAUTHTOKEN, TESTDIR);
 
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
-        assertJsonEquals(expected, actual, m);
+        assertJsonEquals(expected, expected, actual, m);
     }
 
-    private void assertJsonEquals(String expected, String actual, String testName) {
+    private void assertJsonEquals(String initial, String expected, String actual, String testName) {
         System.out.println("### TestName: " + testName + " ###");
+        System.out.println("initial: " + nl + initial);
         System.out.println("expected: " + nl + expected);
         System.out.println("actual:   " + nl + actual);
         assertJsonValid(expected);
