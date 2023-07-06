@@ -71,7 +71,8 @@ public class EjbApplicationScopedBean extends AbstractObserver {
         //EJB PreDestroy should be seen after any test request
         assertTrue(logMsg("EJB PreDestroy was observed before test"), testRequested);
         //EJB PreDestroy should be seen before Shutdown
-        assertFalse(logMsg("EJB PreDestroy was observed after Shutdown"), shutdownObserved);
+        //The ordering of these two events is undefined in the spec, until this is corrected we will not test this
+        //assertFalse(logMsg("EJB PreDestroy was observed after Shutdown"), shutdownObserved);
     }
 
 }
