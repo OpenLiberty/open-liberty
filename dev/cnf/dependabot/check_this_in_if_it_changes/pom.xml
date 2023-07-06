@@ -4089,22 +4089,27 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>database-commons</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -4114,27 +4119,27 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-xe</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>selenium</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.17.4</version>
+      <version>1.18.3</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
