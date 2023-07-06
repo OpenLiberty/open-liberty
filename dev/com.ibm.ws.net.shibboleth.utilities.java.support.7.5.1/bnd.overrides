@@ -46,8 +46,5 @@ Import-Package: \
  *
  
  Include-Resource: \
-  @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
-  @${repo;org.bouncycastle:bcprov-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class, \
-  @${repo;org.bouncycastle:bcpkix-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class, \
-  @${repo;org.bouncycastle:bcutil-jdk18on;1.75;EXACT}!/!META-INF/versions/9/module-info.class
+  @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

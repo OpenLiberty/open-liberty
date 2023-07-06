@@ -13,6 +13,9 @@ singleton=true
   com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5, \
   com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5, \
   com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5, \
-  com.ibm.ws.security.saml.websso.2.0
+  com.ibm.ws.security.saml.websso.2.0, \
+  io.openliberty.org.bouncycastle.bcpkix-jdk18on, \
+  io.openliberty.org.bouncycastle.bcprov-jdk18on, \
+  io.openliberty.org.bouncycastle.bcutil-jdk18on
 kind=ga
 edition=core
