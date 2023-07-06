@@ -13,6 +13,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.utils.ExternalTestService;
@@ -121,59 +130,56 @@ public class ArtifactoryRegistry {
         final String m = "generateDockerConfig";
 
         File configFile = new File(configDir, "config.json");
-        String contents = "";
+        String newContent = null;
 
-        String privateAuth = "\t\t\"" + registry + "\": {\n" +
-                             "\t\t\t\"auth\": \"" + authToken + "\",\n"
-                             + "\t\t\t\"email\": null\n" + "\t\t}";
+        final ObjectMapper mapper = JsonMapper.builder()
+                        .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY) // alpha properties
+                        .disable(MapperFeature.SORT_CREATOR_PROPERTIES_FIRST) // ensures new properties are not excluded from alpha
+                        .enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS) // alpha maps
+                        .enable(SerializationFeature.INDENT_OUTPUT) // use pretty printer by default
+                        .defaultPrettyPrinter(
+                                              // pretty printer should use tabs and new lines
+                                              new DefaultPrettyPrinter().withObjectIndenter(new DefaultIndenter("\t", "\n")))
+                        .build();
+        final ObjectNode root;
+
+        //If config file already exists, read it, otherwise create a new json object
         if (configFile.exists()) {
+            root = (ObjectNode) mapper.readTree(configFile);
+
             Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
-            for (String line : Files.readAllLines(configFile.toPath()))
-                contents += line + '\n';
-
-            logConfigContents(m, "Original contents", contents);
-            int authsIndex = contents.indexOf("\"auths\"");
-            boolean replacedAuth = false;
-
-            if (contents.contains(registry)) {
-                Log.info(c, m, "Config already contains the private registry: " + registry);
-                int registryIndex = contents.indexOf(registry, authsIndex);
-                int authIndex = contents.indexOf("\"auth\":", registryIndex);
-                int authIndexEnd = contents.indexOf(',', authIndex) + 1;
-                String authSubstring = contents.substring(authIndex, authIndexEnd);
-                if (authSubstring.contains(authToken)) {
-                    Log.info(c, m, "Config already contains the correct auth token for registry: " + registry);
-                    return configFile;
-                } else {
-                    replacedAuth = true;
-                    Log.info(c, m, "Replacing auth token for registry: " + registry);
-                    contents = contents.replace(authSubstring, "\"auth\": \"" + authToken + "\",");
-                }
-            }
-
-            if (authsIndex >= 0 && !replacedAuth) {
-                Log.info(c, m, "Other auths exist. Need to add auth token for registry: " + registry);
-                int splitAt = contents.indexOf('{', authsIndex);
-                String firstHalf = contents.substring(0, splitAt + 1);
-                String secondHalf = contents.substring(splitAt + 1);
-                contents = firstHalf + '\n' + privateAuth + "," + secondHalf;
-            } else if (!replacedAuth) {
-                Log.info(c, m, "No auths exist. Adding auth block");
-                int splitAt = contents.indexOf('{');
-                String firstHalf = contents.substring(0, splitAt + 1);
-                String secondHalf = contents.substring(splitAt + 1);
-                String delimiter = secondHalf.contains(":") ? "," : "";
-                contents = firstHalf + "\n\t\"auths\": {\n" + privateAuth + "\n\t}" + delimiter + secondHalf;
-            }
+            logConfigContents(m, "Original contents", serializeOutput(mapper, root));
         } else {
+            root = mapper.createObjectNode();
+
             configDir.mkdirs();
-            Log.info(c, m, "Generating a private registry config file at: "
-                           + configFile.getAbsolutePath());
-            contents = "{\n\t\"auths\": {\n" + privateAuth + "\n\t}\n}";
+            Log.info(c, m, "Generating a private registry config file at: " + configFile.getAbsolutePath());
         }
-        logConfigContents(m, "New config.json contents are", contents);
-        configFile.delete();
-        writeFile(configFile, contents);
+
+        //If existing config contains correct registry and auth token combination, return original file.
+        try {
+            if (root.get("auths").get(registry).get("auth").textValue() == authToken) {
+                Log.info(c, m, "Config already contains the correct auth token");
+                return configFile;
+            }
+        } catch (Exception ignore) {
+            //assume config did not contain authToken
+        }
+
+        //Get existing nodes
+        ObjectNode authsObject = root.has("auths") ? (ObjectNode) root.get("auths") : mapper.createObjectNode();
+        ObjectNode registryObject = authsObject.has(registry) ? (ObjectNode) authsObject.get(registry) : mapper.createObjectNode();
+        TextNode registryAuthObject = TextNode.valueOf(authToken); //Replace existing auth token with this one.
+
+        //Replace nodes with updated/new configuration
+        registryObject.replace("auth", registryAuthObject);
+        authsObject.replace(registry, registryObject);
+        root.set("auths", authsObject);
+
+        //Output results to file
+        newContent = serializeOutput(mapper, root);
+        logConfigContents(m, "New config.json contents are", newContent);
+        writeFile(configFile, newContent);
         return configFile;
     }
 
@@ -188,6 +194,13 @@ public class ArtifactoryRegistry {
             throw new RuntimeException(e);
         }
         Log.info(c, "writeFile", "Wrote property to: " + outFile.getAbsolutePath());
+    }
+
+    private static String serializeOutput(final ObjectMapper mapper, final ObjectNode root) throws JsonProcessingException {
+        String input = mapper.writeValueAsString(root);
+        Object pojo = mapper.readValue(input, Object.class);
+        String output = mapper.writeValueAsString(pojo);
+        return output;
     }
 
     /**
