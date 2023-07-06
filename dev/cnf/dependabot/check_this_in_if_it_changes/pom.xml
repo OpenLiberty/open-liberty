@@ -114,17 +114,17 @@
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-api</artifactId>
-      <version>3.2.13</version>
+      <version>3.3.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport-zerodep</artifactId>
-      <version>3.2.13</version>
+      <version>3.3.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport</artifactId>
-      <version>3.2.13</version>
+      <version>3.3.1</version>
     </dependency>
     <dependency>
       <groupId>com.google.errorprone</groupId>
