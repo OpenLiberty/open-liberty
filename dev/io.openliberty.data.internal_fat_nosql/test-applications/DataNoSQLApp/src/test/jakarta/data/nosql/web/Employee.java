@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.nosql.web;
 
+import jakarta.nosql.Column;
 import jakarta.nosql.Entity;
 import jakarta.nosql.Id;
 
@@ -22,16 +23,22 @@ public class Employee {
     @Id
     public long empNum;
 
+    @Column
     public String firstName;
 
+    @Column
     public String lastName;
 
+    @Column
     public String location;
 
+    @Column
     public String position;
 
+    @Column
     public float wage;
 
+    @Column
     public int yearHired;
 
     public Employee() {
@@ -49,4 +56,5 @@ public class Employee {
         this.age = (short) age;
         this.wage = wage;
     }
+
 }

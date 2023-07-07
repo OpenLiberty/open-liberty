@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.MongoDBContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -36,6 +37,8 @@ import test.jakarta.data.nosql.web.DataNoSQLServlet;
 @MinimumJavaLevel(javaLevel = 17)
 public class DataNoSQLTest extends FATServletClient {
 
+    public static MongoDBContainer mongoDBContainer = FATSuite.mongoDBContainer;
+
     @Server("io.openliberty.data.internal.fat.nosql")
     @TestServlet(servlet = DataNoSQLServlet.class, contextRoot = "DataNoSQLApp")
     public static LibertyServer server;
@@ -44,6 +47,9 @@ public class DataNoSQLTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp("DataNoSQLApp", "test.jakarta.data.nosql.web");
         ShrinkHelper.exportAppToServer(server, war);
+
+        server.addEnvVar("MONGO_DBNAME", "testdb");
+        server.addEnvVar("MONGO_HOST", mongoDBContainer.getHost() + ":" + String.valueOf(mongoDBContainer.getMappedPort(27017)));
 
         server.startServer();
     }
