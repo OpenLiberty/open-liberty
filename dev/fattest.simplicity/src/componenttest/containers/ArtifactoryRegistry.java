@@ -130,7 +130,6 @@ public class ArtifactoryRegistry {
         final String m = "generateDockerConfig";
 
         File configFile = new File(configDir, "config.json");
-        String newContent = null;
 
         final ObjectMapper mapper = JsonMapper.builder()
                         .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY) // alpha properties
@@ -141,29 +140,31 @@ public class ArtifactoryRegistry {
                                               // pretty printer should use tabs and new lines
                                               new DefaultPrettyPrinter().withObjectIndenter(new DefaultIndenter("\t", "\n")))
                         .build();
-        final ObjectNode root;
+        ObjectNode root;
 
         //If config file already exists, read it, otherwise create a new json object
         if (configFile.exists()) {
-            root = (ObjectNode) mapper.readTree(configFile);
+            try {
+                root = (ObjectNode) mapper.readTree(configFile);
 
-            Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
-            logConfigContents(m, "Original contents", serializeOutput(mapper, root));
+                Log.info(c, m, "Config already exists at: " + configFile.getAbsolutePath());
+                logConfigContents(m, "Original contents", serializeOutput(mapper, root));
+
+                //If existing config contains correct registry and auth token combination, return original file.
+                if (testExistingConfig(root, registry, authToken)) {
+                    Log.info(c, m, "Config already contains the correct auth token for registry: " + registry);
+                    return configFile;
+                }
+            } catch (Exception e) {
+                Log.error(c, m, e);
+                Log.warning(c, "Could not read config file, or it was malformed, recreating from scrach");
+                root = mapper.createObjectNode();
+            }
         } else {
             root = mapper.createObjectNode();
 
             configDir.mkdirs();
             Log.info(c, m, "Generating a private registry config file at: " + configFile.getAbsolutePath());
-        }
-
-        //If existing config contains correct registry and auth token combination, return original file.
-        try {
-            if (root.get("auths").get(registry).get("auth").textValue().equals(authToken)) {
-                Log.info(c, m, "Config already contains the correct auth token");
-                return configFile;
-            }
-        } catch (Exception ignore) {
-            //assume config did not contain authToken
         }
 
         //Get existing nodes
@@ -177,7 +178,7 @@ public class ArtifactoryRegistry {
         root.set("auths", authsObject);
 
         //Output results to file
-        newContent = serializeOutput(mapper, root);
+        String newContent = serializeOutput(mapper, root);
         logConfigContents(m, "New config.json contents are", newContent);
         writeFile(configFile, newContent);
         return configFile;
@@ -185,7 +186,13 @@ public class ArtifactoryRegistry {
 
     //   UTILITY METHODS
 
-    static void writeFile(File outFile, String content) {
+    /**
+     * Deletes current file if it exists and writes the content to a new file
+     *
+     * @param outFile - The output file destination
+     * @param content - The content to be written
+     */
+    static void writeFile(final File outFile, final String content) {
         try {
             Files.deleteIfExists(outFile.toPath());
             Files.write(outFile.toPath(), content.getBytes());
@@ -196,7 +203,60 @@ public class ArtifactoryRegistry {
         Log.info(c, "writeFile", "Wrote property to: " + outFile.getAbsolutePath());
     }
 
-    private static String serializeOutput(final ObjectMapper mapper, final ObjectNode root) throws JsonProcessingException {
+    /**
+     * Tests to see if the existing JSON object contains the expected registry
+     *
+     * @param  root      - The collected JSON object
+     * @param  registry  - The expected registry
+     * @param  authToken - The expected authToken
+     * @return           true, if the existing json object contains the registry and authToken, false otherwise.
+     */
+    static boolean testExistingConfig(final ObjectNode root, final String registry, final String authToken) {
+        final String m = "testExistingConfig";
+
+        try {
+            if (root.isNull()) {
+                return false;
+            }
+
+            if (!root.hasNonNull("auths")) {
+                Log.finer(c, m, "Config does not contain the auths element");
+                return false;
+            }
+
+            if (!root.get("auths").hasNonNull(registry)) {
+                Log.finer(c, m, "Config does not contain the registry [ " + registry + " ] element under the auths element");
+                return false;
+            }
+
+            if (!root.get("auths").get(registry).hasNonNull("auth")) {
+                Log.finer(c, m, "Config does not contain the auth element under registry [ " + registry + " ] element");
+                return false;
+            }
+
+            if (!root.get("auths").get(registry).get("auth").isTextual()) {
+                Log.finer(c, m, "Config contains an auth element that is not textual");
+                return false;
+            }
+
+            return root.get("auths").get(registry).get("auth").textValue().equals(authToken);
+        } catch (Exception e) {
+            //Unexpected exception log it and consider fixing the logic above to void it
+            Log.error(c, m, e);
+            return false;
+        }
+
+    }
+
+    /**
+     * Takes a modified JSON object and will serialize it to ensure proper formatting
+     *
+     * @param  mapper                  - The ObjectMapper to use for serialization
+     * @param  root                    - The modified JSON object
+     * @return                         - The serialized JSON object as a string
+     * @throws JsonProcessingException - if any error occurs during serialization.
+     */
+    static String serializeOutput(final ObjectMapper mapper, final ObjectNode root) throws JsonProcessingException {
         String input = mapper.writeValueAsString(root);
         Object pojo = mapper.readValue(input, Object.class);
         String output = mapper.writeValueAsString(pojo);
@@ -206,11 +266,11 @@ public class ArtifactoryRegistry {
     /**
      * Log the contents of a config file that may contain authentication data which should be redacted.
      *
-     * @param method
-     * @param msg
-     * @param contents
+     * @param method   - The method calling this logger
+     * @param msg      - The message to output
+     * @param contents - The content that needs to be sanitized
      */
-    private static void logConfigContents(String method, String msg, String contents) {
+    static void logConfigContents(final String method, final String msg, final String contents) {
         String sanitizedContents = contents.replaceAll("\"auth\": \".*\"", "\"auth\": \"****Token Redacted****\"");
         Log.info(c, method, msg + ":\n" + sanitizedContents);
     }

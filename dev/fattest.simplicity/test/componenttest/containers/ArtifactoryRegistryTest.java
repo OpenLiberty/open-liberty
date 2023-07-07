@@ -10,6 +10,8 @@
 package componenttest.containers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -20,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ArtifactoryRegistryTest {
 
@@ -233,6 +237,111 @@ public class ArtifactoryRegistryTest {
 
         String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
         assertJsonEquals(expected, expected, actual, m);
+    }
+
+    @Test
+    public void testMalformedConfigIsFixed() throws Exception {
+        final String m = "testMalformedConfigIsFixed";
+
+        String existingConfig = "{" + nl +
+                                tab + "\"auths\" : {" + nl +
+                                tab + tab + "\"" + TESTREGISTRY + "\" : {" + nl +
+                                tab + tab + tab + "\"auth\" : \"" + TESTAUTHTOKEN + "\"" + nl +
+                                tab + tab + "}" + nl +
+                                tab + "},}," + nl + // MALFORMED: extra },
+                                "}";
+
+        ArtifactoryRegistry.writeFile(TESTFILE, existingConfig);
+        getGenerateDockerConfig().invoke(null, TESTREGISTRY, TESTAUTHTOKEN, TESTDIR);
+
+        //TODO convert this to a text block once we are building and running on Java 17!
+        String expected = "{" + nl +
+                          tab + "\"auths\" : {" + nl +
+                          tab + tab + "\"" + TESTREGISTRY + "\" : {" + nl +
+                          tab + tab + tab + "\"auth\" : \"" + TESTAUTHTOKEN + "\"" + nl +
+                          tab + tab + "}" + nl +
+                          tab + "}" + nl +
+                          "}";
+        String actual = Files.readAllLines(TESTFILE.toPath()).stream().collect(Collectors.joining(nl));
+        assertJsonEquals(existingConfig, expected, actual, m);
+    }
+
+    /**
+     * Ensure existing config is correctly parsed and only returns true when the correct authToken is present.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExistingConfigResults() throws Exception {
+        boolean result;
+        String json;
+        ObjectNode root;
+
+        final ObjectMapper mapper = JsonMapper.builder().build();
+        final String additionalToken = "fakeToken987654321";
+
+        //root.isNull
+        //Cannot be tested since ObjectNode cannot be NullNode
+
+        //root.has auths
+        json = "{ \"name\" : \"kyle\" }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.nonNull auths
+        json = "{ \"auths\" : null }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.has registry
+        json = "{ \"auths\" : { \"name\" : \"kyle\" } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.nonNull registry
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : null } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.has auth
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"name\" : \"kyle\" } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.nonNull auth
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"auth\" : null } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.auth.isTextual
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"auth\" : { \"name\" : \"kyle\" } } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.auth.isTextual
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"auth\" : { \"name\" : \"kyle\" } } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.auth equals - false
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"auth\" : \"" + additionalToken + "\" } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertFalse(result);
+
+        //root.auths.registry.auth equals - true
+        json = "{ \"auths\" : { \"" + TESTREGISTRY + "\" : { \"auth\" : \"" + TESTAUTHTOKEN + "\" } } }";
+        root = (ObjectNode) mapper.readTree(json);
+        result = ArtifactoryRegistry.testExistingConfig(root, TESTREGISTRY, TESTAUTHTOKEN);
+        assertTrue(result);
     }
 
     private void assertJsonEquals(String initial, String expected, String actual, String testName) {
