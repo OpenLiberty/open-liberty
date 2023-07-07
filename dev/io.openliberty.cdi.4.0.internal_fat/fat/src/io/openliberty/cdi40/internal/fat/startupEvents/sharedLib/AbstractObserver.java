@@ -50,6 +50,9 @@ public abstract class AbstractObserver {
 
     protected void trace(String method) {
         System.out.println(logMsg(method));
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            System.out.println(ste + System.lineSeparator());
+        }
     }
 
     public void observeInit(@Observes @Initialized(ApplicationScoped.class) Object event) {
