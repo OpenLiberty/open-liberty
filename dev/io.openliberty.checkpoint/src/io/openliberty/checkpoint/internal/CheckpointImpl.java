@@ -36,7 +36,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -465,14 +467,17 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             if (features != null) {
                 List<Object> unsupported = new ArrayList<>(0);
                 for (ServiceReference<?> feature : features) {
+                    Object featureName = feature.getProperty("ibm.featureName");
                     LibertyFeature libertyFeature = (LibertyFeature) context.getService(feature);
                     if (libertyFeature != null) {
                         try {
-                            String instantonEnabled = libertyFeature.getHeader(INSTANTON_ENABLED_HEADER);
-                            Object featureName = feature.getProperty("ibm.featureName");
-                            if (!(Boolean.parseBoolean(instantonEnabled) || allowedFeatures.contains(featureName))) {
+                            ManifestElement[] instantonEnabled = ManifestElement.parseHeader(INSTANTON_ENABLED_HEADER, libertyFeature.getHeader(INSTANTON_ENABLED_HEADER));
+                            if (!isInstantOnFeature(instantonEnabled, featureName)) {
                                 unsupported.add(featureName);
                             }
+                        } catch (BundleException e) {
+                            // auto FFDC here to capture a bad header
+                            unsupported.add(featureName);
                         } finally {
                             context.ungetService(feature);
                         }
@@ -486,6 +491,21 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean isInstantOnFeature(ManifestElement[] instantonEnabledHeader, Object featureName) {
+        if (instantonEnabledHeader != null && instantonEnabledHeader.length > 0) {
+
+            if (Boolean.parseBoolean(instantonEnabledHeader[0].getValue())) {
+                // check for beta
+                String type = instantonEnabledHeader[0].getDirective("type");
+                if ("beta".equals(type)) {
+                    return ProductInfo.getBetaEdition();
+                }
+                return true;
+            }
+        }
+        return allowedFeatures.contains(featureName);
     }
 
     public Type getUnknownType() {
