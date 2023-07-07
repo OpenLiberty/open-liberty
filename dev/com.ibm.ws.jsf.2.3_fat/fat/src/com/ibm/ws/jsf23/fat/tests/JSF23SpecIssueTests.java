@@ -26,6 +26,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -39,10 +45,16 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
+import com.ibm.ws.jsf23.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
+
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -62,6 +74,11 @@ public class JSF23SpecIssueTests {
 
     @Server("jsf23SpecIssueServer")
     public static LibertyServer server;
+
+    @Rule
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(c, "selenium-driver"));
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -92,6 +109,8 @@ public class JSF23SpecIssueTests {
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server
         server.startServer(c.getSimpleName() + ".log");
+
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
     @Before
@@ -352,36 +371,26 @@ public class JSF23SpecIssueTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSpecIssue790Test2() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            // Use a synchronizing ajax controller to allow proper ajax updating
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        String contextRoot = "JSF23Spec790";
+        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
 
-            // Construct the URL for the test
-            String contextRoot = "JSF23Spec790";
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "test2.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "test2.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
+        WebElement input = page.findElement(By.id("a:input1"));
+        input.sendKeys("test");
 
-            // Get the input text of the first form and set a value
-            HtmlTextInput textInput1 = (HtmlTextInput) page.getElementById("a:input1");
-            textInput1.setValueAttribute("test");
+        page.findElement(By.id("a:submitButton1")).click();
+        page.waitReqJs();
 
-            // Get the button to click from the first form
-            HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("a:submitButton1");
-            page = submitButton.click();
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            String resultingPage = page.asText();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), resultingPage);
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            // Verify that the input text from the second form contains the same value as the input text of the first form.
-            assertTrue("Input text of the second form is not '" + textInput1.getValueAttribute() + "'",
-                       resultingPage.contains("This is the value from outputText of form 'b': test"));
-        }
+        // Verify that the input text from the second form contains the same value as the input text of the first form.
+        assertTrue("Input text of the second form is not correct",
+                   page.isInPageTextReduced("This is the value from outputText of form 'b': test"));
     }
 
     /**

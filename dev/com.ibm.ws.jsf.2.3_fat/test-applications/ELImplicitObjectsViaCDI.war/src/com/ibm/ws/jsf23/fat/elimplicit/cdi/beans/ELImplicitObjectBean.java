@@ -164,7 +164,7 @@ public class ELImplicitObjectBean implements Serializable {
                 facesContext.addMessage(null, new FacesMessage("Flow map object is null: Exception: " + e.getMessage()));
             }
 
-            facesContext.addMessage(null, new FacesMessage("Message from HeaderMap: " + headerMap.get("headerMessage")));
+            facesContext.addMessage(null, new FacesMessage("Message from HeaderMap: " + headerMap.get("User-Agent")));
 
             facesContext.addMessage(null, new FacesMessage("Cookie object from CookieMap: " + cookieMap.get("JSESSIONID")));
 
@@ -174,7 +174,7 @@ public class ELImplicitObjectBean implements Serializable {
 
             facesContext.addMessage(null, new FacesMessage("Message from RequestParameterValuesMap: " + Arrays.toString(requestParameterValuesMap.get("message"))));
 
-            facesContext.addMessage(null, new FacesMessage("Message from HeaderValuesMap: " + Arrays.toString(headerValuesMap.get("headerMessage"))));
+            facesContext.addMessage(null, new FacesMessage("Message from HeaderValuesMap: " + Arrays.toString(headerValuesMap.get("User-Agent"))));
 
             facesContext.addMessage(null, new FacesMessage("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + resourceHandler.JSF_SCRIPT_LIBRARY_NAME));
 

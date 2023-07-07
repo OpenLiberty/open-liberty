@@ -20,6 +20,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
@@ -29,10 +35,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
+import com.ibm.ws.jsf23.fat.selenium_util.CustomDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
+import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -54,6 +65,11 @@ public class JSF23SelectOneRadioGroupTests {
     @Server("jsf23SelectOneRadioGroupServer")
     public static LibertyServer server;
 
+    @Rule
+    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withLogConsumer(new SimpleLogConsumer(c, "selenium-driver"));
+
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "JSF23SelectOneRadioGroup.war", "com.ibm.ws.jsf23.fat.selectoneradio");
@@ -61,6 +77,8 @@ public class JSF23SelectOneRadioGroupTests {
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
         server.startServer(c.getSimpleName() + ".log");
+
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
     @AfterClass
@@ -79,59 +97,34 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
-        try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
-            // Use a synchronizing ajax controller to allow proper ajax updating
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
 
-            // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(server, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "selectOneRadioGroupAjaxRequest.xhtml");
+        WebPage page = new WebPage(driver);
+        page.get(url);
+        page.waitForPageToLoad();
 
-            HtmlPage testPage = (HtmlPage) webClient.getPage(url);
+        assertTrue("The page was not rendered correctly.", page.isInPage("JSF 2.3 SelectOneRadio Ajax Request"));
 
-            String resultingPage = testPage.asText();
+        page.findElement(By.id("f3:radio1A")).click();
+        page.waitReqJs();
 
-            assertTrue("The page was not rendered correctly.", resultingPage.contains("JSF 2.3 SelectOneRadio Ajax Request"));
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.getPageSource());
+        assertTrue("Radio button 1 is not checked.", page.findElement(By.id("f3:radio1A")).isEnabled());
 
-            // Get radio button 1
-            HtmlRadioButtonInput radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
-            // Mark it as checked
-            testPage = (HtmlPage) radioButton1.setChecked(true);
+        assertTrue("Selected value was not found.", page.isInPage("Selected Value: staticValue2"));
 
-            resultingPage = testPage.asText();
+        page.findElement(By.id("f3:radio0")).click();
+        page.waitReqJs();
 
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), resultingPage);
-            Log.info(c, name.getMethodName(), testPage.asXml());
+        Log.info(c, name.getMethodName(), page.getPageSource());
 
-            // Get the radio button again after submitting the form
-            radioButton1 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio1A");
+        // Verify that it is checked
+        assertTrue("Radio button 0 is not checked.", page.findElement(By.id("f3:radio0")).isEnabled());
 
-            // Verify that it is checked
-            assertTrue("Radio button 1 is not checked.", radioButton1.isChecked());
-
-            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
-
-            // Get radio button 0
-            HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
-            // Mark it as checked
-            testPage = (HtmlPage) radioButton0.setChecked(true);
-
-            resultingPage = testPage.asText();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), resultingPage);
-            Log.info(c, name.getMethodName(), testPage.asXml());
-
-            // Get the radio button again after submitting the form
-            radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
-
-            // Verify that it is checked
-            assertTrue("Radio button 0 is not checked.", radioButton0.isChecked());
-
-            assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue1"));
-        }
+        assertTrue("Selected value was not found.", page.isInPage("Selected Value: staticValue1"));
     }
 
     /**

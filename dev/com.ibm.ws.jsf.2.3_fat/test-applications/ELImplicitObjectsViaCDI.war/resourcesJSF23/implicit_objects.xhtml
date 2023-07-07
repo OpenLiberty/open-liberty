@@ -40,10 +40,10 @@
         Flash isRedirect: <h:outputText value="#{flash.isRedirect()}"/>
         <br/>
         <br/>
-        Header: <h:outputText value="#{header.get('headerMessage')}"/>
+        Header: <h:outputText value="#{header.get('User-Agent')}"/>
         <br/>
         <br/>
-        HeaderValues: <ui:repeat var="item" value="#{headerValues.get('headerMessage')}"> <h:outputText value="#{item}"/> </ui:repeat>
+        HeaderValues: <ui:repeat var="item" value="#{headerValues.get('User-Agent')}"> <h:outputText value="#{item}"/> </ui:repeat>
         <br/>
         <br/>
         InitParam: <h:outputText value="#{initParam.get('WELD_CONTEXT_ID_KEY')}"/>
