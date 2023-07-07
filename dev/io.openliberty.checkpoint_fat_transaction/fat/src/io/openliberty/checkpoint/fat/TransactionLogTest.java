@@ -15,6 +15,7 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -86,9 +87,9 @@ public class TransactionLogTest extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        testMethod = getTestMethod(TestMethod.class, testName);
         ShrinkHelper.cleanAllExportedArchives();
-        Consumer<LibertyServer> preRestoreLogic;
+
+        testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
             case testCheckpointRemovesDefaultTranlogDir:
                 serverTranLog.restoreServerConfiguration();
@@ -110,7 +111,7 @@ public class TransactionLogTest extends FATServletClient {
 
                 deleteTranlogDir(serverTranLog); // Clean up
 
-                preRestoreLogic = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic1 = checkpointServer -> {
                     // Override the app datasource and transaction configurations for restore.
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
                     try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
@@ -120,7 +121,7 @@ public class TransactionLogTest extends FATServletClient {
                         throw new UncheckedIOException(e);
                     }
                 };
-                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic));
+                serverTranLog.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic1));
                 serverTranLog.startServer();
                 break;
             case testUpdateTranlogDatasourceAtRestore:
@@ -130,7 +131,7 @@ public class TransactionLogTest extends FATServletClient {
 
                 ShrinkHelper.defaultApp(serverDbTranLog, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.simple.*");
 
-                preRestoreLogic = checkpointServer -> {
+                Consumer<LibertyServer> preRestoreLogic2 = checkpointServer -> {
                     // Override the app datasource, tranlog datasource, and transactions
                     // configurations for restore.
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
@@ -147,8 +148,8 @@ public class TransactionLogTest extends FATServletClient {
                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
                                   serverDbTranLog.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
                 };
-                serverDbTranLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic);
-                serverDbTranLog.setServerStartTimeout(300000);
+                serverDbTranLog.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, preRestoreLogic2);
+                serverDbTranLog.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
                 serverDbTranLog.startServer();
                 break;
             default:

@@ -14,6 +14,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static io.openliberty.checkpoint.fat.util.FATUtils.LOG_SEARCH_TIMEOUT;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
+import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,12 +30,14 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.transactional.web.TransactionalBeanServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -62,7 +66,7 @@ public class TransactionalBeanTest extends FATServletClient {
     static final String SERVER_NAME = "checkpointTransactionalBean";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME))
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
@@ -77,29 +81,31 @@ public class TransactionalBeanTest extends FATServletClient {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "com.ibm.ws.transactional.web.*");
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
-                             checkpointServer -> {
-                                 // Env var change that triggers transaction config update at restore
-                                 File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
-                                 try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                                     serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
-                                 } catch (FileNotFoundException e) {
-                                     throw new UncheckedIOException(e);
-                                 }
-                                 assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
-                                               checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
-                                 assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
-                                               checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
-                             });
-        server.setServerStartTimeout(300000);
+        ShrinkHelper.cleanAllExportedArchives();
+
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "com.ibm.ws.transactional.web.*");
+
+        Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
+            // Env var change that triggers transaction config update at restore
+            File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
+            try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
+                serverEnvWriter.println("TX_RETRY_INT=" + TX_RETRY_INT);
+            } catch (FileNotFoundException e) {
+                throw new UncheckedIOException(e);
+            }
+            assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
+                          checkpointServer.waitForStringInLogUsingMark("SRVE0169I: .*" + APP_NAME, 0));
+            assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
+                          checkpointServer.waitForStringInLogUsingMark("CWWKZ0001I: .*" + APP_NAME, 0));
+        };
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, preRestoreLogic);
+        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
         stopServer(server, "WTRN0017W");
-        ShrinkHelper.cleanAllExportedArchives();
     }
 
 }

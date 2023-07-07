@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -30,11 +29,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -55,7 +56,7 @@ public class ServletStartupTest extends FATServletClient {
     static final String SERVER_NAME = "checkpointTransactionServletStartup";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers(SERVER_NAME))
                     .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
@@ -65,21 +66,29 @@ public class ServletStartupTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    TestMethod testMethod;
+
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.startup.*");
+        server.saveServerConfiguration();
     }
-
-    TestMethod testMethod;
 
     @Before
     public void setUp() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
+
         testMethod = getTestMethod(TestMethod.class, testName);
         switch (testMethod) {
             case testServletInitUserTranAtDeployment:
+                server.restoreServerConfiguration();
+                ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.startup.*");
+
                 server.setCheckpoint(CheckpointPhase.BEFORE_APP_START, false, null);
                 break;
             case testServletInitUserTranAtApplications:
+                server.restoreServerConfiguration();
+                ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "servlets.startup.*");
+
                 // Expect server checkpoint and restore to fail
                 server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, true, null));
                 break;
@@ -93,15 +102,10 @@ public class ServletStartupTest extends FATServletClient {
         stopServer(server);
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        ShrinkHelper.cleanAllExportedArchives();
-    }
-
     @Test
     public void testServletInitUserTranAtDeployment() throws Exception {
         // Request a server checkpoint
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
 
         assertNull("The StartupServlet.init() method should not execute checkpoint at=deployment, but did.",
                    server.waitForStringInLogUsingMark("StartupServlet init starting", 1000));
