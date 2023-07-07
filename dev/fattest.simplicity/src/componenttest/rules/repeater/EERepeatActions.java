@@ -132,7 +132,7 @@ public class EERepeatActions {
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
-        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+        if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
 
             List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
             Collections.reverse(allSetsList); // Reverse list so newest EE version is first in list
@@ -142,7 +142,7 @@ public class EERepeatActions {
             // Find the newest EE feature set that's in otherFeatureSets and is compatible with the current java version
             Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
                             .filter(s -> candidateFeatureSets.contains(s))
-                            .filter(s -> s.getEEVersion().getMinJavaLevel() <= currentJavaLevel)
+                            .filter(s -> s.getMinJavaLevel().majorVersion() <= currentJavaLevel)
                             .findFirst();
 
             if (newestSupportedSet.isPresent()) {

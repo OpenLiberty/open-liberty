@@ -390,7 +390,31 @@ public class MicroProfileActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
+        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+    }
+
+    /**
+     * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in the mode specified by otherFeatureSetsTestMode
+     * Usage: The following example will repeat the tests using MicroProfile versions 1.2, 1.3, 1.4, 3.3 and 4.0.
+     * 4.0 will be in LITE mode, the others in FULL mode.
+     *
+     * <pre>
+     * <code>
+     * &#64;ClassRule
+     * public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, MicroProfileActions.MP40, MicroProfileActions.MP12,
+     *                                    MicroProfileActions.MP13, MicroProfileActions.MP14, MicroProfileActions.MP33);
+     * </code>
+     * </pre>
+     *
+     * @param  server                   The server to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return                          A RepeatTests instance
+     */
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
+        return repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 
     /**
@@ -409,7 +433,7 @@ public class MicroProfileActions {
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
-        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+        if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
 
             List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
             Collections.reverse(allSetsList); // Reverse list so newest MP version is first in list
@@ -419,7 +443,7 @@ public class MicroProfileActions {
             // Find the newest MP feature set that's in otherFeatureSets and is compatible with the current java version
             Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
                             .filter(s -> candidateFeatureSets.contains(s))
-                            .filter(s -> s.getEEVersion().getMinJavaLevel() <= currentJavaLevel)
+                            .filter(s -> s.getMinJavaLevel().majorVersion() <= currentJavaLevel)
                             .findFirst();
 
             if (newestSupportedSet.isPresent()) {

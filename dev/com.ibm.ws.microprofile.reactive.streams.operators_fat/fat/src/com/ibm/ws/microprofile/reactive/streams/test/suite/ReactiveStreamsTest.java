@@ -13,16 +13,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.streams.test.basic.ReactiveStreamsTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -45,8 +44,7 @@ public class ReactiveStreamsTest extends FATServletClient {
 
     public static final String SERVER_NAME = "ReactiveStreamsTestServer";
 
-    @ClassRule
-    public static RepeatTests r = FATSuite.repeat(SERVER_NAME, TestMode.LITE, FATSuite.MPRS10, FATSuite.MPRS30_MP60);
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     public static final String APP_NAME = "ReactiveStreamsTest";
 
@@ -63,7 +61,7 @@ public class ReactiveStreamsTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.reactive.streams.test.basic");
 
-        ShrinkHelper.exportDropinAppToServer(server, war);
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

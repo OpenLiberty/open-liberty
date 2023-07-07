@@ -21,16 +21,31 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 public class RepeatActions {
 
-    public static enum EEVersion {
-        EE6(8), EE7(8), EE8(8), EE9(8), EE10(11), EE11(17);
+    public static enum SEVersion {
+        JAVA8(8), JAVA11(11), JAVA17(17), JAVA21(21);
 
-        private EEVersion(int minJavaLevel) {
+        private SEVersion(int majorVersion) {
+            this.majorVersion = majorVersion;
+        }
+
+        private final int majorVersion;
+
+        //minor and micro versions could be added in future
+        public int majorVersion() {
+            return majorVersion;
+        }
+    }
+
+    public static enum EEVersion {
+        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17);
+
+        private EEVersion(SEVersion minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
         }
 
-        private final int minJavaLevel;
+        private final SEVersion minJavaLevel;
 
-        public int getMinJavaLevel() {
+        SEVersion getMinJavaLevel() {
             return minJavaLevel;
         }
     }
@@ -100,6 +115,7 @@ public class RepeatActions {
         } else {
             action = new FeatureReplacementAction();
         }
+        action.withMinJavaLevel(featureSet.getMinJavaLevel());
 
         //add all the features from the primary FeatureSet
         action.addFeatures(featureSet.getFeatures());

@@ -19,7 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatActions;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -30,17 +30,30 @@ import componenttest.rules.repeater.RepeatTests;
                 ReactiveConcurrentWorkTest.class
 })
 public class FATSuite {
-    public static final String MPRS10_ID = MicroProfileActions.MP21_ID + "_" + "MPRS10";
-    public static final String MPRS30_MP60_ID = MicroProfileActions.MP60_ID + "_" + "MPRS30";
+    public static final String MP_REACTIVE_STREAMS_10 = "mpReactiveStreams-1.0";
+    public static final String MP_REACTIVE_STREAMS_30 = "mpReactiveStreams-3.0";
 
-    public static final FeatureSet MPRS10 = MicroProfileActions.MP21.addFeature("mpReactiveStreams-1.0").build(MPRS10_ID);
-    public static final FeatureSet MPRS30_MP60 = MicroProfileActions.MP60.addFeature("mpReactiveStreams-3.0").build(MPRS30_MP60_ID);
+    public static final String MPRSO10_ID = MicroProfileActions.MP21_ID + "_" + "mpRSO10";
+    public static final String MPRSO30_MP50_ID = MicroProfileActions.MP50_ID + "_" + "mpRSO30";
+    public static final String MPRSO30_MP60_ID = MicroProfileActions.MP60_ID + "_" + "mpRSO30";
+    public static final String MPRSO30_MP61_ID = MicroProfileActions.MP61_ID + "_" + "mpRSO30";
+
+    public static final FeatureSet MPRSO10 = MicroProfileActions.MP21.addFeature(MP_REACTIVE_STREAMS_10).build(MPRSO10_ID);
+    public static final FeatureSet MPRSO30_MP50 = MicroProfileActions.MP50.addFeature(MP_REACTIVE_STREAMS_30).setMinJavaLevel(SEVersion.JAVA11).build(MPRSO30_MP50_ID);
+    public static final FeatureSet MPRSO30_MP60 = MicroProfileActions.MP60.addFeature(MP_REACTIVE_STREAMS_30).build(MPRSO30_MP60_ID);
+    public static final FeatureSet MPRSO30_MP61 = MicroProfileActions.MP61.addFeature(MP_REACTIVE_STREAMS_30).build(MPRSO30_MP61_ID);
 
     public static final Set<FeatureSet> ALL;
     static {
         ALL = new HashSet<>(MicroProfileActions.ALL);
-        ALL.add(MPRS10);
-        ALL.add(MPRS30_MP60);
+        ALL.add(MPRSO10);
+        ALL.add(MPRSO30_MP50);
+        ALL.add(MPRSO30_MP60);
+        ALL.add(MPRSO30_MP61);
+    }
+
+    public static RepeatTests repeatDefault(String serverName) {
+        return repeat(serverName, TestMode.LITE, FATSuite.MPRSO30_MP61, FATSuite.MPRSO10, FATSuite.MPRSO30_MP50, FATSuite.MPRSO30_MP60);
     }
 
     /**
@@ -54,6 +67,6 @@ public class FATSuite {
      * @return a RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return RepeatActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+        return MicroProfileActions.repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
     }
 }

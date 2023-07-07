@@ -68,7 +68,7 @@ public class RepeatFaultTolerance {
         Set<FeatureSet> otherFeatureSetsSet = new HashSet<>(Arrays.asList(otherFeatureSets));
 
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
-        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+        if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
             // For MP60, just replace it with MP50 (same implementation but running with EE9)
             if (firstFeatureSet == MicroProfileActions.MP60) {
                 firstFeatureSet = MicroProfileActions.MP50;
