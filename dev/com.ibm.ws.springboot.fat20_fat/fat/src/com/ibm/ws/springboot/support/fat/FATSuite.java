@@ -50,7 +50,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MissingServletTests15.class,
                 MissingServletTests20.class,
                 MissingSslFeatureTests.class,
-                MissingWebsocketFeatureTests20.class,
+                    // MissingWebsocketFeatureTests20.class,
+                    //   testMissingWebsocketFor20
                 MultContextTests20.class,
                 MultipleApplicationsNotSupported20.class,
                 NeedSpringBoot15FeatureTests.class,
