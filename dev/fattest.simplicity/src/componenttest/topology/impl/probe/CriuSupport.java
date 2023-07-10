@@ -56,7 +56,7 @@ public class CriuSupport {
                 if (chkPtSupported) {
                     out("isCRIUSupportEnabled() returned " + chkPtSupported);
                 } else {
-                    err("isCRIUSupportEnabled() returned " + chkPtSupported);
+                    System.err.println("isCRIUSupportEnabled() returned " + chkPtSupported);
                 }
             } catch (Exception e) {
                 // An exception here probably means the JDK CRIU API is deprecated or some other incompatible change
@@ -71,15 +71,6 @@ public class CriuSupport {
             err("Unable to load class org.eclipse.openj9.criu.CRIUSupport.", e);
         }
         System.exit(0);
-    }
-
-    /**
-     * Log to stderr
-     *
-     * @param string
-     */
-    private static void err(String string) {
-        System.err.println("string");
     }
 
     /**
