@@ -1986,8 +1986,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                 value = to(entityInfo.idType, result, false);
                                                 if (value == result) // unable to convert value
                                                     throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                                                               entityInfo.entityClass.getName() + ") or the id class (" +
-                                                                               entityInfo.idType + "), not the " + result.getClass().getName() + " class."); // TODO NLS
+                                                                               (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
+                                                                               ") or the id class (" + entityInfo.idType +
+                                                                               "), not the " + result.getClass().getName() + " class."); // TODO NLS
                                             }
 
                                             jakarta.persistence.Query delete = em.createQuery(queryInfo.jpqlDelete);

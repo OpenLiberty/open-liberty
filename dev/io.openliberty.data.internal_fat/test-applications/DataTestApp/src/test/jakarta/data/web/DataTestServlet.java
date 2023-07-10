@@ -59,6 +59,7 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.KeysetAwarePage;
@@ -1291,6 +1292,40 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypes() {
+        packages.deleteAll();
+
+        packages.save(new Package(60006, 16.0f, 61.1f, 6.0f, "testFindAndDeleteReturnsInvalidTypes#60006"));
+
+        Sort sort = Sort.asc("id");
+
+        try {
+            long[] deleted = packages.deleteFirst3(sort);
+            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = packages.deleteFirst4(sort);
+            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Collection<Number> deleted = packages.deleteFirst5(sort);
+            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Find-and-delete repository operations that return one or more objects, corresponding to removed entities.
      */
     // Test annotation is present on corresponding method in DataTest
@@ -1341,7 +1376,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + p0.id + "; expected one of " + remaining, true, remaining.remove(p0.id));
         assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));
 
-        // TODO test for Number return type could be added here
         // should have only 1 remaining
         deleted = packages.delete(Limit.of(4), sort);
         assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);

@@ -420,8 +420,9 @@ class QueryInfo {
                 && !type.equals(Object.class)
                 && !wrapperClassIfPrimitive(type).equals(wrapperClassIfPrimitive(entityInfo.idType)))
                 throw new MappingException("Results for find-and-delete repository queries must be the entity class (" +
-                                           entityInfo.entityClass.getName() + ") or the id class (" +
-                                           entityInfo.idType + "), not the " + type.getName() + " class."); // TODO NLS
+                                           (entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName() +
+                                           ") or the id class (" + entityInfo.idType +
+                                           "), not the " + type.getName() + " class."); // TODO NLS
         }
 
         return isFindAndDelete;

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,12 @@ public interface Packages extends PageableRepository<Package, Integer> {
     int[] deleteFirst2(Sort... sorts);
 
     LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
+
+    long[] deleteFirst3(Sort sort); // invalid return type is not the entity or id
+
+    List<String> deleteFirst4(Sort sort); // invalid return type is not the entity or id
+
+    Collection<Number> deleteFirst5(Sort sort); // invalid return type is not the entity or id
 
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
