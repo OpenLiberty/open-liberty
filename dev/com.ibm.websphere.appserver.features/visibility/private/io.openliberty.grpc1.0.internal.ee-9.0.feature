@@ -7,7 +7,6 @@ Subsystem-Name: Jakarta gRPC internal 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common.jakarta, \
   io.openliberty.grpc.1.0.internal.jakarta, \
-  com.ibm.ws.com.google.guava, \
   com.ibm.ws.security.authorization.util.jakarta
 kind=ga
 edition=core
