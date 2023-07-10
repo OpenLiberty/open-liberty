@@ -40,8 +40,6 @@ Import-Package: \
   !reactor.blockhound.*,\
   !sun.*,\
   javax.annotation;version=!,\
-  !com.google.apphosting.api,\
-  !com.google.appengine.api,\
   *
 
 Export-Package: \
@@ -88,10 +86,6 @@ instrument.disabled: true
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion},\
-  com.google.protobuf:protobuf-java;version=latest, \
-  com.google.protobuf:protobuf-java-util;version=latest, \
-  com.google.guava:failureaccess;version=1.0.1,\
-  com.google.guava:guava;version=latest, \
   io.grpc:grpc-netty;version=${grpcVersion},\
   io.netty:netty-transport-native-unix-common;version=${nettyVersion},\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
