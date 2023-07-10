@@ -60,5 +60,6 @@ generate.replacement: true
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
 	com.ibm.ws.security.jwt;version=latest,\
-	fattest.simplicity;version=latest
+	fattest.simplicity;version=latest,\
+	com.ibm.ws.org.apache.commons.httpclient
 	

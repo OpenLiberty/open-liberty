@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -64,6 +64,10 @@ public class AfterLogoutStates {
     boolean isUsingEndSessionWithHttpLogout = false;
     boolean isUsingLogoutWithHttpLogout = false;
     boolean isUsingJwtToken = true;
+    boolean isUsingIntrospect = false;
+    boolean isUsingInvalidIntrospect = false;
+
+    boolean isUsingSaml = false;
 
     public AfterLogoutStates() {
         isUsingOidcNotSocial = true;
@@ -89,7 +93,11 @@ public class AfterLogoutStates {
      * @param tokenType
      *            access_token is an opaque or jwt token
      */
-    public AfterLogoutStates(boolean usesRealBCLEndpoint, String flowType, String logoutMethod, String sessionEndpoint, String tokenType) {
+    public AfterLogoutStates(boolean usesRealBCLEndpoint, String flowType, String logoutMethod, String sessionEndpoint, String tokenType, boolean usesSaml) {
+
+        Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " logoutMethod: " + logoutMethod);
+
+        isUsingSaml = usesSaml;
 
         if (flowType == null || flowType.equals(Constants.RP_FLOW)) {
             Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " (in OIDC path)");
@@ -98,7 +106,7 @@ public class AfterLogoutStates {
             Log.info(thisClass, "AfterLogoutStates", "flowType: " + flowType + " (in Social path)");
             isUsingOidcNotSocial = false;
         }
-        if (logoutMethod.equals(Constants.END_SESSION) || logoutMethod.equals(Constants.SAML)) {
+        if (logoutMethod.equals(Constants.END_SESSION) || logoutMethod.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
             isUsingEndSessionNotHttpLogout = true;
         } else {
             if (logoutMethod.equals(Constants.LOGOUT_ENDPOINT)) {
@@ -127,6 +135,7 @@ public class AfterLogoutStates {
         setOPCookiesExpectedStatesAfterLogout();
         setClientCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
         setReuseWebClientExpectedStateAfterLogout(usesRealBCLEndpoint);
+        setSPCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
         setIDPCookiesExpectedStatesAfterLogout(usesRealBCLEndpoint);
 
     }
@@ -169,6 +178,7 @@ public class AfterLogoutStates {
         Log.info(thisClass, thisMethod, "isUsingEndSessionWithHttpLogout: " + isUsingEndSessionWithHttpLogout);
         Log.info(thisClass, thisMethod, "isUsingLogoutWithHttpLogout: " + isUsingLogoutWithHttpLogout);
         Log.info(thisClass, thisMethod, "isUsingJwtToken: " + isUsingJwtToken);
+        Log.info(thisClass, thisMethod, "isUsingIntrospect: " + isUsingIntrospect);
 
     }
 
@@ -213,9 +223,14 @@ public class AfterLogoutStates {
     public void setOPCookiesExpectedStatesAfterLogout() {
 
         opCookieExists = false;
-        opCookieMatchesPrevious = false;
         opJSessionIdExists = true;
         opJSessionIdMatchesPrevious = false;
+        // The OP cookie won't be set/used when using SAML, so it'll match (null before logout and null after logout)
+        if (isUsingSaml) {
+            opCookieMatchesPrevious = true;
+        } else {
+            opCookieMatchesPrevious = false;
+        }
 
     }
 
@@ -230,7 +245,9 @@ public class AfterLogoutStates {
      */
     public void setClientCookiesExpectedStatesAfterLogout(boolean usesRealBCLEndpoint) {
 
-        if (usesRealBCLEndpoint || isUsingHttpLogout) {
+        // TODO - verify this
+        //        if (usesRealBCLEndpoint || isUsingHttpLogout) {
+        if ((usesRealBCLEndpoint || isUsingHttpLogout) && (!(isUsingLogoutNotHttpLogout && isUsingSaml))) {
             clientCookieExists = false;
             clientCookieMatchesPrevious = false;
         }
@@ -239,16 +256,26 @@ public class AfterLogoutStates {
 
     public void setReuseWebClientExpectedStateAfterLogout(boolean usesRealBCLEndpoint) {
 
-        if (usesRealBCLEndpoint || isUsingHttpLogout) {
+        Log.info(thisClass, "setReuseWebClientExpectedStateAfterLogout", "usesRealBCLEndpoint: " + usesRealBCLEndpoint + " isUsingHttpLogout: " + isUsingHttpLogout + " isUsingLogoutNotHttpLogout: " + isUsingLogoutNotHttpLogout + " isUsingSaml: " + isUsingSaml);
+        // TODO - verify this
+        if ((usesRealBCLEndpoint || isUsingHttpLogout) && (!(isUsingLogoutNotHttpLogout && isUsingSaml))) {
             appSessionAccess = false;
         }
     }
 
-    // TODO - update when SAML support is added
-    public void setIDPCookiesExpectedStatesAfterLogout(boolean usesRealBCLEndpoint) {
+    public void setSPCookiesExpectedStatesAfterLogout(boolean usesRealBCLEndpoint) {
 
         spCookieExists = false;
-        spCookieMatchesPrevious = false;
+        // The SP cookie won't be set/used when NOT using SAML, so it'll match (null before logout and null after logout)
+        if (isUsingSaml) {
+            spCookieMatchesPrevious = false;
+        } else {
+            spCookieMatchesPrevious = true;
+        }
+
+    }
+
+    public void setIDPCookiesExpectedStatesAfterLogout(boolean usesRealBCLEndpoint) {
 
         idpCookieExists = false;
         idpCookieMatchesPrevious = false;
@@ -393,6 +420,22 @@ public class AfterLogoutStates {
 
     }
 
+    public boolean getSpCookieExists() {
+        return spCookieExists;
+    }
+
+    public boolean getSpCookieMatchesPrevious() {
+        return spCookieMatchesPrevious;
+    }
+
+    public boolean getIdpCookieExists() {
+        return idpCookieExists;
+    }
+
+    public boolean getIdpCookieMatchesPrevious() {
+        return idpCookieMatchesPrevious;
+    }
+
     public void setIsAppSessionAccess(boolean value) {
         appSessionAccess = value;
     }
@@ -418,4 +461,21 @@ public class AfterLogoutStates {
         return refreshTokenValid;
 
     }
+
+    public void setIsUsingIntrospect(boolean value) {
+        isUsingIntrospect = value;
+    }
+
+    public boolean getIsUsingIntrospect() {
+        return isUsingIntrospect;
+    }
+
+    public void setIsUsingInvalidIntrospect(boolean value) {
+        isUsingInvalidIntrospect = value;
+    }
+
+    public boolean getIsUsingInvalidIntrospect() {
+        return isUsingInvalidIntrospect;
+    }
+
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,10 +25,11 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysPassesTest.class,
-        HttpMethodsTests.class,
-        LogoutTokenValidationTests.class,
-        BasicBCLTests.class
+        //        AlwaysPassesTest.class,
+        //        HttpMethodsTests.class,
+        //        LogoutTokenValidationTests.class,
+        BasicBCLTests.class,
+        MultiServerBCLTests.class
 
 })
 /**

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.security.backchannelLogout.fat.CommonTests;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,14 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates;
+import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
 import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
+import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfSocialClient;
+import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDB;
+import com.ibm.ws.security.backchannelLogout.fat.utils.SkipIfUsesMongoDBOrSocialClient;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
+import com.ibm.ws.security.fat.common.Utils;
+import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
@@ -47,6 +54,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.utils.ServerFileUtils;
 
 /**
@@ -64,9 +72,18 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     public String testClient = null;
     public static TestServer clientServer = null;
     public static TestServer clientServer2 = null;
+    protected static String loginMethod = Constants.OIDC;
     protected static String logoutMethodTested = Constants.END_SESSION;
     protected static String sessionLogoutEndpoint = null;
     protected static String currentRepeatAction = null;
+    protected static String tokenType = null;
+    protected static String httpSessionEnabled = null;
+
+    protected static BackChannelLogout_RegisterClients regClients = null;
+
+    protected static String finalAppWithPostRedirect = null;
+    protected static String finalAppWithoutPostRedirect = null;
+    protected static String logoutApp = null;
 
     //    protected boolean debug = true;
     protected boolean debug = false;
@@ -75,6 +92,139 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     public static void afterClass() {
         Log.info(thisClass, "afterClass", "Resetting useLdap to: " + defaultUseLdap);
         useLdap = defaultUseLdap;
+    }
+
+    public static RepeatTests addRepeat(RepeatTests rTests, SecurityTestRepeatAction currentRepeat) {
+        if (rTests == null) {
+            return RepeatTests.with(currentRepeat);
+        } else {
+            return rTests.andWith(currentRepeat);
+        }
+    }
+
+    public static void printRandom(String method) {
+        Log.info(thisClass, method, "********************************************************************************************************************");
+        Log.info(thisClass, method, "                 RRRRRRRR AAAAAAAA N      N DDDDDDD   OOOOOO  MMMM MMM");
+        Log.info(thisClass, method, "                 R      R A      A NN     N D      D O      O M  MM  M");
+        Log.info(thisClass, method, "                 R      R A      A N N    N D      D O      O M  MM  M");
+        Log.info(thisClass, method, "                 RRRRRRRR A      A N  N   N D      D O      O M      M");
+        Log.info(thisClass, method, "                 RR       AAAAAAAA N   N  N D      D O      O M      M");
+        Log.info(thisClass, method, "                 R R      A      A N    N N D      D O      O M      M");
+        Log.info(thisClass, method, "                 R  R     A      A N     NN D      D O      O M      M");
+        Log.info(thisClass, method, "                 R   R    A      A N      N D      D O      O M      M");
+        Log.info(thisClass, method, "                 R    R   A      A N      N DDDDDDD   OOOOOO  M      M");
+        Log.info(thisClass, method, "********************************************************************************************************************");
+
+    }
+
+    public static void makeRandomSettingSelections() throws Exception {
+
+        String thisMethod = "makeRandomSettingSelections";
+        String[] propagationTokenTypes = rsTools.chooseTokenSettings(Constants.OIDC_OP);
+        tokenType = propagationTokenTypes[0];
+
+        // Randomly enable/disable securityIntegration for this class instance to give more coverage
+        httpSessionEnabled = Utils.getRandomSelection("true", "false");
+
+        printRandom(thisMethod);
+        Log.info(thisClass, "makeRandomSettingSelections", "inited tokenType to: " + tokenType);
+        Log.info(thisClass, "makeRandomSettingSelections", "inited securityIntegrationEnabled to: " + httpSessionEnabled);
+        printRandom(thisMethod);
+
+    }
+
+    /**
+    *
+    */
+    public static void initSkipFlags() {
+        SkipIfSocialClient.socialClient = false;
+        SkipIfUsesMongoDBOrSocialClient.socialClient = false;
+        SkipIfUsesMongoDB.usesMongoDB = false;
+        SkipIfUsesMongoDBOrSocialClient.usesMongoDB = false;
+    }
+
+    public static String adjustServerConfig(String configFileName) throws Exception {
+
+        return configFileName.replace(".xml", "_" + httpSessionEnabled + ".xml");
+    }
+
+    /**
+     * There are 3 main setups and each has 1-3 different ways that we can log out - this method will set some flags to tell the
+     * test cases and supporting methods what type of config we have and the logout that we're expecting
+     * 1) OIDC Provider with an openidconnect client
+     * --- invoke end_session on the OP to log out
+     * --- invoke a test app on the rp to invoke http logout then invoke end_session on the OP
+     * --- invoke a test app on the rp to invoke http logout then invoke logout on the OP
+     * 2) OIDC Provider with social client
+     * --- invoke end_session on the OP to log out
+     * --- invoke a test app on the social client to invoke http logout then invoke end_session on the OP
+     * --- invoke a test app on the social client to invoke http logout then invoke logout on the OP
+     * 3) OIDC Provider with SAML with an openidconnect client
+     * --- invoke IDP logout on the IDP (Shibboleth server) to log out
+     **/
+    public static void setConfigBasedOnRepeat() throws Exception {
+
+        finalAppWithPostRedirect = Constants.postLogoutJSessionIdApp;
+
+        Log.info(thisClass, "setConfigBasedOnRepeat", "Current repeat action: " + currentRepeatAction);
+
+        if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
+            loginMethod = Constants.SAML;
+        } else {
+            if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
+                loginMethod = SocialConstants.SOCIAL;
+            } else {
+                loginMethod = Constants.OIDC;
+            }
+        }
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+            logoutMethodTested = Constants.HTTP_SESSION;
+            if (currentRepeatAction.contains(Constants.END_SESSION)) {
+                sessionLogoutEndpoint = Constants.END_SESSION;
+                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
+                finalAppWithPostRedirect = Constants.defaultLogoutPage;
+            } else {
+                sessionLogoutEndpoint = Constants.LOGOUT_ENDPOINT;
+                finalAppWithoutPostRedirect = Constants.LOGOUT_ENDPOINT;
+                // override for configs that use post redrects - using the logout endpoint on the OP will NOT result in a call to them
+                finalAppWithPostRedirect = Constants.LOGOUT_ENDPOINT;
+            }
+        } else {
+            //            if (currentRepeatAction.contains(Constants.SAML)) {
+            //                //                logoutMethodTested = Constants.SAML;
+            //                finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+            //            } // else {
+            if (currentRepeatAction.contains(Constants.END_SESSION)) {
+                logoutMethodTested = Constants.END_SESSION;
+                finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
+            } else {
+                if (currentRepeatAction.contains(Constants.SAML_IDP_INITIATED_LOGOUT)) {
+                    logoutMethodTested = Constants.SAML_IDP_INITIATED_LOGOUT;
+                    finalAppWithoutPostRedirect = Constants.samlLogoutPage;
+                } else {
+                    logoutMethodTested = Constants.LOGOUT_ENDPOINT;
+                    finalAppWithoutPostRedirect = "/oidc/endpoint/.*/logout";
+                    // logout doesn't redirect to the post logout uri
+                    finalAppWithPostRedirect = finalAppWithoutPostRedirect;
+                }
+            }
+            sessionLogoutEndpoint = null;
+        }
+
+        Log.info(thisClass, "setConfigBaseOnRepeat", "loginMethod: " + loginMethod);
+        Log.info(thisClass, "setConfigBaseOnRepeat", "logoutMethodTested: " + logoutMethodTested);
+    }
+
+    public String buildContextRoot() throws Exception {
+
+        String contextRoot = null;
+        if (currentRepeatAction.contains(Constants.OIDC)) {
+            contextRoot = Constants.OIDC_CLIENT_DEFAULT_CONTEXT_ROOT;
+        } else {
+            contextRoot = SocialConstants.DEFAULT_CONTEXT_ROOT;
+        }
+
+        return contextRoot;
     }
 
     /**
@@ -91,12 +241,12 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     public String buildBackchannelLogoutUri(TestServer server, String client) throws Exception {
 
-        String contextRoot = null;
-        if (currentRepeatAction.contains(Constants.OIDC)) {
-            contextRoot = Constants.OIDC_CLIENT_DEFAULT_CONTEXT_ROOT;
-        } else {
-            contextRoot = SocialConstants.DEFAULT_CONTEXT_ROOT;
-        }
+        String contextRoot = buildContextRoot();
+        //        if (currentRepeatAction.contains(Constants.OIDC)) {
+        //            contextRoot = Constants.OIDC_CLIENT_DEFAULT_CONTEXT_ROOT;
+        //        } else {
+        //            contextRoot = SocialConstants.DEFAULT_CONTEXT_ROOT;
+        //        }
         String part2 = (contextRoot + Constants.OIDC_BACK_CHANNEL_LOGOUT_ROOT + client).replace("//", "/");
         String uri = server.getHttpsString() + part2;
         Log.info(thisClass, "_testName", "backchannelLogouturi: " + uri);
@@ -165,6 +315,10 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         return parms;
 
+    }
+
+    public boolean isUsingSaml() throws Exception {
+        return loginMethod.equals(Constants.SAML);
     }
 
     /**
@@ -363,16 +517,21 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     }
 
     public Object accessProtectedApp(WebClient webClient, Object previousResponse, TestSettings settings) throws Exception {
+        // Access a protected app - using a normal RP flow
+        List<validationData> expectations = vData.addSuccessStatusCodes();
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, settings.getTestURL());
+
+        return accessProtectedApp(webClient, previousResponse, settings, expectations);
+    }
+
+    public Object accessProtectedApp(WebClient webClient, Object previousResponse, TestSettings settings, List<validationData> expectations) throws Exception {
 
         String thisMethod = "accessProtectedApp";
         msgUtils.printMethodName(thisMethod);
 
         Object response = null;
-        // Access a protected app - using a normal RP flow
-        List<validationData> expectations = vData.addSuccessStatusCodes();
-        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, settings.getTestURL());
 
-        if (logoutMethodTested.equals(Constants.SAML)) {
+        if (loginMethod.equals(Constants.SAML)) {
             response = genericRP(_testName, webClient, settings, previousResponse, Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT_WITH_SAML, expectations);
         } else {
             response = genericRP(_testName, webClient, settings, previousResponse, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
@@ -393,7 +552,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
      *            flag indicating that if we should or should not have access to protected app without having to log in
      * @throws Exception
      */
-    public void accessAppAfterLogout(WebClient webClient, TestSettings settings, AfterLogoutStates states) throws Exception {
+    public Object accessAppAfterLogout(WebClient webClient, TestSettings settings, AfterLogoutStates states) throws Exception {
 
         String thisMethod = "accessAppAfterLogout";
         validationLogger("Starting", thisMethod);
@@ -401,20 +560,27 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         List<validationData> postLogoutExpectations = vData.addSuccessStatusCodes();
         // make sure we landed on the app if any of the cookies exist
         //        if (states.getOpCookieExists() || states.getOpJSessionIdExists() || states.getClientCookieExists() || states.getClientJSessionIdExists()) {
+        //        if (states.getIsAppSessionAccess() || (loginMethod.equals(Constants.SAML) && logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT))) {
         if (states.getIsAppSessionAccess()) {
             postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, settings.getTestURL());
             postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find the FormLoginServlet output in the response", null, Constants.FORMLOGIN_SERVLET);
         } else {
             states.setClientJSessionIdMatchesPrevious(false); // client JSEssionId will exist (and match the value from the login) before this attempt, it will exist but be a new value after
-            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not Redirect to OP", null, "Redirect To OP");
-            //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on the login page", null, "Login");
-            //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_URL, Constants.STRING_DOES_NOT_CONTAIN, "Landed on the test app after a logout and should NOT have", null, settings.getTestURL());
+            if (!loginMethod.equals(Constants.SAML)) {
+                postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not Redirect to OP", null, "Redirect To OP");
+                //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on the login page", null, "Login");
+                //            postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_URL, Constants.STRING_DOES_NOT_CONTAIN, "Landed on the test app after a logout and should NOT have", null, settings.getTestURL());
+            } else {
+                postLogoutExpectations = vData.addExpectation(postLogoutExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
+            }
         }
 
-        genericRP(_testName, webClient, settings, Constants.GET_LOGIN_PAGE_ONLY, postLogoutExpectations);
+        // If we're getting access, it'll be through the cookies and not propagation, so there should be no difference in behavior for Social clients
+        Object response = genericRP(_testName, webClient, settings, Constants.GET_LOGIN_PAGE_ONLY, postLogoutExpectations);
 
         validationLogger("Ending", thisMethod);
 
+        return response;
     }
 
     /**
@@ -439,24 +605,52 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         List<validationData> accessTokenExpectations = null;
 
-        if (states.getIsAccessTokenValid()) {
-            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, settings.getProtectedResource());
-        } else {
-            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on the login page", null, "Login");
-            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_URL, Constants.STRING_DOES_NOT_CONTAIN, "Landed on the test app after a logout and should NOT have", null, settings.getProtectedResource());
-            // TODO: Social and saml may require different messages
-            if (testSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
-
-            } else {
-                accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that token could not be validated (using introspection).", MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED);
-                accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the inbound request was invalid.", MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP);
-            }
+        TestSettings accessTokenSettings = settings.copyTestSettings();
+        if (accessTokenSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
+            accessTokenSettings.setProtectedResource(settings.getProtectedResource().replace("simple/", "simple/oidc_"));
         }
 
-        helpers.invokeProtectedResource(_testName, getAndSaveWebClient(true), tokenKeeper.getAccessToken(), Constants.HEADER, settings, accessTokenExpectations, action);
+        if (states.getIsAccessTokenValid()) {
+            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, accessTokenSettings.getProtectedResource());
+        } else {
+            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on the login page", null, "Login");
+            accessTokenExpectations = vData.addExpectation(accessTokenExpectations, action, Constants.RESPONSE_URL, Constants.STRING_DOES_NOT_CONTAIN, "Landed on the test app after a logout and should NOT have", null, accessTokenSettings.getProtectedResource());
+            // Social doesn't support propagation, so we need to use an openidConnectClient proetected app to test the access token
+            //            if (accessTokenSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
+            //
+            //            } else {
+            if (states.getIsUsingIntrospect()) {
+                if (states.getIsUsingInvalidIntrospect()) {
+                    accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find a message indicating that the access token could not be recognized by the validation end point.", MessageConstants.CWWKS1721E_OIDC_REQ_FAILED_ACCESS_TOKEN_NOT_VALID);
+                    accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not find a message indicating that the access token could not be recognized by the validation end point.", accessTokenSettings.getIntrospectionEndpt());
+                } else {
+                    accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that token could not be validated (using introspection).", MessageConstants.CWWKS1720E_ACCESS_TOKEN_NOT_ACTIVE);
+                    accessTokenExpectations = validationTools.addMessageExpectation(testOPServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that token could not be validated (token not valid or expired).", MessageConstants.CWWKS1454E_ACCESS_TOKEN_NOT_VALID);
+                }
+            } else {
+                accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that token could not be validated (using introspection).", MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED);
+            }
+            accessTokenExpectations = validationTools.addMessageExpectation(clientServer, accessTokenExpectations, action, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the inbound request was invalid.", MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP);
+            //            }
+        }
+
+        helpers.invokeProtectedResource(_testName, getAndSaveWebClient(true), tokenKeeper.getAccessToken(), Constants.HEADER, accessTokenSettings, accessTokenExpectations, action);
 
         validationLogger("Ending", thisMethod);
 
+    }
+
+    public void accessProtectedAppViaPropagation(String accessToken, TestSettings settings, List<validationData> expectations, String action) throws Exception {
+
+        TestSettings accessTokenSettings = settings.copyTestSettings();
+        if (accessTokenSettings.getFlowType().equals(SocialConstants.SOCIAL)) {
+            String updatedProtectedApp = accessTokenSettings.getProtectedResource();
+            accessTokenSettings.setProtectedResource(updatedProtectedApp.replace("simple/", "simple/oidc_"));
+        }
+
+        Log.info(thisClass, "accessProtectedAppViaPropagation", "Protected App: " + accessTokenSettings.getProtectedResource());
+        expectations = vData.addExpectation(expectations, Constants.INVOKE_PROTECTED_RESOURCE, Constants.RESPONSE_URL, Constants.STRING_CONTAINS, "Did not land on the back channel logout test app", null, accessTokenSettings.getProtectedResource());
+        helpers.invokeProtectedResource(_testName, getAndSaveWebClient(true), accessToken, Constants.HEADER, accessTokenSettings, expectations, action);
     }
 
     /**
@@ -542,7 +736,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     }
 
-    private String getStringValue(Map<String, Object> claims, String key) throws Exception {
+    public String getStringValue(Map<String, Object> claims, String key) throws Exception {
 
         Object objValue = claims.get(key);
         if (objValue != null) {
@@ -557,12 +751,18 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
 
-        String logoutStep = ((logoutMethodTested.equals(Constants.SAML) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
+        //        String logoutStep = ((loginMethod.equals(Constants.SAML) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
+        //        String logoutStep = ((logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
 
-        expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
-
-        if (logoutMethodTested.equals(Constants.SAML)) {
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not land on the post back channel logout test app", null, "\"result\":  \"Success\"");
+        //        if (loginMethod.equals(Constants.SAML)) {
+        //        expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not land on the post back channel logout test app", null, "\"result\":  \"Success\"");
+        //    } else {
+        //        expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
+        //    }
+        if (logoutMethodTested.equals(Constants.SAML_IDP_INITIATED_LOGOUT)) {
+            expectations = vData.addExpectation(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not land on the post back channel logout test app", null, "\"result\":  \"Success\"");
+        } else {
+            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, logoutPage);
         }
         return expectations;
     }
@@ -646,7 +846,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     public List<validationData> initLogoutWithHttpFailureExpectations(String logoutPage, String client) throws Exception {
 
-        String logoutStep = ((logoutMethodTested.equals(Constants.SAML) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
+        String logoutStep = ((loginMethod.equals(Constants.SAML) ? Constants.PROCESS_LOGOUT_PROPAGATE_YES : Constants.LOGOUT));
 
         List<validationData> expectations = initLogoutExpectations(logoutPage);
         expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.TRACE_LOG, Constants.STRING_MATCHES, "Trace log did not contain message indicating that the back channel logout uri could not be invoked.", client + ".*" + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
@@ -705,6 +905,39 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     }
 
+    public List<String> getLogoutTokensFromMessagesLog(TestServer server, String tokenName) throws Exception {
+
+        String thisMethod = "getLogoutTokensFromMessagesLog";
+        msgUtils.printMethodName(thisMethod);
+        Log.info(thisClass, thisMethod, " Searching for key:  " + tokenName);
+
+        List<String> tokens = new ArrayList<String>();
+        List<String> searchResults = server.getServer().findStringsInLogsUsingMark(tokenName, server.getServer().getMatchingLogFile(Constants.MESSAGES_LOG));
+        Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
+        for (String searchResult : searchResults) {
+            Log.info(thisClass, thisMethod, searchResult);
+        }
+        Log.info(thisClass, thisMethod, "DEBUG: ********************************************************************");
+        if (searchResults.size() != 0) {
+            for (String searchResult : searchResults) {
+                int start = searchResult.indexOf(tokenName);
+                int len = tokenName.length();
+                if (start == -1) {
+                    start = searchResult.indexOf("logout_token: ");
+                    len = "logout_token: ".length();
+                }
+                Log.info(thisClass, thisMethod, "start: " + start + " length: " + searchResult.length());
+                String theValue = searchResult.substring(start + len, searchResult.length() - 1);
+                Log.info(thisClass, thisMethod, tokenName + " " + theValue);
+                if (!theValue.isEmpty()) {
+                    tokens.add(theValue);
+                }
+            }
+        }
+        return tokens;
+
+    }
+
     public JwtTokenForTest gatherDataFromToken(String token, TestSettings settings) throws Exception {
 
         String thisMethod = "gatherDataFromIdToken";
@@ -734,6 +967,17 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         }
     }
 
+    public String getServerConfigVar(TestServer server, String varToGet) throws Exception {
+
+        String thisMethod = "getServerConfigVar";
+        ServerConfiguration config = server.getServer().getServerConfiguration();
+        Variable var = config.getVariables().getBy("name", varToGet);
+        String value = var.getValue();
+        Log.info(thisClass, thisMethod, "Returning var: " + varToGet + " value of: " + value);
+        return value;
+
+    }
+
     /**
      * Update/Set config variables for a server and push the updates to the server.
      * Method waits for server to update or indicate that no update in needed
@@ -745,6 +989,10 @@ public class BackChannelLogoutCommonTests extends CommonTest {
      * @throws Exception
      */
     public static void updateServerSettings(TestServer server, Map<String, String> valuesToSet) throws Exception {
+        updateServerSettings(server, valuesToSet, true);
+    }
+
+    public static void updateServerSettings(TestServer server, Map<String, String> valuesToSet, boolean serverAlreadyStarted) throws Exception {
 
         String thisMethod = "updateServerSettings";
         ServerConfiguration config = server.getServer().getServerConfiguration();
@@ -759,7 +1007,9 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         }
 
         server.getServer().updateServerConfiguration(config);
-        server.getServer().waitForConfigUpdateInLogUsingMark(null);
+        if (serverAlreadyStarted) {
+            server.getServer().waitForConfigUpdateInLogUsingMark(null);
+        }
         //        helpers.testSleep(5);
     }
 
@@ -786,14 +1036,22 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     }
 
     public static Map<String, String> updateClientCookieNameAndPort(TestServer server, String cookieName, String cookieNameValue) throws Exception {
+        return updateClientCookieNameAndPort(server, cookieName, cookieNameValue, true);
+    }
+
+    public static Map<String, String> updateClientCookieNameAndPort(TestServer server, String cookieName, String cookieNameValue, boolean isServerStarted) throws Exception {
 
         Map<String, String> vars = new HashMap<String, String>();
+
+        Log.info(thisClass, "updateClientCookieNameAndPort", "server: " + server.getServer().getServerName());
+        Log.info(thisClass, "updateClientCookieNameAndPort", "secure port: " + server.getServerHttpsPort());
 
         vars.put(cookieName, cookieNameValue);
         vars.put("client2Port", Integer.toString(server.getServerHttpsPort()));
 
+        updateServerSettings(server, vars, isServerStarted);
+
         return vars;
-        //        updateServerSettings(server, vars);
 
     }
 
@@ -875,18 +1133,24 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         states.printStates();
 
-        TokenKeeper currentTokenKeeper = new TokenKeeper(webClient);
+        //        //        // chc - invoke - unprotected app
+        //        TokenKeeper currentTokenKeeper = setTokenKeeperFromUnprotectedApp(webClient, settings, 2);
 
         // show that we can/can't access the protected app using just the webClient
         // This request will help flush client cookies that were invalidated, but not removed from the
         // browser session/webClient
         accessAppAfterLogout(webClient, settings, states);
 
-        // in the cases where we expect the client cookies to be gone, gather them AFTER the call to the protected app - that call will flush invalid cookies
-        if (!(states.getIsAccessTokenValid() || states.getIsAppSessionAccess())) {
-            // clientCookieName is simply used to determine if we're using RP1 or RP2 cookie and jsessionid names are based on which server we're using
-            currentTokenKeeper = new TokenKeeper(webClient);
-        }
+        // TODO - do we need this call now that we have a call to the unprotected app?  Will that flush all cookies?
+        //        // in the cases where we expect the client cookies to be gone, gather them AFTER the call to the protected app - that call will flush invalid cookies
+        //        if (!(states.getIsAccessTokenValid() || states.getIsAppSessionAccess())) {
+        //            // clientCookieName is simply used to determine if we're using RP1 or RP2 cookie and jsessionid names are based on which server we're using
+        //            currentTokenKeeper = new TokenKeeper(webClient, afterLogoutResponse, settings.getFlowType());
+        //        }
+
+        //        // chc - invoke - unprotected app
+        // populate token keeper after trying to access app so that all cookies are flushed
+        TokenKeeper currentTokenKeeper = setTokenKeeperFromUnprotectedApp(webClient, settings, 2);
 
         validateOPCookies(previousTokenKeeper, currentTokenKeeper, states);
         validateClientCookies(previousTokenKeeper, currentTokenKeeper, clientCookieName, clientJSessionIdName, states);
@@ -898,6 +1162,22 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         validationLogger("Ending", thisMethod);
 
+    }
+
+    public TokenKeeper setTokenKeeperFromUnprotectedApp(WebClient webClient, TestSettings settings, int numAccesses) throws Exception {
+
+        List<validationData> unprotectedExpectations = vData.addSuccessStatusCodes();
+        TestSettings upprotectedTestSettings = settings.copyTestSettings();
+        upprotectedTestSettings.setTestURL(settings.getTestURL().replace(Constants.APP_FORMLOGIN, "unprotected" + Constants.APP_FORMLOGIN).replace("simple/", "simple/unProtected"));
+
+        Object response = null;
+        for (int cnt = 0; cnt < numAccesses; cnt++) {
+            response = genericRP(_testName, webClient, upprotectedTestSettings, Constants.GET_LOGIN_PAGE_ONLY, unprotectedExpectations);
+        }
+
+        TokenKeeper tokenKeeper = new TokenKeeper(webClient, response, settings.getFlowType());
+
+        return tokenKeeper;
     }
 
     public void validateOPCookies(TokenKeeper beforeLogoutTokenKeeper, TokenKeeper currentTokenKeeper, AfterLogoutStates states) throws Exception {
@@ -984,9 +1264,9 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         String thisMethod = "validateSPCookie";
         msgUtils.printMethodName("Start - " + thisMethod);
-        if (logoutMethodTested.equals(Constants.SAML)) {
-            // TODO
-            Log.info(thisClass, thisMethod, "NO IMPLEMENTED YET");
+        if (loginMethod.equals(Constants.SAML)) {
+            genericCookieValidator(Constants.spCookieName, beforeLogoutTokenKeeper.getSPCookie(), currentTokenKeeper.getSPCookie(), states.getSpCookieExists(), states.getSpCookieMatchesPrevious());
+            // TODO Log.info(thisClass, thisMethod, "NO IMPLEMENTED YET");
         } else {
             Log.info(thisClass, thisMethod, "Skipping checks since they are only valid with SAML and this instance does NOT use SAML");
         }
@@ -996,7 +1276,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         String thisMethod = "validateIDPCookie";
         msgUtils.printMethodName("Start - " + thisMethod);
-        if (logoutMethodTested.equals(Constants.SAML)) {
+        if (loginMethod.equals(Constants.SAML)) {
             // TODO
             Log.info(thisClass, thisMethod, "NO IMPLEMENTED YET");
         } else {
@@ -1012,7 +1292,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         Log.info(thisClass, thisMethod, "After : " + afterCookie);
 
         if (afterCookieShouldExist) {
-            if (afterCookie == null) {
+            if (afterCookie == null || afterCookie.equals(Constants.NOT_FOUND)) {
                 fail("genericCookieValidator failure: Cookie \"" + cookieName + "\" was NOT found in the response and should have been.");
             }
             Log.info(thisClass, thisMethod, "The cookie [" + cookieName + "] was found as it should have been.");
@@ -1035,7 +1315,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
                 Log.info(thisClass, thisMethod, "The after logout cookie [" + cookieName + "] did not match the cookie used during login.");
             }
         } else {
-            if (afterCookie != null) {
+            if (afterCookie != null && !afterCookie.equals(Constants.NOT_FOUND)) {
                 fail("genericCookieValidator failure: Cookie \"" + cookieName + "\" was found in the response and should not have been.");
             }
             Log.info(thisClass, thisMethod, "The cookie [" + cookieName + "] was NOT found as it should NOT have been.");

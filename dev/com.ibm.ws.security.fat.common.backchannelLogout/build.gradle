@@ -86,9 +86,15 @@ task backchannelLogoutTestApp_ZIP (type: Zip, dependsOn: classes) {
     include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_501_Servlet.class'
     include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_logMsg_Servlet.class'
     include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/BackChannelLogout_logJSessionId_Servlet.class'
+    include 'com/ibm/ws/security/fat/backChannelLogoutTestApps//BackChannelLogout_multiServerLogout_Servlet.class'
     include 'com/ibm/ws/security/fat/backChannelLogoutTestApps/utils/BackChannelLogout_utils.class'    
+    include 'com/ibm/ws/security/fat//backChannelLogoutTestApps/utils/BackChannelLogout_SidAndEndpointKeeper.class'
     into 'WEB-INF/classes'
   }
+/*  from (new File(project(':com.ibm.json4j').buildDir, 'com.ibm.json4j.jar')) {
+    into 'WEB-INF/lib'
+  }
+*/  
 }
 
 /******************************************************************

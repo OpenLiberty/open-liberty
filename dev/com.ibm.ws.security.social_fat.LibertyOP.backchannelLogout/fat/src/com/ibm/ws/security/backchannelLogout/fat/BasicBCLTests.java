@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
-@AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
+@AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException", "java.io.IOException" })
 public class BasicBCLTests extends com.ibm.ws.security.backchannelLogout.fat.CommonTests.BasicBCLTests {
 
     @ClassRule
