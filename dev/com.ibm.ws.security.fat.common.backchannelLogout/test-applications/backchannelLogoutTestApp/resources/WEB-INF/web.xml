@@ -53,6 +53,12 @@
   	<load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet id="Servlet_7">
+    <servlet-name>BackChannelLogout_multiServerLogout_Servlet</servlet-name>
+  	<servlet-class>com.ibm.ws.security.fat.backChannelLogoutTestApps.BackChannelLogout_multiServerLogout_Servlet</servlet-class>  	
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
   <!-- SERVLET MAPPINGS -->        
   <servlet-mapping id="ServletMapping_1">
     <servlet-name>BackChannelLogout_logoutToken_Servlet</servlet-name>
@@ -82,6 +88,11 @@
   <servlet-mapping id="ServletMapping_6">
     <servlet-name>BackChannelLogout_logJSessionId_Servlet</servlet-name>
     <url-pattern>/backChannelLogoutJSessionId</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_7">
+    <servlet-name>BackChannelLogout_multiServerLogout_Servlet</servlet-name>
+    <url-pattern>/backChannelLogoutMultiServer</url-pattern>
   </servlet-mapping>
 
 

@@ -26,7 +26,7 @@
 		tokenReplayTimeout="30m"
 		includeTokenInSubject="true"
 		mapToUserRegistry="User"
-		spCookieName="WASSamlSP_spOP"
+		spCookieName="testSPCookie"
 		nameIDFormat="unspecified"
 		spLogout="true"
 	>
@@ -36,6 +36,14 @@
 		<requestUrl
 			id="myAuthRequestUrl"
 			matchType="contains"
-			urlPattern="/authorize" />
+			urlPattern="/authorize|/end_session" />
 	</authFilter>
+	
+	
+	<samlWebSso20
+		id="defaultSP"
+		enabled="false"
+	>
+	</samlWebSso20>
+	
 </server>    

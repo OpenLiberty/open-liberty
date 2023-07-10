@@ -22,11 +22,11 @@
 			
 		<user
 			name="user1"
-			password="user1pwd" />
+			password="security" />
 
 		<user
 			name="user2"
-			password="user2pwd" />
+			password="security" />
 			
 	</basicRegistry>
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -602,6 +602,7 @@ public class CommonTestHelpers extends TestHelpers {
 
         try {
             setMarkToEndOfAllServersLogs();
+            Thread.sleep(2);
 
             // Invoke protected resource
             URL url = AutomationTools.getNewUrl(settings.getProtectedResource());

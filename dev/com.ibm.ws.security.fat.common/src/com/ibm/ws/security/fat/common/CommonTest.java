@@ -219,6 +219,8 @@ public class CommonTest {
 
             transformAppsInDefaultDirs(server, "dropins");
             transformAppsInDefaultDirs(server, "test-apps");
+            // TODO - may break saml - may have to update saml rules
+            transformAppsInDefaultDirs(server, "idp-apps");
 
         }
     }

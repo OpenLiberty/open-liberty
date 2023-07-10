@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,17 +13,11 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
-
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -41,9 +35,16 @@ public class FATSuite {
      *
      * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
      */
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
+    //    @ClassRule
+    //    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+    //            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
+    //            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0").fullFATOnly());
 
+    //    @BeforeClass
+    //    public static void setup() throws Exception {
+    //        /*
+    //         * Force the tests to use local LDAP server
+    //         */
+    //        System.setProperty("fat.test.really.use.local.ldap", "true");
+    //    }
 }

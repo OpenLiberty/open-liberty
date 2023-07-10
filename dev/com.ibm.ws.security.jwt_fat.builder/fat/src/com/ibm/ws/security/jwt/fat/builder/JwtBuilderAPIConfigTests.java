@@ -75,6 +75,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
         serverTracker.addServer(builderServer);
         skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
+        builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_PROTECTED_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 

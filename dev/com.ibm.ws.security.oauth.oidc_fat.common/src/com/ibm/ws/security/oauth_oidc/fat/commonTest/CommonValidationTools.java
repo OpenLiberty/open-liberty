@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -293,7 +293,7 @@ public class CommonValidationTools {
             }
 
             Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType() + " " +
-                "Checking for: " + expected.getValidationValue());
+                    "Checking for: " + expected.getValidationValue());
 
             String fullResponseContent = AutomationTools.getFullResponseContentForFailureMessage(response, expected.getWhere());
 
@@ -1013,7 +1013,9 @@ public class CommonValidationTools {
                     }
                 } else {
                     for (String line : responseLines) {
+                        //                        Log.info(thisClass, "getTokenFromResponse", "Multi line response: " + line);
                         if (line != null && line.contains(searchKey)) {
+                            //                            Log.info(thisClass, "getTokenFromResponse", "contains");
                             if (!searchKey.endsWith(":")) {
                                 char nextChar = line.charAt(line.indexOf(searchKey) + searchKey.length());
                                 if (nextChar != ':' && nextChar != '=' && nextChar != ' ') {
@@ -1022,9 +1024,18 @@ public class CommonValidationTools {
                             }
                             String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length());
                             String[] splitLine = part1.split(",");
+                            //                            Log.info(thisClass, "getTokenFromResponse", splitLine[0]);
                             if (splitLine != null) {
                                 if (splitLine[0] != null) {
-                                    String token = splitLine[0].replace("with value:", "").trim().replace("}+$", "");
+                                    Log.info(thisClass, thisMethod, "chc: " + splitLine[0] + " FOO");
+                                    String token = null;
+                                    String step1 = splitLine[0].replace("with value:", "");
+                                    String step2 = step1.trim();
+                                    if (splitLine[0].endsWith("}")) {
+                                        token = step2.substring(0, step2.length() - 1);
+                                    } else {
+                                        token = step2;
+                                    }
                                     Log.info(thisClass, thisMethod, "token: " + token);
                                     printJWTToken(token);
                                     return token;

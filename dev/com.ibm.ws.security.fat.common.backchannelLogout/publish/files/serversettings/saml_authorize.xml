@@ -27,6 +27,7 @@
 		includeTokenInSubject="true"
 		mapToUserRegistry="User"
 		spCookieName="WASSamlSP_spOP"
+		spLogout="true"
 		nameIDFormat="unspecified"
 	>
 	</samlWebSso20>
@@ -37,4 +38,12 @@
 			matchType="contains"
 			urlPattern="/authorize" />
 	</authFilter>
+	
+	
+	<samlWebSso20
+		id="defaultSP"
+		enabled="false"
+	>
+	</samlWebSso20>
+	
 </server>    

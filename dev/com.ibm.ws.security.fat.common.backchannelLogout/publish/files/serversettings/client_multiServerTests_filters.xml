@@ -1,0 +1,63 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="bcl_multiServer_client1-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client1-1" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client1-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client1-2" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client1-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client1-3" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client1-4_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client1-4" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client2-1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client2-1" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client2-2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client2-2" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client2-3_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client2-3" />
+	</authFilter>
+
+	<authFilter id="bcl_multiServer_client2-4_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_multiServer_client2-4" />
+	</authFilter>
+
+</server>

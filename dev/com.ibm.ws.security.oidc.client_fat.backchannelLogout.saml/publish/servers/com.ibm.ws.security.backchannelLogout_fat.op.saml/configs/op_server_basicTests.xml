@@ -20,8 +20,9 @@
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
 
+	<!-- include location="${server.config.dir}/imports/saml_OPMisc.xml" / -->
 	<include location="${server.config.dir}/imports/OPMisc.xml" />
-
+	
 	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
 
 	<include location="${server.config.dir}/imports/oidcProvider_configTests.xml" />

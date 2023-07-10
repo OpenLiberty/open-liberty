@@ -13,6 +13,8 @@
 
 <server>
 
+	<variable name="client2Port" value="${bvt.prop.security_2_HTTP_default.secure}"/>  
+
 	<include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
 
 	<include location="${server.config.dir}/imports/oidcClient_configTests.xml" />

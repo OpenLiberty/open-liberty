@@ -253,7 +253,6 @@ public class SAMLConstants extends Constants {
     public static final String SUCCESSFUL_DEFAULT_LOGOUT_MSG = "Successful Logout";
     public static final String SUCCESSFUL_SHIBBOLETH_SP_INIT_LOGOUT_MSG = "The logout operation is complete";
     public static final String SUCCESSFUL_SHIBBOLETH_IDP_INIT_LOGOUT_MSG = "This page is displayed when a logout operation at the Identity Provider completes";
-    public static final String UNSUCCESSFUL_LOGOUT_MSG = "Due to an integrity check failure, logout was unsuccessful.";
     public static final String NO_REFRESH_TOKEN_MSG = "refresh_token was not found in the token cache.";
     public static final String POSTLOGOUTPAGE = "Redirect To Identity Provider";
     public static final String SUCCESSFUL_DEFAULT_SP_LOGOUT_TITLE = "SAML Single Logout (SLO) Post-Logout";
@@ -519,7 +518,8 @@ public class SAMLConstants extends Constants {
     public static final String HEADER_FORMAT_PROPAGATE_TOKEN_STRING_FALSE = "propagate_token_string_false";
     public static final String HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_TRUE = "propagate_token_boolean_true";
     public static final String HEADER_FORMAT_PROPAGATE_TOKEN_BOOLEAN_FALSE = "propagate_token_boolean_false";
-    public static final String[] SAML_HEADER_FORMATS = new String[] { HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE, HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE, HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE,
+    public static final String[] SAML_HEADER_FORMATS = new String[] { HEADER_FORMAT_AUTHZ_NAME_EQUALS_VALUE, HEADER_FORMAT_AUTHZ_NAME_EQUALS_QUOTED_VALUE,
+                                                                      HEADER_FORMAT_AUTHZ_NAME_SPACE_VALUE,
                                                                       HEADER_FORMAT_NAME_EQUALS_VALUE };
 
     /* SAML IDPs */

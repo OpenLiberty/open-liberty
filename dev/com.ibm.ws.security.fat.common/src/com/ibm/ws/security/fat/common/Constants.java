@@ -180,6 +180,7 @@ public class Constants {
 
     public static final String LOGOUT_TITLE = "Logout";
     public static final String SUCCESSFUL_LOGOUT_MSG = "You have successfully logged out";
+    public static final String UNSUCCESSFUL_LOGOUT_MSG = "Due to an integrity check failure, logout was unsuccessful.";
 
     public static final String SNOOP = "snoop";
     public static final String SNOOPING = "snooping";

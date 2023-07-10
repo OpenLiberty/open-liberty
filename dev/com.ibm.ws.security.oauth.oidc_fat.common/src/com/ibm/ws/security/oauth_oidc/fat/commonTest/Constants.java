@@ -354,6 +354,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CLIENTMETATYPE_ENDPOINT = "clientMetatype";
     public static final String CHECKSESSIONIFRAME_ENDPOINT = "check_session_iframe";
     public static final String HTTP_SESSION = "http_session";
+    public static final String SAML_IDP_INITIATED_LOGOUT = "saml_idp_initiated_logout";
+    public static final String SAML_SP_INITIATED_LOGOUT = "saml_sp_initiated_logout";
 
     public static final String JSON_USERINFO_DATA = "json_userinfo_data";
     public static final String JWS_USERINFO_DATA = "jws_userinfo_data";

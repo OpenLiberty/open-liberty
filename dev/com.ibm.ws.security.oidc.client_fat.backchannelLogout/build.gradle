@@ -95,4 +95,11 @@ autoFVT.doLast {
     rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
   }   
   
+  
+  copy { 
+    from project(':com.ibm.ws.security.fat.common.backchannelLogout').file("publish/servers/com.ibm.ws.security.backchannelLogout_fat.rp2")
+    into new File(autoFvtDir, "publish/servers/com.ibm.ws.security.backchannelLogout_fat.rp2")
+    include 'configs/**'
+  }
+  
 }

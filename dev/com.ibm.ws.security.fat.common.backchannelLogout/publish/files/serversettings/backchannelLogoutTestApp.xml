@@ -30,4 +30,8 @@
 			</security-role>
 		</application-bnd>
 	</application>
+	
+	<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:-" />
+	<javaPermission className="java.net.URLPermission" name="https://localhost:8940/oidcclient/backchannel_logout/bcl_multiServer_client1" actions="POST:Logout_token" />
+
 </server>    

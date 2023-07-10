@@ -22,7 +22,9 @@ autoFVT.doLast {
    * Copy common artifacts to test servers.
    */
   def servers = [
-    'com.ibm.ws.security.backchannelLogout_fat.social'
+    'com.ibm.ws.security.backchannelLogout_fat.social',
+    'com.ibm.ws.security.backchannelLogout_fat.social2',
+    'com.ibm.ws.security.backchannelLogout_fat.social.prop'
   ]
   servers.each { server ->
   
