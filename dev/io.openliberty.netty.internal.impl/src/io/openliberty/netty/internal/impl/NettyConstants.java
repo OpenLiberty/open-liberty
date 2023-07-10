@@ -19,6 +19,9 @@ public interface NettyConstants {
     String NETTY_TRACE_STRING = "io.netty*=all:io.openliberty.netty*=all"; 
     /** INADDR_ANY host  */
     String INADDR_ANY = "0.0.0.0";
+    /** Netty enablement */
+    String USE_NETTY = "useNettyTransport";
+     
 
     /** TCP Logging Handler Name  */
     public final String TCP_LOGGING_HANDLER_NAME = "tcpLoggingHandler";

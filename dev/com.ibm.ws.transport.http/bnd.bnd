@@ -132,15 +132,25 @@ instrument.classesExcludes: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.kernel.boot.common,\
-    com.ibm.ws.kernel.boot.core,\
+	com.ibm.ws.kernel.boot.common,\
+	com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.accesslists.internal
+	io.openliberty.accesslists.internal,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	io.netty.codec-http,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.codec-http,\
+	io.netty.codec-http,\
+	io.netty.transport
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

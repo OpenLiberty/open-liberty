@@ -57,7 +57,11 @@ Private-Package: \
 	io.openliberty.accesslists.internal,\
 	io.openliberty.io.netty;version=latest,\
 	io.openliberty.netty.internal;version=latest,\
-	io.openliberty.endpoint
+	io.openliberty.endpoint,\
+	io.netty.codec-http,\
+	io.netty.transport,\
+	io.netty.transport,\
+	io.netty.transport
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

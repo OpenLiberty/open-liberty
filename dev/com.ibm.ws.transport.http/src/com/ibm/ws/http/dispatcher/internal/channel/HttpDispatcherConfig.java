@@ -26,8 +26,12 @@ public class HttpDispatcherConfig {
 
     /** Property name for the httpEndpoint associated with this chain **/
     public static final String PROP_ENDPOINT = "httpEndpoint";
+    
+    public static final String PROP_USE_NETTY="useNettyTransport";
     /** ID of httpEndpoint associated w/ this chain */
     private String endpointPid = null;
+    
+    private boolean endpointUseNettyTransport=false;
 
     /**
      * Constructor.
@@ -46,6 +50,14 @@ public class HttpDispatcherConfig {
             this.endpointPid = (String) value;
             if (bTrace && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Config: endpoint pid " + this.endpointPid);
+            }
+        }
+        value = props.get(PROP_USE_NETTY);
+        if (null != value) {
+            // TODO: beta fence
+            this.endpointUseNettyTransport = (boolean) value;
+            if (bTrace && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: endpoint configured to use Netty transport " + this.endpointUseNettyTransport);
             }
         }
     }

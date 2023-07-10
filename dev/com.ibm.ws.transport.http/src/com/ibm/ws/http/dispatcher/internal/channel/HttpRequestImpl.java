@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal.channel;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +33,14 @@ import com.ibm.wsspi.http.ee8.Http2Request;
 
 import io.openliberty.http.ext.HttpRequestExt;
 
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+
 /**
  * Implementation of an HTTP request message provided by the HTTP dispatcher to
  * various containers.
@@ -41,6 +50,13 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     private HttpRequestMessage message = null;
     private HttpInputStreamImpl body = null;
     private boolean useEE7Streams = false;
+
+    private FullHttpRequest nettyRequest = null;
+    private Channel nettyChannel = null;
+    private QueryStringDecoder nettyDecoder = null;
+    private Set<io.netty.handler.codec.http.cookie.Cookie> nettyCookies;
+
+    private boolean usingNetty = false;
 
     /**
      * Constructor.
@@ -70,6 +86,21 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
         }
     }
 
+    /**
+     * Initialize with a new netty based connection
+     */
+    public void init(FullHttpRequest request, Channel channel, HttpInboundServiceContext context) {
+        this.nettyRequest = request;
+        this.nettyChannel = channel;
+        this.nettyDecoder = new QueryStringDecoder(nettyRequest.uri());
+        this.usingNetty = true;
+        if (this.useEE7Streams) {
+            this.body = new HttpInputStreamEE7(context, request);
+        } else {
+            this.body = new HttpInputStreamImpl(context, request);
+        }
+    }
+
     /*
      * @see com.ibm.websphere.http.HttpRequest#getBody()
      */
@@ -83,7 +114,13 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public long getContentLength() {
-        return this.message.getContentLength();
+        int contentLength = -1;
+        if (usingNetty) {
+            HttpUtil.getContentLength(nettyRequest);
+        } else {
+            contentLength = this.message.getContentLength();
+        }
+        return contentLength;
     }
 
     /*
@@ -91,7 +128,31 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public HttpCookie getCookie(String name) {
-        return this.message.getCookie(name);
+        HttpCookie cookie = null;
+        if (usingNetty) {
+            initNettyCookies();
+            for (io.netty.handler.codec.http.cookie.Cookie nettyCookie : nettyCookies) {
+                if (nettyCookie.name().equalsIgnoreCase(name)) {
+                    cookie = new HttpCookie(nettyCookie.name(), nettyCookie.value());
+                    break;
+                }
+            }
+        } else {
+            cookie = this.message.getCookie(name);
+        }
+        return cookie;
+
+    }
+
+    private void initNettyCookies() {
+        if (nettyCookies == null) {
+            String value = nettyRequest.headers().get(HttpHeaderNames.COOKIE);
+            if (value != null) {
+                nettyCookies = ServerCookieDecoder.STRICT.decode(value);
+            } else {
+                nettyCookies = Collections.emptySet();
+            }
+        }
     }
 
     /*
@@ -99,7 +160,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<HttpCookie> getCookies(String name) {
-        return this.message.getAllCookies(name);
+        List<HttpCookie> cookies = Collections.emptyList();
+        HttpCookie HttpCookie;
+
+        if(usingNetty) {
+            initNettyCookies();
+            (!nettyCookies.isEmpty()){
+                cookies = new ArrayList<HttpCookie>();
+                for(io.netty.handler.codec.http.cookie.Cookie cookie: nettyCookies) {
+                    httpCookie = new HttpCookie(cookie.name(), cookie.value());
+                    cookies.add(httpCookie);
+                }
+            }
+        }else {
+            cookies = this.message.getAllCookies(name);
+        }
+        return cookies;
     }
 
     /*
@@ -107,7 +183,23 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<HttpCookie> getCookies() {
-        return this.message.getAllCookies();
+        List<HttpCookie> cookies = Collections.emptyList();
+        HttpCookie httpCookie;
+
+        if (usingNetty) {
+            initNettyCookies();
+            if (!nettyCookies.isEmpty()) {
+                cookies = new ArrayList<HttpCookie>(nettyCookies.size());
+                for (io.netty.handler.codec.http.cookie.Cookie cookie : nettyCookies) {
+                    httpCookie = new HttpCookie(nettyCookie.name(), nettyCookie.value());
+                    cookies.add(cookie);
+                }
+            }
+        } else {
+            cookies = this.message.getAllCookies();
+        }
+
+        return cookies;
     }
 
     /*
@@ -115,7 +207,8 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getHeader(String name) {
-        return this.message.getHeader(name).asString();
+
+        return this.usingNetty ? this.nettyRequest.headers().get(name) : this.message.getHeader(name).asString();
     }
 
     /*
@@ -153,7 +246,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<String> getHeaderNames() {
-        return this.message.getAllHeaderNames();
+        return usingNetty ? new ArrayList<String>(this.nettyRequest.headers().names()) : this.message.getAllHeaderNames();
     }
 
     /*
@@ -169,7 +262,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getMethod() {
-        return this.message.getMethod();
+        return usingNetty ? nettyRequest.method().name() : this.message.getMethod();
     }
 
     /*
@@ -178,7 +271,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
     @Override
     @Trivial
     public String getQuery() {
-        return this.message.getQueryString();
+        return usingNetty ? this.nettyDecoder.rawQuery : this.message.getQueryString();
     }
 
     /*
@@ -194,7 +287,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURI() {
-        return this.message.getRequestURI();
+        return usingNetty ? this.nettyDecoder.path() : this.message.getRequestURI();
     }
 
     /*
@@ -202,7 +295,17 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getURL() {
-        return this.message.getRequestURL().toString();
+        String url;
+        if (usingNetty) {
+            String host = ((InetSocketAddress) this.nettyChannel.remoteAddress()).getHostString();
+            String port = Integer.toString(((InetSocketAddress) this.nettyChannel.localAddress()).getPort());
+
+            url = this.getScheme() + "://" + host + ":" + port + "/" + getURI();
+        } else {
+            url = this.message.getRequestURL().toString();
+        }
+
+        return url;
     }
 
     /*
@@ -210,7 +313,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVersion() {
-        return this.message.getVersion();
+        return usingNetty ? nettyRequest.protocolVersion().text() : this.message.getVersion();
     }
 
     /*
@@ -218,7 +321,21 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getVirtualHost() {
-        return this.message.getVirtualHost();
+        String host;
+
+        if (usingNetty) {
+            host = ((InetSocketAddress) this.nettyChannel.localAddress()).getHostString();
+            if (host == null) {
+                host = this.nettyRequest.headers().get("host");
+                if (host != null && host.contains(":")) {
+                    host = host.substring(0, host.indexOf(':'));
+                }
+            }
+        } else {
+            host = this.message.getVirtualHost();
+        }
+
+        return host;
     }
 
     /*
@@ -226,13 +343,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public int getVirtualPort() {
-        return this.message.getVirtualPort();
+        int port = -1;
+
+        if (usingNetty) {
+            port = ((InetSocketAddress) this.nettyChannel.localAddress()).getPort();
+        } else {
+            this.message.getVirtualPort();
+        }
+        return port;
     }
 
     @Override
     @Trivial
     public String toString() {
-        return this.getClass().getSimpleName() + "[message=" + message + "]";
+
+        return usingNetty ? this.getClass().getSimpleName() + "[message=" + this.nettyRequest + "]" : this.getClass().getSimpleName() + "[message=" + message + "]";
+
     }
 
     /**
@@ -242,7 +368,12 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) {
-        this.message.pushNewRequest(pushBuilder);
+        if (usingNetty) {
+            //TODO: H2 Push
+        } else {
+            this.message.pushNewRequest(pushBuilder);
+        }
+
     }
 
     /*
@@ -252,11 +383,21 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public List<String> getTrailerNames() {
-        HttpTrailers trailers = message.getTrailers();
-        if (trailers != null)
-            return trailers.getAllHeaderNames();
-        else
-            return null;
+        List<String> listOfTrailers;
+
+        if (usingNetty) {
+            HttpHeaders trailerHeaders = this.nettyRequest.trailingHeaders();
+            if (trailerHeaders != null) {
+                listOfTrailers = new ArrayList<String>(trailerHeaders.names());
+            }
+
+        } else {
+            HttpTrailers trailers = message.getTrailers();
+            if (trailers != null)
+                trailers.getAllHeaderNames();
+        }
+
+        return listOfTrailers;
 
     }
 
@@ -267,11 +408,19 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public String getTrailer(String name) {
-        HttpTrailers trailers = message.getTrailers();
-        if (trailers != null)
-            return trailers.getHeader(name).asString();
-        else
-            return null;
+        String trailer;
+
+        if (usingNetty) {
+            HttpHeaders trailers = this.nettyRequest.trailingHeaders();
+            trailer = trailers.get(name);
+
+        } else {
+            HttpTrailers trailers = message.getTrailers();
+            if (trailers != null)
+                trailer = trailers.getHeader(name).asString();
+        }
+
+        return trailer;
     }
 
     /*
@@ -281,12 +430,21 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isTrailersReady() {
+        boolean trailersReady;
+        if(usingNetty) {
+            if(!this.nettyRequest.headers().contains("Trailer")) || this.nettyRequest.trailingHeaders() != null ||
+                            (this.nettyRequest.protocolVersion().majorVersion < 2 && this.nettyRequest.protocolVersion().minorVersion() <1)){
+                                trailersReady = true;
+                            }
+        }else {
         if (!message.isChunkedEncodingSet()
             || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
             || ((HttpBaseMessageImpl) message).getTrailersImpl() != null
             || (message.getVersionValue().getMajor() <= 1 && message.getVersionValue().getMinor() < 1))
-            return true;
-        return false;
+           trailersReady= true;
+        }
+
+        return trailersReady;
     }
 
     /*
@@ -296,7 +454,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isPushSupported() {
-        // TODO Auto-generated method stub
-        return message.isPushSupported();
+        // TODO Add HTTP/2 support for Netty
+        return usingNetty ? false : message.isPushSupported();
     }
 }

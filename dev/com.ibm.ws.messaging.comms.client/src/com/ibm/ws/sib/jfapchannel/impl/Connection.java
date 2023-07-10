@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,17 +64,22 @@ import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
 import com.ibm.ws.sib.jfapchannel.framework.IOConnectionContext;
+import com.ibm.ws.sib.jfapchannel.framework.IOReadCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext;
+import com.ibm.ws.sib.jfapchannel.framework.IOWriteCompletedCallback;
 import com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnection;
 import com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext;
 import com.ibm.ws.sib.jfapchannel.impl.eventrecorder.ConnectionEventRecorder;
 import com.ibm.ws.sib.jfapchannel.impl.eventrecorder.ConnectionEventRecorderFactory;
+import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnection;
 import com.ibm.ws.sib.mfp.ConnectionSchemaSet;
 import com.ibm.ws.sib.utils.RuntimeInfo;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
+
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * Represents an actual socket connection to another machine
@@ -108,9 +113,9 @@ public abstract class Connection implements ConnectionInterface
     protected ConversationTable conversationTable = null;
 
     // Callbacks notified when a read or write completes for this connection
-    private ConnectionWriteCompletedCallback writeCompletedCallback = null;
+    private IOWriteCompletedCallback writeCompletedCallback = null;
 
-    private ConnectionReadCompletedCallback readCompletedCallback = null;
+    private IOReadCompletedCallback readCompletedCallback = null;
 
     // Arbitrary object user has attached to this connection.
     private volatile Object userAttachment = null;
@@ -129,6 +134,9 @@ public abstract class Connection implements ConnectionInterface
 
     // Amount of time to wait for a heartbeat response (seconds)
     private volatile int heartbeatTimeout;
+    
+    // Determine if the connection is using Netty or Channelfw
+    private final boolean usingNetty;
 
     private Conversation.ConversationType conversationType =          // F193735.3
             Conversation.UNKNOWN;
@@ -240,10 +248,11 @@ public abstract class Connection implements ConnectionInterface
     public Connection(NetworkConnectionContext channel,                // F177053
             NetworkConnection vc,
             int heartbeatInterval,
-            int heartbeatTimeout) throws FrameworkException
+            int heartbeatTimeout,
+            boolean usingNetty) throws FrameworkException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>", new Object[] {channel, vc, ""+heartbeatInterval, ""+heartbeatTimeout});
+            SibTr.entry(this, tc, "<init>", new Object[] {channel, vc, ""+heartbeatInterval, ""+heartbeatTimeout, ""+usingNetty});
 
         first = true;
         priorityQueue = new PriorityQueue();
@@ -268,8 +277,19 @@ public abstract class Connection implements ConnectionInterface
 
         connChannel = channel;                                // F174772
         this.vc = vc;                                         // F174772
-
-        writeCompletedCallback = new ConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this); // F176003
+        
+        this.usingNetty = usingNetty;
+        
+        if(isUsingNetty()) {
+        	writeCompletedCallback = new NettyConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this);
+        	try {
+        		((NettyNetworkConnection) vc).setHearbeatInterval(heartbeatInterval);
+        	} catch (NettyException e) {
+        		throw new FrameworkException(e);
+        	}
+        }else {
+        	writeCompletedCallback = new ConnectionWriteCompletedCallback(priorityQueue, tcpWriteCtx, this); // F176003
+        }
 
         logIOEvents = RuntimeInfo.getProperty(JFapChannelConstants.LOG_IO_TO_FFDC_EVENTLOG_PROPERTY) != null;
         int numConversationEvents = -1;
@@ -294,6 +314,18 @@ public abstract class Connection implements ConnectionInterface
             eventRecorder = ConnectionEventRecorderFactory.getConnectionEventRecorder(numConnectionEvents, numConversationEvents);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "<init>");
+    }
+    
+    public IOReadCompletedCallback getReadCompletedCallback () {
+ 	   return this.readCompletedCallback;
+    }
+
+    public NetworkConnection getNetworkConnection () {
+ 	   return this.vc;
+    }
+
+    public IOReadRequestContext getReadRequestContext () {
+ 	   return this.tcpReadCtx;
     }
 
     /**
@@ -326,14 +358,25 @@ public abstract class Connection implements ConnectionInterface
         {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "first conversation for connection");
 
-            readCompletedCallback = new ConnectionReadCompletedCallback(this,
-                    onClientSide,
-                    acceptListener,
-                    conversationTable,
-                    conv,
-                    tcpCtx);
+            if(isUsingNetty()) {
+            	readCompletedCallback = new NettyConnectionReadCompletedCallback(this, 
+            			onClientSide, 
+            			acceptListener, 
+            			conversationTable, 
+            			conv, 
+            			tcpCtx);
+
+            }else {
+            	readCompletedCallback = new ConnectionReadCompletedCallback(this,
+            			onClientSide,
+            			acceptListener,
+            			conversationTable,
+            			conv,
+            			tcpCtx);
+            }
 
             // MS:4 take advantage of being able to leave this null for read (cf integration)
+            // TODO: Verify adding Netty check for performance?
             if (tcpReadCtx.getBuffer() == null)
             {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "needs new buffer");
@@ -361,44 +404,47 @@ public abstract class Connection implements ConnectionInterface
             // If we already have data in the buffer associated with our read context, then
             // pass it to the appropriate completed callback - otherwise perform a read
             // operation.
-            if(tcpReadCtx.getBuffer().remaining() < tcpReadCtx.getBuffer().capacity())
-            {
-                readCompletedCallback.complete(vc, tcpReadCtx);
-            }
-            else
-            {
-                // begin 251021
-                WsByteBuffer readBuffer = tcpReadCtx.getBuffer();
-                if (!readBuffer.isDirect())
+            
+            if(!isUsingNetty()) {
+            	if(tcpReadCtx.getBuffer().remaining() < tcpReadCtx.getBuffer().capacity())
                 {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        SibTr.debug(this, tc, "replacing read buffer with direct version (read buffer = "+readBuffer+")");
-                    WsByteBuffer newBuffer = WsByteBufferPool.getInstance().allocateDirect(readBuffer.capacity());
-                    int pos = readBuffer.position();
-                    int limit = readBuffer.limit();
-                    newBuffer.position(0);
-                    newBuffer.limit(pos);
-                    readBuffer.position(0);
-                    readBuffer.limit(pos);
-                    newBuffer.put(readBuffer);
-                    newBuffer.position(pos);
-                    newBuffer.limit(limit);
-                    tcpReadCtx.setBuffer(newBuffer);
+                    readCompletedCallback.complete(vc, tcpReadCtx);
                 }
-                // end 251021
-
-                if (logIOEvents) getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(tcpReadCtx)+" with a timeout of "+timeout);
-                NetworkConnection conn = tcpReadCtx.read(1,
-                        readCompletedCallback,
-                        false,
-                        timeout);
-                if (conn != null)
+            	else
                 {
-                    readCompletedCallback.complete(conn, tcpReadCtx);
-                }
+                    // begin 251021
+                    WsByteBuffer readBuffer = tcpReadCtx.getBuffer();
+                    if (!readBuffer.isDirect())
+                    {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            SibTr.debug(this, tc, "replacing read buffer with direct version (read buffer = "+readBuffer+")");
+                        WsByteBuffer newBuffer = WsByteBufferPool.getInstance().allocateDirect(readBuffer.capacity());
+                        int pos = readBuffer.position();
+                        int limit = readBuffer.limit();
+                        newBuffer.position(0);
+                        newBuffer.limit(pos);
+                        readBuffer.position(0);
+                        readBuffer.limit(pos);
+                        newBuffer.put(readBuffer);
+                        newBuffer.position(pos);
+                        newBuffer.limit(limit);
+                        tcpReadCtx.setBuffer(newBuffer);
+                    }
+                    // end 251021
 
+                    if (logIOEvents) getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(tcpReadCtx)+" with a timeout of "+timeout);
+                    NetworkConnection conn = tcpReadCtx.read(1,
+                            readCompletedCallback,
+                            false,
+                            timeout);
+                    if (conn != null)
+                    {
+                        readCompletedCallback.complete(conn, tcpReadCtx);
+                    }
+
+                }
+                // end F177053
             }
-            // end F177053
 
         }
 
@@ -560,7 +606,10 @@ public abstract class Connection implements ConnectionInterface
 
             // Proddle the write callback to get it to leap into action and start
             // sending data from the priority queue.
-            writeCompletedCallback.proddle();
+            if(isUsingNetty())
+              	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
+             else
+             	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
         }
         finally
         {
@@ -634,7 +683,11 @@ public abstract class Connection implements ConnectionInterface
 
             // Proddle the write callback to get it to leap into action and start
             // sending data from the priority queue.
-            writeCompletedCallback.proddle();
+            // TODO: Question ..this makes me think about a Proddable or WriteCompletedCallback interface type abstraction (not clear if it would be better but maybe)
+            if(isUsingNetty())
+              	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
+             else
+             	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
         }
         finally
         {
@@ -850,8 +903,14 @@ public abstract class Connection implements ConnectionInterface
             try
             {
                 priorityQueue.waitForCloseToComplete();
-                readCompletedCallback.physicalCloseNotification();
-                writeCompletedCallback.physicalCloseNotification();
+                if(isUsingNetty()) {
+                	((NettyConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
+                	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
+                }
+                else {
+                	((ConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
+                	((ConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
+                }
                 if (vc.requestPermissionToClose((heartbeatInterval+heartbeatTimeout)*1000))
                 {
                     //Release any buffers in the channel below as it is now safe to do so.
@@ -926,6 +985,13 @@ public abstract class Connection implements ConnectionInterface
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setHeartbeatInterval","seconds="+seconds);
         if (seconds < 0) throw new SIErrorException(nls.getFormattedMessage("CONNECTION_INTERNAL_SICJ0043", null, "CONNECTION_INTERNAL_SICJ0043"));
         heartbeatInterval = seconds;
+        if(isUsingNetty()) {
+        	try {
+        		((NettyNetworkConnection) vc).setHearbeatInterval(seconds);
+        	} catch (NettyException e) {
+        		throw new SIErrorException(e);
+        	}
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setHeartbeatInterval");
     }
 
@@ -1214,7 +1280,10 @@ public abstract class Connection implements ConnectionInterface
             processHeartbeat();
         break;
         case(JFapChannelConstants.SEGMENT_HEARTBEAT_RESPONSE):
-            readCompletedCallback.heartbeatReceived();
+        	if(isUsingNetty())
+             	((NettyConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
+            else
+            	((ConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
         break;
         case(JFapChannelConstants.SEGMENT_PHYSICAL_CLOSE):
             processPhysicalClose();
@@ -1270,7 +1339,11 @@ public abstract class Connection implements ConnectionInterface
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "processPhysicalClose");
 
-        readCompletedCallback.stopReceiving();
+        // TODO: Question Common interface for abstracting across ReadCompletedCalllback s?
+        if(isUsingNetty())
+           	((NettyConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
+          else
+          	((ConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
 
         // Iterate through live conversations on this physical
         // connection.  For each one, wake up any exchanges and
@@ -1473,6 +1546,10 @@ public abstract class Connection implements ConnectionInterface
     protected boolean isLoggingIOEvents()
     {
         return logIOEvents;
+    }
+    
+    public boolean isUsingNetty() {
+ 	   return this.usingNetty;
     }
 
 

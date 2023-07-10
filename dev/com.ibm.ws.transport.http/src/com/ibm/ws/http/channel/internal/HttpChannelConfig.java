@@ -42,6 +42,8 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.AccessLog;
 import com.ibm.wsspi.http.logging.DebugLog;
 
+import io.openliberty.netty.internal.impl.NettyConstants;
+
 /**
  * Class to handle parsing the configuration data and storing/supplying the
  * various configuration parameters to the rest of the code.
@@ -206,6 +208,8 @@ public class HttpChannelConfig {
 
     /** Tracks headers that have been configured erroneously **/
     private HashSet<String> configuredHeadersErrorSet = null;
+
+    private final boolean useNetty = false;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -507,6 +511,10 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, value);
             }
 
+            if (key.equalsIgnoreCase(NettyConstants.USE_NETTY)) {
+                props.put(NettyConstants.USE_NETTY, value);
+            }
+
             props.put(key, value);
         }
 
@@ -567,6 +575,7 @@ public class HttpChannelConfig {
         parseCookiesSameSiteStrict(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
+        parseUseNetty(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -2295,6 +2304,25 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the input configuration for the default flag on whether to use
+     * persistent connections or not. If this is false, then the other related
+     * configuration values will be ignored (such as MaxKeepAliveRequests).
+     *
+     * @param props
+     */
+    private void parseUseNetty(Map<Object, Object> props) {
+        boolean flag = this.useNetty;
+        Object value = props.get(NettyConstants.USE_NETTY);
+        if (null != value) {
+            flag = convertBoolean(value);
+        }
+        this.useNetty = flag;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Config: Transport is configured to use Netty: " + useNetty());
+        }
+    }
+
+    /**
      * Configured http protocol version used by this HttpChannel
      *
      * @return
@@ -2963,6 +2991,14 @@ public class HttpChannelConfig {
      */
     public Map<Integer, String> getConfiguredHeadersToRemove() {
         return this.configuredHeadersToRemove;
+    }
+
+    /**
+     *
+     * Returns whether the transport is enabled to use Netty.
+     */
+    public boolean useNetty() {
+        return this.useNetty;
     }
 
 }
