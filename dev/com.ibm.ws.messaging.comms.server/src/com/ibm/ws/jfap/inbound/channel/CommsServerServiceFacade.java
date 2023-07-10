@@ -119,10 +119,8 @@ public class CommsServerServiceFacade implements Singleton {
         this.nettyBundle = nettyBundle;
         this.tcpOptions = tcpOptions;
         this.eventEngine = eventEngine;
-        
-        useNettyTransport = ProductInfo.getBetaEdition() ? 
-				parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true):
-				false;
+
+        useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
 

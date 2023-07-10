@@ -116,10 +116,8 @@ public class CommsOutboundChain implements ApplicationPrereq {
         this.commsClientService = commsClientService;
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
-        
-        useNettyTransport = ProductInfo.getBetaEdition() ? 
-				MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true):
-				false;
+
+        useNettyTransport = ProductInfo.getBetaEdition() && MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
         String id = (String) properties.get("id");
         chainName = id;
@@ -220,7 +218,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
                 if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "JFAP Outbound chain " + chainName + " failed to start, exception ="+exception);
             }
         }else {
-        	// Use Netty Framework for transport
+            // Use Netty Framework for transport
             chainList.put(chainName, this);
         }
         

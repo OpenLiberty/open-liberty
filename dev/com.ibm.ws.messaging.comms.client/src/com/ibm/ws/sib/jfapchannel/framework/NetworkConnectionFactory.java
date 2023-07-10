@@ -42,8 +42,8 @@ public interface NetworkConnectionFactory
     NetworkConnection createConnection() throws FrameworkException;
     
     /**
-     * Destroys the connection object stored
-     * @return if connection was successfully destroyed
+     * Destroys objects related to starting connections.
+     * @throws FrameworkException if objects were NOT successfully destroyed
      */
     void destroy() throws FrameworkException;
     

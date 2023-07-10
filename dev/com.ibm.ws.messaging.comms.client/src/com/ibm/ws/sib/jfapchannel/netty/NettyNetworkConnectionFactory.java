@@ -59,7 +59,6 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 
 	/** The bootstrap this object wraps */
 	private BootstrapExtended bootstrap;
-	private EventLoopGroup workerGroup = new NioEventLoopGroup();
 	private String chainName;
 	private NettyFramework nettyBundle;
 	private Map<Object, Object> sslOptions;

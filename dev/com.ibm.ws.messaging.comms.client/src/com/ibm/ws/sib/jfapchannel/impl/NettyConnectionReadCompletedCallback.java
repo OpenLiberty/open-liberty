@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -42,7 +39,8 @@ import io.openliberty.netty.internal.exception.NettyException;
  * Callback used to notify a Netty connection that a read operation has completed.
  * Each connection should have exactly one of these callbacks. Based on com.ibm.ws.sib.jfapchannel.impl.ConnectionReadCompletedCallback
  */
-public class NettyConnectionReadCompletedCallback implements IOReadCompletedCallback{
+public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCallback
+{
 
 	private static final TraceComponent tc = SibTr.register(NettyConnectionReadCompletedCallback.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 

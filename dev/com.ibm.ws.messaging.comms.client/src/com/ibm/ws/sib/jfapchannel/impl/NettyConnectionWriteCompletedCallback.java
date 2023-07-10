@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -38,7 +35,8 @@ import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
  * Netty transport callback notified when a write operation completes.  These callbacks are
  * owned and registered once per connection. Based on com.ibm.ws.sib.jfapchannel.impl.ConnectionWriteCompletedCallback
  */
-public class NettyConnectionWriteCompletedCallback implements IOWriteCompletedCallback {
+public class NettyConnectionWriteCompletedCallback extends BaseConnectionWriteCallback
+{
 
 	private static final TraceComponent tc = SibTr.register(NettyConnectionWriteCompletedCallback.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
 

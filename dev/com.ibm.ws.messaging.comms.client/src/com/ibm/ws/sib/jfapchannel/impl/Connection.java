@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -113,9 +110,9 @@ public abstract class Connection implements ConnectionInterface
     protected ConversationTable conversationTable = null;
 
     // Callbacks notified when a read or write completes for this connection
-    private IOWriteCompletedCallback writeCompletedCallback = null;
+    private BaseConnectionWriteCallback writeCompletedCallback = null;
 
-    private IOReadCompletedCallback readCompletedCallback = null;
+    private BaseConnectionReadCallback readCompletedCallback = null;
 
     // Arbitrary object user has attached to this connection.
     private volatile Object userAttachment = null;
@@ -606,10 +603,7 @@ public abstract class Connection implements ConnectionInterface
 
             // Proddle the write callback to get it to leap into action and start
             // sending data from the priority queue.
-            if(isUsingNetty())
-              	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
-             else
-             	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
+            writeCompletedCallback.proddle();
         }
         finally
         {
@@ -683,11 +677,7 @@ public abstract class Connection implements ConnectionInterface
 
             // Proddle the write callback to get it to leap into action and start
             // sending data from the priority queue.
-            // TODO: Question ..this makes me think about a Proddable or WriteCompletedCallback interface type abstraction (not clear if it would be better but maybe)
-            if(isUsingNetty())
-              	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
-             else
-             	((ConnectionWriteCompletedCallback)writeCompletedCallback).proddle();
+            writeCompletedCallback.proddle();
         }
         finally
         {
@@ -903,14 +893,8 @@ public abstract class Connection implements ConnectionInterface
             try
             {
                 priorityQueue.waitForCloseToComplete();
-                if(isUsingNetty()) {
-                	((NettyConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
-                	((NettyConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
-                }
-                else {
-                	((ConnectionReadCompletedCallback)readCompletedCallback).physicalCloseNotification();
-                	((ConnectionWriteCompletedCallback)writeCompletedCallback).physicalCloseNotification();
-                }
+                readCompletedCallback.physicalCloseNotification();
+                writeCompletedCallback.physicalCloseNotification();
                 if (vc.requestPermissionToClose((heartbeatInterval+heartbeatTimeout)*1000))
                 {
                     //Release any buffers in the channel below as it is now safe to do so.
@@ -1280,10 +1264,7 @@ public abstract class Connection implements ConnectionInterface
             processHeartbeat();
         break;
         case(JFapChannelConstants.SEGMENT_HEARTBEAT_RESPONSE):
-        	if(isUsingNetty())
-             	((NettyConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
-            else
-            	((ConnectionReadCompletedCallback)readCompletedCallback).heartbeatReceived();
+            readCompletedCallback.heartbeatReceived();
         break;
         case(JFapChannelConstants.SEGMENT_PHYSICAL_CLOSE):
             processPhysicalClose();
@@ -1339,11 +1320,7 @@ public abstract class Connection implements ConnectionInterface
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "processPhysicalClose");
 
-        // TODO: Question Common interface for abstracting across ReadCompletedCalllback s?
-        if(isUsingNetty())
-           	((NettyConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
-          else
-          	((ConnectionReadCompletedCallback)readCompletedCallback).stopReceiving();
+        readCompletedCallback.stopReceiving();
 
         // Iterate through live conversations on this physical
         // connection.  For each one, wake up any exchanges and
