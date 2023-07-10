@@ -15,7 +15,7 @@ def weldVersion = "5.1.1.Final"     ////
 ////////////////////////////////////////
 
 def unzippDir = "${buildDir}/unzip"
-def pathToOSManifest = "${unzippDir}/META-INF/MANIFEST.MF"
+def pathToOSManifest = "${unzippDir}/MANIFEST.MF"
 def pathToTemplateManifest = "${buildDir}/../../bnd.template"
 def tempPathToNewManifest = "${buildDir}/check-me-in-if-i-change.bnd"
 def pathToNewManifest = "${buildDir}/../../check-me-in-if-i-change.bnd"
@@ -64,7 +64,7 @@ task bndMagic {
     doFirst{
         copy {   
             configurations.weld.asFileTree.each {
-               from(zipTree(it))
+               from(zipTree(it).matching { include '**/MANIFEST.MF' }.singleFile)
             }
             into unzippDir
         }
@@ -85,9 +85,9 @@ task bndMagic {
         .collect(Collectors.toList())
 
         if (foundMatch.isEmpty()) {
-            throw new GradleException("The weld version ${weldVersion} was not found in the manifest from the upstream weld-osgi-bundle. Did you change the version in cnf/oss_dependencies.maven but not in this project's build.gradle?")
+            throw new GradleException("The weld version ${weldVersion} was not found in the cnf/oss_dependencies.maven. Did you change the version in cnf/oss_dependencies.maven but not in this project's build.gradle?")
         }
-        ////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////// Sanity check complete ////////////////////////////////
 
         //Make updates to existing exports (currently we have no updates for imports)
         for (int i = 0; i < upstreamExports.size(); i++) {
@@ -105,10 +105,10 @@ task bndMagic {
         // 1) The new exports we add - a trailing new line char is included in the string
         // A single whitespace charachter because String.join won't do a prefix to the first entry.
         // Every entry followed by a ',\' a line break, and a whitespace to start the next line.
-        String exportsBndFormat = additionalExports + " " + String.join(",\\\\" + System.lineSeparator() + " ", upstreamExports)
+        String exportsBndFormat = additionalExports + " " + String.join(",\\\\" + "\n" + " ", upstreamExports)
 
         // The input string uses the same format
-        String importsBndFormat = additionalImports + " " + String.join(",\\\\" + System.lineSeparator() + " ", upstreamImports)
+        String importsBndFormat = additionalImports + " " + String.join(",\\\\" + "\n"	 + " ", upstreamImports)
 
         String templateFile = Files.readString(Paths.get("${pathToTemplateManifest}"));
         templateFile = templateFile.replaceAll("#INSERTEXPORTS", exportsBndFormat).replaceAll("#INSERTIMPORTS", importsBndFormat)
