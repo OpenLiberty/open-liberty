@@ -93,6 +93,10 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpUtil;
+
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
  * context classes.
@@ -275,6 +279,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     private final CopyOnWriteArrayList<Frame> framesToWrite = new CopyOnWriteArrayList<Frame>();
 
+    private ChannelHandlerContext nettyContext;
+    private FullHttpRequest nettyRequest;
+    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+
     /**
      * Constructor for this base service context class.
      */
@@ -283,6 +291,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         // override this flag explicitly)
         this.bIsJITRead = true;
         this.allocatedBuffers = new LinkedList<WsByteBuffer>();
+    }
+
+    public void setNettyContext(ChannelHandlerContext ctx) {
+        this.nettyContext = ctx;
+    }
+
+    public void setNettyRequest(FullHttpRequest request) {
+        this.nettyRequest = request;
+    }
+
+    public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
+        this.nettyResponse = response;
     }
 
     // ********************************************************
@@ -2048,11 +2068,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 msg.appendContentEncoding(ce);
             }
         }
-
-        // when formatting headers, update the "persistence" flag for the
-        // connection so that it reads the header information in the outgoing
-        // message
-        updatePersistence(msg);
+        if (!getHttpConfig().useNetty()) {
+            // when formatting headers, update the "persistence" flag for the
+            // connection so that it reads the header information in the outgoing
+            // message
+            updatePersistence(msg);
+        }
 
         // once headers are in place, we can run the checks to find
         // out if a body is valid to send out with the message
@@ -2073,7 +2094,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 headerBuffers = msg.encodeH2Message();
-            } else {
+            } else if (!getHttpConfig().useNetty()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "formatHeaders: On an non-HTTP/2.0 connection, marshalling the headers");
                 }
@@ -2668,26 +2689,28 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         WsByteBuffer[] buffers = wsbb;
         this.writingHeaders = false;
-        // if a valid body is outgoing, check the encoding flags to see if we
-        // need to automatically change the buffers
-        if (!isRawBody() && !headersSent()) {
-            setupCompressionHandler(msg);
-        }
-        // check whether we need to pass data through the compression handler
-        if (null != this.compressHandler) {
-
-            List<WsByteBuffer> list = this.compressHandler.compress(buffers);
-            if (this.isFinalWrite) {
-                list.addAll(this.compressHandler.finish());
+        if (!getHttpConfig().useNetty()) {
+            // if a valid body is outgoing, check the encoding flags to see if we
+            // need to automatically change the buffers
+            if (!isRawBody() && !headersSent()) {
+                setupCompressionHandler(msg);
             }
+            // check whether we need to pass data through the compression handler
+            if (null != this.compressHandler) {
 
-            // put any created buffers onto the release list
-            if (0 < list.size()) {
-                buffers = new WsByteBuffer[list.size()];
-                list.toArray(buffers);
-                storeAllocatedBuffers(buffers);
-            } else {
-                buffers = null;
+                List<WsByteBuffer> list = this.compressHandler.compress(buffers);
+                if (this.isFinalWrite) {
+                    list.addAll(this.compressHandler.finish());
+                }
+
+                // put any created buffers onto the release list
+                if (0 < list.size()) {
+                    buffers = new WsByteBuffer[list.size()];
+                    list.toArray(buffers);
+                    storeAllocatedBuffers(buffers);
+                } else {
+                    buffers = null;
+                }
             }
         }
 
@@ -2707,10 +2730,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // PK48697 - only update these if the message allows it
             if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
                 complete = true;
-                msg.setContentLength(GenericUtils.sizeOf(buffers));
-                if (msg.isChunkedEncodingSet()) {
-                    msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
-                    msg.commitTransferEncoding();
+                if (!myChannelConfig.useNetty()) {
+                    msg.setContentLength(GenericUtils.sizeOf(buffers));
+                    if (msg.isChunkedEncodingSet()) {
+                        msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
+                        msg.commitTransferEncoding();
+                    }
+                } else {
+                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
                 }
             }
 
@@ -3138,59 +3165,72 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
-            getTSC().getWriteInterface().setBuffers(writeBuffers);
-            try {
-                getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
-            } catch (IOException ioe) {
-                // no FFDC required
-                // just need to set the "broken" connection flag
-                // 313642 - print the message as well
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IOException during sync write: " + ioe.getMessage());
-                }
-                setPersistent(false);
-                logLegacyMessage();
-                //Additional throw IOE for inbound connections check added for PI57542
-                if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
-                    // This is a server response and the request originator (the remote client) is no longer reachable.
-                    // Swallow this exception: nothing useful can be done on the server and no further work can come in.
-                    return;
-                }
-                throw ioe;
-            } finally {
-                // 457369 - disconnect write buffers in TCP when done
-                getTSC().getWriteInterface().setBuffers(null);
-            }
-        } else if (this.isH2Connection && !framesToWrite.isEmpty()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Writing out H2 Frames");
-            }
-            HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
 
-            if (context.getLink() instanceof H2HttpInboundLinkWrap) {
-                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+            if (myChannelConfig.useNetty()) {
+                this.nettyContext.channel().write(this.nettyResponse);
+                for (WsByteBuffer buffer : writeBuffers) {
+                    this.nettyContext.channel().write(buffer);
+                }
+                this.nettyContext.channel().flush();
+            } else {
 
+                getTSC().getWriteInterface().setBuffers(writeBuffers);
                 try {
-                    link.writeFramesSync(framesToWrite);
+                    getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
                 } catch (IOException ioe) {
+                    // no FFDC required
+                    // just need to set the "broken" connection flag
+                    // 313642 - print the message as well
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
+                        Tr.debug(tc, "IOException during sync write: " + ioe.getMessage());
                     }
+                    setPersistent(false);
+                    logLegacyMessage();
+                    //Additional throw IOE for inbound connections check added for PI57542
                     if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
                         // This is a server response and the request originator (the remote client) is no longer reachable.
                         // Swallow this exception: nothing useful can be done on the server and no further work can come in.
                         return;
                     }
-                    //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
                     throw ioe;
                 } finally {
-                    framesToWrite.clear();
+                    // 457369 - disconnect write buffers in TCP when done
+                    getTSC().getWriteInterface().setBuffers(null);
                 }
             }
 
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Sync write has no data to send.");
+            if (this.isH2Connection && !framesToWrite.isEmpty()) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Writing out H2 Frames");
+                }
+                HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+
+                if (context.getLink() instanceof H2HttpInboundLinkWrap) {
+                    H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+
+                    try {
+                        link.writeFramesSync(framesToWrite);
+                    } catch (IOException ioe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
+                        }
+                        if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
+                            // This is a server response and the request originator (the remote client) is no longer reachable.
+                            // Swallow this exception: nothing useful can be done on the server and no further work can come in.
+                            return;
+                        }
+                        //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
+                        throw ioe;
+                    } finally {
+                        framesToWrite.clear();
+                    }
+                }
+
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Sync write has no data to send.");
+                }
             }
         }
     }
