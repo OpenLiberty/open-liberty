@@ -53,17 +53,24 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
                 return System.getProperty("com.ibm.jsse2.usefipsProviderName");
             }
         });
-        System.out.println("EFT: provider: " + ibmjceplusfipsprovider);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
+        }
 
         if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS")) {
-            System.out.println("EFT: fipson and jceplusfips");
-            System.out.println("     EFT: key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
-            System.out.println("     EFT: trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
-            System.out.println("     EFT: protocol: " + Constants.PROTOCOL_TLS);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
+                Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
+                Tr.debug(tc, "trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
+                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_TLS);
+            }
             initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
                        Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
         } else {
-            System.out.println("EFT: fips not on: " + fipsON);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "fips not enabled: " + fipsON);
+            }
             initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
                        Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
         }

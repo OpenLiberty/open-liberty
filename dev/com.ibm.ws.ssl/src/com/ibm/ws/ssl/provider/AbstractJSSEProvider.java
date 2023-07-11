@@ -110,12 +110,16 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.socketFactory = factory;
         this.defaultProtocol = protocolType;
 
-        System.out.println("EFT: defaultProtocol: " + defaultProtocol);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
+        }
 
         if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
-            
+
         {
-            System.out.println("EFT: jce plus fips available");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "jce plus fips available");
+            }
             try {
                 com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
             } catch (Exception e) {
@@ -653,7 +657,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
 
         final String protocol = protocolVal;
-        System.out.println("EFT: protocol = " + protocolVal);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "protocol:  " + protocolVal);
+        }
 
         try {
             sslContext = AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {
