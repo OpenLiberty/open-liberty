@@ -439,7 +439,7 @@ public class EntityDefiner implements Runnable {
                 Queue<String> relationPrefixes = new LinkedList<>();
                 Queue<List<Member>> relationAccessors = new LinkedList<>();
                 Class<?> recordClass = generatedToRecordClass.get(entityType.getJavaType());
-                Class<?> idClass = null;
+                Class<?> idType = null;
                 SortedMap<String, Member> idClassAttributeAccessors = null;
                 String versionAttrName = null;
 
@@ -465,13 +465,15 @@ public class EntityDefiner implements Runnable {
                             collectionElementTypes.put(attributeName, ((PluralAttribute<?, ?, ?>) attr).getElementType().getJavaType());
                     } else {
                         SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
-                        if (singleAttr != null && singleAttr.isId())
+                        if (singleAttr != null && singleAttr.isId()) {
                             attributeNames.put("id", attributeName);
-                        else if (singleAttr != null && singleAttr.isVersion())
+                            idType = singleAttr.getJavaType();
+                        } else if (singleAttr != null && singleAttr.isVersion()) {
                             versionAttrName = attributeName;
-                        else if (Collection.class.isAssignableFrom(attr.getJavaType()))
+                        } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
                             // collection attribute that is not annotated with ElementCollection
                             collectionElementTypes.put(attributeName, Object.class);
+                        }
                     }
                 }
 
@@ -528,10 +530,12 @@ public class EntityDefiner implements Runnable {
                                 collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
                         } else if (relAttr instanceof SingularAttribute) {
                             SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                            if (singleAttr.isId())
+                            if (singleAttr.isId()) {
                                 attributeNames.put("id", fullAttributeName);
-                            else if (singleAttr.isVersion())
+                                idType = singleAttr.getJavaType();
+                            } else if (singleAttr.isVersion()) {
                                 versionAttrName = relationAttributeName_; // to be suitable for query-by-method
+                            }
                         }
                     }
                 }
@@ -546,13 +550,13 @@ public class EntityDefiner implements Runnable {
                         Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
                         if (idClassAttributes != null) {
                             attributeNames.remove("id");
-                            idClass = idClassType.getJavaType();
+                            idType = idClassType.getJavaType();
                             idClassAttributeAccessors = new TreeMap<>();
                             for (SingularAttribute<?, ?> attr : idClassAttributes) {
                                 Member entityMember = attr.getJavaMember();
                                 Member idClassMember = entityMember instanceof Field //
-                                                ? idClass.getField(entityMember.getName()) //
-                                                : idClass.getMethod(entityMember.getName());
+                                                ? idType.getField(entityMember.getName()) //
+                                                : idType.getMethod(entityMember.getName());
                                 idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
                             }
                         }
@@ -570,7 +574,7 @@ public class EntityDefiner implements Runnable {
                                 attributeTypes, //
                                 collectionElementTypes, //
                                 relationAttributeNames, //
-                                idClass, //
+                                idType, //
                                 idClassAttributeAccessors, //
                                 versionAttrName, //
                                 punit);
