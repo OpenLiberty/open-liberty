@@ -322,7 +322,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                 while (tokenIter.hasNext()) {
                     OAuth20Token token = tokenIter.next();
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processAuthorization: Found token to remove from cash.");
+                        Tr.debug(tc, "processAuthorization: Found token to remove from cache.");
                         Tr.debug(tc, "Type: " + token.getType());
                         Tr.debug(tc, "Subtype: " + token.getSubType());
                         Tr.debug(tc, "ClientId: " + token.getClientId());
@@ -593,7 +593,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                 while (tokenIter.hasNext()) {
                     OAuth20Token token = tokenIter.next();
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processTokenRequest: Found token to remove from cash.");
+                        Tr.debug(tc, "processTokenRequest: Found token to remove from cache.");
                         Tr.debug(tc, "Type: " + token.getType());
                         Tr.debug(tc, "Subtype: " + token.getSubType());
                         Tr.debug(tc, "ClientId: " + token.getClientId());
@@ -758,7 +758,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                 while (tokenIter.hasNext()) {
                     OAuth20Token token = tokenIter.next();
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processTokenRequest: Found token to remove from cash.");
+                        Tr.debug(tc, "processTokenRequest: Found token to remove from cache.");
                         Tr.debug(tc, "Type: " + token.getType());
                         Tr.debug(tc, "Subtype: " + token.getSubType());
                         Tr.debug(tc, "ClientId: " + token.getClientId());
