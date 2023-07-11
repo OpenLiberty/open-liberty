@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.el50.fat.servlets;
+package io.openliberty.el50.fat.defaultmethods.servlet;
 
 import static org.junit.Assert.assertEquals;
 
