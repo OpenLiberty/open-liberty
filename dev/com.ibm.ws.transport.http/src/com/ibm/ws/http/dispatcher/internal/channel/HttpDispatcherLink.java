@@ -13,6 +13,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -41,6 +43,8 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.http.netty.NettyHttpRequestImpl;
+import com.ibm.ws.http.netty.NettyHttpResponseImpl;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -62,6 +66,10 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -134,6 +142,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private static AtomicInteger connectionCounter = new AtomicInteger(1);
     private int connectionId;
 
+    private boolean usingNetty = false;
+    private ChannelHandlerContext nettyContext;
+    private FullHttpRequest nettyRequest;
+
     /**
      * Constructor.
      *
@@ -160,6 +172,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     }
 
+    /**
+     * Initialize this link for Netty Use.
+     *
+     */
+    public void init(ChannelHandlerContext context, FullHttpRequest request) {
+        nettyContext = context;
+        this.isc = new HttpInboundServiceContextImpl(context);
+        nettyRequest = request;
+        this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
+        this.response = new NettyHttpResponseImpl(this);
+        this.isc.setNettyRequest(request);
+        this.usingNetty = true;
+    }
+
     /*
      * @see com.ibm.wsspi.channelfw.ConnectionLink#close(VirtualConnection, Exception)
      */
@@ -170,115 +196,126 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
-        if (this.vc == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Connection must be already closed since vc is null");
-            }
-
-            // closeCompleted check is for the close, destroy, close order scenario.
-            // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
-            if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
-                //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "decrementNeeded is true: decrement active connection");
-                }
-                this.myChannel.decrementActiveConns();
-            }
-
-            return;
-        }
-
-        // This is added for Upgrade Servlet3.1 WebConnection
-        // The only API available from connectionLink are close and destroy ,
-        // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
-        String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-        if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "close streams from HttpDispatcherLink.close");
-            }
-
-            Exception errorinClosing = this.closeStreams();
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Error closing in streams" + errorinClosing);
-            }
-
-            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
-            return;
-        }
-
-        String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "upgradedListener ->" + upgradedListener);
-        }
-        if (upgradedListener != null && upgradedListener.equalsIgnoreCase("true")) {
-            boolean closeCalledFromWebConnection = false;
-
-            synchronized (this) {
-                //This sync block prevents both closes from happening, if they are happening at the same time.
-                //This will check the new variable we have added to the VC during the WebConnection close.
-                //If both the WebConnection and WebContainer close happen at the same time then only one will happen.
-                //The first one will come in, check this new variable, then set it to false. The false will cause
-                //the other close to not happen.
-
-                String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
-                if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
-                    closeCalledFromWebConnection = true;
-                    this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
-                }
-            }
-
-            if (!closeCalledFromWebConnection) {
-                // we should not call close as this from webcontainer as Webconnection close will be called some point.
-
-                // closeCalledFromWebConnection seems to be related to generic web connections and read async logic.
-                // but we need to handle the case where webconnection logic like HTTP/2 need to ensure close is called once, and only once.
-                // but we don't want to manipulate existing logic so a separate constant in the state map will be used for that below
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Connection Not to be closed here because Servlet Upgrade.");
-                }
+        if (usingNetty) {
+            ChannelFuture closeFuture = this.nettyContext.channel().close();
+            try {
+                closeFuture.sync();
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            } finally {
                 return;
             }
         } else {
-            if (upgradedListener == null) {
-                String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
-                if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
-                    // want to close down at least once, and only once, for this type of upgraded connection
-                    WebConnCanCloseSync.lock();
-                    try {
-                        if (WebConnCanClose) {
-                            // fall through to close logic after setting flag to only fall through once
-                            // want to call close outside of the sync to avoid deadlocks.
-                            WebConnCanClose = false;
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Upgraded Web Connection closing Dispatcher Link");
+            if (this.vc == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Connection must be already closed since vc is null");
+                }
+
+                // closeCompleted check is for the close, destroy, close order scenario.
+                // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
+                if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
+                    //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "decrementNeeded is true: decrement active connection");
+                    }
+                    this.myChannel.decrementActiveConns();
+                }
+
+                return;
+            }
+
+            // This is added for Upgrade Servlet3.1 WebConnection
+            // The only API available from connectionLink are close and destroy ,
+            // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
+            String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+            if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close streams from HttpDispatcherLink.close");
+                }
+
+                Exception errorinClosing = this.closeStreams();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Error closing in streams" + errorinClosing);
+                }
+
+                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+                return;
+            }
+
+            String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "upgradedListener ->" + upgradedListener);
+            }
+            if (upgradedListener != null && upgradedListener.equalsIgnoreCase("true")) {
+                boolean closeCalledFromWebConnection = false;
+
+                synchronized (this) {
+                    //This sync block prevents both closes from happening, if they are happening at the same time.
+                    //This will check the new variable we have added to the VC during the WebConnection close.
+                    //If both the WebConnection and WebContainer close happen at the same time then only one will happen.
+                    //The first one will come in, check this new variable, then set it to false. The false will cause
+                    //the other close to not happen.
+
+                    String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
+                    if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
+                        closeCalledFromWebConnection = true;
+                        this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
+                    }
+                }
+
+                if (!closeCalledFromWebConnection) {
+                    // we should not call close as this from webcontainer as Webconnection close will be called some point.
+
+                    // closeCalledFromWebConnection seems to be related to generic web connections and read async logic.
+                    // but we need to handle the case where webconnection logic like HTTP/2 need to ensure close is called once, and only once.
+                    // but we don't want to manipulate existing logic so a separate constant in the state map will be used for that below
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Connection Not to be closed here because Servlet Upgrade.");
+                    }
+                    return;
+                }
+            } else {
+                if (upgradedListener == null) {
+                    String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                    if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
+                        // want to close down at least once, and only once, for this type of upgraded connection
+                        WebConnCanCloseSync.lock();
+                        try {
+                            if (WebConnCanClose) {
+                                // fall through to close logic after setting flag to only fall through once
+                                // want to call close outside of the sync to avoid deadlocks.
+                                WebConnCanClose = false;
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Upgraded Web Connection closing Dispatcher Link");
+                                }
+                            } else {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Upgraded Web Connection already called close; returning");
+                                }
+                                return;
                             }
-                        } else {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Upgraded Web Connection already called close; returning");
-                            }
-                            return;
+                        } finally {
+                            WebConnCanCloseSync.unlock();
                         }
-                    } finally {
-                        WebConnCanCloseSync.unlock();
                     }
                 }
             }
-        }
 
-        // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
-        if (myChannel.getStop0Called() == false) {
-            try {
-                super.close(conn, e);
-            } finally {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "decrement active connection count");
+            // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
+            if (myChannel.getStop0Called() == false) {
+                try {
+                    super.close(conn, e);
+                } finally {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "decrement active connection count");
+                    }
+                    this.myChannel.decrementActiveConns();
                 }
-                this.myChannel.decrementActiveConns();
+                closeCompleted.compareAndSet(false, true);
             }
-            closeCompleted.compareAndSet(false, true);
         }
     }
 
@@ -350,6 +387,85 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         h2link.handleHTTP2DirectConnect(h2link);
         this.setDeviceLink(h2link);
         h2link.processRead(vc, this.getTCPConnectionContext().getReadInterface());
+    }
+
+    /*
+     * @see com.ibm.wsspi.channelfw.ConnectionReadyCallback#ready(com.ibm.wsspi.channelfw.VirtualConnection)
+     */
+    @FFDCIgnore(Throwable.class)
+    public void ready() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Received HTTP connection, hc: " + this.hashCode() + " , this link: " + this);
+        }
+
+        SocketAddress socket = this.nettyContext.channel().remoteAddress();
+        if (socket instanceof InetSocketAddress) {
+
+            this.remoteAddress = ((InetSocketAddress) socket).getAddress();
+            this.isc.setRemoteAddr(remoteAddress);
+
+        }
+
+        // Make sure to initialize the response in case of an early-return-error message
+        this.response.init(this.isc);
+        linkIsReady = true;
+
+        ExecutorService executorService = HttpDispatcher.getExecutorService();
+        if (null == executorService) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Missing executor service");
+            }
+            //No content written
+            sendResponse(StatusCodes.UNAVAILABLE, null, false);
+            return;
+        }
+
+        // Try to find a virtual host for the requested host/port..
+        VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(),
+                                                               this);
+        if (vhost == null) {
+            String url = this.isc.getRequest().getRequestURI();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                String alias = getLocalHostAlias();
+                Tr.debug(tc, "No virtual host found for this alias: " + alias);
+            }
+            send404Message(url);
+            return;
+        }
+
+        Runnable handler = null;
+        try {
+            handler = vhost.discriminate(this);
+            if (handler == null) {
+                InputStream landingPageStream = getLandingPageStream();
+                if (landingPageStream != null) {
+                    displayLandingPage(landingPageStream);
+                } else {
+                    String url = this.isc.getRequest().getRequestURI();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        String alias = getLocalHostAlias();
+                        Tr.debug(tc, "The URI was not associated with the virtual host " + vhost.getName(),
+                                 alias, url);
+                    }
+
+                    send404Message(url);
+                }
+            } else {
+                wrapHandlerAndExecute(handler);
+            }
+        } catch (Throwable t) {
+            // no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Exception during dispatch; " + t);
+            }
+
+            if (t instanceof Exception) {
+                sendResponse(StatusCodes.INTERNAL_ERROR, (Exception) t, true);
+            } else {
+                sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Dispatch error", t), true);
+            }
+        }
     }
 
     /*
@@ -991,6 +1107,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private String contextRemoteHostAddress() {
         String remoteAddr = remoteContextAddress;
         if (remoteAddr == null) {
+
             final HttpInboundServiceContextImpl finalSc = this.isc;
             if (finalSc != null) {
                 remoteAddr = remoteContextAddress = finalSc.getRemoteAddr().getHostAddress();
@@ -1319,18 +1436,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public boolean isHTTP2UpgradeRequest(Map<String, String> headers, boolean checkEnabledOnly) {
-        if (isc != null) {
-            //Returns whether HTTP/2 is enabled for this channel/port
-            if (checkEnabledOnly) {
-                return isc.isHttp2Enabled();
-            }
-            //Check headers for HTTP/2 upgrade header
-            else {
-                HttpInboundLink link = isc.getLink();
-                if (link != null) {
-                    return link.isHTTP2UpgradeRequest(headers);
+        if (!usingNetty) {
+            if (isc != null) {
+                //Returns whether HTTP/2 is enabled for this channel/port
+                if (checkEnabledOnly) {
+                    return isc.isHttp2Enabled();
+                }
+                //Check headers for HTTP/2 upgrade header
+                else {
+                    HttpInboundLink link = isc.getLink();
+                    if (link != null) {
+                        return link.isHTTP2UpgradeRequest(headers);
+                    }
                 }
             }
+        } else {
+            //TODO: Netty Upgrade Handler
         }
         return false;
     }
