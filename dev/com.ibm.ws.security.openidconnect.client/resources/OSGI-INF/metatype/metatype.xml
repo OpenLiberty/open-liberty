@@ -162,6 +162,7 @@
                 <Option label="%pkceCodeChallengeMethod.plain" value="plain" />
                 <Option label="%pkceCodeChallengeMethod.S256" value="S256" />
          </AD>
+         <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" ibm:beta="true" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">
