@@ -70,7 +70,7 @@ Include-Resource: \
 test.project: true
 
 # These are the images used by the org.testcontainers and componenttest.topology.database.container packages
-fat.test.container.images: testcontainers/ryuk:0.3.4, testcontainers/sshd:1.1.0, testcontainers/vnc-recorder:1.2.0, kyleaure/db2:1.0, gvenzl/oracle-xe:21.3.0-full-faststart, postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
+fat.test.container.images: testcontainers/ryuk:0.5.1, testcontainers/sshd:1.1.0, testcontainers/vnc-recorder:1.3.0, kyleaure/db2:1.0, gvenzl/oracle-xe:21.3.0-full-faststart, postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

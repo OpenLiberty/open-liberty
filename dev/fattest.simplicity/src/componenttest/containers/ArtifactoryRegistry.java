@@ -271,7 +271,7 @@ public class ArtifactoryRegistry {
      * @param contents - The content that needs to be sanitized
      */
     static void logConfigContents(final String method, final String msg, final String contents) {
-        String sanitizedContents = contents.replaceAll("\"auth\": \".*\"", "\"auth\": \"****Token Redacted****\"");
+        String sanitizedContents = contents.replaceAll("\"auth\" : \".*\"", "\"auth\" : \"****Token Redacted****\"");
         Log.info(c, method, msg + ":\n" + sanitizedContents);
     }
 }
