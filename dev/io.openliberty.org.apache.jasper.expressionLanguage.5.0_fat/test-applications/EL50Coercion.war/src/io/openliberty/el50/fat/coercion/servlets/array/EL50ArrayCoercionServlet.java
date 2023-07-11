@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.el50.fat.coercion.servlets.array;
 
@@ -17,16 +14,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import jakarta.servlet.annotation.WebServlet;
-import java.util.Arrays;
-
 import jakarta.el.ELException;
 import jakarta.el.ELProcessor;
+import jakarta.servlet.annotation.WebServlet;
 
 /**
  * Servlet for testing Array coercion in Expression Language 5.0
@@ -46,7 +43,7 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 If `A` is assignable to an array of type `T`, coerce quietly.
      *
      * @throws Exception
@@ -54,14 +51,14 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     @Test
     public void testSimpleArrayCoercion() throws Exception {
         // Simple array coercion test
-        int[] expectedResult = new int[] {1, 8, 4};
+        int[] expectedResult = new int[] { 1, 8, 4 };
         int[] result = elp.eval("arrayBean.testArrayCoercion([1,8,4].toArray())");
         assertNotNull(result);
         assertArrayEquals("The expression did not evaluate to: " + Arrays.toString(expectedResult) + " but was: " + Arrays.toString(result), expectedResult, result);
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 whenever an array is expected but not received an error is thrown.
      *
      * @throws Exception
@@ -81,7 +78,7 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced if the array is null then null is expected.
      *
      * @throws Exception
@@ -94,7 +91,7 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced it goes element by element coercing them to the expected type.
      *
      * @throws Exception
@@ -102,14 +99,14 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     @Test
     public void testOtherTypesArrayCoercion() throws Exception {
         // Array coercion where each element should coerce to an int value
-        int[] expectedResult = new int[] {0, 1, 8, 10, 4};
+        int[] expectedResult = new int[] { 0, 1, 8, 10, 4 };
         int[] result = elp.eval("arrayBean.testArrayCoercion([null, 1, 8, \"10\", 4].toArray())");
         assertNotNull(result);
-        assertArrayEquals("The expression did not evaluate to: " +  Arrays.toString(expectedResult) + " but was: " + Arrays.toString(result), expectedResult, result);
+        assertArrayEquals("The expression did not evaluate to: " + Arrays.toString(expectedResult) + " but was: " + Arrays.toString(result), expectedResult, result);
     }
 
     /**
-     * 
+     *
      * Expression Language 5.0 in Jakarta EE10 whenever an array is coerced it goes element by element coercing them to the expected type.
      * According to spec while coercing the elements to integer if A is boolean then an error is thrown.
      *
@@ -129,10 +126,10 @@ public class EL50ArrayCoercionServlet extends FATServlet {
     }
 
     /*
-    * (non-Javadoc)
-    *
-    * Simple bean used to test array coercion 
-    */
+     * (non-Javadoc)
+     *
+     * Simple bean used to test array coercion
+     */
     public class ArrayBean {
 
         public int[] testArrayCoercion(int array[]) {
