@@ -4,5 +4,28 @@
 	<classpathentry kind="src" output="bin_test" path="test"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.channelfw"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.boot.nested"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.runtime.update"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.threading"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.checkpoint"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.boot.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.osgi"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.netty.internal"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.netty.internal.impl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.netty.internal.tls.impl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.event"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.boot.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.timer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.accesslists.internal"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/io.openliberty.io.netty"/>
+	<classpathentry kind="lib" path="/Users/mansal/Downloads/netty-all-4.1.9.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

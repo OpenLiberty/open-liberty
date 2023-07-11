@@ -59,6 +59,10 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.DebugLog;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+
 /**
  * Service context specific to an inbound HTTP message.
  *
@@ -89,6 +93,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedHost = null;
     private boolean suppress0ByteChunk = false;
 
+    private ChannelHandlerContext nettyContext;
+    private FullHttpRequest nettyRequest;
+    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+
     /**
      * Constructor for an HTTP inbound service context object.
      *
@@ -100,6 +108,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpInboundServiceContextImpl(TCPConnectionContext tsc, HttpInboundLink link, VirtualConnection vc, HttpChannelConfig hcc) {
         super();
         init(tsc, link, vc, hcc);
+    }
+
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context) {
+        super();
+        nettyContext = context;
+        super.setNettyContext(context);
     }
 
     /**
@@ -136,6 +150,30 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             super.setPushPromise(((H2HttpInboundLinkWrap) wrapper).isPushPromise());
         }
         super.reinit(tcc);
+    }
+
+    @Override
+    public void setNettyRequest(FullHttpRequest request) {
+        this.nettyRequest = request;
+        super.setNettyRequest(request);
+    }
+
+    @Override
+    public void setNettyResponse(HttpResponse response) {
+        this.nettyResponse = response;
+        super.setNettyResponse(response);
+    }
+
+    public FullHttpRequest getNettyRequest() {
+        return this.nettyRequest;
+    }
+
+    public io.netty.handler.codec.http.HttpResponse getNettyResponse() {
+        return this.nettyResponse;
+    }
+
+    public ChannelHandlerContext getNettyContext() {
+        return this.nettyContext;
     }
 
     /*
@@ -461,14 +499,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             if (getObjectFactory() == null) {
                 return null;
             }
-            setMyRequest(getObjectFactory().getRequest(this));
-            getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
+            if (getHttpConfig().useNetty()) {
+                setMyRequest(new HttpRequestMessageImpl());
+                getMyRequest().init(this);
+            } else {
+                setMyRequest(getObjectFactory().getRequest(this));
+                getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
+            }
         }
         setStartTime();
         HttpRequestMessageImpl req = getMyRequest();
 
         // if applicable set the HTTP/2 specific content length
-        if (myLink instanceof H2HttpInboundLinkWrap) {
+        //TODO: Netty H2
+        if (!getHttpConfig().useNetty() && myLink instanceof H2HttpInboundLinkWrap) {
             int len = ((H2HttpInboundLinkWrap) myLink).getH2ContentLength();
             if (len != -1) {
                 req.setContentLength(len);
@@ -494,10 +538,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     final protected HttpResponseMessageImpl getResponseImpl() {
         if (null == getMyResponse()) {
-            if (getObjectFactory() == null) {
-                return null;
+            if (getHttpConfig().useNetty()) {
+                setMyResponse(new HttpResponseMessageImpl());
+                getMyResponse().init(this);
+            } else {
+
+                if (getObjectFactory() == null) {
+                    return null;
+                }
+                setMyResponse(getObjectFactory().getResponse(this));
             }
-            setMyResponse(getObjectFactory().getResponse(this));
         }
         return getMyResponse();
     }
@@ -681,7 +731,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "sendResponseBody(body)");
         }
 
-        if (!headersParsed()) {
+        if (!getHttpConfig().useNetty() && !headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
             // above)
@@ -912,7 +962,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body)");
         }
-        if (!headersParsed()) {
+        if (getHttpConfig().useNetty() && !headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
             // above)
@@ -951,9 +1001,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             logFinalResponse(getNumBytesWritten());
         }
 
-        HttpInvalidMessageException inv = checkResponseValidity();
-        if (null != inv) {
-            throw inv;
+        if (!getHttpConfig().useNetty()) {
+            HttpInvalidMessageException inv = checkResponseValidity();
+            if (null != inv) {
+                throw inv;
+            }
         }
     }
 
