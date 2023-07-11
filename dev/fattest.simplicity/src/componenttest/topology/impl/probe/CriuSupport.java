@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,10 +44,19 @@ public class CriuSupport {
                 // be loaded by JVM
                 Method supported = criuSupport.getDeclaredMethod("isCRIUSupportEnabled");
                 chkPtSupported = ((Boolean) supported.invoke(criuSupport));
+
+                // BEGIN temp fix
+                //  for a A JVM bug where isCRIUSupportEnabled  may return true
+                //  even if the libcriu.so is not loadable by the JVM. Force
+                //  an UnsatisfiedLinkError in such a case
+                out("with java.library.path=" + System.getProperty("java.library.path"));
+                System.loadLibrary("criu");
+                // END temp fix
+
                 if (chkPtSupported) {
                     out("isCRIUSupportEnabled() returned " + chkPtSupported);
                 } else {
-                    err("isCRIUSupportEnabled() returned " + chkPtSupported);
+                    System.err.println("isCRIUSupportEnabled() returned " + chkPtSupported);
                 }
             } catch (Exception e) {
                 // An exception here probably means the JDK CRIU API is deprecated or some other incompatible change
@@ -62,15 +71,6 @@ public class CriuSupport {
             err("Unable to load class org.eclipse.openj9.criu.CRIUSupport.", e);
         }
         System.exit(0);
-    }
-
-    /**
-     * Log to stderr
-     *
-     * @param string
-     */
-    private static void err(String string) {
-        System.err.println("criuSupport> " + string);
     }
 
     /**
@@ -94,7 +94,7 @@ public class CriuSupport {
      * @param string
      */
     private static void out(String string) {
-        System.out.println("criuSupport> " + string);
+        System.out.println(string);
     }
 
 }

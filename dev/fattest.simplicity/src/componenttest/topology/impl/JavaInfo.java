@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -301,27 +301,26 @@ public class JavaInfo {
         } catch (URISyntaxException e) {
             throw new Error(e);
         }
-        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", //
+        // Temp fix for a JVM bug affecting checkpoint. Add hard coded location to library search path for libcriu.
+        // the specified paths cover criu installed on a range of supported systems where we may run checkpoint FATs
+        String libLoadPathSpec = "-Djava.library.path=" + System.getProperty("java.library.path") +
+                                 ":/usr/local/lib64:/usr/lib/x86_64-linux-gnu";
+        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", libLoadPathSpec, //
                         "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
         Process proc;
         try {
             proc = procBuilder.start();
+            BufferedReader stdErrReader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+            BufferedReader stdOutReader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             proc.waitFor();
-            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-            String line;
-            int lines = 0;
+            //log stdout
+            stdOutReader.lines().forEach(line -> Log.info(c, method, "STDOUT: " + line));
             //If there is any error output then criu support not present (or could not be determined).
-            while ((line = br.readLine()) != null) {
-                if (lines == 0) {
-                    Log.info(c, method, "STDERROR from probeCRIUSupport: ");
-                }
-                lines++;
-                Log.info(c, method, "STDERR: " + line);
-            }
-            if (lines == 0) {
-                criuSupported = Optional.of(Boolean.TRUE);
-            } else {
+            Long numStdErrLines = stdErrReader.lines().peek(line -> Log.info(c, method, "STDERR: " + line)).count();
+            if (numStdErrLines > 0) {
                 criuSupported = Optional.of(Boolean.FALSE);
+            } else {
+                criuSupported = Optional.of(Boolean.TRUE);
             }
         } catch (IOException | InterruptedException ex) {
             Log.info(c, method, "Exception launching process to probe for criu support:" + ex);
