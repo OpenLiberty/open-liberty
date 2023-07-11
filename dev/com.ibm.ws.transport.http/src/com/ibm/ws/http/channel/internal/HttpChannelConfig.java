@@ -207,6 +207,8 @@ public class HttpChannelConfig {
     /** Tracks headers that have been configured erroneously **/
     private HashSet<String> configuredHeadersErrorSet = null;
 
+    private final boolean useNetty = Boolean.TRUE;
+
     /**
      * Constructor for an HTTP channel config object.
      *
@@ -2963,6 +2965,10 @@ public class HttpChannelConfig {
      */
     public Map<Integer, String> getConfiguredHeadersToRemove() {
         return this.configuredHeadersToRemove;
+    }
+
+    public boolean useNetty() {
+        return useNetty;
     }
 
 }

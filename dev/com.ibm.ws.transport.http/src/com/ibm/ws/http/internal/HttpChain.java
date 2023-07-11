@@ -85,25 +85,25 @@ public class HttpChain implements ChainEventListener {
         }
     }
 
-    private final StopWait stopWait = new StopWait();
-    private final HttpEndpointImpl owner;
-    private final boolean isHttps;
+    protected final StopWait stopWait = new StopWait();
+    protected final HttpEndpointImpl owner;
+    protected final boolean isHttps;
 
-    private String endpointName;
-    private String tcpName;
-    private String sslName;
-    private String httpName;
-    private String dispatcherName;
-    private String chainName;
+    protected String endpointName;
+    protected String tcpName;
+    protected String sslName;
+    protected String httpName;
+    protected String dispatcherName;
+    protected String chainName;
     private ChannelFramework cfw;
-    private EndPointMgr endpointMgr;
+    protected EndPointMgr endpointMgr;
 
     /**
      * The state of the chain according to values from {@link ChainState}.
      * Aside from the initial value assignment, new values are only assigned from
      * within {@link ChainEventListener} methods.
      */
-    private final AtomicInteger chainState = new AtomicInteger(ChainState.UNINITIALIZED.val);
+    protected final AtomicInteger chainState = new AtomicInteger(ChainState.UNINITIALIZED.val);
 
     /**
      * Toggled by enable/disable methods. This serves only to block activity
@@ -115,7 +115,7 @@ public class HttpChain implements ChainEventListener {
      * A snapshot of the configuration (collection of properties objects) last used
      * for a start/update operation.
      */
-    private volatile ActiveConfiguration currentConfig = null;
+    protected volatile ActiveConfiguration currentConfig = null;
 
     /**
      * Create the new chain with it's parent endpoint
@@ -171,6 +171,14 @@ public class HttpChain implements ChainEventListener {
                 Tr.debug(this, tc, "Error stopping chain " + chainName, this, e);
             }
         }
+    }
+
+    public HttpEndpointImpl getOwner() {
+        return this.owner;
+    }
+
+    public boolean isHttps() {
+        return this.isHttps;
     }
 
     /**
@@ -733,16 +741,16 @@ public class HttpChain implements ChainEventListener {
     /**
      * Get the state of the chain.
      *
-     * @return An interger representation of the state.
+     * @return An integer representation of the state.
      */
     public int getChainState() {
         return chainState.get();
     }
 
-    private final class ActiveConfiguration {
+    public final class ActiveConfiguration {
         final boolean isHttps;
-        final int configPort;
-        final String configHost;
+        public final int configPort;
+        public final String configHost;
         final String resolvedHost;
 
         final Map<String, Object> tcpOptions;
@@ -755,18 +763,18 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
-        boolean validConfiguration = false;
+        public boolean validConfiguration = false;
 
-        ActiveConfiguration(boolean isHttps,
-                            Map<String, Object> tcp,
-                            Map<String, Object> ssl,
-                            Map<String, Object> http,
-                            Map<String, Object> remoteIp,
-                            Map<String, Object> compression,
-                            Map<String, Object> samesite,
-                            Map<String, Object> headers,
-                            Map<String, Object> endpoint,
-                            String resolvedHostName) {
+        public ActiveConfiguration(boolean isHttps,
+                                   Map<String, Object> tcp,
+                                   Map<String, Object> ssl,
+                                   Map<String, Object> http,
+                                   Map<String, Object> remoteIp,
+                                   Map<String, Object> compression,
+                                   Map<String, Object> samesite,
+                                   Map<String, Object> headers,
+                                   Map<String, Object> endpoint,
+                                   String resolvedHostName) {
             this.isHttps = isHttps;
             tcpOptions = tcp;
             sslOptions = ssl;
@@ -844,7 +852,7 @@ public class HttpChain implements ChainEventListener {
          * maps: if the map instances are the same, there have been no
          * updates.
          */
-        protected boolean unchanged(ActiveConfiguration other) {
+        public boolean unchanged(ActiveConfiguration other) {
             if (other == null)
                 return false;
 
