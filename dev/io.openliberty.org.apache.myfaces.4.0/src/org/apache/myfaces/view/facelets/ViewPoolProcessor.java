@@ -233,7 +233,7 @@ public class ViewPoolProcessor
     
     public boolean isViewPoolEnabledForThisView(FacesContext context, UIViewRoot root)
     {
-        if (root.isTransient())
+        if (root == null || root.isTransient())
         {
             // Stateless views cannot be pooled, because we are reusing
             // state saving algorithm for that.
