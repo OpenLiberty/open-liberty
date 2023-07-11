@@ -215,6 +215,8 @@ public class HttpChannelConfig {
      * is expected to be thrown marking the invalid state. */
     private boolean ignoreWriteAfterCommit = false;
 
+    private final boolean useNetty = Boolean.FALSE;
+
     /**
      * Constructor for an HTTP channel config object.
      *
@@ -3126,12 +3128,8 @@ public class HttpChannelConfig {
         return this.configuredHeadersToRemove;
     }
 
-    /**
-     * Returns whether a connection should remain active even if an error occurs during 
-     * closure.
-     */
-    public boolean ignoreWriteAfterCommit(){
-        return this.ignoreWriteAfterCommit;
+    public boolean useNetty() {
+        return useNetty;
     }
 
 }

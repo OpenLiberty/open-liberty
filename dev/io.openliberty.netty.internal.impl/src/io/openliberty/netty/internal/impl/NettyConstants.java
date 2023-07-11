@@ -28,5 +28,7 @@ public interface NettyConstants {
     public final String MAX_OPEN_CONNECTIONS_HANDLER_NAME = "maxConnectionHandler";
     /** Max Connections Handler Name  */
     public final String ACCESSLIST_HANDLER_NAME = "accessListHandler";
+	/** Netty enablement */
+    String USE_NETTY = "useNettyTransport";
 
 }

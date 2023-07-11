@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,12 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * Wrapper for an incoming HTTP request message body that provides the input
@@ -54,6 +58,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     protected long bytesReadFromStore = 0L;
 
     private HttpInputStreamObserver obs = null;
+    private FullHttpRequest nettyRequest = null;
+    private ByteBuf nettyBody = null;
 
     /**
      * Constructor.
@@ -62,6 +68,14 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      */
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
+    }
+
+    public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
+        this.isc = context;
+        this.nettyRequest = request;
+        this.nettyBody = nettyRequest.content();
+        buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
+        this.bytesRead += buffer.remaining();
     }
 
     /*
