@@ -1095,6 +1095,7 @@ public class SipUtil {
     		// each reason header may contain multiple values separated by ','
     		// moreReason indicates whether there's more reason to parse
     		boolean moreReason = true;
+    		
 			while(moreReason){	
 				// reasonHeaderLength holds the length of each value inside a "Reason:" header (until the ',')
 				int reasonHeaderLength = 0;
@@ -1102,7 +1103,13 @@ public class SipUtil {
 				int cause = 0;
 				String text = "";
 				// Split "Reason:" header by ';', as each parameter is separated by ';'
-				String [] reasonParam = reason.split(";");
+				// There should only be two parameters in the Reason header, 
+				// 'cause' containing an integer and 'text' containing a string
+				// As string is not restricted it could also contain ';'
+				// in which case the value of 'text' would be split along ';' as well
+				// if split() is not restricted, causing parsing errors 
+				// Therefore only look at the first two instances of ';' when calling reason.split()
+				String [] reasonParam = reason.split(";",3);
 				
 				// parse the protocol parameter
 				String protocol = reasonParam[0].trim();
