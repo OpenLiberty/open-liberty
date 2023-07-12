@@ -14,10 +14,9 @@ package test.jakarta.data.validation.web;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Set;
 
@@ -26,9 +25,6 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -49,38 +45,15 @@ import test.jakarta.data.validation.web.Entitlement.Frequency;
 public class DataValidationTestServlet extends FATServlet {
 
     @Inject
+    Creatures creatures; // for Java class without an entity annotation
+
+    @Inject
     Entitlements entitlements; // for @Entity from Jakarta Persistence
 
+    @Inject
+    Rectangles rectangles; // for records
+
     Validator validator;
-
-    /**
-     * Invokes test name found in "test" parameter passed to servlet.
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("testMethod");
-        String invoker = request.getParameter("invokedBy");
-        PrintWriter out = response.getWriter();
-
-        try {
-            out.println(getClass().getSimpleName() + " is starting " + test + "<br>");
-            System.out.println("-----> " + test + "(invoked by " + invoker + ") starting");
-            getClass().getMethod(test, HttpServletRequest.class, PrintWriter.class).invoke(this, request, out);
-            System.out.println("<----- " + test + "(invoked by " + invoker + ") successful");
-            out.println(test + " " + FATServlet.SUCCESS);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("<----- " + test + "(invoked by " + invoker + ") failed:");
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        } finally {
-            out.flush();
-            out.close();
-        }
-    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -88,10 +61,31 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Attempt to save a Java class (no entity annotation) that violates constraints for PastOrPresent.
+     */
+    @Test
+    public void testSaveInvalidPastOrPresentClass() {
+        Creature c = new Creature(100l, "Black Bear", "Ursus americanus", //
+                        BigDecimal.valueOf(44107730l, 6), BigDecimal.valueOf(-92489272l, 6), //
+                        ZonedDateTime.now(ZoneId.of("America/Chicago")).plusHours(1).toOffsetDateTime(), //
+                        172.5f);
+
+        Set<?> violations = Collections.emptySet();
+        try {
+            creatures.save(c);
+            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
+            violations = validator.validate(c);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(violations.toString(), 1, violations.size());
+    }
+
+    /**
      * Attempt to save a Jakarta Persistence entity that violated constraints for Pattern.
      */
     @Test
-    public void testSaveInvalidPatternPersistenceEntity(HttpServletRequest request, PrintWriter response) {
+    public void testSaveInvalidPatternPersistenceEntity() {
         Entitlement e = new Entitlement(2, "MEDICARE", "person1@openliberty.io", Frequency.AS_NEEDED, 65, null, null, null);
         Set<?> violations = Collections.emptySet();
         try {
@@ -105,16 +99,71 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Attempt to save a Jakarta Persistence entity that violated constraints for Pattern.
+     */
+    @Test
+    public void testSaveInvalidPositiveMaxRecord() {
+        Rectangle r = new Rectangle("R1", 100l, 150l, -10, 30000);
+        Set<?> violations = Collections.emptySet();
+        try {
+            rectangles.save(r);
+            // TODO omit the next line once Jakarta Data provider does the validation for us
+            violations = validator.validate(r);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(violations.toString(), 2, violations.size());
+    }
+
+    /**
+     * Save a Java class (no entity annotation) that has no constraint violations.
+     */
+    @Test
+    public void testSaveValidClass() {
+        Creature c = new Creature(200l, "White-Tailed Deer", "Odocoileus virginianus", //
+                        BigDecimal.valueOf(44040061l, 6), BigDecimal.valueOf(-92470320l, 6), //
+                        ZonedDateTime.of(2023, 7, 12, 14, 51, 41, 100, ZoneId.of("America/Chicago")).toOffsetDateTime(), //
+                        68.3f);
+
+        Set<?> violations = Collections.emptySet();
+        try {
+            creatures.save(c);
+            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
+            violations = validator.validate(c);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(Collections.EMPTY_SET, violations);
+    }
+
+    /**
      * Save a Jakarta Persistence entity that has no constraint violations.
      */
     @Test
-    public void testSaveValidPersistenceEntity(HttpServletRequest request, PrintWriter response) {
+    public void testSaveValidPersistenceEntity() {
         Entitlement e = new Entitlement(1, "US-SOCIALSECURITY", "person2@openliberty.io", Frequency.MONTHLY, 62, null, Float.valueOf(0), BigDecimal.valueOf(4555));
         Set<?> violations = Collections.emptySet();
         try {
             entitlements.save(e);
             // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
             violations = validator.validate(e);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(Collections.EMPTY_SET, violations);
+    }
+
+    /**
+     * Save a record that has no constraint violations.
+     */
+    @Test
+    public void testSaveValidRecord() {
+        Rectangle r = new Rectangle("R2", 0l, 5l, 40, 50);
+        Set<?> violations = Collections.emptySet();
+        try {
+            rectangles.save(r);
+            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
+            violations = validator.validate(r);
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
         }
