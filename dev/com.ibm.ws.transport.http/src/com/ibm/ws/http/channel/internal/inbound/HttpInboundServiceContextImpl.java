@@ -2062,7 +2062,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Verifying connected endpoint matches proxy regex");
         }
-        String remoteIp = getTSC().getRemoteAddress().getHostAddress();
+
+        String remoteIp = (this.nettyContext != null) ? nettyContext.channel().remoteAddress().toString() : getTSC().getRemoteAddress().getHostAddress();
+
         matcher = pattern.matcher(remoteIp);
         if (matcher.matches()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2117,9 +2119,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
             }
 
-            this.forwardedRemoteAddress = forwardedForList[0];
-            this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
-            this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+            if (this.nettyContext == null) {
+
+                this.forwardedRemoteAddress = forwardedForList[0];
+                this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
+                this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+            }
 
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

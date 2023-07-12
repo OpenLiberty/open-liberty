@@ -219,6 +219,16 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Constructor for an HTTP channel config object using only property bag.
+     *
+     * @param config
+     */
+
+    public HttpChannelConfig(Map<String, Object> config) {
+        parseConfig("default", config);
+    }
+
+    /**
      * Update the existing configuration with the input channel config object.
      *
      * @param cc
@@ -228,17 +238,36 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Update the existing configuration with the input channel property bag
+     *
+     * @param config
+     */
+    public void updateConfig(Map<String, Object> config) {
+        parseConfig("default", config);
+    }
+
+    private void parseConfig(ChannelData cc) {
+
+        Map<String, Object> propertyBag = new HashMap<>();
+        for (Object key : cc.getPropertyBag().keySet()) {
+            propertyBag.putIfAbsent(String.valueOf(key), cc.getPropertyBag().get(key));
+        }
+
+        parseConfig(cc.getName(), propertyBag);
+    }
+
+    /**
      * Parse the configuration data into the separate values.
      *
      * @param cc
      */
-    private void parseConfig(ChannelData cc) {
+    private void parseConfig(String name, Map<String, Object> config) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "parseConfig: " + cc.getName());
+            Tr.entry(tc, "parseConfig: " + name);
         }
 
-        Map<Object, Object> propsIn = cc.getPropertyBag();
+        Map<String, Object> propsIn = config;
 
         Map<Object, Object> props = new HashMap<Object, Object>();
         // convert all keys to valid case independent of case
@@ -251,8 +280,8 @@ public class HttpChannelConfig {
         // are in this Map (so we can't just lower case everything).  So, to be case independent we need to convert
         // the entries to their known internal string constants.  We shouldn't need to configure the channel often, and there
         // should not be many custom properties, so performance should not be an issue.
-        for (Entry<Object, Object> entry : propsIn.entrySet()) {
-            key = (String) entry.getKey();
+        for (Entry<String, Object> entry : propsIn.entrySet()) {
+            key = entry.getKey();
             value = entry.getValue();
 
             // First comparisons are for ones exposed in metatype.xml

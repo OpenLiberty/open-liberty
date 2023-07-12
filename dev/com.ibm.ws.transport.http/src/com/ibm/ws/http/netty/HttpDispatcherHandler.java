@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -21,9 +22,10 @@ import io.netty.handler.codec.http.FullHttpRequest;
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     HttpDispatcherLink link;
+    HttpChannelConfig config;
 
-    public HttpDispatcherHandler() {
-
+    public HttpDispatcherHandler(HttpChannelConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
         link = new HttpDispatcherLink();
-        link.init(context, request);
+        link.init(context, request, config);
 
     }
 
