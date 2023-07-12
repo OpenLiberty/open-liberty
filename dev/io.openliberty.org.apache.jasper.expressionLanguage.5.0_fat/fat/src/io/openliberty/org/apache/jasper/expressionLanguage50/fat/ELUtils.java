@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.org.apache.jasper.expressionLanguage50.fat;
 
@@ -46,13 +43,13 @@ public class ELUtils {
 
         StringBuilder sb = new StringBuilder();
         sb.append("http://")
-                        .append(server.getHostname())
-                        .append(":")
-                        .append(server.getHttpDefaultPort())
-                        .append("/")
-                        .append(contextRoot)
-                        .append("/")
-                        .append(path);
+          .append(server.getHostname())
+          .append(":")
+          .append(server.getHttpDefaultPort())
+          .append("/")
+          .append(contextRoot)
+          .append("/")
+          .append(path);
 
         return sb.toString();
     }
