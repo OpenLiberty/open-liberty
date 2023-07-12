@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,10 @@
  *******************************************************************************/
 
 package com.ibm.ws.repository.transport.model;
+
+import static com.ibm.ws.repository.transport.model.CopyUtils.copyCollection;
+import static com.ibm.ws.repository.transport.model.CopyUtils.copyDate;
+import static com.ibm.ws.repository.transport.model.CopyUtils.copyObject;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -71,6 +75,48 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
     private String mavenCoordinates;
     private String singleton;
     private String ibmInstallTo;
+
+    public WlpInformation() {
+    }
+
+    public WlpInformation(WlpInformation other) {
+        typeLabel = other.typeLabel;
+        productVersion = other.productVersion;
+        productInstallType = other.productInstallType;
+        productId = other.productId;
+        productEdition = other.productEdition;
+        provideFeature = copyCollection(other.provideFeature);
+        requireFeature = copyCollection(other.requireFeature);
+        provideFix = copyCollection(other.provideFix);
+        requireFix = copyCollection(other.requireFix);
+        appliesTo = other.appliesTo;
+        appliesToFilterInfo = copyCollection(other.appliesToFilterInfo, AppliesToFilterInfo::new);
+        visibility = other.visibility;
+        shortName = other.shortName;
+        lowerCaseShortName = other.lowerCaseShortName;
+        date = copyDate(other.date);
+        scriptLanguage = other.scriptLanguage;
+        provisionCapability = other.provisionCapability;
+        installPolicy = other.installPolicy;
+        downloadPolicy = other.downloadPolicy;
+        displayPolicy = other.displayPolicy;
+        webDisplayPolicy = other.webDisplayPolicy;
+        wlpInformationVersion = other.wlpInformationVersion;
+        mainAttachmentSize = other.mainAttachmentSize;
+        links = copyCollection(other.links, Link::new);
+        vanityRelativeURL = other.vanityRelativeURL;
+        featuredWeight = other.featuredWeight;
+        supersededBy = copyCollection(other.supersededBy);
+        supersededByOptional = copyCollection(other.supersededByOptional);
+        javaSEVersionRequirements = copyObject(other.javaSEVersionRequirements, JavaSEVersionRequirements::new);
+        mainAttachmentSHA256 = other.mainAttachmentSHA256;
+        genericRequirements = other.genericRequirements;
+        packagedJava = other.packagedJava;
+        requireFeatureWithTolerates = copyCollection(other.requireFeatureWithTolerates, RequireFeatureWithTolerates::new);
+        mavenCoordinates = other.mavenCoordinates;
+        singleton = other.singleton;
+        ibmInstallTo = other.ibmInstallTo;
+    }
 
     public String getFeaturedWeight() {
         return featuredWeight;

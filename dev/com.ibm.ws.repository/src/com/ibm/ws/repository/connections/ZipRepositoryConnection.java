@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import com.ibm.ws.repository.transport.client.ZipClient;
 public class ZipRepositoryConnection extends AbstractRepositoryConnection implements RepositoryConnection {
 
     private final File _zip;
+    private ZipClient client;
 
     /**
      * @param type
@@ -43,8 +44,11 @@ public class ZipRepositoryConnection extends AbstractRepositoryConnection implem
     }
 
     @Override
-    public RepositoryReadableClient createClient() {
-        return new ZipClient(getZip());
+    public synchronized RepositoryReadableClient createClient() {
+        if (client == null) {
+            client = new ZipClient(getZip());
+        }
+        return client;
     }
 
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -33,6 +34,7 @@ import com.ibm.ws.repository.transport.exceptions.BadVersionException;
 import com.ibm.ws.repository.transport.exceptions.RequestFailureException;
 import com.ibm.ws.repository.transport.model.Asset;
 import com.ibm.ws.repository.transport.model.Attachment;
+import com.ibm.ws.repository.transport.model.CopyUtils;
 
 /**
  *
@@ -40,6 +42,7 @@ import com.ibm.ws.repository.transport.model.Attachment;
 public class ZipClient extends AbstractFileClient {
 
     private final File _zip;
+    private final FileDataCache<List<Asset>> _allAssetsCache;
 
     /**
      * Create a zip client which points to the specified zip file
@@ -48,6 +51,7 @@ public class ZipClient extends AbstractFileClient {
      */
     public ZipClient(File zip) {
         _zip = zip;
+        _allAssetsCache = new FileDataCache<>(zip, this);
     }
 
     /*
@@ -72,6 +76,14 @@ public class ZipClient extends AbstractFileClient {
         ZipFile zip = DirectoryUtils.createZipFile(_zip);
         // if the creation of the zip file is successful ensure it is closed to release the lock
         zip.close();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Asset> getAllAssets() throws IOException {
+        // Cache the value of getAllAssets() based on the modification of the zip file
+        // Copy the result so that a caller can't modify the cached data
+        return CopyUtils.copyCollection(_allAssetsCache.get(super::getAllAssets), Asset::new);
     }
 
     /**

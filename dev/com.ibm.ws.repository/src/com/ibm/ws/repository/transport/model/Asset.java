@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -59,12 +59,47 @@ public class Asset extends AbstractJSON {
     @JSONIncludeForFile
     private String licenseId;
 
+    public Asset() {
+    }
+
+    /**
+     * Copy constructor
+     *
+     * @param other the object to copy
+     */
+    public Asset(Asset other) {
+        this._id = other._id;
+        this.name = other.name;
+        this.description = other.description;
+        this.shortDescription = other.shortDescription;
+        this.type = other.type;
+        this.createdOn = CopyUtils.copyCalendar(other.createdOn);
+        this.createdBy = CopyUtils.copyObject(other.createdBy, User::new);
+        this.lastUpdatedOn = CopyUtils.copyCalendar(other.lastUpdatedOn);
+        this.attachments = CopyUtils.copyCollection(other.attachments, Attachment::new);
+        this.provider = CopyUtils.copyObject(other.provider, Provider::new);
+        this.featured = other.featured;
+        this.state = other.state;
+        this.feedback = CopyUtils.copyObject(other.feedback, Feedback::new);
+        this.information = CopyUtils.copyObject(other.information, AssetInformation::new);
+        this.licenseType = other.licenseType;
+        this.marketplaceId = other.marketplaceId;
+        this.marketplaceName = other.marketplaceName;
+        this.inMyStore = other.inMyStore;
+        this.privacy = other.privacy;
+        this.version = other.version;
+        this.wlpInformation = CopyUtils.copyObject(other.wlpInformation, WlpInformation::new);
+        this.reviewed = CopyUtils.copyObject(other.reviewed, Reviewed::new);
+        this.licenseId = other.licenseId;
+    }
+
     public enum Privacy {
         PUBLIC, PRIVATE
     }
 
     public enum Featured {
         YES("yes"), NO("no");
+
         private final String featured;
 
         private Featured(String featured) {

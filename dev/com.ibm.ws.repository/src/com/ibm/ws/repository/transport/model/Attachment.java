@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,8 @@
  *******************************************************************************/
 
 package com.ibm.ws.repository.transport.model;
+
+import static com.ibm.ws.repository.transport.model.CopyUtils.copyCalendar;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -39,6 +41,29 @@ public class Attachment extends AbstractJSON {
 
     public Attachment() {
         wlpInformation = new AttachmentInfo();
+    }
+
+    /**
+     * Copy constructor
+     *
+     * @param other the object to copy
+     */
+    public Attachment(Attachment other) {
+        super();
+        this._id = other._id;
+        this.name = other.name;
+        this.type = other.type;
+        this.url = other.url;
+        this.assetId = other.assetId;
+        this.contentType = other.contentType;
+        this.uploadOn = copyCalendar(other.uploadOn);
+        this.gridFSId = other.gridFSId;
+        this.content = other.content;
+        this.authentication = other.authentication;
+        this.size = other.size;
+        this.wlpInformation = CopyUtils.copyObject(other.wlpInformation, AttachmentInfo::new);
+        this.linkType = other.linkType;
+        this.locale = other.locale;
     }
 
     public void setLinkType(AttachmentLinkType t) {
