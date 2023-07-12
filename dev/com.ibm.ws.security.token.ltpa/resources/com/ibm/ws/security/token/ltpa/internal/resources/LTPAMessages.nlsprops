@@ -48,17 +48,17 @@ LTPA_CONFIG_ERROR=CWWKS4106E: LTPA configuration error. Unable to create or read
 LTPA_CONFIG_ERROR.explanation=The LTPA keys could not be read or created at the specified location.
 LTPA_CONFIG_ERROR.useraction=Ensure the location is accessible by the server process. Any FFDCs might indicate a fatal error in generating or loading the keys.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: The LTPA keys file or configuration were modified. The LTPA keys will be reloaded from the file: {0}
-LTPA_KEYS_TO_LOAD.explanation=The LTPA keys need to be reloaded because there was a change to the LTPA keys file or the configuration.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: The LTPA keys files created, deleted, or modified {0} or LTPA configuration were modified. All the LTPA keys files will be reloaded.
+LTPA_KEYS_TO_LOAD.explanation=The LTPA keys files need to be reloaded because there was a change to the LTPA keys files or the configuration.
 LTPA_KEYS_TO_LOAD.useraction=Ensure that all servers participating in Single-Sign-On use the same LTPA keys and password.
 
 LTPA_KEY_CREATE_ERROR=CWWKS4108E: The system cannot create the LTPA key.
 LTPA_KEY_CREATE_ERROR.explanation=The LTPA key cannot be created.
 LTPA_KEY_CREATE_ERROR.useraction=Any FFDCs might indicate a fatal error in generating the keys.
 
-LTPA_VALIDATION_KEYS_EXPIRED=CWWKS4109W: The LTPA validation keys file {0} has expired. The LTPA validation keys will not be used.
-LTPA_VALIDATION_KEYS_EXPIRED.explanation=The LTPA validation keys need to update the notUseAfterDate attribute or remove this validation keys file.
-LTPA_VALIDATION_KEYS_EXPIRED.useraction=Ensure that all servers participating in Single-Sign-On do not use this validation keys.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: The LTPA validation keys file {0} has passed not use after date. The LTPA validation keys will not be used.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=The LTPA validation keys need to update the notUseAfterDate attribute or remove this validation keys file.
+LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Ensure that all servers participating in Single-Sign-On do not use this validation keys.
 
 LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: The LTPA validationKeys file {0} has an invalid date format. The LTPA validationKeys will not be used.
 LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=The LTPA validationKeys need to fix the notUseAfterDate with the ISO date, time, and zone format. An example of ISO date format: "2023-04-18T18:08:35Z"

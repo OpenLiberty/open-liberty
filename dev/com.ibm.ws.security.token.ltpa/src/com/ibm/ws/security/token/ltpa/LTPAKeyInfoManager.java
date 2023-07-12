@@ -167,8 +167,8 @@ public class LTPAKeyInfoManager {
             Tr.debug(tc, "current date: " + currentTime);
         }
 
-        if (notUseAfterDateOdt.isAfter(currentTime)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_EXPIRED", filename);
+        if (currentTime.isAfter(notUseAfterDateOdt)) {
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", filename);
             return true;
         } else {
             return false;
@@ -217,20 +217,17 @@ public class LTPAKeyInfoManager {
 
         if (ltpaKeyFileResource != null) {
             props = loadPropertiesFile(ltpaKeyFileResource);
-        } else {
-            if (!validationKey) { //Primary keys file does not exist so create only the primary key
-                long start = System.currentTimeMillis();
-                Tr.info(tc, "LTPA_CREATE_KEYS_START");
+        } else if (validationKey) {
+            Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", keyImportFile);
+            return;
+        } else { //Primary keys file does not exist so create only the primary key
+            long start = System.currentTimeMillis();
+            Tr.info(tc, "LTPA_CREATE_KEYS_START");
 
-                LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
-                props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
+            LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+            props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
 
-                Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
-            } else {
-                //TODO: test this scenario to see if we need the error or not
-                Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", ltpaKeyFileResource);
-                return;
-            }
+            Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
         }
 
         if (props == null || props.isEmpty()) {
@@ -296,11 +293,13 @@ public class LTPAKeyInfoManager {
         if (validationKey) {
             ltpaValidationKeysInfos.add(new LTPAValidationKeysInfo(keyImportFile, secretKey, privateKey, publicKey, notUseAfterDateOdt));
             if (tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Add LTPAValidationKeysInfo to ltpaValidationKeysInfos");
-                Tr.debug(this, tc, "filename: " + keyImportFile);
-                Tr.debug(this, tc, "secretKey: " + secretKey.toString());
-                Tr.debug(this, tc, "publicKey: " + publicKey.toString());
-                Tr.debug(this, tc, "notUseAfterDate: " + notUseAfterDateOdt);
+                Tr.debug(this, tc, "ValidationKeys: " + keyImportFile + " notUseAfterDate: " + notUseAfterDateOdt);
+                /*
+                 * Tr.debug(this, tc, "filename: " + keyImportFile);
+                 * Tr.debug(this, tc, "secretKey: " + secretKey.toString());
+                 * Tr.debug(this, tc, "publicKey: " + publicKey.toString());
+                 * Tr.debug(this, tc, "notUseAfterDate: " + notUseAfterDateOdt);
+                 */
                 Tr.debug(this, tc, "LTPAValidationKeysInfo size: " + ltpaValidationKeysInfos.size());
             }
         }

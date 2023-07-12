@@ -68,7 +68,7 @@ public class LTPAValidationKeysInfo {
         OffsetDateTime currentTime = OffsetDateTime.now(notUseAfterDateOdt.getOffset());
 
         if (notUseAfterDateOdt.isBefore(currentTime)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_EXPIRED", filename);
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", filename);
             return true;
         } else {
             return false;

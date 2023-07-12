@@ -144,10 +144,9 @@ public class SecurityFileMonitor implements FileMonitor {
         for (File createdFile : createdFiles) {
             if (currentlyDeletedFiles.contains(createdFile)) {
                 currentlyDeletedFiles.remove(createdFile);
-                actionNeeded = true;
-            } else { // new file
-                actionNeeded = true;
             }
+            actionNeeded = true;
+
         }
 
         if (modifiedFiles.isEmpty() == false) {
