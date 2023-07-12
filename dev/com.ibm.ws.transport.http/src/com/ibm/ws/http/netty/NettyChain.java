@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
@@ -18,6 +17,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.internal.HttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
+import com.ibm.ws.http.netty.HttpInitializer.ConfigElement;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -478,10 +478,11 @@ public class NettyChain extends HttpChain {
         EndPointInfo info = this.endpointMgr.getEndPoint(this.endpointName);
         info = this.endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
 
-        Map<String, Object> options = new HashMap<String, Object>();
-
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
+
+            HttpInitializer httpPipeline = new HttpInitializer(this);
+            httpPipeline.with(ConfigElement.HTTP_OPTIONS, this.owner.getHttpOptions());
 
             if (isHttps) {
 
@@ -503,6 +504,11 @@ public class NettyChain extends HttpChain {
             }
         }
 
+    }
+
+    @Override
+    public int getActivePort() {
+        return (currentConfig != null) ? currentConfig.configPort : -1;
     }
 
     public VirtualConnection processNewConnection() {

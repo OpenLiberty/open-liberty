@@ -176,13 +176,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Initialize this link for Netty Use.
      *
      */
-    public void init(ChannelHandlerContext context, FullHttpRequest request) {
+    public void init(ChannelHandlerContext context, FullHttpRequest request, HttpChannelConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "New conn: netty context=" + context);
+        }
+
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context);
         nettyRequest = request;
         this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new NettyHttpResponseImpl(this);
         this.isc.setNettyRequest(request);
+        this.isc.setHttpConfig(config);
         this.usingNetty = true;
     }
 
