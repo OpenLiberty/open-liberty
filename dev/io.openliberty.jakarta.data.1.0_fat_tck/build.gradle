@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,31 +11,5 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-//The following artifacts need to be available to the server at runtime
-configurations {
-  junit5  { transitive = false; } 
-  sigTest { transitive = false; } 
-}
-
-dependencies {
-  junit5 'org.junit.jupiter:junit-jupiter:5.9.0'
-  sigTest 'org.netbeans.tools:sigtest-maven-plugin:1.6'
-}
-
-task copyJunit5(type: Copy) {
-  mustRunAfter jar
-  from configurations.junit5
-  into new File(autoFvtDir, 'publish/shared/resources/junit5/5.9.0')
-}
-
-task copySigTest(type: Copy) {
-  mustRunAfter jar
-  from configurations.sigTest
-  into new File(autoFvtDir, 'publish/shared/resources/sigtest/1.6')
-  rename 'sigtest-maven-plugin-.*.jar', 'sigtest.jar'
-}
-
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDrivers
-addRequiredLibraries.dependsOn copyJunit5
-addRequiredLibraries.dependsOn copySigTest

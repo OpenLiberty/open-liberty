@@ -50,6 +50,7 @@ public class DataStandaloneTckLauncher {
     public void launchDataTckStandalone() throws Exception {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
+        additionalProps.put("jimage.dir", "/jimage/output/");
         additionalProps.put("jakarta.tck.profile", "none");
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "standalone & persistence & !signature");
