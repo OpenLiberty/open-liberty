@@ -1954,17 +1954,23 @@ public class LibertyServer implements LogMonitorClient {
                 throw fail;
             }
             assertCheckpointDirAsExpected(true);
-            checkLogsForErrorsAndWarnings(checkpointInfo.checkpointRegexIgnoreMessages.toArray(new String[checkpointInfo.checkpointRegexIgnoreMessages.size()]));
+            try {
+                checkLogsForErrorsAndWarnings(checkpointInfo.checkpointRegexIgnoreMessages.toArray(new String[checkpointInfo.checkpointRegexIgnoreMessages.size()]));
+            } catch (Exception exc) {
+                Log.error(c, "Server logs should not contain unexpected errors after a checkpoint operation", exc);
+                throw exc;
+            }
             assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
                           waitForStringInLogUsingMark("CWWKC0451I:", 0));
-        } catch (AssertionError er) {
-            Log.info(c, method, "AssertionError: " + er);
+        } catch (AssertionError | Exception err) {
+            final String errInfo = (err instanceof AssertionError) ? "AssertionError" : "Exception";
+            Log.info(c, method, "errInfo: " + err);
             if (isStarted) {
-                Log.info(c, method, "Stop running server after checkpointValidate AssertionError");
+                Log.info(c, method, "Stop running server after checkpointValidate " + errInfo);
                 stopServer(false);
             }
             postStopServerArchive();
-            throw er;
+            throw err;
         }
         Log.exiting(c, method);
     }
