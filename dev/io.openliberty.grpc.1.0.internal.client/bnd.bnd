@@ -18,8 +18,6 @@ bVersion=1.0
 grpcVersion=1.43.2
 nettyVersion=4.1.86.Final
 
-
-
 Import-Package: \
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\
