@@ -72,7 +72,7 @@ task bndMagic {
         ArrayList<String> upstreamExports = extractFromManifest("Export-Package:")
         ArrayList<String> upstreamImports = extractFromManifest("Import-Package:")
 
-        ///////////////////////////// Verification test /////////////////////////////////
+        ///////////////////////// Sanity check one /////////////////////////////////////
         //Check if the weld version in the upstream osgi bundle matches ${weldVersion}
         //In other words check to see if someone updated cnf without updating ${weldVersion}
 
@@ -87,7 +87,7 @@ task bndMagic {
         if (foundMatch.isEmpty()) {
             throw new GradleException("The weld version ${weldVersion} was not found in the cnf/oss_dependencies.maven. Did you change the version in cnf/oss_dependencies.maven but not in this project's build.gradle?")
         }
-        ////////////////////////////// Verification test ///////////////////////////////
+        ///////////////////////// Sanity check complete ////////////////////////////////
 
         //Make updates to existing exports (currently we have no updates for imports)
         for (int i = 0; i < upstreamExports.size(); i++) {
