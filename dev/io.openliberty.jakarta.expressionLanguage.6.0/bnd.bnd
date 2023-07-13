@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.expressionLanguage.6.0; singleton:=true
+Bundle-Description: Jakarta Expression Language, version 6.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Export-Package: \
+ jakarta.el;thread-context=true; version="6.0.0"
+
+ Provide-Capability: \
+   osgi.contract;\
+       osgi.contract=JavaEL;\
+       version:Version=6.0.0;\
+       uses:="jakarta.el"
+
+-includeresource: \
+    @${repo;org.apache.tomcat:tomcat-el-api;11.0.0.M9;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    jakarta=resources/jakarta
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+   org.apache.tomcat:tomcat-el-api;strategy=exact;version=11.0.0.M9
