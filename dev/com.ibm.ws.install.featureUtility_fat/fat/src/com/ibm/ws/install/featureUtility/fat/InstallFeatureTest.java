@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -26,7 +27,11 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
@@ -36,6 +41,18 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = InstallFeatureTest.class;
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
+	static String cotainerFilePath = "/public_key";
+	static String localDirPath = mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc";
+
+	@ClassRule
+	public static GenericContainer<?> container = new GenericContainer<>(//
+		new ImageFromDockerfile()
+			.withDockerfileFromBuilder(
+				builder -> builder.from("python:3-alpine").run("mkdir " + cotainerFilePath)
+					.copy("./validKey.asc", cotainerFilePath + "/validKey.asc").build())
+			.withFileFromFile("./validKey.asc", new File(localDirPath), 644))
+				.withWorkingDirectory(cotainerFilePath).withExposedPorts(8080)
+				.withCommand("python", "-m", "http.server", "8080").waitingFor(Wait.forHttp("/"));
 
 
 	@BeforeClass
@@ -68,7 +85,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		if (!isZos) {
 			resetOriginalWlpProps();
 		}
-
+		container.stop();
 	}
 
 	/**
@@ -683,19 +700,23 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	/*
-	 * Test installFeature --verify=all from external keyserver
-	 * (https://keyserver.ubuntu.com)
+	 * Test installFeature --verify=all from external test container
 	 */
 	@Test
-	public void testVerifyhttpsKeyServer() throws Exception {
-	    final String METHOD_NAME = "testVerifyhttpsKeyServer";
+	public void testVerifyhttpKeyServer() throws Exception {
+	    final String METHOD_NAME = "testVerifyhttpKeyServer";
 	    Log.entering(c, METHOD_NAME);
-	Properties envProps = new Properties();envProps.put("FEATURE_VERIFY","all");
+	    Properties envProps = new Properties();
+	    envProps.put("FEATURE_VERIFY", "all");
 
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    // start external test server
+	    container.start();
+	    String containerUrl = "http://" + container.getHost() + ":" + container.getMappedPort(8080)
+		    + "/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
-	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-		    "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
 	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 

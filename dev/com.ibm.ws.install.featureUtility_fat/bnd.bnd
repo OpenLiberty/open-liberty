@@ -39,7 +39,7 @@ fat.project: true
 	com.ibm.ws.install.featureUtility.featureutil;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
-	com.ibm.ws.install.map;version=latest, \
+	com.ibm.ws.install.map;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
@@ -50,6 +50,7 @@ fat.project: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
 	wlp.lib.extract;version=latest
 
 -testpath: \

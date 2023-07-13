@@ -32,3 +32,5 @@ addRequiredLibraries {
         into "publish/repo/archive"
     }
 }
+
+addRequiredLibraries.dependsOn copyTestContainers
