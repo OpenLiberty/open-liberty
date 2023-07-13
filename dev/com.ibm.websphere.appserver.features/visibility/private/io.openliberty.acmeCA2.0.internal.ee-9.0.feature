@@ -6,6 +6,9 @@ singleton=true
 -features=\
   com.ibm.websphere.appserver.servlet-5.0; ibm.tolerates:="6.0, 6.1"
 -bundles=\
-  io.openliberty.security.acme.internal
+  io.openliberty.security.acme.internal, \
+  io.openliberty.org.bouncycastle.bcpkix-jdk18on, \
+  io.openliberty.org.bouncycastle.bcprov-jdk18on, \
+  io.openliberty.org.bouncycastle.bcutil-jdk18on
 kind=ga
 edition=base
