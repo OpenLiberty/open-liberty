@@ -32,6 +32,11 @@ Import-Package: \
 Require-Capability: osgi.contract;
  filter:="(&(osgi.contract=JavaEL)(version=6.0.0))"
 
+# Remove the org/apache/el=${bin}/org/apache/el entry once we no longer have overlays and can run with Java 21.
+# Currently we are overlaying all the source so that we can build with Java 17.
+-includeresource: \
+    org/apache/el=${bin}/org/apache/el
+
 instrument.disabled: true
 
 -buildpath: \

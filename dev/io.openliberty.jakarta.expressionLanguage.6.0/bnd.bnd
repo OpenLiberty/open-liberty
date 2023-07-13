@@ -27,9 +27,12 @@ Export-Package: \
        version:Version=6.0.0;\
        uses:="jakarta.el"
 
+# Remove the javkarta/el=${bin}/jakarta/el entry once we no longer have overlays and can run with Java 21.
+# Currently we are overlaying all the source so that we can build with Java 17.
 -includeresource: \
     @${repo;org.apache.tomcat:tomcat-el-api;11.0.0.M9;EXACT}!/!(META-INF/maven/*|module-info.class),\
-    jakarta=resources/jakarta
+    jakarta=resources/jakarta,\
+    jakarta/el=${bin}/jakarta/el
 
 instrument.disabled: true
 
