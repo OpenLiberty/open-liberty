@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
-@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
+@Repository(dataStore = "java:comp/jdbc/DerbyDataSource")
 public interface Creatures {
     void save(@Valid Creature c);
 }

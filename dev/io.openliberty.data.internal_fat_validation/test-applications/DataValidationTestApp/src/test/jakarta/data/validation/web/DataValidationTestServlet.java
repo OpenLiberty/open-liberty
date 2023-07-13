@@ -13,6 +13,7 @@
 package test.jakarta.data.validation.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -22,6 +23,9 @@ import java.util.Set;
 
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,7 +38,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import test.jakarta.data.validation.web.Entitlement.Frequency;
 
-@DataSourceDefinition(name = "java:module/jdbc/DerbyDataSource",
+@DataSourceDefinition(name = "java:comp/jdbc/DerbyDataSource",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
                       databaseName = "memory:testdb",
                       user = "dbuser1",
@@ -55,9 +59,31 @@ public class DataValidationTestServlet extends FATServlet {
 
     Validator validator;
 
+    @PersistenceUnit(unitName = "MyPersistenceUnit")
+    EntityManagerFactory emf;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    /**
+     * Checks whether there is automatic integration between Jakarta Persistence and
+     * Jakarta Validation when Jakarta Data isn't involved. In this case, the entity
+     * should be automatically validated.
+     */
+    @Test
+    public void testJakartaPersistenceAndValidation() {
+        Entitlement e = new Entitlement(3, "ACA", "person3@openliberty.io", Frequency.AS_NEEDED, 0, null, null, null);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.persist(e);
+            fail("Did not find the expected violations.");
+        } catch (ConstraintViolationException x) {
+            assertEquals("found: " + x.getConstraintViolations(), 2, x.getConstraintViolations().size());
+        } finally {
+            em.close();
+        }
     }
 
     /**
@@ -71,13 +97,13 @@ public class DataValidationTestServlet extends FATServlet {
                         172.5f);
 
         Set<?> violations = Collections.emptySet();
-        try {
-            creatures.save(c);
-            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
-            violations = validator.validate(c);
-        } catch (ConstraintViolationException x) {
-            violations = x.getConstraintViolations();
-        }
+        //try {
+        creatures.save(c);
+        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
+        violations = validator.validate(c);
+        //} catch (ConstraintViolationException x) {
+        //    violations = x.getConstraintViolations();
+        //}
         assertEquals(violations.toString(), 1, violations.size());
     }
 
@@ -88,13 +114,13 @@ public class DataValidationTestServlet extends FATServlet {
     public void testSaveInvalidPatternPersistenceEntity() {
         Entitlement e = new Entitlement(2, "MEDICARE", "person1@openliberty.io", Frequency.AS_NEEDED, 65, null, null, null);
         Set<?> violations = Collections.emptySet();
-        try {
-            entitlements.save(e);
-            // TODO omit the next line once Jakarta Data provider does the validation for us
-            violations = validator.validate(e);
-        } catch (ConstraintViolationException x) {
-            violations = x.getConstraintViolations();
-        }
+        //try {
+        entitlements.save(e);
+        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
+        violations = validator.validate(e);
+        //} catch (ConstraintViolationException x) {
+        //    violations = x.getConstraintViolations();
+        //}
         assertEquals(violations.toString(), 1, violations.size());
     }
 
@@ -105,13 +131,13 @@ public class DataValidationTestServlet extends FATServlet {
     public void testSaveInvalidPositiveMaxRecord() {
         Rectangle r = new Rectangle("R1", 100l, 150l, -10, 30000);
         Set<?> violations = Collections.emptySet();
-        try {
-            rectangles.save(r);
-            // TODO omit the next line once Jakarta Data provider does the validation for us
-            violations = validator.validate(r);
-        } catch (ConstraintViolationException x) {
-            violations = x.getConstraintViolations();
-        }
+        //try {
+        rectangles.save(r);
+        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
+        violations = validator.validate(r);
+        //} catch (ConstraintViolationException x) {
+        //    violations = x.getConstraintViolations();
+        //}
         assertEquals(violations.toString(), 2, violations.size());
     }
 
