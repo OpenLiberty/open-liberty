@@ -65,7 +65,10 @@
           default="${count(anySSLOptionsRef)}" />
           
       <AD id="useNettyTransport" name="internal" description="internal" required="false" 
-      	  type="Boolean" default="false" />
+      	  type="Boolean" default="true" />
+
+      <AD id="nettyTlsRef" name="internal" description="internal use only" ibm:reference="io.openliberty.netty.internal.tls" ibm:type="pid" type="String" required="false" />
+      <AD id="nettyTlsProvider.cardinality.minimum" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${count(nettyTlsRef)}" />
   
     </OCD>
 

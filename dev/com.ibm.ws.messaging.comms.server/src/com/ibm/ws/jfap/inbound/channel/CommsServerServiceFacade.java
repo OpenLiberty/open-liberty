@@ -64,7 +64,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.server",
         configurationPolicy = REQUIRE,
-        property = {"type=messaging.comms.server.service", "service.vendor=IBM"})
+        property = { "type=messaging.comms.server.service", "nettyTlsProvider.cardinality.minimum=1", "service.vendor=IBM" })
 public class CommsServerServiceFacade implements Singleton {
     private static final String SECURE_PORT = "wasJmsSSLPort";
     private static final String BASIC_PORT = "wasJmsPort";
@@ -106,6 +106,8 @@ public class CommsServerServiceFacade implements Singleton {
             CHFWBundle chfw,
             @Reference(name = "nettyBundle")
             NettyFramework nettyBundle,
+            @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL)
+            NettyTlsProvider nettyTlsProvider,
             @Reference(name = "tcpOptions", target = "(id=unbound)") // target to be overwritten by metatype
             ChannelConfiguration tcpOptions,
             @Reference(name = "eventEngine")
@@ -119,6 +121,7 @@ public class CommsServerServiceFacade implements Singleton {
         this.nettyBundle = nettyBundle;
         this.tcpOptions = tcpOptions;
         this.eventEngine = eventEngine;
+        this.nettyTlsProvider = nettyTlsProvider;
 
         useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
@@ -169,24 +172,24 @@ public class CommsServerServiceFacade implements Singleton {
         factotum.stopBasicChain(true);
     }
     
-    @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
-    void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindTlsProviderService", tlsProvider);
-        this.nettyTlsProvider = tlsProvider;
-        if(awaitingTlsProvider.getAndSet(false)) {
-        	if (securePort >= 0 && secureFacetRef.get().areSecureSocketsEnabled()) inboundSecureChain.enable(true);
-            synchronized (factotum) {
-                factotum.updateSecureChain();
-            }
-        }
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
-    }
+    // @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
+    // void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindTlsProviderService", tlsProvider);
+    //     this.nettyTlsProvider = tlsProvider;
+    //     if(awaitingTlsProvider.getAndSet(false)) {
+    //     	if (securePort >= 0 && secureFacetRef.get().areSecureSocketsEnabled()) inboundSecureChain.enable(true);
+    //         synchronized (factotum) {
+    //             factotum.updateSecureChain();
+    //         }
+    //     }
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
+    // }
     
-    void unbindTlsProviderService(NettyTlsProvider oldService) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
-        // TODO: Figure out if there's something else to be done here
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
-    }
+    // void unbindTlsProviderService(NettyTlsProvider oldService) {
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
+    //     // TODO: Figure out if there's something else to be done here
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
+    // }
     
     public NettyTlsProvider getNettyTlsProvider() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "getNettyTlsProvider");

@@ -60,7 +60,8 @@ import io.openliberty.netty.internal.tls.NettyTlsProvider;
 @Component(
         configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
         configurationPolicy = REQUIRE,
-        property = "service.vendor=IBM")
+        property = { "nettyTlsProvider.cardinality.minimum=1", "service.vendor=IBM" }
+)
 public class CommsOutboundChain implements ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(CommsOutboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private static final TraceNLS nls = TraceNLS.getTraceNLS(JFapChannelConstants.MSG_BUNDLE);
@@ -104,16 +105,19 @@ public class CommsOutboundChain implements ApplicationPrereq {
             ChannelConfiguration tcpOptions,
             @Reference(name="commsClientService")
             CommsClientServiceFacade commsClientService,
+            @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL)
+            NettyTlsProvider nettyTlsProvider,
             /* Require SingletonsReady so that we will wait for it to ensure its availability at least until the chain is deactivated. */ 
             @Reference(name="singletonsReady")
             SingletonsReady singletonsReady,
             Map<Object, Object> properties) {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            entry(this, tc, "<init>", tcpOptions, commsClientService, properties);
+            entry(this, tc, "<init>", tcpOptions, commsClientService, nettyTlsProvider, properties);
 
         this.tcpOptions = tcpOptions;
         this.commsClientService = commsClientService;
+        this.nettyTlsProvider = nettyTlsProvider;
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
 
@@ -164,18 +168,18 @@ public class CommsOutboundChain implements ApplicationPrereq {
         return tcpProps;
     }
 
-    @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
-    void bindNettyTlsProviderService(NettyTlsProvider tlsProvider) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "bindTlsProviderService", tlsProvider);
-        this.nettyTlsProvider = tlsProvider;
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
-    }
+    // @Reference(name = "nettyTlsProvider", cardinality = OPTIONAL, policyOption = GREEDY, unbind = "unbindTlsProviderService")
+    // void bindNettyTlsProviderService(NettyTlsProvider tlsProvider) {
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "bindTlsProviderService", tlsProvider);
+    //     this.nettyTlsProvider = tlsProvider;
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "bindTlsProviderService");
+    // }
 
-    void unbindTlsProviderService(NettyTlsProvider oldService) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
-        // TODO: Figure out if there's something to be done here
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
-    }
+    // void unbindTlsProviderService(NettyTlsProvider oldService) {
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindTlsProviderService", oldService);
+    //     // TODO: Figure out if there's something to be done here
+    //     if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "unbindTlsProviderService");
+    // }
 
     public NettyTlsProvider getNettyTlsProvider() {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "getNettyTlsProvider");
