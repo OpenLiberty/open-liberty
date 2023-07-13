@@ -56,7 +56,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
  io.openliberty.org.jboss.logging35, \
- io.openliberty.org.jboss.classfilewriter.1.3, \
+ com.ibm.ws.org.jboss.classfilewriter, \
  com.ibm.ws.cdi.weld.jakarta, \
  com.ibm.ws.cdi.internal.jakarta, \
  io.openliberty.cdi.4.0.internal.weld, \
