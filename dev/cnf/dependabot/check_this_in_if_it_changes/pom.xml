@@ -3207,11 +3207,6 @@
       <version>1.7.0.Alpha13</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.classfilewriter</groupId>
-      <artifactId>jboss-classfilewriter</artifactId>
-      <version>1.3.0.Final</version>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging-annotations</artifactId>
       <version>2.2.1.Final</version>
@@ -3399,7 +3394,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>5.1.1.Final</version>
+      <version>5.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3414,7 +3409,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>5.1.1.Final</version>
+      <version>5.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -3434,7 +3429,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>5.1.1.Final</version>
+      <version>5.1.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
