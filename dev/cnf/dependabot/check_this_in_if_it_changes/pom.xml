@@ -134,7 +134,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>32.0.1-android</version>
+      <version>30.1-android</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -2125,6 +2125,11 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk15on</artifactId>
       <version>1.69</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpg-jdk18on</artifactId>
+      <version>1.75</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>

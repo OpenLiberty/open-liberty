@@ -30,8 +30,8 @@ instrument.disabled: true
 
 -includeresource: \
 	@${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/* \
-	@${repo;org.bouncycastle:bcpg-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}
+	@${repo;org.bouncycastle:bcpg-jdk18on;1.75;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk18on;1.75;EXACT}
 
 -buildpath: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
@@ -52,8 +52,8 @@ instrument.disabled: true
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
-	org.bouncycastle:bcpg-jdk15on;version=1.69,\
-	org.bouncycastle:bcprov-jdk15on;version=1.69,\
+	org.bouncycastle:bcpg-jdk18on;version=1.75,\
+	org.bouncycastle:bcprov-jdk18on;version=1.75,\
 	org.glassfish.javax.json
 
 
