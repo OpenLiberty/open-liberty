@@ -80,5 +80,5 @@ export function getOAuth2Url() {
 }
 
 export function getMpOAuth2Url() {
-    return location.protocol + "//" + location.host + "/openapi/ui/" + "oauth2-redirect.html";
+    return location.protocol + "//" + location.host + location.pathname + "oauth2-redirect.html";
 }
