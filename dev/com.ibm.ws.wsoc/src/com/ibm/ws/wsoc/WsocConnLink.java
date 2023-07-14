@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -146,41 +146,22 @@ public class WsocConnLink {
         deviceConnLink = access.getDeviceConnLink();
         vConnection = access.getVirtualConnection();
 
-        if (!useNetty()) {
-            TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
-            tcpReadContext = tcpConnection.getReadInterface();
-            linkWrite = new LinkWrite();
-            linkRead = new LinkRead();
+        TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
+        tcpReadContext = tcpConnection.getReadInterface();
+        linkWrite = new LinkWrite();
+        linkRead = new LinkRead();
 
-            wrc = new WsocReadCallback();
-            wrc.setConnLinkCallback(this);
+        wrc = new WsocReadCallback();
+        wrc.setConnLinkCallback(this);
 
-            if (clientSide) {
-                linkWrite.initialize(tcpWriteContext, epc, this, true);
-                linkRead.initialize(tcpReadContext, epc, ep, this, false);
-            } else {
-                linkWrite.initialize(tcpWriteContext, epc, this, false);
-                linkRead.initialize(tcpReadContext, epc, ep, this, true);
-            }
-
+        if (clientSide) {
+            linkWrite.initialize(tcpWriteContext, epc, this, true);
+            linkRead.initialize(tcpReadContext, epc, ep, this, false);
         } else {
-            TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
-            tcpReadContext = tcpConnection.getReadInterface();
-            linkWrite = new NettyLinkWrite();
-            linkRead = new NettyLinkRead();
+            linkWrite.initialize(tcpWriteContext, epc, this, false);
+            linkRead.initialize(tcpReadContext, epc, ep, this, true);
 
-            wrc = new NettyWsocReadCallback();
-            wrc.setConnLinkCallback(this);
-
-            if (clientSide) {
-                linkWrite.initialize(tcpWriteContext, epc, this, true);
-                linkRead.initialize(tcpReadContext, epc, ep, this, false);
-            } else {
-                linkWrite.initialize(tcpWriteContext, epc, this, false);
-                linkRead.initialize(tcpReadContext, epc, ep, this, true);
-            }
         }
-
     }
 
     public void setParametersOfInterest(ParametersOfInterest value) {

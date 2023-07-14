@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,9 +13,7 @@
 package com.ibm.ws.wsoc.outbound;
 
 import java.io.IOException;
-import java.lang.reflect.Parameter;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.Extension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +25,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.websocket.ClientEndpointConfig;
+import javax.websocket.Extension;
+import javax.websocket.Extension.Parameter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -34,6 +34,7 @@ import com.ibm.ws.wsoc.Constants;
 import com.ibm.ws.wsoc.HandshakeProcessor;
 import com.ibm.ws.wsoc.ParametersOfInterest;
 import com.ibm.ws.wsoc.WebSocketContainerManager;
+import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.external.HandshakeResponseExt;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -73,21 +74,16 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
 
     private final ParametersOfInterest things;
 
-    private boolean usingNetty = false;
-
-    public HttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things, boolean usingNetty) {
+    public HttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
-        this.usingNetty = usingNetty;
     }
 
-    @Override
     public ClientTransportAccess getClientTransportAccess() {
         return access;
     }
 
-    @Override
     public void connect() throws Exception {
 
         access = new ClientTransportAccess();
@@ -98,14 +94,12 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
 
     }
 
-    @Override
     public void sendRequest() throws IOException, MessageSentException {
         sendRequest(null);
     }
 
     private final Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
 
-    @Override
     public void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException {
 
         httpOutboundSC = (HttpOutboundServiceContext) vc.getChannelAccessor();
@@ -198,7 +192,6 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
             }
         }
 
-        // LLA Synchronous write/read
         httpOutboundSC.enableImmediateResponseRead();
         httpOutboundSC.sendRequestHeaders();
 
@@ -223,7 +216,6 @@ public class HttpRequestorWsoc10 implements HttpRequestor {
         }
     }
 
-    @Override
     public WsByteBuffer completeResponse() throws IOException {
         HttpResponseMessage hrm = httpOutboundSC.getResponse();
 

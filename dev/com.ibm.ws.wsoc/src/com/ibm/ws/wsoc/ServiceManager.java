@@ -116,7 +116,7 @@ public class ServiceManager {
 
     public static NettyFramework getNettyBundle() {
         // TODO Verify this later on
-        return _nettyRef.getService();
+        return nettyRef.getService();
     }
 
     protected void setInjectionService(ServiceReference<InjectionService> ref) {
