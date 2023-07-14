@@ -83,13 +83,22 @@ public class UIBasicTest {
 
     @Before
     public void setupTest() {
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
     }
 
     @Test
-    public void testUI() {
+    public void testHttpUI(){
         driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/openapi/ui");
+        testUI();
+    }
 
+    @Test
+    public void testHttpsUI(){
+        driver.get("https://host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/openapi/ui");
+        testUI();
+    }
+
+    public void testUI() {
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
