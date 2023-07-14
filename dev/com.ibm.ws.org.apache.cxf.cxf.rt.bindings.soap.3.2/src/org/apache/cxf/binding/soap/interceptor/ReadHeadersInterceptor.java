@@ -415,10 +415,29 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                         // End Liberty Change
                     }
                     for (int i = 0; i < reader.getAttributeCount(); i++) {
-                        addEvent(eventFactory.createAttribute(reader.getAttributePrefix(i),
-                                                         reader.getAttributeNamespace(i),
-                                                         reader.getAttributeLocalName(i),
-                                                         reader.getAttributeValue(i)));
+                        // Liberty Change Start: CXF is calling XMLEventFactory.createAttribute(attributePrefix, attributeNamespaceURI, attributeLocalName, attributeValue) 
+                        // if the prefix is null because the message is using the default namespace, CXF throws a parsing error for passing a
+                        // null prefix. Same if the URI is also null, in case of URI being null we need to use the local name of the element
+                        // in order to create the namespace on the writer. 
+                        
+                        String attributePrefix = reader.getAttributePrefix(i);
+                        String attributeNamespaceURI = reader.getAttributeNamespace(i);
+                        if(attributeNamespaceURI != null && attributePrefix != null)  {
+                            addEvent(eventFactory.createAttribute(attributePrefix,
+                                                                  attributeNamespaceURI,
+                                                                  reader.getAttributeLocalName(i),
+                                                                  reader.getAttributeValue(i)));
+                        } else if (attributeNamespaceURI != null) {
+                           addEvent(eventFactory.createAttribute(XMLConstants.DEFAULT_NS_PREFIX,
+                                                                 attributeNamespaceURI,
+                                                                 reader.getAttributeLocalName(i),
+                                                                 reader.getAttributeValue(i)));
+                        } else {
+                            addEvent(eventFactory.createAttribute(reader.getAttributeLocalName(i),
+                                                                  reader.getAttributeValue(i)));      
+                        }
+                        
+                        // Liberty Change End
                     }
                     if (doc != null) {
                         //go on parsing the stream directly till the end and stop generating events
