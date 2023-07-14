@@ -20,6 +20,13 @@ fat.project: true
 fat.minimum.java.level: 11
 fat.test.container.images: selenium/standalone-chrome:4.8.3, alpine:3.16
 
+
+tested.features: \
+    expressionlanguage-5.0,\
+    appsecurity-5.0,\
+    pages-3.1,\
+    servlet-6.0
+
 -buildpath: \
 	io.openliberty.org.testcontainers;version=latest,\
 	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
@@ -27,4 +34,6 @@ fat.test.container.images: selenium/standalone-chrome:4.8.3, alpine:3.16
 	org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
 	org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
 	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
-	io.openliberty.jakarta.restfulWS.3.0;version=latest
+	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
+    io.openliberty.org.eclipse.microprofile.openapi.3.1;version=latest,\
+    jakarta.annotation-api;version=latest

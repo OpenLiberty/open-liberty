@@ -20,6 +20,7 @@ import java.time.Duration;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -84,6 +85,12 @@ public class UIBasicTest {
     @Before
     public void setupTest() {
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
+    }
+
+    @After
+    public void teardownTest() throws Exception {
+        //close the browser before stopping the server
+        driver.quit();
     }
 
     @Test
