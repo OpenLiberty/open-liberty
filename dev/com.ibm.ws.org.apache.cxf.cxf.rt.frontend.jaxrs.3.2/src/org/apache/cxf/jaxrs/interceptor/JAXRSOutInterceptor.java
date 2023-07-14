@@ -38,7 +38,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.sse.SseEventSink;
+import javax.ws.rs.sse.SseEventSink; // Liberty Change
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 
@@ -66,30 +66,31 @@ import org.apache.cxf.staxutils.CachingXmlEventWriter;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jaxrs20.JaxRsConstants;
+import com.ibm.websphere.ras.Tr; // Liberty Change
+import com.ibm.websphere.ras.TraceComponent; // Liberty Change
+import com.ibm.ws.jaxrs20.JaxRsConstants; // Liberty Change
 
 public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
-    private static final TraceComponent tc = Tr.register(JAXRSOutInterceptor.class);
+    private static final TraceComponent tc = Tr.register(JAXRSOutInterceptor.class); // Liberty change Start
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(JAXRSOutInterceptor.class);
 
     public JAXRSOutInterceptor() {
         super(Phase.MARSHAL);
     }
 
+	// Liberty Change - Override and check SsseEventSink for Null
     @Override
     public void handleMessage(Message message) {
         ServerProviderFactory providerFactory = ServerProviderFactory.getInstance(message);
         try {
             processResponse(providerFactory, message);
         } finally {
-            if (message.get(SseEventSink.class) == null) {
+            if (message.get(SseEventSink.class) == null) { 
                 ServerProviderFactory.releaseRequestState(providerFactory, message);
             }
         }
-
     }
+	// Liberty Change End
 
     @SuppressWarnings("resource") // Response shouldn't be closed here
     private void processResponse(ServerProviderFactory providerFactory, Message message) {
@@ -104,7 +105,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
 
         Object responseObj = objs.get(0);
 
-        Response response = null;
+        final Response response;
         if (responseObj instanceof Response) {
             response = (Response)responseObj;
             if (response.getStatus() == 500
@@ -145,14 +146,14 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             && ori != null && HttpMethod.HEAD.equals(ori.getHttpMethod());
         Object entity = response.getActualEntity();
         if (headResponse && entity != null) {
-            Tr.info(tc, new org.apache.cxf.common.i18n.Message("HEAD_WITHOUT_ENTITY", BUNDLE).toString());
+            Tr.info(tc, new org.apache.cxf.common.i18n.Message("HEAD_WITHOUT_ENTITY", BUNDLE).toString()); // Liberty Change
             entity = null;
         }
 
         Method invoked = ori == null ? null : ori.getAnnotatedMethod() != null
             ? ori.getAnnotatedMethod() : ori.getMethodToInvoke();
 
-        Annotation[] annotations = null;
+        Annotation[] annotations;
         Annotation[] staticAnns = ori != null ? ori.getOutAnnotations() : new Annotation[]{};
         Annotation[] responseAnns = response.getEntityAnnotations();
         if (responseAnns != null) {
@@ -171,7 +172,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             prepareResponseHeaders(message, response, entity, firstTry);
 
         // Run the filters
-        if (JaxRsConstants.JAXRS_CONTAINER_FILTER_DISABLED == false) {
+        if (JaxRsConstants.JAXRS_CONTAINER_FILTER_DISABLED == false) { // Liberty Change
             try {
                 JAXRSUtils.runContainerResponseFilters(providerFactory, response, message, ori, invoked);
             } catch (Throwable ex) {
@@ -232,14 +233,14 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             }
             responseMediaType = checkFinalContentType(responseMediaType, writers, checkWriters);
         } catch (Throwable ex) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // Liberty Chnage - Use Trace Component
                 Tr.debug(tc, ex.getMessage() + ", " + ex);
             }
 	    handleWriteException(providerFactory, message, ex, firstTry);
             return;
         }
         String finalResponseContentType = JAXRSUtils.mediaTypeToString(responseMediaType);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {  // Liberty Chnage - Use Trace Component
             Tr.debug(tc, "Response content type is: " + finalResponseContentType);
         }
         responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, finalResponseContentType);
@@ -348,7 +349,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
     }
 
     private void checkCachedStream(Message m, OutputStream osOriginal, boolean enabled) throws Exception {
-        XMLStreamWriter writer = null;
+        final XMLStreamWriter writer;
         if (enabled) {
             writer = m.getContent(XMLStreamWriter.class);
         } else {
@@ -356,7 +357,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         }
         if (writer instanceof CachingXmlEventWriter) {
             CachingXmlEventWriter cache = (CachingXmlEventWriter)writer;
-            if (cache.getEvents().size() != 0) {
+            if (!cache.getEvents().isEmpty()) {
                 XMLStreamWriter origWriter = null;
                 try {
                     origWriter = StaxUtils.createXMLStreamWriter(osOriginal);
@@ -446,10 +447,10 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         if (!firstTry || headers.containsKey(HttpHeaders.DATE)) {
             return;
         }
-// Liberty Change for CXF Begin
-//        SimpleDateFormat format = HttpUtils.getHttpDateFormat();
-        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(System.currentTimeMillis()));
-//Liberty Change for CXF End
+		// Liberty Change Start - Pull from chached time
+		// SimpleDateFormat format = HttpUtils.getHttpDateFormat();
+        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(-1));
+		//Liberty Change End
     }
 
     private boolean isResponseAlreadyHandled(Message m) {
@@ -469,7 +470,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             byte[] bytes = responseObj.toString().getBytes(StandardCharsets.UTF_8);
             os.write(bytes, 0, bytes.length);
         } catch (Exception ex) {
-            Tr.error(tc, "Problem with writing the data to the output stream");
+            Tr.error(tc, "Problem with writing the data to the output stream"); // Liberty Change
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
@@ -497,7 +498,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         return PropertyUtils.isTrue(message.get(AbstractHTTPDestination.RESPONSE_HEADERS_COPIED));
     }
 
-    @Override
+    @Override // Liberty Change - @Override
     public void handleFault(Message message) {
         // complete
     }

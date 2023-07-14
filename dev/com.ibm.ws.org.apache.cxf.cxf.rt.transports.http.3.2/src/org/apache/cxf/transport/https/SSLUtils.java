@@ -83,6 +83,30 @@ public final class SSLUtils {
 	LOG.fine("getHostnameVerifier() returning: " + verifier.getClass().getCanonicalName()); // Liberty Change
         return verifier;
     }
+    
+    public static SSLContextInitParameters getSSLContextInitParameters(TLSParameterBase parameters) 
+            throws GeneralSecurityException {
+        
+        final SSLContextInitParameters contextParameters = new SSLContextInitParameters();
+
+        KeyManager[] keyManagers = parameters.getKeyManagers();
+        if (keyManagers == null && parameters instanceof TLSClientParameters) {
+	    LOG.fine("Calling getDefaultKeyStoreManagers..."); // Liberty Change
+            keyManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultKeyStoreManagers(LOG);
+        }
+        KeyManager[] configuredKeyManagers = configureKeyManagersWithCertAlias(parameters, keyManagers);
+
+        TrustManager[] trustManagers = parameters.getTrustManagers();
+        if (trustManagers == null && parameters instanceof TLSClientParameters) {
+	    LOG.fine("Calling getDefaultTrustStoreManagers..."); // Liberty Change
+            trustManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultTrustStoreManagers(LOG);
+        }
+
+        contextParameters.setKeyManagers(configuredKeyManagers);
+        contextParameters.setTrustManagers(trustManagers);
+        
+        return contextParameters;
+    }
 
     public static SSLContext getSSLContext(TLSParameterBase parameters) throws GeneralSecurityException {
         // TODO do we need to cache the context
@@ -91,35 +115,17 @@ public final class SSLUtils {
         String protocol = parameters.getSecureSocketProtocol() != null ? parameters
             .getSecureSocketProtocol() : "TLS";
 
-	LOG.fine("getSSLContext: provider = " + provider + " and protocol = " + protocol); // Liberty Change
-
         SSLContext ctx = provider == null ? SSLContext.getInstance(protocol) : SSLContext
             .getInstance(protocol, provider);
 
-        KeyManager[] keyManagers = parameters.getKeyManagers();
-        if (keyManagers == null && parameters instanceof TLSClientParameters) {
-	    LOG.fine("Calling getDefaultKeyStoreManagers...");
-            keyManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultKeyStoreManagers(LOG);
-        }
-        KeyManager[] configuredKeyManagers = configureKeyManagersWithCertAlias(parameters, keyManagers);
-
-        TrustManager[] trustManagers = parameters.getTrustManagers();
-        if (trustManagers == null && parameters instanceof TLSClientParameters) {
-	    LOG.fine("Calling getDefaultTrustStoreManagers...");
-            trustManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultTrustStoreManagers(LOG);
-        }
-
-	LOG.fine("keyManagers: " + keyManagers); // Liberty Change
-	LOG.fine("trustManagers: " + trustManagers); // Liberty Change
-	LOG.fine("configuredkeyManagers: " +  configuredKeyManagers); // Liberty Change
-
-        ctx.init(configuredKeyManagers, trustManagers, parameters.getSecureRandom());
+        final SSLContextInitParameters initParams = getSSLContextInitParameters(parameters);
+        ctx.init(initParams.getKeyManagers(), initParams.getTrustManagers(), parameters.getSecureRandom());
 
         if (parameters instanceof TLSClientParameters && ctx.getClientSessionContext() != null) {
             ctx.getClientSessionContext().setSessionTimeout(((TLSClientParameters)parameters).getSslCacheTimeout());
         }
 
-	LOG.fine("getSSLContext returning: " + ctx.getClass().getCanonicalName()); // Liberty Change
+    	LOG.fine("getSSLContext returning: " + ctx.getClass().getCanonicalName()); // Liberty Change
         return ctx;
     }
 

@@ -75,7 +75,10 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
-// No Liberty Change: jaxws-2.3 requires recompiling this class
+// Liberty Change - This class has no Liberty specific changes other than the Sensitive annotation 
+// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
+// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
+// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message> {
     MessageModeOutInterceptorInternal internal;
     SAAJOutInterceptor saajOut;
@@ -93,7 +96,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
         type = t;
         this.bindingName = bname;
     }
-    public void handleMessage(@Sensitive Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault { // Liberty Change
         BindingOperationInfo bop = message.getExchange().getBindingOperationInfo();
         if (bop != null && !bindingName.equals(bop.getBinding().getName())) {
             return;
@@ -178,7 +181,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
     }
 
 
-    private void validatePossibleFault(@Sensitive Message message, BindingOperationInfo bop, Node ds) {
+    private void validatePossibleFault(@Sensitive Message message, BindingOperationInfo bop, Node ds) { // Liberty Change Start
         Element el = DOMUtils.getFirstElement(ds);
         if (!"Fault".equals(el.getLocalName())) {
             return;
@@ -218,7 +221,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             }
         }
     }
-    private void validateFault(@Sensitive SoapMessage message, SOAPFault fault, BindingOperationInfo bop) {
+    private void validateFault(@Sensitive SoapMessage message, SOAPFault fault, BindingOperationInfo bop) { // Liberty Change
         if (ServiceUtils.isSchemaValidationEnabled(SchemaValidationType.OUT, message)) {
             Schema schema = EndpointReferenceUtils.getSchema(message.getExchange().getService()
                                                              .getServiceInfos().get(0),
@@ -236,7 +239,7 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
     }
 
 
-    private void doSoap(@Sensitive Message message) {
+    private void doSoap(@Sensitive Message message) { // Liberty Change
         MessageContentsList list = (MessageContentsList)message.getContent(List.class);
         if (list == null || list.isEmpty()) {
             return;
@@ -290,10 +293,10 @@ public class MessageModeOutInterceptor extends AbstractPhaseInterceptor<Message>
             addBefore(SAAJOutInterceptor.class.getName());
         }
 
-        public void handleMessage(@Sensitive SoapMessage message) throws Fault {
+        public void handleMessage(@Sensitive SoapMessage message) throws Fault { // Liberty Change
             MessageContentsList list = (MessageContentsList)message.getContent(List.class);
             Object o = list.remove(0);
-            SOAPMessage soapMessage = null;
+            SOAPMessage soapMessage = null; // Liberty Change
 
             if (o instanceof SOAPMessage) {
                 soapMessage = (SOAPMessage)o;

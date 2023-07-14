@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.Proxy;
-import java.net.SocketException;
+import java.net.SocketException; // Liberty Change 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -50,15 +50,17 @@ import org.apache.cxf.transport.https.HttpsURLConnectionFactory;
 import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.common.util.PropertyUtils; // Liberty Change
+// Liberty Change Start - Imports
+import org.apache.cxf.common.util.PropertyUtils; 
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+// Liberty Change End
 
 /**
  * 
  */
-@Trivial
+@Trivial // Liberty Change
 public class URLConnectionHTTPConduit extends HTTPConduit {
     public static final String HTTPURL_CONNECTION_METHOD_REFLECTION = "use.httpurlconnection.method.reflection";
     public static final String SET_REASON_PHRASE_NOT_NULL = "set.reason.phrase.not.null";
@@ -98,7 +100,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
     /**
      * Close the conduit
      */
-    @FFDCIgnore(IOException.class)
+    @FFDCIgnore(IOException.class) // Liberty Change
     public void close() {
         super.close();
         if (defaultAddress != null) {
@@ -155,7 +157,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
     }
     //Liberty end
 
-    @FFDCIgnore({java.net.ProtocolException.class, Throwable.class, Throwable.class})
+    @FFDCIgnore({java.net.ProtocolException.class, Throwable.class, Throwable.class}) // Liberty Change
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
         HttpURLConnection connection = createConnection(message, address, csPolicy);
         connection.setDoOutput(true);       
@@ -194,7 +196,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
                             java.lang.reflect.Field f2 = ReflectionUtil.getDeclaredField(connection.getClass(),
                                                                                          "delegate");
-						    //Liberty start
+						    // Liberty Start
                             if (f2 == null) {
                                 for (java.lang.reflect.Field field : ReflectionUtil.getDeclaredFields(connection.getClass())) {
                                    
@@ -221,7 +223,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
                                 ReflectionUtil.setAccessible(f).set(c2, httpRequestMethod);
                             }
-							//Liberty end
+							// Liberty End
                         } catch (Throwable t) {
                             //ignore
                             logStackTrace(t);
@@ -244,7 +246,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         message.put(KEY_HTTP_CONNECTION_ADDRESS, address);
     }
 
-    @FFDCIgnore(URISyntaxException.class)
+    @FFDCIgnore(URISyntaxException.class) // Liberty Change
     protected OutputStream createOutputStream(Message message, 
                                               boolean needToCacheRequest, 
                                               boolean isChunking,
@@ -271,7 +273,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         return address != null ? address.getURI() : connection.getURL().toURI();
     }
     
-    @Trivial
+    @Trivial // Liberty Change
     class URLConnectionWrappedOutputStream extends WrappedOutputStream {
         HttpURLConnection connection;
         URLConnectionWrappedOutputStream(Message message, HttpURLConnection connection,
@@ -289,7 +291,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             this.connection = wos.connection;
         }
 
-        @FFDCIgnore(Throwable.class)
+        @FFDCIgnore(Throwable.class) // Liberty Change
         private OutputStream connectAndGetOutputStream(Boolean b) throws IOException {
             OutputStream cout = null;
 
@@ -311,11 +313,11 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             return cout;
         }
 
-        @FFDCIgnore({PrivilegedActionException.class, ProtocolException.class, SocketException.class})
+        @FFDCIgnore({PrivilegedActionException.class, ProtocolException.class, SocketException.class}) // Liberty Change
         protected void setupWrappedStream() throws IOException {
             // If we need to cache for retransmission, store data in a
             // CacheAndWriteOutputStream. Otherwise write directly to the output stream.
-            OutputStream cout = null;
+            OutputStream cout;
             try {
                 try {
 //                    cout = connection.getOutputStream();
@@ -337,7 +339,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                     Boolean b =  (Boolean)outMessage.get(HTTPURL_CONNECTION_METHOD_REFLECTION);
                     cout = connectAndGetOutputStream(b); 
                 }
-            } catch (SocketException e) { //Liberty
+            } catch (SocketException e) { // Liberty Change
                 if ("Socket Closed".equals(e.getMessage())
                     || "HostnameVerifier, socket reset for TTL".equals(e.getMessage())) {
                     connection.connect();
@@ -398,9 +400,9 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             cookies.readFromHeaders(h);
         }
         
-        @FFDCIgnore(IOException.class)
+        @FFDCIgnore(IOException.class) // Liberty Change
         protected InputStream getInputStream() throws IOException {
-            InputStream in = null;
+            InputStream in;
             if (getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
                 in = connection.getErrorStream();
                 if (in == null) {
@@ -431,7 +433,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             }
         }
 
-        @FFDCIgnore(PrivilegedActionException.class)
+        @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
         protected int getResponseCode() throws IOException {
             try {
                 return AccessController.doPrivileged(new PrivilegedExceptionAction<Integer>() {
@@ -457,7 +459,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                 //reason phrase in response, return a informative value
                 //to tell user no reason phrase in the response instead of null
                 return "no reason phrase in the response";
-            } else { //Liberty
+            } else {  // Liberty Change
                 return connection.getResponseMessage();
             }
         }
@@ -471,10 +473,10 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
         }
-        @FFDCIgnore(PrivilegedActionException.class)
+        @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
         protected void handleNoOutput() throws IOException {
             if ("POST".equals(getMethod())) {
-			    //Liberty start
+			    // Liberty Change Start
                 try {
                     AccessController.doPrivileged((PrivilegedExceptionAction<Void>)() -> {
                         connection.getOutputStream().close(); 
@@ -487,10 +489,10 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                     }
                     throw new RuntimeException(t);
                 }
-				//Liberty end
+				// Liberty Change End
             }
         }
-        @FFDCIgnore(URISyntaxException.class)
+        @FFDCIgnore(URISyntaxException.class) // Liberty Change
         protected void setupNewConnection(String newURL) throws IOException {
             HTTPClientPolicy cp = getClient(outMessage);
             Address address;

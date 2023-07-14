@@ -21,10 +21,12 @@ package org.apache.cxf.jaxrs.interceptor;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.AsyncResponse;  // Liberty Change
 import javax.ws.rs.core.Response;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.w3c.dom.Node;
 
 import org.apache.cxf.common.i18n.BundleUtils;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -33,16 +35,15 @@ import org.apache.cxf.helpers.NSStack;
 import org.apache.cxf.interceptor.AbstractOutDatabindingInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.StaxOutInterceptor;
-import org.apache.cxf.jaxrs.impl.AsyncResponseImpl;
+import org.apache.cxf.jaxrs.impl.AsyncResponseImpl;  // Liberty Change
 import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
-import org.w3c.dom.Node;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;  // Liberty Change
 
 public class JAXRSDefaultFaultOutInterceptor extends AbstractOutDatabindingInterceptor {
 
@@ -56,8 +57,8 @@ public class JAXRSDefaultFaultOutInterceptor extends AbstractOutDatabindingInter
         super(phase);
     }
 
-    @Override
-    @FFDCIgnore(Exception.class)
+    @Override // Liberty Change
+    @FFDCIgnore(Exception.class) // Liberty Change
     public void handleMessage(Message message) throws Fault {
         if (PropertyUtils.isTrue(message.getExchange().get(JAXRSUtils.SECOND_JAXRS_EXCEPTION))) {
             return;
@@ -66,8 +67,8 @@ public class JAXRSDefaultFaultOutInterceptor extends AbstractOutDatabindingInter
 
         Response r = JAXRSUtils.convertFaultToResponse(f.getCause(), message);
 
-        //Liberty Change start - cxf-6373
-        if (r == null) //which means it is an unmapped exception
+        // Liberty Change Start - cxf-6373
+        if (r == null) // which means it is an unmapped exception
         {
             try {
                 AsyncResponseImpl asyncResponse = (AsyncResponseImpl) message.getExchange().getInMessage().get(AsyncResponse.class);
@@ -76,11 +77,11 @@ public class JAXRSDefaultFaultOutInterceptor extends AbstractOutDatabindingInter
                     asyncResponse.setUnmappedThrowable(f.getCause());
                 }
             } catch (Exception e)
-            {//donothing
+            { // do nothing
 
             }
         }
-        //Liberty Change end
+        // Liberty Change End
 
         if (r != null) {
             JAXRSUtils.setMessageContentType(message, r);
@@ -140,5 +141,6 @@ public class JAXRSDefaultFaultOutInterceptor extends AbstractOutDatabindingInter
     protected boolean mustPropogateException(Message m) {
         return Boolean.TRUE.equals(m.getExchange().get(Message.PROPOGATE_EXCEPTION));
     }
+
 
 }

@@ -43,7 +43,7 @@ public class ConfigurationImpl implements Configuration {
     private RuntimeType runtimeType;
     private Map<Object, Map<Class<?>, Integer>> providers =
         new LinkedHashMap<>();
-    private Map<Feature, Boolean> features = new LinkedHashMap<Feature, Boolean>();
+    private Map<Feature, Boolean> features = new LinkedHashMap<Feature, Boolean>(); // Liberty Change
 
     public ConfigurationImpl(RuntimeType rt) {
         this.runtimeType = rt;
@@ -82,7 +82,7 @@ public class ConfigurationImpl implements Configuration {
         if (contracts != null) {
             providers.put(o, contracts);
         } else {
-            register(o, AnnotationUtils.getBindingPriority(o.getClass()),
+            register(o, AnnotationUtils.getBindingPriority(o.getClass()), 
                         ConfigurableImpl.getImplementedContracts(o, new Class<?>[]{}));
         }
     }
@@ -241,7 +241,7 @@ public class ConfigurationImpl implements Configuration {
         return metadata;
     }
 
-    @FFDCIgnore(Throwable.class)
+    @FFDCIgnore(Throwable.class) // Liberty Change
     public static Object createProvider(Class<?> cls) {
         try {
             return cls.newInstance();

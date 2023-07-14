@@ -23,27 +23,27 @@ package org.apache.cxf.jaxrs;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
+import java.util.Arrays; // Liberty Change
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.logging.Level;
+import java.util.logging.Level; // Liberty Change
 import java.util.logging.Logger;
 
-import javax.ws.rs.FormParam;
+import javax.ws.rs.FormParam; // Liberty Change
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Form;
+import javax.ws.rs.core.Form; // Liberty Change
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder;
@@ -59,7 +59,7 @@ import org.apache.cxf.jaxrs.impl.ResourceContextImpl;
 import org.apache.cxf.jaxrs.lifecycle.ResourceProvider;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
-import org.apache.cxf.jaxrs.model.ParameterType;
+import org.apache.cxf.jaxrs.model.ParameterType; // Liberty Change
 import org.apache.cxf.jaxrs.model.ProviderInfo;
 import org.apache.cxf.jaxrs.model.URITemplate;
 import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
@@ -84,7 +84,7 @@ public class JAXRSInvoker extends AbstractInvoker {
     public JAXRSInvoker() {
     }
 
-    @FFDCIgnore({Throwable.class, WebApplicationException.class})
+    @FFDCIgnore({Throwable.class, WebApplicationException.class}) // Liberty Change
     public Object invoke(Exchange exchange, Object request) {
         MessageContentsList responseList = checkExchangeForResponse(exchange);
         if (responseList != null) {
@@ -149,7 +149,7 @@ public class JAXRSInvoker extends AbstractInvoker {
         return new MessageContentsList(asyncObj);
     }
 
-    @FFDCIgnore(Fault.class)
+    @FFDCIgnore(Fault.class) // Liberty Change
     private Object handleAsyncFault(Exchange exchange, AsyncResponseImpl ar, Throwable t) {
         try {
             return handleFault(new Fault(t), exchange.getInMessage(), null, null);
@@ -168,7 +168,7 @@ public class JAXRSInvoker extends AbstractInvoker {
         exchange.put(JAXRSUtils.ROOT_PROVIDER, provider);
     }
 
-    @FFDCIgnore({Fault.class, IOException.class, WebApplicationException.class})
+    @FFDCIgnore({Fault.class, IOException.class, WebApplicationException.class}) // Liberty Change
     @SuppressWarnings("unchecked")
     public Object invoke(Exchange exchange, Object request, Object resourceObject) {
 
@@ -251,7 +251,7 @@ public class JAXRSInvoker extends AbstractInvoker {
 
                 result = checkSubResultObject(result, subResourcePath);
 
-                Class<?> subResponseType = null;
+                final Class<?> subResponseType;
                 if (result.getClass() == Class.class) {
                     ResourceContext rc = new ResourceContextImpl(inMessage, ori);
                     result = rc.getResource((Class<?>)result);
@@ -318,7 +318,7 @@ public class JAXRSInvoker extends AbstractInvoker {
         return result;
     }
 
-    // Liberty change start - CXF-7860
+    // Liberty Change Start - CXF-7860
     private List<Object> reprocessFormParams(Method method, List<Object> origParams, Message m) {
         Form form = null;
         boolean hasFormParamAnnotations = false;
@@ -359,7 +359,7 @@ public class JAXRSInvoker extends AbstractInvoker {
         }
         return Arrays.asList(newValues);
     }
-    //Liberty change end
+    //Liberty Change End
 
     protected AsyncResponseImpl checkFutureResponse(Message inMessage, Object result) {
         if (result instanceof CompletionStage) {
@@ -380,7 +380,7 @@ public class JAXRSInvoker extends AbstractInvoker {
     protected Method getMethodToInvoke(ClassResourceInfo cri, OperationResourceInfo ori, Object resourceObject) {
         Method resourceMethod = cri.getMethodDispatcher().getMethod(ori);
 
-        Method methodToInvoke = null;
+        Method methodToInvoke;
         if (Proxy.class.isInstance(resourceObject)) {
             methodToInvoke = cri.getMethodDispatcher().getProxyMethod(resourceMethod);
             if (methodToInvoke == null) {
@@ -513,4 +513,3 @@ public class JAXRSInvoker extends AbstractInvoker {
 
 
 }
-
