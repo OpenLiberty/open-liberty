@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 /**
  * Repository for a record with bean validation annotations.
  */
-@Repository(dataStore = "java:comp/jdbc/DerbyDataSource")
+@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Rectangles extends DataRepository<Rectangle, String> {
     void save(@Valid Rectangle r);
 }

@@ -38,7 +38,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import test.jakarta.data.validation.web.Entitlement.Frequency;
 
-@DataSourceDefinition(name = "java:comp/jdbc/DerbyDataSource",
+@DataSourceDefinition(name = "java:module/jdbc/DerbyDataSource",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
                       databaseName = "memory:testdb",
                       user = "dbuser1",

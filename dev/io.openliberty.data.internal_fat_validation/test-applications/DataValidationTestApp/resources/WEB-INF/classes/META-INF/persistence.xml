@@ -20,7 +20,7 @@
     version="1.0">
 
     <persistence-unit name="MyPersistenceUnit">
-        <jta-data-source>java:comp/jdbc/DerbyDataSource</jta-data-source>
+        <jta-data-source>java:module/jdbc/DerbyDataSource</jta-data-source>
         <class>test.jakarta.data.validation.web.Entitlement</class>
         <properties>
             <property name="eclipselink.logging.parameters" value="true"/>

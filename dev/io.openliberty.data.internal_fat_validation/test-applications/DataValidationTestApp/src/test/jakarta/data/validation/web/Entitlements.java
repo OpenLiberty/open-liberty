@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
-@Repository(dataStore = "java:comp/jdbc/DerbyDataSource")
+@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Entitlements extends DataRepository<Entitlement, Long> {
     void save(@Valid Entitlement e);
 }
