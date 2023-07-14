@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Handle proxy requests
@@ -33,13 +36,45 @@ public class ProxySupportUtil {
     private static URL extractURL(HttpServletRequest request) {
         String urlString;
         String refererHeader = request.getHeader(HTTP_HEADER_REFERER);
+
+        String docPath = "/openapi";
+        String uiPath = docPath+"/ui";
+
+        // retrieve the context from the request so that we can retrieve the values of the OpenAPI endpoints
+        BundleContext bundleContext = (BundleContext) request.getServletContext().getAttribute("osgi-bundlecontext");
+        //ensure we have a context in case for some reason this is activated with the bundle having stopped
+        if(bundleContext != null) {
+            ServiceTracker<OpenAPIEndpointProvider,OpenAPIEndpointProvider> openAPIEndpointTracker = new ServiceTracker<>(bundleContext, OpenAPIEndpointProvider.class, null);
+            openAPIEndpointTracker.open();
+            docPath = openAPIEndpointTracker.getService().getOpenAPIDocUrl();
+            uiPath = openAPIEndpointTracker.getService().getOpenAPIUIUrl();
+            openAPIEndpointTracker.close();
+        }
+
         if (refererHeader != null) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Using referer header to generate servers: " + refererHeader);
             }
             refererHeader = refererHeader.endsWith("/") ? refererHeader.substring(0, refererHeader.length() - 1) : refererHeader;
-            if (!refererHeader.endsWith("/ui") && !refererHeader.endsWith("/openapi")) {
-                refererHeader = null;
+            //Original behavior based on default expected paths
+            if(docPath.equals("/openapi") && (uiPath.equals("/openapi/ui"))) {
+                if (!refererHeader.endsWith("/ui") && !refererHeader.endsWith("/openapi")) {
+                    refererHeader = null;
+                }
+            } else {
+                // If either path has been modified to not be default do an exact match
+                try {
+                    URL refURL = new URL(refererHeader);
+                    String refPath = refURL.getPath();
+                    if (!refPath.equals(docPath) && !refPath.equals(uiPath)) {
+                        refererHeader = null;
+                    }
+                } catch (MalformedURLException e){
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to create URL for " + refererHeader + ": " + e.getMessage());
+                    }
+                    refererHeader=null;
+                }
             }
             if (refererHeader != null) {
                 urlString = refererHeader;

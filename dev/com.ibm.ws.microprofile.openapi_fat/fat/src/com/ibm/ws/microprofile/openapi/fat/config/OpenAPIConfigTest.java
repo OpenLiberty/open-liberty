@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -51,6 +52,8 @@ public class OpenAPIConfigTest {
 
     private static String DEFAULT_DOC_PATH = "/openapi";
     private static String DEFAULT_UI_PATH = DEFAULT_DOC_PATH+"/ui";
+
+    private static String APP_NAME = "mpOpenAPIConfigTest";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -254,6 +257,53 @@ public class OpenAPIConfigTest {
 
         assertMissing("/mpOpenAPIConfigTest");
     }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testCustomizedEndpointProxyRefererHeader() throws Exception{
+        // Defaults are tested in the ProxySupportTest.class
+        ServerConfiguration config = server.getServerConfiguration();
+        config.getMpOpenAPIElement().setDocPath("/foo");
+        config.getMpOpenAPIElement().setUiPath("/bar");
+        server.updateServerConfiguration(config);
+
+        server.startServer(false);
+
+        assertWebAppStarts("/foo");
+        assertWebAppStarts("/bar");
+
+        assertDocumentPath("/foo");
+        assertUiPath("/bar");
+
+        // Test changed path with various referer headers
+
+        //Default HTTP port with matching docPath
+        OpenAPI model = new OpenAPIConnection(server, "/foo").header("Referer","http://testurl1/foo").downloadModel();
+        //as ports is not a liberty report, only return a single server
+        assertTrue("Check that the list of servers is not empty",model.getServers().size()==1);
+        //check that the server name has changed to allow for either http:// or https:// to be first
+        assertTrue("check that the servers entry use the server from the referer header",model.getServers().get(0).getUrl().contains("http://testurl1/"+APP_NAME));
+
+        //Default HTTPS port with matching uiPath
+        model = new OpenAPIConnection(server, "/foo").header("Referer","https://testurl2/bar").downloadModel();
+        //as ports is not a liberty report, only return a single server
+        assertTrue("Check that the list of servers is not empty",model.getServers().size()==1);
+        //check that the host name has changed to allow for either http:// or https:// to be first
+        assertTrue("check that the servers entry use the server from the referer header",model.getServers().get(0).getUrl().contains("https://testurl2/"+APP_NAME));
+
+        //Rerun Test that if the referer path does not match the endpoints that the original hostname is used when config is not default
+        model = new OpenAPIConnection(server, "/foo").header("Referer","http://testurl3:"+server.getHttpDefaultPort()+"/random/").downloadModel();
+        // Path mismatch, should revert to server host and server http port - https not enabled so only single server should be returned
+        assertTrue("Check that the list of servers has single entries",model.getServers().size() == 1);
+        assertTrue("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl().contains("http://" + server.getHostname()+ ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
+
+        //path does not match, but ends in `/ui`, so should revert to default host, however as port differs from server ports, only a single entry should be being returned
+        model = new OpenAPIConnection(server, "/foo").header("Referer","http://testurl4/random/ui").downloadModel();
+        // Path mismatch with `/ui`, should revert to server host and server http port - https not enabled so only single server should be returned
+        assertTrue("Check that the list of servers has a single entries",model.getServers().size() == 1);
+        assertTrue("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl().contains("http://"+server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME));
+    }
+
 
     @Test
     public void testConfigureDynamicUpdate() throws Exception {
