@@ -11,32 +11,24 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.13.4
+bVersion=2.15.2
 
 Bundle-Name: FasterXML Jackson Processor
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson
 Bundle-Description: Provides Jackson Processor as a bundle
 
-# Note: Exclude /META-INF/versions because it only contains module-info.class
-# When updating, must check each jar to see if the module-info.class has moved
-# or if there are other classess in /META-INF/versions
--includeresource: \
-  @${repo;com.fasterxml.jackson.core:jackson-core;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.13.4;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.core:jackson-databind;2.13.4.2;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.13.4;EXACT}!/!META-INF/versions*,\
-  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.13.4;EXACT}!/!META-INF/versions*
+Multi-Release: true
 
-# Note: snakeyaml is not included in the list above because it's pulled in via the buildpath and Export-Package header
-# so that we can override one of the classes. Listing it in -includeresource would overwrite the class we compile.
+-includeresource: \
+  @${repo;com.fasterxml.jackson.core:jackson-core;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.core:jackson-databind;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.15.2;EXACT}!/!(*/)?module-info.class,\
+  @${repo;org.yaml:snakeyaml;2.0;EXACT}!/!(*/)?module-info.class
 
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.13.4,\
-  org.yaml.snakeyaml.*;version=1.32;-split-package:=merge-first
-
-# Note: -split-package directive is present becase org.yaml.snakeyaml.Yaml is found both on the classpath and in the src directory
-# Requesting "merge-first" means we prefer the version from src since src is always first on the classpath
-
--buildpath: org.yaml:snakeyaml;version=1.32
+  com.fasterxml.jackson.*;version=2.15.2,\
+  org.yaml.snakeyaml.*;version=2.0
