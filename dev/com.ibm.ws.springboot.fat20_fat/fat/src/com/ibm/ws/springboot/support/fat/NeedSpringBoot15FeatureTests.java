@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,8 @@ public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
 
     @Test
     public void testNeedSpringBootFeature15() throws Exception {
-        assertNotNull("No error message was found to enable springBoot-1.5 feature", server.waitForStringInLog("CWWKC0252E"));
+        assertNotNull("No error message was found to enable springBoot-1.5 feature",
+                      server.waitForStringInLog("CWWKC0252E"));
     }
 
     @Override

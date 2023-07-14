@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,8 +35,9 @@ public class NeedSpringBoot20FeatureTests extends AbstractSpringTests {
 
     @Test
     public void testNeedSpringBootFeature20() throws Exception {
-        assertNotNull("No error message was found to enable springBoot-2.0 feature", server.waitForStringInLog("CWWKC0253E"));
-        stopServer(true, "CWWKC0253E", "CWWKZ0002E");
+        assertNotNull("No error message was found to enable springBoot-2.0 feature",
+                      server.waitForStringInLog("CWWKC0278E"));
+        stopServer(true, "CWWKC0278E", "CWWKZ0002E");
     }
 
     @Override
@@ -48,5 +49,4 @@ public class NeedSpringBoot20FeatureTests extends AbstractSpringTests {
     public String getApplication() {
         return SPRING_BOOT_20_APP_BASE;
     }
-
 }

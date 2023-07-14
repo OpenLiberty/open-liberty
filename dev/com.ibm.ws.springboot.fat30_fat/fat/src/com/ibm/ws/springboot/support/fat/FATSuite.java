@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,16 +40,16 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                     // SpringSecurityTests30.class,
                     //   testSpringWithSecurity
                     //   testSpringWithoutSecurity
+                    // Disabled due to application failures.
                 JSPTests30.class,
                     // MissingServletTests30.class,
-                    //   testMissingServletFor30
+                    // Disabled: The jakarta servlet class is being provisioned even without the servlet feature!
                 MissingSslFeatureTests30.class,
                     // MissingWebsocketFeatureTests30.class,
-                    //   testMissingWebsocketFor30
+                    // Disabled: The jakarta web socket class is being provisioned even without the web socket feature!
                 MultiContextTests30.class,
                 MultipleApplicationsNotSupported30.class,
-                    // NeedSpringBootFeatureTests30.class,
-                    //   testNeedSpringBootFeature30
+                NeedSpringBootFeatureTests30.class,
                 InvalidAppTests.class,
                 NoServletRequiredAppTests30.class,
                 SpringBootUtilityThinTest.class,
@@ -57,10 +57,11 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ExtractedAppTests30.class,
                     // WebSocketTests30.class,
                     //   testEchoWebSocket30
+                    // Disabled due to application failures.
                 MimeMapping30.class,
                 ErrorPage30Test.class,
                     // EnableSpringBootTraceTests30.class,
-                    //   testEnableSpringBootTraceFor30
+                    // Disabled: Failing to start web server.  See the test class for details.
                 ExceptionOccuredAfterAppIsAvailableTest30.class,
                 JakartaFeatureTests30.class,
                 TemplateTests30.class,
@@ -70,5 +71,5 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
 })
 
 public class FATSuite {
-
+    // Empty
 }

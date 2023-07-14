@@ -112,7 +112,8 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     @Test
     public void testMultipleApplicationsNotSupported() throws Exception {
         try {
-            String appName = checkOneInstalledApp();
+            String shortAppName = checkOneInstalledApp();
+            String appName = shortAppName + "." + SPRING_APP_TYPE;
 
             removeDropinApps(appName);
             restoreDropinApps(appName);
@@ -167,43 +168,63 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     }
 
     private void removeDropinApps(String installedAppName) throws Exception {
-        RemoteFile serverRoot = getServerRootFile();
-        RemoteFile dropins = getDropinsFile();
+        System.out.println("Removing applications");
 
         for ( String appName : getApplicationNames() ) {
             if ( appName.equals(installedAppName) ) {
-                System.out.println("Skipping installed application [ " + appName + " ]");
                 continue;
             }
-            System.out.println("Removing application file [ " + appName + " ]");
+            System.out.println("Removing application [ " + appName + " ]");
+            xferApp(appName, DO_BACKUP);
 
-            RemoteFile originalFile = new RemoteFile(dropins, appName);
-            RemoteFile backupFile = new RemoteFile(serverRoot, appName );
-            originalFile.rename(backupFile);
-
-            // Note: The dropin remains recorded.
-            // There will be a failed attempt to delete it, which
-            // is a little extra work, and which will fail, but
-            // the failure will be ignored.
+            // Note: The dropin remains recorded by the server.  There
+            // will be a failed attempt to delete it during server cleanup,
+            // which will fail, but the failure will be ignored.
         }
 
-        requireServerMessage("Application not removed", "CWWKT0017I:.*");
+        System.out.println("Removing installed application [ " + installedAppName + " ]");
+        xferApp(installedAppName, DO_BACKUP);
+        requireServerMessage("Installed application not removed", "CWWKT0017I:.*");
+    }
+
+    private static final boolean DO_BACKUP = true;
+    private static final boolean DO_RESTORE = !DO_BACKUP;
+
+    private void xferApp(String appName, boolean doBackup) throws Exception {
+        RemoteFile dropins = getDropinsFile();
+        RemoteFile serverRoot = getServerRootFile();
+
+        RemoteFile originalFile = new RemoteFile(dropins, appName);
+        RemoteFile backupFile = new RemoteFile(serverRoot, appName);
+
+        RemoteFile srcFile;
+        RemoteFile dstFile;
+        if ( doBackup ) {
+            srcFile = originalFile;
+            dstFile = backupFile;
+        } else {
+            srcFile = backupFile;
+            dstFile = originalFile;
+        }
+
+        System.out.println("Renaming [ " + srcFile.getAbsolutePath() + " ]" +
+                           " to [ " + dstFile.getAbsolutePath() + " ]");
+        srcFile.rename(dstFile);
     }
 
     private void restoreDropinApps(String installedAppName) throws Exception {
-        RemoteFile serverRoot = getServerRootFile();
-        RemoteFile dropins = getDropinsFile();
+        System.out.println("Restoring applications");
+
+        System.out.println("Restoring installed application [ " + installedAppName + " ]");
+        xferApp(installedAppName, DO_RESTORE);
+        requireServerMessage("The application was not installed", "CWWKZ0001I:.*");
 
         for ( String appName : getApplicationNames() ) {
             if ( appName.equals(installedAppName) ) {
                 continue;
             }
-
-            RemoteFile backupFile = new RemoteFile(serverRoot, appName);
-            RemoteFile restoredFile = new RemoteFile(dropins, appName);
-            backupFile.rename(restoredFile);
+            System.out.println("Restoring application [ " + appName + " ]");
+            xferApp(appName, DO_RESTORE);
         }
-
-        requireServerMessage("The application was not installed", "CWWKZ0001I:.*");
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,9 @@ public class MissingServletTests20 extends AbstractSpringTests {
 
     @Test
     public void testMissingServletFor20() throws Exception {
-        assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
-        stopServer(true, "CWWKC0254E", "CWWKZ0002E");
+        assertNotNull("No error message CWWKC0279E was found for missing servlet feature ",
+                      server.waitForStringInLog("CWWKC0279E"));
+        stopServer(true, "CWWKC0279E", "CWWKZ0002E");
     }
 
     @Override

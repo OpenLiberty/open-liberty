@@ -32,24 +32,23 @@ public class MissingServletTests30 extends AbstractSpringTests {
         return false;
     }
 
-    // <featureManager>
-    //   <feature>springBoot-3.0</feature>
-    // </featureManager>
+    // Disabled: The jakarta servlet class is being provisioned even without the servlet feature!
     //
-    // [6/20/23, 23:47:52:701 EDT] 00000041 SystemOut
-    //   O Using [ com.ibm.ws.classloading.internal.AppClassLoader@5ad3f40f ]
-    // [6/20/23, 23:47:52:701 EDT] 00000041 SystemOut
-    //   O Failed to locate required class [ com.ibm.ws.springboot.support.web.server.version30.container.LibertyConfiguration ]
-    //     for spring boot version [ 3.0.4 ]
-    //
-    // at com.ibm.ws.springboot.support.shutdown.FeatureAuditor$SpringFeatureRequirement.verify(FeatureAuditor.java:153)
-    //
-    // com.ibm.ws.app.manager.springboot.container.ApplicationError: CWWKC0267E: The application failed to start because the springBoot-1.5 or springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-3.0 feature to be configured.
+    // FeatureAuditor: Found [ true ] class [ org.springframework.web.WebApplicationInitializer ] as [ org/springframework/web/WebApplicationInitializer.class ]
+    // FeatureAuditor: Found [ false ] class [ org.springframework.web.socket.WebSocketHandler ] as [ org/springframework/web/socket/WebSocketHandler.class ]
+    // FeatureAuditor: Found [ false ] class [ com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration ] as [ com/ibm/ws/springboot/support/web/server/version15/container/LibertyConfiguration.class ]
+    // FeatureAuditor: Found [ false ] class [ com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration ] as [ com/ibm/ws/springboot/support/web/server/version20/container/LibertyConfiguration.class ]
+    // FeatureAuditor: Found [ false ] class [ io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration ] as [ io/openliberty/springboot/support/web/server/version30/container/LibertyConfiguration.class ]
+    // FeatureAuditor: Found [ false ] class [ javax.servlet.Servlet ] as [ javax/servlet/Servlet.class ]
+    // FeatureAuditor: Found [ true ] class [ jakarta.servlet.Servlet ] as [ jakarta/servlet/Servlet.class ]
+    // FeatureAuditor: Found [ false ] class [ javax.websocket.WebSocketContainer ] as [ javax/websocket/WebSocketContainer.class ]
+    // FeatureAuditor: Found [ true ] class [ jakarta.websocket.WebSocketContainer ] as [ jakarta/websocket/WebSocketContainer.class ]
 
     @Test
     public void testMissingServletFor30() throws Exception {
-        assertNotNull("No error message was found for missing servlet feature ", server.waitForStringInLog("CWWKC0254E"));
-        stopServer(true, "CWWKC0254E", "CWWKZ0002E");
+        assertNotNull("No error message CWWKC0274E was found for missing servlet feature",
+                      server.waitForStringInLog("CWWKC0274E"));
+        stopServer(true, "CWWKC0274E", "CWWKZ0002E");
     }
 
     @Override

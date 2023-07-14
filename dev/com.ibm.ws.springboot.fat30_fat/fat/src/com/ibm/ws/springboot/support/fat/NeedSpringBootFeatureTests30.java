@@ -33,20 +33,23 @@ public class NeedSpringBootFeatureTests30 extends AbstractSpringTests {
         return false;
     }
 
+    // [ERROR   ] CWWKC0273E: Error: Feature springBoot-3.0 (or higher) must be provisioned:
+    // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application has Spring 3.0 content.
+
     @Test
     public void testNeedSpringBootFeature30() throws Exception {
-        assertNotNull("No error message was found to enable springBoot-3.0 feature", server.waitForStringInLog("CWWKC0253E"));
-        stopServer(true, "CWWKC0253E", "CWWKZ0002E");
+        assertNotNull("No error message was found to enable springBoot-3.0 feature",
+                      server.waitForStringInLog("CWWKC0273E"));
+        stopServer(true, "CWWKC0273E", "CWWKZ0002E");
     }
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));
+        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
     }
 
     @Override
     public String getApplication() {
         return SPRING_BOOT_30_APP_BASE;
     }
-
 }

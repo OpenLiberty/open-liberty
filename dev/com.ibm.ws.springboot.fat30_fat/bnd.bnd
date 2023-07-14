@@ -49,8 +49,8 @@ tested.features: \
   persistencecontainer-3.1, \
   restfulws-3.1, \
   restfulwsclient-3.1, \
+  servlet-3.1, \
   servlet-6.0, \
-  springBoot-3.0, \
   ssl-1.0, \
   transportSecurity-1.0, \
   webprofile-10.0, \
@@ -58,6 +58,7 @@ tested.features: \
   xmlbinding-4.0, \
   xmlws-4.0, \
 \
+  springBoot-2.0, \
   springBoot-3.0
 
 src: \

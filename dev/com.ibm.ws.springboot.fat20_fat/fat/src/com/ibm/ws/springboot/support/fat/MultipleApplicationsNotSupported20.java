@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,11 +15,12 @@ package com.ibm.ws.springboot.support.fat;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -41,7 +42,10 @@ public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-2.0", "servlet-3.1"));
+        Set<String> features = new HashSet<>(2);
+        features.add("springBoot-2.0");
+        features.add("servlet-3.1");
+        return features;
     }
 
     @Override
@@ -59,72 +63,168 @@ public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
         return 3;
     }
 
-    @Test
-    public void testMultipleApplicationsNotSupported() throws Exception {
+    private String[] applicationNames;
+    private String[] shortApplicationNames;
 
-        //Get the name of the application installed so that we can remove it later
-        Collection<String> appNames = new ArrayList<>();
-        String baseName = getApplicationName(SPRING_BOOT_20_APP_BASE);
-        appNames.add(baseName);
-        appNames.add("app.copy0");
-        appNames.add("app.copy1");
-        appNames.add("app.copy2");
-
-        checkOneInsetalledApp(appNames);
-
-        removeDropinApps(appNames);
-
-        //Set mark to end so we can test the messages after we add the dropins app back
-        server.setMarkToEndOfLog();
-
-        restoreDropinApps(appNames);
-
-        checkOneInsetalledApp(appNames);
-
-        stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
+    public String[] getApplicationNames() {
+        if ( applicationNames == null ) {
+            computeAppNames();
+        }
+        return applicationNames;
     }
 
-    private void checkOneInsetalledApp(Collection<String> appNames) throws Exception {
-        Set<String> installedApps = server.getInstalledAppNames(appNames.toArray(new String[0]));
-        assertEquals("Expected number of applications not installed", 1, installedApps.size());
-        String installedApp = installedApps.iterator().next();
+    public String[] getShortApplicationNames() {
+        // The test on 'applicationNames' is correct.
+        if ( applicationNames == null ) {
+            computeAppNames();
+        }
+        return shortApplicationNames;
+    }
 
-        for (String dropinApp : appNames) {
-            if (!dropinApp.equals(installedApp)) {
-                // Make sure we get Error messages indicating multiple spring boot applications cannot be configured in the same server configuration
-                assertNotNull("Expected error message not found for not supporting multiple spring boot applications",
-                              server.waitForStringInLog("CWWKC0255E:.*" + dropinApp + ".*"));
+    protected void computeAppNames() {
+        int numCopies = getDropinCopyNum();
+        String[] shortAppNames = new String[ 1 + numCopies ];
+        String[] appNames = new String[ 1 + numCopies ];
+
+        String appName = getApplication();
+        String appHead = appName.substring(0, appName.length() - 4 );
+
+        shortAppNames[0] = appHead;
+        appNames[0] = appHead + "." + SPRING_APP_TYPE;
+
+        for ( int appNo = 0; appNo < numCopies; appNo++ ) {
+            String shortAppHead = "app.copy" + appNo;
+            shortAppNames[1 + appNo] = shortAppHead;
+            appNames[1 + appNo] = shortAppHead + "." + SPRING_APP_TYPE;
+        }
+
+        shortApplicationNames = shortAppNames;
+        applicationNames = appNames;
+    }
+
+    // [6/20/23, 23:51:30:440 EDT] 00000042 com.ibm.ws.app.manager.AppMessageHelper E
+    // CWWKZ0002E: An exception occurred while starting the application com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT.
+    // The exception message was: java.lang.IllegalStateException:
+    // CWWKC0255E: Spring Boot application com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT cannot be started
+    // because application app.copy1 is already active. You cannot configure multiple Spring Boot applications
+    // in the same server configuration.
+
+    @Test
+    public void testMultipleApplicationsNotSupported() throws Exception {
+        try {
+            String shortAppName = checkOneInstalledApp();
+            String appName = shortAppName + "." + SPRING_APP_TYPE;
+
+            removeDropinApps(appName);
+            restoreDropinApps(appName);
+
+            String newShortAppName = checkOneInstalledApp();
+
+        } finally {
+            stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
+        }
+    }
+
+    private String checkOneInstalledApp() throws Exception {
+        String[] shortAppNames = getShortApplicationNames();
+        RemoteFile dropins = getDropinsFile();
+
+        Set<String> installedAppNames = server.getInstalledAppNames(shortAppNames);
+        assertEquals("Count of installed applications", 1, installedAppNames.size());
+        String installedAppName = installedAppNames.iterator().next();
+        System.out.println("Installed application [ " + installedAppName + " ] on [ " + server + " ]");
+
+        List<String> appErrors = server.findStringsInLogs("CWWKC0255E");
+        System.out.println("Application errors:");
+        for ( String appError : appErrors ) {
+            System.out.println("  [ " + appError + " ]");
+        }
+
+        for ( String shortAppName : shortAppNames ) {
+            if ( shortAppName.equals(installedAppName) ) {
+                continue;
+            }
+
+            String appMessage = shortAppName + " cannot be started";
+            boolean locatedAppError = false;
+            for ( String appError : appErrors ) {
+                if ( appError.contains(appMessage) ) {
+                    locatedAppError = true;
+                    break;
+                }
+            }
+
+            if ( !locatedAppError ) {
+                assertTrue("Failed to locate app error [ " + appMessage + " ]", locatedAppError);
+            } else {
+                System.out.println("Located app error [ " + appMessage + " ]");
             }
         }
 
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
+        server.setMarkToEndOfLog();
 
+        return installedAppName;
     }
 
-    private void removeDropinApps(Collection<String> appNames) throws Exception {
-        RemoteFile dropins = server.getFileFromLibertyServerRoot("dropins");
-        for (String appName : appNames) {
-            String appFileName = appName + '.' + SPRING_APP_TYPE;
-            RemoteFile appFile = new RemoteFile(dropins, appFileName);
-            appFile.rename(new RemoteFile(server.getFileFromLibertyServerRoot(""), appFileName));
+    private void removeDropinApps(String installedAppName) throws Exception {
+        System.out.println("Removing applications");
+
+        for ( String appName : getApplicationNames() ) {
+            if ( appName.equals(installedAppName) ) {
+                continue;
+            }
+            System.out.println("Removing application [ " + appName + " ]");
+            xferApp(appName, DO_BACKUP);
+
+            // Note: The dropin remains recorded by the server.  There
+            // will be a failed attempt to delete it during server cleanup,
+            // which will fail, but the failure will be ignored.
         }
-        assertNotNull("Web application not removed", server.waitForStringInLog("CWWKT0017I:.*"));
+
+        System.out.println("Removing installed application [ " + installedAppName + " ]");
+        xferApp(installedAppName, DO_BACKUP);
+        requireServerMessage("Installed application not removed", "CWWKT0017I:.*");
     }
 
-    private void restoreDropinApps(Collection<String> appNames) throws Exception {
-        RemoteFile dropins = server.getFileFromLibertyServerRoot("dropins");
-        for (String appName : appNames) {
-            String appFileName = appName + '.' + SPRING_APP_TYPE;
-            RemoteFile appFile = new RemoteFile(server.getFileFromLibertyServerRoot(""), appFileName);
-            RemoteFile restoreDest = new RemoteFile(dropins, "restore." + appFileName);
-            appFile.rename(restoreDest);
-            dropinFiles.add(restoreDest);
+    private static final boolean DO_BACKUP = true;
+    private static final boolean DO_RESTORE = !DO_BACKUP;
+
+    private void xferApp(String appName, boolean doBackup) throws Exception {
+        RemoteFile dropins = getDropinsFile();
+        RemoteFile serverRoot = getServerRootFile();
+
+        RemoteFile originalFile = new RemoteFile(dropins, appName);
+        RemoteFile backupFile = new RemoteFile(serverRoot, appName);
+
+        RemoteFile srcFile;
+        RemoteFile dstFile;
+        if ( doBackup ) {
+            srcFile = originalFile;
+            dstFile = backupFile;
+        } else {
+            srcFile = backupFile;
+            dstFile = originalFile;
         }
-        assertNotNull("The application was not installed", server
-                        .waitForStringInLog("CWWKZ0001I:.*"));
+
+        System.out.println("Renaming [ " + srcFile.getAbsolutePath() + " ]" +
+                           " to [ " + dstFile.getAbsolutePath() + " ]");
+        srcFile.rename(dstFile);
     }
 
-    private String getApplicationName(String application) {
-        return application.substring(0, application.lastIndexOf("."));
+    private void restoreDropinApps(String installedAppName) throws Exception {
+        System.out.println("Restoring applications");
+
+        for ( String appName : getApplicationNames() ) {
+            if ( appName.equals(installedAppName) ) {
+                continue;
+            }
+            System.out.println("Restoring application [ " + appName + " ]");
+            xferApp(appName, DO_RESTORE);
+        }
+
+        System.out.println("Restoring installed application [ " + installedAppName + " ]");
+        xferApp(installedAppName, DO_RESTORE);
+        requireServerMessage("The application was not installed", "CWWKZ0001I:.*");
     }
 }

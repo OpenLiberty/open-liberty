@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,6 +87,7 @@ public abstract class AbstractSpringTests {
     protected static final String DEFAULT_HOST_WITH_APP_PORT = "DefaultHostWithAppPort";
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("SpringBootTests");
+
     static {
         DEFAULT_HTTP_PORT = server.getHttpDefaultPort();
         DEFAULT_HTTPS_PORT = server.getHttpDefaultSecurePort();
@@ -94,8 +96,50 @@ public abstract class AbstractSpringTests {
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
         javaVersion = System.getProperty("java.version"); // Pre-JDK 9 the java.version is 1.MAJOR.MINOR, post-JDK 9 its MAJOR.MINOR
-
     }
+
+    public static void requireServerMessage(String msg, String regex) {
+        assertNotNull( msg, server.waitForStringInLog(regex) );
+    }
+
+    public static void requireServerTrace(String msg, String regex) {
+        String traceMsg = server.waitForStringInTraceUsingLastOffset(regex);
+        assertNotNull(msg, traceMsg);
+    }
+
+    public static void requireServerTrace(String msg, String regex, long timeout) {
+        String traceMsg = server.waitForStringInTraceUsingLastOffset(regex, timeout);
+        assertNotNull(msg, traceMsg);
+    }
+
+    public static void forbidServerTrace(String msg, String regex, long timeout) {
+        String traceMsg = server.waitForStringInTraceUsingLastOffset(regex, timeout);
+        assertNull(msg, traceMsg);
+    }
+
+    public static RemoteFile getServerFile(String name) throws Exception {
+        return server.getFileFromLibertyServerRoot(name);
+    }
+
+    public static RemoteFile serverRootFile;
+    public static RemoteFile dropinsFile;
+
+    public static RemoteFile getServerRootFile() throws Exception {
+        if ( serverRootFile == null ) {
+            serverRootFile = getServerFile("");
+        }
+        return serverRootFile;
+    }
+
+    public static RemoteFile getDropinsFile() throws Exception {
+        if ( dropinsFile == null ) {
+            dropinsFile = new RemoteFile( getServerRootFile(), "dropins" );
+        }
+        return dropinsFile;
+    }
+
+    //
+
     public static final AtomicBoolean serverStarted = new AtomicBoolean();
     public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
     private static final Properties bootStrapProperties = new Properties();

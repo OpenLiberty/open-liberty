@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MissingServletTests20.class,
                 MissingSslFeatureTests.class,
                 MissingWebsocketFeatureTests20.class,
-                //   testMissingWebsocketFor20
                 MultContextTests20.class,
                 MultipleApplicationsNotSupported20.class,
                 NeedSpringBoot15FeatureTests.class,
@@ -62,7 +61,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebAnnotationTests20.class,
                 ExtractedAppTests20.class,
                 WebSocketTests20.class,
-                //   testEchoWebSocket20
                 MimeMapping15.class,
                 MimeMapping20.class,
                 ErrorPage15Test.class,
@@ -78,5 +76,5 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
 })
 
 public class FATSuite {
-
+    // EMPTY
 }

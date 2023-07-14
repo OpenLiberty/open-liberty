@@ -61,17 +61,8 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         String resourceName = asResourceName(className);
         boolean foundClass = ( classLoader.getResource(resourceName) != null );
 
-        //        if ( !foundClass ) {
-        //            try {
-        //                Class.forName(className);
-        //                System.out.println("Loaded [ true ] class [ " + className + " ]");
-        //            } catch ( ClassNotFoundException e ) {
-        //                System.out.println("Loaded [ false ] class [ " + className + " ]");
-        //            }
-        //        }
-        //
-        //        System.out.println("Found [ " + foundClass + " ] class [ " + className + " ] as [ " + resourceName + " ]");
-        //        System.out.println("Using [ " + classLoader + " ]");
+        // System.out.println("FeatureAuditor: Found [ " + foundClass + " ] class [ " + className + " ] as [ " + resourceName + " ]");
+        // System.out.println("FeatureAuditor: Using [ " + classLoader + " ]");
 
         return foundClass;
     }
@@ -79,14 +70,6 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
     protected static void warning(Type msgId, Object...parms) {
         ApplicationTr.warning(msgId, parms);
     }
-
-    public static final String SPRING15_FACTORY = "org.springframework.boot.context.embedded.EmbeddedServletContainerFactory";
-    public static final String SPRING20_FACTORY = "org.springframework.boot.web.servlet.server.ServletWebServerFactory";
-    // The Spring 3.0 factory is the same as the Spring 2.0 factory.
-
-    public static final String LIBERTY15_CONFIG = "com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration";
-    public static final String LIBERTY20_CONFIG = "com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration";
-    public static final String LIBERTY30_CONFIG = "com.ibm.ws.springboot.support.web.server.version30.container.LibertyConfiguration";
 
     /**
      * Verify that the liberty server is provisioned correctly for the current spring version.
@@ -110,110 +93,188 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
-        String springBootVersion = SpringBootVersion.getVersion();
-        //        System.out.println("spring.boot.version = " + springBootVersion);
-        boolean springIsAtLeast20 = ( springBootVersion.compareTo("2.0.0") >= 0 );
-        boolean springIsAtLeast30 = ( springBootVersion.compareTo("3.0.0") >= 0 );
+        String appSpringBootVersion = SpringBootVersion.getVersion();
+        boolean appHasSpring30 = ( appSpringBootVersion.compareTo("3.0.0") >= 0 );
+        boolean appHasSpring20 = ( !appHasSpring30 && appSpringBootVersion.compareTo("2.0.0") >= 0 );
+        boolean appHasSpring15 = ( !appHasSpring30 && !appHasSpring20 );
+
+        boolean appUsesServlets = isClassAvailable("org.springframework.web.WebApplicationInitializer");
+        boolean appUsesWebsockets = isClassAvailable("org.springframework.web.socket.WebSocketHandler");
+
+        // Previously, the application was tested for either
+        // "org.springframework.boot.context.embedded.EmbeddedServletContainerFactory"
+        // or for
+        // "org.springframework.boot.web.servlet.server.ServletWebServerFactory"
+        //
+        // However, these checks are consistency checks against the spring application
+        // content.  The checks were removed.
+
+        // https://www.ibm.com/docs/en/was-liberty/base?topic=liberty-deploying-spring-boot-application
+
+        // Current features of note:
+        // (javax) springBoot-1.5, springBoot-2.0, (jakarta) springBoot-3.0
+        // (javax) servlet-3.1, (javax) servlet-4.0, (jakarta) servlet-6.0
+        // (javax) websocket-1.0, (javax) websocket-1.1, (jakarta) websocket-2.0, (jakarta) websocket-2.1
+
+        // 1.5, 2.0: servlet-3.1, servlet-4.0, websocket-1.0, websocket-1.1
+        // 3.0: servlet-6.0, websocket-2.0, websocket-2.1
+
+        boolean libertyHasSpring15 =
+            isClassAvailable("com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration");
+        boolean libertyHasSpring20 =
+            isClassAvailable("com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration");
+        boolean libertyHasSpring30 =
+            isClassAvailable("io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration");
+
+        boolean libertyHasJavaxServlets = isClassAvailable("javax.servlet.Servlet");
+        boolean libertyHasJakartaServlets = isClassAvailable("jakarta.servlet.Servlet");
+
+        boolean libertyHasJavaxWebsockets = isClassAvailable("javax.websocket.WebSocketContainer");
+        boolean libertyHasJakartaWebsockets = isClassAvailable("jakarta.websocket.WebSocketContainer");
+
+        // First, test that the Spring Boot version can be run with the current java.
+
+        // https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.system-requirements
+        //
+        // "Spring Boot 3.1.1 requires Java 17 and is compatible up to and
+        // including Java 20. Spring Framework 6.0.10 or above is also required."
+        //
+        // https://endoflife.date/spring-boot
+        // 3.0 - 3.1 	17 - 20
+        //
+        // 2.7 	         8 - 20
+        // 2.6 	         8 - 19
+        // 2.5 	         8 - 18
+        // 2.4 	         8 - 16
+        // 2.2 - 2.3 	 8 - 15
+        // 2.1 	         8 - 12
+        // 2.0 	         8 - 9
+        //
+        // 1.5 	         6 - 8
 
         String javaVersion = System.getProperty("java.version");
-        //        System.out.println("java.version = " + javaVersion);
-
         String javaSpecVersion = System.getProperty("java.vm.specification.version");
-        //        System.out.println("java.vm.specification.version = " + javaSpecVersion);
-
         int javaSpecVersionNo = Integer.parseInt(javaSpecVersion);
 
         int requiredJavaVersion;
         String requiredVersionText;
-        boolean isSatisfied;
 
-        if ( !springIsAtLeast20 ) {
-            requiredJavaVersion = 7;
-            requiredVersionText = "Java 7";
-        } else if ( !springIsAtLeast30 ) {
+        if ( libertyHasSpring15 ) {
             requiredJavaVersion = 8;
-            requiredVersionText = "Java 8";
-        } else {
-            requiredJavaVersion = 17;
-            requiredVersionText = "Java 17";
-        }
+            requiredVersionText = "JavaSE-1.8";
 
-        if ( javaSpecVersionNo < requiredJavaVersion ) {
-            warning(Type.WARNING_UNSUPPORTED_JAVA_VERSION, javaVersion, springBootVersion, requiredVersionText);
-        } else {
-            //            System.out.println("Validated required java version [ " + requiredVersionText + " ]" +
-            //                               " for Spring Boot version [ " + springBootVersion + " ]");
-        }
+            // Spring 1.5 does not support java versions above 1.8.
+            //
+            // Java 1.7 and Java 1.6 are not supported by Liberty, and were removed
+            // as allowed java versions.
 
-        if ( springIsAtLeast30 ) {
-            if ( isClassAvailable(SPRING20_FACTORY) &&
-                 (isClassAvailable(LIBERTY15_CONFIG) || isClassAvailable(LIBERTY20_CONFIG)) ) {
-                if ( !isClassAvailable(LIBERTY30_CONFIG) ) {
-                    //                    System.out.println("Failed to liberty spring configuration class [ " + LIBERTY30_CONFIG + " ]");
-                    throw new ApplicationError(Type.ERROR_NEED_SPRING_BOOT_VERSION_30);
-                }
+            if ( javaSpecVersionNo != requiredJavaVersion ) {
+                ApplicationTr.warning("warning.unsupported.spring.java.version",
+                                      javaVersion, appSpringBootVersion, requiredVersionText);
+                // CWWKC0271W: The current Java version {0} does not support the provisioned
+                // Spring Boot version {1}: Java version {2} is required.
+             }
+
+        } else { 
+            // The checking was relaxed to put all Spring 2 versions under a single
+            // requirement.
+            //
+            // The highest supported version is explicitly not checked.  The reason for
+            // the restriction to JavaSE-20 (see above) is not clear.
+
+            if ( libertyHasSpring20 ) {
+                requiredJavaVersion = 8;
+                requiredVersionText = "JavaSE-1.8";
+            } else { // ( libertyHasSpring30 )
+                requiredJavaVersion = 17;
+                requiredVersionText = "JavaSE-17.0";
             }
-        } else if ( springIsAtLeast20 ) {
-            if ( isClassAvailable(SPRING20_FACTORY) &&
-                 (isClassAvailable(LIBERTY15_CONFIG) || isClassAvailable(LIBERTY30_CONFIG)) ) {
-                if ( !isClassAvailable(LIBERTY20_CONFIG) ) {
-                    //                    System.out.println("Failed to liberty spring configuration class [ " + LIBERTY20_CONFIG + " ]");
-                    throw new ApplicationError(Type.ERROR_NEED_SPRING_BOOT_VERSION_20);
-                }
-            }
-        } else {
-            if ( isClassAvailable(SPRING15_FACTORY) &&
-                 (isClassAvailable(LIBERTY20_CONFIG) || isClassAvailable(LIBERTY30_CONFIG)) ) {
-                if ( !isClassAvailable(LIBERTY15_CONFIG) ) {
-                    //                    System.out.println("Failed to liberty spring configuration class [ " + LIBERTY15_CONFIG + " ]");
-                    throw new ApplicationError(Type.ERROR_NEED_SPRING_BOOT_VERSION_15);
-                }
+
+            if ( javaSpecVersionNo < requiredJavaVersion ) {
+                ApplicationTr.warning("warning.unsupported.spring.java.version",
+                                      javaVersion, appSpringBootVersion, requiredVersionText);
+                // CWWKC0270W: The current Java version {0} does not support the provisioned
+                // Spring Boot version {1}: Java version {2} or higher is required.
             }
         }
 
-        // Servlet and WebSocket might not be used by the application.
-        // This is detected by the inclusion of a spring class.
+        // Next, look for mismatched features:
+
+        // Leaving this off: Feature intercompatibility should checked as a
+        // usual step of feature initialization, well before applications are
+        // started.
+
+        // String featureErrCode = null;
+
+        // if ( libertyHasSpring30 ) {
+        //     if ( libertyHasJavaxServlets ) {
+        //         featureErrCode = "error.spring3.requires.servlet6";
+        //         // "Error: The feature servlet-6.0 (or higher) must be provisioned:
+        //         // Features springBoot-3.0 and servlet-3.1 or servlet-4.0 are provisioned."
+        //     } else if ( libertyHasJavaxWebsockets ) {
+        //         featureErrCode = "error.spring3.requires.websocket2";
+        //         // "Error: The feature websocket-2.0 (or higher) must be provisioned:
+        //         // Features springBoot-3.0 and websocket-1.0 or websocket-1.1 are provisioned."
+        //     }
         //
-        // Note: This is an approximate test, depending on whether the
-        // spring packaging is minimal for the function in use.  That is
-        // to say, the spring class might be included in the packaging but
-        // is unused.
+        // } else if ( libertyHasSpring20 || libertyHasSpring15 ) {
+        //     if ( libertyHasJakartaServlets ) {
+        //         featureErrCode = "error.spring2.requires.servlet31";
+        //         // "Error: The feature servlet-3.1 or servlet-4.0 must be provisioned:
+        //         // Features springBoot-1.5 or springBoot-2.0 with servlet-6.0 (or higher) are provisioned."
+        //     } else if ( libertyHasJakartaWebsockets ) {
+        //         featureErrCode = "error.spring2.requires.websocket1";
+        //         // "Error: The feature websocket-1.0 or websocket-1.1 must be provisioned:
+        //         // Features springBoot-1.5 or springBoot-2.0 with websocket-2.0 (or higher) are provisioned."
+        //     }
+        // }
         //
-        // Note: This component is not transformed for jakarta.  That means that
-        // support for both javax and jakarta versions of the required API classes
-        // is provided, and means that the class availability test must not be coded
-        // with reference the target class.
+        // if ( featureErrCode != null ) {
+        //     ApplicationTr.error(featureErrCode);
+        //     return;
+        // }
 
-        if ( isClassAvailable("org.springframework.web.WebApplicationInitializer") ) {
-            String servletClassName =
-                ( springIsAtLeast30 ? "jakarta.servlet.Servlet" : "javax.servlet.Servlet");
-            if ( !isClassAvailable(servletClassName) ) {
-                //                System.out.println("Failed to locate servlet class [ " + servletClassName + " ]");
-                throw new ApplicationError(Type.ERROR_MISSING_SERVLET_FEATURE);
-            } else {
-                //                System.out.println("The Spring Servlet function was located;" +
-                //                                   " the base Servlet API is provisioned.");
+        // Then, look content errors:
+        //   The liberty spring version must be correct for the application content.
+        //   The liberty servlet and websocket versions must be correct for the application contents.
+
+        String appErrorCode = null;
+
+        if ( appHasSpring30 ) {
+            if ( libertyHasSpring15 || libertyHasSpring20 ) {
+                appErrorCode = "error.spring3.required";
+                // "CWWKC0273E: Error: Feature springBoot-3.0 (or higher) must be provisioned:
+                // Feature springBoot-1.5 or springBoot-2.0 is provisioned
+                // and the application has Spring 3.0 content."
+            } else if ( appUsesServlets && !libertyHasJakartaServlets ) {
+                appErrorCode = "error.spring3.requires.servlet6.application";
+                // "CWWKC0274E: Error: Feature servlet-6.0 (or higher) must be provisioned:
+                // Feature springBoot-3.0 is provisioned and the application uses Servlets."
+            } else if ( appUsesWebsockets && !libertyHasJakartaWebsockets ) {
+                appErrorCode = "error.spring3.requires.websocket2.application";
+                // "CWWKC0275E: Error: Feature websocket-2.0 (or higher) must be provisioned:
+                // Feature springBoot-3.0 is provisioned and the application uses WebSockets."
             }
-        } else {
-            //            System.out.println("The Spring Servlet function was not located.");
+
+        } else { // ( appHasSpring20 || appHasSpring15 )
+            if ( libertyHasSpring30 ) {
+                appErrorCode = "error.spring2.required";
+                // "CWWKC0278E: Error: Feature springBoot-1.5 or springBoot-2.0 must be provisioned:
+                // Feature springBoot-3.0 (or higher) is provisioned
+                // and the application has Spring 1.5 or Spring 2.0 content."
+            } else if ( appUsesServlets && !libertyHasJavaxServlets ) {
+                appErrorCode = "error.spring2.requires.servlet31.application";
+                // "CWWKC0279E: Error: Feature servlet-3.1 or servlet-4.0 must be provisioned:
+                // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses Servlets."
+            } else if ( appUsesWebsockets && !libertyHasJavaxWebsockets ) {
+                appErrorCode = "error.spring2.requires.websocket1.application";
+                // "CWWKC0280E: Error: Feature websocket-1.0 or websocket-1.1 must be provisioned:
+                // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses WebSockets."
+            }
         }
 
-        String webSocketHandlerClassName = "org.springframework.web.socket.WebSocketHandler";
-
-        if ( isClassAvailable(webSocketHandlerClassName) ) {
-            //            System.out.println("Noted WebSocket spring class [ " + webSocketHandlerClassName + " ]");
-
-            String webSocketClassName =
-                ( springIsAtLeast30 ? "jakarta.websocket.WebSocketContainer" : " javax.websocket.WebSocketContainer" );
-            if ( !isClassAvailable(webSocketClassName) ) {
-                System.out.println("Failed to locate websocket class [ " + webSocketClassName + " ]");
-                // throw new ApplicationError(Type.ERROR_MISSING_WEBSOCKET_FEATURE);
-            } else {
-                //                System.out.println("The Spring WebSocket function was located;" +
-                //                                   " the base WebSocket API is provisioned.");
-            }
-        } else {
-            //            System.out.println("The Spring WebSocket function was not located.");
+        if ( appErrorCode != null ) {
+            ApplicationTr.error(appErrorCode);
         }
     }
 }
