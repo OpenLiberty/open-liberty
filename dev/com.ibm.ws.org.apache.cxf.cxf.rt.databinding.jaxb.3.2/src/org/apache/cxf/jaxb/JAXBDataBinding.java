@@ -1017,9 +1017,8 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding imp
             ValidationEventHandler oldEventHandler = unm.getEventHandler();
             Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
             if (!setEventHandler) {
-                addTrace("setEventHandler is set to false"); // Liberty change
                 if (handlerClass != DefaultValidationEventHandler.class) {
-                    addTrace("ValidationEventHandler class is not the default"); // Liberty change
+                    addTrace("ValidationEventHandler class which is not the default, is not set"); // Liberty change
                     // Don't add an eventHandler if the unmarshaller doesn't already have one.
                     // unm.setEventHandler(null);
                 }
@@ -1034,15 +1033,30 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding imp
                 unm.setListener(unmarshallerListener);
                 addTrace("UnmarshallerListener is set"); // Liberty change
             }
+
+            boolean ignoreUnknownElements;
+            String ignoreUnknownElementsText = System.getProperty("com.ibm.ws.webservices.ignoreUnknownElements");
+            if (ignoreUnknownElementsText != null
+                && ignoreUnknownElementsText.trim().length() > 0
+                && ignoreUnknownElementsText.trim().equalsIgnoreCase("true")) {
+                ignoreUnknownElements = true;
+            } else {
+                ignoreUnknownElements = false;
+            }
+            
             if (setEventHandler) {
-                unm.setEventHandler(veventHandler);
-                addTrace("ValidationEventHandler is set"); // Liberty change
+                if (!ignoreUnknownElements) { // Liberty change
+                    unm.setEventHandler(veventHandler);
+                    addTrace("ValidationEventHandler is set"); // Liberty change
+                } else {
+                    // If com.ibm.ws.webservices.ignoreUnknownElements is set to true, skip setting validation
+                    addTrace("com.ibm.ws.webservices.ignoreUnknownElements is set to true. ValidationEventHandler is not set"); // Liberty change  
+                }
             }
             if (unmarshallerProperties != null) {
                 for (Map.Entry<String, Object> propEntry : unmarshallerProperties.entrySet()) {
                     try {
-                        unm.setProperty(propEntry.getKey(), propEntry.getValue());
-                        addTrace("Unmarshaller Property key: " + propEntry.getKey() + ", value: " + propEntry.getValue()); // Liberty change        
+                        unm.setProperty(propEntry.getKey(), propEntry.getValue());   
                     } catch (PropertyException pe) {
                         LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
                     }

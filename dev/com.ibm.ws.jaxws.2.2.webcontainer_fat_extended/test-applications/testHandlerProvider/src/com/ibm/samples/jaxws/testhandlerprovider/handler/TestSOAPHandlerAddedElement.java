@@ -10,25 +10,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.samples.jaxws.client.handler;
+package com.ibm.samples.jaxws.testhandlerprovider.handler;
 
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import javax.xml.namespace.QName;
+import javax.xml.soap.Node;
+import javax.xml.soap.SOAPException;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
-    @Resource(name = "soapArg0")
-    private String initParam;
+public class TestSOAPHandlerAddedElement implements SOAPHandler<SOAPMessageContext> {
 
     @PostConstruct
     public void initialize() {
-        System.out.println(this.getClass().getName() + ": init param \"soapArg0\" = " + initParam);
         System.out.println(this.getClass().getName() + ": postConstruct is invoked");
     }
 
@@ -49,8 +47,17 @@ public class TestSOAPHandler implements SOAPHandler<SOAPMessageContext> {
         if (!isOut) {
             System.out.println(this.getClass().getName() + ": handle inbound message");
         } else {
-            //add another soap element to the soap body to make it fail
-            // modify context to add get namespace
+            // An element is added to SOAP Body the create  "javax.xml.ws.soap.SOAPFaultException: Unmarshalling Error: unexpected element"
+            try {
+                Node returnNode = (Node) context.getMessage().getSOAPBody().getFirstChild();
+                Node an = context.getMessage().getSOAPBody().addChildElement("return1");
+                an.setTextContent("dontsayhello");
+                returnNode.appendChild(an);
+                System.out.println(this.getClass().getName() + ": an unkown element added");
+
+            } catch (SOAPException e) {
+                e.printStackTrace();
+            }
             System.out.println(this.getClass().getName() + ": handle outbound message");
         }
         return true;

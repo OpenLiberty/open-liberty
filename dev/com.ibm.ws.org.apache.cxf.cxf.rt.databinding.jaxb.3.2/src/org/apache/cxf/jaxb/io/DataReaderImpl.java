@@ -32,6 +32,7 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
+import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.jaxb.JAXBUtils;
@@ -87,25 +88,19 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     }
 
     public void setProperty(String prop, Object value) {
-        addTrace("Property to be set: " + prop + ", value: " + value.toString()); // Liberty change
         if (prop.equals(JAXBDataBinding.UNWRAP_JAXB_ELEMENT)) {
             unwrapJAXBElement = Boolean.TRUE.equals(value);
             addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
         } else if (prop.equals(org.apache.cxf.message.Message.class.getName())) {
             org.apache.cxf.message.Message m = (org.apache.cxf.message.Message) value;
-            if(null==m.getDestination())        // If destination is not null it's an Inbound Web Service
-                addTrace("Outbound Web Service");
-            else
-                addTrace("Inbound Web Service");
-                
-            addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
-            
+
             veventHandler = getValidationEventHandler(m, JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER);
+
             if (veventHandler == null) {
                 veventHandler = databinding.getValidationEventHandler();
             }
-            setEventHandler = MessageUtils.getContextualBoolean(m,
-                                                                JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
+
+            setEventHandler = MessageUtils.getContextualBoolean(m, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
             addTrace("SetEventHandler is set to: " + setEventHandler + " trough message context"); // Liberty change
 
             Object unwrapProperty = m.get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
@@ -122,7 +117,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     private Unmarshaller createUnmarshaller() {
         try {
             // Liberty change begin
-            // Move the logic that is 
+            // Move the logic that is         
             Unmarshaller um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
             if (um == null) {
                 addTrace("Unmarshaller is null"); // Liberty change
@@ -152,7 +147,6 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
                 addTrace("AttachmentUnmarshaller is set to Unmarshaller"); // Liberty change
                 for (XmlAdapter<?, ?> adapter : databinding.getConfiguredXmlAdapters()) {
                     um.setAdapter(adapter);
-                    addTrace("XmlAdapter: " + adapter + " is set to Unmarshaller"); // Liberty change
                 }
             }
             return um;

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
+/**
+ *
+ */
 @RunWith(FATRunner.class)
 public class HandlerChainTest {
 
@@ -47,6 +50,9 @@ public class HandlerChainTest {
 
     @Server("XmlOverrideHandlerChainTestServer")
     public static LibertyServer xmlServer;
+
+    @Server("AddedElementHandlerChainTestServer")
+    public static LibertyServer addedElementServer;
 
 //    private final static QName serviceQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterService");
 //    private final static QName portQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterPort");
@@ -73,6 +79,14 @@ public class HandlerChainTest {
         ShrinkHelper.defaultDropinApp(xmlServer, "testHandlerClient", "com.ibm.samples.jaxws.client",
                                       "com.ibm.samples.jaxws.client.handler",
                                       "com.ibm.samples.jaxws.client.servlet");
+        // Identical to xmlServer
+        ShrinkHelper.defaultDropinApp(addedElementServer, "testHandlerProvider", "com.ibm.samples.jaxws.testhandlerprovider",
+                                      "com.ibm.samples.jaxws.testhandlerprovider.handler",
+                                      "com.ibm.samples.jaxws.testhandlerprovider.service");
+
+        ShrinkHelper.defaultDropinApp(addedElementServer, "testHandlerClient", "com.ibm.samples.jaxws.client",
+                                      "com.ibm.samples.jaxws.client.handler",
+                                      "com.ibm.samples.jaxws.client.servlet");
     }
 
     @After
@@ -82,6 +96,9 @@ public class HandlerChainTest {
         }
         if (xmlServer != null && xmlServer.isStarted()) {
             xmlServer.stopServer();
+        }
+        if (addedElementServer != null && addedElementServer.isStarted()) {
+            addedElementServer.stopServer();
         }
     }
 
@@ -158,6 +175,26 @@ public class HandlerChainTest {
      * }
      */
 
+    /**
+     * Negative test designed to fail unless com.ibm.ws.webservices.ignoreUnknownElements is set to true
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testClientHandlerChainAddedElement() throws Exception {
+
+        addedElementServer.startServer("HandlerChainClientAddedElement.log");
+
+        // Visit the URL:  http://hostName:hostPort/testHandlerClient/TestServiceServlet?target=user
+        runTest(addedElementServer, "testHandlerClient/TestServiceServlet?target=AddedElement");
+
+        // Uninstall the applications
+        uninstallApplications(addedElementServer);
+
+        assertNotNull("Expected Unmarshalling Error: unexpected element exception is not thrown",
+                      addedElementServer.waitForStringInLog("xml.ws.soap.SOAPFaultException: Unmarshalling Error: unexpected element "));
+    }
+
     @Test
     public void testClientAnnotatedHandlerChain() throws Exception {
 
@@ -190,6 +227,7 @@ public class HandlerChainTest {
                         //"com.ibm.samples.jaxws.client.handler.TestLogicalHandler: PreDestroy is invoked",
                         //"com.ibm.samples.jaxws.client.handler.TestSOAPHandler: PreDestroy is invoked"
         });
+
     }
 
     @Test
@@ -236,16 +274,20 @@ public class HandlerChainTest {
                                                             "com.ibm.samples.jaxws.client.handler.TestSOAPHandler: postConstruct is invoked",
                                                             "com.ibm.samples.jaxws.client.handler.TestLogicalHandler: postConstruct is invoked",
         });
-
     }
 
-    private void assertResponseNotNull(LibertyServer server, String pathAndParams) throws ProtocolException, IOException {
+    private String runTest(LibertyServer server, String pathAndParams) throws ProtocolException, IOException {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + pathAndParams);
         Log.info(this.getClass(), "assertResponseNotNull", "Calling Application with URL=" + url.toString());
 
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);
         String line = br.readLine();
+        return line;
+    }
+
+    private void assertResponseNotNull(LibertyServer server, String pathAndParams) throws ProtocolException, IOException {
+        String line = runTest(server, pathAndParams);
         //If there is output then the Application automatically installed correctly
         assertNotNull("The content of the response is null", line);
     }

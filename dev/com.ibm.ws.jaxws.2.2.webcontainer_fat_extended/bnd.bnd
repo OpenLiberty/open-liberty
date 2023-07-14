@@ -70,30 +70,31 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-core;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-management;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.4.3,\
-	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=3.4.3,\
-	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
-	org.apache.cxf.xjcplugins:cxf-xjc-ts;version=2.6.0,\
-	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version=2.6.0,\
-	org.springframework:spring-aop;version=3.0.7.RELEASE,\
-	org.springframework:spring-asm;version=3.0.7.RELEASE,\
-	org.springframework:spring-beans;version=3.0.7.RELEASE,\
-	org.springframework:spring-context;version=3.0.7.RELEASE,\
-	org.springframework:spring-core;version=3.0.7.RELEASE,\
-	org.springframework:spring-expression;version=3.0.7.RELEASE,\
-	org.springframework:spring-web;version=3.0.7.RELEASE,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-core;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-management;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version='3.4.3',\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version='3.4.3',\
+	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-dv;version='2.6.0',\
+	org.apache.cxf.xjcplugins:cxf-xjc-ts;version='2.6.0',\
+	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version='2.6.0',\
+	org.springframework:spring-aop;version='3.0.7.RELEASE',\
+	org.springframework:spring-asm;version='3.0.7.RELEASE',\
+	org.springframework:spring-beans;version='3.0.7.RELEASE',\
+	org.springframework:spring-context;version='3.0.7.RELEASE',\
+	org.springframework:spring-core;version='3.0.7.RELEASE',\
+	org.springframework:spring-expression;version='3.0.7.RELEASE',\
+	org.springframework:spring-web;version='3.0.7.RELEASE',\
 	fattest.simplicity,\
 	com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.ws.org.slf4j.jdk14;version=latest
+	com.ibm.ws.org.slf4j.jdk14;version=latest,\
+	jakarta.xml.soap-api
   
 	
