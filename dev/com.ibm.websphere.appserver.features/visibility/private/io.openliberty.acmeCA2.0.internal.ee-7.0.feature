@@ -7,9 +7,6 @@ singleton=true
 -features=\
   com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="3.1"
 -bundles=\
-  com.ibm.ws.security.acme, \
-  io.openliberty.org.bouncycastle.bcpkix-jdk18on, \
-  io.openliberty.org.bouncycastle.bcprov-jdk18on, \
-  io.openliberty.org.bouncycastle.bcutil-jdk18on
+  com.ibm.ws.security.acme
 kind=ga
 edition=base
