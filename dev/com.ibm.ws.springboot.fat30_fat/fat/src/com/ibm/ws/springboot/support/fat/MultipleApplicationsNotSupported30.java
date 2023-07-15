@@ -102,13 +102,6 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
         applicationNames = appNames;
     }
 
-    // [6/20/23, 23:51:30:440 EDT] 00000042 com.ibm.ws.app.manager.AppMessageHelper E
-    // CWWKZ0002E: An exception occurred while starting the application com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT.
-    // The exception message was: java.lang.IllegalStateException:
-    // CWWKC0255E: Spring Boot application com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT cannot be started
-    // because application app.copy1 is already active. You cannot configure multiple Spring Boot applications
-    // in the same server configuration.
-
     @Test
     public void testMultipleApplicationsNotSupported() throws Exception {
         try {
@@ -118,7 +111,7 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
             removeDropinApps(appName);
             restoreDropinApps(appName);
 
-            String newAppName = checkOneInstalledApp();
+            String newShortAppName = checkOneInstalledApp();
 
         } finally {
             stopServer(true, "CWWKC0255E", "CWWKZ0002E", "CWWKZ0014W");
@@ -215,10 +208,6 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
     private void restoreDropinApps(String installedAppName) throws Exception {
         System.out.println("Restoring applications");
 
-        System.out.println("Restoring installed application [ " + installedAppName + " ]");
-        xferApp(installedAppName, DO_RESTORE);
-        requireServerMessage("The application was not installed", "CWWKZ0001I:.*");
-
         for ( String appName : getApplicationNames() ) {
             if ( appName.equals(installedAppName) ) {
                 continue;
@@ -226,5 +215,9 @@ public class MultipleApplicationsNotSupported30 extends AbstractSpringTests {
             System.out.println("Restoring application [ " + appName + " ]");
             xferApp(appName, DO_RESTORE);
         }
+
+        System.out.println("Restoring installed application [ " + installedAppName + " ]");
+        xferApp(installedAppName, DO_RESTORE);
+        requireServerMessage("The application was not installed", "CWWKT0016I:.*");
     }
 }

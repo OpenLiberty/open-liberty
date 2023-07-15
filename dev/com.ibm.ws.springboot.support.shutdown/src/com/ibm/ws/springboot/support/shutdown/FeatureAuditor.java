@@ -98,6 +98,11 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         boolean appHasSpring20 = ( !appHasSpring30 && appSpringBootVersion.compareTo("2.0.0") >= 0 );
         boolean appHasSpring15 = ( !appHasSpring30 && !appHasSpring20 );
 
+        // System.out.println("SB Version [ " + appSpringBootVersion + " ]");
+        // System.out.println("SB 30 [ " + appHasSpring30 + " ]");
+        // System.out.println("SB 20 [ " + appHasSpring20 + " ]");
+        // System.out.println("SB 15 [ " + appHasSpring15 + " ]");
+
         boolean appUsesServlets = isClassAvailable("org.springframework.web.WebApplicationInitializer");
         boolean appUsesWebsockets = isClassAvailable("org.springframework.web.socket.WebSocketHandler");
 
@@ -125,6 +130,11 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             isClassAvailable("com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration");
         boolean libertyHasSpring30 =
             isClassAvailable("io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration");
+
+        String libertySpringFeature =
+            (libertyHasSpring15 ? "springBoot-1.5" :
+             (libertyHasSpring20 ? "springBoot-2.0" :
+              (libertyHasSpring30 ? "springBoot-3.0" : null)));
 
         boolean libertyHasJavaxServlets = isClassAvailable("javax.servlet.Servlet");
         boolean libertyHasJakartaServlets = isClassAvailable("jakarta.servlet.Servlet");
@@ -159,7 +169,11 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         int requiredJavaVersion;
         String requiredVersionText;
 
-        if ( libertyHasSpring15 ) {
+        // Note: Checking is against the application content, not against the
+        // server provisioning.  Feature requirements should detect feature/java
+        // dependencies well before application startup.
+
+        if ( appHasSpring15 ) {
             requiredJavaVersion = 8;
             requiredVersionText = "JavaSE-1.8";
 
@@ -182,10 +196,10 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             // The highest supported version is explicitly not checked.  The reason for
             // the restriction to JavaSE-20 (see above) is not clear.
 
-            if ( libertyHasSpring20 ) {
+            if ( appHasSpring20 ) {
                 requiredJavaVersion = 8;
                 requiredVersionText = "JavaSE-1.8";
-            } else { // ( libertyHasSpring30 )
+            } else { // ( appHasSpring30 )
                 requiredJavaVersion = 17;
                 requiredVersionText = "JavaSE-17.0";
             }
@@ -237,44 +251,48 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         // Then, look content errors:
         //   The liberty spring version must be correct for the application content.
         //   The liberty servlet and websocket versions must be correct for the application contents.
-
-        String appErrorCode = null;
+        //
+        // Match the liberty spring version to the application content!
 
         if ( appHasSpring30 ) {
+            // Don't test '!libertyHasSpring30'; that may not be set.
             if ( libertyHasSpring15 || libertyHasSpring20 ) {
-                appErrorCode = "error.spring3.required";
+                ApplicationTr.error("error.spring3.required");
                 // "CWWKC0273E: Error: Feature springBoot-3.0 (or higher) must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned
                 // and the application has Spring 3.0 content."
             } else if ( appUsesServlets && !libertyHasJakartaServlets ) {
-                appErrorCode = "error.spring3.requires.servlet6.application";
+                ApplicationTr.error("error.spring3.requires.servlet6.application");
                 // "CWWKC0274E: Error: Feature servlet-6.0 (or higher) must be provisioned:
                 // Feature springBoot-3.0 is provisioned and the application uses Servlets."
             } else if ( appUsesWebsockets && !libertyHasJakartaWebsockets ) {
-                appErrorCode = "error.spring3.requires.websocket2.application";
+                ApplicationTr.error("error.spring3.requires.websocket2.application");
                 // "CWWKC0275E: Error: Feature websocket-2.0 (or higher) must be provisioned:
                 // Feature springBoot-3.0 is provisioned and the application uses WebSockets."
             }
 
-        } else { // ( appHasSpring20 || appHasSpring15 )
-            if ( libertyHasSpring30 ) {
-                appErrorCode = "error.spring2.required";
-                // "CWWKC0278E: Error: Feature springBoot-1.5 or springBoot-2.0 must be provisioned:
-                // Feature springBoot-3.0 (or higher) is provisioned
-                // and the application has Spring 1.5 or Spring 2.0 content."
+        } else {
+            // Don't test '!libertyHasSpring20'; that may not be set.
+            if ( appHasSpring20 && (libertyHasSpring15 || libertyHasSpring30) ) {
+                ApplicationTr.error("error.spring.required", "springBoot-2.0", libertySpringFeature, "2.0");
+                // "CWWKC0278E: Error: Feature {0} must be provisioned:
+                // Feature {1} is provisioned and the application has Spring {2} content.
+
+            // Don't test '!libertyHasSpring15'; that may not be set.
+            } else if ( appHasSpring15 && (libertyHasSpring20 || libertyHasSpring30) ) {
+                ApplicationTr.error("error.spring.required", "springBoot-1.5", libertySpringFeature, "1.5");
+                // "CWWKC0278E: Error: Feature {0} must be provisioned:
+                // Feature {1} is provisioned and the application has Spring {2} content.
+
             } else if ( appUsesServlets && !libertyHasJavaxServlets ) {
-                appErrorCode = "error.spring2.requires.servlet31.application";
+                ApplicationTr.error("error.spring2.requires.servlet31.application");
                 // "CWWKC0279E: Error: Feature servlet-3.1 or servlet-4.0 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses Servlets."
             } else if ( appUsesWebsockets && !libertyHasJavaxWebsockets ) {
-                appErrorCode = "error.spring2.requires.websocket1.application";
+                ApplicationTr.error("error.spring2.requires.websocket1.application");
                 // "CWWKC0280E: Error: Feature websocket-1.0 or websocket-1.1 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses WebSockets."
             }
-        }
-
-        if ( appErrorCode != null ) {
-            ApplicationTr.error(appErrorCode);
         }
     }
 }

@@ -102,6 +102,23 @@ public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
         applicationNames = appNames;
     }
 
+    // [AUDIT   ] CWWKE0001I: The server SpringBootTests has been launched.
+    // [AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
+    //
+    // [AUDIT   ] CWWKZ0001I: Application app.copy1 started in 7.692 seconds.
+    // [AUDIT   ] CWWKF0012I: The server installed the following features: [servlet-3.1, springBoot-2.0, timedexit-1.0].
+    // [AUDIT   ] CWWKF0011I: The SpringBootTests server is ready to run a smarter planet. The SpringBootTests server started in 14.828 seconds.
+    // [AUDIT   ] CWWKT0016I: Web application available (springBootVirtualHost-8081): http://laptop-evshm5o4.attlocal.net:8081/
+    //
+    // [AUDIT   ] CWWKT0017I: Web application removed (springBootVirtualHost-8081): http://laptop-evshm5o4.attlocal.net:8081/
+    // [AUDIT   ] CWWKZ0009I: The application app.copy1 has stopped successfully.
+    //
+    // [AUDIT   ] CWWKZ0001I: Application app.copy1 started in 5.155 seconds.
+    //
+    // [AUDIT   ] CWWKE0055I: Server shutdown requested on Friday, July 14, 2023 at 11:36 PM. The server SpringBootTests is shutting down.
+    // [AUDIT   ] CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
+    // [AUDIT   ] CWWKZ0009I: The application app.copy1 has stopped successfully.
+
     // [6/20/23, 23:51:30:440 EDT] 00000042 com.ibm.ws.app.manager.AppMessageHelper E
     // CWWKZ0002E: An exception occurred while starting the application com.ibm.ws.springboot.fat30.app-0.0.1-SNAPSHOT.
     // The exception message was: java.lang.IllegalStateException:
@@ -184,6 +201,10 @@ public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
 
         System.out.println("Removing installed application [ " + installedAppName + " ]");
         xferApp(installedAppName, DO_BACKUP);
+
+        // [AUDIT   ] CWWKT0017I: Web application removed (springBootVirtualHost-8081): http://laptop-evshm5o4.attlocal.net:8081/
+        // [AUDIT   ] CWWKZ0009I: The application app.copy1 has stopped successfully.
+
         requireServerMessage("Installed application not removed", "CWWKT0017I:.*");
     }
 
@@ -225,6 +246,10 @@ public class MultipleApplicationsNotSupported20 extends AbstractSpringTests {
 
         System.out.println("Restoring installed application [ " + installedAppName + " ]");
         xferApp(installedAppName, DO_RESTORE);
-        requireServerMessage("The application was not installed", "CWWKZ0001I:.*");
+
+        // [AUDIT   ] CWWKZ0001I: Application app.copy1 started in 5.155 seconds.
+        // [AUDIT   ] CWWKT0016I: Web application available (springBootVirtualHost-8081): http://laptop-evshm5o4.attlocal.net:8081/
+
+        requireServerMessage("The application was not installed", "CWWKT0016I:.*");
     }
 }

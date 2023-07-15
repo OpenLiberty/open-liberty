@@ -35,9 +35,9 @@ public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
     @AfterClass
     public static void stopTestServer() throws Exception {
         if (!javaVersion.startsWith("1.")) {
-            server.stopServer(true, "CWWKC0252E", "CWWKZ0002E", "CWWKC0265W");
+            server.stopServer(true, "CWWKC0278E", "CWWKZ0002E", "CWWKC0265W");
         } else {
-            server.stopServer(true, "CWWKC0252E", "CWWKZ0002E");
+            server.stopServer(true, "CWWKC0278E", "CWWKZ0002E");
         }
     }
 
@@ -49,7 +49,7 @@ public class NeedSpringBoot15FeatureTests extends AbstractSpringTests {
     @Test
     public void testNeedSpringBootFeature15() throws Exception {
         assertNotNull("No error message was found to enable springBoot-1.5 feature",
-                      server.waitForStringInLog("CWWKC0252E"));
+                      server.waitForStringInLog("CWWKC0278E"));
     }
 
     @Override
