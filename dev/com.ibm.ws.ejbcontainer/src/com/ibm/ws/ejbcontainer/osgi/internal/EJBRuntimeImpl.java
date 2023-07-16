@@ -113,6 +113,7 @@ import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
 import com.ibm.ws.container.service.naming.LocalColonEJBNamingHelper;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.container.service.state.ApplicationStateListenerConstants;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
 import com.ibm.ws.ejbcontainer.EJBPMICollaboratorFactory;
@@ -179,7 +180,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
            configurationPid = "com.ibm.ws.ejbcontainer.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "deferredMetaData=EJB" })
+           property = { "deferredMetaData=EJB", "service.ranking:Integer="+ApplicationStateListenerConstants.EJB_SERVICE_RANK })
 public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationStateListener, DeferredMetaDataFactory, ServerQuiesceListener {
     private static final String CLASS_NAME = EJBRuntimeImpl.class.getName();
     private static final TraceComponent tc = Tr.register(EJBRuntimeImpl.class);
