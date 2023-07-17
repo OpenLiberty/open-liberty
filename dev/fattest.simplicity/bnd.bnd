@@ -61,11 +61,12 @@ Private-Package: \
 	com.ibm.websphere.simplicity.configuration
 
 Include-Resource: \
-    @${repo;org.bouncycastle:bcpg-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT},\
-    @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT},\
-    init-sqlserver.sql=resources/init-sqlserver.sql
+    @${repo;org.bouncycastle:bcpg-jdk18on;1.75;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk18on;1.75;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk18on;1.75;EXACT},\
+    @${repo;org.bouncycastle:bcutil-jdk18on;1.75;EXACT},\
+    init-sqlserver.sql=resources/init-sqlserver.sql, \
+	META-INF=resources/META-INF
 
 test.project: true
 
