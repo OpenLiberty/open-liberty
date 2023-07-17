@@ -32,45 +32,31 @@ import com.ibm.wsspi.jsp.context.JspCoreContext;
 
 public class SimpleTagGenerator extends BaseTagGenerator {
     private FragmentHelperClassWriter.FragmentWriter fragmentBodyWriter = null;
-    private JspVisitorInputMap inputMap=null; //jsp2.1work
+    private JspVisitorInputMap inputMap = null; //jsp2.1work
     private boolean genTagInMethod = false;
 
     public SimpleTagGenerator(
-        int nestingLevel,
-        boolean isTagFile,
-        boolean genTagInMethod,
-        boolean hasBody,
-        boolean hasJspBody,
-        String tagHandlerVar,
-        Element element,
-        TagLibraryCache tagLibraryCache,
-        JspConfiguration jspConfiguration,
-        JspCoreContext ctxt,
-        TagClassInfo tagClassInfo,
-        TagInfo ti,
-        Map persistentData,
-        ValidateResult.CollectedTagData collectedTagData,
-        FragmentHelperClassWriter fragmentHelperClassWriter,
-        JspOptions jspOptions,
-        JspVisitorInputMap inputMap) {
-            
-        super(nestingLevel,
-              isTagFile,
-              hasBody,
-              hasJspBody,
-              tagHandlerVar,
-              element,
-              tagLibraryCache,
-              jspConfiguration,
-              ctxt,
-              tagClassInfo,
-              ti,
-              persistentData,
-              collectedTagData,
-              fragmentHelperClassWriter,
-              jspOptions);
-        this.inputMap=inputMap;
-        this.genTagInMethod=genTagInMethod;
+                              int nestingLevel,
+                              boolean isTagFile,
+                              boolean genTagInMethod,
+                              boolean hasBody,
+                              boolean hasJspBody,
+                              String tagHandlerVar,
+                              Element element,
+                              TagLibraryCache tagLibraryCache,
+                              JspConfiguration jspConfiguration,
+                              JspCoreContext ctxt,
+                              TagClassInfo tagClassInfo,
+                              TagInfo ti,
+                              Map persistentData,
+                              ValidateResult.CollectedTagData collectedTagData,
+                              FragmentHelperClassWriter fragmentHelperClassWriter,
+                              JspOptions jspOptions,
+                              JspVisitorInputMap inputMap) {
+
+        super(nestingLevel, isTagFile, hasBody, hasJspBody, tagHandlerVar, element, tagLibraryCache, jspConfiguration, ctxt, tagClassInfo, ti, persistentData, collectedTagData, fragmentHelperClassWriter, jspOptions);
+        this.inputMap = inputMap;
+        this.genTagInMethod = genTagInMethod;
     }
 
     public MethodWriter generateTagStart() throws JspCoreException {
@@ -78,32 +64,32 @@ public class SimpleTagGenerator extends BaseTagGenerator {
         declareScriptingVars(tagStartWriter, VariableInfo.AT_BEGIN);
         saveScriptingVars(tagStartWriter, VariableInfo.AT_BEGIN);
 
-        if (!jspOptions.isDisableResourceInjection()){		//PM06063
+        if (!jspOptions.isDisableResourceInjection()) { //PM06063
 
             // have CDI create and inject the managed object
-            tagStartWriter.print ("com.ibm.ws.managedobject.ManagedObject " + tagHandlerVar + "_mo = ");
-            tagStartWriter.print ("_jspx_iaHelper.inject(");
-            tagStartWriter.print (tagClassInfo.getTagClassName() + ".class");
-            tagStartWriter.println (");");
-        
+            tagStartWriter.print("com.ibm.ws.managedobject.ManagedObject " + tagHandlerVar + "_mo = ");
+            tagStartWriter.print("_jspx_iaHelper.inject(");
+            tagStartWriter.print(tagClassInfo.getTagClassName() + ".class");
+            tagStartWriter.println(");");
+
             // get the underlying object from the managed object
             tagStartWriter.print(tagClassInfo.getTagClassName());
             tagStartWriter.print(" ");
-            tagStartWriter.print(tagHandlerVar);   
-            tagStartWriter.print(" = ");           
-            tagStartWriter.println("("+tagClassInfo.getTagClassName()+")"+tagHandlerVar+"_mo.getObject();"); 
+            tagStartWriter.print(tagHandlerVar);
+            tagStartWriter.print(" = ");
+            tagStartWriter.println("(" + tagClassInfo.getTagClassName() + ")" + tagHandlerVar + "_mo.getObject();");
 
-            if(genTagInMethod){
+            if (genTagInMethod) {
                 tagStartWriter.println("try {");
             }
 
-            tagStartWriter.print ("_jspx_iaHelper.doPostConstruct(");
-            tagStartWriter.print (tagHandlerVar);
-            tagStartWriter.println (");");
-    	
-            tagStartWriter.print ("_jspx_iaHelper.addTagHandlerToCdiMap(");
-            tagStartWriter.print (tagHandlerVar + ", " + tagHandlerVar + "_mo");
-            tagStartWriter.println (");");
+            tagStartWriter.print("_jspx_iaHelper.doPostConstruct(");
+            tagStartWriter.print(tagHandlerVar);
+            tagStartWriter.println(");");
+
+            tagStartWriter.print("_jspx_iaHelper.addTagHandlerToCdiMap(");
+            tagStartWriter.print(tagHandlerVar + ", " + tagHandlerVar + "_mo");
+            tagStartWriter.println(");");
 
         } else {
             // not using CDI
@@ -116,29 +102,28 @@ public class SimpleTagGenerator extends BaseTagGenerator {
             tagStartWriter.println("();");
 
         }
-        
+
         generateSetParent(tagStartWriter);
         return tagStartWriter;
     }
 
     public MethodWriter generateTagMiddle() throws JspCoreException {
         MethodWriter tagMiddleWriter = new MethodWriter();
-        int methodNesting =  ((Integer)persistentData.get("methodNesting")).intValue();
+        int methodNesting = ((Integer) persistentData.get("methodNesting")).intValue();
 
-	  // JspIdConsumer (after context has been set)
+        // JspIdConsumer (after context has been set)
         if (tagClassInfo.implementsJspIdConsumer()) {
-        	tagMiddleWriter.print(tagHandlerVar);
-        	tagMiddleWriter.print(".setJspId(\"");
-        	tagMiddleWriter.print(createJspId(inputMap));
-        	tagMiddleWriter.println("\");");
+            tagMiddleWriter.print(tagHandlerVar);
+            tagMiddleWriter.print(".setJspId(\"");
+            tagMiddleWriter.print(createJspId(inputMap));
+            tagMiddleWriter.println("\");");
         }
-        
-	  if (hasJspBody == false) {
+
+        if (hasJspBody == false) {
             if (hasBody) {
                 createBodyWriter(methodNesting, tagMiddleWriter);
             }
-        }
-        else {
+        } else {
             createBodyWriter(methodNesting, tagMiddleWriter);
         }
         return tagMiddleWriter;
@@ -147,10 +132,10 @@ public class SimpleTagGenerator extends BaseTagGenerator {
     public MethodWriter generateTagEnd() throws JspCoreException {
         generateJspAttributeSetters();
         MethodWriter tagEndWriter = new MethodWriter();
-        int methodNesting =  ((Integer)persistentData.get("methodNesting")).intValue();
+        int methodNesting = ((Integer) persistentData.get("methodNesting")).intValue();
         tagEndWriter.print(tagHandlerVar);
         tagEndWriter.println(".doTag();");
-        
+
         // Note: With PH49514, doPreDestroy & cleanUpTagHandlerFromCdiMap were removed and now occur in the finally block.
         // See the cleanupCDITagManagedObject generated code in the CustomTagGenerator.java
         // See change history
@@ -172,39 +157,38 @@ public class SimpleTagGenerator extends BaseTagGenerator {
         String pageContextVar = Constants.JSP_PAGE_CONTEXT_ORIG;
         if (isTagFile && jspOptions.isModifyPageContextVariable()) {
             pageContextVar = Constants.JSP_PAGE_CONTEXT_NEW;
-        }        
+        }
         //PK65013 end
         tagMiddleWriter.print(tagHandlerVar);
         tagMiddleWriter.print(".setJspBody(");
         fragmentBodyWriter = fragmentHelperClassWriter.openFragment(element, tagHandlerVar, methodNesting, pageContextVar);
         tagMiddleWriter.print("new " + fragmentHelperClassWriter.getClassName());
-        
+
         if (jspOptions.isUsePageTagPool() ||
             jspOptions.isUseThreadTagPool()) {
-            tagMiddleWriter.print("(_jspx_TagLookup, " + fragmentBodyWriter.getId() + ", "+pageContextVar+", ");//PK65013
+            tagMiddleWriter.print("(_jspx_TagLookup, " + fragmentBodyWriter.getId() + ", " + pageContextVar + ", ");//PK65013
+        } else {
+            tagMiddleWriter.print("( " + fragmentBodyWriter.getId() + ", " + pageContextVar + ", "); //PK65013
         }
-        else {
-            tagMiddleWriter.print("( " + fragmentBodyWriter.getId() + ", "+pageContextVar+", "); //PK65013
-        } 
-        String pushBodyCountVar = (String)persistentData.get("pushBodyCountVar");
+        String pushBodyCountVar = (String) persistentData.get("pushBodyCountVar");
         // defect 363508 begin
-        if (pushBodyCountVar!=null) {
-        	String pushBodyCountVarToUse=(String)persistentData.get("pushBodyCountVarArgument"+this.hashCode());
-        	if (pushBodyCountVarToUse==null) {
-        		pushBodyCountVarToUse=(String)persistentData.get("pushBodyCountVarDeclaration");
-        	}
-        	if (pushBodyCountVarToUse==null) {
-        		pushBodyCountVarToUse=(String)persistentData.get("pushBodyCountVarDeclarationBase");
-        	}
-        	if (pushBodyCountVarToUse!=null) {
-        		pushBodyCountVar=pushBodyCountVarToUse;
-        	}            	
+        if (pushBodyCountVar != null) {
+            String pushBodyCountVarToUse = (String) persistentData.get("pushBodyCountVarArgument" + this.hashCode());
+            if (pushBodyCountVarToUse == null) {
+                pushBodyCountVarToUse = (String) persistentData.get("pushBodyCountVarDeclaration");
+            }
+            if (pushBodyCountVarToUse == null) {
+                pushBodyCountVarToUse = (String) persistentData.get("pushBodyCountVarDeclarationBase");
+            }
+            if (pushBodyCountVarToUse != null) {
+                pushBodyCountVar = pushBodyCountVarToUse;
+            }
         }
         // defect 363508 end
-        tagMiddleWriter.print(tagHandlerVar + ", " + pushBodyCountVar + ")" );
+        tagMiddleWriter.print(tagHandlerVar + ", " + pushBodyCountVar + ")");
         tagMiddleWriter.println(");");
-        persistentData.put("pushBodyCountVarArgument"+this.hashCode(),null); // defect 363508
-        
+        persistentData.put("pushBodyCountVarArgument" + this.hashCode(), null); // defect 363508
+
         //PK60565 commented out the next line - problem with nested TryCatchFinally tags
         //persistentData.put("pushBodyCountVarDeclaration",null); // defect 363508
         //PK60565 end
@@ -215,31 +199,32 @@ public class SimpleTagGenerator extends BaseTagGenerator {
         if (section == CodeGenerationPhase.METHOD_SECTION) {
             if (childElement.getNodeType() == Node.ELEMENT_NODE) {
                 if (childElement.getNamespaceURI() != null &&
-                    childElement.getNamespaceURI().equals(Constants.JSP_NAMESPACE) && 
+                    childElement.getNamespaceURI().equals(Constants.JSP_NAMESPACE) &&
                     childElement.getLocalName().equals(Constants.JSP_ATTRIBUTE_TYPE)) {
-                    writerForChild = (JavaCodeWriter)attributeWriterMap.get(childElement);    
-                }
-                else {
+                    writerForChild = (JavaCodeWriter) attributeWriterMap.get(childElement);
+                } else {
                     if (fragmentBodyWriter != null)
                         writerForChild = fragmentBodyWriter;
-                    else                
+                    else
                         writerForChild = bodyWriter;
                 }
-            }
-            else {
+            } else {
                 if (fragmentBodyWriter != null)
                     writerForChild = fragmentBodyWriter;
-                else                
+                else
                     writerForChild = bodyWriter;
             }
         }
         return (writerForChild);
     }
-    
+
     public boolean fragmentWriterUsed() {
         return (fragmentBodyWriter != null) ? true : false;
     }
-    
-    public void generateInitialization(JavaCodeWriter writer) {}
-    public void generateFinally(JavaCodeWriter writer) {}
+
+    public void generateInitialization(JavaCodeWriter writer) {
+    }
+
+    public void generateFinally(JavaCodeWriter writer) {
+    }
 }

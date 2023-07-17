@@ -32,20 +32,19 @@ import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
 import com.ibm.wsspi.jsp.context.JspCoreContext;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
-
 public class GeneratorUtils {
-	static private Logger logger;
-	private static final String CLASS_NAME="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils";
-	static{
-		logger = Logger.getLogger("com.ibm.ws.jsp");
-	}
-	
-	public static String classfileVersion= JSPExtensionFactory.getGeneratorUtilsExtFactory().getGeneratorUtilsExt().getClassFileVersion();
-	public static String fullClassfileInformation="unknown";
-	public static int TAG_FILE_TYPE=1;
-	public static int JSP_FILE_TYPE=2;
-	
-	//PM21395 
+    static private Logger logger;
+    private static final String CLASS_NAME = "com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils";
+    static {
+        logger = Logger.getLogger("com.ibm.ws.jsp");
+    }
+
+    public static String classfileVersion = JSPExtensionFactory.getGeneratorUtilsExtFactory().getGeneratorUtilsExt().getClassFileVersion();
+    public static String fullClassfileInformation = "unknown";
+    public static int TAG_FILE_TYPE = 1;
+    public static int JSP_FILE_TYPE = 2;
+
+    //PM21395 
     public static String quote(String s) {
         return quote(s, false);
     }
@@ -55,7 +54,7 @@ public class GeneratorUtils {
         if (s == null)
             return "null";
         //PM21395 starts
-        if (flag){
+        if (flag) {
             s = s.replaceAll("&quot;", "\"");
         }
         //PM21395 ends
@@ -87,47 +86,47 @@ public class GeneratorUtils {
 
     //PM81674 start
     public static String handleEscapes(String exp) {
-        
+
         boolean evalExpressionFollowingTwoBackslashes = WCCustomProperties.EVAL_EXPRESSION_FOLLOWING_TWO_BACKSLASHES; //PM81674
-        
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes","expression = ["+exp+"]");
-            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes","evalExpressionFollowingTwoBackslashes = ["+evalExpressionFollowingTwoBackslashes+"]");
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes", "expression = [" + exp + "]");
+            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes", "evalExpressionFollowingTwoBackslashes = [" + evalExpressionFollowingTwoBackslashes + "]");
         }
-        
+
         //749106.1 start
         if (!evalExpressionFollowingTwoBackslashes) {
             return exp;
         }
         //749106.1 end
-        
+
         if (exp.indexOf("${") == -1) {
             return exp;
         }
-            
-        boolean inEL = false;               
+
+        boolean inEL = false;
         int len = exp.length();
         StringBuilder sb = new StringBuilder();
-            
+
         for (int x = 0; x < len; x++) {
             char c = exp.charAt(x);
-            
+
             if (c == '$') {
-                if (((x+1) < len) && (exp.charAt(x+1) == '{')) {
+                if (((x + 1) < len) && (exp.charAt(x + 1) == '{')) {
                     inEL = true;
                     sb.append("${");
                     x++;
                 } else {
                     sb.append(c);
                 }
-            } else if (c == '}') { 
+            } else if (c == '}') {
                 inEL = false;
                 sb.append(c);
             } else if (c == '\\' && !inEL) {
-                if ((x+4) < len) {                          
-                    if (exp.substring(x, x+4).equals("\\\\\\\\")) {                                 
+                if ((x + 4) < len) {
+                    if (exp.substring(x, x + 4).equals("\\\\\\\\")) {
                         sb.append("${'\\\\\\\\'}");
-                        x = x + 3;                                  
+                        x = x + 3;
                     } else {
                         sb.append(c);
                     }
@@ -136,14 +135,14 @@ public class GeneratorUtils {
                 }
             } else {
                 sb.append(c);
-            }                       
+            }
         }
-                            
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes","after processing expression = ["+sb.toString()+"]");
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+            logger.logp(Level.FINEST, CLASS_NAME, "handleEscapes", "after processing expression = [" + sb.toString() + "]");
         }
-            
-        return sb.toString();               
+
+        return sb.toString();
     }
     //PM81674 end
 
@@ -162,14 +161,14 @@ public class GeneratorUtils {
     //  PK65013 - already know if this isTagFile or not and pageContextVar is set accordingly
     public static void generateLocalVariables(JavaCodeWriter out, Element jspElement, String pageContextVar) throws JspCoreException {
         if (hasUseBean(jspElement)) {
-            out.println("HttpSession session = "+pageContextVar+".getSession();");
-            out.println("ServletContext application = "+pageContextVar+".getServletContext();");
+            out.println("HttpSession session = " + pageContextVar + ".getSession();");
+            out.println("ServletContext application = " + pageContextVar + ".getServletContext();");
         }
         if (hasUseBean(jspElement) || hasIncludeAction(jspElement) || hasSetProperty(jspElement) || hasForwardAction(jspElement)) {
-            out.println("HttpServletRequest request = (HttpServletRequest)"+pageContextVar+".getRequest();");
+            out.println("HttpServletRequest request = (HttpServletRequest)" + pageContextVar + ".getRequest();");
         }
         if (hasIncludeAction(jspElement)) {
-            out.println("HttpServletResponse response = (HttpServletResponse)"+pageContextVar+".getResponse();");
+            out.println("HttpServletResponse response = (HttpServletResponse)" + pageContextVar + ".getResponse();");
         }
     }
 
@@ -215,26 +214,19 @@ public class GeneratorUtils {
         if (expectedType.isPrimitive()) {
             if (expectedType.equals(Boolean.TYPE)) {
                 classType = Boolean.class.getName();
-            }
-            else if (expectedType.equals(Byte.TYPE)) {
+            } else if (expectedType.equals(Byte.TYPE)) {
                 classType = Byte.class.getName();
-            }
-            else if (expectedType.equals(Character.TYPE)) {
+            } else if (expectedType.equals(Character.TYPE)) {
                 classType = Character.class.getName();
-            }
-            else if (expectedType.equals(Short.TYPE)) {
+            } else if (expectedType.equals(Short.TYPE)) {
                 classType = Short.class.getName();
-            }
-            else if (expectedType.equals(Integer.TYPE)) {
+            } else if (expectedType.equals(Integer.TYPE)) {
                 classType = Integer.class.getName();
-            }
-            else if (expectedType.equals(Long.TYPE)) {
+            } else if (expectedType.equals(Long.TYPE)) {
                 classType = Long.class.getName();
-            }
-            else if (expectedType.equals(Float.TYPE)) {
+            } else if (expectedType.equals(Float.TYPE)) {
                 classType = Float.class.getName();
-            }
-            else if (expectedType.equals(Double.TYPE)) {
+            } else if (expectedType.equals(Double.TYPE)) {
                 classType = Double.class.getName();
             }
         }
@@ -247,49 +239,43 @@ public class GeneratorUtils {
         if (expectedType.isPrimitive()) {
             if (expectedType.equals(Boolean.TYPE)) {
                 primitiveConverterMethod = "booleanValue";
-            }
-            else if (expectedType.equals(Byte.TYPE)) {
+            } else if (expectedType.equals(Byte.TYPE)) {
                 primitiveConverterMethod = "byteValue";
-            }
-            else if (expectedType.equals(Character.TYPE)) {
+            } else if (expectedType.equals(Character.TYPE)) {
                 primitiveConverterMethod = "charValue";
-            }
-            else if (expectedType.equals(Short.TYPE)) {
+            } else if (expectedType.equals(Short.TYPE)) {
                 primitiveConverterMethod = "shortValue";
-            }
-            else if (expectedType.equals(Integer.TYPE)) {
+            } else if (expectedType.equals(Integer.TYPE)) {
                 primitiveConverterMethod = "intValue";
-            }
-            else if (expectedType.equals(Long.TYPE)) {
+            } else if (expectedType.equals(Long.TYPE)) {
                 primitiveConverterMethod = "longValue";
-            }
-            else if (expectedType.equals(Float.TYPE)) {
+            } else if (expectedType.equals(Float.TYPE)) {
                 primitiveConverterMethod = "floatValue";
-            }
-            else if (expectedType.equals(Double.TYPE)) {
+            } else if (expectedType.equals(Double.TYPE)) {
                 primitiveConverterMethod = "doubleValue";
             }
         }
-    	return primitiveConverterMethod;
+        return primitiveConverterMethod;
     }
 
     /**
      * Produces a String representing a call to the EL interpreter.
-     * @param expression a String containing zero or more "${}" expressions
-     * @param expectedType the expected type of the interpreted result
-     * @param defaultPrefix Default prefix, or literal "null"
-     * @param fnmapvar Variable pointing to a function map.
-     * @param XmlEscape True if the result should do XML escaping
+     * 
+     * @param expression     a String containing zero or more "${}" expressions
+     * @param expectedType   the expected type of the interpreted result
+     * @param defaultPrefix  Default prefix, or literal "null"
+     * @param fnmapvar       Variable pointing to a function map.
+     * @param XmlEscape      True if the result should do XML escaping
      * @param pageContextVar Variable for PageContext variable name in generated Java code.
      * @return a String representing a call to the EL interpreter.
      */
     public static String interpreterCall(
-        boolean isTagFile,
-        String expression,
-        Class expectedType,
-        String fnmapvar,
-        boolean XmlEscape,
-        String pageContextVar) {  //PK65013
+                                         boolean isTagFile,
+                                         String expression,
+                                         Class expectedType,
+                                         String fnmapvar,
+                                         boolean XmlEscape,
+                                         String pageContextVar) { //PK65013
 
         return JSPExtensionFactory.getGeneratorUtilsExtFactory().getGeneratorUtilsExt().interpreterCall(isTagFile,
                                                                                                         expression,
@@ -306,7 +292,7 @@ public class GeneratorUtils {
         sb.append(',');
         sb.append("_el_expressionfactory");
         sb.append(".createValueExpression(");
-        if (true/*isELInput*/) { // optimize
+        if (true/* isELInput */) { // optimize
             sb.append(elContext);
             sb.append(',');
         }
@@ -333,11 +319,12 @@ public class GeneratorUtils {
             sb.append(".getELContext()");
             sb.append(")");
         }
-        attrValue = sb.toString();    	
-    	return sb.toString();
+        attrValue = sb.toString();
+        return sb.toString();
     }
 
-    public static String createMethodExpression(StringBuffer sb, String mark, String elContext, String attrValue, boolean isELinput, Class c, TagAttributeInfo tai, String jspCtxt) {
+    public static String createMethodExpression(StringBuffer sb, String mark, String elContext, String attrValue, boolean isELinput, Class c, TagAttributeInfo tai,
+                                                String jspCtxt) {
         sb.append("new org.apache.jasper.el.JspMethodExpression(");
         sb.append(quote(mark));
         sb.append(',');
@@ -362,17 +349,16 @@ public class GeneratorUtils {
 
         sb.append("}))");
         attrValue = sb.toString();
-    	return sb.toString();
+        return sb.toString();
     }
-    
+
     public static String toJavaSourceTypeFromTld(String type) {
         if (type == null || "void".equals(type)) {
             return "Void.TYPE";
         }
         return type + ".class";
     }
-    
-    
+
     public static String[] getParameterTypeNames(TagAttributeInfo tai) {
         if (tai != null) {
             if (GeneratorUtils.isDeferredMethodInput(tai)) {
@@ -411,7 +397,6 @@ public class GeneratorUtils {
         return "java.lang.Object";
     }
 
-    
     public static String nextTemporaryVariableName(Map persistentData) {
         String nextTempVar = "_jspx_temp";
 
@@ -430,62 +415,58 @@ public class GeneratorUtils {
 
     //PK65013 add method parameter pageContextVar
     public static String attributeValue(
-        String valueIn,
-        boolean encode,
-        Class expectedType,
-        JspConfiguration jspConfig,
-        boolean isTagFile,
-        String pageContextVar) {
+                                        String valueIn,
+                                        boolean encode,
+                                        Class expectedType,
+                                        JspConfiguration jspConfig,
+                                        boolean isTagFile,
+                                        String pageContextVar) {
         String value = valueIn;
         value = value.replaceAll("&gt;", ">");
         value = value.replaceAll("&lt;", "<");
         value = value.replaceAll("&amp;", "&");
         value = value.replaceAll("<\\%", "<%");
         value = value.replaceAll("%\\>", "%>");
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","valueIn = ["+valueIn+"]");
-			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","encode = ["+encode+"]");
-			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","expectedType = ["+expectedType+"]");
-			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","isTagFile = ["+isTagFile+"]");
-		}
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+            logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "valueIn = [" + valueIn + "]");
+            logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "encode = [" + encode + "]");
+            logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "expectedType = [" + expectedType + "]");
+            logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "isTagFile = [" + isTagFile + "]");
+        }
         if (JspTranslatorUtil.isExpression(value)) {
             value = value.substring(2, value.length() - 1);
             if (encode) {
-                value = "org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(" + 
-                value + 
-                "), request.getCharacterEncoding())";//PK03712
+                value = "org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(String.valueOf(" +
+                        value +
+                        "), request.getCharacterEncoding())";//PK03712
             }
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-    			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","isExpression. value = ["+value+"]");
-    		}
-        }
-        else if (JspTranslatorUtil.isELInterpreterInput(value, jspConfig)) {
-        	if(encode){
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "isExpression. value = [" + value + "]");
+            }
+        } else if (JspTranslatorUtil.isELInterpreterInput(value, jspConfig)) {
+            if (encode) {
                 //PK65013 - add pageContextVar parameter
-        	    value = "org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(" + 
-        	            interpreterCall(isTagFile, value, expectedType, "_jspx_fnmap", false, pageContextVar) + 
-						", request.getCharacterEncoding())";
-        	}
-        	else{
+                value = "org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode(" +
+                        interpreterCall(isTagFile, value, expectedType, "_jspx_fnmap", false, pageContextVar) +
+                        ", request.getCharacterEncoding())";
+            } else {
                 //PK65013 - add pageContextVar parameter
                 value = interpreterCall(isTagFile, value, expectedType, "_jspx_fnmap", false, pageContextVar);
-        	}
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-    			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","isELInterpreterInput. value = ["+value+"]");
-    		}
-        }
-        else {
+            }
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "isELInterpreterInput. value = [" + value + "]");
+            }
+        } else {
             if (encode) {
                 value = "org.apache.jasper.runtime.JspRuntimeLibrary.URLEncode("
                         + quote(value)
                         + ", request.getCharacterEncoding())";
-            }
-            else {
+            } else {
                 value = quote(value);
             }
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-    			logger.logp(Level.FINEST, CLASS_NAME, "attributeValue","default. value = ["+value+"]");
-    		}
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                logger.logp(Level.FINEST, CLASS_NAME, "attributeValue", "default. value = [" + value + "]");
+            }
         }
 
         return (value);
@@ -520,8 +501,7 @@ public class GeneratorUtils {
                 caw.write('%');
                 caw.write('>');
                 i = i + 3;
-            }
-            else
+            } else
                 caw.write(chars[i]);
         }
         return caw.toCharArray();
@@ -530,9 +510,9 @@ public class GeneratorUtils {
     public static char[] escapeQuotes(char[] chars) {
         char[] c = escapeScriptingStart(chars);
         c = escapeScriptingEnd(c);
-        return (c);    
+        return (c);
     }
-    
+
     private static char[] escapeScriptingStart(char[] chars) {
         // Prescan to convert <\% to <%
         String s = new String(chars);
@@ -565,11 +545,9 @@ public class GeneratorUtils {
         return (chars);
     }
 
+    public static void generateELFunctionCode(JavaCodeWriter writer, ValidateResult validatorResult) throws JspCoreException {
 
-    public static void generateELFunctionCode(JavaCodeWriter writer, ValidateResult validatorResult)
-        throws JspCoreException {
-        
-        JSPExtensionFactory.getGeneratorUtilsExtFactory().getGeneratorUtilsExt().generateELFunctionCode(writer, validatorResult);        
+        JSPExtensionFactory.getGeneratorUtilsExtFactory().getGeneratorUtilsExt().generateELFunctionCode(writer, validatorResult);
     }
 
     public static void generateDependencyList(JavaCodeWriter writer, ValidateResult validatorResult, JspCoreContext context, boolean isTrackDependencies) {
@@ -580,26 +558,26 @@ public class GeneratorUtils {
             writer.print("_jspx_dependants = new String[");
             if (validatorResult.getDependencyList().size() > 0) {
                 writer.print("" + validatorResult.getDependencyList().size());
-            }
-            else {
+            } else {
                 writer.print("" + 0);
             }
             writer.print("];");
             writer.println();
 
             int count = 0;
-            String dependencyName=null;
+            String dependencyName = null;
             long dependencyTimeStamp;
             //String dependencyFullName=null;
             //File dependencyFile=null;
             for (Iterator itr = validatorResult.getDependencyList().iterator(); itr.hasNext();) {
-                writer.print("_jspx_dependants["+(count++)+"] = \"");
-                dependencyName=(String) itr.next();
+                writer.print("_jspx_dependants[" + (count++) + "] = \"");
+                dependencyName = (String) itr.next();
                 dependencyTimeStamp = context.getRealTimeStamp(dependencyName);
                 //dependencyFullName=context.getRealPath(dependencyName);
                 //dependencyFile = new File(dependencyFullName);
                 //writer.print(dependencyName+Constants.TIMESTAMP_DELIMETER+dependencyFile.lastModified() + Constants.TIMESTAMP_DELIMETER+ (new java.util.Date(dependencyFile.lastModified())).toString());
-                writer.print(dependencyName+Constants.TIMESTAMP_DELIMETER+dependencyTimeStamp + Constants.TIMESTAMP_DELIMETER+ (new java.util.Date(dependencyTimeStamp)).toString());
+                writer.print(dependencyName + Constants.TIMESTAMP_DELIMETER + dependencyTimeStamp + Constants.TIMESTAMP_DELIMETER
+                             + (new java.util.Date(dependencyTimeStamp)).toString());
                 writer.print("\";");
                 writer.println();
             }
@@ -615,16 +593,16 @@ public class GeneratorUtils {
     /*
      * Following three methods were added for PH49514
      */
-    public static void generateLastManagedObjectVariable(JavaCodeWriter writer){
+    public static void generateLastManagedObjectVariable(JavaCodeWriter writer) {
         writer.println("java.util.ArrayList<Object> _jspMangedObjectList = new java.util.ArrayList<Object>();");
         writer.println();
     }
 
-    public static void generate_process_jspMangedObjectList(JavaCodeWriter writer, boolean isDisableResourceInjection){
+    public static void generate_process_jspMangedObjectList(JavaCodeWriter writer, boolean isDisableResourceInjection) {
         writer.println("public void _process_jspMangedObjectList(java.util.ArrayList<Object> jspMangedObjectList) {");
         writer.println("if(!jspMangedObjectList.isEmpty()) {");
         writer.println("for(int i = 0; i < jspMangedObjectList.size(); i++ ) {");
-        if(!isDisableResourceInjection) {
+        if (!isDisableResourceInjection) {
             writer.println("cleanupCDITagManagedObject(jspMangedObjectList.get(i));");
         }
         writer.println("if (jspMangedObjectList.get(i) instanceof javax.servlet.jsp.tagext.Tag) {");
@@ -632,11 +610,11 @@ public class GeneratorUtils {
         writer.println("}");
         writer.println("}");
         writer.println("}");
-		writer.println("}");
-		writer.println();
+        writer.println("}");
+        writer.println();
     }
 
-    public static void generateCDITagCleanUp(JavaCodeWriter writer){
+    public static void generateCDITagCleanUp(JavaCodeWriter writer) {
         writer.println("public void cleanupCDITagManagedObject(Object obj) {");
         writer.println("_jspx_iaHelper.doPreDestroy(obj);");
         writer.println("_jspx_iaHelper.cleanUpTagHandlerFromCdiMap(obj);");
@@ -644,47 +622,44 @@ public class GeneratorUtils {
         writer.println();
     }
 
-	public static void generateVersionInformation(JavaCodeWriter writer, boolean isDebugClassFile) {
-		writer.println("private static String _jspx_classVersion;");
-		//		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
-		writer.println("private static boolean _jspx_isDebugClassFile;");
-		//		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.		
+    public static void generateVersionInformation(JavaCodeWriter writer, boolean isDebugClassFile) {
+        writer.println("private static String _jspx_classVersion;");
+        //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
+        writer.println("private static boolean _jspx_isDebugClassFile;");
+        //		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.		
 
-		writer.println("static {");
-		writer.print("_jspx_classVersion = new String(");
-		writer.print("\"" + classfileVersion);
-		writer.print("\");");
-		writer.println();
+        writer.println("static {");
+        writer.print("_jspx_classVersion = new String(");
+        writer.print("\"" + classfileVersion);
+        writer.print("\");");
+        writer.println();
 
-		//		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
-		writer.print("_jspx_isDebugClassFile = ");
-		writer.print("" + isDebugClassFile);
-		writer.print(";");
-		writer.println();
-		//		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.	
-		
-		writer.println("}");
-		writer.println();
+        //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
+        writer.print("_jspx_isDebugClassFile = ");
+        writer.print("" + isDebugClassFile);
+        writer.print(";");
+        writer.println();
+        //		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.	
 
-		writer.println("public String getVersionInformation() {");
-		writer.println("return _jspx_classVersion;");
-		writer.println("}");
+        writer.println("}");
+        writer.println();
 
-		//		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
-		writer.println("public boolean isDebugClassFile() {");
-		writer.println("return _jspx_isDebugClassFile;");
-		writer.println("}");
-		writer.println();
-		//		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.	
+        writer.println("public String getVersionInformation() {");
+        writer.println("return _jspx_classVersion;");
+        writer.println("}");
 
-		
-	}
+        //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
+        writer.println("public boolean isDebugClassFile() {");
+        writer.println("return _jspx_isDebugClassFile;");
+        writer.println("}");
+        //		 end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.	
+
+    }
 
     public static String coerceToPrimitiveBoolean(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToBoolean(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "false";
             else
@@ -695,12 +670,10 @@ public class GeneratorUtils {
     public static String coerceToBoolean(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Boolean) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Boolean.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Boolean(false)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Boolean(" + Boolean.valueOf(s).toString() + ")";
             }
@@ -710,8 +683,7 @@ public class GeneratorUtils {
     public static String coerceToPrimitiveByte(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToByte(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "(byte) 0";
             else
@@ -722,12 +694,10 @@ public class GeneratorUtils {
     public static String coerceToByte(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Byte) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Byte.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Byte((byte) 0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Byte((byte)" + Byte.valueOf(s).toString() + ")";
             }
@@ -737,12 +707,10 @@ public class GeneratorUtils {
     public static String coerceToChar(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToChar(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "(char) 0";
-            }
-            else {
+            } else {
                 char ch = s.charAt(0);
                 // this trick avoids escaping issues
                 return "((char) " + (int) ch + ")";
@@ -753,12 +721,10 @@ public class GeneratorUtils {
     public static String coerceToCharacter(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Character) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Character.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Character((char) 0)";
-            }
-            else {
+            } else {
                 char ch = s.charAt(0);
                 // this trick avoids escaping issues
                 return "new Character((char) " + (int) ch + ")";
@@ -769,8 +735,7 @@ public class GeneratorUtils {
     public static String coerceToPrimitiveDouble(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToDouble(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "(double) 0";
             else
@@ -781,12 +746,10 @@ public class GeneratorUtils {
     public static String coerceToDouble(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Double) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Double.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Double(0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Double(" + Double.valueOf(s).toString() + ")";
             }
@@ -796,8 +759,7 @@ public class GeneratorUtils {
     public static String coerceToPrimitiveFloat(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToFloat(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "(float) 0";
             else
@@ -808,12 +770,10 @@ public class GeneratorUtils {
     public static String coerceToFloat(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Float) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Float.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Float(0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Float(" + Float.valueOf(s).toString() + "f)";
             }
@@ -823,8 +783,7 @@ public class GeneratorUtils {
     public static String coerceToInt(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToInt(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "0";
             else
@@ -835,12 +794,10 @@ public class GeneratorUtils {
     public static String coerceToInteger(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Integer) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Integer.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Integer(0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Integer(" + Integer.valueOf(s).toString() + ")";
             }
@@ -850,8 +807,7 @@ public class GeneratorUtils {
     public static String coerceToPrimitiveShort(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToShort(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "(short) 0";
             else
@@ -862,12 +818,10 @@ public class GeneratorUtils {
     public static String coerceToShort(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Short) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Short.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Short((short) 0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Short(\"" + Short.valueOf(s).toString() + "\")";
             }
@@ -877,8 +831,7 @@ public class GeneratorUtils {
     public static String coerceToPrimitiveLong(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "org.apache.jasper.runtime.JspRuntimeLibrary.coerceToLong(" + s + ")";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0)
                 return "(long) 0";
             else
@@ -889,18 +842,16 @@ public class GeneratorUtils {
     public static String coerceToLong(String s, boolean isNamedAttribute) {
         if (isNamedAttribute) {
             return "(Long) org.apache.jasper.runtime.JspRuntimeLibrary.coerce(" + s + ", Long.class)";
-        }
-        else {
+        } else {
             if (s == null || s.length() == 0) {
                 return "new Long(0)";
-            }
-            else {
+            } else {
                 // Detect format error at translation time
                 return "new Long(" + Long.valueOf(s).toString() + "l)";
             }
         }
     }
-    
+
     /* Defect 213290 */
     public static String toJavaSourceType(String type) {
 
@@ -913,34 +864,33 @@ public class GeneratorUtils {
         for (int i = 1; i < type.length(); i++) {
             if (type.charAt(i) == '[') {
                 dims++;
-            }
-            else {
+            } else {
                 switch (type.charAt(i)) {
-                    case 'Z' :
+                    case 'Z':
                         t = "boolean";
                         break;
-                    case 'B' :
+                    case 'B':
                         t = "byte";
                         break;
-                    case 'C' :
+                    case 'C':
                         t = "char";
                         break;
-                    case 'D' :
+                    case 'D':
                         t = "double";
                         break;
-                    case 'F' :
+                    case 'F':
                         t = "float";
                         break;
-                    case 'I' :
+                    case 'I':
                         t = "int";
                         break;
-                    case 'J' :
+                    case 'J':
                         t = "long";
                         break;
-                    case 'S' :
+                    case 'S':
                         t = "short";
                         break;
-                    case 'L' :
+                    case 'L':
                         t = type.substring(i + 1, type.indexOf(';'));
                         break;
                     default:
@@ -958,62 +908,62 @@ public class GeneratorUtils {
 
     //PM06063
     public static void generateInitSectionCode(JavaCodeWriter writer, int type) {
-    	generateInitSectionCode(writer, type, null);
+        generateInitSectionCode(writer, type, null);
     }
     //PM06063
-    
+
     //jsp2.1work
-    public static void generateInitSectionCode(JavaCodeWriter writer, int type, JspOptions jspOptions) {  	//PM06063
+    public static void generateInitSectionCode(JavaCodeWriter writer, int type, JspOptions jspOptions) { //PM06063
         writer.println("private javax.el.ExpressionFactory _el_expressionfactory;");
-        if (type==GeneratorUtils.TAG_FILE_TYPE) {
+        if (type == GeneratorUtils.TAG_FILE_TYPE) {
             //LIDB4147-24 & 443243 : need to define injection helpers for .tag files
-        	if (jspOptions == null || !jspOptions.isDisableResourceInjection()){	                        //PM06063
-        		generateInjectionSection(writer);
-        	}																								//PM06063
+            if (jspOptions == null || !jspOptions.isDisableResourceInjection()) { //PM06063
+                generateInjectionSection(writer);
+            } //PM06063
             writer.println("private void _jspInit(ServletConfig config) {");
         } else {
-        	writer.println("public void _jspInit() {");
+            writer.println("public void _jspInit() {");
         }
         writer.print("_el_expressionfactory");
         writer.print(" = _jspxFactory.getJspApplicationContext(");
-        if (type==GeneratorUtils.TAG_FILE_TYPE) {
-        	writer.print("config");
+        if (type == GeneratorUtils.TAG_FILE_TYPE) {
+            writer.print("config");
         } else {
-        	writer.print("getServletConfig()");
+            writer.print("getServletConfig()");
         }
         writer.print(".getServletContext()).getExpressionFactory();");
         writer.println();
         writer.println();
-        
+
         // LIDB4147-24
-        if (jspOptions == null || !jspOptions.isDisableResourceInjection()){		//PM06063
-        	
-        	writer.print ("com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager _jspx_aHelper = ");
-        	writer.print ("com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager.getInstance (");
-        	//443243: need to have the servletConfig to get the servletContext
-        	if (type==GeneratorUtils.TAG_FILE_TYPE) {
-        		writer.print("config");
-        	} else {
-        		writer.print("getServletConfig()");
-        	}
-        	writer.println(".getServletContext());");
-        	writer.println ("_jspx_iaHelper = _jspx_aHelper.getAnnotationHelper();");
-        }								                                            //PM06063
-        
+        if (jspOptions == null || !jspOptions.isDisableResourceInjection()) { //PM06063
+
+            writer.print("com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager _jspx_aHelper = ");
+            writer.print("com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager.getInstance (");
+            //443243: need to have the servletConfig to get the servletContext
+            if (type == GeneratorUtils.TAG_FILE_TYPE) {
+                writer.print("config");
+            } else {
+                writer.print("getServletConfig()");
+            }
+            writer.println(".getServletContext());");
+            writer.println("_jspx_iaHelper = _jspx_aHelper.getAnnotationHelper();");
+        } //PM06063
+
         //PK81147 start
         //if this is a JSP page, need to set this to true to indicate that we have already run_jspInit() for this generated servlet.  
-        if(type==GeneratorUtils.JSP_FILE_TYPE){
+        if (type == GeneratorUtils.JSP_FILE_TYPE) {
             writer.println("_jspx_isJspInited = true;");
         }
         //PK81147 end
-        
-        writer.println("}");
-		
-	}
 
-	public static void generateFactoryInitialization(JavaCodeWriter writer, boolean jcdiWrapIt) {
+        writer.println("}");
+
+    }
+
+    public static void generateFactoryInitialization(JavaCodeWriter writer, boolean jcdiWrapIt) {
         //If jcdi is enabled, we need to return a wrapped factory, that can be used to get a wrappedExpressionFactory 
-	    writer.print("private static final JspFactory _jspxFactory = ");
+        writer.print("private static final JspFactory _jspxFactory = ");
         if (jcdiWrapIt) {
             writer.print("new org.apache.jasper.runtime.JcdiWrappedJspFactoryImpl(");
         }
@@ -1022,11 +972,11 @@ public class GeneratorUtils {
             writer.print(")");
         }
         writer.println(";");
-	}
-     
-     // LIDB4147-24
-     
-     public static void generateInjectionSection (JavaCodeWriter writer) {
-          writer.println ("private com.ibm.wsspi.webcontainer.annotation.AnnotationHelper _jspx_iaHelper;");
-     }
+    }
+
+    // LIDB4147-24
+
+    public static void generateInjectionSection(JavaCodeWriter writer) {
+        writer.println("private com.ibm.wsspi.webcontainer.annotation.AnnotationHelper _jspx_iaHelper;");
+    }
 }

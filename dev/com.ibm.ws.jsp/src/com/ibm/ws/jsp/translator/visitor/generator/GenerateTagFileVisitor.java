@@ -40,112 +40,110 @@ import com.ibm.wsspi.jsp.resource.translation.TagFileResources;
 public class GenerateTagFileVisitor extends GenerateVisitor {
     protected GenerateTagFileResult result = null;
     protected TagFileResources tagFileFiles = null;
-  
-	static private Logger logger;
-	private static final String CLASS_NAME="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor";
-	static{
-		logger = Logger.getLogger("com.ibm.ws.jsp");
-	}
-    
+
+    static private Logger logger;
+    private static final String CLASS_NAME = "com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor";
+    static {
+        logger = Logger.getLogger("com.ibm.ws.jsp");
+    }
+
     public GenerateTagFileVisitor(JspVisitorUsage visitorUsage,
-                                  JspConfiguration jspConfiguration, 
-                                  JspCoreContext context, 
+                                  JspConfiguration jspConfiguration,
+                                  JspCoreContext context,
                                   HashMap resultMap,
-                                  JspVisitorInputMap inputMap) 
-        throws JspCoreException {
+                                  JspVisitorInputMap inputMap) throws JspCoreException {
         super(visitorUsage, jspConfiguration, context, resultMap, inputMap, "TagFileValidate");
         result = new GenerateTagFileResult(visitorUsage.getJspVisitorDefinition().getId());
-        tagFileFiles = (TagFileResources)inputMap.get("TagFileFiles");
+        tagFileFiles = (TagFileResources) inputMap.get("TagFileFiles");
         createWriter(tagFileFiles.getGeneratedSourceFile().getPath(), tagFileFiles.getClassName(), result.getCustomTagMethodJspIdMap()); //232818
     }
-    
+
     public JspVisitorResult getResult() throws JspCoreException {
         closeWriter();
         return result;
     }
-    
+
     public void visit(Document jspDocument, int visitCount) throws JspCoreException {
-        ValidateTagFileResult validatorResult = (ValidateTagFileResult)resultMap.get("TagFileValidate");
-        
+        ValidateTagFileResult validatorResult = (ValidateTagFileResult) resultMap.get("TagFileValidate");
+
         switch (visitCount) {
             case CodeGenerationPhase.IMPORT_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase IMPORT_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase IMPORT_SECTION");
+                }
                 generateImportSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.CLASS_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase CLASS_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase CLASS_SECTION");
+                }
                 generateClassSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.STATIC_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase STATIC_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase STATIC_SECTION");
+                }
                 generateStaticSection();
                 break;
             }
-            
+
             case CodeGenerationPhase.INIT_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase INIT_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase INIT_SECTION");
+                }
                 generateInitSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.METHOD_INIT_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase METHOD_INIT_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase METHOD_INIT_SECTION");
+                }
                 generateDoTagInitSection(validatorResult);
                 break;
             }
-            
+
             case CodeGenerationPhase.METHOD_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase METHOD_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase METHOD_SECTION");
+                }
                 generateDoTagSection(validatorResult, jspDocument);
                 break;
             }
-            
+
             case CodeGenerationPhase.FINALLY_SECTION: {
-				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-					logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase FINALLY_SECTION");
-				}
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                    logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase FINALLY_SECTION");
+                }
                 generateFinallySection();
                 break;
-            } 
+            }
         }
-        
+
         super.visit(jspDocument, visitCount);
-        
+
         if (visitCount == CodeGenerationPhase.FINALLY_SECTION) {
             writer.println("}");
             writer.println("}");
 
-			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-				logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase METHOD_WRITE");
-			}
-    
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase METHOD_WRITE");
+            }
+
             boolean poolingTagMethodsCreated = false;
             for (Iterator itr = methodWriterList.iterator(); itr.hasNext();) {
-                MethodWriter methodWriter = (MethodWriter)itr.next();
+                MethodWriter methodWriter = (MethodWriter) itr.next();
                 //247815 Start
                 if (methodWriter instanceof InitTaglibLookupWriter) {
-                    InitTaglibLookupWriter w = (InitTaglibLookupWriter)methodWriter;
+                    InitTaglibLookupWriter w = (InitTaglibLookupWriter) methodWriter;
                     w.complete();
                     poolingTagMethodsCreated = true;
-                }
-                else if (methodWriter instanceof CleanupTaglibLookupWriter) {
-                    CleanupTaglibLookupWriter w = (CleanupTaglibLookupWriter)methodWriter;
+                } else if (methodWriter instanceof CleanupTaglibLookupWriter) {
+                    CleanupTaglibLookupWriter w = (CleanupTaglibLookupWriter) methodWriter;
                     w.complete();
                     poolingTagMethodsCreated = true;
                 }
@@ -158,105 +156,103 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
                 InitTaglibLookupWriter initTaglibLookupWriter = new InitTaglibLookupWriter(jspOptions.isUseThreadTagPool());
                 initTaglibLookupWriter.complete();
                 writer.printMultiLn(initTaglibLookupWriter.toString());
-                CleanupTaglibLookupWriter cleanupTaglibLookupWriter =  new CleanupTaglibLookupWriter(jspOptions.isUseThreadTagPool());
+                CleanupTaglibLookupWriter cleanupTaglibLookupWriter = new CleanupTaglibLookupWriter(jspOptions.isUseThreadTagPool());
                 cleanupTaglibLookupWriter.complete();
                 writer.printMultiLn(cleanupTaglibLookupWriter.toString());
             }
             //247815 End
-            
-			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)) {
-				logger.logp(Level.FINEST, CLASS_NAME, "visit","entering code generation phase FRAGMENT_HELPER");
-			}
+
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
+                logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase FRAGMENT_HELPER");
+            }
 
             if (fragmentHelperClassWriter.isUsed()) {
                 fragmentHelperClassWriter.generatePostamble();
                 writer.printMultiLn(fragmentHelperClassWriter.toString());
             }
-    
+
             writer.println("}");
         }
     }
 
-
     protected void generateImportSection(ValidateTagFileResult validatorResult) {
-        TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
-        TagLibraryInfoImpl tli = (TagLibraryInfoImpl)tfi.getTagInfo().getTagLibrary();
+        TagFileInfo tfi = (TagFileInfo) inputMap.get("TagFileInfo");
+        TagLibraryInfoImpl tli = (TagLibraryInfoImpl) tfi.getTagInfo().getTagLibrary();
         String tagFilePath = null;
         if (tfi.getPath().startsWith("/WEB-INF/tags")) {
             tagFilePath = tfi.getPath().substring(tfi.getPath().indexOf("/WEB-INF/tags") + 13);
-        }
-        else if (tfi.getPath().startsWith("/META-INF/tags")) {
+        } else if (tfi.getPath().startsWith("/META-INF/tags")) {
             tagFilePath = tfi.getPath().substring(tfi.getPath().indexOf("/META-INF/tags") + 14);
         }
         tagFilePath = tagFilePath.substring(0, tagFilePath.lastIndexOf("/"));
         //PM70267 start
         if (tagFilePath.indexOf("-") > -1) {
             tagFilePath = com.ibm.ws.jsp.translator.utils.NameMangler.handlePackageName(tagFilePath);
-            if (!tagFilePath.startsWith(".")) { 
+            if (!tagFilePath.startsWith(".")) {
                 tagFilePath = "." + tagFilePath;
             }
         }
         //PM70267 end
 
         tagFilePath = tagFilePath.replace('/', '.');
-        
+
         String tagFilePackageName = Constants.TAGFILE_PACKAGE_NAME + "." + tli.getOriginatorId();
         if (tagFilePath.length() > 0)
             tagFilePackageName += tagFilePath;
         writer.println("package " + tagFilePackageName + ";");
         writer.println();
-        
-        for(int i = 0; i < Constants.STANDARD_IMPORTS.length; i++)
+
+        for (int i = 0; i < Constants.STANDARD_IMPORTS.length; i++)
             writer.println("import " + (String) Constants.STANDARD_IMPORTS[i] + ";");
-        
+
         writer.println();
     }
-    
+
     protected void generateClassSection(ValidateTagFileResult validatorResult) {
         writer.println();
         writer.print("public class " + tagFileFiles.getClassName() + " extends javax.servlet.jsp.tagext.SimpleTagSupport");
-        
+
         ArrayList<String> implementingInterfaces = new ArrayList<String>();
 
-        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
             implementingInterfaces.add("com.ibm.ws.jsp.runtime.DirectiveInfo");
         }
 
-        TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
+        TagFileInfo tfi = (TagFileInfo) inputMap.get("TagFileInfo");
         TagInfo ti = tfi.getTagInfo();
         if (ti.hasDynamicAttributes()) {
             implementingInterfaces.add("javax.servlet.jsp.tagext.DynamicAttributes");
         }
 
-        if(implementingInterfaces.size() > 0){
+        if (implementingInterfaces.size() > 0) {
             writer.print(" implements");
             int size = implementingInterfaces.size();
-            for(int i = 0; i < size; i++){
+            for (int i = 0; i < size; i++) {
                 writer.print(" " + implementingInterfaces.get(i));
-                if(i < size -1 ){
+                if (i < size - 1) {
                     writer.print(",");
                 }
             }
         }
-        
+
         writer.println(" {");
         GeneratorUtils.generateFactoryInitialization(writer, jspConfiguration.getConfigManager().isJCDIEnabled());
-		writer.println();
+        writer.println();
 
-        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
             writer.println();
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
-            
+
             // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
             // the imports below are required for all pages 
             writer.println("static {");
             // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
-			writer.println("importPackageList.add(\"jakarta.servlet\");");
-			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
-			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
+            writer.println("importPackageList.add(\"jakarta.servlet\");");
+            writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
+            writer.println("importPackageList.add(\"jakarta.servlet.http\");");
             writer.println("}");
         }
     }
@@ -265,11 +261,11 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println();
         writer.println("static {");
     }
-    
+
     protected void generateInitSection(ValidateTagFileResult validatorResult) throws JspCoreException {
-        TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
+        TagFileInfo tfi = (TagFileInfo) inputMap.get("TagFileInfo");
         TagInfo ti = tfi.getTagInfo();
-        
+
         boolean aliasSeen = false;
         TagVariableInfo[] tagVars = ti.getTagVariableInfos();
         for (int i = 0; i < tagVars.length; i++) {
@@ -280,16 +276,15 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         }
         writer.println("}");
         writer.println();
-        GeneratorUtils.generateInitSectionCode(writer, GeneratorUtils.TAG_FILE_TYPE, jspOptions);        //PM06063
-        writer.println();        
+        GeneratorUtils.generateInitSectionCode(writer, GeneratorUtils.TAG_FILE_TYPE, jspOptions); //PM06063
+        writer.println();
         GeneratorUtils.generateELFunctionCode(writer, validatorResult);
         writer.println("private JspContext jspContext;");
         writer.println("private java.io.Writer _jspx_sout;");
-        
+
         if (aliasSeen) {
             writer.println("public void setJspContext(JspContext ctx, java.util.Map aliasMap) {");
-        }
-        else {
+        } else {
             writer.println("public void setJspContext( JspContext ctx ) {");
         }
         writer.println("super.setJspContext(ctx);");
@@ -300,19 +295,19 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         for (int i = 0; i < tagVars.length; i++) {
 
             switch (tagVars[i].getScope()) {
-                case VariableInfo.NESTED :
+                case VariableInfo.NESTED:
                     writer.println("if (_jspx_nested == null)");
                     writer.println("_jspx_nested = new java.util.ArrayList();");
                     writer.print("_jspx_nested.add(");
                     break;
 
-                case VariableInfo.AT_BEGIN :
+                case VariableInfo.AT_BEGIN:
                     writer.println("if (_jspx_at_begin == null)");
                     writer.println("_jspx_at_begin = new java.util.ArrayList();");
                     writer.print("_jspx_at_begin.add(");
                     break;
 
-                case VariableInfo.AT_END :
+                case VariableInfo.AT_END:
                     writer.println("if (_jspx_at_end == null)");
                     writer.println("_jspx_at_end = new java.util.ArrayList();");
                     writer.print("_jspx_at_end.add(");
@@ -321,20 +316,18 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
 
             writer.print(GeneratorUtils.quote(tagVars[i].getNameGiven()));
             writer.print(");");
-            writer.println();     
+            writer.println();
         }
-        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
             if (aliasSeen) {
                 writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, this, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
-            } 
-            else {
+            } else {
                 writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, this, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
             }
         } else {
             if (aliasSeen) {
                 writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
-            } 
-            else {
+            } else {
                 writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
             }
         }
@@ -345,9 +338,9 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println("return this.jspContext;");
         writer.println("}");
 
-        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
             writer.println(" public boolean isErrorOnELNotFound() {");
-            writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
+            writer.println("return " + validatorResult.isErrorOnELNotFound() + ";");
             writer.println("}");
 
             writer.println(" public java.util.List<String> getImportClassList() {");
@@ -363,21 +356,20 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.println("}");
         }
 
-        if(!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
+        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
             GeneratorUtils.generateCDITagCleanUp(writer);
         }
 
         if (ti.hasDynamicAttributes()) {
             writer.println("private java.util.HashMap _jspx_dynamic_attrs = new java.util.HashMap();");
         }
-        
+
         TagAttributeInfo[] attrInfos = ti.getAttributes();
         for (int i = 0; i < attrInfos.length; i++) {
             writer.print("private ");
             if (attrInfos[i].isFragment()) {
                 writer.print("javax.servlet.jsp.tagext.JspFragment ");
-            }
-            else {
+            } else {
                 /* Defect 213290 */
                 writer.print(GeneratorUtils.toJavaSourceType(attrInfos[i].getTypeName()));
                 writer.print(" ");
@@ -393,8 +385,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
                 writer.print("public ");
                 if (attrInfos[i].isFragment()) {
                     writer.print("javax.servlet.jsp.tagext.JspFragment ");
-                }
-                else {
+                } else {
                     /* Defect 213290 */
                     writer.print(GeneratorUtils.toJavaSourceType(attrInfos[i].getTypeName()));
                     writer.print(" ");
@@ -415,8 +406,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
                 if (attrInfos[i].isFragment()) {
                     writer.print("(");
                     writer.print("javax.servlet.jsp.tagext.JspFragment ");
-                }
-                else {
+                } else {
                     writer.print("(");
                     /* Defect 213290 */
                     writer.print(GeneratorUtils.toJavaSourceType(attrInfos[i].getTypeName()));
@@ -441,17 +431,17 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
                 writer.println();
             }
         }
-        
+
         if (ti.hasDynamicAttributes()) {
             writer.println("public void setDynamicAttribute(String uri, String localName, Object value) throws javax.servlet.jsp.JspException {");
             writer.println("if (uri == null) _jspx_dynamic_attrs.put(localName, value);");
             writer.println("}");
         }
-        
+
     }
-    
+
     protected void generateDoTagInitSection(ValidateTagFileResult validatorResult) {
-        TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
+        TagFileInfo tfi = (TagFileInfo) inputMap.get("TagFileInfo");
         TagInfo ti = tfi.getTagInfo();
         //PK65013 - start
         String pageContextVar = Constants.JSP_PAGE_CONTEXT_ORIG;
@@ -459,31 +449,30 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             pageContextVar = Constants.JSP_PAGE_CONTEXT_NEW;
         }
         //PK65013 - end
-        
+
         //PM12658 start - keep track of doTag line number for debug mode (smap generation)
-        result.setTagMethodLineNumber(((JavaFileWriter)writer).getCurrentLineNumber());
+        result.setTagMethodLineNumber(((JavaFileWriter) writer).getCurrentLineNumber());
         //PM12658 end
         writer.println("public void doTag() throws javax.servlet.jsp.JspException, java.io.IOException {");
-        writer.println("PageContext "+pageContextVar+" = (PageContext)jspContext;");
-        writer.println("javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest) "+pageContextVar+".getRequest();");        //PK66299
-        writer.println("javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) "+pageContextVar+".getResponse();");    //PK66299
-        writer.println("javax.servlet.http.HttpSession session = "+pageContextVar+".getSession();");
-        writer.println("javax.servlet.ServletContext application = "+pageContextVar+".getServletContext();");
-        writer.println("javax.servlet.ServletConfig config = "+pageContextVar+".getServletConfig();");
+        writer.println("PageContext " + pageContextVar + " = (PageContext)jspContext;");
+        writer.println("javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest) " + pageContextVar + ".getRequest();"); //PK66299
+        writer.println("javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse) " + pageContextVar + ".getResponse();"); //PK66299
+        writer.println("javax.servlet.http.HttpSession session = " + pageContextVar + ".getSession();");
+        writer.println("javax.servlet.ServletContext application = " + pageContextVar + ".getServletContext();");
+        writer.println("javax.servlet.ServletConfig config = " + pageContextVar + ".getServletConfig();");
         writer.println("javax.servlet.jsp.JspWriter out = jspContext.getOut();");
 
-        if(!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()){
+        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
             GeneratorUtils.generateLastManagedObjectVariable(writer);
         }
 
         writer.println();
-        
+
         // 247815 Start
         if (jspOptions.isUsePageTagPool()) {
             writer.println("java.util.HashMap _jspx_TagLookup = initTaglibLookup();");
             writer.println();
-        }
-        else if (jspOptions.isUseThreadTagPool()) {
+        } else if (jspOptions.isUseThreadTagPool()) {
             writer.println("java.util.HashMap _jspx_TagLookup = new java.util.HashMap();");
             writer.println();
         }
@@ -492,7 +481,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         // jsp2.1ELwork
         writer.println("_jspInit(config);");
         writer.println();
-        
+
         // defect 386311 begin
         // set current JspContext on ELContext
         writer.println("jspContext.getELContext().putContext(JspContext.class,jspContext);");
@@ -500,14 +489,14 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         boolean varMapperInit = false;
         TagAttributeInfo[] attrInfos = ti.getAttributes();
         for (int i = 0; i < attrInfos.length; i++) {
-        	String attrName = attrInfos[i].getName();
-        	if(attrInfos[i].isDeferredMethod()||attrInfos[i].isDeferredValue()){
-        		if(!varMapperInit){
-        			writer.print("javax.el.VariableMapper _jspx_varmap= jspContext.getELContext().getVariableMapper();");
-        			writer.println();
-        			varMapperInit = true;
-        		}
-        		writer.print("javax.el.ValueExpression _jspx_ve");
+            String attrName = attrInfos[i].getName();
+            if (attrInfos[i].isDeferredMethod() || attrInfos[i].isDeferredValue()) {
+                if (!varMapperInit) {
+                    writer.print("javax.el.VariableMapper _jspx_varmap= jspContext.getELContext().getVariableMapper();");
+                    writer.println();
+                    varMapperInit = true;
+                }
+                writer.print("javax.el.ValueExpression _jspx_ve");
                 writer.print(Integer.toString(i));
                 writer.print(" = _jspx_varmap.setVariable(");
                 writer.print(GeneratorUtils.quote(attrName));
@@ -522,76 +511,74 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
                 }
                 writer.print(");");
                 writer.println();
-                
-        	}else{
-        		writer.print("if (" + GeneratorUtils.toGetterMethod(attrName) + " != null) ");
-                writer.print(" "+pageContextVar+".setAttribute(");
-        		writer.print(GeneratorUtils.quote(attrName));
-            	writer.print(", ");
-            	writer.print(GeneratorUtils.toGetterMethod(attrName));
-            	writer.print(");");
-            	writer.println();
-        	}
+
+            } else {
+                writer.print("if (" + GeneratorUtils.toGetterMethod(attrName) + " != null) ");
+                writer.print(" " + pageContextVar + ".setAttribute(");
+                writer.print(GeneratorUtils.quote(attrName));
+                writer.print(", ");
+                writer.print(GeneratorUtils.toGetterMethod(attrName));
+                writer.print(");");
+                writer.println();
+            }
         }
 
         if (ti.hasDynamicAttributes()) {
-            writer.print(pageContextVar+".setAttribute(\"");
-            writer.print(((TagFileTagInfo)ti).getDynamicAttributesMapName());
+            writer.print(pageContextVar + ".setAttribute(\"");
+            writer.print(((TagFileTagInfo) ti).getDynamicAttributesMapName());
             writer.print("\", _jspx_dynamic_attrs);");
             writer.println();
         }
     }
-    
+
     protected void generateDoTagSection(ValidateTagFileResult validatorResult, Document jspDocument) {
         writer.println("try {");
         if (jspConfiguration.isXml()) {
             boolean omitXmlDeclaration = true;
             Element outputElement = null;
-            
+
             if (jspDocument.getElementsByTagNameNS(Constants.JSP_NAMESPACE, Constants.JSP_OUTPUT_TYPE).getLength() > 0) {
-                outputElement = (Element)jspDocument.getDocumentElement().getElementsByTagNameNS(Constants.JSP_NAMESPACE, Constants.JSP_OUTPUT_TYPE).item(0);
+                outputElement = (Element) jspDocument.getDocumentElement().getElementsByTagNameNS(Constants.JSP_NAMESPACE, Constants.JSP_OUTPUT_TYPE).item(0);
                 String s = outputElement.getAttribute("omit-xml-declaration");
                 if (s.equalsIgnoreCase("no") || s.equalsIgnoreCase("false")) {
                     omitXmlDeclaration = false;
-                }
-                else if (s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("true")) {
+                } else if (s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("true")) {
                     omitXmlDeclaration = true;
                 }
             }
-            
+
             if (omitXmlDeclaration == false) {
                 String pageEncoding = validatorResult.getPageEncoding();
                 if (pageEncoding == null || pageEncoding.equals("")) {
                     pageEncoding = jspConfiguration.getPageEncoding();
                     if (pageEncoding == null || pageEncoding.equals("")) {
-                        pageEncoding = "UTF-8";    
+                        pageEncoding = "UTF-8";
                     }
                 }
                 writer.println("out.write(\"<?xml version=\\\"1.0\\\" encoding=\\\"" + pageEncoding + "\\\"?>\\n\");");
             }
-            
+
             //PK17173 begin
             String doctype = "";
-            if (outputElement!=null)
-            	doctype=outputElement.getAttribute("doctype-root-element");
-            if (outputElement != null && !doctype.equals("")) {    //PK17173 end
-                String docTypeRootElement =  outputElement.getAttribute("doctype-root-element");
+            if (outputElement != null)
+                doctype = outputElement.getAttribute("doctype-root-element");
+            if (outputElement != null && !doctype.equals("")) { //PK17173 end
+                String docTypeRootElement = outputElement.getAttribute("doctype-root-element");
                 String docTypeSystem = outputElement.getAttribute("doctype-system");
                 String docTypePublic = outputElement.getAttribute("doctype-public");
-                
+
                 writer.print("out.write(\"<!DOCTYPE " + docTypeRootElement);
                 if (docTypePublic.equals("") == false) {
                     writer.print(" PUBLIC \\\"" + docTypePublic + "\\\" \\\"" + docTypeSystem + "\\\">\\n\");");
-                    writer.println();     
-                }
-                else {
+                    writer.println();
+                } else {
                     writer.print(" SYSTEM \\\"" + docTypeSystem + "\\\">\\n\");");
-                    writer.println();     
+                    writer.println();
                 }
             }
         }
     }
-    
+
     protected void generateFinallySection() {
         writer.println("} catch( Throwable t ) {");
         writer.println("if( t instanceof javax.servlet.jsp.SkipPageException )");
