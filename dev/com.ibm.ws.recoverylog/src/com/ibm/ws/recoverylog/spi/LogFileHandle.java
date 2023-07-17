@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -528,17 +529,22 @@ class LogFileHandle {
      *
      * @return boolean true if the file currently exists.
      */
+    @Trivial
     protected boolean fileExists() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "fileExists", this);
 
         boolean fileAlreadyExists = true;
 
         File file = new File(_logDirectory, _fileName);
         fileAlreadyExists = (file.exists() && (file.length() > 0));
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "fileExists", fileAlreadyExists);
+        if (tc.isDebugEnabled()) {
+            try {
+                String name = file.getCanonicalPath();
+                Tr.debug(tc, "fileExists {0} {1}", name, fileAlreadyExists);
+            } catch (IOException e) {
+                Tr.debug(tc, "fileExists", e);
+            }
+        }
         return fileAlreadyExists;
     }
 
@@ -690,7 +696,7 @@ class LogFileHandle {
             Tr.entry(tc, "writeFileStatus", this, maintainPosition);
 
         if (_logFileHeader.status() == LogFileHeader.STATUS_INVALID) {
-            final InternalLogException ile = new InternalLogException(null);
+            final InternalLogException ile = new InternalLogException("LogFileHeaderStatus is INVALID");
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileStatus", ile);
             throw ile;
@@ -820,6 +826,7 @@ class LogFileHandle {
      * @return LogFileHeader The log file header object associated with this LogFileHandle
      *         instance.
      */
+    @Trivial
     protected LogFileHeader logFileHeader() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "logFileHeader", this, _logFileHeader);
@@ -859,9 +866,8 @@ class LogFileHandle {
      *
      * @return long The number of free bytes remaining.
      */
+    @Trivial
     public int freeBytes() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "freeBytes", this);
 
         int freeBytes = 0;
 
@@ -879,8 +885,8 @@ class LogFileHandle {
             freeBytes = 0;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "freeBytes", freeBytes);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "freeBytes {0}", freeBytes);
 
         return freeBytes;
     }

@@ -37,8 +37,6 @@ import componenttest.app.FATServlet;
 @WebServlet("/LongtranServlet")
 public class LongtranServlet extends FATServlet {
 
-    /**  */
-    private static final String filter = "(testfilter=jon)";
     private String TRAN_STATE_FILE;
 
     /**
@@ -64,12 +62,12 @@ public class LongtranServlet extends FATServlet {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             // Drive commit
@@ -145,12 +143,12 @@ public class LongtranServlet extends FATServlet {
                 tm.begin();
                 final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                                 .getXAResource(xaResInfo1);
-                final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+                final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
                 tm.enlist(xaRes1, recoveryId1);
 
                 final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                                 .getXAResource(xaResInfo2);
-                final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+                final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
                 tm.enlist(xaRes2, recoveryId2);
 
                 // Now pause for 15 seconds, meantime the server will be shutdown

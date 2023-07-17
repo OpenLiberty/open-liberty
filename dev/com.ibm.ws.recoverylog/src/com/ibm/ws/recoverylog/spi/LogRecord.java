@@ -134,15 +134,14 @@ public abstract class LogRecord {
      *                   that this log records byte cursor is isolated from other
      *                   log records.
      */
+    @Trivial
     protected LogRecord(Buffer buffer, int absolutePosition) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "LogRecord", buffer, absolutePosition);
 
         _buffer = (ByteBuffer) buffer;
         _absolutePosition = absolutePosition;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "LogRecord", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "LogRecord {0} {1} {2}", this, buffer, absolutePosition);
     }
 
     //------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RLSUtils.Operation;
 
@@ -615,7 +616,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "readRecords", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         ArrayList<ReadableLogRecord> records = null;
@@ -685,7 +686,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypointStarting", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         // Choose the 'other' file to be the target for the keypoint operation.
@@ -741,7 +742,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "closeLog", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         try {
@@ -793,7 +794,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "getServiceData", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         final byte[] serviceData = _activeFile.getServiceData();
@@ -822,7 +823,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "force", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         // Attempt to get exclusive lock on the lock object provided by RecoveryLogService
@@ -869,7 +870,7 @@ class LogHandle {
         if (_activeFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "logFileHeader", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log was already closed: " + _logDirectory);
         }
 
         final LogFileHeader logFileHeader = _activeFile.logFileHeader();
@@ -888,9 +889,10 @@ class LogHandle {
      *
      * @return ArrayList An array of ReadableLogRecords.
      */
+    @Trivial
     ArrayList<ReadableLogRecord> recoveredRecords() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "recoveredRecords", _recoveredRecords);
+            Tr.debug(tc, "recoveredRecords {0}", _recoveredRecords);
         return _recoveredRecords;
     }
 
@@ -913,7 +915,7 @@ class LogHandle {
         if ((_file1 == null) || (_file2 == null)) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "setServiceData", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("A log file is unavailable");
         }
 
         // Cache the service data buffer reference. This class logically 'owns' the buffer.
@@ -1048,7 +1050,7 @@ class LogHandle {
         if (_activeFile == null || _inactiveFile == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "resizeLog", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("A log file is unavailable");
         }
 
         try {

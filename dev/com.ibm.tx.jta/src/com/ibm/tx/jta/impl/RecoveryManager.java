@@ -708,7 +708,8 @@ public class RecoveryManager implements Runnable {
             Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
         try {
             if (_leaseLog != null) {
-                _leaseLog.releasePeerLease(recoveryIdentity);
+                if (isPeerServer)
+                    _leaseLog.releasePeerLease(recoveryIdentity);
                 _leaseLog.deleteServerLease(recoveryIdentity, isPeerServer);
             }
         } catch (Exception e) {
@@ -1640,12 +1641,12 @@ public class RecoveryManager implements Runnable {
 
                     postShutdown(true); // Close the partner log
 
-                    // Recovery is complete, if this was peer recovery then we may delete the peer server lease
-                    // This is a noop if peer recovery is not enabled.
+                    // Recovery is complete. This is a noop if peer recovery is not enabled.
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Server with identity {0} has recovered the logs of server {1}", _localRecoveryIdentity, _failureScopeController.serverName());
-                        deleteServerLease(_failureScopeController.serverName());
+                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+
+                        deleteServerLease(_failureScopeController.serverName(), true);
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
@@ -1819,7 +1820,6 @@ public class RecoveryManager implements Runnable {
 
             // Lets update our entry in the leaseLog early
             if (_leaseLog != null) {
-                // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
                     if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName)) {

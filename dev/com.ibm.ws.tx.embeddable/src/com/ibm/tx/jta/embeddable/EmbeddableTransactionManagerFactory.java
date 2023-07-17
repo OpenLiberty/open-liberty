@@ -6,7 +6,7 @@ package com.ibm.tx.jta.embeddable;
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerSet;
 import com.ibm.tx.ltc.embeddable.impl.EmbeddableLocalTranCurrentSet;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -31,11 +32,11 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
  * In addition to the javax.transaction.TransactionManager interface, the returned
  * instance also provides methods to enlist and delist resources with transactions,
  * as defined in the WebSphereTransactionManager interface.
- * 
+ *
  * <p> This class is private to WAS.
  * Any use of this class outside the WAS Express/ND codebase
  * is not supported.
- * 
+ *
  */
 public class EmbeddableTransactionManagerFactory extends com.ibm.tx.jta.TransactionManagerFactory {
     private static final TraceComponent tc = Tr.register(EmbeddableTransactionManagerFactory.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
@@ -49,22 +50,22 @@ public class EmbeddableTransactionManagerFactory extends com.ibm.tx.jta.Transact
     //
     // This is a factory class that should not be instantiated - police use of the constructor.
     //
-    protected EmbeddableTransactionManagerFactory() {}
+    protected EmbeddableTransactionManagerFactory() {
+    }
 
     /**
      * This method returns the underlying implementation of the TransactionManager. Use of this object
      * replaces use of the old JTSXA instance and static methods.
      */
+    @Trivial
     public static EmbeddableWebSphereTransactionManager getTransactionManager() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getTransactionManager");
 
         if (_tranManager == null) {
             loadEmbeddableTranManager(tmImplFactoryKey);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getTransactionManager", _tranManager);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "getTransactionManager {0}", _tranManager);
         return (EmbeddableWebSphereTransactionManager) _tranManager;
     }
 
@@ -101,7 +102,7 @@ public class EmbeddableTransactionManagerFactory extends com.ibm.tx.jta.Transact
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "loadEmbeddableLocalTranCurrent");
 
-        // TODO use services 
+        // TODO use services
         //             final Class<?> c = ImplFactory.loadClassFromKey(ltcsImplFactoryKey);
         // TODO LIBERTY HOLLY don't just revert to hardcode
         _localTranCurrent = EmbeddableLocalTranCurrentSet.instance();
@@ -123,7 +124,7 @@ public class EmbeddableTransactionManagerFactory extends com.ibm.tx.jta.Transact
 
     /**
      * Must only be called in a client
-     * 
+     *
      * @return
      */
     public static ExtendedTransactionManager getClientTransactionManager() {

@@ -446,11 +446,16 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
     // Retrieve address from lease log
     @Override
-    public String getAddress(String recoveryId) throws Exception {
+    public String getAddress(String recoveryId) {
         SharedServerLeaseLog leaseLog = Configuration.getLogManager().getLeaseLog();
 
-        if (leaseLog != null) {
-            return leaseLog.getBackendURL(recoveryId);
+        try {
+            if (leaseLog != null) {
+                return leaseLog.getBackendURL(recoveryId);
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getAddress", e);
         }
 
         return null;

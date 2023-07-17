@@ -22,6 +22,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -38,6 +41,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     static String _tranRecoveryLogDirStem;
     static String _localRecoveryIdentity;
     static File _leaseLogDirectory;
+    static String _recoveryGroup;
     // The file system directory where the lease files will be stored
     static File _serverInstallLeaseLogDir;
     boolean leaseLogWrittenInThisRun;
@@ -87,14 +91,14 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     // 2. We'll maintain a single lock for working against possibly more than one peer. But we'll only work against one peer at a time.
     //
 
-    LeaseLock _peerLeaseLock;
-    LeaseLock _localLeaseLock;
+    private LeaseLock _peerLeaseLock;
+    private LeaseLock _localLeaseLock;
 
     // Singleton instance of the FileSystem Lease Log class
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
 
     //to prevent creating another instance of Singleton
-    public FileSharedServerLeaseLog() {
+    private FileSharedServerLeaseLog() {
     }
 
     /**
@@ -127,6 +131,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         // append the recovery group to the directory
         if (recoveryGroup == null)
             recoveryGroup = "defaultGroup";
+        _recoveryGroup = recoveryGroup;
 
         try {
             final File leasesDir = new File(tranRecoveryLogDirStem).getParentFile();
@@ -218,10 +223,18 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     // Write the Transaction Log directory string to the file
                     if (!leaseLogWrittenInThisRun) {
                         try {
-                            //fooWriter.write(_logDirStem); // was "\n"
                             ByteBuffer byteBuffer = null;
                             FileChannel fChannel = _localLeaseLock.getFileChannel();
+                            if (tc.isDebugEnabled()) {
+                                byteBuffer = ByteBuffer.allocate((int) fChannel.size());
+                                fChannel.position(0);
+                                fChannel.read(byteBuffer);
+                                byteBuffer.flip();
+                                String line = new String(byteBuffer.array());
+                                Tr.info(tc, "Originally {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
+                            }
                             byteBuffer = ByteBuffer.wrap(_tranRecoveryLogDirStem.getBytes());
+                            fChannel.position(0);
                             fChannel.write(byteBuffer);
                             byteBuffer = ByteBuffer.wrap(("\n" + getBackendURL()).getBytes());
                             fChannel.write(byteBuffer);
@@ -233,7 +246,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.debug(tc, "Lease file now contains " + line + "of length " + line.length());
+                                Tr.info(tc, "On writing " + recoveryIdentity + " lease file length " + line.length() + " contains " + line);
                             }
                         } catch (IOException iox) {
                             if (tc.isDebugEnabled())
@@ -242,7 +255,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     }
 
                     // "Touch" the file for this server
-                    final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
+                    final File leaseFile = _localLeaseLock.getFile();
                     if (leaseLogWrittenInThisRun) {
                         boolean success = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
                             @Override
@@ -252,7 +265,10 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                         });
                         if (!success) {
                             if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Unable to set the last modification time for " + leaseFile);
+                                Tr.debug(tc, "Unable to set the last modification time for {0}", leaseFile.getCanonicalPath());
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Successfully modified time for {0}", leaseFile.getCanonicalPath());
                         }
                     }
                 }
@@ -263,12 +279,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         } catch (OverlappingFileLockException e) {
             // File is already locked in this thread or virtual machine, We're not expecting this to happen. Log the event
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "The file aleady appears to be locked in another thread");
+                Tr.debug(tc, "{0} already appears to be locked in another thread", _localLeaseLock.getFile().getCanonicalPath());
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "updateServerLease", this);
-
+            Tr.exit(tc, "updateServerLease");
     }
 
     /*
@@ -279,98 +294,87 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     @Override
     public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity, isPeerServer });
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
 
         // Is a lease file (equivalent to a record in the DB table) available for deletion
-        final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
+        final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentity);
 
         // At this point we are ready to acquire a lock on the control file prior to attempting to delete the server's file.
-        FileLock lock = null;
-        FileChannel channel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
+        // Block until we can acquire the lock on the control file.
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
-            public FileChannel run() {
-                FileChannel theChannel = null;
-                try {
-                    theChannel = new RandomAccessFile(_controlFile, "rw").getChannel();
-                } catch (FileNotFoundException e) {
+            public Void run() {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Block until we acquire the lock on the control file");
+                try (FileChannel theChannel = new RandomAccessFile(_controlFile, "rw").getChannel(); FileLock lock = theChannel.lock();) {
+                    // If we are about to delete a peer lease file, then do a check to be sure that a new instance
+                    // of the peer has not "recently" started.
+                    boolean attemptDelete = true;
+                    if (!recoveryIdentity.equals(_localRecoveryIdentity)) {
+                        final long leaseTime = leaseFile.lastModified();
+
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "recoveryId: " + recoveryIdentity + ", leaseTime: " + Utils.traceTime(leaseTime));
+                        }
+
+                        PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, leaseTime, _leaseTimeout);
+                        if (!pld.isExpired()) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "The lease file has not expired, do not attempt deletion");
+                            attemptDelete = false;
+                        }
+                    }
+
+                    // Attempt to delete the lease file
+                    if (attemptDelete) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Prepare to delete file " + leaseFile.getName() + ", in dir " + _serverInstallLeaseLogDir);
+
+                        boolean fileExists = false;
+
+                        boolean success = false;
+                        try {
+                            Path path = FileSystems.getDefault().getPath(System.getenv("WLP_USER_DIR"), "shared",
+                                                                         "leases", _recoveryGroup, recoveryIdentity);
+                            fileExists = Files.exists(path);
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Does nio path exist? " + fileExists);
+                            if (fileExists) {
+                                Files.delete(path);
+                                success = true;
+                            }
+                        } catch (Exception ex) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Caught exception in nio delete code " + ex);
+                        }
+
+                        if (success) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Successfully deleted lease file " + leaseFile.getName());
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Failed to delete lease file");
+                        }
+                    }
+                } catch (IOException e) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught FileNotFound exception when trying to lock control file");
-                    theChannel = null;
+                        Tr.debug(tc, "Exception locking lease control file: ", e);
+                } finally {
+                    // This next code fragment will delete the directory structure if appropriate
+                    //TODO: complete this code
+                    int fileNumber = _serverInstallLeaseLogDir.listFiles().length;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Number of files contained in " + _serverInstallLeaseLogDir + " is " + fileNumber);
+                    File fileArray[] = _serverInstallLeaseLogDir.listFiles();
+                    for (int i = 0; i < fileArray.length; i++) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Lease file residing at " + i + " is " + fileArray[i].getName());
+                    }
                 }
-                return theChannel;
+
+                return null;
             }
         });
-
-        try {
-            // Block until we can acquire the lock on the control file.
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Block until we acquire the lock on the control file");
-            lock = channel.lock();
-
-            if (lock != null) {
-                // Delete the leaseFile
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        boolean success = false;
-
-                        try {
-                            // If we are about to delete a peer lease file, then do a check to be sure that a new instance
-                            // of the peer has not "recently" started.
-                            boolean attemptDelete = true;
-                            if (!recoveryIdentity.equals(_localRecoveryIdentity)) {
-                                final long leaseTime = leaseFile.lastModified();
-
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "recoveryId: " + recoveryIdentity + ", leaseTime: " + Utils.traceTime(leaseTime));
-                                }
-
-                                PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, leaseTime, _leaseTimeout);
-                                if (!pld.isExpired()) {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "The lease file has not expired, do not attempt deletion");
-                                    attemptDelete = false;
-                                }
-                            }
-
-                            // Attempt to delete the lease file
-                            if (attemptDelete) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Attempt to delete file " + leaseFile.getName() + ", in dir " + _serverInstallLeaseLogDir);
-                                success = leaseFile.delete();
-                                if (success) {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "Successfully deleted lease file");
-                                } else {
-                                    if (tc.isDebugEnabled())
-                                        Tr.debug(tc, "Failed to delete lease file");
-                                }
-                            }
-                        } catch (SecurityException se) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Caught SecurityException " + se);
-                        }
-                        return null;
-                    }
-                });
-
-            }
-        } catch (OverlappingFileLockException e) {
-            // File is already locked in this thread or virtual machine, We're not expecting this to happen. Log the event
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The control file aleady appears to be locked in another thread");
-        } catch (IOException e) {
-            // We're not expecting this to happen. Log the event
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Caught an IOException");
-        } finally {
-            // Release the lock - if it is not null!
-            if (lock != null) {
-                lock.release();
-            }
-            // Close the channel
-            channel.close();
-        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteServerLease", this);
@@ -395,7 +399,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             // has "recently" recovered it.
             boolean attemptClaim = true;
             // Read the appropriate lease file (equivalent to a record in the DB table)
-            final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentityToRecover);
+            final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentityToRecover);
 
             // Get the timestamp when the lease file was last touched.
             final long newleaseTime = AccessController.doPrivileged(new PrivilegedAction<Long>() {
@@ -406,10 +410,10 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             });
 
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "recoveryId: " + recoveryIdentityToRecover + ", new leaseTime: " + Utils.traceTime(newleaseTime));
+                Tr.debug(tc, "recoveryId: {0}, new leaseTime: {1}", recoveryIdentityToRecover, Utils.traceTime(newleaseTime));
             }
 
-            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, newleaseTime, _leaseTimeout);
+            final PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, newleaseTime, _leaseTimeout);
             if (newleaseTime == 0 || !pld.isExpired()) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The lease file has not expired, or does not exist do not attempt recovery");
@@ -433,15 +437,16 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                         // Read file. Gives us both lines
                         String line = new String(buffer.array());
 
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Lease file contained " + line + " of length " + line.length());
+                        if (tc.isDebugEnabled()) {
+                            Tr.info(tc, "On reading " + recoveryIdentityToRecover + " lease file length " + line.length() + " contains " + line);
+                        }
                         int newline = line.indexOf("\n");
 
                         // strip off the backend URL
                         if (newline > 0)
                             line = line.substring(0, newline);
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "String is now " + line + " of length " + line.length());
+                            Tr.debug(tc, "String is now " + line + "of length " + line.length());
                         // Set the string into the LeaseInfo object
                         leaseInfo.setLeaseDetail(new File(line));
 
@@ -457,7 +462,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                             filePos = fileSize;
                         }
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Write in our own backendURL " + myBackendURL + " from file position " + filePos);
+                            Tr.debug(tc, "Write in our own backendURL {0} from file position {1}", myBackendURL, filePos);
                         fChannel.write(myBackendURL, filePos);
                         fChannel.force(false);
 
@@ -467,7 +472,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                             fChannel.read(buffer);
                             buffer.flip();
                             line = new String(buffer.array());
-                            Tr.debug(tc, "Lease file now contains " + line + " of length " + line.length());
+                            Tr.info(tc, "On writing " + recoveryIdentityToRecover + " lease file length " + line.length() + " contains " + line);
                         }
 
                         claimedLease = true;
@@ -507,79 +512,39 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
             public Void run() {
-
                 // We'll start by trying to lock the control file, if we can't do it this time around, then so be it, we
                 // assume that someone else is either getting peer leases or deleting peer leases.
-                FileChannel theChannel = null;
-                FileLock lock = null;
-                try {
-                    theChannel = new RandomAccessFile(_controlFile, "rw").getChannel();
-                } catch (FileNotFoundException e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught FileNotFound exception when trying to lock control file");
-                    theChannel = null;
-                }
+                try (FileChannel theChannel = new RandomAccessFile(_controlFile, "rw").getChannel(); FileLock lock = theChannel.tryLock();) {
+                    File thePeerFiles[] = _leaseLogDirectory.listFiles();
+                    // Now process through the peers we need to handle
+                    if (thePeerFiles != null) {
+                        for (File peerFile : thePeerFiles) {
+                            if (!peerFile.isDirectory()) {
+                                final String recoveryId = peerFile.getName();
+                                //Skip over the control file
+                                if (!recoveryId.equals(_controlFile.getName())) {
+                                    final long leaseTime = peerFile.lastModified();
 
-                if (theChannel != null) {
-                    // Non blocking attempt to acquire the lock on the control file.
-                    try {
-                        lock = theChannel.tryLock();
-                    } catch (IOException e) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught IOException when trying to lock control file - " + e);
-                        theChannel = null;
-                    }
-
-                    if (lock != null) {
-
-                        File thePeerFiles[] = _leaseLogDirectory.listFiles();
-                        // Now process through the peers we need to handle
-                        if (thePeerFiles != null) {
-                            for (File peerFile : thePeerFiles) {
-                                if (!peerFile.isDirectory()) {
-                                    final String recoveryId = peerFile.getName();
-                                    //Skip over the control file
-                                    if (!recoveryId.equals(_controlFile.getName())) {
-                                        final long leaseTime = peerFile.lastModified();
-
-                                        if (tc.isEventEnabled()) {
-                                            Tr.event(tc, "Lease Table: read recoveryId: " + recoveryId);
-                                            Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
-                                        }
-
-                                        PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
-
-                                        peerLeaseTable.addPeerEntry(pld);
-                                    } else {
-                                        if (tc.isDebugEnabled())
-                                            Tr.debug(tc, "Exclude the control file from the list");
+                                    if (tc.isEventEnabled()) {
+                                        Tr.event(tc, "Lease Table: read recoveryId: {0}, read leaseTime: {1}", recoveryId, Utils.traceTime(leaseTime));
                                     }
+
+                                    PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
+
+                                    peerLeaseTable.addPeerEntry(pld);
+                                } else {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Exclude the control file from the list");
                                 }
                             }
-                        } else {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "No peer servers found");
                         }
-                    }
-                }
-
-                // Tidy up before we leave
-                if (lock != null) {
-                    try {
-                        lock.release();
-                    } catch (IOException e) {
+                    } else {
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught an IOException on lock release");
+                            Tr.debug(tc, "No peer servers found");
                     }
-                }
-                // Close the channel
-                if (theChannel != null) {
-                    try {
-                        theChannel.close();
-                    } catch (IOException e) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Caught an IOException on channel close");
-                    }
+                } catch (Exception e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Exception locking lease control file: ", e);
                 }
 
                 return null;
@@ -588,7 +553,6 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getLeasesForPeers", this);
-
     }
 
     /*
@@ -597,17 +561,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockPeerLease(java.lang.String)
      */
     @Override
-    @FFDCIgnore({ OverlappingFileLockException.class })
     public boolean lockPeerLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "lockPeerLease", recoveryIdentity, this);
-        // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
-        boolean claimedLock = false;
-        // Read the appropriate lease file (equivalent to a record in the DB table)
-        final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
 
-        FileLock fLock = null;
-        FileChannel fChannel = null;
+        // Read the appropriate lease file (equivalent to a record in the DB table)
+        final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentity);
 
         // If the peer lease file does not exist then we can return early. This also prevents us from re-creating the file if it has
         // already been deleted by another peer. We could probably do this all a little more neatly if we didn't have to maintain Java6
@@ -624,14 +583,29 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                 return fileExists;
             }
         });
+
         if (!success) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "lockPeerLease", false);
             return false;
         }
 
+        _peerLeaseLock = lock(leaseFile);
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "lockPeerLease", _peerLeaseLock != null);
+        return _peerLeaseLock != null;
+    }
+
+    /**
+     * @param leaseFile
+     * @return
+     */
+    @FFDCIgnore({ OverlappingFileLockException.class })
+    private LeaseLock lock(File leaseFile) {
+
         // At this point we are ready to acquire a lock on the lease file prior to attempting to read it.
-        fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
+        FileChannel fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
             @Override
             public FileChannel run() {
                 FileChannel theChannel = null;
@@ -647,6 +621,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             }
         });
 
+        FileLock fLock = null;
         try {
             // Try acquiring the lock without blocking. This method returns
             // null or throws an exception if the file is already locked.
@@ -655,36 +630,30 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
                 if (fLock != null) {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "We have claimed the lock for file - " + leaseFile);
-                    claimedLock = true;
-                    _peerLeaseLock = new LeaseLock(recoveryIdentity, fLock, fChannel);
+                        Tr.debug(tc, "We have claimed the lock for {0}", leaseFile.getPath());
+                    return new LeaseLock(fLock, fChannel, leaseFile);
                 }
             }
         } catch (OverlappingFileLockException e) {
             // File is already locked in this thread or virtual machine, We're not expecting this to happen. Log the event
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "The file aleady appears to be locked in another thread");
+                Tr.debug(tc, "{0} appears to be locked in another thread", leaseFile.getPath());
         } catch (IOException e) {
             // We're not expecting this to happen. Log the event
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Caught an IOException");
+                Tr.debug(tc, "Caught an IOException", e);
         }
 
-        // Tidy up if we failed to claim lock
-        if (!claimedLock) {
-            if (fChannel != null)
-                try {
-                    fChannel.close();
-                } catch (IOException e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught an IOException on channel close");
-                }
-            _localLeaseLock = null;
+        if (fChannel != null) {
+            try {
+                fChannel.close();
+            } catch (IOException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Caught an IOException on channel close", e);
+            }
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "lockPeerLease", claimedLock);
-        return claimedLock;
+        return null;
     }
 
     /*
@@ -696,29 +665,49 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     public boolean releasePeerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "releasePeerLease", recoveryIdentity, this);
-        // Release the lock - if it is not null!
-        FileLock fLock = null;
-        FileChannel fChannel = null;
+
         if (_peerLeaseLock != null) {
-            String recIdentity = _peerLeaseLock.getRecoveryIdentity();
-            if (recoveryIdentity.equals(recIdentity)) {
-                fLock = _peerLeaseLock.getFileLock();
-                if (fLock != null) {
-                    fLock.release();
-                }
-                // Close the channel
-                fChannel = _peerLeaseLock.getFileChannel();
-                if (fChannel != null)
-                    fChannel.close();
-                _peerLeaseLock = null;
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "The locks identity which was " + recIdentity + " did not match the requested identity which was " + recoveryIdentity);
-            }
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The lease lock was unexpectedly null");
+            _peerLeaseLock.release();
+            _peerLeaseLock = null;
         }
+
+//        // Release the lock - if it is not null!
+//        FileLock fLock = null;
+//        FileChannel fChannel = null;
+//        if (_peerLeaseLock != null) {
+//            String recIdentity = _peerLeaseLock.getRecoveryIdentity();
+//            if (recoveryIdentity.equals(recIdentity)) {
+//                fLock = _peerLeaseLock.getFileLock();
+//                if (fLock != null) {
+//                    if (tc.isDebugEnabled())
+//                        Tr.debug(tc, "Release the peer lock");
+//                    try {
+//                        fLock.release();
+//                    } catch (Exception ex) {
+//                        if (tc.isDebugEnabled())
+//                            Tr.debug(tc, "Caught exception on lock release " + ex);
+//                    }
+//                }
+//                // Close the channel
+//                fChannel = _peerLeaseLock.getFileChannel();
+//                if (tc.isDebugEnabled())
+//                    Tr.debug(tc, "Close channel " + fChannel);
+//                if (fChannel != null)
+//                    try {
+//                        fChannel.close();
+//                    } catch (Exception ex) {
+//                        if (tc.isDebugEnabled())
+//                            Tr.debug(tc, "Caught exception on channel close " + ex);
+//                    }
+//                _peerLeaseLock = null;
+//            } else {
+//                if (tc.isDebugEnabled())
+//                    Tr.debug(tc, "The locks identity which was {0} did not match the requested identity which was {1}", recIdentity, recoveryIdentity);
+//            }
+//        } else {
+//            if (tc.isDebugEnabled())
+//                Tr.debug(tc, "The lease lock was null");
+//        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "releasePeerLease");
@@ -737,60 +726,15 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
 
         // Read the appropriate lease file (equivalent to a record in the DB table)
-        final File leaseFile = new File(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryIdentity);
+        final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentity);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Attempting to lock {0}", leaseFile.getPath());
 
-        FileLock fLock = null;
-
-        // At this point we are ready to acquire a lock on the lease file prior to attempting to read it.
-        FileChannel fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
-            @Override
-            public FileChannel run() {
-                FileChannel theChannel = null;
-                try {
-                    theChannel = new RandomAccessFile(leaseFile, "rw").getChannel();
-                } catch (FileNotFoundException e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught FileNotFound exception when trying to lock lease file", e);
-                    theChannel = null;
-                }
-                return theChannel;
-            }
-        });
-
-        if (fChannel != null) {
-            try {
-                // Try acquiring the lock without blocking. This method returns
-                // null or throws an exception if the file is already locked.
-                fLock = fChannel.tryLock();
-            } catch (OverlappingFileLockException e) {
-                // File is already locked in this thread or virtual machine, We're not expecting this to happen. Log the event
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "The file aleady appears to be locked in another thread", e);
-            } catch (IOException e) {
-                // We're not expecting this to happen. Log the event
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Caught an IOException", e);
-            }
-
-            // Tidy up if we failed to claim lock
-            if (fLock != null) {
-                _localLeaseLock = new LeaseLock(recoveryIdentity, fLock, fChannel);
-            } else {
-                _localLeaseLock = null;
-                try {
-                    fChannel.close();
-                } catch (IOException e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught an IOException on channel close", e);
-                }
-            }
-        }
+        _localLeaseLock = lock(leaseFile);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "lockLocalLease", fLock != null);
-        return fLock != null;
+            Tr.exit(tc, "lockLocalLease", _localLeaseLock != null);
+        return _localLeaseLock != null;
     }
 
     /*
@@ -802,64 +746,76 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "releaseLocalLease", recoveryIdentity, this);
-        // Release the lock - if it is not null!
-        FileLock fLock = null;
-        FileChannel fChannel = null;
         if (_localLeaseLock != null) {
-            String recIdentity = _localLeaseLock.getRecoveryIdentity();
-            if (recoveryIdentity.equals(recIdentity)) {
-                fLock = _localLeaseLock.getFileLock();
-                if (fLock != null) {
-                    fLock.release();
-                }
-                // Close the channel
-                fChannel = _localLeaseLock.getFileChannel();
-                if (fChannel != null)
-                    fChannel.close();
-                _localLeaseLock = null;
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "The locks identity which was " + recIdentity + " did not match the requested identity which was " + recoveryIdentity);
-            }
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The lease lock was unexpectedly null");
+            _localLeaseLock.release();
+            _localLeaseLock = null;
         }
-
+//        // Release the lock - if it is not null!
+//        FileLock fLock = null;
+//        FileChannel fChannel = null;
+//        if (_localLeaseLock != null) {
+//            String recIdentity = _localLeaseLock.getRecoveryIdentity();
+//            if (recoveryIdentity.equals(recIdentity)) {
+//                fLock = _localLeaseLock.getFileLock();
+//                if (fLock != null) {
+//                    fLock.release();
+//                }
+//                // Close the channel
+//                fChannel = _localLeaseLock.getFileChannel();
+//                if (fChannel != null)
+//                    fChannel.close();
+//                _localLeaseLock = null;
+//            } else {
+//                if (tc.isDebugEnabled())
+//                    Tr.debug(tc, "The lock's identity which was " + recIdentity + " did not match the requested identity which was " + recoveryIdentity);
+//            }
+//        } else {
+//            if (tc.isDebugEnabled())
+//                Tr.debug(tc, "The lease lock was unexpectedly null");
+//        }
+//
         if (tc.isEntryEnabled())
             Tr.exit(tc, "releaseLocalLease");
         return true;
     }
 
     private class LeaseLock {
-        private final String _recoveryIdentity;
-        FileLock _leaseFileLock = null;
-        FileChannel _leaseChannel = null;
+        private final FileLock _leaseFileLock;
+        private final FileChannel _leaseChannel;
+        private final File _leaseFile;
 
         // Constructor
-        public LeaseLock(String recIdentity, FileLock fLock, FileChannel fChannel) {
+        public LeaseLock(FileLock fLock, FileChannel fChannel, File leaseFile) {
             if (tc.isEntryEnabled())
-                Tr.entry(tc, "LeaseLock", recIdentity, fLock, fChannel);
-            _recoveryIdentity = recIdentity;
+                Tr.entry(tc, "LeaseLock", fLock, fChannel, leaseFile);
             _leaseFileLock = fLock;
             _leaseChannel = fChannel;
+            _leaseFile = leaseFile;
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "LeaseLock", this);
+        }
+
+        /**
+         * @throws IOException
+         *
+         */
+        public void release() throws IOException {
+            _leaseFileLock.release();
+            _leaseChannel.close();
         }
 
         public FileLock getFileLock() {
             return _leaseFileLock;
         }
 
+        public File getFile() {
+            return _leaseFile;
+        }
+
         public FileChannel getFileChannel() {
             return _leaseChannel;
         }
-
-        public String getRecoveryIdentity() {
-            return _recoveryIdentity;
-        }
-
     }
 
     /*
@@ -877,16 +833,29 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
-
     }
 
     @Override
-    public String getBackendURL(String recoveryId) throws Exception {
+    public String getBackendURL(String recoveryId) {
+        String filename = _serverInstallLeaseLogDir + File.separator + recoveryId;
+        String ret = null;
+
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getBackendURL", filename);
+
         // Want the second line out of the file
-        BufferedReader reader = new BufferedReader(new FileReader(_serverInstallLeaseLogDir + String.valueOf(File.separatorChar) + recoveryId));
-        // discard first line
-        reader.readLine();
-        // return the second
-        return reader.readLine();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            // discard first line
+            reader.readLine();
+            // return the second
+            ret = reader.readLine();
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "getBackendURL", e);
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getBackendURL", ret);
+        return ret;
     }
 }

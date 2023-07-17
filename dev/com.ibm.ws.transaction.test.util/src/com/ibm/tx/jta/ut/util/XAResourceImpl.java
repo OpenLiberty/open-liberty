@@ -150,7 +150,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int RECOVERED = 128;
     public static final int COMMITTED_ONE_PHASE = 256;
 
-    protected static String STATE_FILE = "XAResourceData.dat";
+    protected static File STATE_FILE = new File("XAResourceData.dat");
     public static final String DUMP_STATE = "Dump State: ";
 
     // This variable may be set to true to allow more chatty output.
@@ -170,8 +170,12 @@ public class XAResourceImpl implements XAResource, Serializable {
         return this;
     }
 
-    public static synchronized void setStateFile(String path) {
-        System.out.println("setStateFile: " + path);
+    public static synchronized void setStateFile(File path) {
+        try {
+			System.out.println("setStateFile: " + path.getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         STATE_FILE = path;
     }
 
@@ -1399,8 +1403,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     public static synchronized boolean clear() {
-		final File f = new File(STATE_FILE);
-		System.out.println("XAResourceImpl.clear(): Deleting state file: " + f.getAbsolutePath());
+		System.out.println("XAResourceImpl.clear(): Deleting state file: " + STATE_FILE.getAbsolutePath());
 
 		_XAEvents.clear();
         _resources.clear();
@@ -1409,8 +1412,8 @@ public class XAResourceImpl implements XAResource, Serializable {
 
 			@Override
 			public Boolean run() {
-				if (f.exists()) {
-					boolean result = f.delete();
+				if (STATE_FILE.exists()) {
+					boolean result = STATE_FILE.delete();
 					System.out.println("Deletion " + (result ? "succeeded" : "failed"));
 					return result;
 				} else {
@@ -1563,7 +1566,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     /**
      * @param stateFile
      */
-    public static synchronized void loadState(String stateFile) {
+    public static synchronized void loadState(File stateFile) {
         setStateFile(stateFile);
         loadState();
     }

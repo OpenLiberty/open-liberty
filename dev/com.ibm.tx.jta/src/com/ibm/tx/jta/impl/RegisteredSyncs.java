@@ -1,17 +1,16 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
  * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -91,7 +90,7 @@ public class RegisteredSyncs {
 
     final static int SYNC_ARRAY_SIZE = SYNC_TIER_RRS + 1; // RRS should always be last
 
-    protected final List[] _syncs = new ArrayList[SYNC_ARRAY_SIZE];
+    protected final List<Synchronization>[] _syncs = new ArrayList[SYNC_ARRAY_SIZE];
 
     final static int DEFAULT_DEPTH_LIMIT = 5; // @287100A
 
@@ -158,12 +157,12 @@ public class RegisteredSyncs {
         // Finally issue the RRS syncs - z/OS always issues these even if RBO has occurred
         // during previous syncs.  Need to check with Matt if we need to do these even if the
         // overall transaction is set to RBO as we bypass distributeBefore in this case.
-        final List RRSsyncs = _syncs[SYNC_TIER_RRS];
+        final List<Synchronization> RRSsyncs = _syncs[SYNC_TIER_RRS];
 
         if (RRSsyncs != null) {
             for (int j = 0; j < RRSsyncs.size(); j++) // d162354 array could grow
             {
-                final Synchronization sync = (Synchronization) RRSsyncs.get(j);
+                final Synchronization sync = RRSsyncs.get(j);
 
                 if (tc.isEventEnabled())
                     Tr.event(tc, "driving RRS before sync[" + j + "]", Util.identity(sync));
@@ -207,7 +206,7 @@ public class RegisteredSyncs {
         // after the asynchronous sync completions as RRS needs to be as
         // close to the tran completion as possible.
         for (int i = 0; i < _syncs.length - 1; i++) {
-            final List syncs = _syncs[i];
+            final List<Synchronization> syncs = _syncs[i];
 
             if (syncs != null) {
                 // d287100 - container syncs can invoke a new bean which adds new syncs.
@@ -232,7 +231,7 @@ public class RegisteredSyncs {
                         currentLast = syncs.size();
                     }
 
-                    final Synchronization sync = (Synchronization) syncs.get(j);
+                    final Synchronization sync = syncs.get(j);
 
                     if (tc.isEventEnabled())
                         Tr.event(tc, "driving before sync[" + j + "]", Util.identity(sync));
@@ -257,12 +256,12 @@ public class RegisteredSyncs {
             Tr.entry(tc, "distributeAfter", new Object[] { this, Util.printStatus(status) });
 
         // Issue the RRS syncs first - these need to be as close to the completion as possible
-        final List RRSsyncs = _syncs[SYNC_TIER_RRS];
+        final List<Synchronization> RRSsyncs = _syncs[SYNC_TIER_RRS];
 
         if (RRSsyncs != null) {
             final int RRSstatus = (status == Status.STATUS_UNKNOWN ? Status.STATUS_COMMITTED : status); // @281425A
             for (int j = RRSsyncs.size(); --j >= 0;) {
-                final Synchronization sync = (Synchronization) RRSsyncs.get(j);
+                final Synchronization sync = RRSsyncs.get(j);
 
                 try {
                     if (tc.isEntryEnabled())
@@ -291,11 +290,11 @@ public class RegisteredSyncs {
         // are driven in the tier order inner, then normal,
         // and lastly outer.
         for (int i = _syncs.length - 1; --i >= 0;) {
-            final List syncs = _syncs[i];
+            final List<Synchronization> syncs = _syncs[i];
 
             if (syncs != null) {
                 for (int j = 0; j < syncs.size(); ++j) {
-                    final Synchronization sync = (Synchronization) syncs.get(j);
+                    final Synchronization sync = syncs.get(j);
 
                     try {
                         if (tc.isEntryEnabled())
@@ -346,7 +345,7 @@ public class RegisteredSyncs {
         }
 
         if (_syncs[tier] == null) {
-            _syncs[tier] = new ArrayList();
+            _syncs[tier] = new ArrayList<Synchronization>();
         }
 
         _syncs[tier].add(sync);

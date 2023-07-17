@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.naming.InitialContext;
@@ -129,9 +130,16 @@ public class TxTestUtils {
 			if (!resourcesDir.exists()) {
 				resourcesDir.mkdirs();
 			}
-			XAResourceImpl.setStateFile(resourcesDir.getPath() + File.separator + "XAResources.dat");
+			XAResourceImpl.setStateFile(new File(resourcesDir.getPath() + File.separator + "XAResources.dat"));
 			System.out.println("setTestResourcesFile: "+XAResourceImpl.STATE_FILE);
 		}
+	}
+
+	public static void setTimeouts(Map<String, Object> requestContext, int timeout) {
+		requestContext.put("com.sun.xml.ws.connect.timeout", timeout);
+		requestContext.put("com.sun.xml.ws.request.timeout", timeout);
+		requestContext.put("javax.xml.ws.client.connectionTimeout", timeout);
+		requestContext.put("javax.xml.ws.client.receiveTimeout", timeout);
 	}
 }
 

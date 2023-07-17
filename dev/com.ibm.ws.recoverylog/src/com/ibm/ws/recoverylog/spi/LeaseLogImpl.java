@@ -33,4 +33,40 @@ public class LeaseLogImpl {
             Tr.debug(tc, "backendURL: {0}", _backendURL);
         return _backendURL;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockPeerLease(java.lang.String)
+     */
+    public boolean lockPeerLease(String recoveryIdentity) {
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releasePeerLease(java.lang.String)
+     */
+    public boolean releasePeerLease(String recoveryIdentity) throws Exception {
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockLocalLease(java.lang.String)
+     */
+    public boolean lockLocalLease(String recoveryIdentity) {
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
+     */
+    public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
+        return true;
+    }
 }

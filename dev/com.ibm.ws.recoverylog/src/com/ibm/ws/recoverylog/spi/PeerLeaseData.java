@@ -16,6 +16,7 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  *
@@ -37,6 +38,7 @@ public class PeerLeaseData {
             Tr.exit(tc, "PeerLeaseData");
     }
 
+    @Trivial
     public String getRecoveryIdentity() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
@@ -46,6 +48,7 @@ public class PeerLeaseData {
     /**
      * @return the _leaseTime
      */
+    @Trivial
     public long getLeaseTime() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getLeaseTime", Utils.traceTime(_leaseTime));
@@ -55,6 +58,7 @@ public class PeerLeaseData {
     /**
      * Has the peer expired?
      */
+    @Trivial
     public boolean isExpired() {
         boolean expired = false;
         long curTime = System.currentTimeMillis();

@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import tests.DBRerouteRecoveryTest;
@@ -24,7 +25,7 @@ import tests.DBRerouteRecoveryTest;
 @SuiteClasses({
 	DBRerouteRecoveryTest.class,
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())

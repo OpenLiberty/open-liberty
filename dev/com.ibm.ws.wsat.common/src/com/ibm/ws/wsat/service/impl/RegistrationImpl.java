@@ -185,14 +185,19 @@ public class RegistrationImpl {
         }
 
         String recoveryId = wsatProperties.get(Constants.WS_WSAT_REC_REF.getLocalPart());
-        String newAddr;
+        String newAddr = null;
         try {
             newAddr = tranService.getAddress(recoveryId);
         } catch (Exception e) {
-            WSATException e1 = new WSATException(e.getLocalizedMessage());
-            e1.initCause(e);
-            throw e1;
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Can't get address for {0} {1}", recoveryId, e);
+            }
         }
+
+        // Reroute address may be unavailable
+        if (newAddr == null)
+            return null;
+
         String toAddr = WSATUtil.createRedirectAddr(wsatProperties.get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,13 +75,9 @@ public class FileFailureScope implements FailureScope {
      * Constructor to create a new failure scope that encompasses the current point
      * of execution. In WebSphere distributed, this means the current server.
      */
+    @Trivial
     public FileFailureScope() {
         this(Configuration.fqServerName());
-
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "FileFailureScope");
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "FileFailureScope", this);
     }
 
     //------------------------------------------------------------------------------
@@ -93,17 +89,15 @@ public class FileFailureScope implements FailureScope {
      *
      * @param serverName The target server name
      */
+    @Trivial
     public FileFailureScope(String serverName) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "FileFailureScope", serverName);
-
         _serverName = serverName;
         _hashCode = _serverName.hashCode();
 
         _stringForm = "FileFailureScope: " + _serverName + " [" + _hashCode + "]";
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "FileFailureScope", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "FileFailureScope {0}", _stringForm);
     }
 
     public FileFailureScope(String serverName, LeaseInfo leaseInfo) {

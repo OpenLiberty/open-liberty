@@ -29,7 +29,7 @@
     heuristicRetryLimit="10"
     recoverOnStartup="true"
     recoveryGroup="server-group"
-    recoveryIdentity="WSATRecoveryServer2"
+    recoveryIdentity="WSATRecoveryServer3"
     waitForRecovery="false"
   />
 

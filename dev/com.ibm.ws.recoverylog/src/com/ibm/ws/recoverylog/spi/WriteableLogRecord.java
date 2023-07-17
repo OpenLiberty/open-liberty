@@ -61,20 +61,18 @@ public class WriteableLogRecord extends LogRecord {
      * @param length         The length of the data that other recovery log components will
      *                           write to the record.
      */
+    @Trivial
     protected WriteableLogRecord(ByteBuffer buffer, long sequenceNumber, int length, int absolutePosition) {
         super(buffer, absolutePosition);
 
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "WriteableLogRecord", buffer, sequenceNumber, length, absolutePosition);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "WriteableLogRecord {0} {1} {2} {3} {4}", this, buffer, sequenceNumber, length, absolutePosition);
 
         _buffer.put(RECORD_MAGIC_NUMBER);
         _buffer.putLong(sequenceNumber);
         _buffer.putInt(length);
 
         _sequenceNumber = sequenceNumber;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "WriteableLogRecord", this);
     }
 
     //------------------------------------------------------------------------------
@@ -170,12 +168,9 @@ public class WriteableLogRecord extends LogRecord {
      * this call has been issued.
      */
     protected void close() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "close", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "close {0}", this);
 
         _buffer.putLong(_sequenceNumber);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "close");
     }
 }

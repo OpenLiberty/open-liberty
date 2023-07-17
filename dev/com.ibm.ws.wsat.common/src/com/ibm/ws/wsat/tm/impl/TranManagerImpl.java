@@ -363,7 +363,7 @@ public class TranManagerImpl {
      * @return
      * @throws Exception
      */
-    public String getAddress(String recoveryId) throws Exception {
+    public String getAddress(String recoveryId) {
         return getRemoteTranMgr().getAddress(recoveryId);
     }
 }

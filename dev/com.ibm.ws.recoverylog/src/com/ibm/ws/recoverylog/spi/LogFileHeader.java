@@ -298,7 +298,7 @@ public class LogFileHeader {
                          String logName) {
 
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "LogFileHeader", new Object[] { serverName, serviceName, serviceVersion, logName });
+            Tr.entry(tc, "LogFileHeader", serverName, serviceName, serviceVersion, logName);
 
         // When first created, the header is assumed to represent an inactive or non-existant file.
         // This field will be updated as required either by loading the real header from an existing
@@ -343,6 +343,7 @@ public class LogFileHeader {
             Tr.exit(tc, "LogFileHeader", this);
     }
 
+    @Trivial
     public final static int headerSize() {
         /**
          * The length of the static portion of the file header. Variable parts such as server name length
@@ -367,6 +368,8 @@ public class LogFileHeader {
                          RLSUtils.LONG_SIZE + // datestamp (repeated)
                          RLSUtils.LONG_SIZE; // sequence number (repeated)
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "headerSize {0}", headerSize);
         return headerSize;
     }
 
@@ -397,7 +400,7 @@ public class LogFileHeader {
         if (_status == STATUS_INVALID) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "length", "LogHeaderInvalid - throwing InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("LogFileHeader status is invalid");
         }
 
         // Calculate the length based on fixed and variable length data.
@@ -449,7 +452,7 @@ public class LogFileHeader {
         if (_status == STATUS_INVALID) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "write", "LogHeaderInvalid - throwing InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("LogFileHeader status is invalid");
         }
 
         try {
@@ -842,10 +845,10 @@ public class LogFileHeader {
      *
      * @return long The firstRecordSequenceNumber field.
      */
+    @Trivial
     public long firstRecordSequenceNumber() {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "firstRecordSequenceNumber", this);
-            Tr.exit(tc, "firstRecordSequenceNumber", _firstRecordSequenceNumber);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "firstRecordSequenceNumber {0} {1}", this, _firstRecordSequenceNumber);
         }
         return _firstRecordSequenceNumber;
     }
@@ -922,10 +925,10 @@ public class LogFileHeader {
      *
      * @return The service data refernece.
      */
+    @Trivial
     public byte[] getServiceData() {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "getServiceData", this);
-            Tr.exit(tc, "getServiceData", RLSUtils.toHexString(_serviceData, RLSUtils.MAX_DISPLAY_BYTES));
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "getServiceData {0} {1}", this, RLSUtils.toHexString(_serviceData, RLSUtils.MAX_DISPLAY_BYTES));
         }
         return _serviceData;
     }
@@ -938,14 +941,12 @@ public class LogFileHeader {
      *
      * @param serviceData The new service data reference.
      */
+    @Trivial
     public void setServiceData(byte[] serviceData) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setServiceData", new Object[] { RLSUtils.toHexString(serviceData, RLSUtils.MAX_DISPLAY_BYTES), this });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setServiceData {0} {1}", this, RLSUtils.toHexString(serviceData, RLSUtils.MAX_DISPLAY_BYTES));
 
         _serviceData = serviceData;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setServiceData");
     }
 
     //------------------------------------------------------------------------------
@@ -974,6 +975,7 @@ public class LogFileHeader {
      *
      * @return boolean true if the log file header is valid, otherwise false.
      */
+    @Trivial
     public boolean valid() {
         boolean valid = true;
         if (_status == STATUS_INVALID)
@@ -991,10 +993,10 @@ public class LogFileHeader {
      *
      * @return int The status field.
      */
+    @Trivial
     public int status() {
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "status", this);
-            Tr.exit(tc, "status", _status);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "status {0} {1}", this, _status);
         }
         return _status;
     }
@@ -1056,14 +1058,13 @@ public class LogFileHeader {
      *
      * @param newStatus The new status field value.
      */
+    @Trivial
     public void changeStatus(int newStatus) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "changeStatus", new Object[] { this, newStatus });
 
         _status = newStatus;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "changeStatus");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "changeStatus {0} {1}", this, newStatus);
     }
 
     //------------------------------------------------------------------------------
@@ -1121,9 +1122,9 @@ public class LogFileHeader {
             Tr.exit(tc, "setCleanShutdown");
     }
 
+    @Trivial
     public boolean wasShutdownClean() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "wasShutdownClean", this);
+
         boolean clean = true;
 
         // true if not using variable field header
@@ -1131,11 +1132,9 @@ public class LogFileHeader {
             clean = _shutDownWasClean;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "wasShutdownClean", clean);
-
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "wasShutdownClean {0} {1}", this, clean);
         return clean;
-
     }
 
     /**
@@ -1143,6 +1142,7 @@ public class LogFileHeader {
      *
      * @return
      */
+    @Trivial
     private byte[] initVariableFieldData() {
         // current implementation is for a single byte with a value of 0
         if (_useVariableFieldHeader)

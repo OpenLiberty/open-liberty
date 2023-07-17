@@ -30,6 +30,7 @@ import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -71,6 +72,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     volatile private boolean _isOracle;
     volatile private boolean _isPostgreSQL;
     volatile private boolean _isSQLServer;
+    volatile private boolean _isDB2;
     volatile private boolean _isNonStandard;
 
     volatile private boolean _leaseTableExists;
@@ -78,7 +80,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private boolean _logRetriesEnabled;
     private int _leaseTimeout;
     private final String _leaseTableName = "WAS_LEASES_LOG";
-
+    private boolean isolationFailureReported;
     /**
      * These strings are used for Database table creation. DDL is
      * different for DB2, MS SQL Server, PostgreSQL and Oracle.
@@ -624,7 +626,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 String storedLeaseOwner = "";
                 String columnString = _updatelockingRS.getString(2);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Column contained " + columnString);
+                    Tr.debug(tc, "Lease_owner column contained " + columnString);
                 int commaPos = columnString.indexOf(",");
 
                 // extract the stored lease owner
@@ -712,7 +714,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "insertNewLease", this);
 
-        short serviceId = (short) 1;
         String insertString = "INSERT INTO " +
                               _leaseTableName +
                               " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
@@ -888,6 +889,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a PostgreSQL Database");
             } else if (dbName.toLowerCase().contains("db2")) {
+                _isDB2 = true;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "This is a DB2 Database");
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
@@ -988,24 +990,39 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.exit(tc, "createLeaseTable");
     }
 
-    private void dropLeaseTableIfEmpty(Connection conn) throws SQLException {
+    private int dropLeaseTableIfEmpty() throws SQLException, Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "dropLeaseTableIfEmpty", conn, this);
-
+            Tr.entry(tc, "dropLeaseTableIfEmpty", this);
+        Connection conn = null;
         Statement dropTableStmt = null;
         Exception currentEx = null;
         int rowCount = 99;
+        int dropReturn = 0;
         try {
-            dropTableStmt = conn.createStatement();
+
             try {
-                String queryString = "SELECT COUNT(*) AS recordCount FROM " + _leaseTableName;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Attempt to check for an empty table using - " + queryString);
-                _updatelockingRS = dropTableStmt.executeQuery(queryString);
-                _updatelockingRS.next();
-                rowCount = _updatelockingRS.getInt("recordCount");
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Number of rows in table is " + rowCount);
+                // Get a new connection to the DB
+                conn = getConnection();
+
+                // If we were unable to get a connection, write debug
+                if (conn == null) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "dropLeaseTableIfEmpty", "Null connection for table drop");
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Set autocommit FALSE on the connection");
+                    conn.setAutoCommit(false);
+
+                    dropTableStmt = conn.createStatement();
+                    String queryString = "SELECT COUNT(*) AS recordCount FROM " + _leaseTableName;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Attempt to check for an empty table using - " + queryString);
+                    _updatelockingRS = dropTableStmt.executeQuery(queryString);
+                    _updatelockingRS.next();
+                    rowCount = _updatelockingRS.getInt("recordCount");
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Number of rows in table is " + rowCount);
+                }
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Query failed with exception: " + e);
@@ -1013,21 +1030,59 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             }
 
             if (rowCount == 0 && currentEx == null) {
-                // we should drop the table
-                String dropTableString = "DROP TABLE " + _leaseTableName;
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Drop table using: " + dropTableString);
-                dropTableStmt.executeUpdate(dropTableString);
+                // Prepare to drop table
+                if (_updatelockingRS != null)
+                    _updatelockingRS.close();
+                if (dropTableStmt != null && !dropTableStmt.isClosed()) {
+                    dropTableStmt.close();
+                }
+                if (conn != null) {
+                    conn.commit();
+                    conn.close();
+                }
+                // Get a new connection to the DB
+                conn = getConnection();
+
+                // If we were unable to get a connection, throw an exception
+                if (conn == null) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "dropLeaseTableIfEmpty", "Null connection for table drop");
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Set autocommit FALSE on the connection");
+                    conn.setAutoCommit(false);
+                    dropTableStmt = conn.createStatement();
+                    //                   dropTableStmt.setQueryTimeout(300);
+                    // we should drop the table
+                    String dropTableString = "DROP TABLE " + _leaseTableName;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Drop table using: " + dropTableString);
+                    dropReturn = dropTableStmt.executeUpdate(dropTableString);
+
+                    // commit the change
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Commit the change");
+
+                    conn.commit();
+                }
             }
 
-        } finally {
+        } finally
+
+        {
+            if (_updatelockingRS != null)
+                _updatelockingRS.close();
             if (dropTableStmt != null && !dropTableStmt.isClosed()) {
                 dropTableStmt.close();
+            }
+            if (conn != null) {
+                conn.close();
             }
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "dropLeaseTableIfEmpty");
+            Tr.exit(tc, "dropLeaseTableIfEmpty", dropReturn);
+        return dropReturn;
     }
 
     /*
@@ -1164,12 +1219,28 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 }
 
                 // If this is the last server in the lease log, then the table can be dropped
-                if (!isPeerServer)
-                    dropLeaseTableIfEmpty(conn);
+                if (!isPeerServer) {
+                    // We can go ahead and drop the table from the Database
+                    int dropReturn = dropLeaseTableIfEmpty();
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Have dropped table with return: " + dropReturn);
+                }
             } else {
                 // If this is the last server in the lease log, then the table can be dropped
-                if (!isPeerServer)
-                    dropLeaseTableIfEmpty(conn);
+                if (!isPeerServer) {
+                    // Tidy up first
+                    if (_deleteStmt != null && !_deleteStmt.isClosed())
+                        _deleteStmt.close();
+                    if (conn != null)
+                        conn.close();
+
+                    // We can go ahead and drop the table from the Database
+                    int dropReturn = dropLeaseTableIfEmpty();
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Have dropped table with return: " + dropReturn);
+                }
             }
 
             if (_deleteStmt != null && !_deleteStmt.isClosed())
@@ -1449,50 +1520,6 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockPeerLease(java.lang.String)
-     */
-    @Override
-    public boolean lockPeerLease(String recoveryIdentity) {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releasePeerLease(java.lang.String)
-     */
-    @Override
-    public boolean releasePeerLease(String recoveryIdentity) throws Exception {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#lockLocalLease(java.lang.String)
-     */
-    @Override
-    public boolean lockLocalLease(String recoveryIdentity) {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
-     */
-    @Override
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
-        // Noop in RDBMS implementation
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#setPeerRecoveryLeaseTimeout(int)
      */
     @Override
@@ -1764,8 +1791,33 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      */
     @Override
     public int prepareConnectionForBatch(Connection conn) throws SQLException {
-        // A no-op for this class
-        return 0;
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "prepareConnectionForBatch", conn);
+        conn.setAutoCommit(false);
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+        if (_isDB2) {
+            try {
+                initialIsolation = conn.getTransactionIsolation();
+                if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Transaction isolation level was " + initialIsolation + " , setting to TRANSACTION_REPEATABLE_READ");
+                    conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "setTransactionIsolation to RR threw Exception. Transaction isolation level was " + initialIsolation + " ", e);
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.prepareConnectionForBatch", "3668", this);
+                if (!isolationFailureReported) {
+                    isolationFailureReported = true;
+                    Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+                }
+                // returning RR will prevent closeConnectionAfterBatch resetting isolation level
+                initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "prepareConnectionForBatch", initialIsolation);
+        return initialIsolation;
     }
 
     /*
@@ -1775,7 +1827,26 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      */
     @Override
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
-        // A no-op for this class
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "closeConnectionAfterBatch", conn, initialIsolation);
+        if (_isDB2) {
+            if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
+                try {
+                    conn.setTransactionIsolation(initialIsolation);
+                } catch (Exception e) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "setTransactionIsolation threw Exception. Specified transaction isolation level was " + initialIsolation + " ", e);
+                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.closeConnectionAfterBatch", "3696", this);
+                    if (!isolationFailureReported) {
+                        isolationFailureReported = true;
+                        Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+                    }
+                }
+        }
+        conn.setAutoCommit(true);
+        conn.close();
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "closeConnectionAfterBatch");
     }
 
     @Override
@@ -1791,7 +1862,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             while (rs.next()) {
                 String columnString = rs.getString(1);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Column contained " + columnString);
+                    Tr.debug(tc, "Lease_owner column contained " + columnString);
                 int commaPos = columnString.indexOf(",");
 
                 // extract the backend URL

@@ -1,7 +1,5 @@
-package com.ibm.ws.Transaction.JTS;
-
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +10,7 @@ package com.ibm.ws.Transaction.JTS;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.Transaction.JTS;
 
 import javax.transaction.SystemException;
 
@@ -19,6 +18,8 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.impl.FailureScopeController;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl;
@@ -32,7 +33,6 @@ public final class Configuration {
     private static int currentEpoch = 1;
 
     private static RecoveryLogManager _logManager;
-    private static ClassLoader _classLoader;
 
     private static FailureScopeController _failureScopeController;
 
@@ -124,9 +124,10 @@ public final class Configuration {
      *
      * @param name The applId. Non-recoverable servers may have an applId but no name.
      */
+    @Trivial
     public static final void setApplId(byte[] name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setApplId", name);
+            Tr.debug(tc, "setApplId", Util.toHexString(name));
 
         // Store the applId.
         applId = name;

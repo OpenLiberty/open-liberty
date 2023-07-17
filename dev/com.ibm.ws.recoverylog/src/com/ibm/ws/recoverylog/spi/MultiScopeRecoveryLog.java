@@ -376,7 +376,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         // Ensure that if the physical location has been left unspecified (field is null) it is updated
         // with the correct default.
         if (_logDirectory == null) {
-            _logDirectory = Configuration.WASInstallDirectory() + _fileSeparator + "recoveryLogs" + _fileSeparator +
+            _logDirectory = Configuration.getWASInstallDirectory() + _fileSeparator + "recoveryLogs" + _fileSeparator +
                             DirUtils.createDirectoryPath(_serverName) + _fileSeparator + _clientName + _fileSeparator +
                             _logName;
         }
@@ -520,7 +520,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "openLog", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has failed");
         }
 
         // If this is the first time the recovery log has been opened during the current server run, then
@@ -781,7 +781,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recoveryComplete", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Check that the log is open.
@@ -873,7 +873,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recoveryComplete", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Check that the log is open.
@@ -1206,7 +1206,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "createRecoverableUnit", "InternalLogException");
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Check that the log is actually open.
@@ -1309,7 +1309,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "removeRecoverableUnit", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Ensure the log is actually open.
@@ -1431,7 +1431,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     public synchronized LogCursor recoverableUnits(FailureScope failureScope) throws LogClosedException /* @MD19706C */
     {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "recoverableUnits", new Object[] { failureScope, this });
+            Tr.entry(tc, "recoverableUnits", failureScope, this);
 
         // Check that the log is actually open
         if (_logHandle == null) {
@@ -1442,15 +1442,17 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
 
         final List<RecoverableUnitImpl> recoverableUnits = new ArrayList<RecoverableUnitImpl>();
 
-        // No need to access this inside a sync block as the caller is required to
-        // hold off from changing the underlying structures whilst the cursor is open.
-        final Iterator<RecoverableUnit> iterator = _recoverableUnits.values().iterator();
+        if (_recoverableUnits != null) {
+            // No need to access this inside a sync block as the caller is required to
+            // hold off from changing the underlying structures whilst the cursor is open.
+            final Iterator<RecoverableUnit> iterator = _recoverableUnits.values().iterator();
 
-        while (iterator.hasNext()) {
-            final RecoverableUnitImpl recoverableUnit = (RecoverableUnitImpl) iterator.next();
+            while (iterator.hasNext()) {
+                final RecoverableUnitImpl recoverableUnit = (RecoverableUnitImpl) iterator.next();
 
-            if (_bypassContainmentCheck || (recoverableUnit.failureScope().isContainedBy(failureScope))) {
-                recoverableUnits.add(recoverableUnit);
+                if (_bypassContainmentCheck || (recoverableUnit.failureScope().isContainedBy(failureScope))) {
+                    recoverableUnits.add(recoverableUnit);
+                }
             }
         }
 
@@ -1550,7 +1552,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypoint", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed");
         }
 
         // Check that the log is open.
@@ -1787,7 +1789,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
             if (failed()) {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "keypoint", this);
-                throw new InternalLogException(null);
+                throw new InternalLogException("Log has already failed");
             }
         }
 
@@ -1825,7 +1827,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         if (failed() || incompatible()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "removing", this);
-            throw new InternalLogException(null);
+            throw new InternalLogException("Log has already failed or is incompatible");
         }
 
         try {
@@ -2403,16 +2405,15 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * - this could be fixed for general use by delegating to an 'AssociatedLogGroup' object shared between associated logs.
      */
     @Override
+    @Trivial
     public void associateLog(DistributedRecoveryLog otherLog, boolean failAssociatedLog) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "associateLog", new Object[] { otherLog, failAssociatedLog, this });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "associateLog {0} {1} {2}", this, otherLog, failAssociatedLog);
 
         if (otherLog instanceof MultiScopeLog) {
             _associatedLog = (MultiScopeLog) otherLog;
             _failAssociatedLog = failAssociatedLog;
         }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "associateLog");
     }
 
     /**

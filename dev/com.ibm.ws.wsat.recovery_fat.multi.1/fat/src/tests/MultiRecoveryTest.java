@@ -149,14 +149,6 @@ public class MultiRecoveryTest {
 		} else {
 			// This is peer recovery
 			checkPeerRecovery(server, server2, crashingServers, restartingServers, id);
-			
-			// Restart servers for the next test
-			if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
-				FATUtils.startServers(runner, server);
-			}
-			if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
-				FATUtils.startServers(runner, server2);
-			}
 		}
 
 		Log.info(getClass(), method, "callCheckServlet(" + id + ") returned: " + result);

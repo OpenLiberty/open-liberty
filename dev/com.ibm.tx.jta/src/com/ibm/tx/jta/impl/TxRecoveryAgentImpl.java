@@ -124,15 +124,16 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
-        if (cp.getApplId() == null) {
+        byte[] applId = cp.getApplId();
+        if (applId == null) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "TXAGENT, cp applid null - " + cp + " set applid - " + Util.toHexString(newApplId));
+                Tr.debug(tc, "TXAGENT, cp applid null - {0} set applid - {1}", cp, Util.toHexString(newApplId));
             cp.setApplId(newApplId);
             Configuration.setApplId(newApplId);
         } else {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "TXAGENT, do not reset cp - " + cp + " set applid - " + Util.toHexString(cp.getApplId()));
-            Configuration.setApplId(cp.getApplId());
+                Tr.debug(tc, "TXAGENT, do not reset cp - {0} set applid - {1}", cp, Util.toHexString(applId));
+            Configuration.setApplId(applId);
         }
     }
 
@@ -175,10 +176,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     public void initiateRecovery(FailureScope fs) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "initiateRecovery", fs);
-        String recoveredServerIdentity = null;
+        String recoveredServerIdentity = fs.serverName();
         FailureScopeController fsc = null;
         ConfigurationProvider cp = null;
-        recoveredServerIdentity = fs.serverName();
+
         final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
         try {
@@ -192,7 +193,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.exit(tc, "initiateRecovery", "server stopping");
                         throw new RecoveryFailedException("server stopping");
                     }
-                    Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
+                    Tr.audit(tc, "WTRN0108I: Recovery initiated for server {0}", recoveredServerIdentity);
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Recovery initiated for server {0}", recoveredServerIdentity);
@@ -475,7 +476,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 _recoveryDirector.serialRecoveryComplete(this, fs);
             }
 
-            //RTC170534 - wait for Replay Completion before spawning the timout manager to monitor leases.
+            //RTC170534 - wait for Replay Completion before spawning the timeout manager to monitor leases.
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop replay processing.
             if (!localRecovery && _serverStopping) {
                 if (tc.isEntryEnabled())
@@ -513,7 +514,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (localRecovery) {
                             if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
                                 if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Have released locallease lock");
+                                    Tr.debug(tc, "Have released local lease lock");
                             }
                         } else {
                             if (_leaseLog.releasePeerLease(recoveredServerIdentity)) {

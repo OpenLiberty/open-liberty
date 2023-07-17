@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.tx.jta.ut.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 
 public class XAResourceInfoImpl implements Serializable {
@@ -20,12 +22,16 @@ public class XAResourceInfoImpl implements Serializable {
 
     private final String _i;
 
-    private final String _stateFile;
+    private final File _stateFile;
 
     public XAResourceInfoImpl(String i) {
         _i = i;
         _stateFile = XAResourceImpl.STATE_FILE;
-        System.out.println("XAResourceInfo " + _i + " created. State file is " + _stateFile);
+        try {
+			System.out.println("XAResourceInfo " + _i + " created. State file is " + _stateFile.getCanonicalPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     public String toString() {
@@ -36,7 +42,7 @@ public class XAResourceInfoImpl implements Serializable {
         return _i;
     }
 
-    public String getStateFile() {
+    public File getStateFile() {
         return _stateFile;
     }
 

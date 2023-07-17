@@ -55,8 +55,6 @@ public class Recovery {
 	private static String METHOD_KILL_OTHER = "kill other";
 	private static String METHOD_DUAL_KILLER = "dual killer";
 
-	private static final String filter = "(testfilter=jon)";
-	
 	public String invoke(int testNumber,String url) throws IOException {
 		String result = "";
 		System.out.println("============RecoveryService test number "
@@ -629,7 +627,7 @@ public class Recovery {
 				xaRes = XAResourceFactoryImpl.instance().getXAResourceImpl(
 						xaResInfo).setExpectedDirection(expectedDirection);
 
-			final int recoveryId = TM.registerResourceInfo(filter,
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			
 			result1 = TM.enlist(xaRes, recoveryId);
@@ -779,9 +777,9 @@ public class Recovery {
 				}
 			}
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes1.setExpectedDirection(expectedDirection);
 			xaRes2.setExpectedDirection(expectedDirection);
@@ -1021,11 +1019,11 @@ public class Recovery {
 				}
 			}
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
 			xaRes1.setExpectedDirection(expectedDirection);
 			xaRes2.setExpectedDirection(expectedDirection);
@@ -1136,11 +1134,11 @@ public class Recovery {
 			xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(
 						xaResInfo3);
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
 			xaRes1.setExpectedDirection(expectedDirection);
 			xaRes2.setExpectedDirection(expectedDirection);
@@ -1419,13 +1417,13 @@ public class Recovery {
 			}
 
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
-			final int recoveryId4 = TM.registerResourceInfo(filter,
+			final int recoveryId4 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo4);
 			xaRes1.setExpectedDirection(expectedDirection);
 			xaRes2.setExpectedDirection(expectedDirection);
@@ -1540,25 +1538,25 @@ public class Recovery {
 			xaRes10 = XAResourceFactoryImpl.instance().getXAResourceImpl(
 					xaResInfo10);
 			
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
-			final int recoveryId4 = TM.registerResourceInfo(filter,
+			final int recoveryId4 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo4);
-			final int recoveryId5 = TM.registerResourceInfo(filter,
+			final int recoveryId5 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo5);
-			final int recoveryId6 = TM.registerResourceInfo(filter,
+			final int recoveryId6 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo6);
-			final int recoveryId7 = TM.registerResourceInfo(filter,
+			final int recoveryId7 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo7);
-			final int recoveryId8 = TM.registerResourceInfo(filter,
+			final int recoveryId8 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo8);
-			final int recoveryId9 = TM.registerResourceInfo(filter,
+			final int recoveryId9 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo9);
-			final int recoveryId10 = TM.registerResourceInfo(filter,
+			final int recoveryId10 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo10);
 			
 			xaRes1.setExpectedDirection(expectedDirection);
@@ -1671,9 +1669,9 @@ public class Recovery {
 					xaRes2.setRollbackAction(action2);
 				}
 
-				final int recoveryId1 = TM.registerResourceInfo(filter,
+				final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo1);
-				final int recoveryId2 = TM.registerResourceInfo(filter,
+				final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo2);
 				xaRes1.setExpectedDirection(expectedDirection);
 				xaRes2.setExpectedDirection(expectedDirection);
@@ -1720,9 +1718,9 @@ public class Recovery {
 					xaRes2.setRollbackAction(action2);
 				}
 
-				final int recoveryId1 = TM.registerResourceInfo(filter,
+				final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo1);
-				final int recoveryId2 = TM.registerResourceInfo(filter,
+				final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo2);
 				xaRes1.setExpectedDirection(expectedDirection);
 				xaRes2.setExpectedDirection(expectedDirection);
@@ -1839,11 +1837,11 @@ public class Recovery {
 					xaRes3.setRollbackAction(action3);
 				}
 
-				final int recoveryId1 = TM.registerResourceInfo(filter,
+				final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo1);
-				final int recoveryId2 = TM.registerResourceInfo(filter,
+				final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo2);
-				final int recoveryId3 = TM.registerResourceInfo(filter,
+				final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo3);
 				xaRes1.setExpectedDirection(expectedDirection);
 				xaRes2.setExpectedDirection(expectedDirection);
@@ -1906,11 +1904,11 @@ public class Recovery {
 					xaRes3.setRollbackAction(action3);
 				}
 
-				final int recoveryId1 = TM.registerResourceInfo(filter,
+				final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo1);
-				final int recoveryId2 = TM.registerResourceInfo(filter,
+				final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo2);
-				final int recoveryId3 = TM.registerResourceInfo(filter,
+				final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 						xaResInfo3);
 				xaRes1.setExpectedDirection(expectedDirection);
 				xaRes2.setExpectedDirection(expectedDirection);
@@ -1955,11 +1953,11 @@ public class Recovery {
 					.getXAResourceImpl(xaResInfo3);
 			xaRes3.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
 
 			result1 = TM.enlist(xaRes1, recoveryId1);
@@ -1993,11 +1991,11 @@ public class Recovery {
 					.getXAResourceInfo("two");
 			XAResourceImpl xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 
-			final int recoveryId1 = TM.registerResourceInfo(filter,
+			final int recoveryId1 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo1);
-			final int recoveryId2 = TM.registerResourceInfo(filter,
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo(filter,
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
 
 			result1 = TM.enlist(xaRes1, recoveryId1);

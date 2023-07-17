@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -216,7 +217,11 @@ public class RLSControllerImpl implements RLSController {
      *
      * @return boolean isSuspended
      */
+    @Trivial
     static boolean isSuspended() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isSuspended {0}", _isSuspended);
+
         return _isSuspended;
     }
 

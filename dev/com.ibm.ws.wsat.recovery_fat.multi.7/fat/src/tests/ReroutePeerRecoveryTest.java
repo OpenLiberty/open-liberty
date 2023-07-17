@@ -13,7 +13,6 @@
 package tests;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -23,6 +22,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,9 +36,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
+@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.io.FileNotFoundException" })
 @RunWith(FATRunner.class)
-public class ReroutePeerRecoveryTest extends MultiRecoveryTest5 {
+public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	/*
 	 * server1, WSATRecoveryClient1 (8010), is the primary client
@@ -60,6 +60,9 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest5 {
 	@Server("WSATRecoveryServer3")
 	public static LibertyServer server6;
 	
+	public static LibertyServer[] serversToStart;
+	public static LibertyServer[] serversToStop;
+
 	@BeforeClass
 	public static void startExtraServers() throws Exception {
     	Log.info(ReroutePeerRecoveryTest.class, "startExtraServers", "");
@@ -73,13 +76,17 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest5 {
 		ShrinkHelper.exportDropinAppToServer(server3, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server5, serverApp);
 		
-		FATUtils.startServers(runner, server4, server6);
+		FATUtils.startServers(runner, server3, server4, server5, server6);
 	}
-	
+
+	@After
+	public void afterTest() throws Exception {
+		FATUtils.stopServers(allowedMsgs, serversToStop);
+		FATUtils.startServers(runner, serversToStart);
+	}
+
 	@Before
 	public void beforeTest() throws Exception {
-		FATUtils.stopServers(server1, server2, server3, server5);
-		FATUtils.startServers(runner, server1, server2, server3, server5);
 		WSATTest.callClearResourcesServlet(recoveryServer, server3, server5);
 	}
 	
@@ -185,5 +192,33 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest5 {
 
 		Log.info(getClass(), method, "Result: " + result);
 		return result;
+	}
+
+	@Test
+	public void WSTXMPR008DFVT() throws Exception {
+		serversToStop = new LibertyServer[]{server2, server3,};
+		serversToStart = new LibertyServer[]{server1, server2, server3};
+		recoveryTest(server1, server2, "801", "server1", "none");
+	}
+
+	@Test
+	public void WSTXMPR008EFVT() throws Exception {
+		serversToStop = new LibertyServer[]{server1, server5,};
+		serversToStart = new LibertyServer[]{server1, server2, server5};
+		recoveryTest(server1, server2, "802", "server2", "none");
+	}
+
+	@Test
+	public void WSTXMPR009DFVT() throws Exception {
+		serversToStop = new LibertyServer[]{server2, server3,};
+		serversToStart = new LibertyServer[]{server1, server2, server3};
+		recoveryTest(server1, server2, "901", "server1", "none");
+	}
+
+	@Test
+	public void WSTXMPR009EFVT() throws Exception {
+		serversToStop = new LibertyServer[]{server1, server5,};
+		serversToStart = new LibertyServer[]{server1, server2, server5};
+		recoveryTest(server1, server2, "902", "server2", "none");
 	}
 }

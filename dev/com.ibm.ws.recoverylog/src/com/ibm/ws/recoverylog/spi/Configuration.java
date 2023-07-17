@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -115,10 +115,10 @@ public class Configuration {
      *
      * @param WASInstallDirectory The WAS install directory
      */
-    public static final void WASInstallDirectory(String WASInstallDirectory) {
+    @Trivial
+    public static final void setWASInstallDirectory(String WASInstallDirectory) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "WASInstallDirectory", WASInstallDirectory);
-
+            Tr.debug(tc, "setWASInstallDirectory {0}", WASInstallDirectory);
         _WASInstallDirectory = WASInstallDirectory;
     }
 
@@ -130,9 +130,10 @@ public class Configuration {
      *
      * @return String The WAS install directory.
      */
-    public static final String WASInstallDirectory() {
+    @Trivial
+    public static final String getWASInstallDirectory() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "WASInstallDirectory", _WASInstallDirectory);
+            Tr.debug(tc, "getWASInstallDirectory {0}", _WASInstallDirectory);
         return _WASInstallDirectory;
     }
 
@@ -231,10 +232,10 @@ public class Configuration {
      *
      * @param name The name of the WAS server
      */
+    @Trivial
     public static final void serverName(String name) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "serverName", name);
-
+            Tr.debug(tc, "serverName {0}", name);
         _serverName = name;
     }
 
@@ -318,11 +319,12 @@ public class Configuration {
      *
      * @return String The fully qualified name of the WAS server
      */
+    @Trivial
     public static final String fqServerName() {
         String fqServerName = _serverName; // RLSUtils.FQHAMCompatibleServerName(_cellName,_nodeName,_serverName); tWAS
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "fqServerName", fqServerName);
+            Tr.debug(tc, "fqServerName {0}", fqServerName);
         return fqServerName;
     }
 
@@ -363,14 +365,9 @@ public class Configuration {
      *
      * @param localFailureScope The local FailureScope
      */
+    @Trivial
     public static final void localFailureScope(FailureScope localFailureScope) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "localFailureScope", localFailureScope);
-
         _localFailureScope = localFailureScope;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "localFailureScope");
     }
 
     //------------------------------------------------------------------------------
@@ -390,13 +387,10 @@ public class Configuration {
     //------------------------------------------------------------------------------
     // Method: Configuration.txRecoveryAgent
     //------------------------------------------------------------------------------
-    /**
-    *
-    */
-    public static void txRecoveryAgent(RecoveryAgent txRecoveryAgent) {
+    @Trivial
+    public static void setTxRecoveryAgent(RecoveryAgent txRecoveryAgent) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "txRecoveryAgent", txRecoveryAgent);
-
+            Tr.debug(tc, "setTxRecoveryAgent {0}", txRecoveryAgent);
         _txRecoveryAgent = txRecoveryAgent;
     }
 
@@ -406,28 +400,30 @@ public class Configuration {
     /**
     *
     */
-    public static RecoveryAgent txRecoveryAgent() {
+    @Trivial
+    public static RecoveryAgent getTxRecoveryAgent() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "txRecoveryAgent", _txRecoveryAgent);
+            Tr.debug(tc, "getTxRecoveryAgent {0}", _txRecoveryAgent);
         return _txRecoveryAgent;
     }
+
     //---------------------------------------------------------------------------
     // Method: Configuration.setRecoveryLogComponent
     //---------------------------------------------------------------------------
-
+    @Trivial
     public static final void setRecoveryLogComponent(RecoveryLogComponent rls) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "setRecoveryLogComponent", rls);
+            Tr.debug(tc, "setRecoveryLogComponent {0}", rls);
         _reclogComponent = rls;
     }
 
     //---------------------------------------------------------------------------
     // Method: Configuration.getSetRecoveryLogComponent
     //---------------------------------------------------------------------------
-
+    @Trivial
     public static final RecoveryLogComponent getRecoveryLogComponent() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryLogComponent", _reclogComponent);
+            Tr.debug(tc, "getRecoveryLogComponent {0}", _reclogComponent);
         return _reclogComponent;
     }
 

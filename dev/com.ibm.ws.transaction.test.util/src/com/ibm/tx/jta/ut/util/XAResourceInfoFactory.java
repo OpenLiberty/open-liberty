@@ -21,6 +21,8 @@ import java.util.UUID;
 public class XAResourceInfoFactory {
     private static final HashMap<String, XAResourceInfoImpl> _xaResInfoTable = new HashMap<String, XAResourceInfoImpl>();
 
+    public static final String filter = "(testfilter=jon)";
+
     public static XAResourceInfoImpl getXAResourceInfo(int i) {
     	return getXAResourceInfo(Integer.toString(i));
     }

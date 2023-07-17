@@ -349,8 +349,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 if (cp != null) {
                     _recoveryIdentity = cp.getRecoveryIdentity();
                     _recoveryGroup = cp.getRecoveryGroup();
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "recoveryGroup: ", _recoveryGroup);
                 }
 
                 //Add this guard to ensure that we have sufficient config to drive recovery.

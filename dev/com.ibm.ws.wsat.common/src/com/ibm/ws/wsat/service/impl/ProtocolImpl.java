@@ -167,14 +167,19 @@ public class ProtocolImpl {
         String globalId = wrapper.getTxID();
 
         // Need to construct an EPR for the participant
-        String newAddr;
+        String newAddr = null;
         try {
             newAddr = tranService.getAddress(wrapper.getRecoveryID());
         } catch (Exception e) {
-            WSATException e1 = new WSATException(e.getLocalizedMessage());
-            e1.initCause(e);
-            throw e1;
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Can't get address for {0} {1}", wrapper.getRecoveryID(), e);
+            }
         }
+
+        // Reroute address may be unavailable
+        if (newAddr == null)
+            return;
+
         String toAddr = WSATUtil.createRedirectAddr(wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 
@@ -358,14 +363,19 @@ public class ProtocolImpl {
         String globalId = wrapper.getTxID();
 
         // Need to construct an EPR for the coordinator
-        String newAddr;
+        String newAddr = null;
         try {
             newAddr = tranService.getAddress(wrapper.getRecoveryID());
         } catch (Exception e) {
-            WSATException e1 = new WSATException(e.getLocalizedMessage());
-            e1.initCause(e);
-            throw e1;
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Can't get address for {0} {1}", wrapper.getRecoveryID(), e);
+            }
         }
+
+        // Reroute address may be unavailable
+        if (newAddr == null)
+            return;
+
         String toAddr = WSATUtil.createRedirectAddr(wrapper.getWsatProperties().get(Names.WSA_TO_QNAME.getLocalPart()), newAddr);
         EndpointReferenceType toEpr = WSATUtil.createEpr(toAddr);
 

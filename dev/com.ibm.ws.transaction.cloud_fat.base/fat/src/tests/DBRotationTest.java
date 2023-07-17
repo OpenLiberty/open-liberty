@@ -409,6 +409,35 @@ public class DBRotationTest extends FATServletClient {
         Log.info(c, method, "test complete");
     }
 
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testBackwardCompatibility() throws Exception {
+        final String method = "testBackwardCompatibility";
+
+        //FIXME - when switching from generic to specific datasource properties
+        //this test will fail for SQLServer.
+        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.SQLServer) {
+            Log.info(c, method, "FIXME - when switching from generic to specific datasource properties. This test will fail for SQLServer.");
+            return;
+        }
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
+        FATUtils.startServers(runner, server1);
+
+        runTest(server1, SERVLET_NAME, "setupV1LeaseLog");
+
+        // Check for key string to see whether the lease has been updated with the owner/backendURL combo. Set the trace mark so that
+        // we pickup the trace from the next home server lease update where the V1 data will be replaced by V2 and from the claim for
+        // cloud0022's logs.
+        server1.setTraceMarkToEndOfDefaultTrace();
+        assertNotNull("Lease Owner column not updated", server1.waitForStringInTrace("Lease_owner column contained cloud0011,http", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Lease Owner column not inserted", server1.waitForStringInTrace("Insert combined string cloud0011,http", LOG_SEARCH_TIMEOUT));
+
+        // Now tidy up after test
+        runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
+    }
+
     // Returns false if the server is alive, throws Exception otherwise
     private boolean isDead(LibertyServer server) throws Exception {
         final int status = server.executeServerScript("status", null).getReturnCode();

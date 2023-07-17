@@ -752,7 +752,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     @Override
     public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "commit", "(SPI)");
+            Tr.entry(tc, "commit (SPI)");
 
         try {
             processCommit();
@@ -762,11 +762,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final HeuristicMixedException hme = new HeuristicMixedException(hhe.getLocalizedMessage());
             hme.initCause(hhe.getCause()); //Set the cause to be the cause of the HeuristicHazardException
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "commit", new Object[] { "(SPI)", hme });
+                Tr.exit(tc, "commit (SPI)", hme);
             throw hme;
         } finally {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "commit", "(SPI)");
+                Tr.exit(tc, "commit (SPI)");
         }
     }
 
@@ -1103,7 +1103,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     @Override
     public void rollback() throws IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "rollback", "(SPI)");
+            Tr.entry(tc, "rollback (SPI)");
 
         final int state = _status.getState();
 
@@ -1123,7 +1123,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Exception caught setting state to ROLLING_BACK!", se);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", "(SPI)");
+                    Tr.exit(tc, "rollback (SPI)");
                 throw se;
             }
 
@@ -1155,14 +1155,14 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 if (tc.isEventEnabled())
                     Tr.event(tc, "SystemException caught during rollback", se);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", "(SPI)");
+                    Tr.exit(tc, "rollback (SPI)");
                 throw se;
             } catch (Throwable ex) {
                 FFDCFilter.processException(ex, "com.ibm.tx.jta.TransactionImpl.rollback", "1633", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Exception caught during rollback", ex);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "rollback", "(SPI)");
+                    Tr.exit(tc, "rollback (SPI)");
                 throw new SystemException(ex.getLocalizedMessage());
             } finally {
                 notifyCompletion();
@@ -1178,18 +1178,18 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             if (tc.isEventEnabled())
                 Tr.event(tc, "No transaction available!");
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "rollback", "(SPI)");
+                Tr.exit(tc, "rollback (SPI)");
             throw new IllegalStateException();
         } else {
             if (tc.isEventEnabled())
                 Tr.event(tc, "Invalid transaction state:" + state);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "rollback", "(SPI)");
+                Tr.exit(tc, "rollback (SPI)");
             throw new SystemException();
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "rollback", "(SPI)");
+            Tr.exit(tc, "rollback (SPI)");
     }
 
     public int internalPrepare() throws HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException, IllegalStateException, SystemException {
@@ -1894,7 +1894,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     @Override
     public void setRollbackOnly() throws IllegalStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setRollbackOnly", "(SPI)");
+            Tr.entry(tc, "setRollbackOnly (SPI)");
 
         final int state = _status.getState();
 
@@ -1902,13 +1902,13 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             state == TransactionState.STATE_COMMITTED ||
             state == TransactionState.STATE_ROLLED_BACK) {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setRollbackOnly", "(SPI)");
+                Tr.exit(tc, "setRollbackOnly (SPI)");
             throw new IllegalStateException("No transaction available");
         }
         setRBO();
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setRollbackOnly", "(SPI)");
+            Tr.exit(tc, "setRollbackOnly (SPI)");
     }
 
     /**
@@ -1941,7 +1941,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     @Override
     public boolean enlistResource(XAResource xaRes) throws RollbackException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enlistResource", new Object[] { "(SPI)", xaRes });
+            Tr.entry(tc, "enlistResource (SPI)", xaRes);
 
         //
         // Check the transaction is in a valid state to allow a new resource to be enlisted.
@@ -1957,7 +1957,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 RollbackException rbe = new RollbackException("Transaction rolled back");
                 FFDCFilter.processException(rbe, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1760", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", rbe });
+                    Tr.exit(tc, "enlistResource (SPI)", rbe);
                 throw rbe;
             }
             default: {
@@ -1967,7 +1967,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 final IllegalStateException ise = new IllegalStateException("Transaction is inactive or prepared");
                 FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1769", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                    Tr.exit(tc, "enlistResource (SPI)", ise);
                 throw ise;
             }
         }
@@ -1975,7 +1975,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (xaRes == null) {
             final IllegalStateException ise = new IllegalStateException("Cannot enlist a null resource");
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "enlistResource (SPI)", ise);
             throw ise;
         }
 
@@ -1990,7 +1990,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         } catch (IllegalStateException ise) {
             FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1858", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "enlistResource (SPI)", ise);
             throw ise;
         } catch (Throwable t) {
             FFDCFilter.processException(t, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1868", this);
@@ -1998,12 +1998,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final RollbackException rbe = new RollbackException(t.getMessage());
             rbe.initCause(t);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", rbe });
+                Tr.exit(tc, "enlistResource (SPI)", rbe);
             throw rbe;
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", Boolean.TRUE });
+            Tr.exit(tc, "enlistResource (SPI)", Boolean.TRUE);
         return true;
     }
 
@@ -2032,7 +2032,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     public boolean enlistResource(XAResource xaRes, int recoveryIndex, int branchCoupling) throws RollbackException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enlistResource", new Object[] { "(SPI)", xaRes, recoveryIndex, branchCoupling });
+            Tr.entry(tc, "enlistResource (SPI)", xaRes, recoveryIndex, branchCoupling);
 
         //
         // Check the transaction is in a valid state to allow a new resource to be enlisted.
@@ -2047,7 +2047,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 final RollbackException rbe = new RollbackException("Transaction rolled back");
                 FFDCFilter.processException(rbe, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1895", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", rbe });
+                    Tr.exit(tc, "enlistResource (SPI)", rbe);
                 throw rbe;
             default:
                 //
@@ -2056,7 +2056,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 final IllegalStateException ise = new IllegalStateException("Transaction is inactive or prepared");
                 FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1904", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                    Tr.exit(tc, "enlistResource (SPI)", ise);
                 throw ise;
         }
 
@@ -2066,7 +2066,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1914", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "enlistResource (SPI)", ise);
             throw ise;
         }
 
@@ -2077,7 +2077,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1934", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "enlistResource (SPI)", ise);
             throw ise;
         }
 
@@ -2096,20 +2096,20 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 FFDCFilter.processException(rbe, "com.ibm.tx.jta.TransactionImpl.enlistResource", "2035", this);
                 this.setRollbackOnly();
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", rbe });
+                    Tr.exit(tc, "enlistResource (SPI)", rbe);
                 throw rbe;
             } catch (SystemException se) {
                 FFDCFilter.processException(se, "com.ibm.tx.jta.TransactionImpl.enlistResource", "2042", this);
                 this.setRollbackOnly();
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", se });
+                    Tr.exit(tc, "enlistResource (SPI)", se);
                 throw se;
             } catch (Throwable t) {
                 FFDCFilter.processException(t, "com.ibm.tx.jta.TransactionImpl.enlistResource", "2049", this);
                 this.setRollbackOnly();
                 final SystemException se = new SystemException(t.getLocalizedMessage());
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", t });
+                    Tr.exit(tc, "enlistResource (SPI)", t);
                 throw se;
             }
         } else {
@@ -2117,12 +2117,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final SystemException se = new SystemException(msg);
             FFDCFilter.processException(se, "com.ibm.tx.jta.TransactionImpl.enlistResource", "1955", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", se });
+                Tr.exit(tc, "enlistResource (SPI)", se);
             throw se;
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "enlistResource", new Object[] { "(SPI)", Boolean.TRUE });
+            Tr.exit(tc, "enlistResource (SPI)", Boolean.TRUE);
         return true;
     }
 
@@ -2135,12 +2135,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      */
     public void enlistResource(JTAResource remoteRes) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enlistResource", new Object[] { "(SPI): args: ", remoteRes });
+            Tr.entry(tc, "enlistResource (SPI)", remoteRes);
 
         getResources().addRes(remoteRes);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "enlistResource", "(SPI)");
+            Tr.exit(tc, "enlistResource (SPI)");
     }
 
     /**
@@ -2214,7 +2214,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     @Override
     public boolean delistResource(XAResource xaRes, int flag) throws IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.event(tc, "delistResource", new Object[] { "(SPI)", xaRes, Util.printFlag(flag) });
+            Tr.event(tc, "delistResource (SPI)", xaRes, Util.printFlag(flag));
 
         //
         // Check the transaction is in a valid state to allow a resource to be delisted.
@@ -2224,7 +2224,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.delistResource", "2212", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "delistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "delistResource (SPI)", ise);
             throw ise;
         }
 
@@ -2234,7 +2234,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.delistResource", "2224", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "delistResource", new Object[] { "(SPI)", ise });
+                Tr.exit(tc, "delistResource (SPI)", ise);
             throw ise;
         }
 
@@ -2247,7 +2247,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             throw se;
         } finally {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "delistResource", new Object[] { "(SPI)", delisted });
+                Tr.exit(tc, "delistResource (SPI)", delisted);
         }
 
         return delisted;
@@ -2261,7 +2261,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     public void registerSynchronization(javax.transaction.Synchronization sync,
                                         int tier) throws RollbackException, IllegalStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "registerSynchronization", new Object[] { "(SPI)", this, sync, tier });
+            Tr.entry(tc, "registerSynchronization (SPI)", this, sync, tier);
 
         //
         // Check the transaction is in a valid state to allow a new
@@ -2277,7 +2277,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 final RollbackException rbe = new RollbackException("Transaction rolled back");
                 FFDCFilter.processException(rbe, "com.ibm.tx.jta.TransactionImpl.registerSynchronization", "2289", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "registerSynchronization", new Object[] { "(SPI)", rbe });
+                    Tr.exit(tc, "registerSynchronization (SPI)", rbe);
                 throw rbe;
             default:
                 //
@@ -2286,14 +2286,14 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
                 final IllegalStateException ise = new IllegalStateException("Transaction is inactive or prepared");
                 FFDCFilter.processException(ise, "com.ibm.tx.jta.TransactionImpl.registerSynchronization", "2297", this);
                 if (tc.isEntryEnabled())
-                    Tr.exit(tc, "registerSynchronization", new Object[] { "(SPI)", ise });
+                    Tr.exit(tc, "registerSynchronization (SPI)", ise);
                 throw ise;
         }
 
         getSyncs().add(sync, tier);
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "registerSynchronization", "(SPI)");
+            Tr.exit(tc, "registerSynchronization (SPI)");
     }
 
     /**

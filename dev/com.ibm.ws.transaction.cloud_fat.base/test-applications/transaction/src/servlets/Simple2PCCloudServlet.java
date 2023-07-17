@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package servlets;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -234,6 +235,74 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         }
     }
 
+    public void setupV1LeaseLog(HttpServletRequest request,
+                                HttpServletResponse response) throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+
+            // Statement used to drop table
+            try (Statement stmt = con.createStatement()) {
+                String selForUpdateString = "SELECT LEASE_OWNER" +
+                                            " FROM WAS_LEASES_LOG" +
+                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
+                                            (isPostgreSQL ? "" : " OF LEASE_OWNER");
+                System.out.println("setupV1LeaseLog: " + selForUpdateString);
+                ResultSet rs = stmt.executeQuery(selForUpdateString);
+                String owner = null;
+                while (rs.next()) {
+                    owner = rs.getString("LEASE_OWNER");
+                    System.out.println("setupV1LeaseLog: owner is - " + owner);
+                }
+                rs.close();
+
+                if (owner == null) {
+                    throw new Exception("No rows were returned for " + selForUpdateString);
+                }
+
+                String updateString = "UPDATE WAS_LEASES_LOG" +
+                                      " SET LEASE_OWNER = 'cloud0011'" +
+                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                System.out.println("setupV1LeaseLog: " + updateString);
+                stmt.executeUpdate(updateString);
+
+                //Insert a couple of artificial server references into the lease log.
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                PreparedStatement specStatement = null;
+                long fir1 = 0;
+
+                System.out.println("setupV1LeaseLog: setup new row using - " + insertString);
+
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, "cloud0022");
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, "cloud0022");
+                specStatement.setLong(4, fir1);
+
+                specStatement.executeUpdate();
+
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, "cloud0033");
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, "cloud0033");
+                specStatement.setLong(4, fir1);
+
+                specStatement.executeUpdate();
+
+                System.out.println("setupV1LeaseLog: commit changes to database");
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("setupV1LeaseLog: caught exception in testSetup: " + ex);
+            }
+        }
+    }
+
     /**
      * This method supports a retry when a connection is required.
      *
@@ -263,5 +332,36 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         System.out.println("Simple2PCCloudServlet: getConnection returned connection - " + conn);
         return conn;
+    }
+
+    public void tidyupV1LeaseLog(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+
+            // Statement used to delete from table
+            try (Statement stmt = con.createStatement()) {
+                String delString = "DELETE FROM WAS_LEASES_LOG" +
+                                   (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                   " WHERE SERVER_IDENTITY='cloud0022'";
+                System.out.println("tidyupV1LeaseLog: " + delString);
+                int ret = stmt.executeUpdate(delString);
+                System.out.println("tidyupV1LeaseLog: return was " + ret);
+                delString = "DELETE FROM WAS_LEASES_LOG" +
+                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                            " WHERE SERVER_IDENTITY='cloud0033'";
+                System.out.println("tidyupV1LeaseLog: " + delString);
+                ret = stmt.executeUpdate(delString);
+
+                System.out.println("tidyupV1LeaseLog: return was " + ret + " commit changes to database");
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("tidyupV1LeaseLog: caught exception in testSetup: " + ex);
+            }
+        }
     }
 }

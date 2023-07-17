@@ -90,11 +90,7 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 
 			//Set timeout until a connection is established
 			// Set timeouts 2 ways to cater for different javas
-			bind2.getRequestContext().put("com.sun.xml.ws.connect.timeout", timeout);
-			bind2.getRequestContext().put("com.sun.xml.ws.request.timeout", timeout);
-
-			bind2.getRequestContext().put("javax.xml.ws.client.connectionTimeout", timeout);
-			bind2.getRequestContext().put("javax.xml.ws.client.receiveTimeout", timeout);
+			TxTestUtils.setTimeouts(bind2.getRequestContext(), timeout);
 
 			userTransaction.begin();
 

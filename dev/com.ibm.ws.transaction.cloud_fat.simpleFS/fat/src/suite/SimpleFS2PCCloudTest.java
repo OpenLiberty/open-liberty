@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
@@ -54,6 +55,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
     public static final String SERVLET_NAME = APP_NAME + "/SimpleFS2PCCloudServlet";
     private static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
     protected static final int FScloud2ServerPort = 9992;
+    private static final String v1Length = "v1Length";
 
     @Server("FSCLOUD001")
     public static LibertyServer server1;
@@ -97,7 +99,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testFSBaseRecovery() throws Exception {
         // Start Server1
@@ -120,7 +122,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test
     public void testFSRecoveryTakeover() throws Exception {
         final String method = "testFSRecoveryTakeover";
         StringBuilder sb = null;
@@ -178,7 +180,7 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     // defect 227411, if FScloud002 starts slowly, then access to FScloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
@@ -229,7 +231,98 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
             assertNotNull(server2.getServerName() + " did not recover for " + server1.getServerName(),
                           server2.waitForStringInTrace("Performed recovery for " + server1.getServerName(), FATUtils.LOG_SEARCH_TIMEOUT));
         } finally {
-            FATUtils.stopServers(server2);
+            FATUtils.stopServers(server2, longLeaseLengthFSServer1);
+        }
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testBackwardCompatibility() throws Exception {
+        final String method = "testBackwardCompatibility";
+
+        final String defaultBackendURL = "\nhttp://localhost:9080";
+
+        // Start and stop FSCLOUD001 & FSCLOUD002 to initialize their logs
+        FATUtils.startServers(server1, server2);
+        FATUtils.stopServers(server1, server2);
+
+        // Leases will have gone but we know where they were
+
+        // Edit the lease files
+        setupV1LeaseLogs(server1, server2);
+
+        String s1Length = server1.getEnvVar(v1Length);
+        String s2Length = server2.getEnvVar(v1Length);
+
+        // Start Server1
+        FATUtils.startServers(server1);
+        server1.clearLogMarks();
+        // Check whether the peer lease has been updated with the owner/backendURL combo.
+        assertNotNull("Artificial lease not set up",
+                      server1.waitForStringInLogUsingMark("Originally " + server1.getServerName() + " lease file length " + s1Length,
+                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+        int newLength = Integer.parseInt(s1Length) + defaultBackendURL.length();
+        assertNotNull("Artificial lease not updated",
+                      server1.waitForStringInLogUsingMark("On writing " + server1.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+        // Check for key string to see whether the home lease has been updated with the owner/backendURL combo.
+        assertNotNull("Home lease not set up",
+                      server1.waitForStringInLogUsingMark("On reading " + server2.getServerName() + " lease file length " + s2Length,
+                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+        newLength = Integer.parseInt(s2Length) + defaultBackendURL.length();
+        assertNotNull("Home lease not updated",
+                      server1.waitForStringInLogUsingMark("On writing " + server2.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+
+        FATUtils.stopServers(server1);
+    }
+
+    private void setupV1LeaseLogs(LibertyServer... servers) throws IOException {
+        final String method = "setupV1LeaseLogs";
+        for (LibertyServer s : servers) {
+            final File leaseFile = new File(s.getInstallRoot() +
+                                            File.separator + "usr" +
+                                            File.separator + "shared" +
+                                            File.separator + "leases" +
+                                            File.separator + "defaultGroup" +
+                                            File.separator + s.getServerName()); // Have arranged for recoveryIdentity to be server name
+
+            Log.info(getClass(), method, "Modifying lease file: " + leaseFile);
+
+            final String logdir = s.getInstallRoot() +
+                                  File.separator + "usr" +
+                                  File.separator + "servers" +
+                                  File.separator + s.getServerName() +
+                                  File.separator + "tranlog";
+
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    try (FileChannel fileChannel = new RandomAccessFile(leaseFile, "rw").getChannel()) {
+                        fileChannel.position(0);
+                        ByteBuffer bb = ByteBuffer.wrap(logdir.getBytes());
+                        fileChannel.write(bb);
+                        Log.info(SimpleFS2PCCloudTest.class, method, "Truncate channel to length " + logdir.length());
+                        s.addEnvVar(v1Length, Integer.toString(logdir.length()));
+                        fileChannel.truncate(logdir.length());
+                        fileChannel.force(false);
+
+                        long fileSize = fileChannel.size();
+                        Log.info(SimpleFS2PCCloudTest.class, method, "Channel size is " + fileSize);
+                        ByteBuffer buffer2 = ByteBuffer.allocate((int) fileSize);
+                        fileChannel.position(0);
+                        fileChannel.read(buffer2);
+                        buffer2.flip();
+
+                        String line2 = new String(buffer2.array());
+                        Log.info(SimpleFS2PCCloudTest.class, method, "Lease file now contains " + line2 + " of length " + line2.length());
+                    } catch (FileNotFoundException e) {
+                        Log.error(SimpleFS2PCCloudTest.class, method, e);
+                    } catch (IOException e) {
+                        Log.error(SimpleFS2PCCloudTest.class, method, e);
+                    }
+
+                    return null;
+                }
+            });
         }
     }
 

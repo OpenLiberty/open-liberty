@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -485,6 +486,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
     }
 
     @Override
+    @Trivial
     public SharedServerLeaseLog getLeaseLog() {
         return _leaseLog;
     }
