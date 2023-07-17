@@ -95,7 +95,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String authFilterRef;
     private long expirationDifferenceAllowed;
     private boolean monitorDirectory;
-    private final List<Properties> validationKeys = new ArrayList<Properties>();;
+    private final List<Properties> validationKeys = new ArrayList<Properties>();
     private List<Properties> configValidationKeys = null;
     private List<Properties> unConfigValidationKeys = null;
 
@@ -301,12 +301,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         Tr.audit(tc, "LTPA_KEYS_TO_LOAD", printLTPAKeys(files));
 
         if (monitorDirectory) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "validationKeys", validationKeys);
-                Tr.debug(tc, "config validationKeys", configValidationKeys);
-                Tr.debug(tc, "unconfig validationKeys", unConfigValidationKeys);
-
-            }
             validationKeys.clear();
 
             if (configValidationKeys != null || !configValidationKeys.isEmpty())
@@ -371,7 +365,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         Long oldMonitorInterval = monitorInterval;
         Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
         boolean oldMonitorDirectory = monitorDirectory;
-        List<Properties> oldValidationKeys = validationKeys;
+        List<Properties> oldValidationKeys = new ArrayList<Properties>();
+        oldValidationKeys.addAll(validationKeys);
+
+//        List<Properties> oldValidationKeys = validationKeys;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "oldValidationKeys: " + oldValidationKeys);
+        }
 
         loadConfig(props);
 
@@ -386,7 +386,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     /**
-     * The keys config is changed if the file or expiration were modified.
+     * The keys config is changed if the file, expiration, expirationDifferenceAllowed or validationKeys configured were modified.
      * Changing the password by itself must not be considered a config change that should trigger a keys reload.
      *
      * @param oldValidationKeys
@@ -402,7 +402,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     /**
-     * If we have any validationKeys, we want to reload all keys
+     * If we have any validationKeys(configured or unConfigured), we want to reload all keys
      *
      * @param oldValidationKeys
      * @return
@@ -673,7 +673,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             noUserAfterDateOdt = OffsetDateTime.parse(notUseAfterDate);
         } catch (Exception e) {
-            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
+            Tr.error(tc, "LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT", notUseAfterDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
             return true;
         }
 
@@ -687,7 +687,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         if (currentDateTime.isAfter(noUserAfterDateOdt)) {
-            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
+            Tr.warning(tc, "LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE", notUseAfterDate, configProps.get(CFG_KEY_VALIDATION_FILE_NAME));
             return true;
         } else {
             return false;
