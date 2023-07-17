@@ -447,10 +447,10 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         if (!firstTry || headers.containsKey(HttpHeaders.DATE)) {
             return;
         }
-		// Liberty Change Start - Pull from chached time
-		// SimpleDateFormat format = HttpUtils.getHttpDateFormat();
-        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(-1));
-		//Liberty Change End
+        // Liberty Change Start
+        // SimpleDateFormat format = HttpUtils.getHttpDateFormat();
+        headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(System.currentTimeMillis()));
+        // Liberty Change End
     }
 
     private boolean isResponseAlreadyHandled(Message m) {
