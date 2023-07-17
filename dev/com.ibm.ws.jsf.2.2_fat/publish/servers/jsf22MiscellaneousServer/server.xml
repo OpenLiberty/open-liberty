@@ -12,15 +12,61 @@
  -->
  <server description="Server for testing JavaServer Faces 2.2">
 
-    <!--    CDI applications can take a while to start up; when multiple CDI apps are packaged in the same server, the cumulative startup time
-            on slower build machines can cause the corresponding tests to run past the timeout limit of 30 seconds.  We'll limit the number
-            of apps that run on each by creating a separate server definition for each CDI test class.  -->
-
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
         <feature>jsf-2.2</feature>
         <feature>cdi-1.2</feature>
     </featureManager>
+    
+    <!-- 
+        ("java.lang.RuntimePermission" "accessDeclaredMembers")
+        Stack: 
+        java.security.AccessControlException: Access denied ("java.lang.RuntimePermission" "accessDeclaredMembers")java.base/java.security.AccessController.throwACE(AccessController.java:177)
+        java.base/java.security.AccessController.checkPermissionHelper(AccessController.java:239)
+        java.base/java.security.AccessController.checkPermission(AccessController.java:386)
+        java.base/java.lang.SecurityManager.checkPermission(SecurityManager.java:416)
+        com.ibm.ws.kernel.launch.internal.MissingDoPrivDetectionSecurityManager.checkPermission(MissingDoPrivDetectionSecurityManager.java:47)
+        java.base/java.lang.Class.checkMemberAccess(Class.java:278)
+        java.base/java.lang.Class.getDeclaredConstructor(Class.java:813)
+        jakarta.faces.FactoryFinder.addBeanEntry(FactoryFinder.java:443)
+        jakarta.faces.FactoryFinder.injectAndPostConstruct(FactoryFinder.java:379)
+        jakarta.faces.FactoryFinder.newFactoryInstance(FactoryFinder.java:485)
+        jakarta.faces.FactoryFinder._getFactory(FactoryFinder.java:327)
+        jakarta.faces.FactoryFinder.getFactory(FactoryFinder.java:207)
+        org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory.<init>(DefaultFaceletFactory.java:95)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage.createFaceletFactory(FaceletViewDeclarationLanguage.java:2085)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage.<init>(FaceletViewDeclarationLanguage.java:242)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy.<init>(FaceletViewDeclarationLanguageStrategy.java:52)
+        org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl.initialize(ViewDeclarationLanguageFactoryImpl.java:95)
+        org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl.getViewDeclarationLanguage(ViewDeclarationLanguageFactoryImpl.java:54)
+        org.apache.myfaces.application.ViewHandlerImpl.getViewDeclarationLanguage(ViewHandlerImpl.java:184)
+        org.apache.myfaces.application.ViewHandlerImpl.createView(ViewHandlerImpl.java:258)
+        com.ibm.ws.jsf22.fat.myfaces4512.viewhandler.MyFaces4512ViewHandler.createView(MyFaces4512ViewHandler.java:51)
+    -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    
+    <!--
+        ("java.lang.reflect.ReflectPermission" "suppressAccessChecks")
+        Stack: 
+        java.security.AccessControlException: Access denied ("java.lang.reflect.ReflectPermission" "suppressAccessChecks")java.base/java.security.AccessController.throwACE(AccessController.java:177)
+        java.base/java.security.AccessController.checkPermissionHelper(AccessController.java:239)
+        java.base/java.security.AccessController.checkPermission(AccessController.java:386)
+        java.base/java.lang.SecurityManager.checkPermission(SecurityManager.java:416)
+        com.ibm.ws.kernel.launch.internal.MissingDoPrivDetectionSecurityManager.checkPermission(MissingDoPrivDetectionSecurityManager.java:47)
+        java.base/java.lang.reflect.AccessibleObject.checkPermission(AccessibleObject.java:91)
+        java.base/java.lang.reflect.Method.setAccessible(Method.java:192)
+        org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory.<init>(DefaultFaceletFactory.java:175)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage.createFaceletFactory(FaceletViewDeclarationLanguage.java:2239)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage.initialize(FaceletViewDeclarationLanguage.java:2477)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage.<init>(FaceletViewDeclarationLanguage.java:309)
+        org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguageStrategy.<init>(FaceletViewDeclarationLanguageStrategy.java:52)
+        org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl.initialize(ViewDeclarationLanguageFactoryImpl.java:104)
+        org.apache.myfaces.view.ViewDeclarationLanguageFactoryImpl.getViewDeclarationLanguage(ViewDeclarationLanguageFactoryImpl.java:73)
+        org.apache.myfaces.application.ViewHandlerImpl.getViewDeclarationLanguage(ViewHandlerImpl.java:183)
+        org.apache.myfaces.application.ViewHandlerImpl.createView(ViewHandlerImpl.java:255)
+        com.ibm.ws.jsf22.fat.myfaces4512.viewhandler.MyFaces4512ViewHandler.createView(MyFaces4512ViewHandler.java:51)
+    -->
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 
 </server>

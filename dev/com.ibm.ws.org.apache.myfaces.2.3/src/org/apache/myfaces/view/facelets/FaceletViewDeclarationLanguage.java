@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -42,12 +44,12 @@ import javax.el.ValueExpression;
 import javax.el.VariableMapper;
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
-import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ProjectStage;
 import javax.faces.application.Resource;
 import javax.faces.application.StateManager;
 import javax.faces.application.ViewHandler;
+import javax.faces.application.ViewVisitOption;
 import javax.faces.component.ActionSource2;
 import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
@@ -69,7 +71,6 @@ import javax.faces.event.PostRestoreStateEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.event.ValueChangeListener;
 import javax.faces.render.RenderKit;
-import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 import javax.faces.validator.MethodExpressionValidator;
 import javax.faces.validator.Validator;
@@ -134,19 +135,19 @@ import org.apache.myfaces.view.facelets.tag.composite.CreateDynamicCompositeComp
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionActionListener;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValidator;
 import org.apache.myfaces.view.facelets.tag.jsf.PartialMethodExpressionValueChangeListener;
+import org.apache.myfaces.view.facelets.util.FaceletsTemplateMappingUtils;
 import org.apache.myfaces.view.facelets.util.FaceletsViewDeclarationLanguageUtils;
 
 /**
  * This class represents the abstraction of Facelets as a ViewDeclarationLanguage.
  *
- * @author Simon Lessard (latest modification by $Author: lu4242 $)
- * @version $Revision: 1634897 $ $Date: 2014-10-28 15:49:14 +0000 (Tue, 28 Oct 2014) $
+ * @author Simon Lessard (latest modification by $Author$)
+ * @version $Revision$ $Date$
  *
  * @since 2.0
  */
 public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLanguageBase
 {
-    //private static final Log log = LogFactory.getLog(FaceletViewDeclarationLanguage.class);
     private static final Logger log = Logger.getLogger(FaceletViewDeclarationLanguage.class.getName());
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
@@ -268,8 +269,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
     private StateManagementStrategy _stateMgmtStrategy;
     
-    private RenderKitFactory _renderKitFactory = null;
-
     private boolean _partialStateSaving;
 
     private boolean _refreshTransientBuildOnPSS;
@@ -322,7 +321,14 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         if (_strategy.handles(viewId))
         {
-            return _resourceResolver.resolveUrl(viewId) != null;
+            if (_resourceResolver instanceof DefaultResourceResolver)
+            {
+                return ((DefaultResourceResolver)_resourceResolver).resolveUrl(facesContext, viewId) != null;
+            }
+            else
+            {
+                return _resourceResolver.resolveUrl(viewId) != null;
+            }
         }
         return false;
     }
@@ -863,7 +869,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
      * In short words, this method take care of "target" an "attached object".
      * <ul>
      * <li>The "attached object" is instantiated by a tag handler.</li> 
-     * <li>The "target" is an object used as "marker", that exposes a List<UIComponent></li>
+     * <li>The "target" is an object used as "marker", that exposes a List&lt;UIComponent&gt;</li>
      * </ul>
      * This method should be called from some composite component tag handler, after
      * all children of composite component has been applied.
@@ -1922,28 +1928,29 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                         if (end >= 0)
                         {
                             // save state
-                            String stateStr;
-                            if (view.isTransient())
-                            {
-                                // Force state saving
-                                stateMgr.writeState(context, stateObj);
-                                stateStr = stateWriter.getAndResetBuffer();
-                            }
-                            else if (stateObj == null)
-                            {
-                                stateStr = null;
-                            }
-                            else
-                            {
-                                stateMgr.writeState(context, stateObj);
-                                stateStr = stateWriter.getAndResetBuffer();
-                            }
-
                             int start = 0;
 
                             while (end != -1)
                             {
                                 origWriter.write(content, start, end - start);
+                                
+                                String stateStr;
+                                if (view.isTransient())
+                                {
+                                    // Force state saving
+                                    stateMgr.writeState(context, stateObj);
+                                    stateStr = stateWriter.getAndResetBuffer();
+                                }
+                                else if (stateObj == null)
+                                {
+                                    stateStr = null;
+                                }
+                                else
+                                {
+                                    stateMgr.writeState(context, stateObj);
+                                    stateStr = stateWriter.getAndResetBuffer();
+                                }                                
+                                
                                 if (stateStr != null)
                                 {
                                     origWriter.write(stateStr);
@@ -2058,7 +2065,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     List<String> contracts = vdl.calculateResourceLibraryContracts(
                         context, root.getViewId() != null ? root.getViewId() : viewId);
                     context.setResourceLibraryContracts(contracts);
-               }
+                }
             }
             return root;
         }
@@ -2121,7 +2128,6 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     view = context.getApplication().getViewHandler().createView(context, viewId);
                 }
-                
                 context.setViewRoot (view); 
                 boolean oldContextEventState = context.isProcessingEvents();
                 try 
@@ -2133,25 +2139,28 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                     {
                         throw new FacesException ("unable to create view \"" + viewId + "\"");
                     } 
+    
                 }
                 finally
                 {
                     context.setProcessingEvents (oldContextEventState);
                 } 
-                
             }
             catch (Throwable e)
             {
                 throw new FacesException ("unable to create view \"" + viewId + "\"", e);
             }
+            FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, view);
             return view;
         }
         else
         {
-            return super.restoreView(context, viewId);
+            UIViewRoot root = super.restoreView(context, viewId);
+            FaceletsViewDeclarationLanguageUtils.markRenderedResources(context, root);
+            return root;
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -2160,7 +2169,7 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
     {
         if (_cachedViewHandlerSupport == null)
         {
-            _cachedViewHandlerSupport = new DefaultViewHandlerSupport();
+            _cachedViewHandlerSupport = new DefaultViewHandlerSupport(context);
         }
 
         return _cachedViewHandlerSupport.calculateViewId(context, viewId);
@@ -2382,7 +2391,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
 
         // see if we need to override the encoding
         Map<Object, Object> m = context.getAttributes();
-        Map<String, Object> sm = context.getExternalContext().getSessionMap();
+        
+        Object session = context.getExternalContext().getSession(false);
 
         // 1. check the request attribute
         if (m.containsKey(PARAM_ENCODING))
@@ -2393,7 +2403,10 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 log.finest("Facelet specified alternate encoding '" + encoding + "'");
             }
 
-            sm.put(CHARACTER_ENCODING_KEY, encoding);
+            if (session != null)
+            {
+                context.getExternalContext().getSessionMap().put(CHARACTER_ENCODING_KEY, encoding);
+            }
         }
 
         // 2. get it from request
@@ -2405,10 +2418,13 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // 3. get it from the session
         if (encoding == null)
         {
-            encoding = (String) sm.get(CHARACTER_ENCODING_KEY);
-            if (encoding != null && log.isLoggable(Level.FINEST))
+            if (session != null)
             {
-                log.finest("Session specified alternate encoding '" + encoding + "'");
+                encoding = (String) context.getExternalContext().getSessionMap().get(CHARACTER_ENCODING_KEY);
+                if (encoding != null && log.isLoggable(Level.FINEST))
+                {
+                    log.finest("Session specified alternate encoding '" + encoding + '\'');
+                }
             }
         }
 
@@ -2619,7 +2635,9 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         // Per spec section 11.1.3, the default value for the partial state saving feature needs
         // to be true if 2.0, false otherwise.
 
-        partialStateSavingDefault = (facesVersion == null) || facesVersion.trim().isEmpty() || Float.parseFloat(facesVersion) >= 2;
+        partialStateSavingDefault = facesVersion == null
+                || facesVersion.trim().isEmpty()
+                || Float.parseFloat(facesVersion) >= 2;
 
         // In jsf 2.0 this code evolve as PartialStateSaving feature
         //_buildBeforeRestore = _getBooleanParameter(context, PARAM_BUILD_BEFORE_RESTORE, false);
@@ -2941,12 +2959,19 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
         return createdComponent;
     }
     
-    protected RenderKitFactory getRenderKitFactory()
+    @Override
+    public Stream<String> getViews(FacesContext facesContext, String path, int maxDepth, ViewVisitOption... options)
     {
-        if (_renderKitFactory == null)
+        Stream<String> stream = super.getViews(facesContext, path, maxDepth, options);
+        RuntimeConfig runtimeConfig = RuntimeConfig.getCurrentInstance(facesContext.getExternalContext());
+            stream = stream.filter(f -> (_strategy.handles(f) && 
+                    !FaceletsTemplateMappingUtils.matchTemplate(runtimeConfig, f) ) );
+        if (options != null &&
+            Arrays.binarySearch(options, ViewVisitOption.RETURN_AS_MINIMAL_IMPLICIT_OUTCOME) >= 0)
         {
-            _renderKitFactory = (RenderKitFactory)FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
+            stream = stream.map(f -> _strategy.getMinimalImplicitOutcome(f));
         }
-        return _renderKitFactory;
+        return stream;
     }
+    
 }
