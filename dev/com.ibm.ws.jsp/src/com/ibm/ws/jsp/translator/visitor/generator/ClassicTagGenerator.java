@@ -124,6 +124,10 @@ public class ClassicTagGenerator extends BaseTagGenerator {
                 tagStartWriter.print(" = ");           
                 tagStartWriter.println("("+tagClassInfo.getTagClassName()+")"+tagHandlerVar+"_mo.getObject();"); 
 
+                if(genTagInMethod){
+                    tagStartWriter.println("try {");
+                }
+
             	tagStartWriter.print ("_jspx_iaHelper.doPostConstruct(");
             	tagStartWriter.print (tagHandlerVar);
             	tagStartWriter.println (");");
@@ -131,7 +135,9 @@ public class ClassicTagGenerator extends BaseTagGenerator {
                 tagStartWriter.print ("_jspx_iaHelper.addTagHandlerToCdiMap(");
                 tagStartWriter.print (tagHandlerVar + ", " + tagHandlerVar + "_mo");
                 tagStartWriter.println (");");
-                
+                if(!genTagInMethod) {
+                    tagStartWriter.println ("_jspMangedObjectList.add("+ tagHandlerVar + ");");
+                }
             } else {
                 // not using CDI
                 tagStartWriter.print(tagClassInfo.getTagClassName());
@@ -326,20 +332,9 @@ public class ClassicTagGenerator extends BaseTagGenerator {
         
         if (reuseTag == false || tagClassInfo.implementsJspIdConsumer()) {//jsp2.1work
             // LIDB4147-24
-             
-        	if (!jspOptions.isDisableResourceInjection()){		//PM06063
-            	    tagEndWriter.print ("_jspx_iaHelper.doPreDestroy(");
-            	    tagEndWriter.print (tagHandlerVar);
-            	    tagEndWriter.println (");");
-            	
-                    tagEndWriter.print ("_jspx_iaHelper.cleanUpTagHandlerFromCdiMap(");
-                    tagEndWriter.print (tagHandlerVar);
-                    tagEndWriter.println (");");
-        	} 
-             
-            tagEndWriter.println();
-             
-            tagEndWriter.println(tagHandlerVar + ".release();");
+            if(genTagInMethod || jspOptions.isDisableResourceInjection()){
+                tagEndWriter.println(tagHandlerVar + ".release();");
+            }
         }
         
         if (isTagFile || isFragment) {
@@ -388,14 +383,9 @@ public class ClassicTagGenerator extends BaseTagGenerator {
         if (reuseTag == false || tagClassInfo.implementsJspIdConsumer()) {//jsp2.1work
             //           LIDB4147-24
              
-        	if (!jspOptions.isDisableResourceInjection()){		//PM06063
-            	    tagEndWriter.print ("_jspx_iaHelper.doPreDestroy(");
-            	    tagEndWriter.print (tagHandlerVar);
-            	    tagEndWriter.println (");");
-            	
-            	    tagEndWriter.print ("_jspx_iaHelper.cleanUpTagHandlerFromCdiMap(");
-            	    tagEndWriter.print (tagHandlerVar);
-            	    tagEndWriter.println (");");
+        	if (!jspOptions.isDisableResourceInjection() && !genTagInMethod){		//PM06063 & PH49514
+                tagEndWriter.println("cleanupCDITagManagedObject("+ tagHandlerVar + ");");
+                tagEndWriter.println ("_jspMangedObjectList.remove("+ tagHandlerVar + ");");
         	}
              
             tagEndWriter.println();

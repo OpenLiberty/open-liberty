@@ -211,9 +211,10 @@ public class CustomTagGenerator extends CodeGeneratorBase {
             optTag = tagLibraryCache.getOptimizedTag(namespaceURI, ((TagLibraryInfoImpl)tli).getTlibversion(), shortName);
             if (optTag != null) {
                 tagGenerator = new OptimizedTagGenerator(optTag,
-                                                         tagPushBodyCountVar,      
+                                                         tagPushBodyCountVar,    
                                                          nestingLevel,
                                                          isTagFile,
+                                                         genTagInMethod,  
                                                          hasBody,
                                                          hasJspBody,
                                                          tagHandlerVar,
@@ -260,6 +261,7 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                     new SimpleTagGenerator(
                         nestingLevel,
                         isTagFile,
+                        genTagInMethod,
                         hasBody,
                         hasJspBody,
                         tagHandlerVar,
@@ -572,7 +574,13 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         if (genTagInMethod) {
             if (methodNesting > 0) {
                 methodWriter.println("return false;");
+                if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
+                    methodWriter.println("} finally {");
+                    methodWriter.println("cleanupCDITagManagedObject(" + tagHandlerVar + ");");
+                    methodWriter.println("}");
+                }
             }
+            
             if (tagGenerator.fragmentWriterUsed() == false) 
                 if (debugEnd) //232818
                 	writeDebugEndEnd(methodWriter); //232818

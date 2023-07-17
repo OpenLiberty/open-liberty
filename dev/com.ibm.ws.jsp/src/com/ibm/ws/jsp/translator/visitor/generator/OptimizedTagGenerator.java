@@ -45,11 +45,13 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
     protected Map attrMap = new HashMap();
     protected List declaredIdList = null;
     protected String tagPushBodyCountVar = null;
+    private boolean genTagInMethod = false;
     
     public OptimizedTagGenerator(OptimizedTag optimizedTag,
-                                 String tagPushBodyCountVar, 
+                                 String tagPushBodyCountVar,
                                  int nestingLevel,
                                  boolean isTagFile,
+                                 boolean genTagInMethod,
                                  boolean hasBody,
                                  boolean hasJspBody,
                                  String tagHandlerVar,
@@ -82,6 +84,7 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
         this.jspOptions = jspOptions; //PK65013
         this.optimizedTag = optimizedTag;
         this.tagPushBodyCountVar = tagPushBodyCountVar;
+        this.genTagInMethod = genTagInMethod;
         
         NamedNodeMap nodeAttrs = element.getAttributes();
         for (int i = 0; i < nodeAttrs.getLength(); i++) {
@@ -138,6 +141,10 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
                 tagStartWriter.print(" = ");           
                 tagStartWriter.println("("+tagClassInfo.getTagClassName()+")"+tagHandlerVar+"_mo.getObject();"); 
 
+                if(genTagInMethod){
+                    tagStartWriter.println("try {");
+                }
+
             	tagStartWriter.print ("_jspx_iaHelper.doPostConstruct(");
             	tagStartWriter.print (tagHandlerVar);
             	tagStartWriter.println (");");
@@ -146,6 +153,7 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
                 tagStartWriter.print (tagHandlerVar + ", " + tagHandlerVar + "_mo");
                 tagStartWriter.println (");");
                 
+                tagStartWriter.println ("_jspMangedObjectList.add("+ tagHandlerVar + ");");
             } else {
                 
                 // not using CDI

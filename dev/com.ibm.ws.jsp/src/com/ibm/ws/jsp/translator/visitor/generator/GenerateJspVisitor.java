@@ -294,6 +294,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
 		GeneratorUtils.generateVersionInformation(writer, jspOptions.isDebugEnabled());
 		// end 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.
 
+        if(!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
+            GeneratorUtils.generateCDITagCleanUp(writer);
+        }
+
         // PK81147 start
 		// declare class variable to indicate whether _jspInit() has been called.
 		writer.println();
@@ -315,6 +319,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
 			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
 			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
             writer.println("}");
+        }
+
+        if(!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
+            GeneratorUtils.generate_process_jspMangedObjectList(writer, jspOptions.isDisableResourceInjection());
         }
 
         // PK81147 end
@@ -370,6 +378,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
         result.setServiceMethodLineNumber(((JavaFileWriter)writer).getCurrentLineNumber());
         //writer.println("JspFactory _jspxFactory = null;");
         writer.println("PageContext pageContext = null;");
+
+        if(!jspOptions.isDisableResourceInjection()){
+            GeneratorUtils.generateLastManagedObjectVariable(writer);
+        }
 
         if (genSessionVariable)
             writer.println("HttpSession session = null;");
@@ -559,8 +571,14 @@ public class GenerateJspVisitor extends GenerateVisitor {
     	// end 242714: enhance error reporting for SkipPageException.
 
         writer.println("} finally {");
+
+        if(!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
+            writer.println("_process_jspMangedObjectList(_jspMangedObjectList);");
+        }
+
         //writer.println("if (_jspxFactory != null) _jspxFactory.releasePageContext(pageContext);");
         writer.println("_jspxFactory.releasePageContext(pageContext);");
+
         //247815 Start
         if (jspOptions.isUsePageTagPool()) {
             writer.println("cleanupTaglibLookup(_jspx_TagLookup);");

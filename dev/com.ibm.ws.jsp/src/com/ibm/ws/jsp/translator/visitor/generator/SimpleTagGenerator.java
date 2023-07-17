@@ -33,10 +33,12 @@ import com.ibm.wsspi.jsp.context.JspCoreContext;
 public class SimpleTagGenerator extends BaseTagGenerator {
     private FragmentHelperClassWriter.FragmentWriter fragmentBodyWriter = null;
     private JspVisitorInputMap inputMap=null; //jsp2.1work
+    private boolean genTagInMethod = false;
 
     public SimpleTagGenerator(
         int nestingLevel,
         boolean isTagFile,
+        boolean genTagInMethod,
         boolean hasBody,
         boolean hasJspBody,
         String tagHandlerVar,
@@ -68,6 +70,7 @@ public class SimpleTagGenerator extends BaseTagGenerator {
               fragmentHelperClassWriter,
               jspOptions);
         this.inputMap=inputMap;
+        this.genTagInMethod=genTagInMethod;
     }
 
     public MethodWriter generateTagStart() throws JspCoreException {
@@ -89,6 +92,10 @@ public class SimpleTagGenerator extends BaseTagGenerator {
             tagStartWriter.print(tagHandlerVar);   
             tagStartWriter.print(" = ");           
             tagStartWriter.println("("+tagClassInfo.getTagClassName()+")"+tagHandlerVar+"_mo.getObject();"); 
+
+            if(genTagInMethod){
+                tagStartWriter.println("try {");
+            }
 
             tagStartWriter.print ("_jspx_iaHelper.doPostConstruct(");
             tagStartWriter.print (tagHandlerVar);
@@ -144,15 +151,9 @@ public class SimpleTagGenerator extends BaseTagGenerator {
         tagEndWriter.print(tagHandlerVar);
         tagEndWriter.println(".doTag();");
         
-        if (!jspOptions.isDisableResourceInjection()){		//PM06063
-        	tagEndWriter.print ("_jspx_iaHelper.doPreDestroy(");
-        	tagEndWriter.print (tagHandlerVar);
-        	tagEndWriter.println (");");
-        	
-        	tagEndWriter.print ("_jspx_iaHelper.cleanUpTagHandlerFromCdiMap(");
-        	tagEndWriter.print (tagHandlerVar);
-        	tagEndWriter.println (");");
-        }
+        // Note: With PH49514, doPreDestroy & cleanUpTagHandlerFromCdiMap were removed and now occur in the finally block.
+        // See the cleanupCDITagManagedObject generated code in the CustomTagGenerator.java
+        // See change history
 
         restoreScriptingVars(tagEndWriter, VariableInfo.AT_BEGIN);
         syncScriptingVars(tagEndWriter, VariableInfo.AT_BEGIN);
