@@ -136,7 +136,9 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
                 tagStartWriter.print(tagHandlerVar + ", " + tagHandlerVar + "_mo");
                 tagStartWriter.println(");");
 
-                tagStartWriter.println("_jspMangedObjectList.add(" + tagHandlerVar + ");");
+                if(!genTagInMethod) {
+                    tagStartWriter.println ("_jspMangedObjectList.add("+ tagHandlerVar + ");");
+                }
             } else {
 
                 // not using CDI

@@ -88,6 +88,10 @@ public class SimpleTagGenerator extends BaseTagGenerator {
             tagStartWriter.print(tagHandlerVar + ", " + tagHandlerVar + "_mo");
             tagStartWriter.println(");");
 
+            if(!genTagInMethod) {
+                tagStartWriter.println ("_jspMangedObjectList.add("+ tagHandlerVar + ");");
+            }
+
         } else {
             // not using CDI
             tagStartWriter.print(tagClassInfo.getTagClassName());
