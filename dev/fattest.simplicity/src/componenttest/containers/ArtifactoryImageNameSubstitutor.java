@@ -13,6 +13,7 @@
 package componenttest.containers;
 
 import org.testcontainers.DockerClientFactory;
+import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
 
@@ -23,6 +24,7 @@ import com.ibm.websphere.simplicity.log.Log;
  * Here we use it to apply a private registry prefix and organization prefix so that in remote builds we use an internal
  * Artifactory mirror of Docker Hub, instead of downloading from Docker Hub in each build which causes rate limiting issues.
  */
+@SuppressWarnings("deprecation")
 public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     private static final Class<?> c = ArtifactoryImageNameSubstitutor.class;
@@ -75,7 +77,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             }
 
             // Priority 5: Always use Artifactory if using remote docker host.
-            if (DockerClientFactory.instance().isUsing(ExternalDockerClientStrategy.class)) {
+            if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
                 result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
                                 .withRegistry(ArtifactoryRegistry.instance().getRegistry())
                                 .asCompatibleSubstituteFor(original);

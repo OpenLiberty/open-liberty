@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.dockerclient.DockerClientProviderStrategy;
+import org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy;
 import org.testcontainers.dockerclient.UnixSocketClientProviderStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -160,7 +161,7 @@ public class ArtifactoryImageNameSubstitutorTest {
 
         //Using our remote docker host
         setArtifactoryRegistryAvailable(true);
-        setDockerClientStrategy(new ExternalDockerClientStrategy());
+        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
         System.setProperty("fat.test.use.artifactory.substitution", "false");
 
         input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
@@ -177,7 +178,7 @@ public class ArtifactoryImageNameSubstitutorTest {
 
         //Using our remote docker host, but no artifactory registry set should throw exception
         setArtifactoryRegistryAvailable(false);
-        setDockerClientStrategy(new ExternalDockerClientStrategy());
+        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
         System.setProperty("fat.test.use.artifactory.substitution", "false");
 
         input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
