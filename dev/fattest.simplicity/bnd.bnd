@@ -65,8 +65,7 @@ Include-Resource: \
     @${repo;org.bouncycastle:bcpkix-jdk18on;1.75;EXACT},\
     @${repo;org.bouncycastle:bcprov-jdk18on;1.75;EXACT},\
     @${repo;org.bouncycastle:bcutil-jdk18on;1.75;EXACT},\
-    init-sqlserver.sql=resources/init-sqlserver.sql, \
-	META-INF=resources/META-INF
+    init-sqlserver.sql=resources/init-sqlserver.sql
 
 test.project: true
 
@@ -115,7 +114,7 @@ fat.test.container.images: testcontainers/ryuk:0.5.1, testcontainers/sshd:1.1.0,
 	io.openliberty.com.fasterxml.jackson;version=latest,\
 	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
 	org.seleniumhq.selenium:selenium-support;version=4.8.3,\
-	org.bouncycastle:bcpg-jdk15on;version=1.69,\
-	org.bouncycastle:bcpkix-jdk15on;version=1.69,\
-	org.bouncycastle:bcprov-jdk15on;version=1.69
+	org.bouncycastle:bcpg-jdk18on;version=1.75,\
+	org.bouncycastle:bcpkix-jdk18on;version=1.75,\
+	org.bouncycastle:bcprov-jdk18on;version=1.75
 	
