@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import org.w3c.dom.Element;
 
 import com.ibm.ws.jsp.JspCoreException;
+import com.ibm.ws.jsp.JspOptions;
 
 public class FragmentHelperClassWriter extends MethodWriter {
 
@@ -36,9 +34,12 @@ public class FragmentHelperClassWriter extends MethodWriter {
     private boolean used = false;
     private ArrayList fragments = new ArrayList();
     private String className;
+    private JspOptions jspOptions;
 
-    public FragmentHelperClassWriter(String className) {
+    public FragmentHelperClassWriter(String className, JspOptions jspOptions) {
         this.className = className + "Helper";
+        this.jspOptions = jspOptions;
+
     }
 
     public String getClassName() {
@@ -84,8 +85,7 @@ public class FragmentHelperClassWriter extends MethodWriter {
         // See comment in closeFragment()
         if (methodNesting > 0) {
             fragment.print("public boolean invoke");
-        }
-        else {
+        } else {
             fragment.print("public void invoke");
         }
         fragment.print(fragment.getId() + "(java.io.Writer out) throws Throwable {");
@@ -99,17 +99,29 @@ public class FragmentHelperClassWriter extends MethodWriter {
         fragment.print(" = parentTag;");
         fragment.println();
 
+        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
+            GeneratorUtils.generate__jspTagList_variable(fragment);
+            fragment.println("try {");
+        }
+
         return fragment;
     }
 
     public void closeFragment(FragmentWriter fragment, int methodNesting) {
         // XXX - See comment in openFragment()
         if (methodNesting > 0) {
+
             fragment.println("return false;");
-        }
-        else {
+        } else {
             fragment.println("return;");
         }
+
+        if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
+            fragment.println("} finally {");
+            fragment.println("_jsp_cleanUpTagArrayList(_jspTagList);");
+            fragment.println("}");
+        }
+
         fragment.println("}");
     }
 
@@ -122,7 +134,7 @@ public class FragmentHelperClassWriter extends MethodWriter {
         }
 
         // Generate postamble:
-        
+
         println("public void invoke(java.io.Writer writer) throws javax.servlet.jsp.JspException {");
         println("java.io.Writer out = null;");
         println("if( writer != null ) {");
@@ -131,7 +143,7 @@ public class FragmentHelperClassWriter extends MethodWriter {
         println("out = this.jspContext.getOut();");
         println("}");
         println("try {");
-        println("this.jspContext.getELContext().putContext(JspContext.class,this.jspContext);");  // defect 393110
+        println("this.jspContext.getELContext().putContext(JspContext.class,this.jspContext);"); // defect 393110
         println("switch( this.discriminator ) {");
         for (int i = 0; i < fragments.size(); i++) {
             println("case " + i + ": {");
