@@ -16,10 +16,6 @@
 
 bVersion=1.0
 grpcVersion=1.56.0
-<<<<<<< HEAD
-=======
-nettyVersion=4.1.86.Final
->>>>>>> a33acbbdec (saftey commit)
 
 Import-Package: \
   !com.aayushatharva.brotli4j*,\
