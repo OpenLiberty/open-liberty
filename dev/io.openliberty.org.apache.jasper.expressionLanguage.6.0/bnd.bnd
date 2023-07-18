@@ -28,9 +28,10 @@ Export-Package: org.apache.el;thread-context=true;version=${Implementation-Versi
 Import-Package: \
     jakarta.el; version=6.0.0, \
     *
-
+# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
+# to depend on Expression Language 6.0.
 Require-Capability: osgi.contract;
- filter:="(&(osgi.contract=JavaEL)(version=6.0.0))"
+ filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
 
 # Remove the org/apache/el=${bin}/org/apache/el entry once we no longer have overlays and can run with Java 21.
 # Currently we are overlaying all the source so that we can build with Java 17.

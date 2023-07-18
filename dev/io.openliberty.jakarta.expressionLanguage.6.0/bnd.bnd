@@ -21,10 +21,12 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 Export-Package: \
  jakarta.el;thread-context=true; version="6.0.0"
 
+# Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
+# to depend on Expression Language 6.0.
  Provide-Capability: \
    osgi.contract;\
        osgi.contract=JavaEL;\
-       version:Version=6.0.0;\
+       version:Version=5.0.0;\
        uses:="jakarta.el"
 
 # Remove the javkarta/el=${bin}/jakarta/el entry once we no longer have overlays and can run with Java 21.
