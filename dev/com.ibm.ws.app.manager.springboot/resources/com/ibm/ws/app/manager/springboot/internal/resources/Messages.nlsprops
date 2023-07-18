@@ -46,8 +46,8 @@ warning.could.not.thin.application.useraction=Attempt to resolve the issue in th
 #1: The current spring feature.
 #2: The version of spring content found in the application.
 error.spring.required.15=CWWKC0252E: Error: Feature {0} must be provisioned: Feature {1} is provisioned and the application has Spring {2} content.
-error.spring.required.explanation=The Spring Boot feature is not compatible with application content.
-error.spring.required.useraction=Change the Spring Boot feature to be compatible with application content.
+error.spring.required.15.explanation=The Spring Boot feature is not compatible with application content.
+error.spring.required.15.useraction=Change the Spring Boot feature to be compatible with application content.
 
 #UPDATED for SpringBoot 3.0:
 #error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
@@ -58,8 +58,8 @@ error.spring.required.useraction=Change the Spring Boot feature to be compatible
 #1: The current spring feature.
 #2: The version of spring content found in the application.
 error.spring.required.20=CWWKC0253E: Error: Feature {0} must be provisioned: Feature {1} is provisioned and the application has Spring {2} content.
-error.spring.required.explanation=The Spring Boot feature is not compatible with application content.
-error.spring.required.useraction=Change the Spring Boot feature to be compatible with application content.
+error.spring.required.20.explanation=The Spring Boot feature is not compatible with application content.
+error.spring.required.20.useraction=Change the Spring Boot feature to be compatible with application content.
 
 #ADDED for SpringBoot 3.0:
 error.spring3.required=CWWKC0273E: Error: Feature springBoot-3.0 must be provisioned: Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application has Spring 3.0 content.

@@ -57,6 +57,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyFileManager;
@@ -64,6 +65,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
     private static String SPRING_BOOT_30_BASE_THIN = SPRING_BOOT_30_APP_BASE.substring(0, SPRING_BOOT_30_APP_BASE.length() - 3) + SPRING_APP_TYPE;
