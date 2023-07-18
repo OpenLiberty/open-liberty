@@ -45,7 +45,8 @@ public class ConcurrentCDITest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi.web");
-        ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web");
+        // TODO remove concurrent.cu3.web once default resources are automatically made available via @Inject
+        ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web", "concurrent.cu3.web");
         server.startServer();
         runTest(server, APP_NAME_EE10 + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
     }

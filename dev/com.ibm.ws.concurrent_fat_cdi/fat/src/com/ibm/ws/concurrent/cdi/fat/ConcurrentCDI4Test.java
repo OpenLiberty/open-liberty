@@ -38,7 +38,9 @@ public class ConcurrentCDI4Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi4.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME,
+                                      "concurrent.cdi4.web",
+                                      "concurrent.cu3.web");
         server.startServer();
         runTest(server, APP_NAME + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
     }

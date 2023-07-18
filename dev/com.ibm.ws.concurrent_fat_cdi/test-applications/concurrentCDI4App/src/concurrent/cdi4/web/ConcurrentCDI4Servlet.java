@@ -59,6 +59,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -77,6 +78,8 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 import org.junit.Test;
+
+import concurrent.cdi4.web.ResourcesProducer.SampleExecutor;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -140,7 +143,11 @@ public class ConcurrentCDI4Servlet extends HttpServlet {
     private ExecutorService unmanagedThreads;
 
     @Inject
-    private ManagedExecutorService injectedExec; // produced by ResourcesProducer.exec field
+    private ManagedExecutorService injectedExec; // produced by UnqualifiedResourcesProducer.exec field
+
+    @Inject
+    @SampleExecutor
+    private ManagedExecutorService sampleExec; // produced by ResourcesProducer.exec field
 
     @Override
     public void destroy() {
@@ -509,10 +516,34 @@ public class ConcurrentCDI4Servlet extends HttpServlet {
         }
     }
 
+    /**
+     * Inject a ManagedExecutorService that has no qualifier.
+     */
     @Test
-    public void testInjectedManagedExecutorService() {
-        System.out.println("@AGG injected executor is: " + injectedExec);
+    public void testInjectedManagedExecutorService() throws Exception {
+        // via @Inject annotation:
         assertNotNull(injectedExec);
+        assertEquals(true, injectedExec.completedFuture(44).isDone());
+
+        // programmatically:
+        ManagedExecutorService instance = CDI.current().select(ManagedExecutorService.class).get();
+        assertNotNull(instance);
+        assertEquals(Character.valueOf('i'), instance.completedFuture('i').get());
+    }
+
+    /**
+     * Inject a ManagedExecutorService that has a qualifier.
+     */
+    @Test
+    public void testInjectedManagedExecutorServiceWithQualifier() throws Exception {
+        // via @Inject annotation:
+        assertNotNull(sampleExec);
+        assertEquals(true, sampleExec.completedFuture(50).isDone());
+
+        // programmatically:
+        ManagedExecutorService instance = CDI.current().select(ManagedExecutorService.class, SampleExecutor.Literal.instance()).get();
+        assertNotNull(instance);
+        assertEquals("hello", instance.completedFuture("hello").get());
     }
 
     /**
@@ -531,7 +562,7 @@ public class ConcurrentCDI4Servlet extends HttpServlet {
         CountDownLatch method3blocker = new CountDownLatch(1);
 
         // use up second (of 2) maxAsync to interrupt inline execution
-        Future<String> task2future = injectedExec.submit(() -> {
+        Future<String> task2future = sampleExec.submit(() -> {
             Thread servletThread = (Thread) method3running.exchange(method3blocker, TIMEOUT_MS, TimeUnit.MILLISECONDS);
             servletThread.interrupt();
             return "task2successful";
@@ -876,8 +907,8 @@ public class ConcurrentCDI4Servlet extends HttpServlet {
 
         // Use up maxAsync of 2
         try {
-            injectedExec.submit(wait);
-            injectedExec.submit(wait);
+            sampleExec.submit(wait);
+            sampleExec.submit(wait);
             assertTrue(started.await(TIMEOUT_MS, TimeUnit.MILLISECONDS));
 
             // Queue up 2 asynchronous methods that won't be able to run yet
