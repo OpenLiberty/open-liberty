@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,7 +42,7 @@ import org.junit.Test;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
-public class ConcurrentCDIServlet extends HttpServlet {
+public class ConcurrentCDI3Servlet extends HttpServlet {
 
     /**
      * Maximum number of milliseconds to wait for a task to finish.
