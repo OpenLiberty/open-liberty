@@ -106,6 +106,9 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         boolean appUsesServlets = isClassAvailable("org.springframework.web.WebApplicationInitializer");
         boolean appUsesWebsockets = isClassAvailable("org.springframework.web.socket.WebSocketHandler");
 
+        // System.out.println("App uses servlets [ " + appUsesServlets + " ]");
+        // System.out.println("App uses websockets [ " + appUsesWebsockets + " ]");
+
         // Previously, the application was tested for either
         // "org.springframework.boot.context.embedded.EmbeddedServletContainerFactory"
         // or for
@@ -136,11 +139,18 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
              (libertyHasSpring20 ? "springBoot-2.0" :
               (libertyHasSpring30 ? "springBoot-3.0" : null)));
 
+        // System.out.println("Liberty spring feature [ " + libertySpringFeature + " ]");
+
         boolean libertyHasJavaxServlets = isClassAvailable("javax.servlet.Servlet");
         boolean libertyHasJakartaServlets = isClassAvailable("jakarta.servlet.Servlet");
 
         boolean libertyHasJavaxWebsockets = isClassAvailable("javax.websocket.WebSocketContainer");
         boolean libertyHasJakartaWebsockets = isClassAvailable("jakarta.websocket.WebSocketContainer");
+
+        // System.out.println("Liberty has javax servlets [ " + libertyHasJavaxServlets + " ]");
+        // System.out.println("Liberty has javax websockets [ " + libertyHasJavaxWebsockets + " ]");
+        // System.out.println("Liberty has jakarta  servlets [ " + libertyHasJakartaServlets + " ]");
+        // System.out.println("Liberty has jakarta websockets [ " + libertyHasJakartaWebsockets + " ]");
 
         // First, test that the Spring Boot version can be run with the current java.
 

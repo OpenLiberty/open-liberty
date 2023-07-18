@@ -38,8 +38,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 SSLTests30.class,
                 SSLMutualAuthTests30.class,
                     // SpringSecurityTests30.class,
-                    //   testSpringWithSecurity
-                    //   testSpringWithoutSecurity
                     // Disabled due to application failures.
                 JSPTests30.class,
                     // MissingServletTests30.class,
@@ -56,7 +54,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebAnnotationTests30.class,
                 ExtractedAppTests30.class,
                     // WebSocketTests30.class,
-                    //   testEchoWebSocket30
                     // Disabled due to application failures.
                 MimeMapping30.class,
                 ErrorPage30Test.class,
