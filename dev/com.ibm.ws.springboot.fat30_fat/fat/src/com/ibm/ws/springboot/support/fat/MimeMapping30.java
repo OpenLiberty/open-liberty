@@ -16,6 +16,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class MimeMapping30 extends MimeMappingBaseTest {
     @Override
     public Set<String> getFeatures() {
@@ -26,5 +31,4 @@ public class MimeMapping30 extends MimeMappingBaseTest {
     public String getApplication() {
         return SPRING_BOOT_30_APP_BASE;
     }
-
 }

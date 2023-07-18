@@ -33,9 +33,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class WebSocketTests30 extends AbstractSpringTests {
 
     private WebSocketContainer wsContainer;

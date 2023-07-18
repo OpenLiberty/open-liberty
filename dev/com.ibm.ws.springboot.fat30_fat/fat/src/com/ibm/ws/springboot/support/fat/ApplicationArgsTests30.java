@@ -20,12 +20,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Run the basic web application tests on the base application.
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class ApplicationArgsTests30 extends CommonWebServerTests {
     private static int TEST_PORT = 8082;
 

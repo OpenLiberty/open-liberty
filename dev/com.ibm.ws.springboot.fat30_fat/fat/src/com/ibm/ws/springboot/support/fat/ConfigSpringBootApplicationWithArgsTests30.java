@@ -22,10 +22,12 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class ConfigSpringBootApplicationWithArgsTests30 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {

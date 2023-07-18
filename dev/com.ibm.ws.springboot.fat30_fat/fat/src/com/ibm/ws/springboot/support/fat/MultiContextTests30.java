@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -31,6 +32,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class MultiContextTests30 extends AbstractSpringTests {
     private static final int CHILD1_MAIN_PORT = 8081;
     private static final int CHILD1_ACTUATOR_PORT = 9991;

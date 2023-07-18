@@ -27,9 +27,11 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class SpringSecurityTests30 extends AbstractSpringTests {
 
     @Override

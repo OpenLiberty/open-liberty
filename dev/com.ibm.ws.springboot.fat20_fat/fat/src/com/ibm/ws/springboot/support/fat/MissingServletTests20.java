@@ -36,8 +36,8 @@ public class MissingServletTests20 extends AbstractSpringTests {
     @Test
     public void testMissingServletFor20() throws Exception {
         assertNotNull("No error message CWWKC0279E was found for missing servlet feature ",
-                      server.waitForStringInLog("CWWKC0279E"));
-        stopServer(true, "CWWKC0279E", "CWWKZ0002E");
+                      server.waitForStringInLog("CWWKC0254E"));
+        stopServer(true, "CWWKC0254E", "CWWKZ0002E");
     }
 
     @Override

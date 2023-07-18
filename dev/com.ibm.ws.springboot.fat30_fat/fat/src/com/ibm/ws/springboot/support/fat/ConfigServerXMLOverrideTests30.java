@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,6 +41,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class ConfigServerXMLOverrideTests30 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {

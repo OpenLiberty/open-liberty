@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -34,6 +35,7 @@ import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class InvalidAppTests extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
 

@@ -25,12 +25,14 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
 
 @Mode(FULL)
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class GenerateWebServerPluginTests30 extends AbstractSpringTests {
 
     @After

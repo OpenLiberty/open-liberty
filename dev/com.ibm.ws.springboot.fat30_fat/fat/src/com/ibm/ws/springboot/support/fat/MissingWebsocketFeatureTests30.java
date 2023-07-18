@@ -22,11 +22,13 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class MissingWebsocketFeatureTests30 extends AbstractSpringTests {
     @Override
     public boolean expectApplicationSuccess() {

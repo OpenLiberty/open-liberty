@@ -24,10 +24,12 @@ import com.ibm.websphere.simplicity.config.KeyStore;
 import com.ibm.websphere.simplicity.config.ORB;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class JakartaFeatureTests30 extends AbstractSpringTests {
 
     /**

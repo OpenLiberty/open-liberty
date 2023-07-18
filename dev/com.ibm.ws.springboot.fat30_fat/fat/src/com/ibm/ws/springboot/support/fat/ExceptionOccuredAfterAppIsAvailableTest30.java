@@ -27,11 +27,13 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class ExceptionOccuredAfterAppIsAvailableTest30 extends AbstractSpringTests {
 
     @Override

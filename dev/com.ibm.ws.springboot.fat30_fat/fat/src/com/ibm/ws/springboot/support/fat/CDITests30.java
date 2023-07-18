@@ -26,6 +26,7 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class CDITests30 extends CommonWebServerTests {
 
     @After

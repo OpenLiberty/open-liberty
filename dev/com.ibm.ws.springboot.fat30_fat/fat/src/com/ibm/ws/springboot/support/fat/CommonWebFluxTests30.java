@@ -22,9 +22,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class CommonWebFluxTests30 extends CommonWebFluxTests {
 
     @Override

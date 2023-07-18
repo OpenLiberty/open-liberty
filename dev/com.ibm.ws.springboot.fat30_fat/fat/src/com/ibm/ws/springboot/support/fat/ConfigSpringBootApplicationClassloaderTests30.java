@@ -26,12 +26,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
 
 @Mode(FULL)
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class ConfigSpringBootApplicationClassloaderTests30 extends AbstractSpringTests {
 
     @Override

@@ -38,11 +38,9 @@ import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 
-/**
- *
- */
 public abstract class SSLCommonTests extends AbstractSpringTests {
 
     private static final String TEST_CLIENT_AUTH_NEED = "testClientAuthNeedWithClientSideKeyStore";
@@ -238,12 +236,10 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
 
     private static URL getURL(String path, LibertyServer server) throws MalformedURLException {
         return new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + path);
-
     }
 }
 
 class MyHostnameVerifier implements HostnameVerifier {
-
     @Override
     public boolean verify(String hostname, SSLSession session) {
         return true;

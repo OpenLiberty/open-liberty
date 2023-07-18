@@ -19,12 +19,14 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class UseDefaultHostTest30 extends CommonWebServerTests {
 
     @Test

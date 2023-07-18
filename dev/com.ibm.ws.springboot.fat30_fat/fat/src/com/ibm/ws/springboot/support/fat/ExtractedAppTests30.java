@@ -39,11 +39,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityScriptUtils;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class ExtractedAppTests30 extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
 

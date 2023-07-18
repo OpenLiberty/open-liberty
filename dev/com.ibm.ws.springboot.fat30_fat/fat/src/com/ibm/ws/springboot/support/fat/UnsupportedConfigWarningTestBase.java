@@ -17,9 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.custom.junit.runner.FATRunner;
-
-@RunWith(FATRunner.class)
 public abstract class UnsupportedConfigWarningTestBase extends CommonWebServerTests {
 
     @Override

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
@@ -37,6 +38,7 @@ import componenttest.topology.utils.HttpUtils;
  * Do not make this part of the FULL mode since we want to make sure
  * this tests always runs.
  */
+@MinimumJavaLevel(javaLevel = 17)
 public class PreThinnedSpringBootTests30 extends AbstractSpringTests {
 
     private String application = SPRING_BOOT_30_APP_BASE;

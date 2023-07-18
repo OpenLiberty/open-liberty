@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
@@ -37,6 +38,7 @@ import componenttest.topology.utils.HttpUtils;
  * this tests always runs.
  */
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class WarmStartTests30 extends AbstractSpringTests {
 
     @Override

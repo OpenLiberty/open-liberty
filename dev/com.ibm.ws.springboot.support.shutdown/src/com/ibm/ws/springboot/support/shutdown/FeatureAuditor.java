@@ -223,11 +223,11 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         // if ( libertyHasSpring30 ) {
         //     if ( libertyHasJavaxServlets ) {
         //         featureErrCode = "error.spring3.requires.servlet6";
-        //         // "Error: The feature servlet-6.0 (or higher) must be provisioned:
+        //         // "Error: The feature servlet-6.0 must be provisioned:
         //         // Features springBoot-3.0 and servlet-3.1 or servlet-4.0 are provisioned."
         //     } else if ( libertyHasJavaxWebsockets ) {
         //         featureErrCode = "error.spring3.requires.websocket2";
-        //         // "Error: The feature websocket-2.0 (or higher) must be provisioned:
+        //         // "Error: The feature websocket-2.0 must be provisioned:
         //         // Features springBoot-3.0 and websocket-1.0 or websocket-1.1 are provisioned."
         //     }
         //
@@ -235,11 +235,11 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         //     if ( libertyHasJakartaServlets ) {
         //         featureErrCode = "error.spring2.requires.servlet31";
         //         // "Error: The feature servlet-3.1 or servlet-4.0 must be provisioned:
-        //         // Features springBoot-1.5 or springBoot-2.0 with servlet-6.0 (or higher) are provisioned."
+        //         // Features springBoot-1.5 or springBoot-2.0 with servlet-6.0 are provisioned."
         //     } else if ( libertyHasJakartaWebsockets ) {
         //         featureErrCode = "error.spring2.requires.websocket1";
         //         // "Error: The feature websocket-1.0 or websocket-1.1 must be provisioned:
-        //         // Features springBoot-1.5 or springBoot-2.0 with websocket-2.0 (or higher) are provisioned."
+        //         // Features springBoot-1.5 or springBoot-2.0 with websocket-2.0 are provisioned."
         //     }
         // }
         //
@@ -258,39 +258,39 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             // Don't test '!libertyHasSpring30'; that may not be set.
             if ( libertyHasSpring15 || libertyHasSpring20 ) {
                 ApplicationTr.error("error.spring3.required");
-                // "CWWKC0273E: Error: Feature springBoot-3.0 (or higher) must be provisioned:
+                // "CWWKC0273E: Error: Feature springBoot-3.0 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned
                 // and the application has Spring 3.0 content."
             } else if ( appUsesServlets && !libertyHasJakartaServlets ) {
                 ApplicationTr.error("error.spring3.requires.servlet6.application");
-                // "CWWKC0274E: Error: Feature servlet-6.0 (or higher) must be provisioned:
+                // "CWWKC0274E: Error: Feature servlet-6.0 must be provisioned:
                 // Feature springBoot-3.0 is provisioned and the application uses Servlets."
             } else if ( appUsesWebsockets && !libertyHasJakartaWebsockets ) {
                 ApplicationTr.error("error.spring3.requires.websocket2.application");
-                // "CWWKC0275E: Error: Feature websocket-2.0 (or higher) must be provisioned:
+                // "CWWKC0275E: Error: Feature websocket-2.0 must be provisioned:
                 // Feature springBoot-3.0 is provisioned and the application uses WebSockets."
             }
 
         } else {
             // Don't test '!libertyHasSpring20'; that may not be set.
             if ( appHasSpring20 && (libertyHasSpring15 || libertyHasSpring30) ) {
-                ApplicationTr.error("error.spring.required", "springBoot-2.0", libertySpringFeature, "2.0");
-                // "CWWKC0278E: Error: Feature {0} must be provisioned:
+                ApplicationTr.error("error.spring.required.20", "springBoot-2.0", libertySpringFeature, "2.0");
+                // "CWWKC0253E: Error: Feature {0} must be provisioned:
                 // Feature {1} is provisioned and the application has Spring {2} content.
 
             // Don't test '!libertyHasSpring15'; that may not be set.
             } else if ( appHasSpring15 && (libertyHasSpring20 || libertyHasSpring30) ) {
-                ApplicationTr.error("error.spring.required", "springBoot-1.5", libertySpringFeature, "1.5");
-                // "CWWKC0278E: Error: Feature {0} must be provisioned:
+                ApplicationTr.error("error.spring.required.15", "springBoot-1.5", libertySpringFeature, "1.5");
+                // "CWWKC0252E: Error: Feature {0} must be provisioned:
                 // Feature {1} is provisioned and the application has Spring {2} content.
 
             } else if ( appUsesServlets && !libertyHasJavaxServlets ) {
                 ApplicationTr.error("error.spring2.requires.servlet31.application");
-                // "CWWKC0279E: Error: Feature servlet-3.1 or servlet-4.0 must be provisioned:
+                // "CWWKC0254E: Error: Feature servlet-3.1 or servlet-4.0 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses Servlets."
             } else if ( appUsesWebsockets && !libertyHasJavaxWebsockets ) {
                 ApplicationTr.error("error.spring2.requires.websocket1.application");
-                // "CWWKC0280E: Error: Feature websocket-1.0 or websocket-1.1 must be provisioned:
+                // "CWWKC0259E: Error: Feature websocket-1.0 or websocket-1.1 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses WebSockets."
             }
         }

@@ -21,10 +21,12 @@ import org.junit.AfterClass;
 
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class UnsupportedConfigWarningTest30 extends UnsupportedConfigWarningTestBase {
     @AfterClass
     public static void stopTestServer() throws Exception {

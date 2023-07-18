@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
@@ -47,6 +48,7 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MinimumJavaLevel(javaLevel = 17)
 public class NonZipExtensionFilesInBootInfLibTests30 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {

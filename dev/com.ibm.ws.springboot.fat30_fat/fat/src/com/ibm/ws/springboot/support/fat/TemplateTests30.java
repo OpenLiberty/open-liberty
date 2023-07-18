@@ -30,12 +30,14 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.utils.LibertyServerUtils;
 
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class TemplateTests30 {
     private static Bootstrap bootstrap;
     private static String installPath;

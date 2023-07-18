@@ -18,6 +18,11 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel = 17)
 public class ErrorPage30Test extends ErrorPageBaseTest {
 
     @AfterClass
