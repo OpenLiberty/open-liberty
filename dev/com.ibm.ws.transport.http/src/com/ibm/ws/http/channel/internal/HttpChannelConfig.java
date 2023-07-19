@@ -212,7 +212,7 @@ public class HttpChannelConfig {
     /** Tracks headers that have been configured erroneously **/
     private HashSet<String> configuredHeadersErrorSet = null;
 
-    private final boolean useNetty = Boolean.TRUE;
+    protected boolean useNetty = Boolean.TRUE;
 
     /**
      * Constructor for an HTTP channel config object.
@@ -230,7 +230,15 @@ public class HttpChannelConfig {
      */
 
     public HttpChannelConfig(Map<String, Object> config) {
+        System.out.println("MSP: properties set");
         parseConfig("default", config);
+    }
+
+    /**
+     *
+     */
+    public HttpChannelConfig() {
+        // TODO Auto-generated constructor stub
     }
 
     /**

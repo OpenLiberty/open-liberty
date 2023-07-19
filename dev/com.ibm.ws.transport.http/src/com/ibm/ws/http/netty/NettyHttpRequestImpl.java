@@ -206,7 +206,7 @@ public class NettyHttpRequestImpl extends HttpRequestImpl implements Http2Reques
     @Override
     public Set<String> getHeaderNamesSet() {
         //TODO: needed?
-        return null;
+        return this.nettyRequest.headers().names();
     }
 
     /*
