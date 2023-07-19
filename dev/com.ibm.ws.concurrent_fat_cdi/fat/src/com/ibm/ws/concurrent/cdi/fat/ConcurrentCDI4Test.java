@@ -21,34 +21,28 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import concurrent.cdi.web.ConcurrentCDIServlet;
 import concurrent.cdi4.web.ConcurrentCDI4Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
-public class ConcurrentCDITest extends FATServletClient {
+@MinimumJavaLevel(javaLevel = 11)
+public class ConcurrentCDI4Test extends FATServletClient {
 
-    public static final String APP_NAME = "concurrentCDIApp";
-    public static final String APP_NAME_EE10 = "concurrentCDI4App";
+    public static final String APP_NAME = "concurrentCDI4App";
 
-    @Server("concurrent_fat_cdi")
-    @TestServlets({
-                    @TestServlet(servlet = ConcurrentCDIServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = ConcurrentCDI4Servlet.class, contextRoot = APP_NAME_EE10)
-    })
+    @Server("concurrent_fat_cdi4")
+    @TestServlet(servlet = ConcurrentCDI4Servlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi.web");
-        // TODO remove concurrent.cu3.web once default resources are automatically made available via @Inject
-        ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web", "concurrent.cu3.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME,
+                                      "concurrent.cdi4.web",
+                                      "concurrent.cu3.web");
         server.startServer();
-        runTest(server, APP_NAME_EE10 + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
+        runTest(server, APP_NAME + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
     }
 
     @AfterClass
