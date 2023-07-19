@@ -47,4 +47,4 @@ src: \
   org.springframework.security:spring-security-crypto;${springSecurityCryptoVersion20}, \
   org.springframework.security:spring-security-web;${springSecurityVersion20}, \
 \
-  com.ibm.websphere.javaee.servlet.4.0
+  com.ibm.websphere.javaee.servlet.3.1
