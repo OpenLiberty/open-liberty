@@ -499,6 +499,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         System.out.println("MSP: request message impl");
         if (null == getMyRequest()) {
             if (getHttpConfig().useNetty()) {
+
                 setMyRequest(new HttpRequestMessageImpl());
                 getMyRequest().init(this);
                 System.out.println("request message netty complete");
