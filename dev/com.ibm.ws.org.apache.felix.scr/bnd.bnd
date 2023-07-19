@@ -14,15 +14,19 @@
  jar:${fileuri;${repo;org.apache.felix:org.apache.felix.scr;2.2.6;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
 
+instrument.disabled: true
+
 -includeresource: \
    OSGI-INF=resources/OSGI-INF, \
    @${repo;org.apache.felix:org.apache.felix.scr;2.2.6;EXACT}!/!META-INF/maven/*,\
    @${repo;org.osgi:org.osgi.util.function;1.1.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
    @${repo;org.osgi:org.osgi.util.promise;1.1.1;EXACT}!/!(OSGI-OPT|META-INF)/*,\
-   @${repo;org.osgi:org.osgi.service.component;1.5.0;EXACT}!/!(OSGI-OPT|META-INF)/*
+   @${repo;org.osgi:org.osgi.service.component;1.5.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
+   org/apache=${bin}/org/apache
 
 -buildpath: \
 	org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.2.6,\
 	org.osgi:org.osgi.util.function;strategy=exact;version=1.1.0,\
 	org.osgi:org.osgi.util.promise;strategy=exact;version=1.1.1,\
-        org.osgi:org.osgi.service.component;strategy=exact;version=1.5.0
+	org.osgi:org.osgi.service.component;strategy=exact;version=1.5.0,\
+	com.ibm.websphere.org.osgi.core;version=latest
