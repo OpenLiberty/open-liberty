@@ -502,6 +502,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 return null;
             }
             if (getHttpConfig().useNetty()) {
+
                 setMyRequest(new HttpRequestMessageImpl());
                 getMyRequest().init(this);
                 System.out.println("request message netty complete");
