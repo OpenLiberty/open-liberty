@@ -7,28 +7,36 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-// Liberty Change for CXF Begin - Entire class is unique to our fork, could it be contributed back? 
+// Liberty Change for CXF Begin - (Unique to Liberty's version of CXF)
 package org.apache.cxf.jaxrs.interceptor;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 class CachedTime {
 
     /** Stored formatter */
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM uuuu HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
 
-    /** Last time we formatted a value */
-    private long lastTimeCheck = 0L;
-    /** The stored formatted time as a string */
-    private String sTime = null;
+    private static final CachedTime instance = new CachedTime();
 
-    private static CachedTime instance = new CachedTime();
+    private static class CachedFormattedTime {
+        final long timeInMilliseconds;
+        final String formattedTimeString;
 
-    protected static final long DEFAULT_TOLERANCE = 1000L;
+        CachedFormattedTime(long time, String formattedString) {
+            this.timeInMilliseconds = time;
+            this.formattedTimeString = formattedString;
+        }
+    }
+
+    private final AtomicReference<CachedFormattedTime> cachedTime = new AtomicReference<>();
 
     /**
      * Create a cachedTime instance with the given format.
@@ -45,44 +53,26 @@ class CachedTime {
     }
 
     /**
-     * Utility method to determine whether to use the cached time value or
-     * update to a newly formatted timestamp.
-     * 
-     * @param tolerance
-     */
-    private void updateTime(long tolerance) {
-        long now = System.currentTimeMillis();
-        // check for exact match
-        if (now == this.lastTimeCheck) {
-            return;
-        }
-        // check for a "range" match
-        if (0L != tolerance) {
-            long range = (-1 == tolerance) ? DEFAULT_TOLERANCE : tolerance;
-            if ((now - this.lastTimeCheck) <= range) {
-                return;
-            }
-        }
-        // otherwise need to format the current time
-        sTime = dateFormatter.format(Instant.ofEpochMilli(now));
-
-        this.lastTimeCheck = now;
-    }
-
-    /**
-     * Get a formatted version of the time as a String. The input range is
-     * the allowed difference in time from the cached snapshot that the
-     * caller is willing to use. If that range is exceeded, then a new
-     * snapshot is taken and formatted.
+     * Get a formatted version of the time as a String.
      * <br>
-     * 
-     * @param tolerance -- milliseconds, -1 means use default 1000ms, a 0
-     *            means that this must be an exact match in time
+     * @param  current time in milliseconds from System.currentTimeMillis()
      * @return String
      */
-    protected synchronized String getTimeAsString(long tolerance) {
-        updateTime(tolerance);
-        return this.sTime;
+    protected String getTimeAsString(long now) {
+        // We only care about seconds, so remove the milliseconds from the time.
+        now -= (now % 1000);
+
+        CachedFormattedTime cachedFormattedTime = cachedTime.get();
+        if (cachedFormattedTime != null && now == cachedFormattedTime.timeInMilliseconds) {
+            return cachedFormattedTime.formattedTimeString;
+        }
+
+        // otherwise need to format the current time
+        String sTime = dateFormatter.format(Instant.ofEpochMilli(now));
+
+        // Only update it if another thread hasn't already updated it.
+        cachedTime.compareAndSet(cachedFormattedTime, new CachedFormattedTime(now, sTime));
+        return sTime;
     }
 }
 //Liberty Change for CXF End

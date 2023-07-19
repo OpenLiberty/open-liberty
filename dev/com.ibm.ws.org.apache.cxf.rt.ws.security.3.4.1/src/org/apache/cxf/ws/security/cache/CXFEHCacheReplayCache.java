@@ -50,10 +50,10 @@ public class CXFEHCacheReplayCache extends EHCacheReplayCache implements BusLife
      * @throws WSSecurityException 
      * 
      */
-    //Liberty Change
+    // Liberty Change Begin
     public CXFEHCacheReplayCache(String key, Bus bus, Path diskstorePath, HashMap oldconfig) throws WSSecurityException {
         super(key, diskstorePath, oldconfig);
-		// Liberty CHangte End
+        // Liberty Change End
         this.bus = bus;
         if (bus != null) {
             bus.getExtension(BusLifeCycleManager.class).registerLifeCycleListener(this);
