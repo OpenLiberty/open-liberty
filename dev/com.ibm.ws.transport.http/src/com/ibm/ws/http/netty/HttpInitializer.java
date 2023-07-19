@@ -53,6 +53,11 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
     HttpChannelConfig httpConfig;
 
+    private HttpInitializer(HttpPipelineBuilder builder) {
+        this.chain = builder.chain;
+        this.httpConfig = builder.httpConfig;
+    }
+
     public HttpInitializer(NettyChain chain) {
         this.chain = chain;
         tcpOptions = Collections.emptyMap();
@@ -64,34 +69,7 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         headers = Collections.emptyMap();
         endpointOptions = Collections.emptyMap();
 
-    }
-
-    public void with(ConfigElement config, Map<String, Object> options) {
-        switch (config) {
-            case HTTP_OPTIONS: {
-                this.httpOptions = options;
-                break;
-            }
-            default:
-                break;
-        }
-
-    }
-
-    private void initializeHttpConfig() {
-        System.out.println("Initializing http config");
-        if (httpConfig != null)
-            return;
-
-        Map<String, Object> config = new HashMap<String, Object>();
-        config.forEach(httpOptions::putIfAbsent);
-        config.forEach(remoteIp::putIfAbsent);
-        config.forEach(compression::putIfAbsent);
-        config.forEach(compression::putIfAbsent);
-        config.forEach(samesite::putIfAbsent);
-        config.forEach(headers::putIfAbsent);
-
-        httpConfig = new HttpChannelConfig(config);
+        this.httpConfig = new NettyHttpChannelConfig();
 
     }
 
@@ -116,8 +94,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
         ChannelPipeline pipeline = channel.pipeline();
 
-        initializeHttpConfig();
-
         if (chain.isHttps()) {
             // SSLEngine engine = channel.newEngine(channel.alloc());
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
@@ -128,6 +104,65 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
         pipeline.addLast(new ByteBufferCodec());
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
+    }
+
+    public static class HttpPipelineBuilder {
+
+        private final NettyChain chain;
+        private final Map<String, Object> tcpOptions;
+        private final Map<String, Object> sslOptions;
+        private Map<String, Object> httpOptions;
+        private final Map<String, Object> remoteIp;
+        private final Map<String, Object> compression;
+        private final Map<String, Object> samesite;
+        private final Map<String, Object> headers;
+        private final Map<String, Object> endpointOptions;
+
+        HttpChannelConfig httpConfig;
+
+        public HttpPipelineBuilder(NettyChain chain) {
+            this.chain = chain;
+            tcpOptions = Collections.emptyMap();
+            sslOptions = Collections.emptyMap();
+            httpOptions = Collections.emptyMap();
+            remoteIp = Collections.emptyMap();
+            compression = Collections.emptyMap();
+            samesite = Collections.emptyMap();
+            headers = Collections.emptyMap();
+            endpointOptions = Collections.emptyMap();
+
+        }
+
+        public HttpPipelineBuilder with(ConfigElement config, Map<String, Object> options) {
+            switch (config) {
+                case HTTP_OPTIONS: {
+                    this.httpOptions = options;
+                    initializeHttpConfig();
+                    break;
+                }
+                default:
+                    break;
+            }
+            return this;
+        }
+
+        private void initializeHttpConfig() {
+
+            Map<String, Object> config = new HashMap<String, Object>();
+            config.forEach(httpOptions::putIfAbsent);
+            config.forEach(remoteIp::putIfAbsent);
+            config.forEach(compression::putIfAbsent);
+            config.forEach(compression::putIfAbsent);
+            config.forEach(samesite::putIfAbsent);
+            config.forEach(headers::putIfAbsent);
+
+            httpConfig = new NettyHttpChannelConfig(config);
+        }
+
+        public HttpInitializer build() {
+
+            return new HttpInitializer(this);
+        }
     }
 
 }

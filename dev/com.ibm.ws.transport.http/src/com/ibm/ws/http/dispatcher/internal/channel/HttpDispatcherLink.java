@@ -183,12 +183,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context);
+        System.out.println("MSP: is config null?  " + config == null);
+        this.isc.setHttpConfig(config);
+
         nettyRequest = request;
         this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new NettyHttpResponseImpl(this);
         this.isc.setNettyRequest(request);
-        this.isc.setHttpConfig(config);
         this.usingNetty = true;
+
     }
 
     /*
@@ -410,8 +413,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
-
+        System.out.println("MSP: 1");
         // Make sure to initialize the response in case of an early-return-error message
+        ((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
         this.response.init(this.isc);
         linkIsReady = true;
 
@@ -424,10 +428,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             sendResponse(StatusCodes.UNAVAILABLE, null, false);
             return;
         }
-
         // Try to find a virtual host for the requested host/port..
-        VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(),
-                                                               this);
+        //VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(), this);
+        VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(null, this);
         if (vhost == null) {
             String url = this.isc.getRequest().getRequestURI();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -437,7 +440,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             send404Message(url);
             return;
         }
-
         Runnable handler = null;
         try {
             handler = vhost.discriminate(this);
@@ -1196,12 +1198,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public SSLContext getSSLContext() {
-        if (this.sslinfo == null &&
-            this.isc != null &&
-            this.isc.getSSLContext() != null) {
-            this.sslinfo = new SSLContextImpl(this.isc.getSSLContext());
+
+        if (this.usingNetty) {
+            //TODO: return null for now, connect to pipeline ssl
+            return null;
+        } else {
+            if (this.sslinfo == null &&
+                this.isc != null &&
+                this.isc.getSSLContext() != null) {
+                this.sslinfo = new SSLContextImpl(this.isc.getSSLContext());
+            }
+            return this.sslinfo;
         }
-        return this.sslinfo;
+
     }
 
     /*
@@ -1441,24 +1450,25 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public boolean isHTTP2UpgradeRequest(Map<String, String> headers, boolean checkEnabledOnly) {
-        if (!usingNetty) {
-            if (isc != null) {
-                //Returns whether HTTP/2 is enabled for this channel/port
-                if (checkEnabledOnly) {
-                    return isc.isHttp2Enabled();
-                }
-                //Check headers for HTTP/2 upgrade header
-                else {
-                    HttpInboundLink link = isc.getLink();
-                    if (link != null) {
-                        return link.isHTTP2UpgradeRequest(headers);
-                    }
-                }
+        //NO OP: H2 handled by pipeline
+        if (usingNetty)
+            return false;
+
+        if (isc != null) {
+            //Returns whether HTTP/2 is enabled for this channel/port
+            if (checkEnabledOnly) {
+                return isc.isHttp2Enabled();
             }
-        } else {
-            //TODO: Netty Upgrade Handler
+        }
+        //Check headers for HTTP/2 upgrade header
+        else {
+            HttpInboundLink link = isc.getLink();
+            if (link != null) {
+                return link.isHTTP2UpgradeRequest(headers);
+            }
         }
         return false;
+
     }
 
     /**
