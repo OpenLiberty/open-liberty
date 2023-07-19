@@ -2118,18 +2118,8 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpg-jdk15on</artifactId>
-      <version>1.69</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
       <version>1.75</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.69</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -2138,18 +2128,8 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.69</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
       <version>1.75</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcutil-jdk15on</artifactId>
-      <version>1.69</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -4125,11 +4105,6 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
       <version>1.18.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>mongodb</artifactId>
-      <version>1.17.4</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
