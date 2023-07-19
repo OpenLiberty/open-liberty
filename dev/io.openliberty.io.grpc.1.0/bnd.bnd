@@ -16,7 +16,7 @@
 -sub: *.bnd
 
 bVersion=1.0
-grpcVersion=1.56.0
+grpcVersion=1.56.1
 
 Import-Package: \
   *

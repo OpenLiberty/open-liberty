@@ -14,7 +14,7 @@
 bVersion=1.0
 
 nettyVersion=4.1.94
-grpcVersion=1.56.0
+grpcVersion=1.56.1
 
 src: \
     fat/src,\
