@@ -29,10 +29,18 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 
 public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArchive {
 
-    private static final TraceComponent tc = Tr.register(ExtensionArchiveImpl.class);
+    protected static final TraceComponent tc = Tr.register(ExtensionArchiveImpl.class);
 
     private final ExtensionContainerInfo extensionContainerInfo;
     private Set<String> spiExtensions = null;
+
+    //Store these seperately so we don't try to make regular extensions out of them.
+    private Set<String> spiBuildCompatibleExtensions = new HashSet<String>();
+    
+    //Extensions we cannot store as classnames for some reason.
+    //Currently should only ever contain a org.jboss.weld.lite.extension.translator.LiteExtensionTranslator
+    //Because LiteExtensionTranslator contain vital state in the object (namely the BCEs it translates) that is not part of the class itself.
+    private Set<Supplier<Extension>> extraSPIExtensionSuppliers = new HashSet<Supplier<Extension>>();
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
                                 RuntimeFactory factory, Set<String> spiExtensions) throws CDIException {
@@ -70,6 +78,7 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
     public Set<String> getExtensionClasses() {
         Set<String> extensionClasses = super.getExtensionClasses();
         extensionClasses.addAll(spiExtensions);
+        extensionClasses.addAll(spiBuildCompatibleExtensions);
         return extensionClasses;
     }
 
@@ -97,6 +106,15 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
                 }
             });
         }
+
+        result.addAll(extraSPIExtensionSuppliers);
+
         return result;
+    }
+
+    @Override
+    public void addLiteExtensionTranslator(Extension liteExtensionTranslator, Set<String> buildCompatibleExtensionClassNames) {
+        extraSPIExtensionSuppliers.add(() -> {return liteExtensionTranslator;});
+        spiBuildCompatibleExtensions.addAll(buildCompatibleExtensionClassNames);
     }
 }

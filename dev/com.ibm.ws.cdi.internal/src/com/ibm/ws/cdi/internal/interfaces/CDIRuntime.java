@@ -14,6 +14,7 @@ package com.ibm.ws.cdi.internal.interfaces;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -127,7 +128,6 @@ public interface CDIRuntime extends CDIService {
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
                                                          Set<String> extraExtensionClasses) throws CDIException;
-
     /**
      * @return
      */

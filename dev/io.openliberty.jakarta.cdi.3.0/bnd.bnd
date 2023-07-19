@@ -16,6 +16,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.cdi.3.0; singleton:=true
 
+-dsannotations: CDI30ExtensionSPIProvider.java
+
 Export-Package: jakarta.decorator; version=3.0, \
  jakarta.enterprise.context; version=3.0, \
  jakarta.enterprise.context.control; version=3.0, \
@@ -61,4 +63,7 @@ publish.wlp.jar.suffix: dev/api/spec
 	jakarta.inject:jakarta.inject-api;version=2.0.1;strategy=exact,\
 	jakarta.enterprise:jakarta.enterprise.cdi-api;version=3.0.1;strategy=exact,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.cdi.internal.jakarta,\
+	com.ibm.ws.cdi.interfaces.jakarta,\
+	com.ibm.ws.container.service;version=latest,\
 	org.eclipse.osgi

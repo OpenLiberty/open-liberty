@@ -32,7 +32,8 @@ Bundle-Description:cdi 4.0 weld impl, version ${bVersion}
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
-                com.ibm.ws.cdi.proxy
+                com.ibm.ws.cdi.proxy, \
+                io.openliberty.cdi40.internal.archive.liberty
 
 Import-Package: com.ibm.ws.cdi.internal.resources, \
                 *
@@ -51,6 +52,7 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	org.eclipse.osgi,\
 	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.cdi.4.0.interfaces,\
 	io.openliberty.org.jboss.weld5,\
 	com.ibm.ws.cdi.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta,\

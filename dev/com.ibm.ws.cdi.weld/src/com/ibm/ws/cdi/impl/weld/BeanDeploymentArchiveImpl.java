@@ -77,8 +77,6 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 /**
  * The implementation of Weld spi BeanDeploymentArchive to represent a CDI bean
  * archive.
- *
- *
  */
 public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive {
 
