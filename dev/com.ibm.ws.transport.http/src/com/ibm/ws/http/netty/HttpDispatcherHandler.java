@@ -25,7 +25,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     HttpChannelConfig config;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
-        this.config = config;
+
+        this.config = (config != null) ? config : new NettyHttpChannelConfig();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
         link = new HttpDispatcherLink();
         link.init(context, request, config);
-
+        link.ready();
     }
 
 }

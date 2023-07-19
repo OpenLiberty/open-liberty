@@ -233,7 +233,15 @@ public class HttpChannelConfig {
      */
 
     public HttpChannelConfig(Map<String, Object> config) {
+        System.out.println("MSP: properties set");
         parseConfig("default", config);
+    }
+
+    /**
+     *
+     */
+    public HttpChannelConfig() {
+        // TODO Auto-generated constructor stub
     }
 
     /**

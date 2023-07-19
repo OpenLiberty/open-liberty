@@ -15,6 +15,7 @@ package com.ibm.ws.http.channel.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -982,6 +983,21 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "init");
         }
+    }
+
+    public void init(ChannelHandlerContext context) {
+        this.setNettyContext(context);
+        InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
+        InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
+
+        setLocalPort(local.getPort());
+        setRemotePort(remote.getPort());
+        setLocalAddr(local.getAddress());
+        setRemoteAddr(remote.getAddress());
+
+        this.myReadTimeout = getHttpConfig().getReadTimeout();
+        this.myWriteTimeout = getHttpConfig().getWriteTimeout();
+
     }
 
     public void reinit(TCPConnectionContext tcc) {
@@ -2687,6 +2703,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Preparing to send message");
         }
 
+        System.out.println("MSP prepareOutgoing");
+
         WsByteBuffer[] buffers = wsbb;
         this.writingHeaders = false;
         if (!getHttpConfig().useNetty()) {
@@ -2737,6 +2755,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         msg.commitTransferEncoding();
                     }
                 } else {
+                    System.out.println("MSP set netty CL");
                     HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
                 }
             }
@@ -2836,6 +2855,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
         if (isOutgoingBodyValid()) {
+
+            System.out.println("MSP send full outgoing 1");
             HttpInboundServiceContextImpl hisc = null;
             boolean needH2EOS = true;
             HttpInboundLink link = ((HttpInboundServiceContextImpl) this).getLink();
@@ -2855,6 +2876,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     hisc = (HttpInboundServiceContextImpl) this;
                 }
             }
+            System.out.println("MSP send full outgoing 2");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && hisc != null && hisc.getLink() != null) {
                 Tr.debug(tc, "sendFullOutgoing : " + hisc + ", " + hisc.getLink().toString());
@@ -2885,6 +2907,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
             } else if (msg.isChunkedEncodingSet()) {
+                System.out.println("MSP send full outgoing 3");
                 HttpInboundServiceContextImpl localHisc = null;
                 if (this instanceof HttpInboundServiceContextImpl) {
                     localHisc = (HttpInboundServiceContextImpl) this;
@@ -2899,6 +2922,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         }
+        System.out.println("MSP send full outgoing 4");
         setMessageSent();
         synchWrite();
     }
@@ -3165,6 +3189,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
+
+            System.out.println("MSP attempting write");
 
             if (myChannelConfig.useNetty()) {
                 this.nettyContext.channel().write(this.nettyResponse);
@@ -3535,6 +3561,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return HttpChannelConfig
      */
     final public HttpChannelConfig getHttpConfig() {
+        System.out.println("Null? " + this.myChannelConfig == null);
+        if (this.myChannelConfig == null) {
+            this.myChannelConfig = new HttpChannelConfig();
+        }
+
         return this.myChannelConfig;
     }
 

@@ -202,7 +202,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         nettyRequest = request;
         this.isc.setNettyRequest(request);
-        this.isc.setHttpConfig(config);
         this.usingNetty = true;
 
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
