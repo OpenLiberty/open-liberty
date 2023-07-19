@@ -113,7 +113,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpInboundServiceContextImpl(ChannelHandlerContext context) {
         super();
         nettyContext = context;
-        super.setNettyContext(context);
+
+        super.init(context);
     }
 
     /**
@@ -495,10 +496,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return HttpRequestMessageImpl
      */
     protected HttpRequestMessageImpl getRequestImpl() {
+        System.out.println("MSP: request message impl");
         if (null == getMyRequest()) {
             if (getHttpConfig().useNetty()) {
                 setMyRequest(new HttpRequestMessageImpl());
                 getMyRequest().init(this);
+                System.out.println("request message netty complete");
             } else {
                 setMyRequest(getObjectFactory().getRequest(this));
                 getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
@@ -952,7 +955,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body)");
         }
-        if (getHttpConfig().useNetty() && !headersParsed()) {
+        if (!getHttpConfig().useNetty() && !headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
             // above)
@@ -2053,7 +2056,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "initForwardedValues");
         }
-        forwardedHeaderInitialized = true;
+
+        if (this.nettyContext != null) {
+            nettyInitForwardedValues();
+        } else {
+            legacyInitForwardedValues();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "initForwardedValues");
+        }
+
+    }
+
+    private void legacyInitForwardedValues() {
         //Obtain the Regular Expression either from the configuration or default
         Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
         Matcher matcher = null;
@@ -2063,15 +2079,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "Verifying connected endpoint matches proxy regex");
         }
 
-        String remoteIp = (this.nettyContext != null) ? nettyContext.channel().remoteAddress().toString() : getTSC().getRemoteAddress().getHostAddress();
+        String remoteIp = getTSC().getRemoteAddress().getHostAddress();
 
         matcher = pattern.matcher(remoteIp);
         if (matcher.matches()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
             }
-            //if so, fetch the forwardedForList() from the base message
+            //fetch from the legacy base message
             String[] forwardedForList = this.getMessageBeingParsed().getForwardedForList();
+
             if (forwardedForList == null || forwardedForList.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
@@ -2119,16 +2136,82 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
             }
 
-            if (this.nettyContext == null) {
-
-                this.forwardedRemoteAddress = forwardedForList[0];
-                this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
-                this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
-            }
+            this.forwardedRemoteAddress = forwardedForList[0];
+            this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
+            this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
 
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.exit(tc, "initForwardedValues");
+    }
+
+    private void nettyInitForwardedValues() {
+        //Obtain the Regular Expression either from the configuration or default
+        Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
+        Matcher matcher = null;
+
+        System.out.println("MSP: netty forwarded start");
+
+        String remoteIp = nettyContext.channel().remoteAddress().toString();
+
+        System.out.println("MSP: remote IP");
+
+        matcher = pattern.matcher(remoteIp);
+        if (matcher.matches()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
+            }
+
+            String[] forwardedForList = null;//netty message getForwardedForList();
+            if (forwardedForList == null || forwardedForList.length == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+            for (int i = forwardedForList.length - 1; i > 0; i--) {
+                matcher = pattern.matcher(forwardedForList[i]);
+                if (!matcher.matches()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found address not defined in proxy regex, forwarded values will not be used");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+            }
+            //if we get to the end, set the forwarded fields with correct values
+
+            //First check that the last node identifier is not an obfuscated address or
+            //unknown token
+            if (forwardedForList[0] == null || "unknown".equals(forwardedForList[0]) || forwardedForList[0].startsWith("_")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Client address is unknown or obfuscated, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+
+            //Check if a port was included
+            if (this.getMessageBeingParsed().getForwardedPort() != null) {
+                //If this port does not resolve to an integer, because it is obfuscated,
+                //malformed, or otherwise, then the address cannot be verified as being
+                //the client. If so, exit now.
+                try {
+                    this.forwardedRemotePort = Integer.parseInt(getMessageBeingParsed().getForwardedPort());
+                } catch (NumberFormatException e) {
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Remote port provided was either obfuscated or malformed, forwarded values will not be used.");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+
+            }
+
+            this.forwardedRemoteAddress = forwardedForList[0];
+            this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
+            this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+
         }
 
     }

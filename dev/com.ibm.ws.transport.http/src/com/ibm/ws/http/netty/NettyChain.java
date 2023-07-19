@@ -154,6 +154,8 @@ public class NettyChain extends HttpChain {
     @Override
     public synchronized void update(String resolvedHostName) {
 
+        System.out.println("MSP: updating chain: " + resolvedHostName);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "update chain " + this);
         }
@@ -473,22 +475,24 @@ public class NettyChain extends HttpChain {
     public void startNettyChannel() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(this, tc, "starting netty channel ");
-        }
 
+        }
+        System.out.println("MSP: start netty channel");
         EndPointInfo info = this.endpointMgr.getEndPoint(this.endpointName);
         info = this.endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
 
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
-            HttpInitializer httpPipeline = new HttpInitializer(this);
-            httpPipeline.with(ConfigElement.HTTP_OPTIONS, this.owner.getHttpOptions());
+            HttpInitializer httpPipeline = new HttpInitializer.HttpPipelineBuilder(this)
+                                .with(ConfigElement.HTTP_OPTIONS, this.owner.getHttpOptions())
+                                .build();
 
             if (isHttps) {
 
             }
 
-            bootstrap.childHandler(new HttpInitializer(this));
+            bootstrap.childHandler(httpPipeline);
             NettyChain parent = this;
 
             nettyFramework.start(bootstrap, info.getHost(), info.getPort(), f -> {
