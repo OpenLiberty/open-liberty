@@ -103,6 +103,9 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(new ChunkedWriteHandler());
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
         pipeline.addLast(new ByteBufferCodec());
+        if (httpConfig.useForwardingHeaders()) {
+            pipeline.addLast(new RemoteIpHandler(httpConfig));
+        }
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
     }
 
@@ -151,7 +154,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
             Map<String, Object> config = new HashMap<String, Object>();
             config.forEach(httpOptions::putIfAbsent);
             config.forEach(remoteIp::putIfAbsent);
-            config.forEach(compression::putIfAbsent);
             config.forEach(compression::putIfAbsent);
             config.forEach(samesite::putIfAbsent);
             config.forEach(headers::putIfAbsent);
