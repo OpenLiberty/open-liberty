@@ -3,13 +3,11 @@
 
     <!-- Enable features -->
     <featureManager>
+        <feature>springBoot-3.0</feature>
         <feature>servlet-6.0</feature>
         <feature>pages-3.1</feature>
         <feature>webSocket-2.1</feature>
-
         <feature>transportSecurity-1.0</feature>
-
-        <feature>springBoot-3.0</feature>
     </featureManager>
 
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
