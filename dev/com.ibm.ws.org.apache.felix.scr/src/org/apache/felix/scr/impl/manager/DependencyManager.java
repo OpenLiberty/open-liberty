@@ -957,8 +957,8 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
             {
                 boolean invokedUnbind = false;
                 m_componentManager.invokeBindMethod(DependencyManager.this,
-                    bindingRefPair, trackingCount);
-                if (!bindingRefPair.isFailed())
+                    refPair, trackingCount);
+                if (!refPair.isFailed())
                 {
                     if (current != null)
                     {
@@ -971,7 +971,7 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
                 else if (cardinalitySatisfied(0))
                 {
                     m_componentManager.registerMissingDependency(DependencyManager.this,
-                        bindingRefPair.getRef(), trackingCount);
+                        refPair.getRef(), trackingCount);
                 }
                 RefPair<S, T> next = null;
                 synchronized (monitor)
@@ -1210,9 +1210,10 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
                 synchronized (monitor)
                 {
                     trackingCount.set(this.trackingCount);
-                    return currentRefPair == null
+                    RefPair<S, T> current = bindingRefPair != null ? bindingRefPair : currentRefPair;
+                    return current == null
                         ? Collections.<RefPair<S, T>> emptyList()
-                        : Collections.singleton(currentRefPair);
+                        : Collections.singleton(current);
                 }
             }
             else
