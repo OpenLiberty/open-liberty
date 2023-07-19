@@ -21,6 +21,7 @@ Bundle-Description: Liberty gRPC Client security, version ${bVersion}
 
 Import-Package: \
   io.grpc.netty; version="[1.43.0, 11)",\
+  !com.google.errorprone.*,\
   *
  
 Export-Package: \

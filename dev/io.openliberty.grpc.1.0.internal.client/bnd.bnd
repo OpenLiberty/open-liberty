@@ -38,6 +38,7 @@ Import-Package: \
   !reactor.blockhound.*,\
   !sun.*,\
   javax.annotation;version=!,\
+  !com.google.errorprone.*,\
   *
 
 Export-Package: \
