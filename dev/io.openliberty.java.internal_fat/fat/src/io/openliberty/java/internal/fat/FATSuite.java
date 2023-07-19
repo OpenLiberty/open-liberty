@@ -27,6 +27,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Java18TestJava2SecurityDisabled.class,
                 Java19Test.class,
                 Java20Test.class,
+                Java21Test.class,
                 JavaIllegalAccessTest.class,
                 AlwaysPassesTest.class
 })
