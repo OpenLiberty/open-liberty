@@ -126,6 +126,7 @@ public class OptimizedTagGenerator extends BaseTagGenerator implements TagGenera
 
                 if (genTagInMethod) {
                     tagStartWriter.println("try {");
+                    persistentData.put("tryBlockStarted" , Boolean.TRUE);
                 }
 
                 tagStartWriter.print("_jspx_iaHelper.doPostConstruct(");

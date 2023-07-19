@@ -108,6 +108,7 @@ public class ClassicTagGenerator extends BaseTagGenerator {
 
                 if (genTagInMethod) {
                     tagStartWriter.println("try {");
+                    persistentData.put("tryBlockStarted" , Boolean.TRUE);
                 }
 
                 tagStartWriter.print("_jspx_iaHelper.doPostConstruct(");

@@ -574,9 +574,17 @@ public class CustomTagGenerator extends CodeGeneratorBase {
         if (genTagInMethod) {
             if (methodNesting > 0) {
                 methodWriter.println("return false;");
-                if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool()) && !jspOptions.isDisableResourceInjection()) {
+                Boolean tryBlockStart =  ((Boolean) persistentData.get("tryBlockStarted")) == Boolean.TRUE;
+                System.out.println(tryBlockStart);
+                Boolean tagPoolNotUsed = !(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool());
+                if ((tagPoolNotUsed || tryBlockStart) && !jspOptions.isDisableResourceInjection()) {
                     methodWriter.println("} finally {");
-                    methodWriter.println("cleanupCDITagManagedObject(" + tagHandlerVar + ");");
+                    if(tryBlockStart){
+                        methodWriter.println("_jspx_iaHelper.doPreDestroy("+ tagHandlerVar +");");
+                        methodWriter.println("_jspx_iaHelper.cleanUpTagHandlerFromCdiMap("+ tagHandlerVar +");");
+                    } else {
+                        methodWriter.println("cleanupCDITagManagedObject(" + tagHandlerVar + ");");
+                    }
                     methodWriter.println("}");
                 }
             }
