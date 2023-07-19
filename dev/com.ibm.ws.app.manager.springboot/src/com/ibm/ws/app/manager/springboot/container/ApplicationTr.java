@@ -20,7 +20,8 @@ public class ApplicationTr {
 
     public enum Type {
         ERROR_INVALID_PACKAGED_LIBERTY_JAR("error.invalid.packaged.liberty.jar"),
-        ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR("error.application.not.found.inside.packaged.liberty.jar");
+        ERROR_APP_NOT_FOUND_INSIDE_PACKAGED_LIBERTY_JAR("error.application.not.found.inside.packaged.liberty.jar"),
+        ERROR_UNSUPPORTED_SPRING_BOOT_VERSION("error.wrong.spring.boot.version");
 
         private final String msgKey;
 
