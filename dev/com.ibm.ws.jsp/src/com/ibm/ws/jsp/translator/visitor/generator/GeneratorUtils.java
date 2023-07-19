@@ -590,13 +590,21 @@ public class GeneratorUtils {
     /*
      * Following three methods were added for PH49514
      */
-    public static void generateLastManagedObjectVariable(JavaCodeWriter writer) {
-        writer.println("java.util.ArrayList<Object> _jspMangedObjectList = new java.util.ArrayList<Object>();");
+    public static void generateLastManagedObjectVariable(JavaCodeWriter writer, int sourceLevel) {
+        if(sourceLevel < 15){
+            writer.println("java.util.ArrayList _jspMangedObjectList = new java.util.ArrayList();");
+        } else {
+            writer.println("java.util.ArrayList<Object> _jspMangedObjectList = new java.util.ArrayList<Object>();");
+        }
         writer.println();
     }
 
-    public static void generate_process_jspMangedObjectList(JavaCodeWriter writer, boolean isDisableResourceInjection) {
-        writer.println("public void _process_jspMangedObjectList(java.util.ArrayList<Object> jspMangedObjectList) {");
+    public static void generate_process_jspMangedObjectList(JavaCodeWriter writer, boolean isDisableResourceInjection, int sourceLevel) {
+        if(sourceLevel < 15){
+                writer.println("public void _process_jspMangedObjectList(java.util.ArrayList jspMangedObjectList) {");
+        } else {
+            writer.println("public void _process_jspMangedObjectList(java.util.ArrayList<Object> jspMangedObjectList) {");
+        }
         writer.println("if(!jspMangedObjectList.isEmpty()) {");
         writer.println("for(int i = 0; i < jspMangedObjectList.size(); i++ ) {");
         if (!isDisableResourceInjection) {

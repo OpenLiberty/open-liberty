@@ -319,7 +319,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
         }
 
         if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
-            GeneratorUtils.generate_process_jspMangedObjectList(writer, jspOptions.isDisableResourceInjection());
+            GeneratorUtils.generate_process_jspMangedObjectList(writer, jspOptions.isDisableResourceInjection(), jspOptions.getJdkSourceLevel());
         }
 
         // PK81147 end
@@ -376,7 +376,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("PageContext pageContext = null;");
 
         if (!jspOptions.isDisableResourceInjection()) {
-            GeneratorUtils.generateLastManagedObjectVariable(writer);
+            GeneratorUtils.generateLastManagedObjectVariable(writer, jspOptions.getJdkSourceLevel());
         }
 
         if (genSessionVariable)
