@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ package com.ibm.ws.config.xml.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -373,6 +374,74 @@ public class XMLConfigParser {
 
         if (locationService != null) {
             String location = includeAttributeValue;
+            WsResource includeResource = null;
+            try {
+                includeResource = resolveInclude(location, docLocation, locationService);
+            } catch (MalformedLocationException mle) {
+                // We're going to handle this after the null check below, so we don't need to handle it immediately.
+            }
+            if (includeResource != null) {
+                // Don't add directory to includes, just it's contents
+                if (!includeResource.isType(WsResource.Type.DIRECTORY)) {
+                    includes.add(includeResource);
+                }
+                if (includeResource.exists() &&
+                    ((includeResource.isType(WsResource.Type.FILE) || (includeResource.isType(WsResource.Type.REMOTE))))) {
+
+                    if (includeResource.isType(WsResource.Type.FILE)) {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.asFile());
+                    } else {
+                        Tr.audit(tc, "audit.include.being.processed", includeResource.toExternalURI());
+                    }
+
+                    parseIncludeConfiguration(includeResource, configuration, mergeBehavior);
+                    return;
+
+                } else if (includeResource.exists() &&
+                           ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
+                    Iterator<String> children = includeResource.getChildren();
+                    while (children.hasNext()) {
+                        parseIncludeDir(parser, docLocation, children.next(), includes, configuration);
+                    }
+
+                } else {
+                    if (!optionalImport) {
+                        logError("error.cannot.read.location", resolvePath(location));
+                        throw new ConfigParserTolerableException();
+                    }
+                }
+            } else {
+                if (optionalImport) {
+                    Tr.warning(tc, "warn.cannot.resolve.optional.include", resolvePath(location));
+                    configuration = null;
+                } else {
+                    logError("error.cannot.read.location", resolvePath(location));
+                    throw new ConfigParserTolerableException();
+                }
+            }
+        } else {
+            throw new ConfigParserException("LocationService is not available");
+        }
+    }
+
+    private void parseIncludeDir(DepthAwareXMLStreamReader parser, String docLocation, String dirChild,
+                                 List<WsResource> includes,
+                                 BaseConfiguration configuration) throws ConfigParserException, ConfigParserTolerableException, ConfigValidationException {
+        String behaviorAttribute = getAttributeValue(parser, BEHAVIOR_ATTRIBUTE);
+        MergeBehavior mergeBehavior = behaviorAttribute == null ? behaviorStack.getLast() : getMergeBehavior(behaviorAttribute);
+
+        String optionalAttributeValue = getAttributeValue(parser, "optional");
+        boolean optionalImport = (optionalAttributeValue != null && "true".equalsIgnoreCase(optionalAttributeValue));
+
+        String includeAttributeValue = getAttributeValue(parser, "location");
+        if (includeAttributeValue == null) {
+            Location l = parser.getLocation();
+            logError("error.include.location.not.specified", l.getLineNumber(), l.getSystemId());
+            throw new ConfigParserTolerableException();
+        }
+
+        if (locationService != null) {
+            String location = includeAttributeValue + dirChild; // There's a better/safer way to do this I just can't think of it right now
             WsResource includeResource = null;
             try {
                 includeResource = resolveInclude(location, docLocation, locationService);
