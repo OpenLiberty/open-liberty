@@ -45,40 +45,40 @@ warning.could.not.thin.application.useraction=Attempt to resolve the issue in th
 #0: The required spring feature.
 #1: The current spring feature.
 #2: The version of spring content found in the application.
-error.spring.required.15=CWWKC0252E: Error: Feature {0} must be provisioned: Feature {1} is provisioned and the application has Spring {2} content.
-error.spring.required.15.explanation=The Spring Boot feature is not compatible with application content.
-error.spring.required.15.useraction=Change the Spring Boot feature to be compatible with application content.
+error.spring.required.15=CWWKC0252E: The {0} feature must be configured in the server.xml file. The {1} feature  is configured and the application has Spring {2} content.
+error.spring.required.15.explanation=The currently configured Spring Boot feature is not compatible with application content.
+error.spring.required.15.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #UPDATED for SpringBoot 3.0:
 #error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
-#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
 #error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
 
 #0: The required spring feature.
 #1: The current spring feature.
 #2: The version of spring content found in the application.
-error.spring.required.20=CWWKC0253E: Error: Feature {0} must be provisioned: Feature {1} is provisioned and the application has Spring {2} content.
-error.spring.required.20.explanation=The Spring Boot feature is not compatible with application content.
-error.spring.required.20.useraction=Change the Spring Boot feature to be compatible with application content.
+error.spring.required.20=CWWKC0253E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring {2} content.
+error.spring.required.20.explanation=The currently configured Spring Boot feature is not compatible with application content.
+error.spring.required.20.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Error: Feature springBoot-3.0 must be provisioned: Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application has Spring 3.0 content.
-error.spring3.required.explanation=The Spring Boot feature is not compatible with application content.
-error.spring3.required.useraction=Change the Spring Boot feature to be compatible with application content.
+error.spring3.required=CWWKC0273E: Feature springBoot-3.0 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application has Spring 3.0 content.
+error.spring3.required.explanation=The currently configured Spring Boot feature is not compatible with application content.
+error.spring3.required.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #UPDATED for SpringBoot 3.0:
 #error.missing.servlet=CWWKC0254E: The application failed to start because it requires a servlet feature to be configured in the server.xml file.
 #error.missing.servlet.explanation=The application is a web application, and it requires a servlet feature to be configured in the server.xml file.
 #error.missing.servlet.useraction=Configure a servlet feature in the server.xml file.
 
-error.spring2.requires.servlet31.application=CWWKC0254E: Error: Feature servlet-3.1 or servlet-4.0 must be provisioned: Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses Servlets.
-error.spring2.requires.servlet31.application.explanation=The application uses Servlets but a Servlet feature is not provisioned.
-error.spring2.requires.servlet31.application.useraction=Add one of the indicated Servlet features.
+error.spring2.requires.servlet31.application=CWWKC0254E: Feature servlet-3.1 or servlet-4.0 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses Servlets.
+error.spring2.requires.servlet31.application.explanation=The application uses Servlets but a Servlet feature is not configured.
+error.spring2.requires.servlet31.application.useraction=Configure one of the indicated Servlet features.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.requires.servlet6.application=CWWKC0274E: Error: Feature servlet-6.0 must be provisioned: Feature springBoot-3.0 is provisioned and the application uses Servlets.
-error.spring3.requires.servlet6.application.explanation=The application uses Servlets but a Servlet feature is not provisioned.
-error.spring3.requires.servlet6.application.useraction=Add the indicated Servlet feature.
+error.spring3.requires.servlet6.application=CWWKC0274E: Feature servlet-6.0 must be configured: Feature springBoot-3.0 is configured and the application uses Servlets.
+error.spring3.requires.servlet6.application.explanation=The application uses Servlets but a Servlet feature is not configured.
+error.spring3.requires.servlet6.application.useraction=Configure the indicated Servlet feature.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
 error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
@@ -101,14 +101,14 @@ error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the 
 #error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
 #error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
 
-error.spring2.requires.websocket1.application=CWWKC0259E: Error: Feature websocket-1.0 or websocket-1.1 must be provisioned: Feature springBoot-1.5 or springBoot-2.0 is provisioned and the application uses WebSockets.
-error.spring2.requires.websocket1.application.explanation=The application uses Web Sockets but a Web Socket feature is not provisioned.
-error.spring2.requires.websocket1.application.useraction=Add one of the indicated Web Socket feature.
+error.spring2.requires.websocket1.application=CWWKC0259E: Feature websocket-1.0 or websocket-1.1 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses WebSockets.
+error.spring2.requires.websocket1.application.explanation=The application uses Web Sockets but a Web Socket feature is not configured.
+error.spring2.requires.websocket1.application.useraction=Configure one of the indicated Web Socket features.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.requires.websocket2.application=CWWKC0275E: Error: Feature websocket-2.0 must be provisioned: Feature springBoot-3.0 is provisioned and the application uses WebSockets.
-error.spring3.requires.websocket2.application.explanation=The application uses Web Sockets but a Web Socket feature is not provisioned.
-error.spring3.requires.websocket2.application.useraction=Add the indicated Web Socket feature.
+error.spring3.requires.websocket2.application=CWWKC0275E: Feature websocket-2.0 must be configured: Feature springBoot-3.0 is configured and the application uses WebSockets.
+error.spring3.requires.websocket2.application.explanation=The application uses Web Sockets but a Web Socket feature is not configured.
+error.spring3.requires.websocket2.application.useraction=Configure the indicated Web Socket feature.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -134,8 +134,8 @@ warning.application.started.event.timeout.useraction=If the application eventual
 #warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
 
 #0: The current Java version
-#1: The provisioned Spring Boot version.
-#2: The Java version required for the provisioned Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
 warning.unsupported.spring.java.version=CWWKC0265W: The current Java version {0} does not support Spring Boot version {1}: Java version {2} is required.
 warning.unsupported.spring.java.version.explanation=Spring Boot has specific Java version requirements.  The current Java version does not support the application Spring Boot version.
 warning.unsupported.spring.java.version.useraction=Either, change the Java version to a required version, or rebuild the application using a different Spring Boot version.
