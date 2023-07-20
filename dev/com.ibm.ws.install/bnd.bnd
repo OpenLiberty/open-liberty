@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -40,7 +40,7 @@ instrument.disabled: true
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
-	javax.json-api;strategy=exact;version=1.1.4,\
+	javax.json:javax.json-api;strategy=exact;version=1.1.4,\
 	com.ibm.ws.repository;version=latest,\
 	com.ibm.ws.repository.liberty;version=latest,\
 	com.ibm.ws.repository.resolver;version=latest,\

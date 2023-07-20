@@ -14,6 +14,11 @@ Bundle-Name: JDT Compiler
 Bundle-SymbolicName: io.openliberty.org.eclipse.jdt.core.java17
 Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.34.0: June, 2023
 
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
 Import-Package: !*
    
 Export-Package: org.eclipse.jdt.*;version=3.34.0;usage=JSP

@@ -70,14 +70,14 @@ tested.features: jaxws-2.3, \
 	com.ibm.ws.jaxws.2.3.common;version=latest,\
 	com.ibm.ws.jaxws.webcontainer,\
 	com.ibm.ws.webcontainer;version=latest,\
-    org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-core;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-management;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.5.5,\
-    org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-core;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-frontend-simple;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-management;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.5.5,\
+    org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=3.5.5,\
 	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
 	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
