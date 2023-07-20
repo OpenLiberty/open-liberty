@@ -31,11 +31,6 @@ private static final long serialVersionUID = 0L;
     return new PriceResponse();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_PriceResponse_descriptor;
@@ -50,7 +45,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
-  private volatile java.lang.Object name_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object name_ = "";
   /**
    * <code>string name = 1;</code>
    * @return The name.
@@ -88,6 +84,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PRICES_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
   private java.util.List<com.ibm.test.g3store.grpc.Price> prices_;
   /**
    * <code>repeated .Price prices = 2;</code>
@@ -248,11 +245,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.PriceResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.PriceResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -331,15 +330,15 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       name_ = "";
-
       if (pricesBuilder_ == null) {
         prices_ = java.util.Collections.emptyList();
       } else {
         prices_ = null;
         pricesBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -366,19 +365,29 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.PriceResponse buildPartial() {
       com.ibm.test.g3store.grpc.PriceResponse result = new com.ibm.test.g3store.grpc.PriceResponse(this);
-      int from_bitField0_ = bitField0_;
-      result.name_ = name_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartialRepeatedFields(com.ibm.test.g3store.grpc.PriceResponse result) {
       if (pricesBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
+        if (((bitField0_ & 0x00000002) != 0)) {
           prices_ = java.util.Collections.unmodifiableList(prices_);
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.prices_ = prices_;
       } else {
         result.prices_ = pricesBuilder_.build();
       }
-      onBuilt();
-      return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.PriceResponse result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.name_ = name_;
+      }
     }
 
     @java.lang.Override
@@ -427,13 +436,14 @@ private static final long serialVersionUID = 0L;
       if (other == com.ibm.test.g3store.grpc.PriceResponse.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (pricesBuilder_ == null) {
         if (!other.prices_.isEmpty()) {
           if (prices_.isEmpty()) {
             prices_ = other.prices_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
           } else {
             ensurePricesIsMutable();
             prices_.addAll(other.prices_);
@@ -446,7 +456,7 @@ private static final long serialVersionUID = 0L;
             pricesBuilder_.dispose();
             pricesBuilder_ = null;
             prices_ = other.prices_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000002);
             pricesBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getPricesFieldBuilder() : null;
@@ -483,7 +493,7 @@ private static final long serialVersionUID = 0L;
               break;
             case 10: {
               name_ = input.readStringRequireUtf8();
-
+              bitField0_ |= 0x00000001;
               break;
             } // case 10
             case 18: {
@@ -557,11 +567,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       name_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -570,8 +578,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearName() {
-      
       name_ = getDefaultInstance().getName();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -582,12 +590,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       name_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -595,9 +601,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<com.ibm.test.g3store.grpc.Price> prices_ =
       java.util.Collections.emptyList();
     private void ensurePricesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000002) != 0)) {
         prices_ = new java.util.ArrayList<com.ibm.test.g3store.grpc.Price>(prices_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
        }
     }
 
@@ -747,7 +753,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearPrices() {
       if (pricesBuilder_ == null) {
         prices_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
       } else {
         pricesBuilder_.clear();
@@ -824,7 +830,7 @@ private static final long serialVersionUID = 0L;
         pricesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             com.ibm.test.g3store.grpc.Price, com.ibm.test.g3store.grpc.Price.Builder, com.ibm.test.g3store.grpc.PriceOrBuilder>(
                 prices_,
-                ((bitField0_ & 0x00000001) != 0),
+                ((bitField0_ & 0x00000002) != 0),
                 getParentForChildren(),
                 isClean());
         prices_ = null;
