@@ -665,19 +665,38 @@ public class TCKUtilities {
      * @return {@code true} if we are configured to use artifactory, {@code false} if not
      */
     static boolean useArtifactory() {
-        String forceExternalString = System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY);
-        boolean forceExternal = Boolean.parseBoolean(forceExternalString);
-
+        boolean forceExternal = isArtifactoryForceExternal();
         String artifactoryServer = getArtifactoryServer();
-        boolean haveArtifactoryServer = (artifactoryServer != null && !artifactoryServer.isEmpty());
 
-        boolean useArtifactory = haveArtifactoryServer && !forceExternal;
+        boolean useArtifactory = (Objects.nonNull(artifactoryServer) && !artifactoryServer.isEmpty());
+
+        if (forceExternal && !useArtifactory) {
+            throw new IllegalStateException("Forced external artifactory usage, but no server was set");
+        }
 
         Log.info(c, "useArtifactory", "Use artifactory = " + useArtifactory + " ("
                                       + ARTIFACTORY_SERVER_KEY + "=" + artifactoryServer + ", "
-                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternalString
+                                      + ARTIFACTORY_FORCE_EXTERNAL_KEY + "=" + forceExternal
                                       + ")");
         return useArtifactory;
+    }
+
+    /**
+     * Get the flag for forcing artfiactory usage
+     *
+     * @return true if flag was true, false otherwise
+     */
+    public static boolean isArtifactoryForceExternal() {
+        return Boolean.parseBoolean(getArtifactoryForceExternal());
+    }
+
+    /**
+     * Get the flag for forcing artfiactory usage
+     *
+     * @return true if flag was true, false otherwise
+     */
+    public static String getArtifactoryForceExternal() {
+        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
     }
 
     /**
@@ -686,7 +705,7 @@ public class TCKUtilities {
      * @return the artifactory server or {@code null} if none is configured
      */
     static String getArtifactoryServer() {
-        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY);
+        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY));
     }
 
     /**
@@ -695,7 +714,7 @@ public class TCKUtilities {
      * @return the username, or {@code null} if none is configured
      */
     static String getArtifactoryUser() {
-        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY);
+        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY));
     }
 
     /**
@@ -704,7 +723,27 @@ public class TCKUtilities {
      * @return the token, or {@code null} if none is configured
      */
     static String getArtifactoryToken() {
-        return System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY);
+        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY));
+    }
+
+    /**
+     * This validates the result string from using System.getProperty().
+     * See launch.xml line 322 we first check if a property was set via a command line property
+     * If not we assume the property was set as an environment property.
+     *
+     * Which mean fat.test.artifactory.download.server could equal "${env.artifactory.download.server}"
+     *
+     * @param  result the string to validate
+     * @return        null if the string was invalid, itself otherwise.
+     */
+    static String validateStringProperty(String result) {
+        if (result == null)
+            return result;
+
+        if (result.startsWith("${"))
+            return null;
+
+        return result;
     }
 
     /**
