@@ -108,10 +108,9 @@ public class ServerConfigurationFactory {
         } catch (IllegalArgumentException e) {
             // version parsing issues; auto-FFDC here
         }
-        if (!range.includes(vActual)) {
+        if ((vActual == null) || (range == null) || !range.includes(vActual)) {
             throw new ApplicationError(Type.ERROR_UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
         }
-
     }
 
     private static void configureVirtualHost(ServerConfiguration sc, Integer port) {
