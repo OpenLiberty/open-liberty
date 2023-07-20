@@ -24,17 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceDependency;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.component.ComponentResourceContainer;
 import org.apache.myfaces.context.RequestViewContext;
@@ -239,6 +239,7 @@ public class ViewPoolProcessor
             // state saving algorithm for that.
             return false;
         }
+
         Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
         if (enableViewPool != null)
         {
@@ -259,6 +260,7 @@ public class ViewPoolProcessor
                 return true;
             }
         }
+
         return false;
     }
 
@@ -455,10 +457,10 @@ public class ViewPoolProcessor
             UIViewRoot root)
     {
         ViewPool viewPool = getViewPool(context, root);
-        if(viewPool != null)
+        if (viewPool != null)
         {
             FaceletState faceletState = (FaceletState) root.getAttributes().get(
-                                                                                ComponentSupport.FACELET_STATE_INSTANCE);
+                    ComponentSupport.FACELET_STATE_INSTANCE);
             boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
             if (!isDynamic)
             {
@@ -486,7 +488,7 @@ public class ViewPoolProcessor
             else
             {
                 ViewStructureMetadata viewStructureMetadata = viewPool.retrieveDynamicViewStructureMetadata(
-                                                                                                            context, view, faceletViewState);
+                    context, view, faceletViewState);
                 if (viewStructureMetadata != null)
                 {
                     clearTransientAndNonFaceletComponentsForDynamicView(context, view, viewStructureMetadata);
@@ -598,9 +600,9 @@ public class ViewPoolProcessor
                     // we need to check these two cases:
                     // 1. Resources relocated by facelets
                     // 2. Resources created by effect of a @ResourceDependency annotation
-                    if (fc.getId() != null && fc.getId().startsWith("javax_faces_location_"))
+                    if (fc.getId() != null && fc.getId().startsWith("jakarta_faces_location_"))
                     {
-                        String target = fc.getId().substring("javax_faces_location_".length());
+                        String target = fc.getId().substring("jakarta_faces_location_".length());
                         Map<String, List<ResourceDependency>> addedResources = 
                             viewStructureMetadata.getRequestViewMetadata().
                                 getResourceDependencyAnnotations(context);

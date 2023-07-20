@@ -24,33 +24,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.Application;
-import javax.faces.application.NavigationHandler;
-import javax.faces.application.ProjectStage;
-import javax.faces.application.ResourceDependency;
-import javax.faces.application.ViewHandler;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import javax.faces.view.StateManagementStrategy;
-import javax.faces.view.ViewDeclarationLanguage;
+import jakarta.faces.application.Application;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.application.ResourceDependency;
+import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.view.StateManagementStrategy;
+import jakarta.faces.view.ViewDeclarationLanguage;
 import org.apache.myfaces.application.StateManagerImpl;
 import org.apache.myfaces.component.ComponentResourceContainer;
+import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.context.RequestViewContext;
 import org.apache.myfaces.context.RequestViewMetadata;
-import org.apache.myfaces.lifecycle.DefaultRestoreViewSupport;
 import org.apache.myfaces.lifecycle.RestoreViewSupport;
-import org.apache.myfaces.shared.config.MyfacesConfig;
-import org.apache.myfaces.shared.util.WebConfigParamUtils;
+import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl;
 import org.apache.myfaces.view.facelets.pool.ViewPool;
 import org.apache.myfaces.view.facelets.pool.ViewPoolFactory;
 import org.apache.myfaces.view.facelets.pool.ViewEntry;
 import org.apache.myfaces.view.facelets.pool.ViewStructureMetadata;
 import org.apache.myfaces.view.facelets.pool.impl.ViewPoolFactoryImpl;
-import org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport;
-import org.apache.myfaces.view.facelets.tag.jsf.FaceletState;
+import org.apache.myfaces.view.facelets.tag.faces.ComponentSupport;
+import org.apache.myfaces.view.facelets.tag.faces.FaceletState;
 
 /**
  * This class is reponsible for all processing tasks related to the view pool.
@@ -109,14 +108,14 @@ public class ViewPoolProcessor
     /**
      * Indicates no reset should be done on this state saving
      */
-    public static final int RESET_MODE_OFF = 0;
+    public static final Integer RESET_MODE_OFF = 0;
     
     /**
      * Indicates a soft reset should be done when saveState(...) is performed,
      * which means all transient state should be cleared but the delta state 
      * should not be destroyed in the process.
      */
-    public static final int RESET_MODE_SOFT = 1;
+    public static final Integer RESET_MODE_SOFT = 1;
     
     /**
      * Indicates a hard reset should be done when saveState(...) is performed,
@@ -126,7 +125,7 @@ public class ViewPoolProcessor
      * from the tree and mark the tree as partial (requires refresh before
      * reuse).
      */
-    public static final int RESET_MODE_HARD = 2;
+    public static final Integer RESET_MODE_HARD = 2;
     
     /**
      * Param used to indicate a "deferred navigation" needs to be done. To allow the view pool to
@@ -144,13 +143,12 @@ public class ViewPoolProcessor
     public ViewPoolProcessor(FacesContext context)
     {
         viewPoolFactory = new ViewPoolFactoryImpl(context);
-        restoreViewSupport = new DefaultRestoreViewSupport(context);
+        restoreViewSupport = new RestoreViewSupport(context);
     }
     
     public static ViewPoolProcessor getInstance(FacesContext context)
     {
-        return (ViewPoolProcessor) context.getExternalContext().
-                getApplicationMap().get(INSTANCE);
+        return (ViewPoolProcessor) context.getExternalContext().getApplicationMap().get(INSTANCE);
     }
     
     /**
@@ -163,23 +161,24 @@ public class ViewPoolProcessor
     {
         if (context.isProjectStage(ProjectStage.Production))
         {
+            MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(context);
+            
             boolean initialize = true;
-            String elMode = WebConfigParamUtils.getStringInitParameter(
-                        context.getExternalContext(),
-                        FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS, 
-                            ELExpressionCacheMode.noCache.name());
-            if (!elMode.equals(ELExpressionCacheMode.alwaysRecompile.name()))
+
+            if (myfacesConfig.getELExpressionCacheMode() != ELExpressionCacheMode.alwaysRecompile)
             {
-                Logger.getLogger(ViewPoolProcessor.class.getName()).log(
-                    Level.INFO, FaceletCompositionContextImpl.INIT_PARAM_CACHE_EL_EXPRESSIONS +
-                    " web config parameter is set to \"" + ( (elMode == null) ? "none" : elMode) +
-                    "\". To enable view pooling this param"+
-                    " must be set to \"alwaysRecompile\". View Pooling disabled.");
+                Logger.getLogger(ViewPoolProcessor.class.getName()).log(Level.INFO,
+                        MyfacesConfig.CACHE_EL_EXPRESSIONS
+                                + " web config parameter is set to \""
+                                + ((myfacesConfig.getELExpressionCacheMode() == null)
+                                        ? "none" : myfacesConfig.getELExpressionCacheMode())
+                                + "\". To enable view pooling this param"
+                                + " must be set to \"alwaysRecompile\". View Pooling disabled.");
                 initialize = false;
             }
             
             long refreshPeriod = WebConfigParamUtils.getLongInitParameter(context.getExternalContext(),
-                    FaceletViewDeclarationLanguage.PARAMS_REFRESH_PERIOD,
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME,
                     FaceletViewDeclarationLanguage.DEFAULT_REFRESH_PERIOD_PRODUCTION);
 
             if (refreshPeriod != -1)
@@ -192,10 +191,10 @@ public class ViewPoolProcessor
                 initialize = false;
             }
             
-            if (MyfacesConfig.getCurrentInstance(context.getExternalContext()).isStrictJsf2FaceletsCompatibility())
+            if (myfacesConfig.isStrictJsf2FaceletsCompatibility())
             {
                 Logger.getLogger(ViewPoolProcessor.class.getName()).log(
-                    Level.INFO, MyfacesConfig.INIT_PARAM_STRICT_JSF_2_FACELETS_COMPATIBILITY +
+                    Level.INFO, MyfacesConfig.STRICT_JSF_2_FACELETS_COMPATIBILITY +
                     " web config parameter is set to \"" + "true" +
                     "\". To enable view pooling this param "+
                     " must be set to \"false\". View Pooling disabled.");
@@ -219,6 +218,7 @@ public class ViewPoolProcessor
             // state saving algorithm for that.
             return null;
         }
+
         Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
         if (enableViewPool != null && !Boolean.TRUE.equals(enableViewPool))
         {
@@ -239,26 +239,19 @@ public class ViewPoolProcessor
             // state saving algorithm for that.
             return false;
         }
+
         Boolean enableViewPool = (Boolean) root.getAttributes().get(ViewPoolProcessor.ENABLE_VIEW_POOL);
         if (enableViewPool != null)
         {
-            if (Boolean.TRUE.equals(enableViewPool))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return enableViewPool;
         }
-        else
+
+        ViewPool viewPool = getViewPool(context, root);
+        if (viewPool != null)
         {
-            ViewPool viewPool = getViewPool(context, root);
-            if (viewPool != null)
-            {
-                return true;
-            }
+            return true;
         }
+
         return false;
     }
 
@@ -345,8 +338,8 @@ public class ViewPoolProcessor
         {
             if (oldView.getFacetCount() > 0)
             {
-                List<String> facetKeys = new ArrayList<String>();
-                facetKeys.addAll(oldView.getFacets().keySet());
+                List<String> facetKeys = new ArrayList<>(oldView.getFacets().keySet());
+
                 for (String facetKey : facetKeys)
                 {
                     //context.setProcessingEvents(false);
@@ -451,14 +444,13 @@ public class ViewPoolProcessor
         }
     }
     
-    public ViewStructureMetadata retrieveViewStructureMetadata(FacesContext context,
-            UIViewRoot root)
+    public ViewStructureMetadata retrieveViewStructureMetadata(FacesContext context, UIViewRoot root)
     {
         ViewPool viewPool = getViewPool(context, root);
-        if(viewPool != null)
+        if (viewPool != null)
         {
             FaceletState faceletState = (FaceletState) root.getAttributes().get(
-                                                                                ComponentSupport.FACELET_STATE_INSTANCE);
+                    ComponentSupport.FACELET_STATE_INSTANCE);
             boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
             if (!isDynamic)
             {
@@ -486,7 +478,7 @@ public class ViewPoolProcessor
             else
             {
                 ViewStructureMetadata viewStructureMetadata = viewPool.retrieveDynamicViewStructureMetadata(
-                                                                                                            context, view, faceletViewState);
+                    context, view, faceletViewState);
                 if (viewStructureMetadata != null)
                 {
                     clearTransientAndNonFaceletComponentsForDynamicView(context, view, viewStructureMetadata);
@@ -518,7 +510,7 @@ public class ViewPoolProcessor
                 // add partial structure view to the map.
                 clearTransientAndRemoveNonResetableComponents(context, ptc, view, viewStructureMetadata);
                 int reusableCount = ptc.getCount();
-                float factor = ((float)reusableCount) / ((float)count);
+                float factor = ((float) reusableCount) / ((float) count);
                 if (factor > 0.3f)
                 {
                     viewPool.pushPartialStructureView(context, view);
@@ -527,8 +519,7 @@ public class ViewPoolProcessor
         }        
     }
     
-    protected void clearTransientAndNonFaceletComponentsForStaticView(final FacesContext context, 
-            final UIViewRoot root)
+    protected void clearTransientAndNonFaceletComponentsForStaticView(FacesContext context, UIViewRoot root)
     {
         // In a static view, clear components that are both transient and non bound to any facelet tag handler
         // is quite simple. Since the structure of the view is static, there is no need to check component resources.
@@ -598,9 +589,11 @@ public class ViewPoolProcessor
                     // we need to check these two cases:
                     // 1. Resources relocated by facelets
                     // 2. Resources created by effect of a @ResourceDependency annotation
-                    if (fc.getId() != null && fc.getId().startsWith("javax_faces_location_"))
+                    if (fc.getId() != null
+                            && fc.getId().startsWith(FaceletCompositionContextImpl.JAKARTA_FACES_LOCATION_PREFIX))
                     {
-                        String target = fc.getId().substring("javax_faces_location_".length());
+                        String target = fc.getId().substring(
+                                FaceletCompositionContextImpl.JAKARTA_FACES_LOCATION_PREFIX.length());
                         Map<String, List<ResourceDependency>> addedResources = 
                             viewStructureMetadata.getRequestViewMetadata().
                                 getResourceDependencyAnnotations(context);
@@ -625,8 +618,7 @@ public class ViewPoolProcessor
             {
                 UIComponent child = component.getChildren().get(i);
                 String id = (String) child.getAttributes().get(ComponentSupport.MARK_CREATED);
-                if (child != null && child.isTransient() &&
-                    id == null)
+                if (child != null && child.isTransient() && id == null)
                 {
                     //Remove both transient not facelets bound components
                     component.getChildren().remove(i);
@@ -651,8 +643,7 @@ public class ViewPoolProcessor
                 else
                 {
                     // Check if the component instance was created using a @ResourceDependency annotation
-                    Object[] rdk = (Object[]) child.getAttributes().get(
-                                RequestViewMetadata.RESOURCE_DEPENDENCY_KEY);
+                    Object[] rdk = (Object[]) child.getAttributes().get(RequestViewMetadata.RESOURCE_DEPENDENCY_KEY);
                     if (rdk != null)
                     {
                         boolean found = false;
@@ -767,8 +758,7 @@ public class ViewPoolProcessor
 
         try
         {
-            root.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, 
-                        ViewPoolProcessor.RESET_MODE_HARD);
+            root.getAttributes().put(ViewPoolProcessor.RESET_SAVE_STATE_MODE_KEY, ViewPoolProcessor.RESET_MODE_HARD);
             if (childCount > 0)
             {
                 for (int i = 0; i < childCount; i++)
@@ -854,7 +844,7 @@ public class ViewPoolProcessor
             {
                 UIComponent child = component.getChildren().get(i);
                 boolean containsFaceletId = child.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
-                if (child != null && child.isTransient() && !containsFaceletId)
+                if (child.isTransient() && !containsFaceletId)
                 {
                     //Transient and not bound to facelets tag, remove it!.
                     component.getChildren().remove(i);
@@ -920,7 +910,7 @@ public class ViewPoolProcessor
             {
                 UIComponent fc = itr.next();
                 boolean containsFaceletId = fc.getAttributes().containsKey(ComponentSupport.MARK_CREATED);
-                if (fc != null && fc.isTransient() && !containsFaceletId)
+                if (fc.isTransient() && !containsFaceletId)
                 {
                     //Transient and not bound to facelets tag, remove it!.
                     itr.remove();
@@ -973,8 +963,8 @@ public class ViewPoolProcessor
     
     public void processDeferredNavigation(FacesContext facesContext)
     {
-            Object[] command = (Object[]) facesContext.getAttributes().get(
-                ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION);
+        Object[] command = (Object[]) facesContext.getAttributes().get(
+            ViewPoolProcessor.INVOKE_DEFERRED_NAVIGATION);
         if (command != null)
         {
             try
@@ -1001,9 +991,6 @@ public class ViewPoolProcessor
         }
     }
     
-    private static final String SERIALIZED_VIEW_REQUEST_ATTR = 
-        StateManagerImpl.class.getName() + ".SERIALIZED_VIEW";
-
     public void disposeView(FacesContext facesContext, UIViewRoot root)
     {
         if (root == null)
@@ -1051,7 +1038,7 @@ public class ViewPoolProcessor
                     }
 
                     // Clear the calculated value from the application map
-                    facesContext.getAttributes().remove(SERIALIZED_VIEW_REQUEST_ATTR);
+                    facesContext.getAttributes().remove(StateManagerImpl.SERIALIZED_VIEW_REQUEST_ATTR);
                 }
             }
         }
@@ -1066,9 +1053,6 @@ public class ViewPoolProcessor
             count = 0;
         }
 
-        /**
-         * @return the count
-         */
         public int getCount()
         {
             return count;
@@ -1078,9 +1062,7 @@ public class ViewPoolProcessor
         {
             return count++;
         }
-        /**
-         * @param count the count to set
-         */
+
         public void setCount(int count)
         {
             this.count = count;

@@ -455,10 +455,10 @@ public class ViewPoolProcessor
             UIViewRoot root)
     {
         ViewPool viewPool = getViewPool(context, root);
-        if(viewPool != null)
+        if (viewPool != null)
         {
             FaceletState faceletState = (FaceletState) root.getAttributes().get(
-                                                                                ComponentSupport.FACELET_STATE_INSTANCE);
+                    ComponentSupport.FACELET_STATE_INSTANCE);
             boolean isDynamic = faceletState != null ? faceletState.isDynamic() : false;
             if (!isDynamic)
             {
@@ -486,7 +486,7 @@ public class ViewPoolProcessor
             else
             {
                 ViewStructureMetadata viewStructureMetadata = viewPool.retrieveDynamicViewStructureMetadata(
-                                                                                                            context, view, faceletViewState);
+                    context, view, faceletViewState);
                 if (viewStructureMetadata != null)
                 {
                     clearTransientAndNonFaceletComponentsForDynamicView(context, view, viewStructureMetadata);
