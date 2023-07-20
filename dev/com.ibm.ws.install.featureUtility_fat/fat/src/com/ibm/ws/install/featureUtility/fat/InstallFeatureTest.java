@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -31,7 +30,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
@@ -45,14 +43,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	static String localDirPath = mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc";
 
 	@ClassRule
-	public static GenericContainer<?> container = new GenericContainer<>(//
-		new ImageFromDockerfile()
-			.withDockerfileFromBuilder(
-				builder -> builder.from("python:3-alpine").run("mkdir " + cotainerFilePath)
-					.copy("./validKey.asc", cotainerFilePath + "/validKey.asc").build())
-			.withFileFromFile("./validKey.asc", new File(localDirPath), 644))
-				.withWorkingDirectory(cotainerFilePath).withExposedPorts(8080)
-				.withCommand("python", "-m", "http.server", "8080").waitingFor(Wait.forHttp("/"));
+	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
+		.withExposedPorts(8080).waitingFor(Wait.forHttp("/"));
 
 
 	@BeforeClass
