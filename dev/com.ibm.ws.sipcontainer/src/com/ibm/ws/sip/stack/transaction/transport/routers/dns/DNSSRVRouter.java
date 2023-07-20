@@ -39,6 +39,7 @@ import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.sip.stack.transaction.transport.Hop;
 import com.ibm.ws.sip.stack.transaction.transport.routers.Router;
 import com.ibm.ws.sip.stack.transaction.util.ApplicationProperties;
+import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 /**
  * @author Amirk
@@ -272,7 +273,7 @@ public class DNSSRVRouter implements Router
 		{
 			if( uriToFind.getScheme().equalsIgnoreCase("sips"))
 			{
-				transport = ListeningPointImpl.TRANSPORT_TLS;
+				transport = SipStackUtil.TLS_TRANSPORT;
 			}
 		}
 		
@@ -305,7 +306,7 @@ public class DNSSRVRouter implements Router
 		{
 			if( uriToFind.getScheme().equalsIgnoreCase( "sips" ))
 			{
-				transport = ListeningPointImpl.TRANSPORT_TLS;
+				transport = SipStackUtil.TLS_TRANSPORT;
 			}
 		}				
 	
