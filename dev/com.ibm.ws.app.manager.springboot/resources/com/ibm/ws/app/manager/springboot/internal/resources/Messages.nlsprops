@@ -45,7 +45,7 @@ warning.could.not.thin.application.useraction=Attempt to resolve the issue in th
 #0: The required spring feature.
 #1: The current spring feature.
 #2: The version of spring content found in the application.
-error.spring.required.15=CWWKC0252E: The {0} feature must be configured in the server.xml file. The {1} feature  is configured and the application has Spring {2} content.
+error.spring.required.15=CWWKC0252E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring {2} content.
 error.spring.required.15.explanation=The currently configured Spring Boot feature is not compatible with application content.
 error.spring.required.15.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
@@ -62,23 +62,23 @@ error.spring.required.20.explanation=The currently configured Spring Boot featur
 error.spring.required.20.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Feature springBoot-3.0 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application has Spring 3.0 content.
+error.spring3.required=CWWKC0273E: The springBoot-3.0 feature must be configured. The springBoot-1.5 or springBoot-2.0 feature is configured and the application has Spring 3.0 content.
 error.spring3.required.explanation=The currently configured Spring Boot feature is not compatible with application content.
 error.spring3.required.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #UPDATED for SpringBoot 3.0:
-#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a servlet feature to be configured in the server.xml file.
-#error.missing.servlet.explanation=The application is a web application, and it requires a servlet feature to be configured in the server.xml file.
-#error.missing.servlet.useraction=Configure a servlet feature in the server.xml file.
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
 
-error.spring2.requires.servlet31.application=CWWKC0254E: Feature servlet-3.1 or servlet-4.0 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses Servlets.
-error.spring2.requires.servlet31.application.explanation=The application uses Servlets but a Servlet feature is not configured.
-error.spring2.requires.servlet31.application.useraction=Configure one of the indicated Servlet features.
+error.spring2.requires.servlet31.application=CWWKC0254E: The servlet-3.1 or servlet-4.0 feature must be configured. The springBoot-1.5 or springBoot-2.0 feature is configured and the application uses Servlets.
+error.spring2.requires.servlet31.application.explanation=The application uses Servlets but no Servlet feature is configured.
+error.spring2.requires.servlet31.application.useraction=Configure one of the specified Servlet features.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.requires.servlet6.application=CWWKC0274E: Feature servlet-6.0 must be configured: Feature springBoot-3.0 is configured and the application uses Servlets.
-error.spring3.requires.servlet6.application.explanation=The application uses Servlets but a Servlet feature is not configured.
-error.spring3.requires.servlet6.application.useraction=Configure the indicated Servlet feature.
+error.spring3.requires.servlet6.application=CWWKC0274E: The servlet-6.0 feature must be configured. The springBoot-3.0 feature is configured and the application uses servlets.
+error.spring3.requires.servlet6.application.explanation=The application uses Servlets but a no Servlet feature is configured.
+error.spring3.requires.servlet6.application.useraction=Configure the specified Servlet feature.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Spring Boot application {0} cannot be started because application {1} is already active. You cannot configure multiple Spring Boot applications in the same server configuration.
 error.multiple.applications.not.allowed.explanation=Configuring multiple Spring Boot applications in the same server configuration is not supported.
@@ -98,17 +98,17 @@ error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the 
 
 #UPDATED for SpringBoot 3.0:
 #error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
-#error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
 #error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
 
-error.spring2.requires.websocket1.application=CWWKC0259E: Feature websocket-1.0 or websocket-1.1 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses WebSockets.
-error.spring2.requires.websocket1.application.explanation=The application uses Web Sockets but a Web Socket feature is not configured.
-error.spring2.requires.websocket1.application.useraction=Configure one of the indicated Web Socket features.
+error.spring2.requires.websocket1.application=CWWKC0259E: Feature websocket-1.0 or websocket-1.1 must be configured: Feature springBoot-1.5 or springBoot-2.0 is configured and the application uses Web Sockets.
+error.spring2.requires.websocket1.application.explanation=The application uses Web Sockets but no Web Socket feature is configured.
+error.spring2.requires.websocket1.application.useraction=Configure one of the specified Web Socket features.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.requires.websocket2.application=CWWKC0275E: Feature websocket-2.0 must be configured: Feature springBoot-3.0 is configured and the application uses WebSockets.
-error.spring3.requires.websocket2.application.explanation=The application uses Web Sockets but a Web Socket feature is not configured.
-error.spring3.requires.websocket2.application.useraction=Configure the indicated Web Socket feature.
+error.spring3.requires.websocket2.application=CWWKC0275E: Feature websocket-2.0 must be configured: Feature springBoot-3.0 is configured and the application uses Web Sockets.
+error.spring3.requires.websocket2.application.explanation=The application uses Web Sockets but no Web Socket feature is configured.
+error.spring3.requires.websocket2.application.useraction=Configure the specified Web Socket feature.
 
 # CWWKC0260E: GOT REMOVED
 
