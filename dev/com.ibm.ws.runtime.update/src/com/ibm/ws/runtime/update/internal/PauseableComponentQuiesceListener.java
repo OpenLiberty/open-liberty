@@ -46,12 +46,21 @@ public class PauseableComponentQuiesceListener implements ServerQuiesceListener 
         if (bundleContext != null) {
             try {
                 Collection<ServiceReference<PauseableComponent>> refs = bundleContext.getServiceReferences(PauseableComponent.class, null);
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Number of Pausable Components: " + refs.size());
+                }
                 for (ServiceReference<PauseableComponent> ref : refs) {
 
                     PauseableComponent pc = bundleContext.getService(ref);
                     if (!pc.isPaused()) {
                         try {
+                            if(tc.isDebugEnabled()){
+                                Tr.debug(tc, "Attempting to pause service: "+pc.getName());
+                            }
                             pc.pause();
+                            if(tc.isDebugEnabled()){
+                                Tr.debug(tc, "Paused service: "+pc.getName());
+                            }
                         } catch (PauseableComponentException ex) {
                             Tr.warning(tc, "warn.did.not.pause.on.shutdown", ex.getMessage());
                         }

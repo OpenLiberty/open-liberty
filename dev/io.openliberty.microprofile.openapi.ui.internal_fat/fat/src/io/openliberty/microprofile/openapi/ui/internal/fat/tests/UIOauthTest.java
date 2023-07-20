@@ -110,6 +110,7 @@ public class UIOauthTest {
 
     @After
     public void teardownTest() throws Exception {
+        driver.close();
         server.stopServer();
     }
 
@@ -117,7 +118,7 @@ public class UIOauthTest {
     public void defaultPathOAuthTest() throws Exception {
         server.addEnvVar(UI_PATH_PROPERTY,UI_PATH_VALUE);
 
-        server.startServer(false);
+        server.startServer();
 
         OAuthTest(UI_PATH_VALUE);
 
@@ -133,7 +134,7 @@ public class UIOauthTest {
 
         server.addEnvVar(UI_PATH_PROPERTY, CUSTOM_UI_PATH_VALUE);
 
-        server.startServer(false);
+        server.startServer();
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }
