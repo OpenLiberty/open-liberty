@@ -10,12 +10,13 @@
 package com.ibm.ws.http.netty;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -35,11 +36,13 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
     public enum ConfigElement {
         HTTP_OPTIONS,
         SSL_OPTIONS,
-        REMOTEIP,
+        REMOTE_IP,
         COMPRESSION,
         SAMESITE,
         HEADERS
     }
+
+    final static String REMOTE_IP_DEFAULT = "defaultRemoteIp";
 
     NettyChain chain;
     Map<String, Object> tcpOptions;
@@ -53,37 +56,31 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
     HttpChannelConfig httpConfig;
 
+    private boolean usingRemoteIp;
+
     private HttpInitializer(HttpPipelineBuilder builder) {
         this.chain = builder.chain;
         this.httpConfig = builder.httpConfig;
     }
 
-    public HttpInitializer(NettyChain chain) {
-        this.chain = chain;
-        tcpOptions = Collections.emptyMap();
-        sslOptions = Collections.emptyMap();
-        httpOptions = Collections.emptyMap();
-        remoteIp = Collections.emptyMap();
-        compression = Collections.emptyMap();
-        samesite = Collections.emptyMap();
-        headers = Collections.emptyMap();
-        endpointOptions = Collections.emptyMap();
-
-        this.httpConfig = new NettyHttpChannelConfig();
-
-    }
-
     public void updateConfig(ConfigElement config, Map<String, Object> options) {
-        switch (config) {
-            case HTTP_OPTIONS: {
-                if (this.httpConfig != null) {
+        if (Objects.nonNull(options)) {
+            switch (config) {
+                case HTTP_OPTIONS: {
                     this.httpConfig.updateConfig(options);
+
+                    break;
                 }
-                break;
+                case REMOTE_IP: {
+                    this.httpConfig.updateConfig(options);
+
+                }
+                default:
+                    break;
+
             }
-            default:
-                break;
         }
+
     }
 
     @Override
@@ -93,6 +90,8 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         }
 
         ChannelPipeline pipeline = channel.pipeline();
+
+        System.out.println("Remote IP enabled: " + httpConfig.useForwardingHeaders());
 
         if (chain.isHttps()) {
             // SSLEngine engine = channel.newEngine(channel.alloc());
@@ -115,13 +114,15 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         private final Map<String, Object> tcpOptions;
         private final Map<String, Object> sslOptions;
         private Map<String, Object> httpOptions;
-        private final Map<String, Object> remoteIp;
+        private Map<String, Object> remoteIp;
         private final Map<String, Object> compression;
         private final Map<String, Object> samesite;
         private final Map<String, Object> headers;
         private final Map<String, Object> endpointOptions;
 
         HttpChannelConfig httpConfig;
+
+        private boolean useRemoteIp;
 
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = chain;
@@ -137,31 +138,48 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         }
 
         public HttpPipelineBuilder with(ConfigElement config, Map<String, Object> options) {
+
+            MSP.log("Building pipeline with " + config);
+
+            if (Objects.isNull(options)) {
+                MSP.log("Null options passed to pipeline, error");
+                return this;
+            }
+
             switch (config) {
                 case HTTP_OPTIONS: {
                     this.httpOptions = options;
-                    initializeHttpConfig();
+                    break;
+                }
+                case REMOTE_IP: {
+
+                    useRemoteIp = REMOTE_IP_DEFAULT.equalsIgnoreCase(String.valueOf(options.get("id"))) ? Boolean.FALSE : Boolean.TRUE;
+                    this.remoteIp = options;
+
                     break;
                 }
                 default:
                     break;
             }
+
+            MSP.log("Finished building");
             return this;
         }
 
-        private void initializeHttpConfig() {
+        private HttpChannelConfig generateHttpOptions() {
 
-            Map<String, Object> config = new HashMap<String, Object>();
-            config.forEach(httpOptions::putIfAbsent);
-            config.forEach(remoteIp::putIfAbsent);
-            config.forEach(compression::putIfAbsent);
-            config.forEach(samesite::putIfAbsent);
-            config.forEach(headers::putIfAbsent);
+            NettyConfigBuilder builder = new NettyHttpChannelConfig.NettyConfigBuilder();
 
-            httpConfig = new NettyHttpChannelConfig(config);
+            if (this.useRemoteIp) {
+                builder.with(ConfigElement.REMOTE_IP, this.remoteIp);
+            }
+
+            return builder.build();
         }
 
         public HttpInitializer build() {
+
+            this.httpConfig = generateHttpOptions();
 
             return new HttpInitializer(this);
         }

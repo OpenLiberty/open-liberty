@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.Objects;
+
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 
@@ -26,7 +28,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
-        this.config = (config != null) ? config : new NettyHttpChannelConfig();
+        Objects.requireNonNull(config);
+        this.config = config;
     }
 
     @Override
