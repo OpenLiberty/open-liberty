@@ -4134,17 +4134,17 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>4.3.13.RELEASE</version>
+      <version>5.2.20.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>5.2.4.RELEASE</version>
+      <version>5.2.20.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>6.0.6</version>
+      <version>5.2.20.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
