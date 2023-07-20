@@ -8,5 +8,5 @@
     SPDX-License-Identifier: EPL-2.0
  -->
 <server>
-     <io.openliberty.netty.internal.tls />
+     <nettyTlsProvider />
 </server>
