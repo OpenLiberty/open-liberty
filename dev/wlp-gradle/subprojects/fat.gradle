@@ -433,11 +433,24 @@ task runfat(type: Exec) {
   mustRunAfter buildfat
   mustRunAfter cleanBeforeRun
   environment System.getProperties()
-  environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
-  environment "artifactory.download.user", gradle.userProps.getProperty("artifactory.download.user")
-  environment "artifactory.download.token", gradle.userProps.getProperty("artifactory.download.token")
-  environment "artifactory.docker.server", gradle.userProps.getProperty("artifactory.docker.server")
-  environment "artifactory.force.external.repo", gradle.userProps.getProperty("artifactory.force.external.repo")
+  
+  
+  //Make sure to check if we have a property, otherwise we will end up setting "null" as the value
+  if ( gradle.userProps.hasProperty("artifactory.download.server") )
+  	environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
+
+  if ( gradle.userProps.hasProperty("artifactory.download.user") )
+  	environment "artifactory.download.user", gradle.userProps.getProperty("artifactory.download.user")
+
+  if ( gradle.userProps.hasProperty("artifactory.download.token") )
+  	environment "artifactory.download.token", gradle.userProps.getProperty("artifactory.download.token")
+
+  if ( gradle.userProps.hasProperty("artifactory.docker.server") )
+  	environment "artifactory.docker.server", gradle.userProps.getProperty("artifactory.docker.server")
+
+  if ( gradle.userProps.hasProperty("artifactory.force.external.repo") )
+  	environment "artifactory.force.external.repo", gradle.userProps.getProperty("artifactory.force.external.repo")
+  
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM
   environment "fat.test.localrun", "true"
