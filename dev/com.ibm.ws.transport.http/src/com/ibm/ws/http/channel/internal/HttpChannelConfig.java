@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -160,9 +161,9 @@ public class HttpChannelConfig {
     /** Don't start sending window update frames until 1/2 the window is used **/
     private boolean http2LimitWindowUpdateFrames = false;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
-    private boolean useForwardingHeaders = false;
+    protected boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
-    private String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
+    private final String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
     private Pattern proxiesPattern = null;
     /** Describes the maximum inflation ratio allowed for a request's body when decompressing */
     private int decompressionRatioLimit = 200;
@@ -174,7 +175,7 @@ public class HttpChannelConfig {
      */
     private boolean useForwardingHeadersInAccessLog = false;
     /** Identifies if the channel has been configured to use Auto Compression */
-    private boolean useCompression = false;
+    protected boolean useCompression = false;
     /** Identifies the preferred compression algorithm */
     private String preferredCompressionAlgorithm = "none";
 
@@ -184,7 +185,7 @@ public class HttpChannelConfig {
     private Pattern compressionQValuePattern = null;
 
     /** Identifies if the channel has been configured to use cookie configuration */
-    private boolean useSameSiteConfig = false;
+    protected boolean useSameSiteConfig = false;
     /**
      * Sets of cookies configured to be defaulted to have SameSite attribute set to lax, none, or strict. This attribute is added when the cookie has no SameSite attribute defined
      */
@@ -195,7 +196,7 @@ public class HttpChannelConfig {
     private boolean onlySameSiteStar = false;
 
     /** Identifies if the channel has been configured to use <headers> configuration */
-    private boolean isHeadersConfigEnabled = false;
+    protected boolean isHeadersConfigEnabled = false;
 
     /** Maps containing all configured header values to be added in each response */
     private Map<Integer, List<Map.Entry<String, String>>> configuredHeadersToAdd = null;
@@ -593,8 +594,8 @@ public class HttpChannelConfig {
         parseH2LimitWindowUpdateFrames(props);
         parsePurgeRemainingResponseBody(props); //PI81572
         parseRemoteIp(props);
-        parseRemoteIpProxies(props);
-        parseRemoteIpAccessLog(props);
+        parseRemoteIpProxies(props.get(HttpConfigConstants.PROPNAME_REMOTE_PROXIES));
+        parseRemoteIpAccessLog(props.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
         parseCompression(props);
         parseCompressionTypes(props);
         parseCompressionPreferredAlgorithm(props);
@@ -1608,33 +1609,28 @@ public class HttpChannelConfig {
     }
 
     /**
-     * @param props
+     * @param object
      */
-    private void parseRemoteIpProxies(Map<Object, Object> props) {
-        String value = (String) props.get(HttpConfigConstants.PROPNAME_REMOTE_PROXIES);
-        if (null != value) {
-            this.proxiesRegex = value;
+    protected void parseRemoteIpProxies(Object option) {
+
+        if (Objects.nonNull(option) && this.useForwardingHeaders) {
+            String value = String.valueOf(option);
 
             if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
                 Tr.event(tc, "RemoteIp Config: proxies regex set to: " + value);
             }
-        }
 
-        if (this.useForwardingHeaders) {
             this.proxiesPattern = Pattern.compile(this.proxiesRegex);
         }
-
     }
 
-    private void parseRemoteIpAccessLog(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG);
-        if (null != value) {
-            this.useForwardingHeadersInAccessLog = convertBoolean(value);
+    protected void parseRemoteIpAccessLog(Object option) {
+        if (Objects.nonNull(option) && this.useForwardingHeaders) {
+            this.useForwardingHeadersInAccessLog = convertBoolean(option);
 
             if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
                 Tr.event(tc, "RemoteIp Config: useRemoteIpInAccessLog set to: " + useForwardingHeadersInAccessLog);
             }
-
         }
     }
 
