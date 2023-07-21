@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2021 IBM Corporation and others.
+ * Copyright (c) 2008, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@ package com.ibm.ws.sip.stack.transport.sip.netty;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.*;
+
 import javax.net.ssl.SSLEngine;
 
 import com.ibm.websphere.ras.Tr;
@@ -24,12 +26,15 @@ import com.ibm.ws.sip.stack.util.SipStackUtil;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.*;
+import io.openliberty.netty.internal.*;
 import jain.protocol.ip.sip.ListeningPoint;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.openliberty.netty.internal.exception.NettyException;
 
 /**
  * base class for outbound connections of any transport type
@@ -48,9 +53,9 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 	/** name of outbound chain */
 	private final String m_chainName;
 
-	private Bootstrap bootstrap = new Bootstrap();
-	private EventLoopGroup workerGroup = new NioEventLoopGroup();
-
+	private BootstrapExtended bootstrap;
+	private NettyFramework nettyFw;
+	
 	/**
 	 * constructor for outbound connections
 	 * 
@@ -59,27 +64,33 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 	 * @param channel  channel that created this connection
 	 */
 	public SipOutboundConnLink(String peerHost, int peerPort, SipInboundChannel sipInboundChannel, Channel channel, boolean isSecure) {
-        super(peerHost, peerPort, sipInboundChannel, channel);
-        m_chainName = sipInboundChannel.getOutboundChainName();
-        bootstrap.group(workerGroup).channel(NioSocketChannel.class);
-    
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, s_connectTimeout);
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel ch) throws Exception {
-                final ChannelPipeline pipeline = ch.pipeline();
-                if (isSecure) {
-                    SslContext context = GenericEndpointImpl.getTlsProvider().getOutboundSSLContext(GenericEndpointImpl.getSslOptions(), peerHost, Integer.toString(peerPort));
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "SipOutboundConnLink", "context: " + context);
-                    }
-                    SSLEngine engine = context.newEngine(ch.alloc());
-                    pipeline.addFirst("ssl", new SslHandler(engine, false));
-                }
-                pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
-                pipeline.addLast("handler", new SipStreamHandler());
-            }
-        });
+          super(peerHost, peerPort, sipInboundChannel, channel);
+          m_chainName = sipInboundChannel.getOutboundChainName();
+          Map<String, Object> tcpOpt = Collections.emptyMap();
+          nettyFw = GenericEndpointImpl.getNettyBundle();
+          try {
+            bootstrap = nettyFw.createTCPBootstrapOutbound(tcpOpt); 
+            bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, s_connectTimeout);
+            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+              @Override
+              public void initChannel(SocketChannel ch) throws Exception {
+                  final ChannelPipeline pipeline = ch.pipeline();
+                  if (isSecure) {
+                      SslContext context = GenericEndpointImpl.getTlsProvider().getOutboundSSLContext(GenericEndpointImpl.getSslOptions(), peerHost, Integer.toString(peerPort));
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                          Tr.debug(this, tc, "SipOutboundConnLink", "context: " + context);
+                      }
+                      SSLEngine engine = context.newEngine(ch.alloc());
+                      pipeline.addFirst("ssl", new SslHandler(engine, false));
+                  }
+                  pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
+                  pipeline.addLast("handler", new SipStreamHandler());
+              }
+            });
+          } catch (NettyException e) {
+  			e.printStackTrace();
+  			close();
+  		  }
 	}
 
 	// ----------------------------
