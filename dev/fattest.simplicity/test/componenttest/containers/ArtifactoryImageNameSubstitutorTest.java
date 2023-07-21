@@ -34,6 +34,7 @@ public class ArtifactoryImageNameSubstitutorTest {
 
     private static ArtifactoryRegistry artifactoryRegistry;
     private static final String TESTREGISTRY = "example.com";
+    private static final String FORCE_EXTERNAL = "fat.test.artifactory.force.external.repo";
 
     private static DockerClientFactory dockerClientFactory;
 
@@ -95,6 +96,7 @@ public class ArtifactoryImageNameSubstitutorTest {
         }
     }
 
+    // Priority 1: If we are using a synthetic image do not substitute nor cache
     @Test
     public void testSyntheticImageNotModified() throws Exception {
         setArtifactoryRegistryAvailable(false);
@@ -107,6 +109,24 @@ public class ArtifactoryImageNameSubstitutorTest {
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
     }
 
+    // Priority 2: If the image is known to only exist in an Artifactory registry
+    @Test
+    public void testArtifactoryRegistryModifification() throws Exception {
+        setArtifactoryRegistryAvailable(false);
+        DockerImageName testImage;
+
+        testImage = DockerImageName.parse("docker-na-public.artifactory.swg-devops.com/kyleaure/oracle-xe:1.0.0");
+        try {
+            new ArtifactoryImageNameSubstitutor().apply(testImage);
+            fail("Should not have allowed artifactory registry.");
+        } catch (RuntimeException e) {
+            //pass
+        } catch (Throwable t) {
+            fail("Wrong throwable caught" + t.getMessage());
+        }
+    }
+
+    // Priority 3: If a public registry was explicitly set on an image, do not substitute
     @Test
     public void testExplicitRegistryNotModified() throws Exception {
         setArtifactoryRegistryAvailable(false);
@@ -116,34 +136,32 @@ public class ArtifactoryImageNameSubstitutorTest {
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
     }
 
+    // Priority 4: Always use Artifactory if using remote docker host.
     @Test
-    public void testSystemPropertyModified() throws Exception {
+    public void testDockerClientStrategy() throws Exception {
         DockerImageName input;
         DockerImageName expected;
 
-        //False system property should not append registry
-        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
-        setArtifactoryRegistryAvailable(false);
-        System.setProperty("fat.test.use.artifactory.substitution", "false");
-
-        expected = DockerImageName.parse("openliberty:1.0.0");
-        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
-
-        //True system property should append registry
-        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
+        //Using our remote docker host
         setArtifactoryRegistryAvailable(true);
-        System.setProperty("fat.test.use.artifactory.substitution", "true");
+        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
 
-        input = DockerImageName.parse("openliberty:1.0.0");
-        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/openliberty:1.0.0");
+        input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
+        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/kyleaure/oracle-xe:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
 
-        //True system property, but no artifactory registry set should throw an exception
-        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
+        //Using local docker host
         setArtifactoryRegistryAvailable(false);
-        System.setProperty("fat.test.use.artifactory.substitution", "true");
+        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
 
-        input = DockerImageName.parse("openliberty:1.0.0");
+        expected = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
+        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
+
+        //Using our remote docker host, but no artifactory registry set should throw exception
+        setArtifactoryRegistryAvailable(false);
+        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
+
+        input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
         try {
             new ArtifactoryImageNameSubstitutor().apply(input);
             fail("Should have thrown a RuntimeException");
@@ -154,42 +172,29 @@ public class ArtifactoryImageNameSubstitutorTest {
         }
     }
 
+    // Priority 5: System property artifactory.force.external.repo (NOTE: only honor this property if set to true)
     @Test
-    public void testDockerClientStrategy() throws Exception {
+    public void testSystemPropertyModified() throws Exception {
         DockerImageName input;
         DockerImageName expected;
 
-        //Using our remote docker host
-        setArtifactoryRegistryAvailable(true);
-        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
-        System.setProperty("fat.test.use.artifactory.substitution", "false");
-
-        input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
-        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/kyleaure/oracle-xe:1.0.0");
-        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
-
-        //Using local docker host
-        setArtifactoryRegistryAvailable(false);
+        //True system property should not append registry
         setDockerClientStrategy(new UnixSocketClientProviderStrategy());
-        System.setProperty("fat.test.use.artifactory.substitution", "false");
+        setArtifactoryRegistryAvailable(false);
+        System.setProperty(FORCE_EXTERNAL, "true");
 
-        expected = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
+        expected = DockerImageName.parse("openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
 
-        //Using our remote docker host, but no artifactory registry set should throw exception
-        setArtifactoryRegistryAvailable(false);
-        setDockerClientStrategy(new EnvironmentAndSystemPropertyClientProviderStrategy());
-        System.setProperty("fat.test.use.artifactory.substitution", "false");
+        //False system property should be ignored
+        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
+        setArtifactoryRegistryAvailable(true);
+        System.setProperty(FORCE_EXTERNAL, "false");
 
-        input = DockerImageName.parse("kyleaure/oracle-xe:1.0.0");
-        try {
-            new ArtifactoryImageNameSubstitutor().apply(input);
-            fail("Should have thrown a RuntimeException");
-        } catch (RuntimeException e) {
-            //passed
-        } catch (Throwable e) {
-            fail("Wrong throwable caught");
-        }
+        input = DockerImageName.parse("openliberty:1.0.0");
+        expected = DockerImageName.parse("openliberty:1.0.0");
+        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
+
     }
 
     private static void setDockerClientStrategy(DockerClientProviderStrategy strategy) throws Exception {
