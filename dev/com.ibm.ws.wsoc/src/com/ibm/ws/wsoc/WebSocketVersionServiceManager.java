@@ -34,7 +34,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import io.openliberty.netty.internal.NettyFramework;
 
 /**
- * Provides various services for differnet features.
+ * Provides various services for different features.
  */
 public class WebSocketVersionServiceManager {
 
@@ -43,7 +43,7 @@ public class WebSocketVersionServiceManager {
     /** CHFWBundle service reference -- required */
     private static final AtomicServiceReference<CHFWBundle> cfwBundleRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
 
-    private static final AtomicServiceReference<NettyFramework> _nettyRef = new AtomicServiceReference<NettyFramework>("nettyBundle");
+    private static final AtomicServiceReference<NettyFramework> nettyRef = new AtomicServiceReference<NettyFramework>("nettyBundle");
 
     //websocket 1.1 SessionExt for WebSocket 1.1 API support
     private static final AtomicServiceReference<WebSocketFactory> websocketFactoryServiceRef = new AtomicServiceReference<WebSocketFactory>("websocketFactoryService");
@@ -71,7 +71,7 @@ public class WebSocketVersionServiceManager {
      */
     protected synchronized void activate(ComponentContext context) {
         cfwBundleRef.activate(context);
-        _nettyRef.activate(context);
+        nettyRef.activate(context);
         websocketFactoryServiceRef.activate(context);
         servletContainerFactorySRRef.activate(context);
         httpRequestorFactoryServiceRef.activate(context);
@@ -85,7 +85,7 @@ public class WebSocketVersionServiceManager {
      */
     protected synchronized void deactivate(ComponentContext context) {
         cfwBundleRef.deactivate(context);
-        _nettyRef.deactivate(context);
+        nettyRef.deactivate(context);
         websocketFactoryServiceRef.deactivate(context);
         servletContainerFactorySRRef.deactivate(context);
         httpRequestorFactoryServiceRef.deactivate(context);
@@ -118,20 +118,19 @@ public class WebSocketVersionServiceManager {
     }
 
     protected void setNettyBundle(ServiceReference<NettyFramework> ref) {
-        _nettyRef.setReference(ref);
+        nettyRef.setReference(ref);
     }
 
     protected void unsetNettyBundle(ServiceReference<NettyFramework> ref) {
-        _nettyRef.unsetReference(ref);
+        nettyRef.unsetReference(ref);
     }
 
     public static NettyFramework getNettyBundle() {
-        // TODO Verify this later on
-        return _nettyRef.getService();
+        return nettyRef.getService();
     }
 
     /**
-     * Access the current reference to the bytebuffer pool manager from channel frame work.
+     * Access the current reference to the bytebuffer pool manager from channel framework.
      *
      * @return WsByteBufferPoolManager
      */
@@ -241,6 +240,12 @@ public class WebSocketVersionServiceManager {
             return true;
         }
         return false;
+    }
+
+    public static boolean useNetty() {
+        // LLA TODO fix this
+        return true;
+
     }
 
 }

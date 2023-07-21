@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -65,26 +65,26 @@ public class ClientConnector {
     }
 
     public Session connectClass(Object clazz, URI path, ClientEndpointConfig config, WebSocketContainer wsc) throws DeploymentException, IOException {
-       
+
         WsocAddress endpointAddress;
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
-            endpointAddress  = new Wsoc21Address(path);
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
+            endpointAddress = new Wsoc21Address(path);
         } else {
             endpointAddress = new Wsoc10Address(path);
         }
-        
-        
+
         endpointAddress.validateURI();
 
         ParametersOfInterest things = new ParametersOfInterest();
 
-        if(WebSocketVersionServiceManager.isWsoc21OrHigher()){
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
             config = WebSocketVersionServiceManager.getClientEndpointConfigCopyFactory().getClientEndpointConfig(config);
             things.setUserProperties(config.getUserProperties());
         }
 
-        HttpRequestor requestor = WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things);
+        HttpRequestor requestor = (HttpRequestor) (WebSocketVersionServiceManager.getHttpRequestorFactory().getHttpRequestor(endpointAddress, config, things));
+
         WsByteBuffer remainingBuf = null;
 
         try {

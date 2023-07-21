@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,6 @@ import javax.websocket.ClientEndpointConfig;
 import com.ibm.ws.wsoc.ParametersOfInterest;
 
 public interface HttpRequestorFactory {
-    
+
     HttpRequestor getHttpRequestor(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things);
 }

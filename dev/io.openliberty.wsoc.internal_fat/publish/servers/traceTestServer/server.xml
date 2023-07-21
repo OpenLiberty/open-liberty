@@ -11,10 +11,12 @@
 
     <!-- include location="../fatTestPorts.xml"/ -->
         <httpEndpoint id="defaultHttpEndpoint"
+        		  useNettyTransport="true"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
                   <httpOptions persistTimeout="5"/>
+                  
         </httpEndpoint>          
 
     <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">

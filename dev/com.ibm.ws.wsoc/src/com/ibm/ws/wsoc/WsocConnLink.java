@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -155,6 +155,7 @@ public class WsocConnLink {
         wrc.setConnLinkCallback(this);
 
         if (clientSide) {
+            // LLA TODO
             linkWrite.initialize(tcpWriteContext, epc, this, true);
             linkRead.initialize(tcpReadContext, epc, ep, this, false);
         } else {
@@ -172,12 +173,14 @@ public class WsocConnLink {
         return things;
     }
 
+    // LLA TODO
     public WsocWriteCallback getWriteCallback() {
         WsocWriteCallback wwc = new WsocWriteCallback();
         wwc.setConnLinkCallback(this);
         return (wwc);
     }
 
+    // LLA TODO
     public WsocReadCallback getReadCallback() {
         WsocReadCallback wrc = new WsocReadCallback();
         wrc.setConnLinkCallback(this);
