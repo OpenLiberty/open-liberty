@@ -55,18 +55,23 @@ public class FragmentHelperClassWriter extends MethodWriter {
         println("private javax.servlet.jsp.tagext.JspTag parentTag;");
         println("private int[] _jspx_push_body_count;");
         println("private java.util.HashMap _jspx_TagLookup;");
+        if(!reuseTags){
+            println("private java.util.ArrayList _jspMangedObjectList;");
+        }
         println();
         print("public " + className);
         if (reuseTags)
             print("( java.util.HashMap _jspx_TagLookup, int discriminator, JspContext jspContext, ");
         else
-            print("( int discriminator, JspContext jspContext, ");
+            print("( int discriminator, JspContext jspContext, java.util.ArrayList jspMangedObjectList, ");
         println("javax.servlet.jsp.tagext.JspTag parentTag, int[] _jspx_push_body_count ) {");
         println("super( discriminator, jspContext, parentTag );");
         println("this.parentTag = parentTag;");
         println("this._jspx_push_body_count = _jspx_push_body_count;");
         if (reuseTags)
             println("this._jspx_TagLookup = _jspx_TagLookup;");
+        else
+            println("this._jspMangedObjectList = jspMangedObjectList;");
         println("}");
         println();
     }

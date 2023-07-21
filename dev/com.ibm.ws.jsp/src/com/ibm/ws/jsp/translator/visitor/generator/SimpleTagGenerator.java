@@ -170,7 +170,7 @@ public class SimpleTagGenerator extends BaseTagGenerator {
             jspOptions.isUseThreadTagPool()) {
             tagMiddleWriter.print("(_jspx_TagLookup, " + fragmentBodyWriter.getId() + ", " + pageContextVar + ", ");//PK65013
         } else {
-            tagMiddleWriter.print("( " + fragmentBodyWriter.getId() + ", " + pageContextVar + ", "); //PK65013
+            tagMiddleWriter.print("( " + fragmentBodyWriter.getId() + ", " + pageContextVar + ", _jspMangedObjectList" + ", "); //PK65013
         }
         String pushBodyCountVar = (String) persistentData.get("pushBodyCountVar");
         // defect 363508 begin

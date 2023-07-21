@@ -638,7 +638,9 @@ public class GeneratorUtils {
             }
             writer.println("cleanupCDITagManagedObject(tag);");
             writer.println("jspMangedObjectList.remove(tag);");
-            writer.println("tag.release();");
+            writer.println("if ( tag instanceof javax.servlet.jsp.tagext.Tag) {");
+            writer.println("( (javax.servlet.jsp.tagext.Tag) tag).release();");
+            writer.println("}");
             writer.println("}");
         }
 
