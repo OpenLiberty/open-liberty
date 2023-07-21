@@ -641,7 +641,7 @@ public final class JAXRSUtils {
                                     if (matchProduceTypes(acceptType, ori)) {
                                         candidateList.put(ori, map);
                                         added = true;
-                                        resourceMethodsAdded = true;
+                                        resourceMethodsAdded = true; // Liberty Change
                                         break;
                                     }
                                 }
@@ -663,8 +663,8 @@ public final class JAXRSUtils {
         // We may get several matching candidates with different HTTP methods which match subresources
         // and resources. Before excluding subresources, let us make sure we have at least one matching
         // HTTP method candidate.
-        boolean isOptions = HttpMethod.OPTIONS.equalsIgnoreCase(httpMethod);
-        if (finalPathSubresources != null && (methodMatched > 0 || isOptions)
+        // boolean isOptions = HttpMethod.OPTIONS.equalsIgnoreCase(httpMethod); // Liberty Change 
+        if (finalPathSubresources != null && resourceMethodsAdded // Liberty Change
             && !MessageUtils.getContextualBoolean(message, KEEP_SUBRESOURCE_CANDIDATES, false)) {
             for (OperationResourceInfo key : finalPathSubresources) {
                 candidateList.remove(key);
