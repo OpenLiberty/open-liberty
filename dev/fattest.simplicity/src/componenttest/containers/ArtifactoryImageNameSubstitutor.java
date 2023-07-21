@@ -32,7 +32,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     /**
      * Manual override that will allow builds or users to pull from the default registry instead of Artifactory.
      */
-    private static final String substitutionOverride = "fat.test.artifactory.force.external.repo";
+    private static final String forceExternal = "fat.test.artifactory.force.external.repo";
 
     /**
      * Artifactory keeps a cache of docker images from DockerHub within
@@ -79,10 +79,20 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
             }
 
             // Priority 5: System property artifactory.force.external.repo (NOTE: only honor this property if set to true)
-            if (Boolean.getBoolean(substitutionOverride)) {
+            if (Boolean.getBoolean(forceExternal)) {
                 result = original;
                 needsArtifactory = false;
                 reason = "System property [ fat.test.artifactory.force.external.repo ] was set to true, must use original image name.";
+                break;
+            }
+
+            // Priority 6: If Artifactory registry is available use it to avoid rate limits on other registries
+            if (ArtifactoryRegistry.instance().isArtifactoryAvailable()) {
+                result = DockerImageName.parse(mirror + '/' + original.asCanonicalNameString())
+                                .withRegistry(ArtifactoryRegistry.instance().getRegistry())
+                                .asCompatibleSubstituteFor(original);
+                needsArtifactory = true;
+                reason = "Artifactory was available.";
                 break;
             }
 

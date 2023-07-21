@@ -173,27 +173,44 @@ public class ArtifactoryImageNameSubstitutorTest {
     }
 
     // Priority 5: System property artifactory.force.external.repo (NOTE: only honor this property if set to true)
+    // Priority 6: If Artifactory registry is available assume user wants to use that.
     @Test
     public void testSystemPropertyModified() throws Exception {
         DockerImageName input;
         DockerImageName expected;
 
-        //True system property should not append registry
+        //Force external does force
         setDockerClientStrategy(new UnixSocketClientProviderStrategy());
-        setArtifactoryRegistryAvailable(false);
         System.setProperty(FORCE_EXTERNAL, "true");
+        setArtifactoryRegistryAvailable(false);
 
         expected = DockerImageName.parse("openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
 
-        //False system property should be ignored
+        //Force external use and Artifactory is ignored
         setDockerClientStrategy(new UnixSocketClientProviderStrategy());
+        System.setProperty(FORCE_EXTERNAL, "true");
         setArtifactoryRegistryAvailable(true);
+
+        expected = DockerImageName.parse("openliberty:1.0.0");
+        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
+
+        //No force, with Artifactory, use artifactory
+        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
         System.setProperty(FORCE_EXTERNAL, "false");
+        setArtifactoryRegistryAvailable(true);
 
         input = DockerImageName.parse("openliberty:1.0.0");
-        expected = DockerImageName.parse("openliberty:1.0.0");
+        expected = DockerImageName.parse("example.com/wasliberty-docker-remote/openliberty:1.0.0");
         assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(input));
+
+        //No force, no Artifactory, default behavior
+        setDockerClientStrategy(new UnixSocketClientProviderStrategy());
+        System.setProperty(FORCE_EXTERNAL, "false");
+        setArtifactoryRegistryAvailable(false);
+
+        expected = DockerImageName.parse("openliberty:1.0.0");
+        assertEquals(expected, new ArtifactoryImageNameSubstitutor().apply(expected));
 
     }
 
