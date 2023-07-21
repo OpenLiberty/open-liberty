@@ -668,11 +668,7 @@ public class TCKUtilities {
         boolean forceExternal = isArtifactoryForceExternal();
         String artifactoryServer = getArtifactoryServer();
 
-        boolean useArtifactory = (Objects.nonNull(artifactoryServer) && !artifactoryServer.isEmpty());
-
-        if (forceExternal && !useArtifactory) {
-            throw new IllegalStateException("Forced external artifactory usage, but no server was set");
-        }
+        boolean useArtifactory = Objects.nonNull(artifactoryServer) && !forceExternal;
 
         Log.info(c, "useArtifactory", "Use artifactory = " + useArtifactory + " ("
                                       + ARTIFACTORY_SERVER_KEY + "=" + artifactoryServer + ", "
@@ -686,7 +682,7 @@ public class TCKUtilities {
      *
      * @return true if flag was true, false otherwise
      */
-    public static boolean isArtifactoryForceExternal() {
+    static boolean isArtifactoryForceExternal() {
         return Boolean.parseBoolean(getArtifactoryForceExternal());
     }
 
@@ -695,8 +691,8 @@ public class TCKUtilities {
      *
      * @return true if flag was true, false otherwise
      */
-    public static String getArtifactoryForceExternal() {
-        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
+    static String getArtifactoryForceExternal() {
+        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_FORCE_EXTERNAL_KEY));
     }
 
     /**
@@ -705,7 +701,7 @@ public class TCKUtilities {
      * @return the artifactory server or {@code null} if none is configured
      */
     static String getArtifactoryServer() {
-        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY));
+        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_SERVER_KEY));
     }
 
     /**
@@ -714,7 +710,7 @@ public class TCKUtilities {
      * @return the username, or {@code null} if none is configured
      */
     static String getArtifactoryUser() {
-        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY));
+        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_USER_KEY));
     }
 
     /**
@@ -723,7 +719,7 @@ public class TCKUtilities {
      * @return the token, or {@code null} if none is configured
      */
     static String getArtifactoryToken() {
-        return validateStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY));
+        return normalizeStringProperty(System.getProperty(FAT_TEST_PREFIX + ARTIFACTORY_TOKEN_KEY));
     }
 
     /**
@@ -736,9 +732,13 @@ public class TCKUtilities {
      * @param  result the string to validate
      * @return        null if the string was invalid, itself otherwise.
      */
-    static String validateStringProperty(String result) {
+    static String normalizeStringProperty(String result) {
         if (result == null)
             return result;
+
+        if (result.isEmpty()) {
+            return null;
+        }
 
         if (result.startsWith("${"))
             return null;

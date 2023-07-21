@@ -13,7 +13,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Objects;
 
@@ -30,62 +29,52 @@ public class TCKUtilitiesTest {
      */
     @Test
     public void usingArtifactory() {
-        final String forceExternalProp = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_FORCE_EXTERNAL_KEY;
-        final String artifactoryServerProp = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_SERVER_KEY;
+        final String FORCE_EXTERNAL_PROP = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_FORCE_EXTERNAL_KEY;
+        final String ART_SERVER_PROP = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_SERVER_KEY;
 
-        logTest(1, artifactoryServerProp, "null", forceExternalProp, "null");
-        System.clearProperty(artifactoryServerProp);
-        System.clearProperty(forceExternalProp);
+        logTest(1, ART_SERVER_PROP, "null", FORCE_EXTERNAL_PROP, "null");
+        System.clearProperty(ART_SERVER_PROP);
+        System.clearProperty(FORCE_EXTERNAL_PROP);
         assertFalse(TCKUtilities.useArtifactory());
 
-        logTest(2, artifactoryServerProp, "null", forceExternalProp, "true");
-        System.clearProperty(artifactoryServerProp);
-        System.setProperty(forceExternalProp, "true");
-        try {
-            TCKUtilities.useArtifactory();
-            fail("Should have thrown an IllegalStateException");
-        } catch (IllegalStateException e) {
-            //pass
-        }
-
-        logTest(3, artifactoryServerProp, "null", forceExternalProp, "false");
-        System.clearProperty(artifactoryServerProp);
-        System.setProperty(forceExternalProp, "false");
+        logTest(2, ART_SERVER_PROP, "null", FORCE_EXTERNAL_PROP, "true");
+        System.clearProperty(ART_SERVER_PROP);
+        System.setProperty(FORCE_EXTERNAL_PROP, "true");
         assertFalse(TCKUtilities.useArtifactory());
 
-        logTest(4, artifactoryServerProp, "example.com", forceExternalProp, "null");
-        System.setProperty(artifactoryServerProp, "example.com");
-        System.clearProperty(forceExternalProp);
-        assertTrue(TCKUtilities.useArtifactory());
-
-        logTest(5, artifactoryServerProp, "example.com", forceExternalProp, "true");
-        System.setProperty(artifactoryServerProp, "example.com");
-        System.setProperty(forceExternalProp, "true");
-        assertTrue(TCKUtilities.useArtifactory());
-
-        logTest(6, artifactoryServerProp, "example.com", forceExternalProp, "false");
-        System.setProperty(artifactoryServerProp, "example.com");
-        System.setProperty(forceExternalProp, "false");
-        assertTrue(TCKUtilities.useArtifactory());
-
-        logTest(7, artifactoryServerProp, "", forceExternalProp, "null");
-        System.setProperty(artifactoryServerProp, "");
-        System.clearProperty(forceExternalProp);
+        logTest(3, ART_SERVER_PROP, "null", FORCE_EXTERNAL_PROP, "false");
+        System.clearProperty(ART_SERVER_PROP);
+        System.setProperty(FORCE_EXTERNAL_PROP, "false");
         assertFalse(TCKUtilities.useArtifactory());
 
-        logTest(8, artifactoryServerProp, "", forceExternalProp, "true");
-        System.setProperty(artifactoryServerProp, "");
-        System.setProperty(forceExternalProp, "true");
-        try {
-            TCKUtilities.useArtifactory();
-            fail("Should have thrown an IllegalStateException");
-        } catch (IllegalStateException e) {
-            //pass
-        }
+        logTest(4, ART_SERVER_PROP, "example.com", FORCE_EXTERNAL_PROP, "null");
+        System.setProperty(ART_SERVER_PROP, "example.com");
+        System.clearProperty(FORCE_EXTERNAL_PROP);
+        assertTrue(TCKUtilities.useArtifactory());
 
-        logTest(9, artifactoryServerProp, "", forceExternalProp, "false");
-        System.setProperty(artifactoryServerProp, "");
-        System.setProperty(forceExternalProp, "false");
+        logTest(5, ART_SERVER_PROP, "example.com", FORCE_EXTERNAL_PROP, "true");
+        System.setProperty(ART_SERVER_PROP, "example.com");
+        System.setProperty(FORCE_EXTERNAL_PROP, "true");
+        assertFalse(TCKUtilities.useArtifactory());
+
+        logTest(6, ART_SERVER_PROP, "example.com", FORCE_EXTERNAL_PROP, "false");
+        System.setProperty(ART_SERVER_PROP, "example.com");
+        System.setProperty(FORCE_EXTERNAL_PROP, "false");
+        assertTrue(TCKUtilities.useArtifactory());
+
+        logTest(7, ART_SERVER_PROP, "", FORCE_EXTERNAL_PROP, "null");
+        System.setProperty(ART_SERVER_PROP, "");
+        System.clearProperty(FORCE_EXTERNAL_PROP);
+        assertFalse(TCKUtilities.useArtifactory());
+
+        logTest(8, ART_SERVER_PROP, "", FORCE_EXTERNAL_PROP, "true");
+        System.setProperty(ART_SERVER_PROP, "");
+        System.setProperty(FORCE_EXTERNAL_PROP, "true");
+        assertFalse(TCKUtilities.useArtifactory());
+
+        logTest(9, ART_SERVER_PROP, "", FORCE_EXTERNAL_PROP, "false");
+        System.setProperty(ART_SERVER_PROP, "");
+        System.setProperty(FORCE_EXTERNAL_PROP, "false");
         assertFalse(TCKUtilities.useArtifactory());
 
     }
@@ -96,22 +85,21 @@ public class TCKUtilitiesTest {
      */
     @Test
     public void getArtifactoryServer() {
-        final String artifactoryServerProp = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_SERVER_KEY;
+        final String ART_SERVER_PROP = TCKUtilities.FAT_TEST_PREFIX + TCKUtilities.ARTIFACTORY_SERVER_KEY;
 
-        System.clearProperty(artifactoryServerProp);
+        System.clearProperty(ART_SERVER_PROP);
         assertNull(TCKUtilities.getArtifactoryServer());
         assertTrue(Objects.isNull(TCKUtilities.getArtifactoryServer()));
 
-        System.setProperty(artifactoryServerProp, "${env.artifactory.download.server}");
+        System.setProperty(ART_SERVER_PROP, "${env.artifactory.download.server}");
         assertNull(TCKUtilities.getArtifactoryServer());
         assertTrue(Objects.isNull(TCKUtilities.getArtifactoryServer()));
 
-        System.setProperty(artifactoryServerProp, "");
-        assertNotNull(TCKUtilities.getArtifactoryServer());
-        assertFalse(Objects.isNull(TCKUtilities.getArtifactoryServer()));
-        assertTrue(TCKUtilities.getArtifactoryServer().isEmpty());
+        System.setProperty(ART_SERVER_PROP, "");
+        assertNull(TCKUtilities.getArtifactoryServer());
+        assertTrue(Objects.isNull(TCKUtilities.getArtifactoryServer()));
 
-        System.setProperty(artifactoryServerProp, "example.com");
+        System.setProperty(ART_SERVER_PROP, "example.com");
         assertNotNull(TCKUtilities.getArtifactoryServer());
         assertFalse(Objects.isNull(TCKUtilities.getArtifactoryServer()));
         assertFalse(TCKUtilities.getArtifactoryServer().isEmpty());
