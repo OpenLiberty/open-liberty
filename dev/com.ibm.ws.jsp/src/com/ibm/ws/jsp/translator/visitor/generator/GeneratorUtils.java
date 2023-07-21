@@ -627,6 +627,21 @@ public class GeneratorUtils {
         writer.println();
     }
 
+        //  _jspMangedObjectList + ", "+ tagHandlerVar
+        public static void generate_jsp_destroyRemoveReleaseTag(JavaCodeWriter writer, int sourceLevel) {
+            if (sourceLevel < 15) {
+                writer.println(
+                        "public void _jsp_destroyRemoveReleaseTag(java.util.ArrayList jspMangedObjectList, Object tag) {");
+            } else {
+                writer.println(
+                        "public void _jsp_destroyRemoveReleaseTag(java.util.ArrayList<Object> jspMangedObjectList, Object tag) {");
+            }
+            writer.println("cleanupCDITagManagedObject(tag);");
+            writer.println("jspMangedObjectList.remove(tag);");
+            writer.println("tag.release();");
+            writer.println("}");
+        }
+
     public static void generateVersionInformation(JavaCodeWriter writer, boolean isDebugClassFile) {
         writer.println("private static String _jspx_classVersion;");
         //		 begin 228118: JSP container should recompile if debug enabled and jsp was not compiled in debug.

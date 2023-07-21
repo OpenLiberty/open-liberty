@@ -320,6 +320,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
 
         if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
             GeneratorUtils.generate_process_jspMangedObjectList(writer, jspOptions.isDisableResourceInjection(), jspOptions.getJdkSourceLevel());
+            writer.println();
+            if(!jspOptions.isDisableResourceInjection()){
+                GeneratorUtils.generate_jsp_destroyRemoveReleaseTag(writer, jspOptions.getJdkSourceLevel());
+            }
         }
 
         // PK81147 end

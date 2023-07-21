@@ -338,6 +338,14 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println("return this.jspContext;");
         writer.println("}");
 
+                // PH49514 start
+                if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
+                    if (!jspOptions.isDisableResourceInjection()) {
+                        GeneratorUtils.generate_jsp_destroyRemoveReleaseTag(writer, jspOptions.getJdkSourceLevel());
+                    }
+                }
+                // PH49514 end
+
         if (PagesVersionHandler.isPages31OrHigherLoaded()) {
             writer.println(" public boolean isErrorOnELNotFound() {");
             writer.println("return " + validatorResult.isErrorOnELNotFound() + ";");
