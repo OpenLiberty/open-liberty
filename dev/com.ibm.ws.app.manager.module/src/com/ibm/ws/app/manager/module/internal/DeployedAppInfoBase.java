@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
+import com.ibm.ws.app.manager.module.internal.DeferredCache.FailableProducer;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
@@ -72,6 +73,7 @@ import com.ibm.wsspi.library.Library;
 
 public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase implements ApplicationClassesContainerInfo, AppClassLoaderFactory, ModuleClassLoaderFactory {
     private static final TraceComponent _tc = Tr.register(DeployedAppInfoBase.class, "app.manager", "com.ibm.ws.app.manager.module.internal.resources.Messages");
+
     private static final String PERMISSION_XML = "permissions.xml";
 
     protected static final class SharedLibClassesContainerInfo implements LibraryClassesContainerInfo {
@@ -117,6 +119,8 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return classesContainerInfo;
         }
     }
+
+    protected static final DeferredCache<Container> containerCache = new DeferredCache<>();
 
     protected static final class SharedLibDeploymentInfo {
         private final WsLocationAdmin locAdmin;
@@ -175,86 +179,160 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         private void processLibraryPIDs(DeployedAppServices deployedAppServices, List<ContainerInfo> sharedLibContainers, String[] libraryPIDs,
                                         LibraryContainerInfo.LibraryType libType) throws InvalidSyntaxException {
             if (libraryPIDs != null) {
-                for (String pid : libraryPIDs) {
-                    Collection<Library> libraries = deployedAppServices.getLibrariesFromPid(pid);
+                for (String libraryPid : libraryPIDs) {
+                    Collection<Library> libraries = deployedAppServices.getLibrariesFromPid(libraryPid);
                     for (Library library : libraries) {
-                        addLibraryContainers(sharedLibContainers, pid, libType, library);
+                        addLibraryContainers(sharedLibContainers, libraryPid, libType, library);
                     }
                 }
             }
         }
 
-        private void addLibraryContainers(List<ContainerInfo> sharedLibContainers, String pid, LibraryContainerInfo.LibraryType libType, Library library) {
-            if (library != null) {
-                String libName = library.id();
-                SharedLibClassesContainerInfo libClassesInfo = new SharedLibClassesContainerInfo(libType, library, "/" + libName);
-                Collection<File> files = library.getFiles();
-                addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, files);
-                Collection<File> folders = library.getFolders();
-                addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, folders);
-                Collection<Fileset> filesets = library.getFilesets();
-                for (Fileset fileset : filesets) {
-                    addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, fileset.getFileset());
-                }
-                if (!libClassesInfo.getClassesContainerInfo().isEmpty()) {
-                    sharedLibContainers.add(libClassesInfo);
-                }
+        private void addLibraryContainers(List<ContainerInfo> sharedLibContainers,
+                                          String libraryPid, LibraryContainerInfo.LibraryType libType, Library library) {
+            if (library == null) {
+                return;
+            }
+
+            String libName = library.id();
+
+            SharedLibClassesContainerInfo libClassesInfo = new SharedLibClassesContainerInfo(libType, library, "/" + libName);
+            List<ContainerInfo> libContainerInfo = libClassesInfo.getClassesContainerInfo();
+
+            addContainers(libContainerInfo, libraryPid, libName, library.getFiles());
+            addContainers(libContainerInfo, libraryPid, libName, library.getFolders());
+            for (Fileset libFileset : library.getFilesets()) {
+                addContainers(libContainerInfo, libraryPid, libName, libFileset.getFileset());
+            }
+
+            if (!libContainerInfo.isEmpty()) {
+                sharedLibContainers.add(libClassesInfo);
             }
         }
 
-        private void addContainers(List<ContainerInfo> sharedLibContainers, String pid, String libName, Collection<File> files) {
-            if (files != null) {
-                for (File file : files) {
-                    final Container container = setupContainer(pid, file);
-                    if (container != null) {
-                        final String name = "/" + libName + "/" + file.getName();
-                        sharedLibContainers.add(new ContainerInfo() {
-                            @Override
-                            public Type getType() {
-                                return Type.SHARED_LIB;
-                            }
+        private void addContainers(List<ContainerInfo> libContainerInfo,
+                                   String libraryPid, String libName, Collection<File> libFiles) {
 
-                            @Override
-                            public String getName() {
-                                return name;
-                            }
+            if (libFiles == null) {
+                return;
+            }
 
-                            @Override
-                            public Container getContainer() {
-                                return container;
-                            }
-                        });
+            for (File libFile : libFiles) {
+                Container container = setupContainer(libraryPid, libFile);
+                if (container == null) {
+                    continue;
+                }
+
+                // TODO: 'name' is not guaranteed to be unique.
+                String name = "/" + libName + "/" + libFile.getName();
+                libContainerInfo.add(new ContainerInfo() {
+                    @Override
+                    public Type getType() {
+                        return Type.SHARED_LIB;
                     }
-                }
+
+                    @Override
+                    public String getName() {
+                        return name;
+                    }
+
+                    @Override
+                    public Container getContainer() {
+                        return container;
+                    }
+                });
             }
         }
 
-        private Container setupContainer(String pid, File locationFile) {
-            if (!FileUtils.fileExists(locationFile)) {
+        // TODO: The first library which uses a specified library file has it's PID used by the shared
+        //       library container.
+        //
+        //       This only matters if the same library file is used by more than one library.
+        //
+        //       This might not be significant: The additional associated folders are possibly never used.
+        //
+        //       Even if used, would the cached data be different for different libraries?  For example,
+        //       extracted nested archives would be the same.  On the other hand, application specific class
+        //       loading historical information or cached classes (which capture a history) would be application
+        //       specific.
+        //
+        //       As an alternative, container sharing could be limited by library PID.
+
+        private Container setupContainer(String libraryPid, File libFile) {
+            String libPath = libFile.getAbsolutePath();
+            FailableProducer<Container> containerSource = containerCache.defer(libPath, () -> baseSetupContainer(libraryPid, libFile));
+            try {
+                return containerSource.produce();
+            } catch (Exception e) {
+                return null; // Can't happen
+            }
+        }
+
+        private Container baseSetupContainer(String libraryPid, File libraryFile) {
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Creating container for library [ " + libraryPid + " ] on [ " + libraryFile.getAbsolutePath() + " ]");
+            }
+
+            if (!FileUtils.fileExists(libraryFile)) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "Null library container: the library file does not exist.");
+                }
                 return null;
             }
 
-            File cacheDir = new File(getCacheDir(), pid);
+            File cacheDir = new File(getCacheDir(), libraryPid);
             if (!FileUtils.ensureDirExists(cacheDir)) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "Null library container: Cache [ " + cacheDir.getAbsolutePath() + " ] was not created");
+                }
                 return null;
             }
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Cache [ " + cacheDir.getAbsolutePath() + " ]");
+            }
 
-            ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, locationFile);
+            ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, libraryFile);
             if (artifactContainer == null) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "Null library container: Artifact container creation failed.");
+                }
                 return null;
             }
-
-            File cacheDirAdapt = new File(getCacheAdaptDir(), pid);
-            if (!FileUtils.ensureDirExists(cacheDirAdapt)) {
-                return null;
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Artifact container [ " + artifactContainer + " ]");
             }
 
-            File cacheDirOverlay = new File(getCacheOverlayDir(), pid);
-            if (!FileUtils.ensureDirExists(cacheDirOverlay)) {
+            File adaptDir = new File(getCacheAdaptDir(), libraryPid);
+            if (!FileUtils.ensureDirExists(adaptDir)) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] was not created");
+                }
                 return null;
             }
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Adapt directory [ " + adaptDir.getAbsolutePath() + " ]");
+            }
 
-            return moduleFactory.getContainer(cacheDirAdapt, cacheDirOverlay, artifactContainer);
+            File overlayDir = new File(getCacheOverlayDir(), libraryPid);
+            if (!FileUtils.ensureDirExists(overlayDir)) {
+                if (_tc.isDebugEnabled()) {
+                    Tr.debug(_tc, "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] was not created");
+                }
+                return null;
+            }
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, "Overlay directory [ " + overlayDir.getAbsolutePath() + " ]");
+            }
+
+            Container adaptableContainer = moduleFactory.getContainer(adaptDir, overlayDir, artifactContainer);
+            if (_tc.isDebugEnabled()) {
+                if (adaptableContainer == null) {
+                    Tr.debug(_tc, "Null library container: Adaptable container creation failed");
+                } else {
+                    Tr.debug(_tc, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
+                }
+            }
+            return adaptableContainer;
         }
 
         private File getCacheAdaptDir() {
