@@ -55,7 +55,7 @@ instrument.disabled: true
     com.google.guava:failureaccess;version=1.0.1,\
     com.ibm.ws.com.google.guava;version=latest, \
     com.google.j2objc:j2objc-annotations;version=1.1, \
-    com.google.protobuf:protobuf-java;version=3.19.6, \
+    com.google.protobuf:protobuf-java;version=3.23.4, \
     org.checkerframework:checker-compat-qual;version=2.5.2,\
     io.openliberty.grpc.1.0.internal.common;version=latest,\
     io.openliberty.grpc.1.0.internal.client;version=latest,\

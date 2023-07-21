@@ -30,11 +30,6 @@ private static final long serialVersionUID = 0L;
     return new GenreCountResponse();
   }
 
-  @java.lang.Override
-  public final com.google.protobuf.UnknownFieldSet
-  getUnknownFields() {
-    return this.unknownFields;
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return com.ibm.test.g3store.grpc.AppConsumerProto.internal_static_test_g3store_grpc_GenreCountResponse_descriptor;
@@ -49,6 +44,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOTALGENRECOUNTS_FIELD_NUMBER = 1;
+  @SuppressWarnings("serial")
   private java.util.List<com.ibm.test.g3store.grpc.GenreCounts> totalGenreCounts_;
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
@@ -199,11 +195,13 @@ private static final long serialVersionUID = 0L;
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
+
   public static com.ibm.test.g3store.grpc.GenreCountResponse parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
+
   public static com.ibm.test.g3store.grpc.GenreCountResponse parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -282,6 +280,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       if (totalGenreCountsBuilder_ == null) {
         totalGenreCounts_ = java.util.Collections.emptyList();
       } else {
@@ -315,7 +314,13 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreCountResponse buildPartial() {
       com.ibm.test.g3store.grpc.GenreCountResponse result = new com.ibm.test.g3store.grpc.GenreCountResponse(this);
-      int from_bitField0_ = bitField0_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartialRepeatedFields(com.ibm.test.g3store.grpc.GenreCountResponse result) {
       if (totalGenreCountsBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
           totalGenreCounts_ = java.util.Collections.unmodifiableList(totalGenreCounts_);
@@ -325,8 +330,10 @@ private static final long serialVersionUID = 0L;
       } else {
         result.totalGenreCounts_ = totalGenreCountsBuilder_.build();
       }
-      onBuilt();
-      return result;
+    }
+
+    private void buildPartial0(com.ibm.test.g3store.grpc.GenreCountResponse result) {
+      int from_bitField0_ = bitField0_;
     }
 
     @java.lang.Override
