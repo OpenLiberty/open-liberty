@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
@@ -53,6 +54,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -95,6 +97,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpUtil;
 
@@ -2924,7 +2927,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         System.out.println("MSP send full outgoing 4");
         setMessageSent();
+        MSP.log("set message");
         synchWrite();
+        MSP.log("wrote");
     }
 
     /**
@@ -3184,79 +3189,86 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     private void synchWrite() throws IOException {
 
+        MSP.log("getting buff list");
         WsByteBuffer[] writeBuffers = getBuffList();
+        MSP.log("is buff list null: " + Objects.isNull(writeBuffers));
+
+        if (myChannelConfig.useNetty()) {
+            MSP.log("sync write");
+            this.nettyContext.channel().write(this.nettyResponse);
+            DefaultHttpContent content;
+            if (Objects.nonNull(writeBuffers)) {
+                for (WsByteBuffer buffer : writeBuffers) {
+                    this.nettyContext.channel().write(buffer);
+                    //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
+
+                }
+                this.nettyContext.channel().flush();
+            }
+            return;
+        }
+
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
 
-            System.out.println("MSP attempting write");
-
-            if (myChannelConfig.useNetty()) {
-                this.nettyContext.channel().write(this.nettyResponse);
-                for (WsByteBuffer buffer : writeBuffers) {
-                    this.nettyContext.channel().write(buffer);
+            getTSC().getWriteInterface().setBuffers(writeBuffers);
+            try {
+                getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
+            } catch (IOException ioe) {
+                // no FFDC required
+                // just need to set the "broken" connection flag
+                // 313642 - print the message as well
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IOException during sync write: " + ioe.getMessage());
                 }
-                this.nettyContext.channel().flush();
-            } else {
+                setPersistent(false);
+                logLegacyMessage();
+                //Additional throw IOE for inbound connections check added for PI57542
+                if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
+                    // This is a server response and the request originator (the remote client) is no longer reachable.
+                    // Swallow this exception: nothing useful can be done on the server and no further work can come in.
+                    return;
+                }
+                throw ioe;
+            } finally {
+                // 457369 - disconnect write buffers in TCP when done
+                getTSC().getWriteInterface().setBuffers(null);
+            }
+        }
 
-                getTSC().getWriteInterface().setBuffers(writeBuffers);
+        if (this.isH2Connection && !framesToWrite.isEmpty()) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Writing out H2 Frames");
+            }
+            HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+
+            if (context.getLink() instanceof H2HttpInboundLinkWrap) {
+                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+
                 try {
-                    getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
+                    link.writeFramesSync(framesToWrite);
                 } catch (IOException ioe) {
-                    // no FFDC required
-                    // just need to set the "broken" connection flag
-                    // 313642 - print the message as well
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "IOException during sync write: " + ioe.getMessage());
+                        Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
                     }
-                    setPersistent(false);
-                    logLegacyMessage();
-                    //Additional throw IOE for inbound connections check added for PI57542
                     if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
                         // This is a server response and the request originator (the remote client) is no longer reachable.
                         // Swallow this exception: nothing useful can be done on the server and no further work can come in.
                         return;
                     }
+                    //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
                     throw ioe;
                 } finally {
-                    // 457369 - disconnect write buffers in TCP when done
-                    getTSC().getWriteInterface().setBuffers(null);
+                    framesToWrite.clear();
                 }
             }
 
-            if (this.isH2Connection && !framesToWrite.isEmpty()) {
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Writing out H2 Frames");
-                }
-                HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
-
-                if (context.getLink() instanceof H2HttpInboundLinkWrap) {
-                    H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
-
-                    try {
-                        link.writeFramesSync(framesToWrite);
-                    } catch (IOException ioe) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
-                        }
-                        if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
-                            // This is a server response and the request originator (the remote client) is no longer reachable.
-                            // Swallow this exception: nothing useful can be done on the server and no further work can come in.
-                            return;
-                        }
-                        //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
-                        throw ioe;
-                    } finally {
-                        framesToWrite.clear();
-                    }
-                }
-
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Sync write has no data to send.");
-                }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Sync write has no data to send.");
             }
         }
     }
