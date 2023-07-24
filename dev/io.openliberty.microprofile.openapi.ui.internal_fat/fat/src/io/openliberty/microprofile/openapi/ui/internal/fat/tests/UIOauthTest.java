@@ -110,13 +110,14 @@ public class UIOauthTest {
 
     @After
     public void teardownTest() throws Exception {
-        //close the browser before stopping the server
+        //close the browser before stopping the server to reduce changes of open connections
         driver.quit();
         server.stopServer();
     }
 
     @Test
     public void defaultPathOAuthTest() throws Exception {
+        // Set the OAuth Endpoint configuration
         server.addEnvVar(UI_PATH_PROPERTY,UI_PATH_VALUE);
 
         server.startServer();
@@ -127,12 +128,12 @@ public class UIOauthTest {
 
     @Test
     public void customPathOAuthTest() throws Exception{
-        //Set the mpOpenAPI endpoint configuration
+        // Set the mpOpenAPI endpoint configuration
         ServerConfiguration config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setUiPath(CUSTOM_UI_PATH_VALUE);
         config.getMpOpenAPIElement().setDocPath(DOC_PATH_VALUE);
         server.updateServerConfiguration(config);
-
+        // Set the OAuth Endpoint configuration
         server.addEnvVar(UI_PATH_PROPERTY, CUSTOM_UI_PATH_VALUE);
 
         server.startServer();

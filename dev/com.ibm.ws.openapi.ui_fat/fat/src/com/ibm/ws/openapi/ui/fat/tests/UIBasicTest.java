@@ -89,7 +89,8 @@ public class UIBasicTest {
 
     @After
     public void teardownTest() throws Exception {
-        //close the browser before stopping the server
+        // Ensure clean closure of selenium components at end of test
+        // As no server changes required, no need to stop the server
         driver.quit();
     }
 

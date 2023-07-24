@@ -95,7 +95,7 @@ public class UICustomPathTest {
 
     @After
     public void teardownTest() throws Exception {
-        //close the browser before stopping the server
+        // Close the browser after tests to ensure selenium is clean between tests
         driver.quit();
     }
 
@@ -107,7 +107,6 @@ public class UICustomPathTest {
 
     @Test
     public void testCustomUIPath() {
-
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
