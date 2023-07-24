@@ -53,6 +53,7 @@ fat.test.container.images: jiwoo/simple-keyserver:1.0
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.ws.org.slf4j.jdk14;version=latest,\
 	wlp.lib.extract;version=latest
 
 -testpath: \
@@ -73,4 +74,4 @@ fat.test.container.images: jiwoo/simple-keyserver:1.0
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
-	wlp.lib.extract;version=latest
+	wlp.lib.extract;version=latest,\
