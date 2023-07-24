@@ -15,6 +15,7 @@ Subsystem-Name: Secure Socket Layer 1.0
  com.ibm.websphere.security, \
  com.ibm.ws.crypto.certificateutil, \
  io.openliberty.wsoc.ssl.internal, \
+ io.openliberty.endpoint, \
  io.openliberty.io.netty, \
  io.openliberty.io.netty.ssl, \
  io.openliberty.netty.internal, \

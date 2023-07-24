@@ -13,8 +13,7 @@
  -->
 
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
-                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
-                   localization="OSGI-INF/l10n/metatype">
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
 
    <OCD id="io.openliberty.netty.internal.tls" ibm:alias="nettyTlsProvider" name="internal" description="internal use only">
    </OCD>
