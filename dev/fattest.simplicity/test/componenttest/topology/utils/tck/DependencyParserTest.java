@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.topology.utils.tck.test;
+package componenttest.topology.utils.tck;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
