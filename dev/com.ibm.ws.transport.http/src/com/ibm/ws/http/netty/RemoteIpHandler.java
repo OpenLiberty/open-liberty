@@ -12,7 +12,6 @@ package com.ibm.ws.http.netty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -20,6 +19,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  *
@@ -33,15 +33,20 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         FOR, BY
     };
 
+    private static final String FOR = "for";
+    private static final String BY = "by";
+    private static final String PROTO = "proto";
+    private static final String HOST = "host";
+
     static final String FORWARDED_HEADER = "Forwarded";
-    static final String X_FORWARDED_IP_HEADER = "X-Forwarded-For";
+    static final String X_FORWARDED_FOR = "X-Forwarded-For";
+    static final String X_FORWARDED_BY = "X-Forwarded-By";
     static final String X_FORWARDED_HOST_HEADER = "X-Forwarded-Host";
     static final String X_FORWARDED_PORT_HEADER = "X-Forwarded-Port";
     static final String X_FORWARDED_PROTO_HEADER = "X-Forwarded-Proto";
 
     Pattern proxies;
     Boolean useInAccessLog;
-    Matcher matcher;
 
     String forwardedProto;
     String forwardedHost;
@@ -50,482 +55,330 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     List<String> forwardedFor = new ArrayList<String>();
     List<String> forwardedBy = new ArrayList<String>();
 
+    boolean noErrors;
+
     public RemoteIpHandler(HttpChannelConfig httpConfig) {
         MSP.log("Forwarded handler created. Good config: " + Objects.nonNull(httpConfig));
         Objects.requireNonNull(httpConfig);
         proxies = httpConfig.getForwardedProxiesRegex();
         useInAccessLog = httpConfig.useForwardingHeadersInAccessLog();
 
+        noErrors = Boolean.TRUE;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
 
-        //get forwarded
-        //not empty? use this, empty? try xforwarded
-
-        //parse and validate
-        //set attributes
+//        String remote = context.channel().remoteAddress().toString();
+//        Matcher matcher = proxies.matcher(remote);
+//
+//        if (matcher.matches()) {
+//
+//        }
 
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
 
         if (!Objects.isNull(forwardedHeader)) {
 
-            System.out.println("Forwarded: " + forwardedHeader);
+            this.parseForwarded(request);
 
         }
 
         else {
-            System.out.println(request.headers().get(X_FORWARDED_HOST_HEADER));
-            request.headers().add("Yes", "Sir");
+            this.parseXForwarded(request);
+        }
+
+        if (noErrors) {
+
+            context.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).set(forwardedHost);
+            context.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).set(forwardedPort);
+            context.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).set(forwardedProto);
+
+            context.channel().attr(NettyHttpConstants.FORWARDED_BY_KEY).set(forwardedBy.toArray(new String[forwardedBy.size()]));
+            context.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).set(forwardedFor.toArray(new String[forwardedFor.size()]));
+
+            MSP.log("ForwardedHost: " + forwardedHost);
+            MSP.log("Forwarded Port: " + forwardedPort);
+            MSP.log("Forwarded Proto: " + forwardedProto);
+
         }
 
         context.fireChannelRead(request);
 
     }
 
-//        //Favor the spec defined header
-//        if (request.headers().contains("forwarded")) {
-//            this.parseForwarded(request);
-//        } else {
-//            this.parseXForwarded(request);
-//        }
-//
-//        //tc, Verifying connected endpoint matches proxy regex
-//
-//        String remoteIp = context.channel().remoteAddress().toString();
-//
-//        matcher = proxies.matcher(remoteIp);
-//        if (matcher.matches()) {
-//            //tc connectected endpoint matched, verifying forwarded FOR list addresses
-//
-//            List<String> forwardedForValues = Collections.EMPTY_LIST;
-//
-//            if (Objects.isNull(forwardedForValues) || forwardedForValues.isEmpty()) {
-//
-//                return;
-//            }
-//
-//            for (String proxy : forwardedForValues) {
-//                matcher = proxies.matcher(proxy);
-//                if (!matcher.matches()) {
-//                    //debug Found address not defined in proxy regex, forwarded values will not be used
-//                    return;
-//                }
-//            }
-//
-//            //First check that the last node identifier is not an obfuscated address or
-//            //unknown token
-//            if (Objects.isNull(forwardedForValues) || "unknown".equalsIgnoreCase(forwardedForValues.get(0))
-//                || forwardedForValues.get(0).startsWith("_")) {
-//
-//                //Client address is unknown or obfuscated, forwarded values will not be used
-//                //exit
-//                return;
-//            }
+    /**
+     * Used when a misconfigured forwarded or x-forwarded-* header is used. Attributes
+     * will not be set when the error flag is set.
+     */
+    private void setErrorState() {
+        this.forwardedBy = null;
+        this.forwardedFor = null;
+        this.forwardedHost = null;
+        this.forwardedPort = null;
+        this.forwardedProto = null;
+        this.noErrors = Boolean.FALSE;
+    }
 
-    //Set attributes values
+    private void parseForwarded(FullHttpRequest request) {
 
-//              this.forwardedRemotePort = Integer.parseInt(getMessageBeingParsed().getForwardedPort());
-//          } catch (NumberFormatException e) {
-    //
-//              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                  Tr.debug(tc, "Remote port provided was either obfuscated or malformed, forwarded values will not be used.");
-//                  Tr.exit(tc, "initForwardedValues");
-//              }
-//              return;
-//          }
-    //
-//      }
-    //
-//      this.forwardedRemoteAddress = forwardedForList[0];
-//      this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
-//      this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+        List<String> values = request.headers().getAll(FORWARDED_HEADER);
+        if (Objects.nonNull(values) && !values.isEmpty()) {
+            values.forEach(this::processForwardedHeader);
+        }
+    }
 
-//    private void parseForwarded(FullHttpRequest request) {
-//
-//        //Each Forwarded header may consist of a combination of the four
-//        //spec defined parameters: by, for, host, proto. When more than
-//        //one parameter is present, the header value will use the semi-
-//        //colon character to delimit between them.
-//        String[] parameters = null;
-//        String[] nodes = null;
-//        String node = null;
-//        String nodeExtract = null;
-//
-//        for (String value : request.headers().getAll("forwarded")) {
-//            parameters = value.split(";");
-//
-//            for (String param : parameters) {
-//                //The "for" and "by" parameters could be comma delimited
-//                //lists. As such, lets split this again to save the
-//                //data in the same format as X-Forwarding
-//                nodes = param.split(",");
-//
-//                //Note that HTTP list allows white spaces between the identifiers, as such,
-//                //trim the string before evaluating.
-//                node = value.trim();
-//                try {
-//                    nodeExtract = node.substring(node.indexOf("=") + 1);
-//                } catch (IndexOutOfBoundsException e) {
-//                    processForwardedErrorState();
-//                    // if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    //     Tr.debug(tc, "Forwarded header node value was malformed.");
-//                    //     Tr.exit(tc, "processSpecForwardedHeader");
-//                    // }
-//                    return;
-//                }
-//                if (node.toLowerCase().startsWith(FOR)) {
-//
-//                    processForwardedAddressExtract(nodeExtract, ListType.FOR);
-//
-//                } else if (node.toLowerCase().startsWith(BY)) {
-//
-//                    processForwardedAddressExtract(nodeExtract, ListType.BY);
-//
-//                } else if (node.toLowerCase().startsWith(PROTO)) {
-//                    forwardedProto = nodeExtract;
-//                    boolean validProto = validateProto(forwardedProto);
-//                    if (!validProto) {
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                            Tr.debug(tc, "Forwarded header proto value was malformed: " + forwardedProto);
-//                        }
-//                        processForwardedErrorState();
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                            Tr.exit(tc, "processSpecForwardedHeader");
-//                        }
-//                        return;
-//                    }
-//                } else if (node.toLowerCase().startsWith(HOST)) {
-//                    forwardedHost = nodeExtract;
-//                    forwardedHost = validateForwardedHost(forwardedHost);
-//                    if (forwardedHost == null) {
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                            Tr.debug(tc, "Forwarded header host value was malformed: " + nodeExtract);
-//                        }
-//                        processForwardedErrorState();
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                            Tr.exit(tc, "processSpecForwardedHeader");
-//                        }
-//                        return;
-//                    }
-//                }
-//                //Unrecognized parameter
-//                else {
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.debug(tc, "Unrecognized parameter if Forwarded header: " + node);
-//                    }
-//                    processForwardedErrorState();
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.exit(tc, "processSpecForwardedHeader");
-//                    }
-//                    return;
-//                }
-//
-//                //Check that processing of this node has not entered error state
-//                if (forwardHeaderErrorState) {
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.exit(tc, "processSpecForwardedHeader");
-//                    }
-//                    return;
-//                }
-//            }
-//        }
-//
-//    }
-//    // Tr.entry(tc, "processSpecForwardedHeader");
-//
-//    //Each Forwarded header may consist of a combination of the four
-//    //spec defined parameters: by, for, host, proto. When more than
-//    //one parameter is present, the header value will use the semi-
-//    //colon character to delimit between them.
-//    String[] parameters = header.getDebugValue().split(";");
-//    String[] nodes = null;
-//    String node = null;
-//    String nodeExtract = null;
-//
-//    for(
-//    String param:parameters)
-//    {
-//
-//        //The "for" and "by" parameters could be comma delimited
-//        //lists. As such, lets split this again to save the
-//        //data in the same format as X-Forwarding
-//        nodes = param.split(",");
-//
-//        for (String value : nodes) {
-//
-//            //Note that HTTP list allows white spaces between the identifiers, as such,
-//            //trim the string before evaluating.
-//            node = value.trim();
-//            try {
-//                nodeExtract = node.substring(node.indexOf("=") + 1);
-//            } catch (IndexOutOfBoundsException e) {
-//                processForwardedErrorState();
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    Tr.debug(tc, "Forwarded header node value was malformed.");
-//                    Tr.exit(tc, "processSpecForwardedHeader");
-//                }
-//                return;
-//            }
-//
-//            if (node.toLowerCase().startsWith(FOR)) {
-//
-//                processForwardedAddressExtract(nodeExtract, ListType.FOR);
-//
-//            } else if (node.toLowerCase().startsWith(BY)) {
-//
-//                processForwardedAddressExtract(nodeExtract, ListType.BY);
-//
-//            } else if (node.toLowerCase().startsWith(PROTO)) {
-//                forwardedProto = nodeExtract;
-//                boolean validProto = validateProto(forwardedProto);
-//                if (!validProto) {
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.debug(tc, "Forwarded header proto value was malformed: " + forwardedProto);
-//                    }
-//                    processForwardedErrorState();
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.exit(tc, "processSpecForwardedHeader");
-//                    }
-//                    return;
-//                }
-//            } else if (node.toLowerCase().startsWith(HOST)) {
-//                forwardedHost = nodeExtract;
-//                forwardedHost = validateForwardedHost(forwardedHost);
-//                if (forwardedHost == null) {
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.debug(tc, "Forwarded header host value was malformed: " + nodeExtract);
-//                    }
-//                    processForwardedErrorState();
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.exit(tc, "processSpecForwardedHeader");
-//                    }
-//                    return;
-//                }
-//            }
-//            //Unrecognized parameter
-//            else {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    Tr.debug(tc, "Unrecognized parameter if Forwarded header: " + node);
-//                }
-//                processForwardedErrorState();
-//
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    Tr.exit(tc, "processSpecForwardedHeader");
-//                }
-//                return;
-//            }
-//
-//            //Check that processing of this node has not entered error state
-//            if (forwardHeaderErrorState) {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    Tr.exit(tc, "processSpecForwardedHeader");
-//                }
-//                return;
-//            }
-//        }
-//
-//    }if(TraceComponent.isAnyTracingEnabled()&&tc.isEntryEnabled())
-//    {
-//        Tr.exit(tc, "processSpecForwardedHeader");
-//    }
-//
-//    }
-//
-//    private void parseXForwarded(FullHttpRequest request) {
-//
-//        for(request.headers().getAll("))
-//
-//            processSpecForwardedHeader(header);
-//
-//        }
-//
-//    else
-//
-//    {
-//        //We received an X-Forwarded-* header, while having already processed
-//        //a Forwarded header. In this case, just exit this processing and
-//        //do not change the state of the internal instances. The X-Forwarding
-//        //information is cleared out on the first Forwarded processed header,
-//        //so it should be clear at this point.
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "X-Forwarded header received after Forwarded header tracking has been enabled, "
-//                         + "X-Forwarded header will not be processed");
-//        }
-//    }if(TraceComponent.isAnyTracingEnabled()&&tc.isEntryEnabled())
-//    {
-//        Tr.exit(tc, "processForwardedHeader");
-//    }
-//    }
-//
-//    /**
-//     * Returns a String representation of the provided address node delimiter
-//     * which is used to update the Forwarded for/by builders. This
-//     * method will remove any provided port in the process, with the exception
-//     * of the very first element added to the list. The first element would
-//     * correspond to the client address, and as such, the port is saved off
-//     * to be referenced as the remote port.
-//     *
-//     * @param nodeExtract
-//     * @return
-//     */
-//    private void processForwardedAddressExtract(String nodeExtract, ListType type) {
-//
-//        List<String> list = null;
-//        if (type == ListType.BY) {
-//            list = this.forwardedBy;
-//        }
-//        if (type == ListType.FOR) {
-//            list = this.forwardedFor;
-//        }
-//
-//        //The node identifier is defined by the ABNF syntax as
-//        //        node     = nodename [ ":" node-port ]
-//        //                   nodename = IPv4address / "[" IPv6address "]" /
-//        //                             "unknown" / obfnode
-//        //As such, to make it equivalent to the de-facto headers, remove the quotations
-//        //and possible port
-//        String extract = nodeExtract.replaceAll("\"", "").trim();
-//        String nodeName = null;
-//
-//        //obfnodes are only allowed to contain ALPHA / DIGIT / "." / "_" / "-"
-//        //so if the token contains "[", it is an IPv6 address
-//        int openBracket = extract.indexOf("[");
-//        int closedBracket = extract.indexOf("]");
-//
-//        if (openBracket > -1) {
-//            //This is an IPv6address
-//            //The nodename is enclosed in "[ ]", get it now
-//
-//            //If the first character isn't the open bracket or if a close bracket
-//            //is not provided, this is a badly formed header
-//            if (openBracket != 0 || !(closedBracket > -1)) {
-//                processForwardedErrorState();
-//                //badly formated header
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                    Tr.debug(tc, "Forwarded header IPv6 was malformed.");
-//                    Tr.exit(tc, "processForwardedHeader");
-//                }
-//                return;
-//            }
-//
-//            nodeName = extract.substring(openBracket + 1, closedBracket);
-//
-//            //If this extract contains a port, there will be a ":" after
-//            //the closing bracket. Only get it if this is the first address
-//            //being added to the "for" list
-//            if ((type == ListType.FOR) && list.isEmpty() && extract.contains("]:")) {
-//                try {
-//                    this.forwardedPort = extract.substring(closedBracket + 2);
-//                } catch (IndexOutOfBoundsException e) {
-//                    processForwardedErrorState();
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                        Tr.debug(tc, "Forwarded header IPv6 port was malformed.");
-//                        Tr.exit(tc, "processForwardedHeader");
-//                    }
-//                    return;
-//                }
-//            }
-//
-//        }
-//
-//        //Simply delimit by ":" on other node types to separate nodename and node-port
-//        else {
-//
-//            if (extract.contains(":")) {
-//                int index = extract.indexOf(":");
-//                nodeName = extract.substring(0, index);
-//                //Record the port if this is the first address being added to the
-//                //"for" list, corresponding to the client
-//                if ((type == ListType.FOR) && list.isEmpty()) {
-//                    try {
-//                        this.forwardedPort = extract.substring(index + 1);
-//                    } catch (IndexOutOfBoundsException e) {
-//                        processForwardedErrorState();
-//                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//                            Tr.debug(tc, "Forwarded header node-port was malformed.");
-//                            Tr.exit(tc, "processForwardedHeader");
-//                        }
-//                        return;
-//                    }
-//
-//                }
-//            }
-//            //No port or "[ ]" characters, the nodename is the entire provided extract
-//            else {
-//                nodeName = extract;
-//            }
-//
-//        }
-//
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-//            Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
-//            Tr.exit(tc, "processForwardedHeader");
-//        }
-//        list.add(nodeName);
-//    }
-//
-//    /*
-//     * A valid proto may start with an alpha followed by any number of chars that are
-//     * - alpha
-//     * - numeric
-//     * - "+" or "-" or "."
-//     */
-//
-//    private boolean validateProto(String forwardedProto) {
-//
-//       //     Tr.entry(tc, "validateProto");
-//
-//        char[] a = forwardedProto.toCharArray();
-//        boolean valid = true;
-//        char c = a[0];
-//        valid = ((c >= 'a') && (c <= 'z')) ||
-//                ((c >= 'A') && (c <= 'Z'));
-//        if (valid) {
-//
-//            for (int i = 1; i < a.length; i++) {
-//                c = a[i];
-//                valid = ((c >= 'a') && (c <= 'z')) ||
-//                        ((c >= 'A') && (c <= 'Z')) ||
-//                        ((c >= '0') && (c <= '9')) ||
-//                        (c == '+') || (c == '-') || (c == '.');
-//                if (!valid) {
-//                    break;
-//                }
-//            }
-//
-//        }
-//
-//        //    Tr.debug(tc, "ValidateProto value is valid: " + valid);
-//        //    Tr.exit(tc, "validateProto");
-//        return valid;
-//
-//    }
-//
-//    /*
-//     * Valid hostname can be a bracketed ipv6 address, or
-//     * any other string.
-//     * Validate the ipv6 address has opening and closing brackets.
-//     */
-//
-//   private String validateForwardedHost(String forwardedHost) {
-//       int openBracket = forwardedHost.indexOf("[");
-//       int closedBracket = forwardedHost.indexOf("]");
-//       String nodename = forwardedHost;
-//
-//       if (openBracket > -1) {
-//           //This is an IPv6address
-//           //The nodename is enclosed in "[ ]", get it now
-//
-//           //If the first character isn't the open bracket or if close bracket
-//           //is missing, this is a badly formed header
-//           if (openBracket != 0 || !(closedBracket > -1)) {
-//               nodename = null;
-//           }
-//       }
-//       return nodename;
-//   }
+    private void processForwardedHeader(String value) {
+        //Each Forwarded header may consist of a combination of the four
+        //spec defined parameters: by, for, host, proto. When more than
+        //one parameter is present, the header value will use the semi-
+        //colon character to delimit between them.
+        String[] parameters = value.split(";");
+        String[] nodes = null;
+        String node = null;
+        String nodeExtract = null;
+
+        for (String param : parameters) {
+            //The "for" and "by" parameters could be comma delimitted
+            //lists. As such, lets split this again to save the data in the same
+            //format as X-Forwarding
+            nodes = param.split(",");
+
+            for (String split : nodes) {
+                //Note that HTTP list allows white spaces between the identifiers, as such,
+                //trim the string before evaluating. Normalize it to lowercase as well
+                node = split.toLowerCase().trim();
+
+                try {
+                    nodeExtract = node.substring(node.indexOf("=") + 1);
+                } catch (IndexOutOfBoundsException e) {
+                    setErrorState();
+                    //TODO: debug error
+                    return;
+                }
+
+                switch (node) {
+                    case (FOR): {
+                        processForwardedAddress(nodeExtract, ListType.FOR);
+                        break;
+                    }
+                    case (BY): {
+                        processForwardedAddress(nodeExtract, ListType.BY);
+                        break;
+                    }
+                    case (PROTO): {
+                        forwardedProto = this.isValidProto(nodeExtract) ? nodeExtract : null;
+                        if (Objects.isNull(forwardedProto)) {
+                            MSP.log("Forwarded header proto value was malformed: " + nodeExtract);
+                            this.setErrorState();
+                            //TODO exit log
+                            return;
+                        }
+                        break;
+                    }
+                    case (HOST): {
+                        forwardedHost = this.isValidHost(nodeExtract) ? forwardedHost : null;
+                        if (Objects.isNull(forwardedHost)) {
+                            MSP.log("Forwarded header host value was malformed: " + nodeExtract);
+                            this.setErrorState();
+                            //TODO exit log
+                            return;
+                        }
+                        break;
+                    }
+                    default: {
+                        MSP.log("Unrecognized parameter in Forwarded header: " + node);
+                        setErrorState();
+                    }
+                }
+                if (!noErrors) {
+                    MSP.log("processForwardedHeader");
+                    return;
+                }
+            }
+        }
+
+        MSP.log("processForwardedHeader");
+
+    }
+
+    private void processForwardedAddress(String address, ListType type) {
+        List<String> list = null;
+
+        if (type == ListType.BY) {
+            list = this.forwardedBy;
+        }
+
+        if (type == ListType.FOR) {
+            list = this.forwardedFor;
+        }
+
+        String extract = address.replaceAll("\"", "").trim();
+        String nodeName = null;
+
+        int openBracket = extract.indexOf("[");
+        int closedBracket = extract.indexOf("]");
+
+        if (openBracket > -1) {
+            //This is an IPv6 address
+            //The nodename is enclosed in "[ ]", get it now
+
+            if (openBracket != 0 || !(closedBracket > -1)) {
+                setErrorState();
+                MSP.log("Forwarded header IPv6 was malformed");
+            }
+            return;
+        }
+
+        nodeName = extract.substring(openBracket + 1, closedBracket);
+
+        if ((type == ListType.FOR) && list.isEmpty() && extract.contains("]:")) {
+            try {
+                this.forwardedPort = extract.substring(closedBracket + 2);
+            } catch (IndexOutOfBoundsException e) {
+                setErrorState();
+                //TODO log error
+                return;
+            }
+        }
+
+        //Simply delimit by ":" on other node types to separate nodename and node-port
+        else {
+            if (extract.contains(":")) {
+                int index = extract.indexOf(":");
+                nodeName = extract.substring(0, index);
+                if ((type == ListType.FOR) && list.isEmpty()) {
+                    try {
+                        this.forwardedPort = extract.substring(index + 1);
+                    } catch (IndexOutOfBoundsException e) {
+                        setErrorState();
+                        //TODO: log error
+                        return;
+                    }
+                }
+            }
+            // No port or "[ ]" character, the nodename is the entire provided extract
+            else {
+
+                nodeName = extract;
+            }
+        }
+        MSP.log("Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+
+        list.add(nodeName);
+    }
+
+    private void parseXForwarded(FullHttpRequest request) {
+
+        List<String> value;
+        HttpHeaders headers = request.headers();
+        Objects.nonNull(headers);
+
+        value = headers.getAll(X_FORWARDED_FOR);
+        if (Objects.nonNull(value)) {
+            value.forEach(this::processXForwardedFor);
+        }
+
+        value = headers.getAll(X_FORWARDED_BY);
+        if (Objects.nonNull(value)) {
+            value.forEach(this::processXForwardedBy);
+        }
+
+        value = headers.getAll(X_FORWARDED_PROTO_HEADER);
+        if (Objects.nonNull(value) && this.isValidProto(value.get(value.size() - 1))) {
+            // this.forwardedProto;
+        }
+
+        this.forwardedHost = NettyHeaderUtils.getLast(headers, X_FORWARDED_HOST_HEADER);
+        this.forwardedPort = NettyHeaderUtils.getLast(headers, X_FORWARDED_PORT_HEADER);
+
+    }
+
+    /**
+     * The forwarded FOR and BY lists are comma delimited. Split by the comma
+     * character and add each value to the corresponding list.
+     *
+     * @param header
+     * @param list
+     */
+    private void processXForwardedAddress(String header, ListType type) {
+
+        String[] addresses = header.split(",");
+        for (String address : addresses) {
+            if (type == ListType.BY) {
+                this.forwardedBy.add(address.trim());
+            } else {
+                this.forwardedFor.add(address.trim());
+            }
+        }
+    }
+
+    private void processXForwardedBy(String header) {
+        processXForwardedAddress(header, ListType.BY);
+    }
+
+    private void processXForwardedFor(String header) {
+
+        processXForwardedAddress(header, ListType.FOR);
+    }
+
+    /**
+     * Ver
+     *
+     * @param forwardedHost
+     * @return
+     */
+    private boolean isValidHost(String forwardedHost) {
+
+        boolean valid = Boolean.TRUE;
+
+        int openBracket = forwardedHost.indexOf("[");
+        int closedBracket = forwardedHost.indexOf("]");
+
+        if (openBracket > -1) {
+            if (openBracket != 0 || !(closedBracket > -1)) {
+                valid = Boolean.FALSE;
+            }
+        }
+
+        return valid;
+    }
+
+    /*
+     * A valid proto may start with an alpha followed by any number of chars that are
+     * - alpha
+     * - numeric
+     * - "+" or "-" or "."
+     */
+
+    private boolean isValidProto(String forwardedProto) {
+
+        //     Tr.entry(tc, "validateProto");
+
+        char[] a = forwardedProto.toCharArray();
+        boolean valid = true;
+        char c = a[0];
+        valid = ((c >= 'a') && (c <= 'z')) ||
+                ((c >= 'A') && (c <= 'Z'));
+        if (valid) {
+
+            for (int i = 1; i < a.length; i++) {
+                c = a[i];
+                valid = ((c >= 'a') && (c <= 'z')) ||
+                        ((c >= 'A') && (c <= 'Z')) ||
+                        ((c >= '0') && (c <= '9')) ||
+                        (c == '+') || (c == '-') || (c == '.');
+                if (!valid) {
+                    break;
+                }
+            }
+
+        }
+
+        //    Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        //    Tr.exit(tc, "validateProto");
+        return valid;
+
+    }
 
 }
