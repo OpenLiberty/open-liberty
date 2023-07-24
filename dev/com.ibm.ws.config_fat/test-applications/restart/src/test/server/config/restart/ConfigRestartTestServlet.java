@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -71,6 +71,8 @@ public class ConfigRestartTestServlet extends HttpServlet {
                 testAfterVariable(bundleContext, references);
             } else if ("checkImport".equals(testName)) {
                 testCheckImport(bundleContext, references);
+            } else if ("includeDir".equals(testName)) {
+                testIncludeDir(bundleContext, references);
             } else if (ServerConfigTest.CHECK_VARIABLE_IMPORT.equals(testName)) {
                 testCheckVariableImport(bundleContext, references);
             } else if (ServerConfigTest.CHECK_VARIABLE_IMPORT_UPDATE.equals(testName)) {
@@ -257,6 +259,20 @@ public class ConfigRestartTestServlet extends HttpServlet {
         assertNotNull("There should be a configuration found for filter " + filter, configs);
         assertEquals("There should be 1 configuration for filter " + filter, 1, configs.length);
         assertEquals("Configuration firstName property", "Joe", configs[0].getProperties().get("firstName"));
+        assertEquals("Configuration lastName property", "Doe", configs[0].getProperties().get("lastName"));
+    }
+
+    private void testIncludeDir(BundleContext ctx, List<ServiceReference> references) throws Exception {
+        ConfigurationAdmin ca = getConfigurationAdmin(ctx, references);
+
+        Configuration[] configs = null;
+        String filter = null;
+
+        filter = "(" + Constants.SERVICE_PID + "=" + "person" + ")";
+        configs = getConfiguration(ca, filter);
+        assertNotNull("There should be a configuration found for filter " + filter, configs);
+        assertEquals("There should be 1 configuration for filter " + filter, 1, configs.length);
+        assertEquals("Configuration firstName property", "John", configs[0].getProperties().get("firstName"));
         assertEquals("Configuration lastName property", "Doe", configs[0].getProperties().get("lastName"));
     }
 
