@@ -13,6 +13,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,7 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -2152,6 +2154,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         System.out.println("MSP: netty forwarded start");
 
         String remoteIp = nettyContext.channel().remoteAddress().toString();
+        String attribute;
 
         System.out.println("MSP: remote IP");
 
@@ -2161,8 +2164,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
             }
 
-            String[] forwardedForList = null;//netty message getForwardedForList();
-            if (forwardedForList == null || forwardedForList.length == 0) {
+            String[] forwardedForList = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
+            if (Objects.isNull(forwardedForList) || forwardedForList.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
                     Tr.exit(tc, "initForwardedValues");
@@ -2183,7 +2186,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
             //First check that the last node identifier is not an obfuscated address or
             //unknown token
-            if (forwardedForList[0] == null || "unknown".equals(forwardedForList[0]) || forwardedForList[0].startsWith("_")) {
+            if (Objects.isNull(forwardedForList[0]) || "unknown".equals(forwardedForList[0]) || forwardedForList[0].startsWith("_")) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Client address is unknown or obfuscated, forwarded values will not be used");
                     Tr.exit(tc, "initForwardedValues");
@@ -2192,12 +2195,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
 
             //Check if a port was included
-            if (this.getMessageBeingParsed().getForwardedPort() != null) {
+            attribute = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
+            if (Objects.nonNull(attribute)) {
                 //If this port does not resolve to an integer, because it is obfuscated,
                 //malformed, or otherwise, then the address cannot be verified as being
                 //the client. If so, exit now.
                 try {
-                    this.forwardedRemotePort = Integer.parseInt(getMessageBeingParsed().getForwardedPort());
+                    this.forwardedRemotePort = Integer.parseInt(attribute);
                 } catch (NumberFormatException e) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2210,8 +2214,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
 
             this.forwardedRemoteAddress = forwardedForList[0];
-            this.forwardedHost = this.getMessageBeingParsed().getForwardedHost();
-            this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
+            this.forwardedHost = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();
+            this.forwardedProto = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).get();
 
         }
 
