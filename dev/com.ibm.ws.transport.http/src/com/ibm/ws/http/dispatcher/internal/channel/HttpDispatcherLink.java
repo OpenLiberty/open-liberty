@@ -183,11 +183,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context);
-        System.out.println("MSP: is config null?  " + config == null);
         this.isc.setHttpConfig(config);
 
         nettyRequest = request;
         this.request = new NettyHttpRequestImpl(HttpDispatcher.useEE7Streams());
+        ((NettyHttpRequestImpl) this.request).init(request, context.channel(), isc);
+
         this.response = new NettyHttpResponseImpl(this);
         this.isc.setNettyRequest(request);
         this.usingNetty = true;
