@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,6 +79,12 @@ public class JavaInfo {
     public static JavaInfo forServer(LibertyServer server) throws IOException {
         String serverJava = server.getServerEnv().getProperty("JAVA_HOME");
         return fromPath(serverJava);
+    }
+
+    //issue 25138
+    public static JavaInfo forClient(LibertyClient client) throws IOException {
+        String clientJava = client.getClientEnv().getProperty("JAVA_HOME");
+        return fromPath(clientJava);
     }
 
     /**
