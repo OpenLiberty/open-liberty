@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -97,6 +97,13 @@ public class LibertyClient {
     protected static final boolean GLOBAL_JAVA2SECURITY = FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+
+    //issue 25138 enabling FIPS-140-3 on client container
+    protected static final boolean GLOBAL_CLIENT_FIPS_140_3 = Boolean.parseBoolean(PrivHelper.getProperty("global.client.fips_140-3", "false"));
+    protected static final boolean GLOBAL_CLIENT_DEBUG_FIPS_140_3 = FAT_TEST_LOCALRUN //
+                    ? Boolean.parseBoolean(PrivHelper.getProperty("global.client.debug.fips_140-3", "true")) //
+                    : Boolean.parseBoolean(PrivHelper.getProperty("global.client.debug.fips_140-3", "false"));
+
     protected static final String GLOBAL_JVM_ARGS = PrivHelper.getProperty("global.jvm.args", "").trim();
     protected static final String TMP_DIR = PrivHelper.getProperty("java.io.tmpdir");
     protected static final boolean DO_COVERAGE = PrivHelper.getBoolean("test.coverage");
@@ -602,6 +609,9 @@ public class LibertyClient {
         // Always set tmp dir.
         JVM_ARGS += " -Djava.io.tmpdir=" + TMP_DIR;
 
+        //issue 25138
+        JavaInfo javaInfo = JavaInfo.forClient(this);
+
         // Add JaCoCo java agent to generate code coverage for FAT test run
         if (DO_COVERAGE) {
             JVM_ARGS += " " + JAVA_AGENT_FOR_JACOCO;
@@ -659,6 +669,21 @@ public class LibertyClient {
                 Log.info(c, "startClientWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
+        }
+
+        //issue 25138
+        // if we have FIPS 140-3 enabled, add JVM arg
+        if (isFIPS140_3Enabled()) {
+            if ((javaInfo.majorVersion() == 8) && (javaInfo.VENDOR == Vendor.IBM)) {
+                Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + Vendor.IBM);
+                Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for client " + getClientName() + ", adding JVM arguments to run with FIPS enabled");
+
+                JVM_ARGS += " -Xenablefips140-3";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                JVM_ARGS += " -Djavax.net.debug=all";
+            }
+
         }
 
         // Look for forced client trace..
@@ -3902,6 +3927,36 @@ public class LibertyClient {
         // of course there is a test fix installed ...it is a test fix build
         fixedIgnoreErrorsList.add("CWWKF0014W:");
 
+    }
+
+    //issue 25138
+    public boolean isFIPS140_3Enabled() {
+        boolean globalEnabled = GLOBAL_CLIENT_FIPS_140_3 || GLOBAL_CLIENT_DEBUG_FIPS_140_3;
+        Log.info(c, "isFIPS140_3Enabled", "Is global build properties FIPS_140_3 set for client " + getClientName() + "? " + globalEnabled);
+        return globalEnabled;
+    }
+
+    //issue 25138
+    public Properties getClientEnv() {
+        Properties props = new Properties();
+
+        props.put("JAVA_HOME", getMachineJavaJDK());
+
+        // First load ${wlp.install.dir}/etc/client.env
+        try {
+            String clientEnv = FileUtils.readFile(getInstallRoot() + "/etc/client.env");
+            props.load(new StringReader(clientEnv.replace("\\", "\\\\")));
+        } catch (IOException ignore) {
+        }
+
+        // Then load ${server.config.dir}/server.env
+        try {
+            String clientEnv = FileUtils.readFile(getClientRoot() + "/client.env");
+            props.load(new StringReader(clientEnv.replace("\\", "\\\\")));
+        } catch (IOException ignore) {
+        }
+
+        return props;
     }
 
 }
