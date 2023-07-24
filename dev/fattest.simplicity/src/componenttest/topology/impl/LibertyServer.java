@@ -1600,7 +1600,7 @@ public class LibertyServer implements LogMonitorClient {
                 JVM_ARGS += " -Xenablefips140-3";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
                 JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Djavax.net.debug=all";
+                //JVM_ARGS += " -Djavax.net.debug=all";
             }
         }
 
@@ -7058,7 +7058,7 @@ public class LibertyServer implements LogMonitorClient {
     //issue 25138
     public boolean isFIPS140_3Enabled() {
         boolean globalEnabled = GLOBAL_FIPS_140_3 || GLOBAL_DEBUG_FIPS_140_3;
-        Log.info(c, "isFIPS140_3Enabled", "Is global build properties GLOBAL_FIPS_140_3 set for server " + getServerName() + "? " + globalEnabled);
+        Log.info(c, "isFIPS140_3Enabled", "Is global build properties FIPS_140_3 set for server " + getServerName() + "? " + globalEnabled);
         return globalEnabled;
     }
 
