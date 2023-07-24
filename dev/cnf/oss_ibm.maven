@@ -59,6 +59,11 @@ io.openliberty.yoko:yoko-rmi-impl:1.5.0.db1c134d1f
 io.openliberty.yoko:yoko-rmi-spec:1.5.0.db1c134d1f
 io.openliberty.yoko:yoko-spec-corba:1.5.0.db1c134d1f
 io.openliberty.yoko:yoko-util:1.5.0.db1c134d1f
+io.openliberty:java-apps:war:17.0.0
+io.openliberty:java-apps:war:18.0.0
+io.openliberty:java-apps:war:19.0.0
+io.openliberty:java-apps:war:20.0.0
+io.openliberty:java-apps:war:21.0.0
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0
