@@ -79,7 +79,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * @throws Exception
      */
     public void positiveTestWithPrivateKey(TestSettings updatedTestSettings) throws Exception {
-        positiveTestWithPrivateKey(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT);
+        positiveTest(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT, null);
     }
 
     /**
@@ -91,7 +91,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      *            - the auth method used by the client
      * @throws Exception
      */
-    public void positiveTestWithPrivateKey(TestSettings updatedTestSettings, AuthMethod authMethod) throws Exception {
+    public void positiveTest(TestSettings updatedTestSettings, AuthMethod authMethod, String originHeader) throws Exception {
 
         WebClient webClient = getAndSaveWebClient(true);
 
@@ -99,7 +99,7 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
-        validateTokenRequest(updatedTestSettings, authMethod);
+        validateTokenRequest(updatedTestSettings, authMethod, originHeader);
     }
 
     /**
@@ -497,16 +497,17 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
     /*
      * Skip this test when using a social client - it does not have a trustStoreRef, so, all cases use the sslRef
      */
-    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException" })
+    @AllowedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenEndpointAuthMethodSettingsException", "java.security.cert.CertificateException", "io.openliberty.security.oidcclientcore.http.BadPostRequestException" })
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfSocialClient.class)
     @Test
     public void PrivateKeyJwtClientTests_accessTokenUsesRS256_privateKeyJwtUsesRS256_mismatchedKeyAliasNames_trustRefSslRefMatch() throws Exception {
 
         TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_alt_RS256_RS256_match");
 
-        // TODO will fail
-        List<validationData> expectations = setPrivateKeyJwtCommonExpectations();
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the corresponding alias could not be found in the trust store.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS2432E_TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR + ".+" + MessageConstants.CWWKS2430E_FAILED_TO_BUILD_TOKEN_FOR_CLIENT_AUTH + ".+" + MessageConstants.CWWKS2436E_CANNOT_RETRIEVE_PUBLIC_KEY_FROM_TRUSTSTORE);
+        List<validationData> expectations = setPrivateKeyJwtCommonExpectations(Constants.BAD_REQUEST_STATUS);
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The response id not get a message about an invalid request", null, MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token request had an invalid client credential.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER + ".*" + MessageConstants.CWWKS1406E_INTROSPECT_INVALID_CREDENTIAL);
+        expectations = validationTools.addMessageExpectation(testOPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the required parm client_id was missing.", MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING);
 
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
@@ -568,4 +569,42 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
         negativeTestWithPrivateKey(updatedTestSettings, expectations);
 
     }
+
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_private_key_jwt() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_originHeader_valid");
+
+        positiveTest(updatedTestSettings, AuthMethod.PRIVATE_KEY_JWT, clientServer.getHttpString());
+
+    }
+
+    @ExpectedFFDC({ "java.io.IOException" })
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_post() throws Exception {
+
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_post_originHeader_valid");
+
+        positiveTest(updatedTestSettings, AuthMethod.CLIENT_SECRET_POST, clientServer.getHttpString());
+
+    }
+
+    @Test
+    public void PrivateKeyJwtClientTests_tokenRequestOriginHeader_post_endToEnd() throws Exception {
+
+        // Most of the tests use a fake/test token endpoint that logs the headers/params - using that prevents us from going end
+        // to end (getting access to the test app) This test uses the real token endpoint and shows that with the origin header included we can still access the protected app
+        TestSettings updatedTestSettings = updateTestCaseSettings("client_RS256", Constants.SIGALG_RS256, "client_post_noStubs_originHeader_valid");
+
+        WebClient webClient = getAndSaveWebClient(true);
+
+        List<validationData> expectations = vData.addSuccessStatusCodes();
+
+        expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Should have gotten to the protected app", "", "Servlet");
+
+        genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
+
+    }
+
 }
