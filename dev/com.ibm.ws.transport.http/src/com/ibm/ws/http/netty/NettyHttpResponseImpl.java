@@ -14,6 +14,7 @@ package com.ibm.ws.http.netty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
@@ -33,7 +34,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.ServerCookieEncoder;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.openliberty.http.ext.HttpResponseExt;
 
 /**
@@ -73,7 +74,7 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
         this.body = null;
         this.nettyContext = ((HttpInboundServiceContextImpl) context).getNettyContext();
         this.nettyRequest = ((HttpInboundServiceContextImpl) context).getNettyRequest();
-        this.nettyResponse = new DefaultHttpResponse(nettyRequest.getProtocolVersion(), HttpResponseStatus.OK);
+        this.nettyResponse = new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK);
         ((HttpInboundServiceContextImpl) isc).setNettyResponse(nettyResponse);
         System.out.println("Init netty response complete");
     }
@@ -92,7 +93,7 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
     @Override
     public void addCookie(HttpCookie cookie) {
 
-        this.nettyResponse.headers().add(HttpHeaderKeys.HDR_SET_COOKIE.getName(), ServerCookieEncoder.encode(cookie.getName(), cookie.getValue()));
+        this.nettyResponse.headers().add(HttpHeaderKeys.HDR_SET_COOKIE.getName(), ServerCookieEncoder.LAX.encode(cookie.getName(), cookie.getValue()));
     }
 
     /*
@@ -226,7 +227,7 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
      */
     @Override
     public HttpOutputStreamImpl getBody() {
-        if (null == this.body) {
+        if (Objects.isNull(body)) {
             if (HttpDispatcher.useEE7Streams()) {
                 this.body = new HttpOutputStreamEE7(this.isc);
             } else {
