@@ -56,8 +56,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
     HttpChannelConfig httpConfig;
 
-    private boolean usingRemoteIp;
-
     private HttpInitializer(HttpPipelineBuilder builder) {
         this.chain = builder.chain;
         this.httpConfig = builder.httpConfig;
@@ -90,8 +88,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         }
 
         ChannelPipeline pipeline = channel.pipeline();
-
-        System.out.println("Remote IP enabled: " + httpConfig.useForwardingHeaders());
 
         if (chain.isHttps()) {
             // SSLEngine engine = channel.newEngine(channel.alloc());
@@ -139,10 +135,7 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
         public HttpPipelineBuilder with(ConfigElement config, Map<String, Object> options) {
 
-            MSP.log("Building pipeline with " + config);
-
             if (Objects.isNull(options)) {
-                MSP.log("Null options passed to pipeline, error");
                 return this;
             }
 
@@ -162,7 +155,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
                     break;
             }
 
-            MSP.log("Finished building");
             return this;
         }
 
