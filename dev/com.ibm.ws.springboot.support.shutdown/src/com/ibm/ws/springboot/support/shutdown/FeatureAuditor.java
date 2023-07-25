@@ -17,7 +17,6 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.ibm.ws.app.manager.springboot.container.ApplicationError;
 import com.ibm.ws.app.manager.springboot.container.ApplicationTr;
 import com.ibm.ws.app.manager.springboot.container.ApplicationTr.Type;
 
@@ -174,7 +173,12 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
         String javaVersion = System.getProperty("java.version");
         String javaSpecVersion = System.getProperty("java.vm.specification.version");
-        int javaSpecVersionNo = Integer.parseInt(javaSpecVersion);
+        int javaSpecVersionNo = 0;
+        if (javaSpecVersion.contains(".")) {
+            javaSpecVersionNo = Integer.parseInt(javaSpecVersion.substring(javaSpecVersion.indexOf(".") + 1, javaSpecVersion.length())) ;
+        } else {
+            javaSpecVersionNo = Integer.parseInt(javaSpecVersion);
+        }
 
         int requiredJavaVersion;
         String requiredVersionText;
@@ -199,7 +203,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
                 // Spring Boot version {1}: Java version {2} is required.
              }
 
-        } else { 
+        } else {
             // The checking was relaxed to put all Spring 2 versions under a single
             // requirement.
             //
