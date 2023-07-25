@@ -16,7 +16,10 @@ import java.util.Objects;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
+import com.ibm.ws.http.netty.pipeline.ByteBufferCodec;
+import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -31,7 +34,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  */
 public class HttpInitializer extends ChannelInitializer<Channel> {
 
-    private static final TraceComponent tc = Tr.register(HttpInitializer.class);
+    private static final TraceComponent tc = Tr.register(HttpInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public enum ConfigElement {
         HTTP_OPTIONS,
@@ -39,7 +42,8 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         REMOTE_IP,
         COMPRESSION,
         SAMESITE,
-        HEADERS
+        HEADERS,
+        ACCESS_LOG
     }
 
     final static String REMOTE_IP_DEFAULT = "defaultRemoteIp";
@@ -93,7 +97,14 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
             // SSLEngine engine = channel.newEngine(channel.alloc());
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
         }
+        MSP.log("***");
 
+        MSP.log("Is accessLog started: " + httpConfig.isAccessLoggingEnabled());
+
+        if (httpConfig.isAccessLoggingEnabled()) {
+            MSP.log("AccessLogger handler should start");
+            pipeline.addLast(new AccessLoggerHandler(httpConfig));
+        }
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new ChunkedWriteHandler());
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
@@ -151,6 +162,9 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
                     break;
                 }
+                case ACCESS_LOG: {
+
+                }
                 default:
                     break;
             }
@@ -161,6 +175,12 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         private HttpChannelConfig generateHttpOptions() {
 
             NettyConfigBuilder builder = new NettyHttpChannelConfig.NettyConfigBuilder();
+
+            if (Objects.nonNull(httpOptions)) {
+
+                builder.with(ConfigElement.HTTP_OPTIONS, this.httpOptions);
+
+            }
 
             if (this.useRemoteIp) {
                 builder.with(ConfigElement.REMOTE_IP, this.remoteIp);

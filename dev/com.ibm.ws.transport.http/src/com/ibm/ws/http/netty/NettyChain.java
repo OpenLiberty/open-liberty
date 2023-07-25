@@ -9,23 +9,20 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.HttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
-import com.ibm.ws.http.internal.HttpServiceConstants;
-import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
 import com.ibm.ws.http.netty.HttpInitializer.ConfigElement;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
-import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
-import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -472,7 +469,7 @@ public class NettyChain extends HttpChain {
 //                        // The exception stack for this is all internals and does not belong in messages.log.
 //                        Tr.error(tc, "start.httpChain.error", tcpName, e.toString());
 //                        handleStartupError(e, newConfig);
-//                    }
+//                    }chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
 //                }
         this.startNettyChannel();
     }
@@ -483,16 +480,28 @@ public class NettyChain extends HttpChain {
 
         }
         System.out.println("MSP: start netty channel");
+
+        //TODO: clean up less clogged active configuration
+        Map<String, Object> httpOptions = new HashMap<String, Object>();
+        owner.getHttpOptions().forEach(httpOptions::putIfAbsent);
+        // Put the endpoint id, which allows us to find the registered access log
+        // dynamically
+        httpOptions.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
+        httpOptions.keySet().forEach(MSP::log);
+        // Put the protocol version, which allows the http channel to dynamically
+        // know what http version it will use.
+        if (owner.getProtocolVersion() != null) {
+            httpOptions.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
+        }
+
         EndPointInfo info = this.endpointMgr.getEndPoint(this.endpointName);
         info = this.endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
 
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
-            HttpInitializer httpPipeline = new HttpInitializer.HttpPipelineBuilder(this)
-                                .with(ConfigElement.HTTP_OPTIONS, this.owner.getHttpOptions())
-                                .with(ConfigElement.REMOTE_IP, this.owner.getRemoteIpConfig())
-                                .build();
+            HttpInitializer httpPipeline = new HttpInitializer.HttpPipelineBuilder(this).with(ConfigElement.HTTP_OPTIONS, httpOptions).with(ConfigElement.REMOTE_IP,
+                                                                                                                                            this.owner.getRemoteIpConfig()).build();
 
             if (isHttps) {
 
@@ -533,9 +542,5 @@ public class NettyChain extends HttpChain {
         }
         return null;
     }
-    
-    
-    
-
 
 }

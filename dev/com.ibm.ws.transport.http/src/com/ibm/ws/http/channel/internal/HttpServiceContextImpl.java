@@ -2706,7 +2706,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Preparing to send message");
         }
 
-        System.out.println("MSP prepareOutgoing");
+        System.out.println("MSP prepareOutgoing. Content length should be set to: " + GenericUtils.sizeOf(wsbb));
 
         WsByteBuffer[] buffers = wsbb;
         this.writingHeaders = false;
@@ -2735,7 +2735,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        if (!headersSent()) {
+        if (!headersSent() && !getHttpConfig().useNetty()) {
             // header compliance is checked by formatHeaders so check for either
             // the partial body flag or explicit chunked encoding here
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2757,9 +2757,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         msg.removeTransferEncoding(TransferEncodingValues.CHUNKED);
                         msg.commitTransferEncoding();
                     }
-                } else {
-                    System.out.println("MSP set netty CL");
-                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
                 }
             }
 
@@ -2792,6 +2789,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
             formatHeaders(msg, complete);
+        } else {
+            System.out.println("MSP set netty CL");
+            HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
         }
 
         // if it is valid to send a body, then format it and queue it up,
@@ -3199,6 +3199,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             DefaultHttpContent content;
             if (Objects.nonNull(writeBuffers)) {
                 for (WsByteBuffer buffer : writeBuffers) {
+
                     this.nettyContext.channel().write(buffer);
                     //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
 
