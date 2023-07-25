@@ -63,7 +63,7 @@ public class EjbDiscoveryTest extends FATServletClient {
         JavaArchive ejbDiscoveryNone = ShrinkWrap.create(JavaArchive.class,
                                                          EJB_DISCOVERY_APP_NAME + "None.jar")
                                                  .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessBean.class)
-                                                 .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.StatelessLocal.class)
+                                                 .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessLocal.class)
                                                  .add(new FileAsset(new File("test-applications/" + EJB_DISCOVERY_APP_NAME + "None.jar/resources/WEB-INF/beans.xml")),
                                                       "/META-INF/beans.xml");
 

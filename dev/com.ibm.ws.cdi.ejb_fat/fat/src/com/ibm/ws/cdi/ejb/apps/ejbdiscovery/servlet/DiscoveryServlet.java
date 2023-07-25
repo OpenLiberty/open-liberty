@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,12 +17,14 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
 import com.ibm.ws.cdi.ejb.apps.ejbdiscovery.extension.DiscoveryExtension;
+import com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessLocal;
 
 import componenttest.app.FATServlet;
 
@@ -32,6 +34,9 @@ public class DiscoveryServlet extends FATServlet {
 
     @Inject
     private DiscoveryExtension extension;
+
+    @EJB
+    private UndiscoveredStatelessLocal undiscoveredBean;
 
     private static void assertContains(Set<?> set, Object contains) {
         assertTrue(contains + " not found in " + set, set.contains(contains));
@@ -99,6 +104,11 @@ public class DiscoveryServlet extends FATServlet {
         Set<Class<?>> beans = extension.getObservedBeans();
         // There is a stateless bean that should not be discovered because the .jar has discovery-mode=none
         assertNotContains(beans, com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessBean.class);
+    }
+
+    @Test
+    public void testCallNotDiscoveredBean() throws Exception {
+        undiscoveredBean.test();
     }
 
 }

@@ -33,6 +33,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 EjbTimerTest.class,
                 InjectParameterTest.class,
                 InterceptorsTest.class,
+                MdbTest.class,
                 MultipleNamedEJBTest.class,
                 StatefulSessionBeanInjectionTest.class,
 })
