@@ -7,22 +7,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package com.ibm.ws.http.netty.pipeline;
 
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.channel.CombinedChannelDuplexHandler;
 
 /**
  *
  */
-public class BufferEncoder extends MessageToByteEncoder<WsByteBuffer> {
+public class ByteBufferCodec extends CombinedChannelDuplexHandler<BufferDecoder, BufferEncoder> {
 
-    @Override
-    public void encode(ChannelHandlerContext context, WsByteBuffer message, ByteBuf out) throws Exception {
-        out.writeBytes(message.getWrappedByteBuffer());
+    public ByteBufferCodec() {
+        super(new BufferDecoder(), new BufferEncoder());
     }
 
 }
