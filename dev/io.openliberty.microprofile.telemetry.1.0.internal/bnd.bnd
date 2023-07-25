@@ -43,15 +43,16 @@ Include-Resource: \
 
 Service-Component: \
     io.openliberty.microprofile.telemetry.internal.ResourceProvider; \
-        implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-        provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-        configuration-policy:=optional; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
 	properties:="resources=${app-resources}" 
 
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
 	io.opentelemetry.api.common,\
+	io.openliberty.microprofile.telemetry.common.*,\
 	*
 
 Export-Package: \
@@ -76,6 +77,7 @@ Private-Package: \
     io.openliberty.org.eclipse.microprofile.config.3.0,\
     io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
     io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
+    io.openliberty.microprofile.telemetry.common;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.ws.container.service;version=latest
 
