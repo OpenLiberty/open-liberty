@@ -51,7 +51,7 @@ public class DataNoSQLTest extends FATServletClient {
         server.addEnvVar("MONGO_DBNAME", "testdb");
         server.addEnvVar("MONGO_HOST", mongoDBContainer.getHost() + ":" + String.valueOf(mongoDBContainer.getMappedPort(27017)));
 
-        server.startServer();
+        server.startServerAndValidate(false, false, true);
     }
 
     @AfterClass

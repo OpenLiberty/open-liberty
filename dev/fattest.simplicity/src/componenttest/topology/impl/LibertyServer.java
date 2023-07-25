@@ -763,7 +763,6 @@ public class LibertyServer implements LogMonitorClient {
 
         // TODO: Verify the micro version matches the files under 'installRoot/lib'.
 
-
         // Allow user directory name to be provided in bootstrap properties.
         // It is optional and if it is not set, setup() will set it.
         userDir = b.getValue("libertyUserDir");
@@ -1326,7 +1325,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void checkPortsOpen(boolean retry) {
+    protected void checkPortsOpen(boolean retry) throws Exception {
         ServerSocket socket = null;
         try {
             // Create unbounded socket
@@ -1346,6 +1345,11 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 // Do this out of the try block, even if we are interrupted we want to try once more
                 checkPortsOpen(false);
+            } else {
+                //Fail fast if http port unavailable
+                Exception e = new Exception("Default http port unavailable");
+                e.initCause(ex);
+                throw e;
             }
         } finally {
             if (null != socket) {
