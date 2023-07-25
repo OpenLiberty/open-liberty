@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.microprofile.telemetry.common
+Bundle-SymbolicName: io.openliberty.microprofile.telemetry.common
+Bundle-Description: MicroProfile.telemetry.common, version 1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+src: resources, src
+
+-includeresource: resources
+
+Import-Package: \
+  com.ibm.websphere.ras,\
+  com.ibm.websphere.ras.annotation,\
+  *
+
+Export-Package: \
+  io.openliberty.microprofile.telemetry.common.resources;version=1.0,\
+  io.openliberty.microprofile.telemetry.common.rest;version=1.0
+
+WS-TraceGroup: TELEMETRY
+
+-buildpath: \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

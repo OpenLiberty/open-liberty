@@ -10,11 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.resources.MPTelemetry")
-@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.common.resources.MPTelemetry")
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
