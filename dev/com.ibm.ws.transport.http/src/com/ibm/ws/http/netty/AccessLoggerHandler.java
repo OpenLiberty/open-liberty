@@ -9,17 +9,35 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 
 /**
  *
  */
-public class AccessLoggerHandler extends ChannelInboundHandlerAdapter {
+public class AccessLoggerHandler extends ChannelDuplexHandler {
+
+    private final HttpChannelConfig config;
+
+    public AccessLoggerHandler(HttpChannelConfig config) {
+        this.config = config;
+        MSP.log("Access logger config set, format : " + config.getAccessLog().getFormat());
+    }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        System.out.println("WRITE:" + msg);
+        super.write(ctx, msg, promise);
+    }
 
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
+        MSP.log("AccessLogger -> read: access log set to:" + config.getAccessLog().getFormat());
+        super.channelRead(ctx, msg);
     }
 
     @Override

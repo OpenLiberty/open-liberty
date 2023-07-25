@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package com.ibm.ws.http.netty.pipeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -25,7 +29,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 
 /**
- *
+ * Pipeline handler to support Liberty's <remoteIp> end point configuration.
  */
 public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
@@ -44,12 +48,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     private static final String PROTO = "proto";
     private static final String HOST = "host";
 
-    static final String FORWARDED_HEADER = "Forwarded";
-    static final String X_FORWARDED_FOR = "X-Forwarded-For";
-    static final String X_FORWARDED_BY = "X-Forwarded-By";
-    static final String X_FORWARDED_HOST_HEADER = "X-Forwarded-Host";
-    static final String X_FORWARDED_PORT_HEADER = "X-Forwarded-Port";
-    static final String X_FORWARDED_PROTO_HEADER = "X-Forwarded-Proto";
+    private static final String FORWARDED_HEADER = "Forwarded";
+    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
+    private static final String X_FORWARDED_BY = "X-Forwarded-By";
 
     static final char COLON = ':';
 
@@ -69,7 +70,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         Objects.requireNonNull(httpConfig);
         proxies = httpConfig.getForwardedProxiesRegex();
         useInAccessLog = httpConfig.useForwardingHeadersInAccessLog();
-
+        MSP.log("Is accessLog started: " + httpConfig.isAccessLoggingEnabled());
         noErrors = Boolean.TRUE;
     }
 
@@ -196,13 +197,12 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                     }
                 }
                 if (!noErrors) {
-                    MSP.log("processForwardedHeader");
                     return;
                 }
             }
         }
 
-        MSP.log("processForwardedHeader");
+        Tr.exit(tc, "processForwardedHeader");
 
     }
 
@@ -273,35 +273,37 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                 nodeName = extract;
             }
         }
-        MSP.log("Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
-        MSP.log("processForwardedAddress 4");
+        Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
         list.add(nodeName);
     }
 
     private void parseXForwarded(FullHttpRequest request) {
-
         List<String> value;
         HttpHeaders headers = request.headers();
-        Objects.nonNull(headers);
-
         value = headers.getAll(X_FORWARDED_FOR);
         if (Objects.nonNull(value)) {
+
             value.forEach(this::processXForwardedFor);
         }
-
+        MSP.log("processForwarded c");
         value = headers.getAll(X_FORWARDED_BY);
         if (Objects.nonNull(value)) {
             value.forEach(this::processXForwardedBy);
         }
 
-        value = headers.getAll(X_FORWARDED_PROTO_HEADER);
-        if (Objects.nonNull(value) && this.isValidProto(value.get(value.size() - 1))) {
-            // this.forwardedProto;
-        }
+        this.forwardedProto = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PROTO.toString());
+        this.forwardedHost = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_HOST.toString());
+        this.forwardedPort = NettyHeaderUtils.getLast(headers, HttpHeaderKeys.HDR_X_FORWARDED_PORT.toString());
+        validateValues();
+    }
 
-        this.forwardedHost = NettyHeaderUtils.getLast(headers, X_FORWARDED_HOST_HEADER);
-        this.forwardedPort = NettyHeaderUtils.getLast(headers, X_FORWARDED_PORT_HEADER);
+    private void validateValues() {
+        Tr.entry(tc, "validateValues");
 
+        this.isValidHost(forwardedHost);
+        this.isValidProto(forwardedProto);
+
+        Tr.exit(tc, "validateValues");
     }
 
     /**
@@ -312,6 +314,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @param list
      */
     private void processXForwardedAddress(String header, ListType type) {
+
+        MSP.log("Processing X-Forwarded-" + type + ": " + header);
 
         String[] addresses = header.split(",");
         for (String address : addresses) {
@@ -333,27 +337,27 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     /**
-     * Ver
+     * Verifies that the header did not contain an invalid host
      *
      * @param forwardedHost
      * @return
      */
     private boolean isValidHost(String forwardedHost) {
+        boolean valid = Boolean.FALSE;
 
-        boolean valid = Boolean.TRUE;
+        if (noErrors && Objects.nonNull(forwardedHost)) {
+            valid = Boolean.TRUE;
 
-        int openBracket = forwardedHost.indexOf("[");
-        int closedBracket = forwardedHost.indexOf("]");
+            int openBracket = forwardedHost.indexOf("[");
+            int closedBracket = forwardedHost.indexOf("]");
 
-        MSP.log("host: " + forwardedHost);
-        MSP.log("open: " + openBracket + " closed: " + closedBracket);
-
-        if (openBracket > -1) {
-            if (openBracket != 0 || !(closedBracket > -1)) {
-                valid = Boolean.FALSE;
+            if (openBracket > -1) {
+                if (openBracket != 0 || !(closedBracket > -1)) {
+                    valid = Boolean.FALSE;
+                }
             }
         }
-        MSP.log("isValidHost: " + valid);
+
         return valid;
     }
 
@@ -366,30 +370,33 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
     private boolean isValidProto(String forwardedProto) {
 
-        //     Tr.entry(tc, "validateProto");
+        Tr.entry(tc, "validateProto", forwardedProto);
+        boolean valid = Boolean.FALSE;
+        if (noErrors && Objects.nonNull(forwardedProto)) {
+            valid = Boolean.TRUE;
+            char[] a = forwardedProto.toCharArray();
 
-        char[] a = forwardedProto.toCharArray();
-        boolean valid = true;
-        char c = a[0];
-        valid = ((c >= 'a') && (c <= 'z')) ||
-                ((c >= 'A') && (c <= 'Z'));
-        if (valid) {
+            char c = a[0];
+            valid = ((c >= 'a') && (c <= 'z')) ||
+                    ((c >= 'A') && (c <= 'Z'));
+            if (valid) {
 
-            for (int i = 1; i < a.length; i++) {
-                c = a[i];
-                valid = ((c >= 'a') && (c <= 'z')) ||
-                        ((c >= 'A') && (c <= 'Z')) ||
-                        ((c >= '0') && (c <= '9')) ||
-                        (c == '+') || (c == '-') || (c == '.');
-                if (!valid) {
-                    break;
+                for (int i = 1; i < a.length; i++) {
+                    c = a[i];
+                    valid = ((c >= 'a') && (c <= 'z')) ||
+                            ((c >= 'A') && (c <= 'Z')) ||
+                            ((c >= '0') && (c <= '9')) ||
+                            (c == '+') || (c == '-') || (c == '.');
+                    if (!valid) {
+                        break;
+                    }
                 }
-            }
 
+            }
         }
 
-        //    Tr.debug(tc, "ValidateProto value is valid: " + valid);
-        //    Tr.exit(tc, "validateProto");
+        Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        Tr.exit(tc, "validateProto");
         return valid;
 
     }

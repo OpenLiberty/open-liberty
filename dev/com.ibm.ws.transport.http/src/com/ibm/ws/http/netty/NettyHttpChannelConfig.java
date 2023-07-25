@@ -63,6 +63,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseRemoteIpOptions(config);
         }
         //Http Options
+        parseHttpOptions(config);
 
     }
 
@@ -97,6 +98,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     private void parseHttpOptions(Map<String, Object> options) {
 
+        this.parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {
