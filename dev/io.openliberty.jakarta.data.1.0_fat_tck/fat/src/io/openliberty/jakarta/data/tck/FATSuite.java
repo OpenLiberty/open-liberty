@@ -24,9 +24,11 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test for java 8 & 11
-                DataCoreTckLauncher.class,
-                DataWebTckLauncher.class //full mode
+                DataCoreTckLauncher.class, //lite mode
+                DataWebTckLauncher.class, //full mode
+//                DataStandaloneLauncher.class //Skipped because our impl doesn't support standalone mode
 })
+
 public class FATSuite {
     @ClassRule
     public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.create();

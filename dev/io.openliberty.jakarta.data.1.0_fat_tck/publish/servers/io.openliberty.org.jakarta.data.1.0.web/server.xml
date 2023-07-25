@@ -12,25 +12,21 @@
  -->
 <server>
     <featureManager>
-        <!-- Features being tested -->
+        <!-- Profile being tested -->
         <feature>webProfile-10.0</feature>
+        
+        <!-- Features being tested -->
         <feature>data-1.0</feature>
         <feature>persistence-3.1</feature>
-        
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
-        
         <!-- Required by test infrastructure -->
         <feature>timedexit-1.0</feature>
-        
         <!-- Convenience feature -->
         <feature>arquillian-support-jakarta-2.1</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml" />
-
-    <!-- Allow Arquillian to monitor application -->
-    <applicationMonitor updateTrigger="mbean"/>
 
     <!-- Allow Arquillian access to dropins directory for application installation -->
     <remoteFileAccess>

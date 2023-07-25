@@ -62,6 +62,7 @@ public class DataWebTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("jakarta.tck.profile", "web");
+
         //Always skip signature tests on Web profile (already tested in core profile)
         additionalProps.put("included.groups", "web & persistence & !signature");
 

@@ -61,6 +61,7 @@ public class DataCoreTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("jakarta.tck.profile", "core");
+
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "core & persistence & !signature");
 

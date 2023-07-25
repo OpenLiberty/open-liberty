@@ -55,8 +55,8 @@
 		<jakarta.cdi.version>4.0.1</jakarta.cdi.version>
 
 		<!-- Test Infrastructure versions -->
-		<arquillian.version>1.7.0.Alpha13</arquillian.version>
-		<arquillian.wlp.version>2.1.2</arquillian.wlp.version>
+		<arquillian.version>1.7.0.Final</arquillian.version>
+		<arquillian.wlp.version>2.1.3</arquillian.wlp.version>
 		<junit.version>5.9.2</junit.version>
 		<sigtest.version>1.6</sigtest.version>
 

@@ -14,7 +14,7 @@
 		<property name="deploymentExportPath">target/</property>
 	</engine>
 	
-	<container qualifier="wlp-managed" default="true">
+	<container qualifier="liberty-managed" default="true">
 		<configuration>
 			<!-- Each variable used is set in surefire config in running pom.xml -->
 			<property name="wlpHome">${wlp}</property>
@@ -23,7 +23,11 @@
 			<property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+			
+			<!-- Custom properties needed for tests to run while using a servlet -->
 			<property name="allowConnectingToRunningServer">true</property>
+			<property name="testProtocol">servlet</property>
+			<property name="deployType">xml</property>
 		</configuration>
 	</container>
 </arquillian> 
