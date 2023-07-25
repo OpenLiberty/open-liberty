@@ -36,6 +36,7 @@ import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.AccessLog;
 import com.ibm.wsspi.http.logging.DebugLog;
@@ -595,7 +596,7 @@ public class HttpChannelConfig {
         parseLimitNumberResponses(props);
         parseLimitMessageSize(props);
         parseAllowRetries(props);
-        parseLoggingInfo(props);
+        parseAccessLog(HttpConfigConstants.PROPNAME_ACCESSLOG_ID);
         parseHeaderValidation(props);
         parseStrictURLFormat(props);
         parseServerHeader(props);
@@ -626,7 +627,7 @@ public class HttpChannelConfig {
         parsePurgeRemainingResponseBody(props); //PI81572
         parseRemoteIp(props);
         parseRemoteIpProxies(props.get(HttpConfigConstants.PROPNAME_REMOTE_PROXIES));
-        parseRemoteIpAccessLog(props.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        parseRemoteIpAccessLog(props.get(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG));
         parseCompression(props);
         parseCompressionTypes(props);
         parseCompressionPreferredAlgorithm(props);
@@ -1245,18 +1246,17 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    private void parseAccessLog(Map<Object, Object> props) {
+    protected void parseAccessLog(Object option) {
 
-        String id = (String) props.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID);
-        if (id != null) {
+        String id = String.valueOf(option);
+
+        MSP.log("======= access log id: " + id);
+        if (Objects.nonNull(id)) {
             AtomicReference<AccessLog> aLog = HttpEndpointImpl.getAccessLogger(id);
             if (aLog != null) {
                 this.accessLogger = aLog;
             }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Config: using logging service", accessLogger);
-            }
+            Tr.debug(tc, "Config: using logging service", accessLogger);
         }
     }
 
@@ -2013,15 +2013,6 @@ public class HttpChannelConfig {
             }
 
         }
-    }
-
-    /**
-     * Check the input configuration for the access/error logging configuration.
-     *
-     * @param props
-     */
-    private void parseLoggingInfo(Map<Object, Object> props) {
-        parseAccessLog(props);
     }
 
     /**
@@ -2904,6 +2895,7 @@ public class HttpChannelConfig {
      * @return boolean
      */
     public boolean isAccessLoggingEnabled() {
+        MSP.log("getting access logger");
         return this.accessLogger.get().isStarted();
     }
 
