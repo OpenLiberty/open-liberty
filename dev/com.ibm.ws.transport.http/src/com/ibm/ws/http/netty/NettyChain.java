@@ -19,7 +19,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.HttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
-import com.ibm.ws.http.netty.HttpInitializer.ConfigElement;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -500,7 +501,7 @@ public class NettyChain extends HttpChain {
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
-            HttpInitializer httpPipeline = new HttpInitializer.HttpPipelineBuilder(this).with(ConfigElement.HTTP_OPTIONS, httpOptions).with(ConfigElement.REMOTE_IP,
+            HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.HTTP_OPTIONS, httpOptions).with(ConfigElement.REMOTE_IP,
                                                                                                                                             this.owner.getRemoteIpConfig()).build();
 
             if (isHttps) {

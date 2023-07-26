@@ -10,25 +10,34 @@
 package com.ibm.ws.http.netty;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
-import com.ibm.ws.http.netty.HttpInitializer.ConfigElement;
+import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 
 /**
  *
  */
 public class NettyHttpChannelConfig extends HttpChannelConfig {
 
+    /** RAS tracing variable */
+    private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
     private NettyHttpChannelConfig(NettyConfigBuilder builder) {
         this.useNetty = Boolean.TRUE;
-        this.useCompression = builder.useCompression;
-        this.useForwardingHeaders = builder.useForwardingHeaders;
-        this.isHeadersConfigEnabled = builder.useHeaders;
-        this.useSameSiteConfig = builder.useSameSite;
+        this.useCompressionOptions = builder.useCompression;
+        this.useRemoteIpOptions = builder.useForwardingHeaders;
+        this.useHeadersOptions = builder.useHeaders;
+        this.useSameSiteOptions = builder.useSameSite;
 
         this.parseConfig(builder.options);
 
@@ -44,75 +53,119 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     }
 
     private void parseConfig(Map<String, Object> config) {
-        MSP.log("Parsing netty config by element");
-        MSP.log("Using remote ip: " + this.useForwardingHeaders);
 
         if (Objects.isNull(config) || config.isEmpty()) {
-            MSP.log("config is null or empty, returning");
+            Tr.debug(tc, "config is null or empty, returning");
             return;
         }
 
-        //Compression Options
+        if (useCompressionOptions) {
+            parseCompressionOptions(config);
+        }
 
-        //Header Options
+        if (useHeadersOptions) {
+            parseHeaderOptions(config);
+        }
 
-        //Forwarded Header (RemoteIp) Options
-
-        //SameSite Options
-        if (this.useForwardingHeaders) {
+        if (useRemoteIpOptions) {
             parseRemoteIpOptions(config);
         }
-        //Http Options
+
+        if (useSameSiteOptions) {
+            parseSameSiteOptions(config);
+        }
+
         parseHttpOptions(config);
 
     }
 
     public void updateConfig(ConfigElement element, Map<String, Object> config) {
-
-    }
-
-    public void updateRemoteIp(Map<String, Object> options) {
-        if (Objects.isNull(options) || options.isEmpty()) {
-            useForwardingHeaders = Boolean.FALSE;
-        }
-
-        this.useForwardingHeaders = Boolean.TRUE;
-
-        System.out.println("Using forwarding: " + this.useForwardingHeaders);
-
-        //parseRemoteIpProxies(options);
-        //parseRemoteIpAccessLog(options);
-
+        //TODO
     }
 
     private void parseCompressionOptions(Map<String, Object> options) {
-        if (this.useCompression) {
+        Objects.requireNonNull(options);
 
+        if (this.useCompressionOptions) {
+            this.includedCompressionContentTypes = new HashSet<String>();
+            this.includedCompressionContentTypes.add("text/*");
+            this.includedCompressionContentTypes.add("application/javascript");
+            this.excludedCompressionContentTypes = new HashSet<String>();
+
+            Tr.event(tc, "Http Channel Config: compression has been enabled");
+
+            this.parseCompressionTypes(options.get(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES));
+            this.parseCompressionPreferredAlgorithm(options.get(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM));
         }
 
     }
 
     private void parseHeaderOptions(Map<String, Object> options) {
+        String method = "parseHeaderOptions";
+        Tr.entry(tc, method);
 
+        if (options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD) ||
+            options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET) ||
+            options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE) ||
+            options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING)) {
+
+            this.configuredHeadersToAdd = new HashMap<Integer, List<Map.Entry<String, String>>>();
+            this.configuredHeadersToSet = new HashMap<Integer, Map.Entry<String, String>>();
+            this.configuredHeadersToSetIfMissing = new HashMap<Integer, Map.Entry<String, String>>();
+            this.configuredHeadersToRemove = new HashMap<Integer, String>();
+            this.configuredHeadersErrorSet = new HashSet<String>();
+
+            Tr.event(tc, "Http Channel Config: <headers> config has been enabled");
+
+            parseHeadersToRemove(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE));
+            parseHeadersToAdd(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD));
+            parseHeadersToSet(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET));
+            parseHeadersToSetIfMissing(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING));
+            logHeadersConfig();
+        }
+
+        Tr.exit(tc, method);
     }
 
     private void parseHttpOptions(Map<String, Object> options) {
 
         this.parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        //TODO - all all parse methods
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {
-        MSP.log("Parse remote Ip Options");
-        parseRemoteIpProxies(options.get(HttpConfigConstants.PROPNAME_REMOTE_PROXIES));
-        parseRemoteIpAccessLog(options.get(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG));
+        Tr.entry(tc, "parseRemoteIpOptions");
+
+        Tr.event(tc, "HTTP Channel Config: remoteIp has been enabled");
+        parseRemoteIpProxies(options.get("proxies"));
+        parseRemoteIpAccessLog(options.get("useRemoteIpInAccessLog"));
+
+        Tr.exit(tc, "parseRemoteIpOptions");
     }
 
     private void parseSameSiteOptions(Map<String, Object> options) {
+        Tr.entry(tc, "parseSameSiteOptions");
 
+        if (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
+            options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
+            options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT)) {
+
+            this.sameSiteCookies = new HashMap<String, String>();
+            this.sameSiteErrorCookies = new HashSet<String>();
+            this.sameSiteStringPatterns = new HashMap<String, String>();
+            Tr.event(tc, "Http Channel Config: SameSite configuration has been enabled");
+
+            parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
+            parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
+            parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
+
+        }
+
+        Tr.exit(tc, "parseSameSiteOptions");
     }
 
     public void disableRemoteIp() {
-        useForwardingHeaders = Boolean.FALSE;
+        useRemoteIpOptions = Boolean.FALSE;
     }
 
     public static class NettyConfigBuilder {
@@ -148,7 +201,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         public NettyConfigBuilder with(ConfigElement config, Map<String, Object> options) {
 
             if (Objects.isNull(options) || options.isEmpty()) {
-                MSP.log("No properties, exit");
+                Tr.debug(tc, "No properties provided, exiting");
                 return this;
             }
 
@@ -174,7 +227,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
                 case REMOTE_IP: {
                     useForwardingHeaders = Boolean.TRUE;
                     forwardingOptions = options;
-
                     break;
                 }
 
@@ -198,10 +250,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             forwardingOptions.forEach(options::putIfAbsent);
             sameSiteOptions.forEach(options::putIfAbsent);
 
-            MSP.log("Collected all properties...");
-            for (String s : options.keySet()) {
-                MSP.log(s + ": " + options.get(s));
-            }
         }
 
         public NettyHttpChannelConfig build() {
