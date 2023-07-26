@@ -489,10 +489,10 @@ public class PrivateKeyJwtClientTests extends PKCEPrivateKeyJwtCommonTooling {
      * tokenEndpointAuthMethod="private_key_jwt"
      * tokenEndpointAuthSigningAlgorithm="RS256"
      * keyAliasName="altrs256"
-     * The client's alias name used with the keystore is different than the alias in the trust store
-     * The sslRef specified uses the key store file used to create the private, but the trust store uses a different alias - we
-     * should fail to get access to the app. The trustStoreRef will override the trust store from the sslRef, but they're both the
-     * same - so, it's hard to tell which is used, but for completeness, I'm testing it.
+     * The certificate's alias name used is coming from the keystore specified by the sslRef.
+     * The trustStoreRef specified does NOT contain a cert with that same alias, but the truststore that is
+     * specified in the sslRef does and that is where we'll find the cert to verify the content.
+     * The Overall request will fail because the Liberty OP doesn't support private key jwt.
      */
     /*
      * Skip this test when using a social client - it does not have a trustStoreRef, so, all cases use the sslRef
