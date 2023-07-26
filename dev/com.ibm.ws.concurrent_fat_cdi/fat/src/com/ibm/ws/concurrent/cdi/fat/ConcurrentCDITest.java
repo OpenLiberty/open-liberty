@@ -45,7 +45,13 @@ public class ConcurrentCDITest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi.web");
-        // TODO remove concurrent.cu3.web once default resources are automatically made available via @Inject
+        // TODO remove "concurrent.cu3.web" below to reproduce the following error:
+        // [7/21/23, 9:03:05:599 CDT] 00000037 SystemOut                                                    O
+        //  Added jakarta.enterprise.concurrent.ManagedExecutorService with qualifiers [@jakarta.enterprise.inject.Default()]
+        // ...
+        // DeploymentException: WELD-001408: Unsatisfied dependencies for type ManagedExecutorService with qualifiers @Default
+        //                  at injection point [BackedAnnotatedField] @Inject private concurrent.cdi4.web.ConcurrentCDI4Servlet.injectedExec
+        //                  at concurrent.cdi4.web.ConcurrentCDI4Servlet.injectedExec(ConcurrentCDI4Servlet.java:0)
         ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web", "concurrent.cu3.web");
         server.startServer();
         runTest(server, APP_NAME_EE10 + '/' + ConcurrentCDI4Servlet.class.getSimpleName(), "initTransactionService");
