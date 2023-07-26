@@ -436,19 +436,20 @@ task runfat(type: Exec) {
   
   
   //Make sure to check if we have a property, otherwise we will end up setting "null" as the value
-  if ( gradle.userProps.hasProperty("artifactory.download.server") )
+  //Use containsKey instead of hasProperty since hasProperty seems to have undeterministic behavior https://github.com/gradle/gradle/issues/16853
+  if ( gradle.userProps.containsKey("artifactory.download.server") )
   	environment "artifactory.download.server", gradle.userProps.getProperty("artifactory.download.server")
 
-  if ( gradle.userProps.hasProperty("artifactory.download.user") )
+  if ( gradle.userProps.containsKey("artifactory.download.user") )
   	environment "artifactory.download.user", gradle.userProps.getProperty("artifactory.download.user")
 
-  if ( gradle.userProps.hasProperty("artifactory.download.token") )
+  if ( gradle.userProps.containsKey("artifactory.download.token") )
   	environment "artifactory.download.token", gradle.userProps.getProperty("artifactory.download.token")
 
-  if ( gradle.userProps.hasProperty("artifactory.docker.server") )
+  if ( gradle.userProps.containsKey("artifactory.docker.server") )
   	environment "artifactory.docker.server", gradle.userProps.getProperty("artifactory.docker.server")
 
-  if ( gradle.userProps.hasProperty("artifactory.force.external.repo") )
+  if ( gradle.userProps.containsKey("artifactory.force.external.repo") )
   	environment "artifactory.force.external.repo", gradle.userProps.getProperty("artifactory.force.external.repo")
   
   //Add fat.test.localrun to JVM environment.
