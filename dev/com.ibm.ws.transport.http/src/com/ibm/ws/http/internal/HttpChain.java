@@ -455,15 +455,15 @@ public class HttpChain implements ChainEventListener {
                         boolean enableSameSite = false;
                         if (samesiteOptions.containsKey("lax")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, samesiteOptions.get("lax"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX_INTERNAL, samesiteOptions.get("lax"));
                         }
                         if (samesiteOptions.containsKey("none")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, samesiteOptions.get("none"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE_INTERNAL, samesiteOptions.get("none"));
                         }
                         if (samesiteOptions.containsKey("strict")) {
                             enableSameSite = true;
-                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT_INTERNAL, samesiteOptions.get("strict"));
                         }
                         if (samesiteOptions.containsKey("partitioned")) {
                             enableSameSite = true;
