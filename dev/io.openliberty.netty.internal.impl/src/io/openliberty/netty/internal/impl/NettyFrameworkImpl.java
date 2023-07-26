@@ -219,6 +219,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     		long timeout = getDefaultChainQuiesceTimeout();
 
     		if(timeout > 0) {
+                if(activeChannelMap.isEmpty() && outboundConnections.isEmpty()){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+    					Tr.debug(tc, "No connections to clean up, skipping quiesce creation.");
+    				}
+                    return;
+                }
     			NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
     			try {
     				// Go through active endpoints and stop accepting connections

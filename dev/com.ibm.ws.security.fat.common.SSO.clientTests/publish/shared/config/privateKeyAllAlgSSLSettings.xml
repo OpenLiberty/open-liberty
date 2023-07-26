@@ -1,0 +1,43 @@
+<server>
+
+	<keyStore
+		id="trust_altAllSigAlg"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/altAllAlgTrustStore.p12" />
+
+	<keyStore
+		id="key_altAllSigAlg"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/altAllAlgKeyStore.p12" />
+
+	<keyStore
+		id="trust_diffTrust"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/diffTrustStore.p12" />
+
+<!-- Key and Trust store either don't have matching aliases --> 
+	<ssl
+		id="ssl_keyTrustMismatch"
+		keyStoreRef="key_altAllSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		clientAuthenticationSupported="true" />
+
+<!-- Key and Trust store do have matching aliases -->
+	<ssl
+		id="ssl_keyTrustMatch"
+		keyStoreRef="key_altAllSigAlg"
+		trustStoreRef="trust_altAllSigAlg"
+		clientAuthenticationSupported="true" />
+				
+	<ssl
+		id="ssl_diffTrust"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_diffTrust"
+		clientAuthenticationSupported="true" />
+		
+	<include location="${server.config.dir}/imports/allAlgSSLSettings.xml" />
+
+</server>

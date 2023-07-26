@@ -105,6 +105,19 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
     }
 
     /**
+     * Build a string representing what the test token endpoint will log for headers that are passed to it
+     *
+     * @param key
+     *            - the key we're expecting
+     * @return - "header: <key>:"
+     * @throws Exception
+     */
+    public String getHeaderString(String key) throws Exception {
+
+        return "header: " + key + ":";
+    }
+
+    /**
      * Build a string representing what the test token endpoint will log for parms that are passed to it
      *
      * @param key
@@ -159,8 +172,11 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.LOGIN_USER);
         expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, status_code);
-        expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
-
+        if (status_code == 200) {
+            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Should have gotten to the protected app", "", "Servlet");
+        } else {
+            expectations = validationTools.addMessageExpectation(clientServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain a message stating that the token endpoint did not return an id_token.", MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
+        }
         return expectations;
     }
 
@@ -174,14 +190,29 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
      * @throws Exception
      */
     public void validateTokenRequest(TestSettings updatedTestSettings, AuthMethod authMethod) throws Exception {
+        validateTokenRequest(updatedTestSettings, authMethod, null);
+    }
 
+    public void validateTokenRequest(TestSettings updatedTestSettings, AuthMethod authMethod, String originHeader) throws Exception {
+
+        // validate the origin header
+        String oh = getParmValueFromMessagesLog(clientServer, getHeaderString("Origin"));
+        if (originHeader != null) {
+            if (oh == null) {
+                fail("The Origin header (" + originHeader + ") was missing from the request to the token endpoint.");
+            } else {
+                if (!originHeader.contentEquals(oh)) {
+                    fail("The Origin header value of (" + oh + ") did not match the configured value (" + originHeader + ")");
+                }
+            }
+        } else {
+            if (oh != null) {
+                fail("Found an Origin header (" + oh + ") and was not expecting it");
+            }
+        }
         // validate client_assertion_type is correct for the auth method used
         String assertionType = getParmValueFromMessagesLog(clientServer, getParmString(Constants.CLIENT_ASSERTION_TYPE));
         validateClientAssertionType(authMethod, assertionType);
-
-        // validate the client_assertion is correct for the auth method used
-        String token = getParmValueFromMessagesLog(clientServer, getParmString(Constants.CLIENT_ASSERTION));
-        validateClientAssertion(token, updatedTestSettings);
 
         // we should always have a grant parm
         String grant = getParmValueFromMessagesLog(clientServer, getParmString(Constants.GRANT_TYPE));
@@ -203,9 +234,13 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
 
         String clientId = null;
         String clientSecret = null;
+        // validate the client_assertion is correct for the auth method used
+        String token = getParmValueFromMessagesLog(clientServer, getParmString(Constants.CLIENT_ASSERTION));
+
         switch (authMethod) {
         case CLIENT_SECRET_BASIC:
         case CLIENT_SECRET_POST:
+            validateClientAssertion(token, updatedTestSettings, false);
             clientId = getParmValueFromMessagesLog(clientServer, getParmString(Constants.JWT_CLIENT_ID));
             clientSecret = getParmValueFromMessagesLog(clientServer, getParmString(Constants.JWT_CLIENT_SECRET));
             if (clientId == null) {
@@ -216,6 +251,7 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
             }
             break;
         case PRIVATE_KEY_JWT:
+            validateClientAssertion(token, updatedTestSettings, true);
             // the client_id and client_secret shouldn't be in the request (make sure to increase the allowed timeout msgs)
             clientId = clientServer.getServer().verifyStringNotInLogUsingMark(getParmString(Constants.JWT_CLIENT_ID), 2000);
             clientSecret = clientServer.getServer().verifyStringNotInLogUsingMark(getParmString(Constants.JWT_CLIENT_SECRET), 2000);
@@ -243,7 +279,7 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
      */
     public String getParmValueFromMessagesLog(TestServer server, String keyName) throws Exception {
 
-        String thisMethod = "getClientAssertionFromMessagesLog";
+        String thisMethod = "getParmValueFromMessagesLog";
         msgUtils.printMethodName(thisMethod);
         Log.info(thisClass, thisMethod, " Searching for key:  " + keyName);
 
@@ -431,14 +467,25 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
      *            - the test case settings to use to validate the token content
      * @throws Exception
      */
-    public void validateClientAssertion(String token, TestSettings settings) throws Exception {
+    public void validateClientAssertion(String token, TestSettings settings, boolean shouldHaveToken) throws Exception {
 
-        JwtTokenForTest jwtToken = new JwtTokenForTest(token);
+        if (shouldHaveToken) {
+            if (token != null) {
 
-        jwtToken.printJwtContent();
+                JwtTokenForTest jwtToken = new JwtTokenForTest(token);
 
-        validateClientAssertionHeader(jwtToken, settings);
-        validateClientAssertionPayload(jwtToken, settings);
+                jwtToken.printJwtContent();
+
+                validateClientAssertionHeader(jwtToken, settings);
+                validateClientAssertionPayload(jwtToken, settings);
+            } else {
+                fail("Client Assertion token was missing.");
+            }
+        } else {
+            if (token != null) {
+                fail("Should not have had a Client Assertion token, but did find one.");
+            }
+        }
 
     }
 
