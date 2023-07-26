@@ -13,6 +13,7 @@
 package com.ibm.ws.wsoc.outbound;
 
 import java.io.IOException;
+import java.nio.channels.Channel;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,12 @@ import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import io.netty.util.AttributeKey;
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
+
 /**
  *
  */
@@ -69,14 +76,42 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
     private Map<String, List<String>> responseHeaders = null;
 
-    protected final ClientEndpointConfig config;
+    protected ClientEndpointConfig config;
 
     private final ParametersOfInterest things;
 
+    private Channel chan;
+
+    private String chainName;
+
+    private final Map<String, Object> tcpOptions = null;;
+    private final Map<String, Object> sslOptions = null;
+
+    private NettyTlsProvider tlsProvider;
+
+    private NettyFramework nettyBundle;
+
+    private BootstrapExtended bootstrap;
+
+    private final Wsoc10Address target = null;
+
     public NettyHttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "<init>");
+
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
+        Map<String, Object> options = new HashMap<String, Object>(tcpOptions);
+        try {
+            bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
+            bootstrap.attr(AttributeKey.valueOf("CHAIN_NAME"), chainName);
+        } catch (NettyException e) {
+            Tr.error(tc, "Failure initializing Netty Bootstrap", e);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "<init>");
+
     }
 
     @Override
@@ -87,11 +122,63 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     @Override
     public void connect() throws Exception {
 
-        access = new ClientTransportAccess();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "connect");
+        }
 
-        vc = (OutboundVirtualConnection) NettyWsocOutboundChain.getVCFactory(endpointAddress);;
-        access.setVirtualConnection(vc);
-        vc.connect(endpointAddress);
+        //final NettyNetworkConnection readyConnection = this;
+
+        //if (FrameworkState.isStopping()) {
+        //    // Drive the callback directly here.
+        //    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        //        Tr.debug(this, tc, "Framework.isStopping() == true");
+        //    listener.connectRequestFailedNotification(new IllegalStateException("Framework stopped"));
+
+        //} else {
+        try {
+
+            bootstrap.handler(new NettyWsocClientInitializer(bootstrap.getBaseInitializer(), target)); //, listener));
+
+            NettyHttpRequestorWsoc10 parent = this;
+
+            // LLA TODO fix the address and port
+
+            nettyBundle.startOutbound(this.bootstrap, "127.0.0.1", 9080, f -> {
+                if (f.isCancelled() || !f.isSuccess()) {
+                    Tr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.entry(parent, tc, "destroy", f.cause());
+                    //listener.connectRequestFailedNotification((Exception) f.cause());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(parent, tc, "destroy");
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.entry(parent, tc, "ready", f);
+                    //parent.chan = f.channel();
+                    //listener.connectRequestSucceededNotification(readyConnection);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(parent, tc, "ready");
+                }
+
+            });
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.entry(this, tc, "destroy", e);
+            //listener.connectRequestFailedNotification(e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(this, tc, "destroy");
+
+        }
+        //}
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(this, tc, "connect");
+        //}
+
+        //access=new ClientTransportAccess();
+
+        //vc=(OutboundVirtualConnection)NettyWsocOutboundChain.getVCFactory(endpointAddress);;access.setVirtualConnection(vc);vc.connect(endpointAddress);
 
     }
 
