@@ -35,6 +35,8 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.install.InstallException;
 
+import componenttest.containers.SimpleLogConsumer;
+
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = InstallFeatureTest.class;
@@ -44,7 +46,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
-		.withExposedPorts(8080).waitingFor(Wait.forHttp("/"));
+		.withExposedPorts(8080).waitingFor(Wait.forHttp("/"))
+		.withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver"));
 
 
 	@BeforeClass
@@ -77,7 +80,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		if (!isZos) {
 			resetOriginalWlpProps();
 		}
-		container.stop();
 	}
 
 	/**
@@ -701,8 +703,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Properties envProps = new Properties();
 	    envProps.put("FEATURE_VERIFY", "all");
 
-	    // start external test server
-	    container.start();
 	    String containerUrl = "http://" + container.getHost() + ":" + container.getMappedPort(8080)
 		    + "/validKey.asc";
 
