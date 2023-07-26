@@ -90,7 +90,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     public void setProperty(String prop, Object value) {
         if (prop.equals(JAXBDataBinding.UNWRAP_JAXB_ELEMENT)) {
             unwrapJAXBElement = Boolean.TRUE.equals(value);
-            addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
+            LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
         } else if (prop.equals(org.apache.cxf.message.Message.class.getName())) {
             org.apache.cxf.message.Message m = (org.apache.cxf.message.Message) value;
 
@@ -101,7 +101,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
 
             setEventHandler = MessageUtils.getContextualBoolean(m, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
-            addTrace("SetEventHandler is set to: " + setEventHandler + " trough message context"); // Liberty change
+            LOG.fine("SetEventHandler is set to: " + setEventHandler + " trough message context"); // Liberty change
 
             Object unwrapProperty = m.get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             if (unwrapProperty == null) {
@@ -109,7 +109,7 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
             if (unwrapProperty != null) {
                 unwrapJAXBElement = Boolean.TRUE.equals(unwrapProperty);
-                addTrace("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough message context"); // Liberty change
+                LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough message context"); // Liberty change
             }
         }
     }
@@ -119,9 +119,6 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             // Liberty change begin
             // Move the logic that is         
             Unmarshaller um = databinding.getJAXBUnmarshaller(setEventHandler, setEventHandler ? new WSUIDValidationHandler(veventHandler) : null);
-            if (um == null) {
-                addTrace("Unmarshaller is null"); // Liberty change
-            } else {
                 /*
                  * if (databinding.getUnmarshallerListener() != null) {
                  * um.setListener(databinding.getUnmarshallerListener());
@@ -142,13 +139,12 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
                  */
                 // Liberty change end
                 um.setSchema(schema);
-                addTrace("Schema is set to Unmarshaller"); // Liberty change
+                LOG.fine("Schema is set to Unmarshaller"); // Liberty change
                 um.setAttachmentUnmarshaller(getAttachmentUnmarshaller());
-                addTrace("AttachmentUnmarshaller is set to Unmarshaller"); // Liberty change
+                LOG.fine("AttachmentUnmarshaller is set to Unmarshaller"); // Liberty change
                 for (XmlAdapter<?, ?> adapter : databinding.getConfiguredXmlAdapters()) {
                     um.setAdapter(adapter);
                 }
-            }
             return um;
 
         } catch (javax.xml.bind.UnmarshalException ex) {
@@ -237,12 +233,4 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
         }
     }
-
-    // Liberty change begin
-    private void addTrace(String message) {
-        if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("DataReaderImpl~" + message);
-        }
-    }
-    // Liberty change end
 }
