@@ -46,14 +46,27 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
      */
     protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, final String realm) throws Exception {
         Properties expProps = null;
+        LTPAKeyPair pair = null; 
 
         try {
             KeyEncryptor encryptor = new KeyEncryptor(keyPasswordBytes);
-            LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
+            if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+                pair = LTPADigSignatureLegacy.generateLTPAKeyPair();
+            }
+            else {
+                pair = LTPADigSignature.generateLTPAKeyPair();
+            }
+
             byte[] publicKey = pair.getPublic().getEncoded();
             byte[] privateKey = pair.getPrivate().getEncoded();
             byte[] encryptedPrivateKey = encryptor.encrypt(privateKey);
-            byte[] sharedKey = LTPACrypto.generate3DESKey(); // key length is 24 for 3DES
+
+            byte[] sharedKey = null; 
+            if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+                sharedKey = LTPACryptoLegacy.generate3DESKey(); // key length is 24 for 3DES
+            } else {
+                sharedKey = LTPACrypto.generate3DESKey(); // key length is 24 for 3DES                
+            }
             byte[] encryptedSharedKey = encryptor.encrypt(sharedKey);
 
             String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKey);

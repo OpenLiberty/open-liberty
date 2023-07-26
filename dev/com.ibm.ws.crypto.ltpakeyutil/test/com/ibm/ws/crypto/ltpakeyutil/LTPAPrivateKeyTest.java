@@ -160,7 +160,12 @@ public class LTPAPrivateKeyTest {
     private byte[][] getRawKey() {
         byte[][] rsaPublicKey = new byte[2][];
         byte[][] rsaPrivateKey = new byte[8][];
-        LTPADigSignature.generateRSAKeys(rsaPublicKey, rsaPrivateKey);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            LTPADigSignatureLegacy.generateRSAKeys(rsaPublicKey, rsaPrivateKey);
+        }
+        else {
+            LTPADigSignature.generateRSAKeys(rsaPublicKey, rsaPrivateKey);
+        }
         return rsaPrivateKey;
     }
 

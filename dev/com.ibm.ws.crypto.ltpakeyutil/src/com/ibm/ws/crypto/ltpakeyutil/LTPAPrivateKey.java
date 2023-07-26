@@ -34,7 +34,13 @@ public final class LTPAPrivateKey implements PrivateKey {
 
     LTPAPrivateKey(byte[][] key) {
         this.rawKey = key;
-        LTPACrypto.setRSAKey(key);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            LTPACryptoLegacy.setRSAKey(key);
+        }
+        else {
+            LTPACrypto.setRSAKey(key);
+        }
+
         this.privateExponentLength = key[PRIVATE_EXPONENT].length;
         this.encodedKey = encode();
     }

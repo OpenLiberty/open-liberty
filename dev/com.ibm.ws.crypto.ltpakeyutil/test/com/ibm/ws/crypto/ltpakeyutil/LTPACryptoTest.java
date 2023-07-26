@@ -58,7 +58,11 @@ public class LTPACryptoTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        LTPACrypto.setMaxCache(0);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            LTPACryptoLegacy.setMaxCache(0);
+        } else {
+            LTPACrypto.setMaxCache(0);
+        }
     }
 
     @Test
@@ -66,152 +70,312 @@ public class LTPACryptoTest {
         // Sign the data.
         LTPAPrivateKey privateKey = new LTPAPrivateKey(PRIVATE_KEY);
         byte[][] rawKey = privateKey.getRawKey();
-        LTPACrypto.setRSAKey(rawKey);
-        byte[] signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            LTPACryptoLegacy.setRSAKey(rawKey);
+            byte[] signature = LTPACryptoLegacy.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
 
-        // Verify the signature.
-        LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
-        rawKey = publicKey.getRawKey();
-        boolean verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0, signature.length);
+            // Verify the signature.
+            LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            boolean verified = LTPACryptoLegacy.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature,
+                    0, signature.length);
 
-        // Check the result.
-        Assert.assertTrue(verified);
+            // Check the result.
+            Assert.assertTrue(verified);
 
-        // Sign the data again.
-        privateKey = new LTPAPrivateKey(PRIVATE_KEY);
-        rawKey = privateKey.getRawKey();
-        LTPACrypto.setRSAKey(rawKey);
-        signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+            // Sign the data again.
+            privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            rawKey = privateKey.getRawKey();
+            LTPACryptoLegacy.setRSAKey(rawKey);
+            signature = LTPACryptoLegacy.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
 
-        // Verify the signature again.
-        publicKey = new LTPAPublicKey(PUBLIC_KEY);
-        rawKey = publicKey.getRawKey();
-        verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0, signature.length);
+            // Verify the signature again.
+            publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            verified = LTPACryptoLegacy.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
 
-        // Check the result again.
-        Assert.assertTrue(verified);
+            // Check the result again.
+            Assert.assertTrue(verified);
+        } else {
+            LTPACrypto.setRSAKey(rawKey);
+            byte[] signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+
+            // Verify the signature.
+            LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            boolean verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
+
+            // Check the result.
+            Assert.assertTrue(verified);
+
+            // Sign the data again.
+            privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            rawKey = privateKey.getRawKey();
+            LTPACrypto.setRSAKey(rawKey);
+            signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+
+            // Verify the signature again.
+            publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
+
+            // Check the result again.
+            Assert.assertTrue(verified);
+        }
+
     }
 
     @Test
     public void testSignCorrectWithCacheOverFlow() throws Exception {
-        // Sign the data.
-        LTPAPrivateKey privateKey = new LTPAPrivateKey(PRIVATE_KEY);
-        byte[][] rawKey = privateKey.getRawKey();
-        LTPACrypto.setRSAKey(rawKey);
-        byte[] signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
 
-        // Verify the signature.
-        LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
-        rawKey = publicKey.getRawKey();
-        boolean verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0, signature.length);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            // Sign the data.
+            LTPAPrivateKey privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            byte[][] rawKey = privateKey.getRawKey();
+            LTPACryptoLegacy.setRSAKey(rawKey);
+            byte[] signature = LTPACryptoLegacy.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
 
-        // Check the result.
-        Assert.assertTrue(verified);
+            // Verify the signature.
+            LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            boolean verified = LTPACryptoLegacy.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature,
+                    0, signature.length);
 
-        // Sign the data again.
-        privateKey = new LTPAPrivateKey(PRIVATE_KEY);
-        rawKey = privateKey.getRawKey();
-        LTPACrypto.setRSAKey(rawKey);
-        signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+            // Check the result.
+            Assert.assertTrue(verified);
 
-        // Verify the signature again.
-        publicKey = new LTPAPublicKey(PUBLIC_KEY);
-        rawKey = publicKey.getRawKey();
-        verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0, signature.length);
+            // Sign the data again.
+            privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            rawKey = privateKey.getRawKey();
+            LTPACryptoLegacy.setRSAKey(rawKey);
+            signature = LTPACryptoLegacy.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
 
-        // Check the result again.
-        Assert.assertTrue(verified);
+            // Verify the signature again.
+            publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            verified = LTPACryptoLegacy.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
+
+            // Check the result again.
+            Assert.assertTrue(verified);
+        } else {
+            // Sign the data.
+            LTPAPrivateKey privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            byte[][] rawKey = privateKey.getRawKey();
+            LTPACrypto.setRSAKey(rawKey);
+            byte[] signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+
+            // Verify the signature.
+            LTPAPublicKey publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            boolean verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
+
+            // Check the result.
+            Assert.assertTrue(verified);
+
+            // Sign the data again.
+            privateKey = new LTPAPrivateKey(PRIVATE_KEY);
+            rawKey = privateKey.getRawKey();
+            LTPACrypto.setRSAKey(rawKey);
+            signature = LTPACrypto.signISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length);
+
+            // Verify the signature again.
+            publicKey = new LTPAPublicKey(PUBLIC_KEY);
+            rawKey = publicKey.getRawKey();
+            verified = LTPACrypto.verifyISO9796(rawKey, ORIGINAL_DATA, 0, ORIGINAL_DATA.length, signature, 0,
+                    signature.length);
+
+            // Check the result again.
+            Assert.assertTrue(verified);
+
+        }
+
     }
 
     @Test
     public void testEncryptCorrectWithAESCBC() throws Exception {
-        // Encrypt the data.
-        byte[] secretKey = SECRET_KEY;
-        byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, AES_CBC_CIPHER);
 
-        // Decrypt the data.
-        byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, AES_CBC_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACryptoLegacy.encrypt(ORIGINAL_DATA, secretKey, AES_CBC_CIPHER);
 
-        // Check the length of the bytes.
-        Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+            // Decrypt the data.
+            byte[] decrypted = LTPACryptoLegacy.decrypt(encrypted, secretKey, AES_CBC_CIPHER);
 
-        // Check each byte.
-        boolean same = true;
-        for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
-            if (ORIGINAL_DATA[i] != decrypted[i]) {
-                same = false;
-                break;
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
             }
+            Assert.assertTrue(same);
+        } else {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, AES_CBC_CIPHER);
+
+            // Decrypt the data.
+            byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, AES_CBC_CIPHER);
+
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
+            }
+            Assert.assertTrue(same);
+
         }
-        Assert.assertTrue(same);
+
     }
 
     @Test
     public void testEncryptCorrectWithAESECB() throws Exception {
-        // Encrypt the data.
-        byte[] secretKey = SECRET_KEY;
-        byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, AES_ECB_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACryptoLegacy.encrypt(ORIGINAL_DATA, secretKey, AES_ECB_CIPHER);
 
-        // Decrypt the data.
-        byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, AES_ECB_CIPHER);
+            // Decrypt the data.
+            byte[] decrypted = LTPACryptoLegacy.decrypt(encrypted, secretKey, AES_ECB_CIPHER);
 
-        // Check the length of the bytes.
-        Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
 
-        // Check each byte.
-        boolean same = true;
-        for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
-            if (ORIGINAL_DATA[i] != decrypted[i]) {
-                same = false;
-                break;
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
             }
+            Assert.assertTrue(same);
+        } else {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, AES_ECB_CIPHER);
+
+            // Decrypt the data.
+            byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, AES_ECB_CIPHER);
+
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
+            }
+            Assert.assertTrue(same);
         }
-        Assert.assertTrue(same);
     }
 
     @Test
     public void testEncryptCorrectWithDESECB() throws Exception {
-        // Encrypt the data.
-        byte[] secretKey = SECRET_KEY;
-        byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, DES_ECB_CIPHER);
 
-        // Decrypt the data.
-        byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, DES_ECB_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACryptoLegacy.encrypt(ORIGINAL_DATA, secretKey, DES_ECB_CIPHER);
 
-        // Check the length of the bytes.
-        Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+            // Decrypt the data.
+            byte[] decrypted = LTPACryptoLegacy.decrypt(encrypted, secretKey, DES_ECB_CIPHER);
 
-        // Check each byte.
-        boolean same = true;
-        for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
-            if (ORIGINAL_DATA[i] != decrypted[i]) {
-                same = false;
-                break;
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
             }
+            Assert.assertTrue(same);
+        } else {
+            // Encrypt the data.
+            byte[] secretKey = SECRET_KEY;
+            byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, secretKey, DES_ECB_CIPHER);
+
+            // Decrypt the data.
+            byte[] decrypted = LTPACrypto.decrypt(encrypted, secretKey, DES_ECB_CIPHER);
+
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
+            }
+            Assert.assertTrue(same);
         }
-        Assert.assertTrue(same);
     }
 
     @Test
     public void testEncryptCorrectWithDESCBC() throws Exception {
-        // Encrypt the data.
-        byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, SECRET_KEY, DES_CBC_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop()) {
+            // Encrypt the data.
+            byte[] encrypted = LTPACryptoLegacy.encrypt(ORIGINAL_DATA, SECRET_KEY, DES_CBC_CIPHER);
 
-        // Decrypt the data.
-        byte[] decrypted = LTPACrypto.decrypt(encrypted, SECRET_KEY, DES_CBC_CIPHER);
+            // Decrypt the data.
+            byte[] decrypted = LTPACryptoLegacy.decrypt(encrypted, SECRET_KEY, DES_CBC_CIPHER);
 
-        // Check the length of the bytes.
-        Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
 
-        // Check each byte.
-        boolean same = true;
-        for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
-            if (ORIGINAL_DATA[i] != decrypted[i]) {
-                same = false;
-                break;
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
             }
+            Assert.assertTrue(same);
+        } else {
+            // Encrypt the data.
+            byte[] encrypted = LTPACrypto.encrypt(ORIGINAL_DATA, SECRET_KEY, DES_CBC_CIPHER);
+
+            // Decrypt the data.
+            byte[] decrypted = LTPACrypto.decrypt(encrypted, SECRET_KEY, DES_CBC_CIPHER);
+
+            // Check the length of the bytes.
+            Assert.assertTrue(ORIGINAL_DATA.length == decrypted.length);
+
+            // Check each byte.
+            boolean same = true;
+            for (int i = 0, il = ORIGINAL_DATA.length; i < il; i++) {
+                if (ORIGINAL_DATA[i] != decrypted[i]) {
+                    same = false;
+                    break;
+                }
+            }
+            Assert.assertTrue(same);
         }
-        Assert.assertTrue(same);
     }
 
 }

@@ -48,10 +48,21 @@ public class KeyEncryptor {
      * @return The decrypted key
      */
     public byte[] decrypt(byte[] encryptedKey) throws Exception {
-        return LTPACrypto.decrypt(encryptedKey, desKey, DES_ECB_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop( )) {
+            return LTPACryptoLegacy.decrypt(encryptedKey, desKey, DES_ECB_CIPHER);
+        }
+        else {
+            return LTPACrypto.decrypt(encryptedKey, desKey, DES_ECB_CIPHER);
+        }
+   
     }
 
     public byte[] encrypt(byte[] key) throws Exception {
-        return LTPACrypto.encrypt(key, desKey, DES_ECB_CIPHER);
+        if (LTPAKeyUtil.isIBMJCEHYBRIDAtTop( )) {
+            return LTPACryptoLegacy.encrypt(key, desKey, DES_ECB_CIPHER);
+        }
+        else {
+            return LTPACrypto.encrypt(key, desKey, DES_ECB_CIPHER);
+        }
     }
 }

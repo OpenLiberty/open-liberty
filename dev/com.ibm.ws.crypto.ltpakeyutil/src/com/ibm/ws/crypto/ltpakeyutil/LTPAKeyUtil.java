@@ -21,25 +21,52 @@ public final class LTPAKeyUtil {
   public static boolean ibmJCEAvailable = false;
   public static boolean providerChecked = false;
   public static String IBM_JCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE"; 
+  private static final String IBMJCEHYBRID_NAME = "IBMJCEHYBRID";
+  private static Boolean ibmJCEHYBRIDAtTop = null; 
 
   public static byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
-    return LTPACrypto.encrypt(data, key, cipher);
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPACryptoLegacy.encrypt(data, key, cipher);
+    }
+    else {
+      return LTPACrypto.encrypt(data, key, cipher);
+    }
   }
 
   public static byte[] decrypt(byte[] msg, byte[] key, String cipher) throws Exception {
-    return LTPACrypto.decrypt(msg, key, cipher);
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPACryptoLegacy.decrypt(msg, key, cipher);
+    }
+    else {
+      return LTPACrypto.decrypt(msg, key, cipher);
+    }
   }
 
   public static boolean verifyISO9796(byte[][] key, byte[] data, int off, int len, byte[] sig, int sigOff, int sigLen) throws Exception {
-    return LTPACrypto.verifyISO9796(key, data, off, len, sig, sigOff, sigLen);
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPACryptoLegacy.verifyISO9796(key, data, off, len, sig, sigOff, sigLen);
+    }
+    else {
+      return LTPACrypto.verifyISO9796(key, data, off, len, sig, sigOff, sigLen);
+    }
   }
 
   public static byte[] signISO9796(byte[][] key, byte[] data, int off, int len) throws Exception {
-    return LTPACrypto.signISO9796(key, data, off, len);
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPACryptoLegacy.signISO9796(key, data, off, len);
+    }
+    else {
+      return LTPACrypto.signISO9796(key, data, off, len);
+    }
   }
 
   public static void setRSAKey(byte[][] key) {
-    LTPACrypto.setRSAKey(key);
+    if (isIBMJCEHYBRIDAtTop()) {
+      LTPACryptoLegacy.setRSAKey(key);
+    }
+    else {
+      LTPACrypto.setRSAKey(key);      
+    }
   }
 
   public static byte[][] getRawKey(LTPAPrivateKey privKey) {
@@ -51,11 +78,21 @@ public final class LTPAKeyUtil {
   }
 
   public static LTPAKeyPair generateLTPAKeyPair() {
-    return LTPADigSignature.generateLTPAKeyPair();
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPADigSignatureLegacy.generateLTPAKeyPair();
+    }
+    else {
+      return LTPADigSignature.generateLTPAKeyPair();
+    }
   }
 
   public static byte[] generate3DESKey() {
-    return LTPACrypto.generate3DESKey();
+    if (isIBMJCEHYBRIDAtTop()) {
+      return LTPACryptoLegacy.generate3DESKey();
+    }
+    else {
+      return LTPACrypto.generate3DESKey();
+    }
   }
 
   public static boolean isIBMJCEAvailable() {
@@ -68,6 +105,26 @@ public final class LTPAKeyUtil {
       return ibmJCEAvailable;
     }
 
+  }
+
+  
+  public static boolean isIBMJCEHYBRIDAtTop() {
+
+    if (ibmJCEHYBRIDAtTop == null) {
+      // Get the list of security providers
+      Provider[] providers = Security.getProviders();
+
+      if (providers.length > 0) {
+        if (providers[0].getName().equals(IBMJCEHYBRID_NAME)) {
+          System.out.println("DEBUG: Yes, ibmjcehybrid provider at top");
+          ibmJCEHYBRIDAtTop = Boolean.TRUE;
+        } else {
+          System.out.println("DEBUG: No, ibmjcehybridprovider is not there.");
+          ibmJCEHYBRIDAtTop = Boolean.FALSE;
+        }
+      }
+    }
+    return ibmJCEHYBRIDAtTop.booleanValue();
   }
 
 }
