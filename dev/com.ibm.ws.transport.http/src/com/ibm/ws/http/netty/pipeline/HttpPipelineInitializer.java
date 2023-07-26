@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package com.ibm.ws.http.netty.pipeline;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,10 +16,13 @@ import java.util.Objects;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.AccessLoggerHandler;
+import com.ibm.ws.http.netty.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.NettyChain;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
-import com.ibm.ws.http.netty.pipeline.ByteBufferCodec;
-import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -32,9 +35,9 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  * Initializes a Netty Pipeline for an HTTP Endpoint. Configuration options may be
  * passed into it.
  */
-public class HttpInitializer extends ChannelInitializer<Channel> {
+public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
 
-    private static final TraceComponent tc = Tr.register(HttpInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(HttpPipelineInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public enum ConfigElement {
         HTTP_OPTIONS,
@@ -45,8 +48,6 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
         HEADERS,
         ACCESS_LOG
     }
-
-    final static String REMOTE_IP_DEFAULT = "defaultRemoteIp";
 
     NettyChain chain;
     Map<String, Object> tcpOptions;
@@ -60,36 +61,37 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
     HttpChannelConfig httpConfig;
 
-    private HttpInitializer(HttpPipelineBuilder builder) {
+    private HttpPipelineInitializer(HttpPipelineBuilder builder) {
+        Objects.requireNonNull(builder);
         this.chain = builder.chain;
         this.httpConfig = builder.httpConfig;
     }
 
     public void updateConfig(ConfigElement config, Map<String, Object> options) {
-        if (Objects.nonNull(options)) {
-            switch (config) {
-                case HTTP_OPTIONS: {
-                    this.httpConfig.updateConfig(options);
+        Objects.requireNonNull(config);
+        Objects.requireNonNull(options);
+        Tr.entry(tc, "updateConfig");
 
-                    break;
-                }
-                case REMOTE_IP: {
-                    this.httpConfig.updateConfig(options);
+        switch (config) {
+            case HTTP_OPTIONS: {
+                this.httpConfig.updateConfig(options);
 
-                }
-                default:
-                    break;
+                break;
+            }
+            case REMOTE_IP: {
+                this.httpConfig.updateConfig(options);
 
             }
-        }
+            default:
+                break;
 
+        }
+        Tr.exit(tc, "updateConfig");
     }
 
     @Override
     protected void initChannel(Channel channel) throws Exception {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.entry(this, tc, "starting a new http pipeline " + this);
-        }
+        Tr.entry(tc, "initChannel");
 
         ChannelPipeline pipeline = channel.pipeline();
 
@@ -97,12 +99,8 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
             // SSLEngine engine = channel.newEngine(channel.alloc());
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
         }
-        MSP.log("***");
-
-        MSP.log("Is accessLog started: " + httpConfig.isAccessLoggingEnabled());
 
         if (httpConfig.isAccessLoggingEnabled()) {
-            MSP.log("AccessLogger handler should start");
             pipeline.addLast(new AccessLoggerHandler(httpConfig));
         }
         pipeline.addLast(new HttpServerCodec());
@@ -113,66 +111,84 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(new RemoteIpHandler(httpConfig));
         }
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
+
+        Tr.exit(tc, "initChannel");
     }
 
     public static class HttpPipelineBuilder {
 
         private final NettyChain chain;
-        private final Map<String, Object> tcpOptions;
-        private final Map<String, Object> sslOptions;
+
+        private Map<String, Object> compression;
+        private Map<String, Object> headers;
         private Map<String, Object> httpOptions;
         private Map<String, Object> remoteIp;
-        private final Map<String, Object> compression;
-        private final Map<String, Object> samesite;
-        private final Map<String, Object> headers;
-        private final Map<String, Object> endpointOptions;
+        private Map<String, Object> samesite;
 
         HttpChannelConfig httpConfig;
 
+        private boolean useCompression;
+        private boolean useHeaders;
         private boolean useRemoteIp;
+        private boolean useSameSite;
 
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = chain;
-            tcpOptions = Collections.emptyMap();
-            sslOptions = Collections.emptyMap();
             httpOptions = Collections.emptyMap();
             remoteIp = Collections.emptyMap();
             compression = Collections.emptyMap();
             samesite = Collections.emptyMap();
             headers = Collections.emptyMap();
-            endpointOptions = Collections.emptyMap();
 
         }
 
         public HttpPipelineBuilder with(ConfigElement config, Map<String, Object> options) {
-
-            if (Objects.isNull(options)) {
+            Tr.entry(tc, "with");
+            if (Objects.isNull(config) || Objects.isNull(options)) {
+                Tr.debug(tc, "with", "A bad configuration was attempted. Config: " + config + " options: " + options);
                 return this;
             }
 
             switch (config) {
+
+                case COMPRESSION: {
+                    useCompression = HttpConfigConstants.DEFAULT_COMPRESSION.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
+                    this.compression = options;
+                    break;
+                }
+
+                case HEADERS: {
+                    useHeaders = HttpConfigConstants.DEFAULT_HEADERS.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
+                    this.headers = options;
+                    break;
+                }
+
                 case HTTP_OPTIONS: {
                     this.httpOptions = options;
                     break;
                 }
                 case REMOTE_IP: {
 
-                    useRemoteIp = REMOTE_IP_DEFAULT.equalsIgnoreCase(String.valueOf(options.get("id"))) ? Boolean.FALSE : Boolean.TRUE;
+                    useRemoteIp = HttpConfigConstants.DEFAULT_REMOTE_IP.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
                     this.remoteIp = options;
 
                     break;
                 }
-                case ACCESS_LOG: {
-
+                case SAMESITE: {
+                    useSameSite = HttpConfigConstants.DEFAULT_SAMESITE.equalsIgnoreCase(String.valueOf(options.get(HttpConfigConstants.ID))) ? Boolean.FALSE : Boolean.TRUE;
+                    this.samesite = options;
+                    break;
                 }
+
                 default:
                     break;
             }
-
+            Tr.exit(tc, "with");
             return this;
         }
 
         private HttpChannelConfig generateHttpOptions() {
+            Tr.entry(tc, "generateHttpOptions");
 
             NettyConfigBuilder builder = new NettyHttpChannelConfig.NettyConfigBuilder();
 
@@ -182,18 +198,31 @@ public class HttpInitializer extends ChannelInitializer<Channel> {
 
             }
 
-            if (this.useRemoteIp) {
-                builder.with(ConfigElement.REMOTE_IP, this.remoteIp);
+            if (useCompression) {
+                builder.with(ConfigElement.COMPRESSION, compression);
             }
+
+            if (useHeaders) {
+                builder.with(ConfigElement.HEADERS, headers);
+            }
+
+            if (useRemoteIp) {
+                builder.with(ConfigElement.REMOTE_IP, remoteIp);
+            }
+
+            if (useSameSite) {
+                builder.with(ConfigElement.SAMESITE, samesite);
+            }
+            Tr.exit(tc, "generateHttpOptions");
 
             return builder.build();
         }
 
-        public HttpInitializer build() {
+        public HttpPipelineInitializer build() {
 
             this.httpConfig = generateHttpOptions();
 
-            return new HttpInitializer(this);
+            return new HttpPipelineInitializer(this);
         }
     }
 
