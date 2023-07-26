@@ -49,6 +49,7 @@ public class SimpleClientServlet extends HttpServlet {
 	private static final int SHORT_SLEEP = 2;
 
 	private Instant tranEndTime;
+	private int timeout;
 	
 	@Resource
 	UserTransaction ut;
@@ -58,7 +59,7 @@ public class SimpleClientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("Servlet: " + request.getRequestURI());
+    	System.out.println("Servlet: " + request.getRequestURI());
         System.out.println("Test: " + request.getParameter(TEST_NAME_PARAM));
 
         final Enumeration<?> params = request.getParameterNames();
@@ -91,13 +92,11 @@ public class SimpleClientServlet extends HttpServlet {
 			}
 			String perf = request.getParameter("perf");
 			if (perf != null && !perf.isEmpty()) {
-				int timeout = Math.round(DEFAULT_TIMEOUT / Float.parseFloat(perf));
+				timeout = Math.round(DEFAULT_TIMEOUT / Float.parseFloat(perf));
 				ut.setTransactionTimeout(timeout);
 				System.out.println("Timeout adjusted to " + timeout);
-
-				// To all intents and purposes, tran is going to start now.
-				tranEndTime = Instant.now().plusSeconds((long)timeout);
-				System.out.println("Transaction is due to timeout at " + tranEndTime.toString());
+			} else {
+				timeout = Math.round(DEFAULT_TIMEOUT);
 			}
 
 			String[] noXARes = new String[]{};
@@ -527,7 +526,10 @@ public class SimpleClientServlet extends HttpServlet {
 		String output = "";
 		try {
 			ut.begin();
-			System.out.println("execute userTransaction.begin()");
+
+			tranEndTime = Instant.now().plusSeconds((long)timeout);
+			System.out.println("Transaction is due to timeout at " + tranEndTime.toString());
+
 			// Check User Transaction Status
 			UTexpectedStatus = Status.STATUS_ACTIVE;
 			UTstatus = ut.getStatus();
