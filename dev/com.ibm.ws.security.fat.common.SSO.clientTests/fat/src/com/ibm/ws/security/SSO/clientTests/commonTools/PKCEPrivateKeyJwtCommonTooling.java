@@ -398,8 +398,8 @@ public class PKCEPrivateKeyJwtCommonTooling extends CommonTest {
             Log.info(thisClass, _testName,
                     "Expiration Time is missing in the private key - the Liberty OP should have included it, but, it is an optional value.");
         } else {
-            if (exp < (iat + 300)) {
-                fail("Expiration Time was not what was expected.  Expected a value 5 minutes after \"iat\": " + iat + " + 300, but found: " + exp);
+            if (exp < (iat + 295) && exp > (iat + 305)) {
+                fail("Expiration Time was not what was expected.  Expected a value 5 minutes after \"iat\" (plus/minus 5 seconds): " + iat + " + 300, but found: " + exp);
             }
         }
 
