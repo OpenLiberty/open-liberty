@@ -272,10 +272,7 @@ public class HttpChannelConfig {
      * @param cc
      */
     protected void parseConfig(String name, Map<String, Object> config) {
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "parseConfig: " + name);
-        }
+        Tr.entry(tc, "parseConfig: " + name);
 
         Map<String, Object> propsIn = config;
 
@@ -551,67 +548,66 @@ public class HttpChannelConfig {
             props.put(key, value);
         }
 
-        parseProtocolVersion(props);
-        parsePersistence(props);
-        parseOutgoingVersion(props);
-        parseBufferType(props);
-        parseOutgoingBufferSize(props);
-        parseIncomingHdrBufferSize(props);
-        parseIncomingBodyBufferSize(props);
-        parsePersistTimeout(props);
-        parseReadTimeout(props);
-        parseWriteTimeout(props);
-        parseByteCacheSize(props);
-        parseDelayedExtract(props);
-        parseBinaryTransport(props);
-        parseLimitFieldSize(props);
-        parseLimitNumberHeaders(props);
-        parseLimitNumberResponses(props);
-        parseLimitMessageSize(props);
-        parseAllowRetries(props);
+        parseProtocolVersion(props.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
+        parsePersistence(props.get(HttpConfigConstants.PROPNAME_KEEPALIVE_ENABLED), props.get(HttpConfigConstants.PROPNAME_MAX_PERSIST));
+        parseOutgoingVersion(props.get(HttpConfigConstants.PROPNAME_OUTGOING_VERSION));
+        parseBufferType(props.get(HttpConfigConstants.PROPNAME_DIRECT_BUFF));
+        parseOutgoingBufferSize(props.get(HttpConfigConstants.PROPNAME_OUTGOING_HDR_BUFFSIZE));
+        parseIncomingHdrBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
+        parseIncomingBodyBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
+        parsePersistTimeout(props.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
+        parseReadTimeout(props.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
+        parseWriteTimeout(props.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
+        parseByteCacheSize(props.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
+        parseDelayedExtract(props.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
+        parseBinaryTransport(props.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
+        parseLimitFieldSize(props.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE));
+        parseLimitNumberHeaders(props.get(HttpConfigConstants.PROPNAME_LIMIT_NUMHEADERS));
+        parseLimitNumberResponses(props.get(HttpConfigConstants.PROPNAME_LIMIT_NUMBER_RESPONSES));
+        parseLimitMessageSize(props.get(HttpConfigConstants.PROPNAME_MSG_SIZE_LIMIT));
+        parseAllowRetries(props.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
         parseAccessLog(props.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
-        parseHeaderValidation(props);
-        parseStrictURLFormat(props);
+        parseHeaderValidation(props.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
+        parseStrictURLFormat(props.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
         parseServerHeader(props.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE), props.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER));
-        parseDateHeaderRange(props);
-        parseCookieUpdate(props);//PI75280
-        parseHeaderChangeLimit(props);
+        parseDateHeaderRange(props.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
+        parseCookieUpdate(props.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), props.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));//PI75280
+        parseHeaderChangeLimit(props.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
         parseAutoDecompression(props.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
-        parseRequestSmugglingProtection(props);
-        parsev0CookieDateRFC1123compat(props);
-        parseDoNotAllowDuplicateSetCookies(props); //PI31734
-        parseWaitForEndOfMessage(props); //PI33453
-        parseRemoveCLHeaderInTempStatusRespRFC7230compat(props);//PI35277
-        parsePreventResponseSplit(props); //PI45266
-        parseAttemptPurgeData(props); //PI11176
-        parseThrowIOEForInboundConnections(props); //PI57542
-        parseSkipCookiePathQuotes(props); //738893
-        parseH2ConnCloseTimeout(props);
-        parseH2ConnectionIdleTimeout(props);
-        parseH2MaxConcurrentStreams(props);
-        parseH2MaxFrameSize(props);
-        parseH2SettingsInitialWindowSize(props);
-        parseH2ConnectionWindowSize(props);
-        parseH2LimitWindowUpdateFrames(props);
+        parseRequestSmugglingProtection(props.get(HttpConfigConstants.PROPNAME_ENABLE_SMUGGLING_PROTECTION));
+        parsev0CookieDateRFC1123compat(props.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
+        parseDoNotAllowDuplicateSetCookies(props.get(HttpConfigConstants.PROPNAME_DO_NOT_ALLOW_DUPLICATE_SET_COOKIES)); //PI31734
+        parseWaitForEndOfMessage(props.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE)); //PI33453
+        parseRemoveCLHeaderInTempStatusRespRFC7230compat(props.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));//PI35277
+        parsePreventResponseSplit(props.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT)); //PI45266
+        parseAttemptPurgeData(props.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE)); //PI11176
+        parseThrowIOEForInboundConnections(props.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS)); //PI57542
+        parseSkipCookiePathQuotes(props.get(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE)); //738893
+        parseH2ConnCloseTimeout(props.get(HttpConfigConstants.PROPNAME_H2_CONN_CLOSE_TIMEOUT));
+        parseH2ConnectionIdleTimeout(props.get(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT));
+        parseH2MaxConcurrentStreams(props.get(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS));
+        parseH2MaxFrameSize(props.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE));
+        parseH2SettingsInitialWindowSize(props.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE));
+        parseH2ConnectionWindowSize(props.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE));
+        parseH2LimitWindowUpdateFrames(props.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES));
         parsePurgeRemainingResponseBody(); //PI81572
-        parseRemoteIp(props);
+        parseRemoteIp(props.get(HttpConfigConstants.PROPNAME_REMOTE_IP));
         parseRemoteIpProxies(props.get(HttpConfigConstants.PROPNAME_REMOTE_PROXIES));
         parseRemoteIpAccessLog(props.get(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG));
-        parseCompression(props);
-        parseCompressionTypes(props);
-        parseCompressionPreferredAlgorithm(props);
+        parseCompression(props.get(HttpConfigConstants.PROPNAME_COMPRESSION));
+        parseCompressionTypes(props.get(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL));
+        parseCompressionPreferredAlgorithm(props.get(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL));
         parseDecompressionRatioLimit(props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT));
         parseDecompressionTolerance(props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE));
-        parseSameSiteConfig(props);
-        parseCookiesSameSiteLax(props);
-        parseCookiesSameSiteNone(props);
-        parseCookiesSameSiteStrict(props);
+        parseSameSiteConfig(props.get(HttpConfigConstants.PROPNAME_SAMESITE));
+        parseCookiesSameSiteLax(props.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX_INTERNAL));
+        parseCookiesSameSiteNone(props.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE_INTERNAL));
+        parseCookiesSameSiteStrict(props.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT_INTERNAL));
         initSameSiteCookiesPatterns();
         parseHeaders(props);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "parseConfig");
-        }
+        Tr.exit(tc, "parseConfig");
+
     }
 
     /**
@@ -635,10 +631,10 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parsePersistence(Map<Object, Object> props) {
-        parseKeepAliveEnabled(props);
+    protected void parsePersistence(Object keepAlive, Object maxPersist) {
+        parseKeepAliveEnabled(keepAlive);
         if (isKeepAliveEnabled()) {
-            parseMaxPersist(props);
+            parseMaxPersist(maxPersist);
         }
     }
 
@@ -960,9 +956,7 @@ public class HttpChannelConfig {
     protected void parseBinaryTransport(Object option) {
         if (Objects.nonNull(option)) {
             this.bBinaryTransport = convertBoolean(option);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Config: binary transport is " + isBinaryTransportEnabled());
-            }
+            Tr.event(tc, "Config: binary transport is " + isBinaryTransportEnabled());
         }
     }
 
@@ -975,14 +969,11 @@ public class HttpChannelConfig {
         if (Objects.nonNull(option)) {
             try {
                 this.limitFieldSize = rangeLimit(convertInteger(option), HttpConfigConstants.MIN_LIMIT_FIELDSIZE, HttpConfigConstants.MAX_LIMIT_FIELDSIZE);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: field size limit is " + getLimitOfFieldSize());
-                }
+                Tr.event(tc, "Config: field size limit is " + getLimitOfFieldSize());
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseLimitFieldSize", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invaild max field size setting of " + option);
-                }
+                Tr.event(tc, "Config: Invaild max field size setting of " + option);
+
             }
         }
     }
@@ -997,14 +988,12 @@ public class HttpChannelConfig {
         if (Objects.nonNull(option)) {
             try {
                 this.limitNumHeaders = rangeLimit(convertInteger(option), HttpConfigConstants.MIN_LIMIT_NUMHEADERS, HttpConfigConstants.MAX_LIMIT_NUMHEADERS);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Num hdrs limit is " + getLimitOnNumberOfHeaders());
-                }
+                Tr.event(tc, "Config: Num hdrs limit is " + getLimitOnNumberOfHeaders());
+
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseLimitNumberHeaders", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid number of headers limit; " + option);
-                }
+                Tr.event(tc, "Config: Invalid number of headers limit; " + option);
+
             }
         }
     }
@@ -1015,24 +1004,21 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parseLimitNumberResponses(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_LIMIT_NUMBER_RESPONSES);
-        if (null != value) {
+    protected void parseLimitNumberResponses(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                int size = convertInteger(value);
+                int size = convertInteger(option);
                 if (HttpConfigConstants.UNLIMITED == size) {
                     this.limitNumResponses = HttpConfigConstants.MAX_LIMIT_NUMRESPONSES;
                 } else {
                     this.limitNumResponses = rangeLimit(size, 1, HttpConfigConstants.MAX_LIMIT_NUMRESPONSES);
                 }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Num responses limit is " + getLimitOnNumberOfResponses());
-                }
+                Tr.event(tc, "Config: Num responses limit is " + getLimitOnNumberOfResponses());
+
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseLimitNumberResponses", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid max number of responses; " + value);
-                }
+                Tr.event(tc, "Config: Invalid max number of responses; " + option);
+
             }
         }
     }
@@ -1043,19 +1029,14 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parseLimitMessageSize(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_MSG_SIZE_LIMIT);
-        if (null != value) {
+    protected void parseLimitMessageSize(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.limitMessageSize = convertLong(value);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Message size limit is " + getMessageSizeLimit());
-                }
+                this.limitMessageSize = convertLong(option);
+                Tr.event(tc, "Config: Message size limit is " + getMessageSizeLimit());
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseLimitMessageSize", "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid message size limit; " + value);
-                }
+                Tr.event(tc, "Config: Invalid message size limit; " + option);
             }
         }
     }
@@ -1187,9 +1168,7 @@ public class HttpChannelConfig {
                     if (!this.sameSiteStringPatterns.containsKey(name)) {
                         this.sameSiteStringPatterns.put(name, sameSiteAttribute.getName());
                     } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                            Tr.event(tc, "The duplicate pattern: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
-                        }
+                        Tr.event(tc, "The duplicate pattern: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
                     }
                 }
             }
@@ -1214,9 +1193,8 @@ public class HttpChannelConfig {
                     if (!this.sameSiteCookies.containsKey(name)) {
                         this.sameSiteCookies.put(name, sameSiteAttribute.getName());
                     } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                            Tr.event(tc, "The duplicate cookieName: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
-                        }
+                        Tr.event(tc, "The duplicate cookieName: " + name + " was not added again to the: " + sameSiteAttribute.getName() + " list.");
+
                     }
                 }
             }
@@ -1279,49 +1257,48 @@ public class HttpChannelConfig {
             }
 
             //If tracing is enabled, print out the state of these maps.
-            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                Set<String> laxCookies = new HashSet<String>();
-                Set<String> noneCookies = new HashSet<String>();
-                Set<String> strictCookies = new HashSet<String>();
+            Set<String> laxCookies = new HashSet<String>();
+            Set<String> noneCookies = new HashSet<String>();
+            Set<String> strictCookies = new HashSet<String>();
 
-                StringBuilder sb = new StringBuilder();
-                sb.append("Http Channel Config: SameSite configuration complete. The following values are set:\n");
-                for (String key : this.sameSiteCookies.keySet()) {
-                    if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
-                        laxCookies.add(key);
-                    }
-                    if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
-                        noneCookies.add(key);
-                    }
-                    if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
-                        strictCookies.add(key);
-                    }
+            StringBuilder sb = new StringBuilder();
+            sb.append("Http Channel Config: SameSite configuration complete. The following values are set:\n");
+            for (String key : this.sameSiteCookies.keySet()) {
+                if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                    laxCookies.add(key);
                 }
-                //This is only defined when there are patterns, ensure the list has been initialized
-                if (this.sameSitePatterns != null) {
-                    for (Pattern key : this.sameSitePatterns.keySet()) {
-
-                        if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
-                            laxCookies.add(key.toString());
-                        }
-                        if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
-                            noneCookies.add(key.toString());
-                        }
-                        if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
-                            strictCookies.add(key.toString());
-                        }
-                    }
+                if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                    noneCookies.add(key);
                 }
-
-                //Construct the lax names
-                sb.append("SameSite Lax Cookies ").append(laxCookies).append("\n");
-                sb.append("SameSite None Cookies ").append(noneCookies).append("\n");
-                sb.append("SameSite Strict Cookies ").append(strictCookies);
-                if (!this.sameSiteErrorCookies.isEmpty()) {
-                    sb.append("\n").append("Misconfigured SameSite cookies ").append(this.sameSiteErrorCookies);
+                if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSiteCookies.get(key))) {
+                    strictCookies.add(key);
                 }
-                Tr.event(tc, sb.toString());
             }
+            //This is only defined when there are patterns, ensure the list has been initialized
+            if (this.sameSitePatterns != null) {
+                for (Pattern key : this.sameSitePatterns.keySet()) {
+
+                    if (HttpConfigConstants.SameSite.LAX.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                        laxCookies.add(key.toString());
+                    }
+                    if (HttpConfigConstants.SameSite.NONE.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                        noneCookies.add(key.toString());
+                    }
+                    if (HttpConfigConstants.SameSite.STRICT.getName().equalsIgnoreCase(this.sameSitePatterns.get(key))) {
+                        strictCookies.add(key.toString());
+                    }
+                }
+            }
+
+            //Construct the lax names
+            sb.append("SameSite Lax Cookies ").append(laxCookies).append("\n");
+            sb.append("SameSite None Cookies ").append(noneCookies).append("\n");
+            sb.append("SameSite Strict Cookies ").append(strictCookies);
+            if (!this.sameSiteErrorCookies.isEmpty()) {
+                sb.append("\n").append("Misconfigured SameSite cookies ").append(this.sameSiteErrorCookies);
+            }
+            Tr.event(tc, sb.toString());
+
         }
     }
 
@@ -1332,19 +1309,17 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parseCompression(Map<Object, Object> props) {
+    protected void parseCompression(Object option) {
 
-        Object value = props.get(HttpConfigConstants.PROPNAME_COMPRESSION);
-        if (null != value) {
-            this.useCompressionOptions = convertBoolean(value);
+        if (Objects.nonNull(option)) {
+            this.useCompressionOptions = convertBoolean(option);
 
             if (this.useCompressionOptions) {
                 this.includedCompressionContentTypes = new HashSet<String>();
                 this.includedCompressionContentTypes.add("text/*");
                 this.includedCompressionContentTypes.add("application/javascript");
                 this.excludedCompressionContentTypes = new HashSet<String>();
-            }
-            if (this.useCompressionOptions && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+
                 Tr.event(tc, "Http Channel Config: compression has been enabled");
             }
         }
@@ -1468,19 +1443,17 @@ public class HttpChannelConfig {
 
             }
 
-            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                Tr.event(tc, "Compression Config", "compressionContentTypes updated: " +
-                                                   !hasConfigError);
-                if (!hasConfigError) {
-                    for (String s : this.includedCompressionContentTypes) {
-                        Tr.event(tc, "Include list of content-types: " + s);
-                    }
-                    for (String s : this.excludedCompressionContentTypes) {
-                        Tr.event(tc, "Exclude list of content-types: " + s);
-                    }
+            Tr.event(tc, "Compression Config", "compressionContentTypes updated: " +
+                                               !hasConfigError);
+            if (!hasConfigError) {
+                for (String s : this.includedCompressionContentTypes) {
+                    Tr.event(tc, "Include list of content-types: " + s);
                 }
-
+                for (String s : this.excludedCompressionContentTypes) {
+                    Tr.event(tc, "Exclude list of content-types: " + s);
+                }
             }
+
         }
 
     }
@@ -1521,9 +1494,8 @@ public class HttpChannelConfig {
                 this.preferredCompressionAlgorithm = value;
             }
 
-            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                Tr.event(tc, "Compression Config", "preferred compression algorithm set to: " + this.preferredCompressionAlgorithm);
-            }
+            Tr.event(tc, "Compression Config", "preferred compression algorithm set to: " + this.preferredCompressionAlgorithm);
+
         }
     }
 
@@ -1553,9 +1525,7 @@ public class HttpChannelConfig {
         if (Objects.nonNull(option) && this.useRemoteIpOptions) {
             String value = String.valueOf(option);
 
-            if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                Tr.event(tc, "RemoteIp Config: proxies regex set to: " + value);
-            }
+            Tr.event(tc, "RemoteIp Config: proxies regex set to: " + value);
 
             this.proxiesPattern = Pattern.compile(this.proxiesRegex);
         }
@@ -1796,9 +1766,8 @@ public class HttpChannelConfig {
                     this.configuredHeadersToSetIfMissing.put(headerNameHashCode, new AbstractMap.SimpleEntry<String, String>(headerName, headerValue));
                 }
 
-                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                    Tr.event(tc, "Header " + collectionType.getName() + " configuration: parsed name [" + headerName + "] and value [" + headerValue + "]");
-                }
+                Tr.event(tc, "Header " + collectionType.getName() + " configuration: parsed name [" + headerName + "] and value [" + headerValue + "]");
+
             }
 
         }
@@ -1911,15 +1880,13 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parseCookieUpdate(Map<Object, Object> props) {
+    protected void parseCookieUpdate(Object option, Object option2) {
         //This property needed to be documented using a new name because
         //the original property contains a banned word for metatype: 'config'
         //This change will verify if either (or both) original/documented properties
         //are set. The instance variable they reference will be set to false if
         //either property is set to false.
 
-        Object option = props.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL);
-        Object option2 = props.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE);
         boolean documentedProperty = Boolean.TRUE;
         boolean originalProperty = Boolean.TRUE;
 
@@ -2272,14 +2239,12 @@ public class HttpChannelConfig {
      */
     private int rangeLimit(int size, int min, int max) {
         if (size < min) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Config: " + size + " too small");
-            }
+            Tr.debug(tc, "Config: " + size + " too small");
+
             return min;
         } else if (size > max) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Config: " + size + " too large");
-            }
+            Tr.debug(tc, "Config: " + size + " too large");
+
             return max;
         }
         return size;
@@ -2295,9 +2260,8 @@ public class HttpChannelConfig {
      */
     private int minLimit(int input, int min) {
         if (input < min) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Config: " + input + " too small.");
-            }
+            Tr.debug(tc, "Config: " + input + " too small.");
+
             return min;
         }
         return input;
@@ -2313,9 +2277,8 @@ public class HttpChannelConfig {
      */
     private long minLimit(long input, long min) {
         if (input < min) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Config: " + input + " too small.");
-            }
+            Tr.debug(tc, "Config: " + input + " too small.");
+
             return min;
         }
         return input;
