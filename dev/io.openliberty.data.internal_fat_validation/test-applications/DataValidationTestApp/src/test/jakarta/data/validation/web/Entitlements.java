@@ -14,12 +14,11 @@ package test.jakarta.data.validation.web;
 
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
-import jakarta.validation.Valid;
 
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Entitlements extends DataRepository<Entitlement, Long> {
-    void save(@Valid Entitlement e);
+    void save(Entitlement e);
 }

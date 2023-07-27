@@ -58,7 +58,7 @@ public class EntityValidatorImpl implements EntityValidator {
             Set<ConstraintViolation<Object>> violations;
             for (Object entity : entities) {
                 violations = validator.validate(entity);
-                if (violations != null)
+                if (violations != null && !violations.isEmpty())
                     throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
                 // TODO Should we continue after an invalid entity is found and collect up the violations across all?
             }
@@ -77,7 +77,7 @@ public class EntityValidatorImpl implements EntityValidator {
         if (cdata != null) {
             Validator validator = validation.getValidator(cdata);
             Set<ConstraintViolation<Object>> violations = validator.validate(entity);
-            if (violations != null)
+            if (violations != null && !violations.isEmpty())
                 throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
         }
     }
@@ -97,7 +97,7 @@ public class EntityValidatorImpl implements EntityValidator {
             Set<ConstraintViolation<Object>> violations;
             for (int i = 0; i < length; i++) {
                 violations = validator.validate(Array.get(entityArray, i));
-                if (violations != null)
+                if (violations != null && !violations.isEmpty())
                     throw new ConstraintViolationException(violations); // TODO better message? Ensure that message includes at least the first violation.
                 // TODO Should we continue after an invalid entity is found and collect up the violations across all?
             }

@@ -1828,7 +1828,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             returnValue = results;
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
                             if (validator != null)
-                                validator.validate(args[0]);
+                                validator.validate((Iterable<?>) args[0]);
                             ArrayList<Object> results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));

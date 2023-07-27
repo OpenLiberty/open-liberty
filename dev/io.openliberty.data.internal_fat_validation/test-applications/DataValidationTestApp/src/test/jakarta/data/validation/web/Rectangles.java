@@ -12,14 +12,16 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
-import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
-import jakarta.validation.Valid;
 
 /**
  * Repository for a record with bean validation annotations.
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
-public interface Rectangles extends DataRepository<Rectangle, String> {
-    void save(@Valid Rectangle r);
+public interface Rectangles {
+    int findWidthById(String id);
+
+    void save(Rectangle r);
+
+    void saveAll(Rectangle... rectangles);
 }

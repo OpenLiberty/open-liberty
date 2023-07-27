@@ -12,13 +12,12 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
+import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Repository;
-import jakarta.validation.Valid;
 
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
-public interface Creatures {
-    void save(@Valid Creature c);
+public interface Creatures extends CrudRepository<Creature, Long> {
 }
