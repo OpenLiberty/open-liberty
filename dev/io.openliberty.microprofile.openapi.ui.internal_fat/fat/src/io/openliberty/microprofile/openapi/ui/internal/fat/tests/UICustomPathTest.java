@@ -57,7 +57,7 @@ public class UICustomPathTest {
     public static final String UI_PROPERTY_NAME = "customUIPath";
     public static final String DOC_PROPERTY_NAME = "customDocPath";
     public static final String UI_PATH_VALUE = "/foo/bar";
-    public static final String DOC_PATH_VALUE = "/bar/foo";
+    public static final String DOC_PATH_VALUE = "/get/docs/here";
     /**
      * Wait for "long" tasks like initial page load or making a test request to the server
      */
