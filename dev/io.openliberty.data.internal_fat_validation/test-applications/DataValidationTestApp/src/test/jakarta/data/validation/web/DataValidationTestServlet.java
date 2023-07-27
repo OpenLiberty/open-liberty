@@ -90,20 +90,19 @@ public class DataValidationTestServlet extends FATServlet {
      * Attempt to save a Java class (no entity annotation) that violates constraints for PastOrPresent.
      */
     @Test
-    public void testSaveInvalidPastOrPresentClass() {
+    public void testSaveInvalidPastOrPresent_Class() {
         Creature c = new Creature(100l, "Black Bear", "Ursus americanus", //
                         BigDecimal.valueOf(44107730l, 6), BigDecimal.valueOf(-92489272l, 6), //
                         ZonedDateTime.now(ZoneId.of("America/Chicago")).plusHours(1).toOffsetDateTime(), //
                         172.5f);
 
         Set<?> violations = Collections.emptySet();
-        //try {
-        creatures.save(c);
-        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
-        violations = validator.validate(c);
-        //} catch (ConstraintViolationException x) {
-        //    violations = x.getConstraintViolations();
-        //}
+        try {
+            creatures.save(c);
+            fail("ConstraintViolationException was not raised.");
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
         assertEquals(violations.toString(), 1, violations.size());
     }
 
@@ -111,16 +110,15 @@ public class DataValidationTestServlet extends FATServlet {
      * Attempt to save a Jakarta Persistence entity that violated constraints for Pattern.
      */
     @Test
-    public void testSaveInvalidPatternPersistenceEntity() {
+    public void testSaveInvalidPattern_PersistenceEntity() {
         Entitlement e = new Entitlement(2, "MEDICARE", "person1@openliberty.io", Frequency.AS_NEEDED, 65, null, null, null);
         Set<?> violations = Collections.emptySet();
-        //try {
-        entitlements.save(e);
-        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
-        violations = validator.validate(e);
-        //} catch (ConstraintViolationException x) {
-        //    violations = x.getConstraintViolations();
-        //}
+        try {
+            entitlements.save(e);
+            fail("ConstraintViolationException was not raised.");
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
         assertEquals(violations.toString(), 1, violations.size());
     }
 
@@ -128,16 +126,16 @@ public class DataValidationTestServlet extends FATServlet {
      * Attempt to save a Jakarta Persistence entity that violated constraints for Pattern.
      */
     @Test
-    public void testSaveInvalidPositiveMaxRecord() {
+    public void testSaveInvalidPositiveMax_Record() {
         Rectangle r = new Rectangle("R1", 100l, 150l, -10, 30000);
         Set<?> violations = Collections.emptySet();
-        //try {
-        rectangles.save(r);
-        // TODO replace the next line with failure and expect to catch ConstraintViolationException once Jakarta Data provider does the validation for us
-        violations = validator.validate(r);
-        //} catch (ConstraintViolationException x) {
-        //    violations = x.getConstraintViolations();
-        //}
+        try {
+            rectangles.save(r);
+            fail("ConstraintViolationException was not raised.");
+            violations = validator.validate(r);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
         assertEquals(violations.toString(), 2, violations.size());
     }
 
@@ -154,8 +152,6 @@ public class DataValidationTestServlet extends FATServlet {
         Set<?> violations = Collections.emptySet();
         try {
             creatures.save(c);
-            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
-            violations = validator.validate(c);
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
         }
@@ -171,8 +167,6 @@ public class DataValidationTestServlet extends FATServlet {
         Set<?> violations = Collections.emptySet();
         try {
             entitlements.save(e);
-            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
-            violations = validator.validate(e);
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
         }
@@ -188,8 +182,6 @@ public class DataValidationTestServlet extends FATServlet {
         Set<?> violations = Collections.emptySet();
         try {
             rectangles.save(r);
-            // TODO the following should be unnecessary once it is done by the Jakarta Data provider:
-            violations = validator.validate(r);
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
         }
