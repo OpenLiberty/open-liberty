@@ -10,14 +10,12 @@
 
 package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.fat.util.Props;
-import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
+import static componenttest.selenium.SeleniumWaits.waitForElement;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.time.Duration;
+import java.util.Arrays;
+
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -36,18 +34,18 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.VncRecordingContainer.VncRecordingFormat;
 
-import java.time.Duration;
-import java.util.Arrays;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.fat.util.Props;
 
-import static componenttest.selenium.SeleniumWaits.waitForElement;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
 
 @RunWith(FATRunner.class)
 public class UIOauthTest {
-
-    /** Wait for "long" tasks like initial page load or making a test request to the server */
-    private static final Duration LONG_WAIT = Duration.ofSeconds(30);
 
     public static final String APP_NAME = "app";
     public static final String UI_PATH_PROPERTY = "uiPath";
@@ -64,10 +62,17 @@ public class UIOauthTest {
     public static final String BASIC_AUTH_PASSWORD_PROPERTY = "testPassword";
     public static final String BASIC_AUTH_PASSWORD = "testpassword";
     public static final String HOST = "host.testcontainers.internal";
-
+    /** Wait for "long" tasks like initial page load or making a test request to the server */
+    private static final Duration LONG_WAIT = Duration.ofSeconds(30);
     @Server("openapi-ui-custom-oauth-test")
     public static LibertyServer server;
 
+    /**
+     * During updates to view recordings regardless of state replace
+     * BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING
+     * with
+     * BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL
+     */
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions())
             .withAccessToHost(true)
@@ -81,7 +86,7 @@ public class UIOauthTest {
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                .addClass(SecureTestResource.class);
+                                   .addClass(SecureTestResource.class);
 
         ShrinkHelper.exportDropinAppToServer(server, war, ShrinkHelper.DeployOptions.SERVER_ONLY);
 
@@ -92,8 +97,8 @@ public class UIOauthTest {
     }
 
     @Before
-    public void setupTest(){
-        //for some reason the envVars are lost if defined in BeforeClass on the second test despite the fact they don't actually change
+    public void setupTest() {
+        //EnvVars are lost if defined in BeforeClass on the second test despite the fact they don't actually change so reset for every test
 
         //configure authentication
         server.addEnvVar(BASIC_AUTH_USERNAME_PROPERTY, BASIC_AUTH_USERNAME);
@@ -118,7 +123,7 @@ public class UIOauthTest {
     @Test
     public void defaultPathOAuthTest() throws Exception {
         // Set the OAuth Endpoint configuration
-        server.addEnvVar(UI_PATH_PROPERTY,UI_PATH_VALUE);
+        server.addEnvVar(UI_PATH_PROPERTY, UI_PATH_VALUE);
 
         server.startServer();
 
@@ -127,7 +132,7 @@ public class UIOauthTest {
     }
 
     @Test
-    public void customPathOAuthTest() throws Exception{
+    public void customPathOAuthTest() throws Exception {
         // Set the mpOpenAPI endpoint configuration
         ServerConfiguration config = server.getServerConfiguration();
         config.getMpOpenAPIElement().setUiPath(CUSTOM_UI_PATH_VALUE);
@@ -141,10 +146,9 @@ public class UIOauthTest {
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }
 
-
-    public void OAuthTest(String uiPath){
+    public void OAuthTest(String uiPath) {
         //Need to use HTTPS path for the test for OAuth to actually work
-        driver.get("https://"+HOST+":" + server.getHttpDefaultSecurePort() + uiPath);
+        driver.get("https://" + HOST + ":" + server.getHttpDefaultSecurePort() + uiPath);
 
         //Store the id of the original window as we need to know when we go through the oauth login flow
         //We don't need to wait for the page to load to know which one we are after
@@ -154,24 +158,26 @@ public class UIOauthTest {
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
 
+        //get the GET `/test` operation from `default`
+        WebElement getOperation = waitForElement(driver, By.id("operations-default-get_test"));
         //check that the operation is "unlocked"
         //we will use the lock object later to check that it has been updated
-        WebElement lock = waitForElement(driver, By.cssSelector("button.authorization__btn.unlocked"));
+        WebElement lock = getOperation.findElement(By.cssSelector("button.authorization__btn.unlocked"));
 
         //Check the Authorize button is available and click it
         WebElement authorizeButton = waitForElement(driver, By.xpath("//span[contains(.,'Authorize')]"));
-        //assertThat("Authorize button", authorizeButton.findElement(By.cssSelector("span")).getText(), Matchers.containsString("Authorize"));
         authorizeButton.click();
 
-        //check that the modal loads
-        WebElement oauthModal = waitForElement(driver, By.cssSelector("div.modal-ux-header"));
-        WebElement oauthModalHeader = oauthModal.findElement(By.cssSelector("h3"));
-        assertThat("", oauthModalHeader.getText(),Matchers.containsString("Available authorizations"));
+        //Get the overall Modal
+        WebElement authModal = waitForElement(driver, By.cssSelector("div.modal-ux"));
 
-        // Get the OAuth Authentication container
-        //WebElement authContainer = oauthModal.findElement(By.cssSelector("div.auth-container"));
-        WebElement authContainer = waitForElement(driver, By.cssSelector("div.auth-container"));
-        assertThat("Check that we ",authContainer.findElement(By.cssSelector("h4")).getText(),Matchers.containsString("oauth (OAuth2, authorizationCode)"));
+        //Check the Modal head element as we need it later
+        WebElement oauthModalHead = authModal.findElement(By.cssSelector("div.modal-ux-header"));
+        assertThat("Authorization header has appeared", oauthModalHead.findElement(By.cssSelector("h3")).getText(), Matchers.containsString("Available authorizations"));
+
+        // Get the OAuth Authentication container - As we only have OAuth Enabled it is the only one we have
+        WebElement authContainer = authModal.findElement(By.cssSelector("div.auth-container"));
+        assertThat("Modal header containers OAuth", authContainer.findElement(By.cssSelector("h4")).getText(), Matchers.containsString("oauth (OAuth2, authorizationCode)"));
 
         //Fill out OAuth fields
         WebElement clientNameField = authContainer.findElement(By.id("client_id"));
@@ -179,8 +185,8 @@ public class UIOauthTest {
         WebElement clientSecretField = authContainer.findElement(By.id("client_secret"));
         clientSecretField.sendKeys(OAUTH_CLIENT_SECRET);
         // Tick the scope tick box
-        //WebElement scopeCheckbox = authContainer.findElement(By.id("test-authorizationCode-checkbox-oauth"));
-        authContainer.findElement(By.cssSelector("span.item")).click();
+        WebElement Scope = authContainer.findElement(By.xpath("//label[@for='test-authorizationCode-checkbox-oauth']"));
+        Scope.findElement(By.cssSelector("span")).click();
 
         //click "Authorize"
         WebElement authBtn = authContainer.findElement(By.cssSelector("button.btn.modal-btn.auth.authorize"));
@@ -188,10 +194,10 @@ public class UIOauthTest {
         authBtn.click();
 
         //Switch to new tab
-        new WebDriverWait(driver,Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 2);
-        for(String windowId:driver.getWindowHandles()){
-            //as we already have the first tabs handle we go to the other one
-            if(!windowId.equals(originalWindow)){
+        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 2);
+        for (String windowId : driver.getWindowHandles()) {
+            //as we already have the first tab's handle we go to the other one
+            if (!windowId.equals(originalWindow)) {
                 driver.switchTo().window(windowId);
             }
         }
@@ -202,22 +208,22 @@ public class UIOauthTest {
         WebElement passwordField = waitForElement(driver, By.name("j_password"));
         passwordField.sendKeys(BASIC_AUTH_PASSWORD);
 
-        WebElement loginBtn = waitForElement(driver,By.name("submitButton"));
+        WebElement loginBtn = waitForElement(driver, By.name("submitButton"));
         loginBtn.click();
 
         WebElement allowOnceBtn = waitForElement(driver, By.xpath("//input[@value='Allow once']"));
         allowOnceBtn.click();
 
         // should now have a single tab which is the original openapi page
-        new WebDriverWait(driver,Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 1);
+        new WebDriverWait(driver, Duration.ofSeconds(3)).until(driver -> driver.getWindowHandles().size() == 1);
         // Switch back to original window
         driver.switchTo().window(originalWindow);
 
         //check button text has changed to Logout
-        assertThat("Auth button text should now state logout",authBtn.getText().equals("Logout"));
+        assertThat("Auth button text should now state logout", authBtn.getText().equals("Logout"));
 
         //close Authorization modal
-        waitForElement(driver,By.cssSelector("button.close-modal")).click();
+        oauthModalHead.findElement(By.cssSelector("button.close-modal")).click();
 
         //Check the lock status on operation - should be "locked"
         assertThat("Check that lock button is now in 'locked' state", lock.getAttribute("class").equals("authorization__btn locked"));
