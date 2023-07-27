@@ -1812,23 +1812,31 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 switch (queryInfo.type) {
                     case MERGE: {
+                        EntityValidator validator = provider.validator();
+
                         em = entityInfo.persister.createEntityManager();
 
                         if (queryInfo.saveParamType.isArray()) {
                             ArrayList<Object> results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
+                            if (validator != null)
+                                validator.validate(a, length);
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
                             returnValue = results;
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
+                            if (validator != null)
+                                validator.validate(args[0]);
                             ArrayList<Object> results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
                             returnValue = results;
                         } else {
+                            if (validator != null && args[0] != null)
+                                validator.validate(args[0]);
                             returnValue = em.merge(toEntity(args[0]));
                             em.flush();
                         }
