@@ -23,6 +23,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+//This handler adds an optional SOAPElement on outgoing responses from SayHelloServiceWithHandlerImpl"
 public class TestSOAPHandlerAddedElement implements SOAPHandler<SOAPMessageContext> {
 
     @PostConstruct
@@ -53,7 +54,7 @@ public class TestSOAPHandlerAddedElement implements SOAPHandler<SOAPMessageConte
                 Node an = context.getMessage().getSOAPBody().addChildElement("return1");
                 an.setTextContent("dontsayhello");
                 returnNode.appendChild(an);
-                System.out.println(this.getClass().getName() + ": an unkown element added");
+                System.out.println(this.getClass().getName() + ": has modified the outgoing response to add an optional element in the SOAPBody");
 
             } catch (SOAPException e) {
                 e.printStackTrace();

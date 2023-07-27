@@ -17,6 +17,7 @@ import javax.jws.WebService;
 
 import com.ibm.samples.jaxws.testhandlerprovider.service.SayHelloService;
 
+//Web Service used to test optional elements added to responses.
 @WebService(serviceName = "SayHelloServiceWithHandler",
             portName = "SayHelloPort",
             targetNamespace = "http://jaxws.samples.ibm.com.handler/")

@@ -37,7 +37,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- *
+ * This suite tests the client side handler chain, including testing the expected behavior
+ * when the client parses a response containing additional unexpected elements in the incoming SOAP response.
  */
 @RunWith(FATRunner.class)
 public class HandlerChainTest {
@@ -51,6 +52,7 @@ public class HandlerChainTest {
     @Server("XmlOverrideHandlerChainTestServer")
     public static LibertyServer xmlServer;
 
+    // TODO: Refactor to remove multiple servers from what should be a single server test suite.
     @Server("AddedElementHandlerChainTestServer")
     public static LibertyServer addedElementServer;
 
@@ -176,7 +178,8 @@ public class HandlerChainTest {
      */
 
     /**
-     * Negative test designed to fail unless com.ibm.ws.webservices.ignoreUnknownElements is set to true
+     * Negative test designed to fail because optional elements are not supported
+     * in incoming responses from a Web Service
      *
      * @throws Exception
      */
