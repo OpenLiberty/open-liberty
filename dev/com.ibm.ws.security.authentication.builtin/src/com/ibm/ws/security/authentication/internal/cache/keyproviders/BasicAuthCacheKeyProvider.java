@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -208,9 +208,12 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
             return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
         } catch (CloneNotSupportedException cnse) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + SHA_512
-                             + ". This is pretty unlikely, and we need to get details about the JDK which is in use.",
-                         cnse);
+                /*
+                 * commented out to suppress CloneNotSupportedException
+                 * Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + SHA_512
+                 * + ". This is pretty unlikely, and we need to get details about the JDK which is in use.",
+                 * cnse);
+                 */
             }
             return MessageDigest.getInstance(SHA_512);
         }
