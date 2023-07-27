@@ -103,11 +103,14 @@ public class ProxySupportUtil {
             }
             if (refererHeader != null) {
                 urlString = refererHeader;
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Using Referer header to generate servers: " + urlString);
+                }
             } else {
                 //fall back to using request url
                 urlString = request.getRequestURL().toString();
                 if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.warning(tc, "Unable to use Referer header, using request url to generate servers: " + urlString);
+                    Tr.event(tc, "Unable to use Referer header, using request url to generate servers: " + urlString);
                 }
             }
         } else {

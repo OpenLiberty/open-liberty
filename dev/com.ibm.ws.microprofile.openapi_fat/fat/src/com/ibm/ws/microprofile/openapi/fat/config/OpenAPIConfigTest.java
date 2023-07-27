@@ -287,14 +287,14 @@ public class OpenAPIConfigTest {
         // Default HTTP protocol port with different host and matching docPath returns
         // single server entry
         OpenAPI model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl1/foo").downloadModel();
-        assertThat(model.getServers().size(), Matchers.is(1));
+        assertThat(model.getServers(), Matchers.hasSize(1));
         // check that the server hostname has changed to supplied value
         assertThat("Check that the servers entry use the host from the referer header",
             model.getServers().get(0).getUrl(), Matchers.containsString("http://testurl1/" + APP_NAME));
 
         // Default HTTPS protocol port with matching uiPath returns single server entry
         model = new OpenAPIConnection(server, "/foo").header("Referer", "https://testurl2/bar").downloadModel();
-        assertThat(model.getServers().size(), Matchers.is(1));
+        assertThat(model.getServers(), Matchers.hasSize(1));
         ;
         // check that the host name has changed and has maintained HTTPS protocol
         assertThat("Check that the servers entry use the host from the referer header",
@@ -308,7 +308,7 @@ public class OpenAPIConfigTest {
         System.out.println(model.toString());
         // Path mismatch, should revert to server host and server http port
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(model.getServers().size(), Matchers.is(1));
+        assertThat(model.getServers(), Matchers.hasSize(1));
         ;
         // Server in String should correspond to the Request URL
         assertThat("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl(),
@@ -320,7 +320,7 @@ public class OpenAPIConfigTest {
         model = new OpenAPIConnection(server, "/foo").header("Referer", "http://testurl4/random/ui").downloadModel();
         System.out.println(model.toString());
         // Only a single server should be returned as HTTPS is disabled
-        assertThat(model.getServers().size(), Matchers.is(1));
+        assertThat(model.getServers(), Matchers.hasSize(1));
         // Server in should correspond to the Request URL
         assertThat("Check host reverts to the requestUrl host", model.getServers().get(0).getUrl(),
             Matchers
