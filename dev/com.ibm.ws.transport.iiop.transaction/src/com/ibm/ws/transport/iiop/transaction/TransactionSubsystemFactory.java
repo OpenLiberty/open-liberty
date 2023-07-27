@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.transaction;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
 import java.util.Map;
 
 import javax.transaction.TransactionManager;
@@ -32,8 +34,8 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxClientTransactionPolicyConfig;
 import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxServerTransactionPolicyConfig;
 
-@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=2" })
-public class TransactionSubsystemFactory extends SubsystemFactory {
+@Component(configurationPolicy = IGNORE, property = { "service.ranking:Integer=2" })
+public class TransactionSubsystemFactory implements SubsystemFactory {
     private static enum MyLocalFactory implements LocalFactory {
         INSTANCE;
         public Class<?> forName(String name) throws ClassNotFoundException {
@@ -71,22 +73,18 @@ public class TransactionSubsystemFactory extends SubsystemFactory {
         providerRegistry.unregisterProvider(transactionInitializerClass);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Policy getTargetPolicy(ORB orb, Map<String, Object> properties, Map<String, Object> extraConfig) throws Exception {
         return new ServerTransactionPolicy(new NoDtxServerTransactionPolicyConfig(transactionManager));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Policy getClientPolicy(ORB orb, Map<String, Object> properties) throws Exception {
         return new ClientTransactionPolicy(new NoDTxClientTransactionPolicyConfig(transactionManager));
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getInitializerClassName(boolean endpoint) {
         return TransactionInitializer.class.getName();
     }
-
 }

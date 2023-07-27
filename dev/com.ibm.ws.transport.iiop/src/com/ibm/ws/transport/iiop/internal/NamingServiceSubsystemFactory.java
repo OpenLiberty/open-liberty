@@ -13,6 +13,7 @@
 package com.ibm.ws.transport.iiop.internal;
 
 import static org.apache.yoko.orb.spi.naming.NameServiceInitializer.NS_REMOTE_ACCESS_ARG;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.List;
 import java.util.Map;
@@ -24,18 +25,13 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(service = SubsystemFactory.class,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class NamingServiceSubsystemFactory extends SubsystemFactory {
+@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class NamingServiceSubsystemFactory implements SubsystemFactory {
     private static final String INITIALIZER_CLASS_NAME = NameServiceInitializer.class.getName();
 
     @Override
     public String getInitializerClassName(boolean endpoint) {
-        if (endpoint) {
-            return INITIALIZER_CLASS_NAME;
-        }
-        return null;
+        return endpoint ? INITIALIZER_CLASS_NAME : null;
     }
 
     @Override
@@ -44,7 +40,6 @@ public class NamingServiceSubsystemFactory extends SubsystemFactory {
         args.add(RemoteAccess.readOnly.name());
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addClientORBInitArgs(Map<String, Object> clientProps, List<String> args) {
         String nameServiceUrl = (String) clientProps.get("nameService");
@@ -53,5 +48,4 @@ public class NamingServiceSubsystemFactory extends SubsystemFactory {
             args.add("NameService=" + nameServiceUrl);
         }
     }
-
 }

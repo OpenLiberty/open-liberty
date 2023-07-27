@@ -24,12 +24,14 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
+@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class DefaultSocketFactorySubsystemFactory implements SubsystemFactory {
     private static enum MyLocalFactory implements LocalFactory {
         INSTANCE;
         public Class<?> forName(String name) throws ClassNotFoundException {

@@ -12,7 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security.config.ssl.yoko;
 
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
+import java.util.Map;
+
 import org.apache.yoko.orb.OB.ZERO_PORT_POLICY_ID;
 import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
@@ -20,21 +23,16 @@ import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
-import org.omg.CORBA.PolicyError;
-import org.omg.CSIIOP.TransportAddress;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class SSLSubsystemFactory extends SubsystemFactory {
+@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class SSLSubsystemFactory implements SubsystemFactory {
     private static enum MyLocalFactory implements LocalFactory {
         INSTANCE;
         public Class<?> forName(String name) throws ClassNotFoundException {
@@ -65,11 +63,6 @@ public class SSLSubsystemFactory extends SubsystemFactory {
         providerRegistry.unregisterProvider(sslInitializerClass);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws PolicyError
-     */
     @Override
     public Policy getTargetPolicy(ORB orb, Map<String, Object> properties, Map<String, Object> extraConfig) throws Exception {
         Policy portPolicy = null;
@@ -86,20 +79,14 @@ public class SSLSubsystemFactory extends SubsystemFactory {
      * A client container will not have an address map, so check for its existence and assume there are secured transport
      * addresses when an address map is not found.
      */
-    @SuppressWarnings("unchecked")
     private boolean isAnySecureTransportAddressAvailable(Map<String, Object> extraConfig) {
-        Map<String, List<TransportAddress>> addrMap = (Map<String, List<TransportAddress>>) extraConfig.get(ADDR_KEY);
-        if (addrMap != null) {
-            Set<String> sslAliases = addrMap.keySet();
-            return sslAliases.size() != 1;
-        }
-        return true;
+        Object addrMap = extraConfig.get(ADDR_KEY);
+        if (null == addrMap) return true;
+        return ((Map<?,?>)addrMap).keySet().size() != 1;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getInitializerClassName(boolean endpoint) {
         return ORBInitializer.class.getName();
     }
-
 }

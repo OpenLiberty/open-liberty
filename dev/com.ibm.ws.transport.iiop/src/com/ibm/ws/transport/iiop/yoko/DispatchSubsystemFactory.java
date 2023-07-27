@@ -14,6 +14,7 @@ package com.ibm.ws.transport.iiop.yoko;
 
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE;
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE_SERVER;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -28,10 +29,8 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
-@Component(service = SubsystemFactory.class,
-                configurationPolicy = ConfigurationPolicy.IGNORE,
-                property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class DispatchSubsystemFactory extends SubsystemFactory {
+@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class DispatchSubsystemFactory implements SubsystemFactory {
     private ExecutorDispatchPolicy dispatcherPolicy;
 
     @Reference
