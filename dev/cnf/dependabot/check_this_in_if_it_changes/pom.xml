@@ -139,7 +139,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1-android</version>
+      <version>32.0.1-android</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -459,47 +459,47 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-okhttp</artifactId>
-      <version>1.47.0</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf-lite</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.43.2</version>
+      <version>1.57.2</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>

@@ -8,14 +8,14 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.43.2)",
+    value = "by gRPC proto compiler (version 1.57.2)",
     comments = "Source: Beer.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class BeerServiceGrpc {
 
   private BeerServiceGrpc() {}
 
-  public static final String SERVICE_NAME = "beer.BeerService";
+  public static final java.lang.String SERVICE_NAME = "beer.BeerService";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<com.ibm.ws.grpc.fat.beer.service.Beer,
@@ -191,14 +191,14 @@ public final class BeerServiceGrpc {
    * The beer service definition.
    * </pre>
    */
-  public static abstract class BeerServiceImplBase implements io.grpc.BindableService {
+  public interface AsyncService {
 
     /**
      * <pre>
      * Add a beer to the collection - unary
      * </pre>
      */
-    public void addBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
+    default void addBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getAddBeerMethod(), responseObserver);
     }
@@ -208,7 +208,7 @@ public final class BeerServiceGrpc {
      * Delete a beer from the collection - unary
      * </pre>
      */
-    public void deleteBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
+    default void deleteBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteBeerMethod(), responseObserver);
     }
@@ -218,7 +218,7 @@ public final class BeerServiceGrpc {
      * Get the best beer of this type
      * </pre>
      */
-    public void getBestBeer(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request,
+    default void getBestBeer(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetBestBeerMethod(), responseObserver);
     }
@@ -228,51 +228,34 @@ public final class BeerServiceGrpc {
      *Get a list of all the beers
      * </pre>
      */
-    public void getBeers(com.google.protobuf.Empty request,
+    default void getBeers(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetBeersMethod(), responseObserver);
-    }
-
-    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getAddBeerMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                com.ibm.ws.grpc.fat.beer.service.Beer,
-                com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
-                  this, METHODID_ADD_BEER)))
-          .addMethod(
-            getDeleteBeerMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                com.ibm.ws.grpc.fat.beer.service.Beer,
-                com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
-                  this, METHODID_DELETE_BEER)))
-          .addMethod(
-            getGetBestBeerMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                com.ibm.ws.grpc.fat.beer.service.RequestedBeerType,
-                com.ibm.ws.grpc.fat.beer.service.Beer>(
-                  this, METHODID_GET_BEST_BEER)))
-          .addMethod(
-            getGetBeersMethod(),
-            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
-              new MethodHandlers<
-                com.google.protobuf.Empty,
-                com.ibm.ws.grpc.fat.beer.service.Beer>(
-                  this, METHODID_GET_BEERS)))
-          .build();
     }
   }
 
   /**
+   * Base class for the server implementation of the service BeerService.
    * <pre>
    * The beer service definition.
    * </pre>
    */
-  public static final class BeerServiceStub extends io.grpc.stub.AbstractAsyncStub<BeerServiceStub> {
+  public static abstract class BeerServiceImplBase
+      implements io.grpc.BindableService, AsyncService {
+
+    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
+      return BeerServiceGrpc.bindService(this);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do asynchronous rpc calls to service BeerService.
+   * <pre>
+   * The beer service definition.
+   * </pre>
+   */
+  public static final class BeerServiceStub
+      extends io.grpc.stub.AbstractAsyncStub<BeerServiceStub> {
     private BeerServiceStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -330,11 +313,13 @@ public final class BeerServiceGrpc {
   }
 
   /**
+   * A stub to allow clients to do synchronous rpc calls to service BeerService.
    * <pre>
    * The beer service definition.
    * </pre>
    */
-  public static final class BeerServiceBlockingStub extends io.grpc.stub.AbstractBlockingStub<BeerServiceBlockingStub> {
+  public static final class BeerServiceBlockingStub
+      extends io.grpc.stub.AbstractBlockingStub<BeerServiceBlockingStub> {
     private BeerServiceBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -389,11 +374,13 @@ public final class BeerServiceGrpc {
   }
 
   /**
+   * A stub to allow clients to do ListenableFuture-style rpc calls to service BeerService.
    * <pre>
    * The beer service definition.
    * </pre>
    */
-  public static final class BeerServiceFutureStub extends io.grpc.stub.AbstractFutureStub<BeerServiceFutureStub> {
+  public static final class BeerServiceFutureStub
+      extends io.grpc.stub.AbstractFutureStub<BeerServiceFutureStub> {
     private BeerServiceFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -449,10 +436,10 @@ public final class BeerServiceGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final BeerServiceImplBase serviceImpl;
+    private final AsyncService serviceImpl;
     private final int methodId;
 
-    MethodHandlers(BeerServiceImplBase serviceImpl, int methodId) {
+    MethodHandlers(AsyncService serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -493,6 +480,39 @@ public final class BeerServiceGrpc {
     }
   }
 
+  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
+    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+        .addMethod(
+          getAddBeerMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.ibm.ws.grpc.fat.beer.service.Beer,
+              com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
+                service, METHODID_ADD_BEER)))
+        .addMethod(
+          getDeleteBeerMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.ibm.ws.grpc.fat.beer.service.Beer,
+              com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
+                service, METHODID_DELETE_BEER)))
+        .addMethod(
+          getGetBestBeerMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.ibm.ws.grpc.fat.beer.service.RequestedBeerType,
+              com.ibm.ws.grpc.fat.beer.service.Beer>(
+                service, METHODID_GET_BEST_BEER)))
+        .addMethod(
+          getGetBeersMethod(),
+          io.grpc.stub.ServerCalls.asyncServerStreamingCall(
+            new MethodHandlers<
+              com.google.protobuf.Empty,
+              com.ibm.ws.grpc.fat.beer.service.Beer>(
+                service, METHODID_GET_BEERS)))
+        .build();
+  }
+
   private static abstract class BeerServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     BeerServiceBaseDescriptorSupplier() {}
@@ -516,9 +536,9 @@ public final class BeerServiceGrpc {
   private static final class BeerServiceMethodDescriptorSupplier
       extends BeerServiceBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final String methodName;
+    private final java.lang.String methodName;
 
-    BeerServiceMethodDescriptorSupplier(String methodName) {
+    BeerServiceMethodDescriptorSupplier(java.lang.String methodName) {
       this.methodName = methodName;
     }
 
