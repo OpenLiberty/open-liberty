@@ -15,38 +15,27 @@ package jakarta.data.repository;
 /**
  * Method signatures are copied from the jakarta.data.repository.Limit from the Jakarta Data repo.
  */
-public class Limit {
-    private final int max;
-    private final long start;
+public record Limit(int maxResults,
+                long startAt) {
 
-    private Limit(long startAt, int maxResults) {
-        start = startAt;
-        max = maxResults;
-        if (start < 1)
-            throw new IllegalArgumentException("startAt: " + start);
-        if (max < 1)
-            throw new IllegalArgumentException("maxResults: " + max);
-    }
-
-    public int maxResults() {
-        return max;
+    public Limit {
+        if (startAt < 1)
+            throw new IllegalArgumentException("startAt: " + startAt);
+        if (maxResults < 1)
+            throw new IllegalArgumentException("maxResults: " + maxResults);
     }
 
     public static Limit of(int maxResults) {
-        return new Limit(1L, maxResults);
+        return new Limit(maxResults, 1L);
     }
 
     public static Limit range(long startAt, long endAt) {
-        if (startAt >= endAt)
+        if (startAt > endAt)
             throw new IllegalArgumentException("startAt: " + startAt + ", endAt: " + endAt);
 
         if (Integer.MAX_VALUE <= endAt - startAt)
             throw new IllegalArgumentException("startAt: " + startAt + ", endAt: " + endAt + ", maxResults > " + Integer.MAX_VALUE);
 
-        return new Limit(startAt, 1 + (int) (endAt - startAt));
-    }
-
-    public long startAt() {
-        return start;
+        return new Limit(1 + (int) (endAt - startAt), startAt);
     }
 }
