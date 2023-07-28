@@ -173,8 +173,8 @@ io.smallrye.reactive:mutiny-reactive-streams-operators-jakarta:2.2.0
 io.smallrye.reactive:mutiny-zero-flow-adapters:1.0.0
 io.smallrye.reactive:mutiny:2.2.0
 io.smallrye.reactive:smallrye-reactive-converter-api:3.0.0
-io.smallrye.reactive:smallrye-reactive-messaging-api:4.7.0
-io.smallrye.reactive:smallrye-reactive-messaging-provider:4.7.0
+io.smallrye.reactive:smallrye-reactive-messaging-api:4.8.0
+io.smallrye.reactive:smallrye-reactive-messaging-provider:4.8.0
 io.smallrye:jandex:3.0.5
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26

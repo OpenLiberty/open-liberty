@@ -313,10 +313,12 @@ public class MicroProfileActions {
 
     private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                  "mpGraphQL-2.0",
+                                                                 "mpReactiveMessaging-3.0",
                                                                  "mpReactiveStreams-3.0" };
 
     private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                   "mpGraphQL-2.0",
+                                                                  "mpReactiveMessaging-3.0",
                                                                   "mpReactiveStreams-3.0" };
 
     private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));

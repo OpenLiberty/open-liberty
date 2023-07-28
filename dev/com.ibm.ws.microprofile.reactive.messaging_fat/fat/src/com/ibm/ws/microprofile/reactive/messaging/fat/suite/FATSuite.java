@@ -16,18 +16,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.jsonb.JsonbTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig.KafkaBadConfigTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.nolib.KafkaNoLibTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
+
 import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 PlaintextTests.class,
-//                TlsTests.class,
-//                SaslPlainTests.class,
-//                KafkaTestClientProviderTest.class,
-//                LoginModuleClassloadingTest.class,
-//                KafkaNoLibTest.class,
-//                KafkaBadConfigTest.class,
-//                JsonbTest.class
+                TlsTests.class,
+                SaslPlainTests.class,
+                KafkaTestClientProviderTest.class,
+                LoginModuleClassloadingTest.class,
+                KafkaNoLibTest.class,
+                KafkaBadConfigTest.class,
+                JsonbTest.class
 })
 
 public class FATSuite extends TestContainerSuite {

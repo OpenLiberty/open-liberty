@@ -134,7 +134,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>30.1-android</version>
+      <version>32.0.1-android</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -889,12 +889,12 @@
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-messaging-api</artifactId>
-      <version>4.7.0</version>
+      <version>4.8.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-messaging-provider</artifactId>
-      <version>4.7.0</version>
+      <version>4.8.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>

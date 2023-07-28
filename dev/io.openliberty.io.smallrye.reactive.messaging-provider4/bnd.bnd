@@ -42,8 +42,8 @@ Private-Package: \
 	io.openliberty.microprofile.reactive.messaging30.internal
 
 -buildpath: \
-  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.7.0;strategy=exact, \
-  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.7.0;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.8.0;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.8.0;strategy=exact, \
   io.openliberty.jakarta.cdi.3.0;version=latest, \
   io.openliberty.jakarta.annotation.2.0;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.messaging.3.0;version=latest, \
