@@ -378,4 +378,10 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             Tr.exit(tc, methodName);
         }
     }
+
+    @Override
+    public void performFileBasedAction(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
+        // TODO Auto-generated method stub
+
+    }
 }

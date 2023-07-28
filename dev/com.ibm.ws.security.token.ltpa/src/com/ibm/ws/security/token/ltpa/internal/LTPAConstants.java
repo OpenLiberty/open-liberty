@@ -20,22 +20,22 @@ public class LTPAConstants {
     protected static final String EXPIRATION = "expiration";
 
     /**
-     * Used to identify the LTPA shared key.
+     * Used to identify the primary LTPA shared key.
      */
     protected static final String PRIMARY_SECRET_KEY = "primary_ltpa_shared_key";
 
     /**
-     * Used to identify the LTPA private key.
+     * Used to identify the primary LTPA private key.
      */
     protected static final String PRIMARY_PRIVATE_KEY = "primary_ltpa_private_key";
 
     /**
-     * Used to identify the LTPA public key.
+     * Used to identify the primary LTPA public key.
      */
     protected static final String PRIMARY_PUBLIC_KEY = "primary_ltpa_public_key";
 
     /**
-     *
+     * Used to identify the validation LTPA keys
      */
     public static final String VALIDATION_KEYS = "ltpa_validation_keys";
 

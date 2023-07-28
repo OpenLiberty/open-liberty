@@ -37,7 +37,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
@@ -243,7 +243,7 @@ public class LTPAConfigurationImplTest {
     private void setupFileMonitorRegistrationsExpectations(final int numberOfInvocations) {
         mock.checking(new Expectations() {
             {
-                exactly(numberOfInvocations).of(bundleContext).registerService(with(FileMonitor.class), (SecurityFileMonitor) with(a(SecurityFileMonitor.class)),
+                exactly(numberOfInvocations).of(bundleContext).registerService(with(FileMonitor.class), (LTPAFileMonitor) with(a(LTPAFileMonitor.class)),
                                                                                (Dictionary<String, Object>) with(a(Dictionary.class)));
             }
         });

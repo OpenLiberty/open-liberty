@@ -101,7 +101,7 @@ public class LTPAToken2Factory implements TokenFactory {
             }
         }
 
-        // secondary key validation
+        // validation keys (secondary keys)
         if (validationKeys != null) {
             Exception lastException = null;
 

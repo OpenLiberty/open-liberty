@@ -30,8 +30,8 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  */
 public class SecurityFileMonitor implements FileMonitor {
 
-    private final FileBasedActionable actionable;
-    private final Collection<File> currentlyDeletedFiles;
+    protected final FileBasedActionable actionable;
+    protected final Collection<File> currentlyDeletedFiles;
 
     public SecurityFileMonitor(FileBasedActionable fileBasedActionable) {
         this.actionable = fileBasedActionable;
@@ -67,6 +67,11 @@ public class SecurityFileMonitor implements FileMonitor {
             fileMonitorProps.put(FileMonitor.MONITOR_DIRECTORIES, dirs);
         }
         fileMonitorProps.put(FileMonitor.MONITOR_INTERVAL, monitorInterval);
+
+        // Don't attempt to register the file monitor if the server is stopping
+        if (FrameworkState.isStopping())
+            return null;
+
         return bundleContext.registerService(FileMonitor.class, this, fileMonitorProps);
     }
 
@@ -120,7 +125,7 @@ public class SecurityFileMonitor implements FileMonitor {
             allFiles.addAll(deletedFiles);
         }
 
-        if (isActionNeeded(createdFiles, modifiedFiles, deletedFiles)) {
+        if (isActionNeeded(createdFiles, modifiedFiles)) {
             if (createdFiles.isEmpty() == false) {
                 allFiles.addAll(createdFiles);
             }
@@ -135,27 +140,20 @@ public class SecurityFileMonitor implements FileMonitor {
 
     /**
      * Action is needed if a file is modified or if it is recreated after it was deleted.
-     *
-     * @param modifiedFiles
      */
-    private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
+    private Boolean isActionNeeded(Collection<File> createdFiles, Collection<File> modifiedFiles) {
         boolean actionNeeded = false;
 
         for (File createdFile : createdFiles) {
             if (currentlyDeletedFiles.contains(createdFile)) {
                 currentlyDeletedFiles.remove(createdFile);
+                actionNeeded = true;
             }
-            actionNeeded = true;
-
         }
 
         if (modifiedFiles.isEmpty() == false) {
             actionNeeded = true;
         }
-        if (deletedFiles.isEmpty() == false) {
-            actionNeeded = true;
-        }
         return actionNeeded;
     }
-
 }
