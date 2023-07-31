@@ -60,7 +60,7 @@ public class JavaeeFeatureTests15 extends AbstractSpringTests {
     public void modifyServerConfiguration(ServerConfiguration config) {
         ORB orb = config.getOrb();
         orb.setId("defaultOrb");
-        orb.setOrbSSLInitTimeout("45");
+        orb.setOrbSSLInitTimeout("75");
 
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();
