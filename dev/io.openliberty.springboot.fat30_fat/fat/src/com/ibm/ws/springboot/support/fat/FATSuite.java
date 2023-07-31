@@ -54,7 +54,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebAnnotationTests30.class,
                 ExtractedAppTests30.class,
                 WebSocketTests30.class,
-                    // Disabled due to application failures.
                 MimeMapping30.class,
                 ErrorPage30Test.class,
                     // EnableSpringBootTraceTests30.class,
