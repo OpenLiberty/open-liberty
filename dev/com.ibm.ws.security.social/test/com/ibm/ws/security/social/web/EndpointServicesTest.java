@@ -1137,7 +1137,7 @@ public class EndpointServicesTest extends CommonTestClass {
 
             services.doRedirect(request, response, socialLoginConfig);
 
-            verifyLogMessage(outputMgr, CWWKS5499E_REQUEST_URL_NOT_VALID + ".+" + CWWKS2352E_MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE);
+            verifyLogMessage(outputMgr, CWWKS5499E_REQUEST_URL_NOT_VALID + ".+" + CWWKS1554E_MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

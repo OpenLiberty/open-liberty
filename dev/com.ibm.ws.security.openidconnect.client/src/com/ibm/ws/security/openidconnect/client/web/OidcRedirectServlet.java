@@ -26,6 +26,7 @@ import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -117,32 +118,11 @@ public class OidcRedirectServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
             return;
         }
-        //  when OIDCClientAuthenticatorUtil.doClientSideRedirect initially redirected the browser,
-        //  this cookie was set to hold the original URL.
-        //  Now it's time to get it back.
-        String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
-        String requestUrl = OidcClientUtil.getReferrerURLCookieHandler().getReferrerURLFromCookies(request, cookieName);
-        // 240540
-        //CookieHelper.clearCookie(request, response, cookieName, cookies); //clear the WAS_REQ_URL_OIDC cookie
-        OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
-        if (tc.isDebugEnabled() && requestUrl != null) {
-            Tr.debug(tc, "requestUrl: " + requestUrl);
-        }
 
-        if (requestUrl == null || requestUrl.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1520E
-            Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
+        String requestUrl = getOriginalRequestUrl(request, response, state);
+        if (requestUrl == null) {
             return;
         }
-
-        if (isRedirectionUrlValid(request, requestUrl) == false) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE", request.getRequestURL(), (new URL(requestUrl)).getHost()); // CWWKS152XE
-            Tr.error(tc, errorMsg);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
-            return;
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "requestURL is not null or empty");
         }
@@ -167,8 +147,44 @@ public class OidcRedirectServlet extends HttpServlet {
         }
     }
 
-    public boolean isRedirectionUrlValid(HttpServletRequest request, @Sensitive String requestUrl) {
-        return OidcClientUtil.isReferrerHostValid(request, requestUrl);
+    String getOriginalRequestUrl(HttpServletRequest request, HttpServletResponse response, String state) throws IOException {
+        //  when OIDCClientAuthenticatorUtil.doClientSideRedirect initially redirected the browser,
+        //  this cookie was set to hold the original URL.
+        //  Now it's time to get it back.
+        String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
+        String requestUrl = OidcClientUtil.getReferrerURLCookieHandler().getReferrerURLFromCookies(request, cookieName);
+        // 240540
+        //CookieHelper.clearCookie(request, response, cookieName, cookies); //clear the WAS_REQ_URL_OIDC cookie
+        OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
+        if (tc.isDebugEnabled() && requestUrl != null) {
+            Tr.debug(tc, "requestUrl: " + requestUrl);
+        }
+
+        if (requestUrl == null || requestUrl.isEmpty()) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1520E
+            Tr.error(tc, errorMsg);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
+            return null;
+        }
+
+        if (!isRedirectionUrlValid(request, requestUrl, cookieName)) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE", request.getRequestURL(), (new URL(requestUrl)).getHost()); // CWWKS152XE
+            Tr.error(tc, errorMsg);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
+            return null;
+        }
+        return requestUrl;
+    }
+
+    @FFDCIgnore(Exception.class)
+    public boolean isRedirectionUrlValid(HttpServletRequest request, @Sensitive String requestUrl, String cookieName) {
+        try {
+            OidcClientUtil.verifyReferrerHostIsValid(request, requestUrl, cookieName);
+            return true;
+        } catch (Exception e) {
+            Tr.error(tc, e.getMessage());
+            return false;
+        }
     }
 
     // todo: converge w social in oidcutils class?

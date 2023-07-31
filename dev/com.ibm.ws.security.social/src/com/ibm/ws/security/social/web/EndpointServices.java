@@ -306,10 +306,8 @@ public class EndpointServices {
 
         try {
             SocialUtil.validateEndpointWithQuery(requestUrl);
-            if (!OidcClientUtil.isReferrerHostValid(request, requestUrl)) {
-                throw new SocialLoginException("MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE", null, new Object[] { request.getRequestURL(), ClientConstants.COOKIE_NAME_REQ_URL_PREFIX, (new URL(requestUrl)).getHost() });
-            }
-        } catch (SocialLoginException e) {
+            OidcClientUtil.verifyReferrerHostIsValid(request, requestUrl, ClientConstants.COOKIE_NAME_REQ_URL_PREFIX);
+        } catch (Exception e) {
             Tr.error(tc, "REQUEST_URL_NOT_VALID", new Object[] { requestUrl, e.getMessage() });
             ErrorHandlerImpl.getInstance().handleErrorResponse(response);
             return;

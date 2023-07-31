@@ -126,7 +126,7 @@ public class CommonTestClass extends com.ibm.ws.security.test.common.CommonTestC
     protected final static String CWWKS6102E_SUBJECT_MAPPING_MISSING_ATTR = "CWWKS6102E";
     protected final static String CWWKS6104W_CONFIG_REQUIRED_ATTRIBUTE_NULL = "CWWKS6104W";
 
-    protected final static String CWWKS2352E_MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE = "CWWKS2352E";
+    protected final static String CWWKS1554E_MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE = "CWWKS1554E";
 
     /****************************************** Helper methods ******************************************/
 
