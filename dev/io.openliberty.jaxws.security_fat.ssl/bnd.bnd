@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -47,7 +47,9 @@ tested.features: jaxws-2.3, \
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\
 	com.ibm.websphere.javaee.ejb.3.2,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.ws.jaxws.2.3.common;version=latest,\

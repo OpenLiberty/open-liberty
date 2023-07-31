@@ -84,6 +84,7 @@ test.project: true
     cglib:cglib;version=3.3.0, \
     com.ibm.ws.org.objectweb.asm;version=latest, \
     com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+    com.ibm.websphere.javaee.jws.1.0;version=latest,\
     com.ibm.ws.junit.extensions;version=latest, \
     com.ibm.ws.kernel.boot.logging;version=latest, \
     com.ibm.ws.kernel.security.thread;version=latest, \

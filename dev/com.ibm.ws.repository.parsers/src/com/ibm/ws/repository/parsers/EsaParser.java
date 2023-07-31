@@ -425,7 +425,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
 
         // build a set of capabilities of each of manifests in the bundles and the subsystem
         // manifest in the feature
-        try (final FileSystem zipSystem = FileSystems.newFileSystem(zipfile, null)) {
+        try (final FileSystem zipSystem = FileSystems.newFileSystem(zipfile, (ClassLoader) null)) {
 
             // get the paths of each bundle jar in the root directory of the esa
             Iterable<Path> roots = zipSystem.getRootDirectories();

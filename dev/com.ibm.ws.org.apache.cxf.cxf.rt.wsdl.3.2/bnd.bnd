@@ -57,6 +57,7 @@ instrument.classesIncludes: \
 -buildpath: \
   org.apache.cxf:cxf-rt-wsdl;strategy=exact;version=${cxfVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core, \
