@@ -213,6 +213,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "webAppSecurity")
     private WebAppSecurity webAppSecurity;
 
+    @XmlElement(name = "ltpa")
+    private LTPA ltpa;
+
     @XmlElement(name = "sslDefault")
     private SSLDefault sslDefault;
 
@@ -704,6 +707,12 @@ public class ServerConfiguration implements Cloneable {
         if (webAppSecurity == null)
             webAppSecurity = new WebAppSecurity();
         return webAppSecurity;
+    }
+
+    public LTPA getLTPA() {
+        if (ltpa == null)
+            ltpa = new LTPA();
+        return ltpa;
     }
 
     /**
