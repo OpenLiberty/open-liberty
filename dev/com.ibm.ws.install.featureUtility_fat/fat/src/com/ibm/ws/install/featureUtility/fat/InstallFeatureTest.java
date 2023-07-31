@@ -41,8 +41,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = InstallFeatureTest.class;
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
-	static String cotainerFilePath = "/public_key";
-	static String localDirPath = mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc";
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
