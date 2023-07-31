@@ -25,4 +25,8 @@ public class InvalidPasswordDecodingException extends Exception {
         super();
     }
 
+    public InvalidPasswordDecodingException(String message) {
+        super(message);
+    }
+
 }

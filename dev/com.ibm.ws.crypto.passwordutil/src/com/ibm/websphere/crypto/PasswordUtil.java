@@ -157,7 +157,7 @@ public class PasswordUtil {
                 // don't accept unsupported crypto algorithm
                 throw new UnsupportedCryptoAlgorithmException();
             } else {
-                throw new InvalidPasswordDecodingException();
+                throw new InvalidPasswordDecodingException(crypto_algorithm);
             }
         }
 
