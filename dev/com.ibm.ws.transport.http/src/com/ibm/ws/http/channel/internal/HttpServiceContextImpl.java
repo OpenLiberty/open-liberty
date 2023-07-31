@@ -99,6 +99,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 
 /**
@@ -2223,6 +2224,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         setupCompressionHandler(msg);
         formatHeaders(msg, false);
         synchWrite();
+    }
+
+    final protected void sendHeaders(HttpResponse response) {
+        if (headersSent()) {
+            Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            return;
+        }
+        this.nettyContext.channel().write(this.nettyResponse);
+        this.setHeadersSent();
+
     }
 
     /**

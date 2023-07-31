@@ -100,16 +100,19 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
         }
 
+        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new ChunkedWriteHandler());
+
+        pipeline.addLast(new HttpObjectAggregator(64 * 1024));
+        pipeline.addLast(new ByteBufferCodec());
+
         if (httpConfig.isAccessLoggingEnabled()) {
             pipeline.addLast(new AccessLoggerHandler(httpConfig));
         }
-        pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new ChunkedWriteHandler());
-        pipeline.addLast(new HttpObjectAggregator(64 * 1024));
-        pipeline.addLast(new ByteBufferCodec());
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addLast(new RemoteIpHandler(httpConfig));
         }
+
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
 
         Tr.exit(tc, "initChannel");
