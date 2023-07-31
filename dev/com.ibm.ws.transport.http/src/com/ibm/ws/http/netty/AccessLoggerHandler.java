@@ -35,7 +35,7 @@ public class AccessLoggerHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
+        MSP.log("AccessLoger obejct: " + msg.toString());
         MSP.log("AccessLogger -> read: access log set to:" + config.getAccessLog().getFormat());
         super.channelRead(ctx, msg);
     }
