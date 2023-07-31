@@ -1163,6 +1163,7 @@ public class HttpChannelConfig {
             if (aLog != null) {
                 this.accessLogger = aLog;
             }
+            MSP.log("access log format is set to: " + accessLogger.get().getFormat());
             Tr.debug(tc, "Config: using logging service", accessLogger);
         }
     }
