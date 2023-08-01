@@ -49,7 +49,7 @@ com.oracle.database.security:osdt_cert:21.8.0.0
 com.oracle.database.security:osdt_core:21.8.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.squareup.okhttp3:okhttp:4.10.0
-com.squareup.okio:okio-jvm:3.0.0
+com.squareup.okio:okio-jvm:3.4.0
 com.sun.activation:jakarta.activation:2.0.1
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
@@ -681,8 +681,8 @@ org.jboss.weld:weld-osgi-bundle:2.4.8.Final
 org.jboss.weld:weld-osgi-bundle:3.1.9.Final
 org.jboss.weld:weld-osgi-bundle:4.0.3.Final
 org.jboss.weld:weld-osgi-bundle:5.1.1.SP1
-org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20
-org.jetbrains.kotlin:kotlin-stdlib:1.6.20
+org.jetbrains.kotlin:kotlin-stdlib-common:1.9.0
+org.jetbrains.kotlin:kotlin-stdlib:1.9.0
 org.jetbrains:annotations:13.0
 org.jmock:jmock-junit4:2.5.1
 org.jmock:jmock-junit4:2.6.0
