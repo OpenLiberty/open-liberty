@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
@@ -44,7 +45,10 @@ public class HeaderHandler {
     }
 
     public void complianceCheck() {
-        Tr.entry(tc, "headerComplianceCheck");
+        String method = "headerComplianceCheck";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, method);
+        }
 
         HttpHeaders headers = response.headers();
 
@@ -70,10 +74,13 @@ public class HeaderHandler {
             //TODO updateCacheControl();
         }
 
+        MSP.log("Using custom heraders: " + config.useHeadersConfiguration());
+
         if (config.useHeadersConfiguration()) {
             //Add all headers configured through the ADD configuration option
             for (List<Map.Entry<String, String>> headersToAdd : config.getConfiguredHeadersToAdd().values()) {
                 for (Entry<String, String> header : headersToAdd) {
+                    MSP.log("Custom header to add: " + header.getKey() + ": " + header.getValue());
                     headers.add(header.getKey(), header.getValue());
                 }
             }
@@ -99,8 +106,9 @@ public class HeaderHandler {
             }
 
         }
-
-        Tr.exit(tc, "headerComplianceCheck");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
     }
 
 }
