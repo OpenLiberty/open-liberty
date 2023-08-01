@@ -123,7 +123,7 @@
             name="%optimize.cache.id.increments" 
             description="%optimize.cache.id.increments.desc" 
             ibmui:group="advanced.performance"
-            required="false" type="Boolean" default="false"/>
+            required="false" type="Boolean" default="true"/>
         
         <!-- ibmui:group=db2 -->
         <AD id="db2RowSize" 
