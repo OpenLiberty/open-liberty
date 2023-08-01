@@ -113,6 +113,8 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(new RemoteIpHandler(httpConfig));
         }
 
+        pipeline.addLast(new TransportOutboundHandler(httpConfig));
+
         pipeline.addLast(new HttpDispatcherHandler(httpConfig));
 
         Tr.exit(tc, "initChannel");
