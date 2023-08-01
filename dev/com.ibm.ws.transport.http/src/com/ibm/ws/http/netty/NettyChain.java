@@ -11,12 +11,14 @@ package com.ibm.ws.http.netty;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
@@ -39,25 +41,7 @@ import io.openliberty.netty.internal.tcp.TCPUtils;
  */
 public class NettyChain extends HttpChain {
 
-    private static final TraceComponent tc = Tr.register(NettyChain.class);
-
-    public enum ChainState {
-        UNINITIALIZED(0, "UNINITIALIZED"),
-        DESTROYED(1, "DESTROYED"),
-        INITIALIZED(2, "INITIALIZED"),
-        STOPPED(3, "STOPPED"),
-        QUIESCED(4, "QUIESCED"),
-        STARTED(5, "STARTED");
-
-        final int val;
-        final String name;
-
-        @Trivial
-        ChainState(int val, String name) {
-            this.val = val;
-            this.name = "name";
-        }
-    }
+    private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private NettyFramework nettyFramework;
 
@@ -66,7 +50,7 @@ public class NettyChain extends HttpChain {
     ServerBootstrapExtended bootstrap = new ServerBootstrapExtended();
     private Channel serverChannel;
 
-    private final EventLoopGroup parent = new NioEventLoopGroup();
+    private final EventLoopGroup parent;
     private final EventLoopGroup child = new NioEventLoopGroup();
 
     /**
@@ -77,6 +61,10 @@ public class NettyChain extends HttpChain {
      */
     public NettyChain(HttpEndpointImpl owner, boolean isHttps) {
         super(owner, isHttps);
+        
+        parent = new NioEventLoopGroup();
+        child = new NioEventLoopGroup();
+        
         bootstrap.group(parent, child);
         bootstrap.channel(NioServerSocketChannel.class);
 
@@ -104,7 +92,7 @@ public class NettyChain extends HttpChain {
      */
     @Override
     public void stop() {
-        if (serverChannel == null) {
+        if (Objects.isNull(serverChannel)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.entry(tc, "Netty channel not initialized, returning from stop");
             }
@@ -114,12 +102,6 @@ public class NettyChain extends HttpChain {
             //created in the update
             this.endpointMgr.removeEndPoint(endpointName);
         }
-
-        //We don't have to check enabled/disabled here: chains are always allowed to stop
-
-//        if (currentConfig = null) {
-//            return;
-//        }
 
         try {
             ChannelFuture future = this.nettyFramework.stop(serverChannel);
@@ -316,109 +298,7 @@ public class NettyChain extends HttpChain {
 ////                        }
 ////                    }
 //
-//                    // HTTP Channel
-//
-//                        chanProps = new HashMap<Object, Object>(httpOptions);
-//                        // Put the endpoint id, which allows us to find the registered access log
-//                        // dynamically
-//                        chanProps.put(HttpConfigConstants.PROPNAME_ACCESSLOG_ID, owner.getName());
-//                        // Put the protocol version, which allows the http channel to dynamically
-//                        // know what http version it will use.
-//                        if (owner.getProtocolVersion() != null) {
-//                            chanProps.put(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION, owner.getProtocolVersion());
-//                        }
-//                        if (remoteIpOptions.get("id").equals("defaultRemoteIp")) {
-//                            //Put the internal remoteIp set to false since the element was not configured to be used
-//                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP, "false");
-//                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_PROXIES, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, null);
-//                        } else {
-//                            chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP, "true");
-//                            //Check if the remoteIp is configured to use the remoteIp in the access log or if
-//                            //a custom proxy regex was provided
-//                            if (remoteIpOptions.containsKey("proxies")) {
-//                                chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_PROXIES, remoteIpOptions.get("proxies"));
-//                            }
-//                            if (remoteIpOptions.containsKey("useRemoteIpInAccessLog")) {
-//                                chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, remoteIpOptions.get("useRemoteIpInAccessLog"));
-//                            }
-//                        }
-//
-//                        if (compressionOptions.get("id").equals("defaultCompression")) {
-//                            //Put the internal compression set to false since the element was not configured to be used
-//                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "false");
-//                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, null);
-//                        }
-//
-//                        else {
-//                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "true");
-//                            //Check if the compression is configured to use content-type filter
-//                            if (compressionOptions.containsKey("types")) {
-//                                chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, compressionOptions.get("types"));
-//
-//                            }
-//                            if (compressionOptions.containsKey("serverPreferredAlgorithm")) {
-//                                chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, compressionOptions.get("serverPreferredAlgorithm"));
-//                            }
-//                        }
-//
-//                        if (samesiteOptions.get("id").equals("defaultSameSite")) {
-//                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, "false");
-//                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, null);
-//                        }
-//
-//                        else {
-//
-//                            boolean enableSameSite = false;
-//                            if (samesiteOptions.containsKey("lax")) {
-//                                enableSameSite = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, samesiteOptions.get("lax"));
-//                            }
-//                            if (samesiteOptions.containsKey("none")) {
-//                                enableSameSite = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, samesiteOptions.get("none"));
-//                            }
-//                            if (samesiteOptions.containsKey("strict")) {
-//                                enableSameSite = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
-//                            }
-//                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, enableSameSite);
-//                        }
-//
-//                        if (headersOptions.get("id").equals("defaultHeaders")) {
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, "false");
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, null);
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, null);
-//                        }
-//
-//                        else {
-//                            boolean enableHeadersFeature = false;
-//                            if (headersOptions.containsKey("add")) {
-//                                enableHeadersFeature = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD, headersOptions.get("add"));
-//                            }
-//                            if (headersOptions.containsKey("set")) {
-//                                enableHeadersFeature = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET, headersOptions.get("set"));
-//                            }
-//                            if (headersOptions.containsKey("setIfMissing")) {
-//                                enableHeadersFeature = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING, headersOptions.get("setIfMissing"));
-//                            }
-//                            if (headersOptions.containsKey("remove")) {
-//                                enableHeadersFeature = true;
-//                                chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE, headersOptions.get("remove"));
-//                            }
-//                            chanProps.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, enableHeadersFeature);
-//                        }
-//
-//
-//                    }
+
 //
 //                    // HTTPDispatcher Channel
 //
@@ -501,8 +381,13 @@ public class NettyChain extends HttpChain {
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
-            HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.HTTP_OPTIONS, httpOptions).with(ConfigElement.REMOTE_IP,
-                                                                                                                                            this.owner.getRemoteIpConfig()).build();
+            HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this)
+                            .with(ConfigElement.COMPRESSION, this.owner.getCompressionConfig())
+                            .with(ConfigElement.HTTP_OPTIONS, httpOptions)                            
+                            .with(ConfigElement.HEADERS, this.owner.getHeadersConfig())
+                            .with(ConfigElement.REMOTE_IP, this.owner.getRemoteIpConfig())
+                            .with(ConfigElement.SAMESITE, this.owner.getSamesiteConfig())
+                            .build();
 
             if (isHttps) {
 

@@ -95,6 +95,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedProto = null;
     private String forwardedHost = null;
     private boolean suppress0ByteChunk = false;
+    private long bytesWritten;
 
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
@@ -499,7 +500,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return HttpRequestMessageImpl
      */
     protected HttpRequestMessageImpl getRequestImpl() {
-        System.out.println("MSP: request message impl");
         if (null == getMyRequest()) {
             if (getObjectFactory() == null) {
                 return null;
@@ -508,10 +508,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
                 setMyRequest(new HttpRequestMessageImpl());
                 getMyRequest().init(this);
-                System.out.println("request message netty complete");
+
             } else {
                 setMyRequest(getObjectFactory().getRequest(this));
                 getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
+
             }
         }
         setStartTime();
@@ -643,13 +644,17 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             throw new MessageSentException("Message already sent");
         }
 
-        sendHeaders(getResponseImpl());
-        if (getResponseImpl().isTemporaryStatusCode()) {
-            // allow multiple temporary responses to be sent out
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Temp response sent, resetting send flags.");
+        if (getHttpConfig().useNetty()) {
+            sendHeaders(this.nettyResponse);
+        } else {
+            sendHeaders(getResponseImpl());
+            if (getResponseImpl().isTemporaryStatusCode()) {
+                // allow multiple temporary responses to be sent out
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Temp response sent, resetting send flags.");
+                }
+                resetWrite();
             }
-            resetWrite();
         }
     }
 
@@ -927,22 +932,30 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "logFinalResponse", c, c.getAccessLog(), c.getAccessLog().isStarted(), numBytesWritten);
         }
 
-        // exit if access logging is disabled
-        if (!getHttpConfig().getAccessLog().isStarted()) {
-            return;
-        }
-        if(getRequest() == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped." );
-            }
-            return; 
-        }
+        if (this.getHttpConfig().useNetty()) {
+            this.bytesWritten = numBytesWritten;
+            this.nettyContext.write(this);
+        } else {
 
-        if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
-            // don't log anything if there wasn't a real request
-            return;
+            // exit if access logging is disabled
+            if (!getHttpConfig().getAccessLog().isStarted()) {
+                return;
+            }
+
+            if(getRequest() == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped." );
+                }
+                return; 
+            }
+
+            if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
+                // don't log anything if there wasn't a real request
+                return;
+            }
+            getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
+
         }
-        getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
     }
 
     /**
@@ -1014,6 +1027,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 throw inv;
             }
         }
+    }
+
+    private void nettyFinishResponseMessage(WsByteBuffer[] body) {
     }
 
     /**
@@ -2002,7 +2018,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setStartTime() {
         if (0 == startTime) {
             if (getHttpConfig().isAccessLoggingEnabled()) {
-                this.startTime = System.nanoTime();
+
+                if (Objects.nonNull(nettyContext) &&
+                    nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+                    this.startTime = nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
+                } else {
+                    this.startTime = System.nanoTime();
+                }
             }
         }
     }

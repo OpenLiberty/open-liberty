@@ -7,9 +7,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.http.netty;
+package com.ibm.ws.http.netty.pipeline;
+
+import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,20 +28,30 @@ public class AccessLoggerHandler extends ChannelDuplexHandler {
     private final HttpChannelConfig config;
 
     public AccessLoggerHandler(HttpChannelConfig config) {
+        Objects.requireNonNull(config);
         this.config = config;
         MSP.log("Access logger config set, format : " + config.getAccessLog().getFormat());
     }
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        System.out.println("WRITE:" + msg);
+
+        if (Objects.nonNull(msg) && msg instanceof HttpInboundServiceContextImpl) {
+            HttpInboundServiceContextImpl isc = (HttpInboundServiceContextImpl) msg;
+            config.getAccessLog().log(isc.getRequest(), isc.getResponse(), isc.getRequestVersion().getName(), null, isc.getRemoteAddr().getHostAddress(), isc.getNumBytesWritten());
+        }
         super.write(ctx, msg, promise);
+
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        MSP.log("AccessLoger obejct: " + msg.toString());
-        MSP.log("AccessLogger -> read: access log set to:" + config.getAccessLog().getFormat());
+        if (!ctx.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+
+            long startTime = System.nanoTime();
+            MSP.log("Setting current time: " + startTime);
+            ctx.channel().attr(NettyHttpConstants.REQUEST_START_TIME).set(startTime);
+        }
         super.channelRead(ctx, msg);
     }
 
