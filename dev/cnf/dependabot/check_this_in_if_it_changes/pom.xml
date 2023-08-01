@@ -272,6 +272,11 @@
       <version>3.0.0</version>
     </dependency>
     <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio-jvm</artifactId>
+      <version>3.4.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.activation</groupId>
       <artifactId>jakarta.activation</artifactId>
       <version>2.0.1</version>
@@ -3444,12 +3449,12 @@
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib-common</artifactId>
-      <version>1.6.20</version>
+      <version>1.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
-      <version>1.6.20</version>
+      <version>1.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains</groupId>
