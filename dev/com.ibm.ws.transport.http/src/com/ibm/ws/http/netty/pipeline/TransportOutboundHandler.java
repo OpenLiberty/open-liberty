@@ -9,20 +9,41 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.util.Objects;
+
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.http.HttpResponse;
 
 /**
  *
  */
 public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
+    HttpChannelConfig config;
+
+    public TransportOutboundHandler(HttpChannelConfig config) {
+        Objects.requireNonNull(config);
+        this.config = config;
+    }
+
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         MSP.log("Writing outbound, msg is: " + msg);
+        //TODO: only if first time running through here (persist needs to clear)
+
+        if (msg instanceof HttpResponse) {
+            HttpResponse response = (HttpResponse) msg;
+            HeaderHandler headerHandler = new HeaderHandler(config, response);
+            headerHandler.complianceCheck();
+
+        }
+
         ctx.writeAndFlush(msg);
     }
 
