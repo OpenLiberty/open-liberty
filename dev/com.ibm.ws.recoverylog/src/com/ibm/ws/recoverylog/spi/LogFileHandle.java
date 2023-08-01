@@ -1078,8 +1078,6 @@ class LogFileHandle {
                 // remains in its current position.
                 int originalPosition = _fileBuffer.position();
 
-                // TODO
-                //        Tr.uncondEvent(tc, "Expanding log file to size of " + newFileSize + " bytes.");
                 Tr.event(tc, "Expanding log file to size of " + newFileSize + " bytes.");
 
                 if (_isMapped) {
@@ -1132,43 +1130,23 @@ class LogFileHandle {
         try {
             if (_isMapped) {
                 // Note: on Win2K we can get an IOException from this even though it is not declared
+                // Can also get UncheckedIOException on AIX apparently
                 ((MappedByteBuffer) _fileBuffer).force();
             } else {
                 // Write the "pending" WritableLogRecords.
                 writePendingToFile();
                 _fileChannel.force(false);
             }
-        } catch (java.io.IOException ioe) {
-            FFDCFilter.processException(ioe, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1049", this);
+        } catch (Exception e) {
+            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1049", this);
             _exceptionInForce = true;
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Unable to force file " + _fileName);
-
-            // d453958: moved terminateserver code to MultiScopeRecoveryLog.markFailed method.
-
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Unable to force file {0} due to {1}", _fileName, e.getMessage());
+            throw new InternalLogException(e);
+        } finally {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "force", "InternalLogException");
-            throw new InternalLogException(ioe);
-        } catch (InternalLogException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1056", this);
-            _exceptionInForce = true;
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Unable to force file " + _fileName);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "force", "InternalLogException");
-            throw exc;
-        } catch (LogIncompatibleException exc) {
-            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1096", this);
-            _exceptionInForce = true;
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Unable to force file " + _fileName);
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "force", "InternalLogException");
-            throw new InternalLogException(exc);
+                Tr.exit(tc, "force");
         }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "force");
     }
 
     //------------------------------------------------------------------------------

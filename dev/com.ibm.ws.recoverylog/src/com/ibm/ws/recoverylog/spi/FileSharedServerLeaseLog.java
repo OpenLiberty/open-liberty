@@ -208,10 +208,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     @Override
     public void updateServerLease(String recoveryIdentity, String recoveryGroup, boolean isServerStartup) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "Using recoveryIdentity " + recoveryIdentity + " and log directory " + _tranRecoveryLogDirStem);
+            Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, _tranRecoveryLogDirStem, this);
 
         // At this point we already have a lock on the file prior to attempting to write to it.
         // And if we have successfully written to the lease file in this instantiation of the server, then
@@ -246,7 +243,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.info(tc, "On writing " + recoveryIdentity + " lease file length " + line.length() + " contains " + line);
+                                Tr.info(tc, "On writing {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
                             }
                         } catch (IOException iox) {
                             if (tc.isDebugEnabled())
@@ -360,8 +357,8 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Exception locking lease control file: ", e);
                 } finally {
+
                     // This next code fragment will delete the directory structure if appropriate
-                    //TODO: complete this code
                     int fileNumber = _serverInstallLeaseLogDir.listFiles().length;
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Number of files contained in " + _serverInstallLeaseLogDir + " is " + fileNumber);
@@ -369,6 +366,75 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     for (int i = 0; i < fileArray.length; i++) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Lease file residing at " + i + " is " + fileArray[i].getName());
+                    }
+
+                    // If only the control file remains, delete it and its parent recovery group directory
+                    if (fileNumber == 1) {
+
+                        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                            @Override
+                            public Void run() {
+                                boolean success = false;
+
+                                try {
+                                    boolean attemptDelete = true;
+
+                                    // Attempt to delete the control file
+                                    if (attemptDelete) {
+                                        if (tc.isDebugEnabled())
+                                            Tr.debug(tc, "Prepare to delete control file in dir " + _serverInstallLeaseLogDir);
+
+                                        boolean fileExists = false;
+                                        Path path = null;
+                                        try {
+                                            // Prepare to delete control file
+                                            path = FileSystems.getDefault().getPath(System.getenv("WLP_USER_DIR"), "shared",
+                                                                                    "leases", _recoveryGroup, "control");
+                                            fileExists = Files.exists(path);
+                                            if (tc.isDebugEnabled())
+                                                Tr.debug(tc, "Does nio path for control file exist? " + fileExists);
+                                            if (fileExists) {
+                                                Files.delete(path);
+                                                success = true;
+                                            }
+
+                                            if (success) {
+                                                if (tc.isDebugEnabled())
+                                                    Tr.debug(tc, "Successfully deleted control file");
+                                                // Prepare to delete recoveryGroup directory
+                                                path = FileSystems.getDefault().getPath(System.getenv("WLP_USER_DIR"), "shared",
+                                                                                        "leases", _recoveryGroup);
+                                                fileExists = Files.exists(path);
+                                                if (tc.isDebugEnabled())
+                                                    Tr.debug(tc, "Does nio path for recovery group directory exist? " + fileExists);
+                                                if (fileExists) {
+                                                    Files.delete(path);
+                                                    success = true;
+                                                    if (tc.isDebugEnabled())
+                                                        Tr.debug(tc, "Successfully deleted recovery group directory");
+                                                }
+                                            } else {
+                                                if (tc.isDebugEnabled())
+                                                    Tr.debug(tc, "Failed to delete control file");
+                                            }
+
+                                        } catch (Exception ex) {
+                                            if (tc.isDebugEnabled())
+                                                Tr.debug(tc, "Caught exception in nio control file delete code " + ex);
+                                        }
+
+                                        if (!success) {
+                                            if (tc.isDebugEnabled())
+                                                Tr.debug(tc, "Failed to delete recovery group directory");
+                                        }
+                                    }
+                                } catch (SecurityException se) {
+                                    if (tc.isDebugEnabled())
+                                        Tr.debug(tc, "Caught SecurityException " + se);
+                                }
+                                return null;
+                            }
+                        });
                     }
                 }
 

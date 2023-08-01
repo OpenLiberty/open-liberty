@@ -266,19 +266,12 @@ public class DBRotationTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-//    FIXME re-enable once SQLServer issue is fixed.
 //    @ExpectedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.tx.jta.XAResourceNotAvailableException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
                            "java.lang.IllegalStateException" })
     // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
-
-        //FIXME - when switching from generic to specific datasource properties
-        //this test started to fail for SQLServer on line 314.
-        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.SQLServer) {
-            return;
-        }
 
         final String method = "testDBRecoveryCompeteForLog";
         String id = "001";
@@ -414,12 +407,6 @@ public class DBRotationTest extends FATServletClient {
     public void testBackwardCompatibility() throws Exception {
         final String method = "testBackwardCompatibility";
 
-        //FIXME - when switching from generic to specific datasource properties
-        //this test will fail for SQLServer.
-        if (DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer) == DatabaseContainerType.SQLServer) {
-            Log.info(c, method, "FIXME - when switching from generic to specific datasource properties. This test will fail for SQLServer.");
-            return;
-        }
 
         serversToCleanup = new LibertyServer[] { server1 };
 

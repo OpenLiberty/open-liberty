@@ -85,13 +85,16 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             DatabaseMetaData mdata = con.getMetaData();
             String dbName = mdata.getDatabaseProductName();
             boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             // Statement used to drop table
             try (Statement stmt = con.createStatement()) {
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
-                                            (isPostgreSQL ? "" : " OF LEASE_OWNER");
+                                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                            " WHERE SERVER_IDENTITY='cloud0011'" +
+                                            ((isSQLServer) ? "" : " FOR UPDATE") +
+                                            ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
                 System.out.println("modifyLeaseOwner: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
                 String owner = null;
@@ -243,13 +246,16 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             DatabaseMetaData mdata = con.getMetaData();
             String dbName = mdata.getDatabaseProductName();
             boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             // Statement used to drop table
             try (Statement stmt = con.createStatement()) {
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
-                                            (isPostgreSQL ? "" : " OF LEASE_OWNER");
+                                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                            " WHERE SERVER_IDENTITY='cloud0011'" +
+                                            ((isSQLServer) ? "" : " FOR UPDATE") +
+                                            ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_OWNER");
                 System.out.println("setupV1LeaseLog: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
                 String owner = null;
