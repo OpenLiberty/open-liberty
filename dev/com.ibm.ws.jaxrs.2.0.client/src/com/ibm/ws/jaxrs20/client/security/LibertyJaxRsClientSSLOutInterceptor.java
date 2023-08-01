@@ -152,9 +152,20 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                                  + "=" + useHttpsURLConnectionDefaultSslSocketFactory);
                 }
 
-                if (useHttpsURLConnectionDefaultSslSocketFactory != null
-                    && useHttpsURLConnectionDefaultSslSocketFactory.trim().length() > 0
-                    && useHttpsURLConnectionDefaultSslSocketFactory.trim().equalsIgnoreCase("true")) {
+                Object useHttpsURLConnectionDefaultSslSocketFactoryClientProp = message.get(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY);
+                String useHttpsURLConnectionDefaultSslSocketFactoryClientPropString = null;
+                if (useHttpsURLConnectionDefaultSslSocketFactoryClientProp != null) {
+                    useHttpsURLConnectionDefaultSslSocketFactoryClientPropString = (String) useHttpsURLConnectionDefaultSslSocketFactoryClientProp;
+                }
+
+                // check if the property is set either via SystemProperty or on the JAX-RS client
+                if ((useHttpsURLConnectionDefaultSslSocketFactory != null
+                        && useHttpsURLConnectionDefaultSslSocketFactory.trim().length() > 0
+                        && useHttpsURLConnectionDefaultSslSocketFactory.trim().equalsIgnoreCase("true"))
+                    || (useHttpsURLConnectionDefaultSslSocketFactoryClientPropString != null
+                        && useHttpsURLConnectionDefaultSslSocketFactoryClientPropString.trim().length() > 0
+                        && useHttpsURLConnectionDefaultSslSocketFactoryClientPropString.trim().equalsIgnoreCase("true"))) {
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Setting useHttpsURLConnectionDefaultSslSocketFactory on TLSClientParameters");
                     }
