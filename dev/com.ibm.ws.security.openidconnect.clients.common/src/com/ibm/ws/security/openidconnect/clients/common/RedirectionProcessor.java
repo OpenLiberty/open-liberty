@@ -124,7 +124,7 @@ public class RedirectionProcessor {
             OidcClientUtil.verifyReferrerHostIsValid(request, requestUrl, OidcStorageUtils.getOriginalReqUrlStorageKey(state));
         } catch (Exception e) {
             Tr.error(tc, e.getMessage());
-            redirectionEntry.sendError(request, response);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
