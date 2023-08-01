@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
 
@@ -20,5 +23,10 @@ import jakarta.data.repository.Repository;
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Entitlements extends DataRepository<Entitlement, Long> {
+
+    Optional<Entitlement> findById(long id);
+
     void save(Entitlement e);
+
+    ArrayList<Entitlement> save(Entitlement[] e);
 }

@@ -191,6 +191,53 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Attempt to save updates to Jakarta Persistence entities where the updates violate one or more constraints.
+     */
+    @Test
+    public void testUpdateInvalidMinAndEmail_Entity() {
+        Entitlement[] e = new Entitlement[2];
+        e[0] = new Entitlement(4, "US-SNAP", "person4@openliberty.io", Frequency.AS_NEEDED, 50, null, 23.00f, BigDecimal.valueOf(43.00f));
+        e[1] = new Entitlement(5, "US-TANF", "person5@openliberty.io", Frequency.MONTHLY, 13, null, 1549.00f, BigDecimal.valueOf(5266.00f));
+        e = entitlements.save(e).toArray(new Entitlement[e.length]); // TODO code needs update to support array return type
+
+        Set<?> violations = Collections.emptySet();
+
+        // First valid, second not valid:
+        e[0].beneficiaryEmail = "person-4@openliberty.io";
+        e[1].setMinAge(-2); // less than minimum of 0
+
+        try {
+            entitlements.save(e);
+            fail("ConstraintViolationException was not raised.");
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(violations.toString(), 1, violations.size());
+
+        // The violation on e[1] must prevent the valid update to e[0]:
+        e[0] = entitlements.findById(4).orElseThrow();
+        assertEquals("person4@openliberty.io", e[0].beneficiaryEmail);
+
+        // First invalid, second valid:
+        e[0].beneficiaryEmail = "person4"; // invalid email address
+        e[0].frequency = null; // invalid null
+        e[0].type = "US-?"; // invalid length
+        e[1].setMinAge(15); // valid update
+
+        try {
+            entitlements.save(e);
+            fail("ConstraintViolationException was not raised.");
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+        }
+        assertEquals(violations.toString(), 3, violations.size());
+
+        // The violations on e[0] must prevent the otherwise valid update to e[1]:
+        e[1] = entitlements.findById(5).orElseThrow();
+        assertEquals(13, e[1].getMinAge());
+    }
+
+    /**
      * Attempt to save updates to Java class entities (no entity annotation) where the updates violate one or more constraints.
      */
     @Test
@@ -327,6 +374,8 @@ public class DataValidationTestServlet extends FATServlet {
             creatures.saveAll(Set.of(c1, c3));
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
 
@@ -335,6 +384,45 @@ public class DataValidationTestServlet extends FATServlet {
             creatures.save(c2);
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+        assertEquals(Collections.EMPTY_SET, violations);
+    }
+
+    /**
+     * Save updates to entities where the updates have no constraint violations.
+     */
+    @Test
+    public void testUpdateValidEntities() {
+        Entitlement[] e = new Entitlement[3];
+        e[0] = new Entitlement(5, "US-SOCIALSECURITY", "person4@openliberty.io", Frequency.MONTHLY, 65, null, Float.valueOf(3100), BigDecimal.valueOf(4555));
+        e[1] = new Entitlement(6, "US-SOCIALSECURITY", "person5@openliberty.io", Frequency.MONTHLY, 66, null, Float.valueOf(3100), BigDecimal.valueOf(4218));
+        e[2] = new Entitlement(7, "US-SOCIALSECURITY", "person6@openliberty.io", Frequency.MONTHLY, 67, null, Float.valueOf(3100), BigDecimal.valueOf(3905));
+        e = entitlements.save(e).toArray(new Entitlement[e.length]); // TODO code needs update to support array return type
+
+        Set<?> violations = Collections.emptySet();
+        try {
+            e[1].beneficiaryEmail = "person-5@openliberty.io";
+            e[2].minBenefit = 3000.0f;
+            e[2].maxBenefit = BigDecimal.valueOf(3499.0f);
+            entitlements.save(new Entitlement[] { e[1], e[2] });
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
+        }
+        assertEquals(Collections.EMPTY_SET, violations);
+
+        try {
+            e[0].frequency = Frequency.YEARLY;
+            e[0].minBenefit *= 12.0f;
+            e[0].maxBenefit = e[0].maxBenefit.multiply(BigDecimal.valueOf(12.0f));
+            entitlements.save(e[0]);
+        } catch (ConstraintViolationException x) {
+            violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
     }
@@ -354,6 +442,8 @@ public class DataValidationTestServlet extends FATServlet {
                                new Rectangle("R5", 500l, 550l, 15, 55));
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
 
@@ -361,6 +451,8 @@ public class DataValidationTestServlet extends FATServlet {
             rectangles.save(new Rectangle("R3", 300l, 330l, 33, 30));
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
+            if (violations.isEmpty())
+                throw x;
         }
         assertEquals(Collections.EMPTY_SET, violations);
     }
