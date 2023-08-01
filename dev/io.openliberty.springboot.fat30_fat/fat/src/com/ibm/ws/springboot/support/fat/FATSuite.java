@@ -37,14 +37,12 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WarmStartTests30.class,
                 SSLTests30.class,
                 SSLMutualAuthTests30.class,
-                    // SpringSecurityTests30.class,
-                    // Disabled due to application failures.
+                // SpringSecurityTests30.class,
+                // Disabled due to application failures.
                 JSPTests30.class,
-                    // MissingServletTests30.class,
-                    // Disabled: The jakarta servlet class is being provisioned even without the servlet feature!
+                MissingServletTests30.class,
                 MissingSslFeatureTests30.class,
-                    // MissingWebsocketFeatureTests30.class,
-                    // Disabled: The jakarta web socket class is being provisioned even without the web socket feature!
+                MissingWebsocketFeatureTests30.class,
                 MultiContextTests30.class,
                 MultipleApplicationsNotSupported30.class,
                 NeedSpringBootFeatureTests30.class,
@@ -53,12 +51,11 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 SpringBootUtilityThinTest.class,
                 WebAnnotationTests30.class,
                 ExtractedAppTests30.class,
-                    // WebSocketTests30.class,
-                    // Disabled due to application failures.
+                // WebSocketTests30.class,
+                // Disabled due to application failures.
                 MimeMapping30.class,
                 ErrorPage30Test.class,
-                    // EnableSpringBootTraceTests30.class,
-                    // Disabled: Failing to start web server.  See the test class for details.
+                EnableSpringBootTraceTests30.class,
                 ExceptionOccuredAfterAppIsAvailableTest30.class,
                 JakartaFeatureTests30.class,
                 TemplateTests30.class,
