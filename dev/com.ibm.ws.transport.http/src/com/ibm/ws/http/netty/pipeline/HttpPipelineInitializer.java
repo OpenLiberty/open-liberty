@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.AccessLoggerHandler;
 import com.ibm.ws.http.netty.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
@@ -100,15 +99,16 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
         }
 
+        if (httpConfig.isAccessLoggingEnabled()) {
+            pipeline.addLast(new AccessLoggerHandler(httpConfig));
+        }
+
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new ChunkedWriteHandler());
 
         pipeline.addLast(new HttpObjectAggregator(64 * 1024));
         pipeline.addLast(new ByteBufferCodec());
 
-        if (httpConfig.isAccessLoggingEnabled()) {
-            pipeline.addLast(new AccessLoggerHandler(httpConfig));
-        }
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addLast(new RemoteIpHandler(httpConfig));
         }
