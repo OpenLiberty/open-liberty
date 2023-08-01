@@ -21,5 +21,6 @@ public class NettyHttpConstants {
     public static final AttributeKey<String> FORWARDED_PORT_KEY = AttributeKey.valueOf("forwardedPort");
     public static final AttributeKey<String[]> FORWARDED_BY_KEY = AttributeKey.valueOf("forwardedBy");
     public static final AttributeKey<String[]> FORWARDED_FOR_KEY = AttributeKey.valueOf("forwardedFor");
+    public static final AttributeKey<Long> REQUEST_START_TIME = AttributeKey.valueOf("requestStartTime");
 
 }
