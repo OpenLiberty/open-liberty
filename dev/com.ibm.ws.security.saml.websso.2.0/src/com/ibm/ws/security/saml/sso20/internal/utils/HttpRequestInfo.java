@@ -88,9 +88,11 @@ public class HttpRequestInfo implements Serializable {
         // bFromRequest = true;
         this.method = request.getMethod();
         this.strInResponseToId = SamlUtil.generateRandomID();
+        //@AV999-092821
+        boolean delegatedLogout = processDelegatedLogoutRequest(request);
         // if FormLogoutExtensionProcessor has specified a logout page, save it off. Stream has already been read.
         formLogoutExitPage = (String) request.getAttribute("FormLogoutExitPage");
-        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {
+        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null && !delegatedLogout) {
             // let's save the parameters for restore
             IServletRequest extRequest = (IServletRequest) request;
             try {
@@ -100,11 +102,12 @@ public class HttpRequestInfo implements Serializable {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
                 // this should not happen. Let the SamlException handle it
-                throw new SamlException(e);
+                if (!delegatedLogout) {
+                    throw new SamlException(e);
+                }    
             }
         }
-        //@AV999-092821
-        processDelegatedLogoutRequest(request);
+
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
@@ -113,8 +116,10 @@ public class HttpRequestInfo implements Serializable {
 
     /**
      * @param request
+     * @return 
      */
-    private void processDelegatedLogoutRequest(HttpServletRequest request) {
+    private boolean processDelegatedLogoutRequest(HttpServletRequest request) {
+        boolean isDelegatedLogout = false;
         if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
             redirectAfterSPLogout = (String) request.getAttribute("OIDC_END_SESSION_REDIRECT");
             if (tc.isDebugEnabled()) {
@@ -130,7 +135,9 @@ public class HttpRequestInfo implements Serializable {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, save OIDC_LOGOUT_REDIRECT_PAGE  : " + redirectPageAfterSPLogout);
             }
-        }      
+        }
+        isDelegatedLogout = redirectAfterSPLogout != null || redirectPageAfterSPLogout != null;
+        return isDelegatedLogout;
     }
 
     public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
