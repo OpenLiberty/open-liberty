@@ -27,7 +27,7 @@ WLP-AlsoKnownAs: jaxrsClient-4.0
 Subsystem-Name: Jakarta RESTful Web Services 4.0 Client
 -features=io.openliberty.cdi-4.1, \
   io.openliberty.jakarta.mail-2.1, \
-  io.openliberty.jakarta.validation-3.0, \
+  io.openliberty.jakarta.validation-3.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.servlet.internal-6.1, \
   io.openliberty.jakarta.restfulWS-4.0, \

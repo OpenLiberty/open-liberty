@@ -15,7 +15,6 @@
     <featureManager>
         <feature>servlet-6.1</feature>
         <feature>concurrent-3.1</feature>
-        <feature>managedBeans-2.0</feature>
         <feature>cdi-4.1</feature>
         <feature>componenttest-2.0</feature>
         <feature>jndi-1.0</feature>
