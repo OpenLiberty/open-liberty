@@ -19,8 +19,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
@@ -55,16 +53,9 @@ public class DataStandaloneTckLauncher {
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "standalone & persistence & !signature");
 
-        // Skip signature testing on Windows.
-        // So far as I can tell the signature test plugin is not supported on this configuration
-        if (System.getProperty("os.name").contains("Windows")) {
-            Log.info(DataStandaloneTckLauncher.class, "launchDataTckStandalone", "Skipping Jakarta Data Signature Test on Windows");
-            additionalProps.put("included.groups", "standalone & persistence & !signature");
-        }
-
         //TODO Remove once TCK is available from stagging repo
         additionalProps.put("jakarta.data.groupid", "io.openliberty.jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-05112023");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-20230802");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandalone";
