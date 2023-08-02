@@ -207,14 +207,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
         try {
             return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
         } catch (CloneNotSupportedException cnse) {
-            if (tc.isDebugEnabled()) {
-                /*
-                 * commented out to suppress CloneNotSupportedException
-                 * Tr.debug(tc, "CloneNotSupportedException caught while trying to clone MessageDigest with algorithm " + SHA_512
-                 * + ". This is pretty unlikely, and we need to get details about the JDK which is in use.",
-                 * cnse);
-                 */
-            }
+            //Since implementation of clone is optional in Java, if clone does not work, just return a new instance.
             return MessageDigest.getInstance(SHA_512);
         }
     }
