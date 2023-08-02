@@ -132,9 +132,61 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     private void parseHttpOptions(Map<String, Object> options) {
 
-        this.parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        //TODO -> Netty Needed
 
-        this.parseDateHeaderRange(options.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
+        parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
+        parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
+        parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
+        parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
+        parseBufferType(options.get(HttpConfigConstants.PROPNAME_DIRECT_BUFF));
+        parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
+        parseCookieUpdate(options.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), options.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));
+        parseDateHeaderRange(options.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
+        parseDecompressionRatioLimit(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT));
+        parseDecompressionTolerance(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE));
+        parseDelayedExtract(options.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
+        parseDoNotAllowDuplicateSetCookies(options.get(HttpConfigConstants.PROPNAME_DO_NOT_ALLOW_DUPLICATE_SET_COOKIES));
+        parseHeaderChangeLimit(options.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
+        parseHeaderValidation(options.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
+        parseIncomingBodyBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
+        parseIncomingHdrBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
+        parseLimitFieldSize(options.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE));
+        parseLimitMessageSize(options.get(HttpConfigConstants.PROPNAME_MSG_SIZE_LIMIT));
+        parseLimitNumberHeaders(options.get(HttpConfigConstants.PROPNAME_LIMIT_NUMHEADERS));
+        parseLimitNumberResponses(options.get(HttpConfigConstants.PROPNAME_LIMIT_NUMBER_RESPONSES));
+        parseOutgoingBufferSize(options.get(HttpConfigConstants.PROPNAME_OUTGOING_HDR_BUFFSIZE));
+        parseOutgoingVersion(options.get(HttpConfigConstants.PROPNAME_OUTGOING_VERSION));
+        parsePersistTimeout(options.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
+        parsePersistence(options.get(HttpConfigConstants.PROPNAME_KEEPALIVE_ENABLED), options.get(HttpConfigConstants.PROPNAME_MAX_PERSIST));
+        parsePreventResponseSplit(options.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT));
+        parseProtocolVersion(options.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
+        parsePurgeRemainingResponseBody();
+        parseReadTimeout(options.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
+        parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
+        parseRequestSmugglingProtection(options.get(HttpConfigConstants.PROPNAME_ENABLE_SMUGGLING_PROTECTION));
+        parseServerHeader(options.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE), options.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER));
+        parseSkipCookiePathQuotes(options.get(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE));
+
+        parseWriteTimeout(options.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
+        parsev0CookieDateRFC1123compat(options.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
+
+        //TODO -> Netty not needed
+
+        //parseStrictURLFormat(options.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
+        //parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS));
+        //parseWaitForEndOfMessage(options.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE));
+
+        // HTTP/2 Options
+
+        parseH2ConnCloseTimeout(options.get(HttpConfigConstants.PROPNAME_H2_CONN_CLOSE_TIMEOUT));
+        parseH2ConnectionIdleTimeout(options.get(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT));
+        parseH2ConnectionWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE));
+        parseH2LimitWindowUpdateFrames(options.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES));
+        parseH2MaxConcurrentStreams(options.get(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS));
+        parseH2MaxFrameSize(options.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE));
+        parseH2SettingsInitialWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE));
+
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {
