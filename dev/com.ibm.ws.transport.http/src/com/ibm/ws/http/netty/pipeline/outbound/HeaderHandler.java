@@ -74,8 +74,6 @@ public class HeaderHandler {
             //TODO updateCacheControl();
         }
 
-        MSP.log("Using custom heraders: " + config.useHeadersConfiguration());
-
         if (config.useHeadersConfiguration()) {
             //Add all headers configured through the ADD configuration option
             for (List<Map.Entry<String, String>> headersToAdd : config.getConfiguredHeadersToAdd().values()) {
