@@ -35,6 +35,7 @@ import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -173,7 +174,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.nettyRequest;
     }
 
-    public io.netty.handler.codec.http.HttpResponse getNettyResponse() {
+    public HttpResponse getNettyResponse() {
         return this.nettyResponse;
     }
 
@@ -545,10 +546,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return HttpResponseMessageImpl
      */
     final protected HttpResponseMessageImpl getResponseImpl() {
-        if (null == getMyResponse()) {
-            if (getHttpConfig().useNetty()) {
-                setMyResponse(new HttpResponseMessageImpl());
-                getMyResponse().init(this);
+        if (Objects.isNull(getMyResponse())) {
+            if (Objects.nonNull(nettyContext)) {
+                setMyResponse(new NettyResponseMessage(this.nettyResponse, this));
+                //setMyResponse(new HttpResponseMessageImpl());
+
             } else {
 
                 if (getObjectFactory() == null) {

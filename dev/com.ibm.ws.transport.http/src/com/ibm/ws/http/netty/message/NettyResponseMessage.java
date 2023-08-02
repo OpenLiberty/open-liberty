@@ -9,628 +9,275 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Objects;
 
-import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
+import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
+import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
+import com.ibm.ws.http.channel.internal.WsByteBuffer;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
-import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
-import com.ibm.wsspi.http.HttpCookie;
-import com.ibm.wsspi.http.channel.HttpResponseMessage;
-import com.ibm.wsspi.http.channel.HttpTrailers;
-import com.ibm.wsspi.http.channel.values.ConnectionValues;
-import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
-import com.ibm.wsspi.http.channel.values.ExpectValues;
+import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
-import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
-import com.ibm.wsspi.http.channel.values.VersionValues;
+
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  *
  */
-public class NettyResponseMessage implements HttpResponseMessage {
+public class NettyResponseMessage extends HttpResponseMessageImpl {
 
-    @Override
-    public boolean isIncoming() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    /** RAS trace variable */
+    private static final TraceComponent tc = Tr.register(NettyResponseMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    @Override
-    public boolean isCommitted() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    HttpResponse nettyResponse;
+    HttpHeaders headers;
 
-    @Override
-    public void setCommitted() {
-        // TODO Auto-generated method stub
+    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc) {
+        Objects.requireNonNull(isc);
+        Objects.requireNonNull(response);
+
+        setOwner(isc);
+        this.nettyResponse = response;
+        this.headers = nettyResponse.headers();
 
     }
 
     @Override
-    public void clear() {
-        // TODO Auto-generated method stub
-
+    protected void setPseudoHeaders(HashMap<String, String> pseudoHeaders) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setPseudoHeaders", "HTTP/2 delegated to Netty pipeline");
+        }
+        //No-op HTTP/2 handled by Netty Pipeline
     }
 
     @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean isBodyExpected() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isBodyAllowed() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setContentLength(long length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public long getContentLength() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setConnection(ConnectionValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setConnection(ConnectionValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public ConnectionValues[] getConnection() {
-        // TODO Auto-generated method stub
+    protected H2HeaderTable getH2HeaderTable() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getH2HeaderTable", "HTTP/2 delegated to Netty pipeline, returning null");
+        }
         return null;
     }
 
     @Override
-    public boolean isKeepAliveSet() {
-        // TODO Auto-generated method stub
-        return false;
+    protected boolean isValidPseudoHeader(H2HeaderField pseudoHeader) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isValidPseudoHeader", "HTTP/2 delegated to Netty pipeline, returning false");
+        }
+
+        return Boolean.FALSE;
     }
 
     @Override
-    public boolean isConnectionSet() {
-        // TODO Auto-generated method stub
-        return false;
+    protected boolean checkMandatoryPseudoHeaders(HashMap<String, String> pseudoHeaders) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "checkMandatoryPseudoHeaders", "HTTP/2 delegated to Netty pipeline, returning false");
+        }
+        return Boolean.FALSE;
     }
 
     @Override
-    public void setContentEncoding(ContentEncodingValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setContentEncoding(ContentEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public ContentEncodingValues[] getContentEncoding() {
-        // TODO Auto-generated method stub
+    public WsByteBuffer[] encodePseudoHeaders() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "encodePseudoHeaders", "HTTP/2 delegated to Netty pipeline, returning null");
+        }
         return null;
     }
 
-    @Override
-    public void setTransferEncoding(TransferEncodingValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setTransferEncoding(TransferEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public TransferEncodingValues[] getTransferEncoding() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isChunkedEncodingSet() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setCurrentDate() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setExpect(ExpectValues value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public byte[] getExpect() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean isExpect100Continue() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getMIMEType() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setMIMEType(String type) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Charset getCharset() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCharset(Charset set) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HttpTrailers getTrailers() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public VersionValues getVersionValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setVersion(VersionValues version) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVersion(String version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HttpTrailersImpl createTrailers() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDebugContext(Object o) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HeaderField getHeader(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HeaderField getHeader(byte[] name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HeaderField getHeader(HeaderKeys name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(byte[] name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(HeaderKeys name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HeaderField> getAllHeaders() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getAllHeaderNames() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Set<String> getAllHeaderNamesSet() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void appendHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void appendHeader(String header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(String header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean containsHeader(byte[] header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsHeader(String header) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(byte[] header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getNumberOfHeaderInstances(HeaderKeys header) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void removeHeader(byte[] header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(byte[] header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(String header) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeHeader(String header, int instance) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void removeAllHeaders() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setHeader(String header, String value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setLimitOnNumberOfHeaders(int number) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getLimitOnNumberOfHeaders() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setLimitOfTokenSize(int size) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getLimitOfTokenSize() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public byte[] getCookieValue(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<String> getAllCookieValues(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public HttpCookie getCookie(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HttpCookie> getAllCookies() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<HttpCookie> getAllCookies(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean setCookie(HttpCookie cookie, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setCookie(String name, String value, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean removeCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean containsCookie(String name, HttpHeaderKeys cookieHeader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public int getStatusCodeAsInt() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public StatusCodes getStatusCode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    /**
+     * Query of the value of the status code as an integer.
+     *
+     * @return int
+     */
+    @Override
+    final public int getStatusCodeAsInt() {
+        return this.nettyResponse.status().code();
+    }
+
+    /**
+     * Set the status code of the response message. An input code that does
+     * not match an existing defined StatusCode will create a new "Undefined"
+     * code where the getByteArray() API will return the input code as a
+     * byte[].
+     *
+     * @param code
+     */
     @Override
     public void setStatusCode(int code) {
-        // TODO Auto-generated method stub
 
+        this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
+
+        StatusCodes val = null;
+        try {
+            val = StatusCodes.getByOrdinal(code);
+
+        } catch (IndexOutOfBoundsException e) {
+            // no FFDC required
+            // nothing to do, just make the undefined value below
+        }
+
+        // this could be null because the ordinal lookup returned an empty
+        // status code, or because it was out of bounds
+        if (null == val) {
+            val = StatusCodes.makeUndefinedValue(code);
+        }
+        setStatusCode(val);
     }
 
+    /**
+     * Set the status code of the response message.
+     *
+     * @param code
+     */
     @Override
     public void setStatusCode(StatusCodes code) {
-        // TODO Auto-generated method stub
+        super.setStatusCode(code);
+
+        this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code.getIntCode()));
+    }
+
+    /**
+     * Set the Content-Length header to the given number of bytes.
+     *
+     * @param length
+     * @throws IllegalArgumentException
+     *                                      if input length is invalid
+     */
+    @Override
+    public void setContentLength(long length) {
+        HttpUtil.setContentLength(nettyResponse, length);
+
+    }
+
+    /**
+     * Query the value of the Content-Length header as a byte number.
+     *
+     * @return int
+     */
+    @Override
+    public long getContentLength() {
+        return HttpUtil.getContentLength(nettyResponse);
 
     }
 
     @Override
-    public String getReasonPhrase() {
-        // TODO Auto-generated method stub
+    public void setHeader(HeaderKeys key, String value) {
+        if (Objects.isNull(key) || Objects.isNull(value)) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeader(h,s): " + key.getName());
+        }
+        headers.set(key.getName(), value);
+    }
+
+    /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeaderIfAbsent(HeaderKeys, String)
+     */
+    @Override
+    public HeaderField setHeaderIfAbsent(HeaderKeys key, String value) {
+        if (Objects.isNull(key) || Objects.isNull(value)) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeaderIfAbsent(h,s): " + key.getName());
+        }
+
+        if (!this.nettyResponse.headers().contains(key.getName())) {
+            headers.set(key.getName(), value);
+        }
+
         return null;
     }
 
+    /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeader(String, String)
+     */
     @Override
-    public byte[] getReasonPhraseBytes() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setReasonPhrase(String reason) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setReasonPhrase(byte[] reason) {
-        // TODO Auto-generated method stub
+    public void setHeader(String header, String value) {
+        if (null == header || null == value) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeader(s,s): " + header);
+        }
+        this.nettyResponse.headers().set(header, value);
 
     }
 
+    /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#removeHeader(HeaderKeys)
+     */
     @Override
-    public HttpResponseMessage duplicate() {
-        // TODO Auto-generated method stub
-        return null;
+    public void removeHeader(HeaderKeys key) {
+        if (Objects.isNull(key)) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "removeHeader(h): " + key.getName());
+        }
+        this.nettyResponse.headers().remove(key.getName());
     }
+
+    /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#removeHeader(String)
+     */
+    @Override
+    public void removeHeader(String header) {
+        if (Objects.isNull(header)) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "removeHeader(s): " + header);
+        }
+        this.nettyResponse.headers().remove(header);
+        super.removeAllHeaders()
+    }
+
+    /*
+     * @see com.ibm.websphere.http.HttpResponse#removeAllHeaders()
+     */
+    @Override
+    public void removeAllHeaders() {
+        this.cookieCache = null;
+        this.cookie2Cache = null;
+        this.setCookieCache = null;
+        this.setCookie2Cache = null;
+        this.message.removeAllHeaders();
+    }
+
+    /*
+     * 
+     * //
+     */
+//   @Override
+//   public void setHeader(String name, String value) {
+//       this.message.setHeader(name, value);
+//   }
+//
+//   /*
+//    * @see com.ibm.websphere.http.HttpResponseExt#setHeader(com.ibm.wsspi.http.channel.values.HttpHeaderKeys, java.lang.String)
+//    */
+//   @Override
+//   public void setHeader(HttpHeaderKeys key, String value) {
+//       this.message.setHeader(key, value);
+//   }
+//
+//   /*
+//    * @see com.ibm.websphere.http.HttpResponseExt#setHeaderIfAbsent(com.ibm.wsspi.http.channel.values.HttpHeaderKeys, java.lang.String)
+//    */
+//   @Override
+//   public String setHeaderIfAbsent(HttpHeaderKeys key, String value) {
+//       HeaderField oldValue = this.message.setHeaderIfAbsent(key, value);
+//       return oldValue == null ? null : oldValue.asString();
+//   }
 
 }
