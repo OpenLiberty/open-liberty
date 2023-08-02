@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.validation.web;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import jakarta.data.repository.DataRepository;
@@ -28,5 +27,5 @@ public interface Entitlements extends DataRepository<Entitlement, Long> {
 
     void save(Entitlement e);
 
-    ArrayList<Entitlement> save(Entitlement[] e);
+    Entitlement[] save(Entitlement[] e);
 }

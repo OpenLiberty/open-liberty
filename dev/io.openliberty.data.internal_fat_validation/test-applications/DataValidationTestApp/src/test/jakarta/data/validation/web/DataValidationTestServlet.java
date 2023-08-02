@@ -75,7 +75,7 @@ public class DataValidationTestServlet extends FATServlet {
      * should be automatically validated.
      */
     @Test
-    public void testJakartaPersistenceAndValidation() {
+    public void testJakartaPersistenceAndValidation() throws Exception {
         Entitlement e = new Entitlement(3, "ACA", "person3@openliberty.io", Frequency.AS_NEEDED, 0, null, null, null);
         EntityManager em = emf.createEntityManager();
         try {
@@ -198,7 +198,7 @@ public class DataValidationTestServlet extends FATServlet {
         Entitlement[] e = new Entitlement[2];
         e[0] = new Entitlement(4, "US-SNAP", "person4@openliberty.io", Frequency.AS_NEEDED, 50, null, 23.00f, BigDecimal.valueOf(43.00f));
         e[1] = new Entitlement(5, "US-TANF", "person5@openliberty.io", Frequency.MONTHLY, 13, null, 1549.00f, BigDecimal.valueOf(5266.00f));
-        e = entitlements.save(e).toArray(new Entitlement[e.length]); // TODO code needs update to support array return type
+        e = entitlements.save(e);
 
         Set<?> violations = Collections.emptySet();
 
@@ -399,7 +399,7 @@ public class DataValidationTestServlet extends FATServlet {
         e[0] = new Entitlement(5, "US-SOCIALSECURITY", "person4@openliberty.io", Frequency.MONTHLY, 65, null, Float.valueOf(3100), BigDecimal.valueOf(4555));
         e[1] = new Entitlement(6, "US-SOCIALSECURITY", "person5@openliberty.io", Frequency.MONTHLY, 66, null, Float.valueOf(3100), BigDecimal.valueOf(4218));
         e[2] = new Entitlement(7, "US-SOCIALSECURITY", "person6@openliberty.io", Frequency.MONTHLY, 67, null, Float.valueOf(3100), BigDecimal.valueOf(3905));
-        e = entitlements.save(e).toArray(new Entitlement[e.length]); // TODO code needs update to support array return type
+        e = entitlements.save(e);
 
         Set<?> violations = Collections.emptySet();
         try {

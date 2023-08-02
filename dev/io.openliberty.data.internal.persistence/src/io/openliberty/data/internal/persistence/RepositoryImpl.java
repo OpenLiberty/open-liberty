@@ -1825,7 +1825,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                            returnValue = results;
+                            if (queryInfo.returnArrayType == null) {
+                                returnValue = results;
+                            } else {
+                                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, length);
+                                returnValue = results.toArray(newArray);
+                            }
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
                             if (validator != null)
                                 validator.validate((Iterable<?>) args[0]);
@@ -1833,7 +1838,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
-                            returnValue = results;
+                            if (queryInfo.returnArrayType == null) {
+                                returnValue = results;
+                            } else {
+                                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                                returnValue = results.toArray(newArray);
+                            }
                         } else {
                             if (validator != null && args[0] != null)
                                 validator.validate(args[0]);
