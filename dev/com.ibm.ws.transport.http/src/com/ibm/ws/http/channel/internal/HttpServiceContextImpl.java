@@ -96,6 +96,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -3192,15 +3193,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         MSP.log("getting buff list");
         WsByteBuffer[] writeBuffers = getBuffList();
         MSP.log("is buff list null: " + Objects.isNull(writeBuffers));
-
+        System.out.println("Size of buffers: " + writeBuffers.length);
         if (myChannelConfig.useNetty()) {
             MSP.log("sync write");
             this.nettyContext.channel().write(this.nettyResponse);
             DefaultHttpContent content;
             if (Objects.nonNull(writeBuffers)) {
                 for (WsByteBuffer buffer : writeBuffers) {
-
-                    this.nettyContext.channel().write(buffer);
+                    content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
+                    System.out.println("Writing: " + content);
+                    this.nettyContext.channel().write(content);
+//                    this.nettyContext.channel().write(buffer);
                     //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
 
                 }

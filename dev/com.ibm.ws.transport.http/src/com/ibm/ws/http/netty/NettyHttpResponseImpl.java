@@ -35,6 +35,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.ext.HttpResponseExt;
 
 /**
@@ -75,6 +76,11 @@ public class NettyHttpResponseImpl extends HttpResponseImpl implements HttpRespo
         this.nettyContext = ((HttpInboundServiceContextImpl) context).getNettyContext();
         this.nettyRequest = ((HttpInboundServiceContextImpl) context).getNettyRequest();
         this.nettyResponse = new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK);
+        if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            String streamId = nettyRequest.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+            System.out.println("Got an HTTP2 request, setting stream ID of response to: " + streamId);
+            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
+        }
         ((HttpInboundServiceContextImpl) isc).setNettyResponse(nettyResponse);
         System.out.println("Init netty response complete");
     }

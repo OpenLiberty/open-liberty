@@ -26,6 +26,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     HttpDispatcherLink link;
     HttpChannelConfig config;
 
+    public static final String HTTP_DISPATCHER_HANDLER_NAME = "HTTP_DISPATCHER";
+
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
         Objects.requireNonNull(config);
@@ -35,12 +37,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
         // TODO Auto-generated method stub
+        System.out.println("Channel read fired from dispatcher!!");
         newRequest(context, request);
 
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+        System.out.println("Got exception from dispatcher!!");
+        cause.printStackTrace();
         context.close();
     }
 
