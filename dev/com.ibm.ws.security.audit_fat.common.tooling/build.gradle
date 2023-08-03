@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,8 +43,8 @@ dependencies {
  ******************************************************************
  ******************************************************************/
 task AuditBase_JAR(type: Jar, dependsOn: classes) { 
-  destinationDir file("${appBuildDir}")
-  archiveName "AuditBase.jar"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "AuditBase.jar"
 
   from ('build/classes/java/main') { 
     include 'web/FlexibleBaseServlet*.class'
@@ -60,8 +60,8 @@ task AuditBase_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task AuditBasicAuthServlet_WAR(type: War, dependsOn: AuditBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "AuditBasicAuthServlet.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "AuditBasicAuthServlet.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/AuditBasicAuthServlet.war/resources') { 
@@ -87,8 +87,8 @@ task AuditBasicAuthServlet_WAR(type: War, dependsOn: AuditBase_JAR) {
  ******************************************************************
  ******************************************************************/
 task AuditFormLoginServlet_WAR(type: War, dependsOn: AuditBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "AuditFormLoginServlet.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "AuditFormLoginServlet.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/AuditFormLoginServlet.war/resources') { 

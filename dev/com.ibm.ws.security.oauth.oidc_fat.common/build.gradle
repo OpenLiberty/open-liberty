@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -390,8 +390,8 @@ task oauthtaidemo_ZIP (type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task oauthtaidemo_EAR(type: Zip, dependsOn: oauthtaidemo_ZIP) {
-  destinationDir file(appBuildDir)
-  archiveName "oauthtaidemo.ear"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "oauthtaidemo.ear"
   
   from (new File(projectDir, 'test-applications/oauthtaidemoear')) {
     include 'META-INF/**'
