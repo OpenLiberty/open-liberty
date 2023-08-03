@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -40,5 +41,7 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @OrderBy("ssn")
     Stream<TaxPayer> findByBankAccountsNotEmpty();
 
-    void save(TaxPayer... taxPayers);
+    Iterable<TaxPayer> save(Iterable<TaxPayer> taxPayers);
+
+    Iterator<TaxPayer> save(TaxPayer... taxPayers);
 }

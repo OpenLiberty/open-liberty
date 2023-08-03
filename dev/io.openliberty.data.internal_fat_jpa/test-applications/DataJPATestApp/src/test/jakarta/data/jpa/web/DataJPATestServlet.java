@@ -431,7 +431,6 @@ public class DataJPATestServlet extends FATServlet {
         a1.state = "Minnesota";
         a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
         a1.zipCode = 55901;
-        shippingAddresses.save(a1);
 
         ShippingAddress a2 = new ShippingAddress();
         a2.id = 1002L;
@@ -439,7 +438,6 @@ public class DataJPATestServlet extends FATServlet {
         a2.state = "Minnesota";
         a2.streetAddress = new StreetAddress(201, "4th St SE");
         a2.zipCode = 55904;
-        shippingAddresses.save(a2);
 
         ShippingAddress a3 = new ShippingAddress();
         a3.id = 1003L;
@@ -447,7 +445,6 @@ public class DataJPATestServlet extends FATServlet {
         a3.state = "Minnesota";
         a3.streetAddress = new StreetAddress(200, "1st Ave SW");
         a3.zipCode = 55902;
-        shippingAddresses.save(a3);
 
         ShippingAddress a4 = new ShippingAddress();
         a4.id = 1004L;
@@ -455,7 +452,11 @@ public class DataJPATestServlet extends FATServlet {
         a4.state = "Minnesota";
         a4.streetAddress = new StreetAddress(151, "4th St SE");
         a4.zipCode = 55904;
-        shippingAddresses.save(a4);
+
+        Set<ShippingAddress> added = shippingAddresses.save(Set.of(a1, a2, a3, a4));
+
+        assertEquals(Set.of(1001L, 1002L, 1003L, 1004L),
+                     added.stream().map(a -> a.id).collect(Collectors.toSet()));
 
         assertArrayEquals(new ShippingAddress[] { a4, a2 },
                           shippingAddresses.findByStreetNameOrderByHouseNumber("4th St SE"),
@@ -523,7 +524,19 @@ public class DataJPATestServlet extends FATServlet {
         TaxPayer t6 = new TaxPayer(678006780L, TaxPayer.FilingStatus.MarriedFilingSeparately, 3, 126000.0f, a2);
         TaxPayer t7 = new TaxPayer(789007890L, TaxPayer.FilingStatus.Single, 0, 37000.0f);
 
-        taxpayers.save(t1, t2, t3, t4, t5, t6, t7);
+        Iterable<TaxPayer> added = taxpayers.save(List.of(t1, t2, t3, t4));
+
+        assertEquals(List.of(123001230L, 234002340L, 345003450L, 456004560L),
+                     StreamSupport.stream(added.spliterator(), false)
+                                     .map(t -> t.ssn)
+                                     .collect(Collectors.toList()));
+
+        Iterator<TaxPayer> addedIt = taxpayers.save(t5, t6, t7);
+
+        assertEquals(List.of(567005670L, 678006780L, 789007890L),
+                     StreamSupport.stream(Spliterators.spliteratorUnknownSize(addedIt, Spliterator.ORDERED), false)
+                                     .map(t -> t.ssn)
+                                     .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
                              taxpayers.findAccountsBySSN(234002340L)
@@ -1472,10 +1485,13 @@ public class DataJPATestServlet extends FATServlet {
         // Clear out data before test
         employees.deleteByLastName("TestIdOnEmbeddable");
 
-        employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'));
-        employees.save(new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'));
-        employees.save(new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'));
-        employees.save(new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+        Streamable<Employee> added = employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
+                                                    new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
+                                                    new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
+                                                    new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+
+        assertEquals(List.of("Irene", "Isabella", "Ivan", "Isaac"),
+                     added.stream().map(e -> e.firstName).collect(Collectors.toList()));
 
         Employee emp4948 = employees.findById(4948);
         assertEquals("Ivan", emp4948.firstName);
