@@ -233,7 +233,8 @@ public class JSF22MiscellaneousTests {
 
             String input = page.findElement(By.id("form1:firstName")).getAttribute("value");
             Log.info(c, name.getMethodName(), "form1:firstName value (expecting empty string) = " + input);
-
+            
+            // Look for the correct results. The "John" text should not exist in the page.
             assertFalse(input.contains("John"));
     }
 

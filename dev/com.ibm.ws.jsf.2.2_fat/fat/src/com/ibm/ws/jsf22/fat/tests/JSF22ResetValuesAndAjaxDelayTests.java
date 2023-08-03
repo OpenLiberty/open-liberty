@@ -120,6 +120,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
         Log.info(c, name.getMethodName(), "On save, the validation should have failed.  Message displayed: " + message);
         assertNotNull("A validation error should have been displayed", message);
 
+        // click the link again, the value should still increment which means the Ajax reset is working
         page.findElement(By.id("form1:link1")).click();
         page.waitReqJs();
 
@@ -127,6 +128,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
         Log.info(c, name.getMethodName(), "The input1 field should have a value of 2, actual: " + input1Value);
         assertEquals("2", input1Value);
 
+        // click the resetButton and ensure the fields are reset to 0 each, which means the f:resetValues component is working.
         page.findElement(By.id("form1:resetButton")).click();
         page.waitReqJs();
 
