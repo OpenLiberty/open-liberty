@@ -16,7 +16,6 @@ import java.util.Objects;
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
@@ -51,7 +50,7 @@ public class NettyChain extends HttpChain {
     private Channel serverChannel;
 
     private final EventLoopGroup parent;
-    private final EventLoopGroup child = new NioEventLoopGroup();
+    private final EventLoopGroup child;
 
     /**
      * Netty Http Chain constructor
@@ -61,10 +60,10 @@ public class NettyChain extends HttpChain {
      */
     public NettyChain(HttpEndpointImpl owner, boolean isHttps) {
         super(owner, isHttps);
-        
+
         parent = new NioEventLoopGroup();
         child = new NioEventLoopGroup();
-        
+
         bootstrap.group(parent, child);
         bootstrap.channel(NioServerSocketChannel.class);
 
@@ -381,13 +380,12 @@ public class NettyChain extends HttpChain {
         try {
             this.bootstrap = nettyFramework.createTCPBootstrap(this.owner.getTcpOptions());
 
-            HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                            .with(ConfigElement.COMPRESSION, this.owner.getCompressionConfig())
-                            .with(ConfigElement.HTTP_OPTIONS, httpOptions)                            
-                            .with(ConfigElement.HEADERS, this.owner.getHeadersConfig())
-                            .with(ConfigElement.REMOTE_IP, this.owner.getRemoteIpConfig())
-                            .with(ConfigElement.SAMESITE, this.owner.getSamesiteConfig())
-                            .build();
+            HttpPipelineInitializer httpPipeline = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.COMPRESSION,
+                                                                                                              this.owner.getCompressionConfig()).with(ConfigElement.HTTP_OPTIONS,
+                                                                                                                                                      httpOptions).with(ConfigElement.HEADERS,
+                                                                                                                                                                        this.owner.getHeadersConfig()).with(ConfigElement.REMOTE_IP,
+                                                                                                                                                                                                            this.owner.getRemoteIpConfig()).with(ConfigElement.SAMESITE,
+                                                                                                                                                                                                                                                 this.owner.getSamesiteConfig()).build();
 
             if (isHttps) {
 
