@@ -1816,8 +1816,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         em = entityInfo.persister.createEntityManager();
 
+                        List<Object> results;
                         if (queryInfo.saveParamType.isArray()) {
-                            ArrayList<Object> results = new ArrayList<>();
+                            results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
                             if (validator != null)
@@ -1825,30 +1826,31 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                            if (queryInfo.returnArrayType == null) {
-                                returnValue = results;
-                            } else {
-                                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, length);
-                                returnValue = results.toArray(newArray);
-                            }
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
                             if (validator != null)
                                 validator.validate((Iterable<?>) args[0]);
-                            ArrayList<Object> results = new ArrayList<>();
+                            results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
-                            if (queryInfo.returnArrayType == null) {
-                                returnValue = results;
-                            } else {
-                                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-                                returnValue = results.toArray(newArray);
-                            }
                         } else {
                             if (validator != null && args[0] != null)
                                 validator.validate(args[0]);
-                            returnValue = em.merge(toEntity(args[0]));
+                            results = List.of(em.merge(toEntity(args[0])));
                             em.flush();
+                        }
+
+                        if (queryInfo.returnArrayType != null) {
+                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                            returnValue = results.toArray(newArray);
+                        } else {
+                            Class<?> multiType = queryInfo.getMultipleResultType();
+                            if (multiType == null)
+                                returnValue = results.isEmpty() ? null : results.get(0);
+                            else if (Stream.class.equals(multiType))
+                                returnValue = results.stream();
+                            else // TODO these might not be compatible
+                                returnValue = results;
                         }
 
                         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {

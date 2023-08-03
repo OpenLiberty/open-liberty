@@ -2095,7 +2095,10 @@ public class DataJPATestServlet extends FATServlet {
         County wabasha = new County("Wabasha", "Minnesota", 21387, wabashaZipCodes, "Wabasha", "Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Zumbro Falls");
         County fillmore = new County("Fillmore", "Minnesota", 21228, fillmoreZipCodes, "Preston", "Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Rushford", "Rushford Village", "Spring Valley", "Whalen", "Wykoff");
 
-        counties.save(olmsted, winona, wabasha, fillmore);
+        Stream<County> saved = counties.save(olmsted, winona, wabasha, fillmore);
+
+        assertEquals(List.of("Olmsted", "Winona", "Wabasha", "Fillmore"),
+                     saved.map(s -> s.name).collect(Collectors.toList()));
 
         // find one entity by id as Optional
         County c = counties.findByName("Olmsted").orElseThrow();
