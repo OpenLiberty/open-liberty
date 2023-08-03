@@ -108,7 +108,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -135,7 +134,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -168,7 +166,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -196,7 +193,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -235,7 +231,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -249,7 +244,6 @@ public class JSF22ClientWindowTests {
         // Click link to execute the methods and update the page
         page.findElement(By.id("testForm:submitCommandButton1")).click();
         page.waitReqJs();
-        System.out.println(page.getPageSource());
 
         String firstName = page.findElement(By.id("testFormPage2:firstName")).getText();
         String lastName = page.findElement(By.id("testFormPage2:lastName")).getText();
@@ -274,7 +268,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -288,7 +281,6 @@ public class JSF22ClientWindowTests {
         // Click link to execute the methods and update the page
         page.findElement(By.id("testForm:commandLink1")).click();
         page.waitReqJs();
-        System.out.println(page.getPageSource());
 
         String firstName = page.findElement(By.id("testFormPage2:firstName")).getText();
         String lastName = page.findElement(By.id("testFormPage2:lastName")).getText();
@@ -313,7 +305,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -346,7 +337,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -354,10 +344,10 @@ public class JSF22ClientWindowTests {
         String clientWindowJS = page.findElement(By.id("clientWindowDisplay")).getText();
 
         page.findElement(By.id("testForm:button2Disabled")).click();
-        // Look for the correct results
+        // Look for the "Test Passed". The page2Disabled.xhtml page has the logic to compare the IDs.
         assertTrue(page.isInPageTextReduced("Test Passed"));
 
-        // check that the client window ids match
+        // We still should be able to get the id from the ExternalContext (in the bean), check to make sure that it isn't null
         String windowIdBean = page.findElement(By.id("form2Disabled:outputWindowIdBean")).getText();
 
         assertTrue(windowIdBean != null && windowIdBean != "");
@@ -374,7 +364,6 @@ public class JSF22ClientWindowTests {
         String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
 
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index.jsf");
-        System.out.println(url);
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
@@ -385,7 +374,6 @@ public class JSF22ClientWindowTests {
         String windowIdParam = page.findElement(By.id("testFormPage2:windowIdParam")).getText();
 
         String url2 = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "index2.jsf");
-        System.out.println(url2);
         WebPage page2 = new WebPage(driver);
         page2.get(url2);
         page2.waitForPageToLoad();
@@ -394,7 +382,7 @@ public class JSF22ClientWindowTests {
         page.waitForPageToLoad();
 
         String windowIdParam2 = page.findElement(By.id("testFormPage2:windowIdParam")).getText();
-        
+        // check that the client window ids do not match
         assertFalse(windowIdParam.equals(windowIdParam2));
     }
 }
