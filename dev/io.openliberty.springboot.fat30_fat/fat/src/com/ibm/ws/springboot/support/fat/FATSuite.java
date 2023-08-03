@@ -53,8 +53,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebSocketTests30.class,
                 MimeMapping30.class,
                 ErrorPage30Test.class,
-                    //EnableSpringBootTraceTests30.class,
-                    // Disabled: Failing to start web server.  See the test class for details.
+                EnableSpringBootTraceTests30.class,
                 ExceptionOccuredAfterAppIsAvailableTest30.class,
                 JakartaFeatureTests30.class,
                 TemplateTests30.class,
