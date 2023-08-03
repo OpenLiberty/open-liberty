@@ -66,6 +66,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  * Service context specific to an inbound HTTP message.
@@ -101,6 +102,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    private HttpResponseMessage response;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -537,7 +539,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpResponseMessage getResponse() {
-        return getResponseImpl();
+        if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
+            this.response = new NettyResponseMessage(this.nettyResponse, this);
+        }
+
+        return Objects.nonNull(this.nettyContext) ? this.response : getResponseImpl();
     }
 
     /**
@@ -548,8 +554,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     final protected HttpResponseMessageImpl getResponseImpl() {
         if (Objects.isNull(getMyResponse())) {
             if (Objects.nonNull(nettyContext)) {
-                setMyResponse(new NettyResponseMessage(this.nettyResponse, this));
-                //setMyResponse(new HttpResponseMessageImpl());
+
+                throw new UnsupportedOperationException("HttpResponseMessageImpl is not valid in Netty context, use NettyResponseMessage instead.");
 
             } else {
 
@@ -1006,11 +1012,27 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // if headers haven't been sent and chunked encoding is not explicitly
         // configured, then set this up for Content-Length
-        if (!headersSent() && !getResponseImpl().isChunkedEncodingSet()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "finishMessage() setting partial body false");
+        if (!headersSent()) {
+            boolean shouldContentLengthBeSet = Boolean.TRUE;
+
+            if (Objects.nonNull(nettyContext)) {
+                if (HttpUtil.isTransferEncodingChunked(nettyResponse)) {
+                    shouldContentLengthBeSet = Boolean.FALSE;
+                }
+            } else {
+                if (getResponseImpl().isChunkedEncodingSet()) {
+
+                    shouldContentLengthBeSet = Boolean.FALSE;
+                }
             }
-            setPartialBody(false);
+
+            if (shouldContentLengthBeSet) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "finishMessage() setting partial body false");
+                }
+                setPartialBody(false);
+            }
+
         }
 
         if (getHttpConfig().runningOnZOS()) {
@@ -1018,7 +1040,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             getVC().getStateMap().put(HttpConstants.FINAL_WRITE_MARK, "true");
         }
         try {
-            sendFullOutgoing(body, getResponseImpl());
+            if (Objects.nonNull(nettyContext)) {
+                sendFullOutgoing(body);
+            } else {
+                sendFullOutgoing(body, getResponseImpl());
+            }
         } finally {
             logFinalResponse(getNumBytesWritten());
         }
