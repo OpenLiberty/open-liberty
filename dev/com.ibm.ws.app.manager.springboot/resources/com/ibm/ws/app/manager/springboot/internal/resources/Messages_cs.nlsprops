@@ -37,17 +37,48 @@ warning.could.not.thin.application=CWWKC0251W: Aplikaci {0} nelze p\u0159ev\u00e
 warning.could.not.thin.application.explanation=Aplikaci se nepoda\u0159ilo p\u0159ev\u00e9st na tenkou aplikaci. Aplikace bude pokra\u010dovat v b\u011bhu z p\u016fvodn\u00edho souboru JAR. 
 warning.could.not.thin.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 
 
-error.need.springboot.version.15=CWWKC0252E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee funkce springBoot-2.0 je nakonfigurov\u00e1na v souboru server.xml. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-1.5.
-error.need.springboot.version.15.explanation=Aplikace vy\u017eaduje funkci springBoot-1.5. Zkontrolujte verzi funkce Spring Boot, kter\u00e1 je aktu\u00e1ln\u011b nakonfigurov\u00e1na v souboru server.xml. 
-error.need.springboot.version.15.useraction=Nakonfigurujte funkci springBoot-1.5 v souboru server.xml. Odeberte v\u0161echny ostatn\u00ed funkce Spring Boot.
+#UPDATED for SpringBoot 3.0:
+# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee funkce springBoot-1.5 je nakonfigurov\u00e1na v souboru server.xml. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-2.0.
-error.need.springboot.version.20.explanation=Aplikace vy\u017eaduje funkci springBoot-2.0. Zkontrolujte verzi funkce Spring Boot, kter\u00e1 je aktu\u00e1ln\u011b nakonfigurov\u00e1na v souboru server.xml. 
-error.need.springboot.version.20.useraction=Nakonfigurujte funkci springBoot-2.0 v souboru server.xml. Odeberte v\u0161echny ostatn\u00ed funkce Spring Boot.
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.15=CWWKC0252E: Funkce {0} mus\u00ed b\u00fdt nakonfigurov\u00e1na v souboru server.xml. Funkce {1} je nakonfigurov\u00e1na a aplikace m\u00e1 obsah Spring {2}.
+error.spring.required.15.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 funkce Spring Boot nen\u00ed kompatibiln\u00ed s obsahem aplikace.
+error.spring.required.15.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
 
-error.missing.servlet=CWWKC0254E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
-error.missing.servlet.explanation=Aplikace je webov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
-error.missing.servlet.useraction=Nakonfigurujte funkci servletu v souboru server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
+#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.20=CWWKC0253E: Funkce {0} mus\u00ed b\u00fdt nakonfigurov\u00e1na v souboru server.xml. Funkce {1} je nakonfigurov\u00e1na a aplikace m\u00e1 obsah Spring {2}.
+error.spring.required.20.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 funkce Spring Boot nen\u00ed kompatibiln\u00ed s obsahem aplikace.
+error.spring.required.20.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.required=CWWKC0273E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-3.0. Je nakonfigurov\u00e1na funkce springBoot-1.5 nebo springBoot-2.0 a aplikace m\u00e1 obsah Spring 3.0.
+error.spring3.required.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 funkce Spring Boot nen\u00ed kompatibiln\u00ed s obsahem aplikace.
+error.spring3.required.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
+
+#UPDATED for SpringBoot 3.0:
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
+
+error.spring2.requires.servlet31.application=CWWKC0254E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce servlet-3.1 nebo servlet-4.0. Funkce springBoot-1.5 nebo springBoot-2.0 je nakonfigurov\u00e1na a aplikace pou\u017e\u00edv\u00e1 servlety.
+error.spring2.requires.servlet31.application.explanation=Aplikace pou\u017e\u00edv\u00e1 servlety, ale nen\u00ed nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 funkce servletu.
+error.spring2.requires.servlet31.application.useraction=Nakonfigurujte jednu z uveden\u00fdch funkc\u00ed servletu.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.servlet6.application=CWWKC0274E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce servlet-6.0. Funkce springBoot-3.0 je nakonfigurov\u00e1na a aplikace pou\u017e\u00edv\u00e1 servlety.
+error.spring3.requires.servlet6.application.explanation=Aplikace pou\u017e\u00edv\u00e1 servlety, ale nen\u00ed nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 funkce servletu.
+error.spring3.requires.servlet6.application.useraction=Nakonfigurujte uvedenou funkci servletu.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Aplikaci Spring Boot {0} nelze spustit, proto\u017ee aplikace {1} je ji\u017e aktivn\u00ed. Ve stejn\u00e9 konfiguraci serveru nelze konfigurovat v\u00edce aplikac\u00ed Spring Boot.
 error.multiple.applications.not.allowed.explanation=Konfigurace v\u00edce aplikac\u00ed Spring Boot ve stejn\u00e9 konfiguraci serveru nen\u00ed podporov\u00e1na.
@@ -65,9 +96,19 @@ error.missing.ssl=CWWKC0258E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee v
 error.missing.ssl.explanation=Aplikace je zabezpe\u010den\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce SSL v souboru server.xml.
 error.missing.ssl.useraction=Nakonfigurujte funkci transportSecurity-1.0 v souboru server.xml.
 
-error.missing.websocket=CWWKC0259E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce websocket v souboru server.xml.
-error.missing.websocket.explanation=Aplikace je webov\u00e1 soketov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce websocket v souboru server.xml.
-error.missing.websocket.useraction=Nakonfigurujte funkci websocket v souboru server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
+#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.spring2.requires.websocket1.application=CWWKC0259E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce websocket-1.0 nebo websocket-1.1: Funkce springBoot-1.5 nebo springBoot-2.0 je nakonfigurov\u00e1na a aplikace pou\u017e\u00edv\u00e1 webov\u00e9 sokety.
+error.spring2.requires.websocket1.application.explanation=Aplikace pou\u017e\u00edv\u00e1 webov\u00e9 sokety, ale nen\u00ed nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 funkce webov\u00e9ho soketu.
+error.spring2.requires.websocket1.application.useraction=Nakonfigurujte jednu z uveden\u00fdch funkc\u00ed webov\u00e9ho soketu.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.websocket2.application=CWWKC0275E: Funkce websocket-2.0 mus\u00ed b\u00fdt nakonfigurov\u00e1na: Funkce springBoot-3.0 je nakonfigurov\u00e1na a aplikace pou\u017e\u00edv\u00e1 webov\u00e9 sokety.
+error.spring3.requires.websocket2.application.explanation=Aplikace pou\u017e\u00edv\u00e1 webov\u00e9 sokety, ale nen\u00ed nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 funkce webov\u00e9ho soketu.
+error.spring3.requires.websocket2.application.useraction=Nakonfigurujte uvedenou funkci webov\u00e9ho soketu.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -87,9 +128,17 @@ warning.application.started.event.timeout=CWWKC0264W: Aplikace {0} nevydala ud\u
 warning.application.started.event.timeout.explanation=Aplikace nevydala po\u010d\u00e1te\u010dn\u00ed ud\u00e1lost v o\u010dek\u00e1van\u00e9m \u010dase. Je mo\u017en\u00e9, \u017ee je server p\u0159et\u00ed\u017een nebo m\u016f\u017ee b\u00fdt aplikace velk\u00e1. Pokud se aplikace spou\u0161t\u00ed jako sou\u010d\u00e1st spu\u0161t\u011bn\u00ed serveru, m\u016f\u017ee se spu\u0161t\u011bn\u00ed serveru dokon\u010dit bez \u010dek\u00e1n\u00ed na spu\u0161t\u011bn\u00ed aplikace.
 warning.application.started.event.timeout.useraction=Pokud se aplikace nakonec spust\u00ed, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud se aplikace nespust\u00ed, zkontrolujte protokoly serveru a zjist\u011bte, zda p\u0159\u00ed\u010dinu nenazna\u010duj\u00ed dal\u0161\u00ed zpr\u00e1vy.
 
-warning.java.version.not.supported=CWWKC0265W: Aktu\u00e1ln\u00ed verze Java {0} nen\u00ed podporov\u00e1na aplikac\u00ed Spring Boot verze {1}. Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.
-warning.java.version.not.supported.explanation=Verze Java vy\u0161\u0161\u00ed ne\u017e 1.8 nejsou podporov\u00e1ny verzemi Spring Boot 1.5.x a ni\u017e\u0161\u00edmi.
-warning.java.version.not.supported.useraction=Upgradujte verzi Spring Boot aplikace na 2.0.x nebo nov\u011bj\u0161\u00ed.
+#UPDATED for SpringBoot 3.0
+#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+#0: The current Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
+warning.unsupported.spring.java.version=CWWKC0265W: Aktu\u00e1ln\u00ed verze jazyka Java {0} nepodporuje aplikaci Spring Boot verze {1}: Je vy\u017eadov\u00e1na verze jazyka Java {2}.
+warning.unsupported.spring.java.version.explanation=Aplikace Spring Boot m\u00e1 specifick\u00e9 po\u017eadavky na verzi jazyka Java.  Aktu\u00e1ln\u00ed verze jazyka Java nepodporuje verzi aplikace Spring Boot.
+warning.unsupported.spring.java.version.useraction=Bu\u010f zm\u011b\u0148te verzi jazyka Java na po\u017eadovanou verzi, nebo znovu sestavte aplikaci s pou\u017eit\u00edm jin\u00e9 verze aplikace Spring Boot.
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee zabalen\u00fd soubor JAR serveru Liberty je neplatn\u00fd.
 error.invalid.packaged.liberty.jar.explanation=V zabalen\u00e9m souboru JAR serveru Liberty chyb\u00ed z\u00e1hlav\u00ed souboru typu manifest Server-Name, polo\u017eky pro ko\u0159en serveru nebo polo\u017eky pro adres\u00e1\u0159 lib.index.cache.
@@ -98,9 +147,3 @@ error.invalid.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee aplikace Spring Boot nebyla nalezena uvnit\u0159 zabalen\u00e9ho souboru JAR serveru Liberty.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Zabalen\u00fd soubor JAR serveru Liberty mus\u00ed obsahovat nakonfigurovanou aplikaci Spring Boot.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen\u00fd soubor JAR serveru Liberty.
-
-#SB3
-
-error.need.springboot.version.30=CWWKC0267E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee je funkce springBoot-1.5 nebo springBoot-2.0 nakonfigurov\u00e1na v souboru server.xml. Aplikace vy\u017eaduje, aby byla nakonfigurov\u00e1na funkce springBoot-3.0.
-error.need.springboot.version.30.explanation=Aplikace vy\u017eaduje funkci springBoot-3.0. Zkontrolujte verzi funkce Spring Boot, kter\u00e1 je aktu\u00e1ln\u011b nakonfigurov\u00e1na v souboru server.xml.  
-error.need.springboot.version.30.useraction=Nakonfigurujte funkci springBoot-3.0 v souboru server.xml. Odeberte v\u0161echny ostatn\u00ed funkce Spring Boot.

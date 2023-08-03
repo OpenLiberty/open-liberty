@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,9 +71,13 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: Ocorreram os problemas a seguir ao
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=A documenta\u00e7\u00e3o do OpenAPI a partir de v\u00e1rios m\u00f3dulos da web n\u00e3o pode ser mesclada com sucesso. Os terminais dos m\u00f3dulos relatados n\u00e3o est\u00e3o inclu\u00eddos no documento do OpenAPI gerado.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Revise os problemas de mesclagem para identificar por que os documentos gerados do OpenAPI n\u00e3o podem ser mesclados.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=O caminho {0} do m\u00f3dulo {1} conflita com um caminho do m\u00f3dulo {2}. {1} n\u00e3o ser\u00e1 mesclado.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=O caminho {0} do m\u00f3dulo {1} conflita com um caminho do m\u00f3dulo {2}. O m\u00f3dulo {1} n\u00e3o pode ser mesclado.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=O caminho \u00e9 dois m\u00f3dulos. Ambas as inst\u00e2ncias do caminho n\u00e3o podem ser inclu\u00eddas no mesmo documento do OpenAPI. Esta mensagem \u00e9 retornada como parte do CWWKO1662.
-OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Altere um dos m\u00f3dulos conflitantes ou configure o recurso mpOpenApi-2.0 para excluir um deles. Esse problema pode ser causado se servidores forem inclu\u00eddos no documento do OpenAPI e a URL do servidor n\u00e3o terminar com a raiz de contexto da aplica\u00e7\u00e3o (por exemplo, porque a aplica\u00e7\u00e3o \u00e9 acessada em uma URL diferente por meio de um proxy reverso).
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Mude um dos m\u00f3dulos conflitantes ou configure o recurso mpOpenApi-2.0 para excluir um dos m\u00f3dulos. Esse problema poder\u00e1 ocorrer se os servidores forem inclu\u00eddos no documento do OpenAPI e a URL do servidor n\u00e3o terminar com a raiz de contexto do aplicativo. Por exemplo, quando o aplicativo \u00e9 acessado em uma URL diferente por meio de um proxy reverso.
+
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=A chave de extens\u00e3o {0} do m\u00f3dulo {1} est\u00e1 em conflito com a mesma chave de extens\u00e3o do m\u00f3dulo {2}. O m\u00f3dulo {1} n\u00e3o pode ser mesclado.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Dois m\u00f3dulos declaram a mesma extens\u00e3o com valores diferentes no n\u00edvel superior do documento OpenAPI. Ambas as inst\u00e2ncias da extens\u00e3o n\u00e3o podem ser inclu\u00eddas no mesmo documento OpenAPI. Esta mensagem \u00e9 retornada como parte do CWWKO1662.
+OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Mude um dos m\u00f3dulos conflitantes para remover a extens\u00e3o ou configure o recurso mpOpenApi-2.0 para excluir um dos m\u00f3dulos.
 
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: A combina\u00e7\u00e3o de documenta\u00e7\u00e3o do OpenAPI de v\u00e1rios m\u00f3dulos est\u00e1 desativada. Apenas {0} \u00e9 usado para gerar documenta\u00e7\u00e3o do OpenAPI. Para ativar a mesclagem de documenta\u00e7\u00e3o do OpenAPI de todos os m\u00f3dulos, defina a propriedade de configura\u00e7\u00e3o mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A menos que a mesclagem de documenta\u00e7\u00e3o do OpenAPI esteja ativada, a documenta\u00e7\u00e3o do OpenAPI \u00e9 gerada apenas para o primeiro m\u00f3dulo do OpenAPI implementado.
@@ -94,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Revise o texto do erro para ide
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: A propriedade de configura\u00e7\u00e3o {0} inclui "{1}" mas isso n\u00e3o corresponde a nenhuma aplica\u00e7\u00e3o ou m\u00f3dulo da web implementado.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=O servidor est\u00e1 configurado para criar a documenta\u00e7\u00e3o do OpenAPI para o nome da aplica\u00e7\u00e3o ou do m\u00f3dulo, mas nenhuma aplica\u00e7\u00e3o ou m\u00f3dulo da web com esse nome foi implementado.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Verifique se todos as aplica\u00e7\u00f5es iniciaram corretamente e que os nomes na propriedade de configura\u00e7\u00e3o est\u00e3o especificados corretamente.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: O caminho da IU do OpenAPI est\u00e1 configurado como {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=O caminho da IU do OpenAPI est\u00e1 configurado para um valor que n\u00e3o \u00e9 o padr\u00e3o.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: O caminho do documento do OpenAPI est\u00e1 configurado como {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=O caminho do documento do OpenAPI est\u00e1 configurado para um valor que n\u00e3o \u00e9 o padr\u00e3o.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: O caminho da IU do OpenAPI \u00e9 inv\u00e1lido. O valor padr\u00e3o ser\u00e1 usado. Verifique os avisos anteriores para obter a causa da falha de valida\u00e7\u00e3o.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=O caminho da IU do OpenAPI \u00e9 inv\u00e1lido. O valor padr\u00e3o ser\u00e1 usado.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Verifique as mensagens de erro anteriores para obter a causa da falha de valida\u00e7\u00e3o.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: O caminho do documento do OpenAPI \u00e9 inv\u00e1lido. O valor padr\u00e3o ser\u00e1 usado. Verifique os avisos anteriores para obter a causa da falha de valida\u00e7\u00e3o.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=O caminho do documento do OpenAPI \u00e9 inv\u00e1lido. O valor padr\u00e3o ser\u00e1 usado.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Verifique as mensagens de erro anteriores para obter a causa da falha de valida\u00e7\u00e3o.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: O caminho da IU do OpenAPI n\u00e3o pode ser configurado como {0}. Este caminho \u00e9 usado para recuperar os documentos do OpenAPI.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Os caminhos do documento do OpenAPI e da IU do OpenAPI n\u00e3o podem ser os mesmos.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Especifique um caminho exclusivo para a IU do OpenAPI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: O caminho da IU do OpenAPI \u00e9 inv\u00e1lido ou cont\u00e9m caracteres inv\u00e1lidos. A URL deve ser constru\u00edda com caracteres alfanum\u00e9ricos Unicode A-Za-z0-9, sublinhado (_), tra\u00e7o (-), barra (/) ou ponto (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=O caminho da IU do OpenAPI n\u00e3o pode ser configurado para um valor que contenha caracteres inv\u00e1lidos.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Assegure-se de que o caminho do OpenAPI contenha apenas A-Za-z0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: O caminho do documento OpenAPI \u00e9 inv\u00e1lido ou cont\u00e9m caracteres inv\u00e1lidos. A URL deve ser constru\u00edda com caracteres alfanum\u00e9ricos Unicode A-Za-z0-9, sublinhado (_), tra\u00e7o (-), barra (/) ou ponto (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=O caminho do documento do OpenAPI n\u00e3o pode ser configurado para um valor que contenha caracteres inv\u00e1lidos.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Assegure-se de que o caminho do OpenAPI contenha apenas A-Za-z0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: O segmento do caminho "/." ou "/.." \u00e9 inv\u00e1lido para terminais do OpenAPI.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=O segmento do caminho do OpenAPI "/." ou "/.." \u00e9 inv\u00e1lido.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Remova qualquer segmento do caminho "/." ou "/.." do caminho.

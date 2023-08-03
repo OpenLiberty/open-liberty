@@ -111,7 +111,7 @@ JWK_READ_TIMED_OUT=CWWKS2422E: Der OpenID Connect-Client konnte innerhalb von {1
 JWK_READ_TIMED_OUT.explanation=Der OpenID Connect-Client kann die JWK-Daten nicht innerhalb des konfigurierten Zeitrahmens aus dem JWK-URI lesen.
 JWK_READ_TIMED_OUT.useraction=Aktualisieren Sie die Eigenschaft "jwksReadTimeout" in der OpenID Connect-Clientkonfiguration. \u00dcberpr\u00fcfen Sie, ob der OpenID Connect-Provider erreichbar ist.
 
-OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Der folgende ung\u00fcltige Antworttyp wurde angegeben: ''{0}''. G\u00fcltige Antworttypen sind [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Der folgende ung\u00fcltige Antworttyp wurde angegeben: '{0}'. G\u00fcltige Antworttypen sind [{1}].
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Der angegebene Antworttyp ist ung\u00fcltig. 
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Geben Sie einen der g\u00fcltigen Antworttypen an.
 
@@ -146,3 +146,23 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem 
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Dem [{0}] OpenID Connect-Client fehlt der Schl\u00fcssel, der zum Signieren des Tokens f\u00fcr die Clientauthentifizierung erforderlich ist.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=In der OpenID Connect-Clientkonfiguration fehlen Daten oder es wurde kein Schl\u00fcssel mit dem Schl\u00fcsselaliasnamen in der SSL-Konfiguration f\u00fcr den OpenID Connect-Client gefunden.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Stellen Sie sicher, dass f\u00fcr den OpenID Connect-Client ein Schl\u00fcsselaliasname und eine SSL-Referenz konfiguriert sind. Vergewissern Sie sich, dass der Keystore, auf den die SSL-Konfiguration verweist, einen Schl\u00fcssel enth\u00e4lt, dessen Alias dem Schl\u00fcsselaliasnamen in der OpenID Connect-Clientkonfiguration entspricht.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: Der OpenID Connect-Client [{0}] hat beim Einrichten der Clientauthentifizierung f\u00fcr den Tokenendpunkt f\u00fcr die Authentifizierungsmethode [{1}] einen Fehler festgestellt. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Der OpenID Connect-Tokenendpunkt erfordert eine Clientauthentifizierung, aber dem OpenID Connect-Client fehlen m\u00f6glicherweise Informationen oder im Client ist beim Einrichten der Authentifizierungsdaten ein anderer Fehler aufgetreten.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: F\u00fcr den OpenID Connect-Client [{0}] ist kein Schl\u00fcsselaliasname konfiguriert. Deshalb kann der Client die Schl\u00fcssel, die zum Erstellen des JSON Web Token f\u00fcr die Clientauthentifizierung erforderlich sind, nicht finden.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Der OpenID Connect-Client muss einen Schl\u00fcsselaliasnamen konfigurieren, um den Schl\u00fcssel zum Signieren des JWT zu definieren. F\u00fcr den privaten Schl\u00fcssel, der zum Signieren des JWT verwendet wird, und den entsprechenden \u00f6ffentlichen Schl\u00fcssel muss derselbe Schl\u00fcsselalias verwendet werden.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=\u00dcberpr\u00fcfen Sie, ob f\u00fcr den OpenID Connect-Client ein Schl\u00fcsselaliasname konfiguriert ist.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: F\u00fcr den OpenID Connect-Client [{0}] ist keine Keystore-Referenz konfiguriert. Deshalb kann der Client den Schl\u00fcssel f\u00fcr die Signatur des JSON Web Token f\u00fcr die Clientauthentifizierung nicht finden.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Der OpenID Connect-Client muss eine Keystore-Referenz konfigurieren, um zu definieren, wo sich der Schl\u00fcssel befindet, der zum Signieren des JWT verwendet werden soll.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Vergewissern Sie sich, dass f\u00fcr den OpenID Connect-Client eine Keystore-Referenz konfiguriert ist.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: Der Client kann den privaten Schl\u00fcssel [{0}] zum Signieren des JSON Web Token nicht aus dem Keystore [{1}] abrufen. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=Der OpenID Connect-Client muss zum Signieren des JSON Web Token f\u00fcr die Clientauthentifizierung einen privaten Schl\u00fcssel verwenden. Der Client hat beim Abrufen des privaten Schl\u00fcssels einen Fehler festgestellt.
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: Der Client kann den \u00f6ffentlichen Schl\u00fcssel [{0}] nicht aus dem Keystore [{1}] abrufen, um den x5t-Header f\u00fcr das JSON Web Token zu berechnen. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Der x5t-Header ist der Zertifikatfingerabdruck des \u00f6ffentlichen Schl\u00fcssels, der dem privaten Schl\u00fcssel entspricht, der zum Signieren des JSON Web Token verwendet wird. Der Header x5t hilft OpenID Connect-Providern, das Zertifikat zu identifizieren, das zum \u00dcberpr\u00fcfen der Signatur des JWT verwendet werden soll. Der Client hat beim Abrufen des \u00f6ffentlichen Schl\u00fcssels einen Fehler festgestellt.
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen.

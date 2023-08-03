@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Examina\u021bi textul de eroare
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: Proprietatea de configurare {0} include \u201e{1}\u201d dar nu se potrive\u0219te niciunei aplica\u021bii sau modul web implementat.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Serverul este configurat pentru a crea documenta\u021bie OpenAPI pentru aplica\u021bie sau numele de modul, dar nicio aplica\u021bie sau modul web cu acest nume nu au fost implementate.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Verifica\u021bi c\u0103 toate aplica\u021biile au pornit corect \u0219i c\u0103 numele din proprietatea de configurare sunt specificate corect.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Calea de UI OpenAPI este setat\u0103 la {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Calea de UI OpenAPI este setat\u0103 la o valoare care nu este cea implicit\u0103.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Calea de document OpenAPI este setat\u0103 la {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Calea de document OpenAPI este setat\u0103 la o valoare care nu este cea implicit\u0103.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Calea de UI OpenAPI nu este valid\u0103. Valoarea implicit\u0103 este utilizat\u0103 \u00een loc. Verifica\u021bi avertismentele anterioare pentru cauza e\u0219ecului de validare.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Calea de UI OpenAPI nu este valid\u0103. Valoarea implicit\u0103 este utilizat\u0103 \u00een loc.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Verifica\u021bi mesajele de eroare anterioare pentru cauza e\u0219ecului de validare.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Calea de document OpenAPI nu este valid\u0103. Valoarea implicit\u0103 este utilizat\u0103 \u00een loc. Verifica\u021bi avertismentele anterioare pentru cauza e\u0219ecului de validare.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Calea de document OpenAPI nu este valid\u0103. Valoarea implicit\u0103 este utilizat\u0103 \u00een loc.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Verifica\u021bi mesajele de eroare anterioare pentru cauza e\u0219ecului de validare.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Calea de UI OpenAPI nu poate fi setat\u0103 la {0}. Aceast\u0103 cale este folosit\u0103 pentru a recupera documentele OpenAPI.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=C\u0103ile de document OpenAPI \u0219i UI OpenAPI nu pot fi identice.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Specifica\u021bi o cale unic\u0103 pentru UI OpenAPI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Calea de UI OpenAPI nu este valid\u0103 sau con\u021bine caractere invalide. URL-ul trebuie s\u0103 fie construit cu caractere alfanumerice Unicode A-Z, a-z, 0-9, liniu\u021b\u0103 de subliniere (_), cratim\u0103 (-), slash \u00eenainte (/) sau punct (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Calea de UI OpenAPI nu poate fi setat\u0103 la o valoare care con\u021bine caractere invalide.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Asigura\u021bi-v\u0103 c\u0103 calea OpenAPI con\u021bine numai A-Z, a-z, 0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Calea de document OpenAPI nu este valid\u0103 sau con\u021bine caractere invalide. URL-ul trebuie s\u0103 fie construit cu caractere alfanumerice Unicode A-Z, a-z, 0-9, liniu\u021b\u0103 de subliniere (_), cratim\u0103 (-), slash \u00eenainte (/) sau punct (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Calea de document OpenAPI nu poate fi setat\u0103 la o valoare care con\u021bine caractere invalide.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Asigura\u021bi-v\u0103 c\u0103 calea OpenAPI con\u021bine numai A-Z, a-z, 0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segmentul de cale "/." sau "/.." nu este valid pentru puncte finale OpenAPI.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segmentul de cale OpenAPI "/." sau "/.." nu este valid.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Elimina\u021bi orice segment de cale "/." sau "/.." din cale.

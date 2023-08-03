@@ -146,3 +146,23 @@ PRIVATE_KEY_JWT_AUTH_ERROR.useraction=Wi\u0119cej informacji na ten temat zawier
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY=CWWKS2431E: Klient [{0}] OpenID Connect nie ma klucza wymaganego do podpisania tokenu do uwierzytelniania klienta.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.explanation=W konfiguracji klienta OpenID Connect brakuje danych lub nie mo\u017cna znale\u017a\u0107 klucza z nazw\u0105 aliasu okre\u015blon\u0105 w konfiguracji SSL dla klienta OpenID Connect.
 PRIVATE_KEY_JWT_MISSING_SIGNING_KEY.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect ma skonfigurowan\u0105 nazw\u0119 aliasu klucza i odwo\u0142anie SSL. Upewnij si\u0119, \u017ce magazyn kluczy, do kt\u00f3rego odwo\u0142uje si\u0119 konfiguracja SSL, zawiera klucz, kt\u00f3rego alias jest zgodny z nazw\u0105 aliasu klucza zdefiniowan\u0105 w konfiguracji klienta OpenID Connect.
+
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS2432E: Klient [{0}] OpenID Connect napotka\u0142 b\u0142\u0105d podczas konfigurowania uwierzytelniania klienta dla punktu ko\u0144cowego tokenu dla metody uwierzytelniania [{1}]. {2}
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=Punkt ko\u0144cowy tokenu OpenID Connect wymaga uwierzytelniania klienta, ale klient OpenID Connect mo\u017ce nie mie\u0107 informacji lub napotka\u0142 inny b\u0142\u0105d podczas konfigurowania danych uwierzytelniania.
+TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS2433E: Klient produktu [{0}] OpenID Connect nie ma skonfigurowanej nazwy aliasu klucza, dlatego klient nie mo\u017ce znale\u017a\u0107 kluczy wymaganych do utworzenia znacznika JSON Web Token na potrzeby uwierzytelniania klienta.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=Klient OpenID Connect musi skonfigurowa\u0107 nazw\u0119 aliasu klucza w celu zdefiniowania klucza, kt\u00f3ry ma by\u0107 u\u017cywany do podpisywania JWT. Nale\u017cy u\u017cywa\u0107 tego samego aliasu klucza zar\u00f3wno dla klucza prywatnego u\u017cywanego do podpisywania znacznika JWT, jak i odpowiadaj\u0105cego mu klucza publicznego.
+PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect ma skonfigurowan\u0105 nazw\u0119 aliasu klucza.
+
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS2434E: Klient [{0}] OpenID Connect nie ma skonfigurowanego odwo\u0142ania do magazynu kluczy, dlatego klient nie mo\u017ce znale\u017a\u0107 klucza, kt\u00f3ry ma by\u0107 u\u017cywany do podpisywania tokenu JSON Web Token na potrzeby uwierzytelniania klienta.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=Klient OpenID Connect musi skonfigurowa\u0107 odwo\u0142anie do magazynu kluczy, aby zdefiniowa\u0107 miejsce, w kt\u00f3rym mo\u017cna znale\u017a\u0107 klucz u\u017cywany do podpisywania JWT.
+PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Upewnij si\u0119, \u017ce klient OpenID Connect ma skonfigurowane odwo\u0142anie do magazynu kluczy.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY=CWWKS2435E: Klient nie mo\u017ce pobra\u0107 klucza prywatnego [{0}] z magazynu kluczy [{1}] do podpisania znacznika JSON Web Token. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.explanation=Klient OpenID Connect musi u\u017cywa\u0107 klucza prywatnego do podpisywania znacznika JSON Web Token w celu uwierzytelniania klienta. Klient napotka\u0142 b\u0142\u0105d podczas pobierania klucza prywatnego.
+PRIVATE_KEY_JWT_ERROR_GETTING_PRIVATE_KEY.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY=CWWKS2436E: Klient nie mo\u017ce pobra\u0107 klucza publicznego [{0}] z magazynu kluczy [{1}], w celu obliczenia nag\u0142\u00f3wka x5t dla znacznika JSON Web Token. {2}
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.explanation=Nag\u0142\u00f3wek x5t to odcisk palca certyfikatu klucza publicznego, kt\u00f3ry odpowiada kluczowi prywatnemu u\u017cywanemu do podpisywania znacznika JSON Web Token. Nag\u0142\u00f3wek x5t pomaga dostawcom OpenID Connect zidentyfikowa\u0107 certyfikat, kt\u00f3ry ma by\u0107 u\u017cywany do weryfikowania podpisu znacznika JWT. Klient napotka\u0142 b\u0142\u0105d podczas pobierania klucza publicznego.
+PRIVATE_KEY_JWT_ERROR_GETTING_PUBLIC_KEY.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.

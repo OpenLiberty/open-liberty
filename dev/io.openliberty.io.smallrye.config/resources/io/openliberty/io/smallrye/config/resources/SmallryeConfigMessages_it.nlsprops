@@ -23,6 +23,6 @@
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
 # MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
 
-WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: Il valore di configurazione MicroProfile per la chiave {0} \u00e8 stato modificato dall''azione di checkpoint completata sul server. Se il valore della chiave viene modificato dopo l''azione di checkpoint, l''applicazione potrebbe non utilizzare il valore aggiornato.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: Il valore di configurazione MicroProfile per la chiave {0} \u00e8 stato modificato successivamente al completamento dell''azione di checkpoint sul server. Se il valore della chiave viene modificato dopo l''azione di checkpoint, l''applicazione potrebbe non utilizzare il valore aggiornato.
 WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=\u00c8 stato eseguito l'accesso al valore di configurazione durante un'azione di checkpoint e il valore \u00e8 stato aggiornato prima che il processo del server fosse ripristinato. A seconda di come l'applicazione accede alla configurazione, il valore aggiornato potrebbe non essere utilizzato.
 WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Evitare di accedere alle propriet\u00e0 di configurazione durante il checkpoint.
