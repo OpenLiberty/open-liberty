@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.streams.operators.test;
+package io.openliberty.microprofile.reactive.streams.operators30.test;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -16,7 +16,6 @@ import com.ibm.ws.fat.util.tck.AbstractArquillianLoadableExtension;
 import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
-
     @Override
     public Set<TCKArchiveModifications> getModifications() {
         return EnumSet.of(TCKArchiveModifications.TEST_LOGGER, 

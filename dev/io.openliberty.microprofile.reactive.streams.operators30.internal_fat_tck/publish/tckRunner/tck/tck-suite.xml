@@ -10,9 +10,9 @@
 -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-reactive-streams-1.1-tck" verbose="2"
+<suite name="microprofile-reactive-streams-3.0-tck" verbose="2"
     configfailurepolicy="continue">
-    <test name="tck-package-org.eclipse.microprofile.reactive.streams.operators.tck">
+    <test name="tck-package-org.eclipse.microprofile.reactive.streams.operators30.tck">
         <classes>
             <class name="org.eclipse.microprofile.reactive.streams.operators.tck.arquillian.ReactiveStreamsArquillianTck"/>
         </classes>
