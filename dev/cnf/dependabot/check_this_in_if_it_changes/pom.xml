@@ -2199,7 +2199,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.8</version>
+      <version>10.1.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2214,7 +2214,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.8</version>
+      <version>10.1.11</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
