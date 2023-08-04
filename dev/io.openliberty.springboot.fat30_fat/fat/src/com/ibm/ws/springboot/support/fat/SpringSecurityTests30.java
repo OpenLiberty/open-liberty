@@ -15,7 +15,6 @@ package com.ibm.ws.springboot.support.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,7 +61,7 @@ public class SpringSecurityTests30 extends AbstractSpringTests {
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_30_APP_BASE;
+        return SPRING_BOOT_30_APP_SECURITY;
     }
 
     @After
@@ -105,7 +104,7 @@ public class SpringSecurityTests30 extends AbstractSpringTests {
         HtmlPage helloPage = (HtmlPage) form.getInputByName("signIn").click();
         //Only authorized users are authenticated and provided access to hello page
         String url = helloPage.getUrl().toExternalForm();
-        assertTrue("User not authenticated, hence not directed to hello page:" + url, url.endsWith(EXPECTED_HTTP_PORT + "/hello"));
+        assertTrue("User not authenticated, hence not directed to hello page:" + url, url.endsWith(EXPECTED_HTTP_PORT + "/hello?continue"));
         String body = helloPage.getBody().asText();
         assertTrue("Expected output not found:" + body, body.contains("Hello user!"));
         return helloPage;

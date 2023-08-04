@@ -34,18 +34,6 @@ public class MissingServletTests30 extends AbstractSpringTests {
         return false;
     }
 
-    // Disabled: The jakarta servlet class is being provisioned even without the servlet feature!
-    //
-    // FeatureAuditor: Found [ true ] class [ org.springframework.web.WebApplicationInitializer ] as [ org/springframework/web/WebApplicationInitializer.class ]
-    // FeatureAuditor: Found [ false ] class [ org.springframework.web.socket.WebSocketHandler ] as [ org/springframework/web/socket/WebSocketHandler.class ]
-    // FeatureAuditor: Found [ false ] class [ com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration ] as [ com/ibm/ws/springboot/support/web/server/version15/container/LibertyConfiguration.class ]
-    // FeatureAuditor: Found [ false ] class [ com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration ] as [ com/ibm/ws/springboot/support/web/server/version20/container/LibertyConfiguration.class ]
-    // FeatureAuditor: Found [ false ] class [ io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration ] as [ io/openliberty/springboot/support/web/server/version30/container/LibertyConfiguration.class ]
-    // FeatureAuditor: Found [ false ] class [ javax.servlet.Servlet ] as [ javax/servlet/Servlet.class ]
-    // FeatureAuditor: Found [ true ] class [ jakarta.servlet.Servlet ] as [ jakarta/servlet/Servlet.class ]
-    // FeatureAuditor: Found [ false ] class [ javax.websocket.WebSocketContainer ] as [ javax/websocket/WebSocketContainer.class ]
-    // FeatureAuditor: Found [ true ] class [ jakarta.websocket.WebSocketContainer ] as [ jakarta/websocket/WebSocketContainer.class ]
-
     @Test
     public void testMissingServletFor30() throws Exception {
         assertNotNull("No error message CWWKC0274E was found for missing servlet feature",
@@ -53,6 +41,7 @@ public class MissingServletTests30 extends AbstractSpringTests {
         stopServer(true, "CWWKC0274E", "CWWKZ0002E");
     }
 
+    // appsecurity-5.0 cannot be added for a seperate test as it contains the servlet-6.0 feature
     @Override
     public Set<String> getFeatures() {
         return Collections.singleton("springBoot-3.0");
