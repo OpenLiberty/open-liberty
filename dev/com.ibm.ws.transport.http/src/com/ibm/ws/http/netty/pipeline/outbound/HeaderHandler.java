@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.outbound;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,7 +54,9 @@ public class HeaderHandler {
         HttpHeaders headers = response.headers();
 
         if (!headers.contains(HttpHeaderKeys.HDR_DATE.getName())) {
-            headers.set(HttpHeaderKeys.HDR_DATE.getName(), HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange()));
+
+            headers.set(HttpHeaderKeys.HDR_DATE.getName(),
+                        new String(HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange()), StandardCharsets.UTF_8));
         }
 
         if (config.removeServerHeader()) {
@@ -64,7 +67,7 @@ public class HeaderHandler {
         } else if (!headers.contains(HttpHeaderKeys.HDR_SERVER.getName())) {
             byte[] serverHeader = config.getServerHeaderValue();
             if (Objects.nonNull(serverHeader)) {
-                headers.set(HttpHeaderKeys.HDR_SERVER.getName(), serverHeader);
+                headers.set(HttpHeaderKeys.HDR_SERVER.getName(), new String(serverHeader, StandardCharsets.UTF_8));
                 Tr.debug(tc, "Adding the Server header value: " + headers.get(HttpHeaderKeys.HDR_SERVER.getName()));
             }
 
