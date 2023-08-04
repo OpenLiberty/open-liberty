@@ -1,4 +1,3 @@
-package com.ibm.ws.jsf22.fat.selenium_util;
 /*
  * Copyright (c) 2023 Contributors to the Eclipse Foundation.
  *
@@ -14,6 +13,7 @@ package com.ibm.ws.jsf22.fat.selenium_util;
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 or Apache-2.0
  */
+package com.ibm.ws.jsf22.fat.selenium_util;
 
 import java.net.URI;
 import java.net.URLDecoder;
