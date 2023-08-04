@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -98,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Esaminare il testo dell'errore 
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: La propriet\u00e0 di configurazione {0} include "{1}" ma ci\u00f2 non corrisponde ad alcun modulo web o applicazione distribuiti.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Il server \u00e8 configurato per creare la documentazione OpenAPI per il nome dell'applicazione o del modulo, ma non sono stati distribuiti moduli web o applicazioni con tale nome.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Verificare che tutte le applicazioni siano state avviate correttamente e che i nomi nella propriet\u00e0 di configurazione siano stati specificati correttamente.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Il percorso IU OpenAPI \u00e8 impostato su {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Il percorso IU OpenAPI \u00e8 impostato su un valore che non \u00e8 quello predefinito.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Non \u00e8 richiesta alcuna azione.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Il percorso documento OpenAPI \u00e8 impostato su {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Il percorso documento OpenAPI \u00e8 impostato su un valore che non \u00e8 quello predefinito.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Non \u00e8 richiesta alcuna azione.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Il percorso IU OpenAPI non \u00e8 valido. Viene utilizzato il valore predefinito. Controllare le avvertenze precedenti per la causa dell'errore di convalida.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Il percorso IU OpenAPI non \u00e8 valido. Viene utilizzato il valore predefinito.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Controllare i precedenti messaggi di errore per la causa dell'errore di convalida.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Il percorso documento OpenAPI non \u00e8 valido. Viene utilizzato il valore predefinito. Controllare le avvertenze precedenti per la causa dell'errore di convalida.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Il percorso documento OpenAPI non \u00e8 valido. Viene utilizzato il valore predefinito.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Controllare i precedenti messaggi di errore per la causa dell'errore di convalida.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Il percorso IU di OpenAPI non pu\u00f2 essere impostato su {0}. Questo percorso viene utilizzato per richiamare i documenti OpenAPI.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=I percorsi documento OpenAPI e IU OpenAPI non possono essere uguali.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Specificare un percorso univoco per la IU OpenAPI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Il percorso IU OpenAPI non \u00e8 valido o contiene caratteri non validi. L'URL deve essere formato con i caratteri alfanumerici Unicode A-Za-z0-9, il carattere di sottolineatura (_), il trattino (-), la barra (/) o il punto (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Il percorso IU OpenAPI non pu\u00f2 essere impostato su un valore che contiene caratteri non validi.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=Assicurarsi che il percorso OpenAPI contenga solo A-Za-z0-9, _, -,., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Il percorso documento OpenAPI non \u00e8 valido o contiene caratteri non validi. L'URL deve essere formato con i caratteri alfanumerici Unicode A-Za-z0-9, il carattere di sottolineatura (_), il trattino (-), la barra (/) o il punto (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Il percorso documento OpenAPI non pu\u00f2 essere impostato su un valore che contiene caratteri non validi.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=Assicurarsi che il percorso OpenAPI contenga solo A-Za-z0-9, _, -,., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Il segmento percorso "/." o "/.." non \u00e8 valido per gli endpoint OpenAPI.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Il segmento percorso OpenAPI "/." o "/.." non \u00e8 valido.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Rimuovere qualsiasi segmento percorso "/." o "/.." dal percorso.

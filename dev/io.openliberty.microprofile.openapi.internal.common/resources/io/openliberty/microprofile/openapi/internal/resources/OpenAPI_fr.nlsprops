@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -78,6 +78,7 @@ OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Modifiez l'un des modules conflictue
 OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH=La cl\u00e9 d''extension {0} du module {1} entre en conflit avec la m\u00eame cl\u00e9 d''extension du module {2}. Le module {1} ne peut pas \u00eatre fusionn\u00e9.
 OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.explanation=Deux modules d\u00e9clarent la m\u00eame extension avec des valeurs diff\u00e9rentes au niveau sup\u00e9rieur du document OpenAPI. Les deux instances de l'extension ne peuvent \u00eatre incluses dans le m\u00eame document OpenAPI. Ce message fait partie du message CWWKO1662.
 OPENAPI_MERGE_PROBLEM_EXTENSION_CLASH.useraction=Modifiez l'un des modules conflictuel pour retirer l'extension ou configurez la fonction mpOpenApi-2.0 pour exclure l'un des modules. 
+
 OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: La combinaison de la documentation OpenAPI de plusieurs modules est d\u00e9sactiv\u00e9e. Seul {0} est utilis\u00e9 pour g\u00e9n\u00e9rer la documentation OpenAPI. Pour activer la fusion de la documentation OpenAPI de tous les modules, d\u00e9finissez la propri\u00e9t\u00e9 config mp.openapi.extensions.liberty.merged.include = all.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=A moins que la fusion de la documentation OpenAPI n'est activ\u00e9e, la documentation OpenAPI n'est g\u00e9n\u00e9r\u00e9e que pour le premier module OpenAPI d\u00e9ploy\u00e9.
 OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=Si vous souhaitez que tous vos modules Web soient utilis\u00e9s pour g\u00e9n\u00e9rer la documentation OpenAPI, d\u00e9finissez la propri\u00e9t\u00e9 MicroProfile Config qui est list\u00e9e dans le message. Cette propri\u00e9t\u00e9 peut \u00eatre d\u00e9finie dans n'importe lequel des emplacements o\u00f9 MicroProfile Config recherche des propri\u00e9t\u00e9s de configuration, telles que dans une propri\u00e9t\u00e9 syst\u00e8me Java ou une variable d'environnement.
@@ -97,3 +98,35 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Consultez le texte d'erreur pou
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: La propri\u00e9t\u00e9 de configuration {0} inclut "{1}" mais ne correspond \u00e0 aucune application ou module Web d\u00e9ploy\u00e9.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=Le serveur est configur\u00e9 pour cr\u00e9er la documentation OpenAPI pour l'application ou le nom de module, mais aucune application ou module Web portant ce nom n'a \u00e9t\u00e9 d\u00e9ploy\u00e9.
 OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=V\u00e9rifiez que toutes les applications ont d\u00e9marr\u00e9 correctement et que les noms de la propri\u00e9t\u00e9 de configuration sont sp\u00e9cifi\u00e9s correctement.
+
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I=CWWKO1668I: Le chemin de l''IU OpenAPI est d\u00e9fini sur {0}.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.explanation=Le chemin de l'IU OpenAPI est d\u00e9fini sur une valeur qui n'est pas la valeur par d\u00e9faut.
+OPEN_API_UI_PATH_UPDATE_CWWKO1668I.useraction=Aucune action n'est requise.
+
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I=CWWKO1669I: Le chemin du document OpenAPI est d\u00e9fini sur {0}.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.explanation=Le chemin du document OpenAPI est d\u00e9fini sur une valeur qui n'est pas la valeur par d\u00e9faut.
+OPEN_API_DOC_PATH_UPDATE_CWWKO1669I.useraction=Aucune action n'est requise.
+
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E=CWWKO1670E: Le chemin d'IU OpenAPI n'est pas valide. La valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place. Consultez les avertissements pr\u00e9c\u00e9dents pour conna\u00eetre la cause de l'\u00e9chec de la validation.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.explanation=Le chemin d'IU OpenAPI n'est pas valide. La valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+OPEN_API_UI_PATH_UPDATE_FAILED_CWWKO1670E.useraction=Consultez les messages d'erreur pr\u00e9c\u00e9dents pour conna\u00eetre la cause de l'\u00e9chec de la validation.
+
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E=CWWKO1671E: Le chemin du document OpenAPI n'est pas valide. La valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place. Consultez les avertissements pr\u00e9c\u00e9dents pour conna\u00eetre la cause de l'\u00e9chec de la validation.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.explanation=Le chemin du document OpenAPI n'est pas valide. La valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+OPEN_API_DOC_PATH_UPDATE_FAILED_CWWKO1671E.useraction=Consultez les messages d'erreur pr\u00e9c\u00e9dents pour conna\u00eetre la cause de l'\u00e9chec de la validation.
+
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E=CWWKO1672E: Le chemin d''IU OpenAPI ne peut pas \u00eatre d\u00e9fini sur {0}. Ce chemin est utilis\u00e9 pour extraire les documents OpenAPI.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.explanation=Les chemins de document OpenAPI et d'IU OpenAPI ne peuvent pas \u00eatre identiques.
+OPEN_API_UI_PATH_CONFLICT_CWWKO1672E.useraction=Sp\u00e9cifiez un chemin unique pour l'IU OpenAPI.
+
+OPEN_API_UI_PATH_INVALID_CWWKO1675E=CWWKO1675E: Le chemin d'IU OpenAPI n'est pas valide ou contient des caract\u00e8res non valides. L'URL doit \u00eatre construite avec des caract\u00e8res alphanum\u00e9riques Unicode A-Za-z0-9, un trait de soulignement (_), un tiret (-), une barre oblique (/) ou un point (.).
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.explanation=Le chemin d'IU OpenAPI ne peut pas \u00eatre d\u00e9fini sur une valeur qui contient des caract\u00e8res non valides.
+OPEN_API_UI_PATH_INVALID_CWWKO1675E.useraction=V\u00e9rifiez que le chemin OpenAPI contient uniquement A-Za-z0-9, _, -, ., /.
+
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E=CWWKO1676E: Le chemin du document OpenAPI n'est pas valide ou contient des caract\u00e8res non valides. L'URL doit \u00eatre construite avec des caract\u00e8res alphanum\u00e9riques Unicode A-Za-z0-9, un trait de soulignement (_), un tiret (-), une barre oblique (/) ou un point (.).
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.explanation=Le chemin du document OpenAPI ne peut pas \u00eatre d\u00e9fini sur une valeur qui contient des caract\u00e8res non valides.
+OPEN_API_DOC_PATH_INVALID_CWWKO1676E.useraction=V\u00e9rifiez que le chemin OpenAPI contient uniquement A-Za-z0-9, _, -, ., /.
+
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E=CWWKO1677E: Segment de chemin "/." ou "/.." n'est pas valide pour les n\u0153uds finaux OpenAPI.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.explanation=Segment de chemin OpenAPI "/." ou "/.." n'est pas valide.
+OPEN_API_PATH_SEGMENT_INVALID_CWWKO1677E.useraction=Supprimez les chemins "/." ou "/.." segment \u00e0 partir du chemin.

@@ -37,17 +37,48 @@ warning.could.not.thin.application=CWWKC0251W: \u7121\u6cd5\u5c07\u61c9\u7528\u7
 warning.could.not.thin.application.explanation=\u7121\u6cd5\u5c07\u61c9\u7528\u7a0b\u5f0f\u8f49\u63db\u6210\u5c0f\u578b\u61c9\u7528\u7a0b\u5f0f\u3002\u61c9\u7528\u7a0b\u5f0f\u5c07\u7e7c\u7e8c\u5f9e\u539f\u59cb JAR \u4f86\u57f7\u884c\u3002
 warning.could.not.thin.application.useraction=\u8acb\u5617\u8a66\u89e3\u6c7a\u7570\u5e38\u72c0\u6cc1\u8a0a\u606f\u4e2d\u7684\u554f\u984c\uff0c\u4e26\u4e14\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\u6216\u662f\u66f4\u65b0\u61c9\u7528\u7a0b\u5f0f\u3002
 
-error.need.springboot.version.15=CWWKC0252E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u662f springBoot-2.0 \u7279\u6027\u3002\u61c9\u7528\u7a0b\u5f0f\u8981\u6c42\u9700\u914d\u7f6e springBoot-1.5 \u7279\u6027\u3002
-error.need.springboot.version.15.explanation=\u61c9\u7528\u7a0b\u5f0f\u9700\u8981 springBoot-1.5 \u7279\u6027\u3002\u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u76ee\u524d\u6240\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
-error.need.springboot.version.15.useraction=\u8acb\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e springBoot-1.5 \u7279\u6027\u3002\u8acb\u79fb\u9664\u5176\u4ed6\u4efb\u4f55 Spring Boot \u7279\u6027\u3002
+#UPDATED for SpringBoot 3.0:
+# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u662f springBoot-1.5 \u7279\u6027\u3002\u61c9\u7528\u7a0b\u5f0f\u8981\u6c42\u9700\u914d\u7f6e springBoot-2.0 \u7279\u6027\u3002
-error.need.springboot.version.20.explanation=\u61c9\u7528\u7a0b\u5f0f\u9700\u8981 springBoot-2.0 \u7279\u6027\u3002\u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u76ee\u524d\u6240\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
-error.need.springboot.version.20.useraction=\u8acb\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e springBoot-2.0 \u7279\u6027\u3002\u8acb\u79fb\u9664\u5176\u4ed6\u4efb\u4f55 Spring Boot \u7279\u6027\u3002
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.15=CWWKC0252E: \u5fc5\u9808\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e {0} \u7279\u6027\u3002 \u5df2\u914d\u7f6e {1} \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u5177\u6709 Spring {2} \u5167\u5bb9\u3002
+error.spring.required.15.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u4e0d\u76f8\u5bb9\u3002
+error.spring.required.15.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
 
-error.missing.servlet=CWWKC0254E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5b83\u8981\u6c42 server.xml \u6a94\u4e2d\u9700\u914d\u7f6e\u4e00\u9805 Servlet \u7279\u6027\u3002
-error.missing.servlet.explanation=\u61c9\u7528\u7a0b\u5f0f\u662f\u4e00\u500b Web \u61c9\u7528\u7a0b\u5f0f\uff0c\u5b83\u8981\u6c42 server.xml \u6a94\u4e2d\u9700\u914d\u7f6e\u4e00\u9805 Servlet \u7279\u6027\u3002
-error.missing.servlet.useraction=\u8acb\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e Servlet \u7279\u6027\u3002
+#UPDATED for SpringBoot 3.0:
+#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
+#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.20=CWWKC0253E: \u5fc5\u9808\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e {0} \u7279\u6027\u3002 \u5df2\u914d\u7f6e {1} \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u5177\u6709 Spring {2} \u5167\u5bb9\u3002
+error.spring.required.20.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u4e0d\u76f8\u5bb9\u3002
+error.spring.required.20.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
+
+#ADDED for SpringBoot 3.0:
+error.spring3.required=CWWKC0273E: \u5fc5\u9808\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002 \u5df2\u914d\u7f6e springBoot-1.5 \u6216 springBoot-2.0 \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u5177\u6709 Spring 3.0 \u5167\u5bb9\u3002
+error.spring3.required.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u4e0d\u76f8\u5bb9\u3002
+error.spring3.required.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
+
+#UPDATED for SpringBoot 3.0:
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
+
+error.spring2.requires.servlet31.application=CWWKC0254E: \u5fc5\u9808\u914d\u7f6e servlet-3.1 \u6216 servlet-4.0 \u7279\u6027\u3002 \u5df2\u914d\u7f6e springBoot-1.5 \u6216 springBoot-2.0 \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Servlet\u3002
+error.spring2.requires.servlet31.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Servlet\uff0c\u4f46\u672a\u914d\u7f6e\u4efb\u4f55 Servlet \u7279\u6027\u3002
+error.spring2.requires.servlet31.application.useraction=\u8acb\u914d\u7f6e\u5176\u4e2d\u4e00\u500b\u6307\u5b9a\u7684 Servlet \u7279\u6027\u3002
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.servlet6.application=CWWKC0274E: \u5fc5\u9808\u914d\u7f6e servlet-6.0 \u7279\u6027\u3002 \u5df2\u914d\u7f6e springBoot-3.0 \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Servlet\u3002
+error.spring3.requires.servlet6.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Servlet\uff0c\u4f46\u672a\u914d\u7f6e\u4efb\u4f55 Servlet \u7279\u6027\u3002
+error.spring3.requires.servlet6.application.useraction=\u914d\u7f6e\u6307\u5b9a\u7684 Servlet \u7279\u6027\u3002
 
 error.multiple.applications.not.allowed=CWWKC0255E: \u7121\u6cd5\u555f\u52d5 Spring Boot \u61c9\u7528\u7a0b\u5f0f {0}\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f {1} \u5df2\u5728\u4f5c\u7528\u4e2d\u3002\u60a8\u7121\u6cd5\u5728\u76f8\u540c\u7684\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\uff0c\u914d\u7f6e\u591a\u500b Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.multiple.applications.not.allowed.explanation=\u4e0d\u652f\u63f4\u5728\u76f8\u540c\u7684\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u914d\u7f6e\u591a\u500b Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
@@ -65,9 +96,19 @@ error.missing.ssl=CWWKC0258E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\u
 error.missing.ssl.explanation=\u61c9\u7528\u7a0b\u5f0f\u662f\u4e00\u500b\u5b89\u5168\u61c9\u7528\u7a0b\u5f0f\uff0c\u5b83\u8981\u6c42 server.xml \u6a94\u4e2d\u9700\u914d\u7f6e\u4e00\u9805 Servlet \u7279\u6027\u3002
 error.missing.ssl.useraction=\u8acb\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e transportSecurity-1.0 \u7279\u6027\u3002
 
-error.missing.websocket=CWWKC0259E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5b83\u8981\u6c42 server.xml \u6a94\u4e2d\u9700\u914d\u7f6e\u4e00\u9805 Websocket \u7279\u6027\u3002
-error.missing.websocket.explanation=\u61c9\u7528\u7a0b\u5f0f\u662f\u4e00\u500b Web Socket \u61c9\u7528\u7a0b\u5f0f\uff0c\u5b83\u8981\u6c42 server.xml \u6a94\u4e2d\u9700\u914d\u7f6e\u4e00\u9805 Websocket \u7279\u6027\u3002
-error.missing.websocket.useraction=\u8acb\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e Websocket \u7279\u6027\u3002
+#UPDATED for SpringBoot 3.0:
+#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
+#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.spring2.requires.websocket1.application=CWWKC0259E: \u5fc5\u9808\u914d\u7f6e\u7279\u6027 websocket-1.0 \u6216 websocket-1.1\uff1a\u5df2\u914d\u7f6e\u7279\u6027 springBoot-1.5 \u6216 springBoot-2.0\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Web Socket\u3002
+error.spring2.requires.websocket1.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Web Socket\uff0c\u4f46\u672a\u914d\u7f6e Web Socket \u7279\u6027\u3002
+error.spring2.requires.websocket1.application.useraction=\u914d\u7f6e\u5176\u4e2d\u4e00\u500b\u6307\u5b9a\u7684 Web Socket \u7279\u6027\u3002
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.websocket2.application=CWWKC0275E: \u5fc5\u9808\u914d\u7f6e\u7279\u6027 websocket-2.0\uff1a\u5df2\u914d\u7f6e\u7279\u6027 springBoot-3.0\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Web Socket\u3002
+error.spring3.requires.websocket2.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Web Socket\uff0c\u4f46\u672a\u914d\u7f6e Web Socket \u7279\u6027\u3002
+error.spring3.requires.websocket2.application.useraction=\u914d\u7f6e\u6307\u5b9a\u7684 Web Socket \u7279\u6027\u3002
 
 # CWWKC0260E: GOT REMOVED
 
@@ -87,9 +128,17 @@ warning.application.started.event.timeout=CWWKC0264W: {0} \u61c9\u7528\u7a0b\u5f
 warning.application.started.event.timeout.explanation=\u61c9\u7528\u7a0b\u5f0f\u672a\u5728\u9810\u671f\u6642\u9593\u5167\u767c\u51fa\u555f\u52d5\u4e8b\u4ef6\u3002\u4f3a\u670d\u5668\u53ef\u80fd\u5df2\u8d85\u8f09\uff0c\u6216\u8005\u61c9\u7528\u7a0b\u5f0f\u53ef\u80fd\u9f90\u5927\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u5728\u4f3a\u670d\u5668\u555f\u52d5\u904e\u7a0b\u4e2d\u555f\u52d5\uff0c\u4f3a\u670d\u5668\u555f\u52d5\u53ef\u80fd\u5b8c\u6210\uff0c\u800c\u4e0d\u7b49\u5f85\u61c9\u7528\u7a0b\u5f0f\u555f\u52d5\u3002
 warning.application.started.event.timeout.useraction=\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u6700\u7d42\u4ecd\u6703\u555f\u52d5\uff0c\u5247\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5982\u679c\u61c9\u7528\u7a0b\u5f0f\u6c92\u6709\u555f\u52d5\uff0c\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u67e5\u660e\u662f\u5426\u6709\u5176\u4ed6\u8a0a\u606f\u6307\u51fa\u539f\u56e0\u3002
 
-warning.java.version.not.supported=CWWKC0265W: Spring Boot {1} \u7248\u4e0d\u652f\u63f4\u73fe\u884c Java {0} \u7248\u3002\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u7684 Spring Boot \u7248\u672c\u5347\u7d1a\u81f3 2.0.x \u6216\u66f4\u65b0\u7248\u672c\u3002
-warning.java.version.not.supported.explanation=Spring Boot 1.5.x \u7248\u53ca\u66f4\u820a\u7248\u672c\u4e0d\u652f\u63f4\u9ad8\u65bc Java 1.8 \u7684\u7248\u672c\u3002
-warning.java.version.not.supported.useraction=\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u7684 Spring Boot \u7248\u672c\u5347\u7d1a\u81f3 2.0.x \u6216\u66f4\u65b0\u7248\u672c\u3002
+#UPDATED for SpringBoot 3.0
+#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+#0: The current Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
+warning.unsupported.spring.java.version=CWWKC0265W: \u73fe\u884c Java \u7248\u672c {0} \u4e0d\u652f\u63f4 Spring Boot \u7248\u672c {1}\uff1a\u9700\u8981 Java \u7248\u672c {2}\u3002
+warning.unsupported.spring.java.version.explanation=Spring Boot \u5177\u6709\u7279\u5b9a\u7684 Java \u7248\u672c\u9700\u6c42\u3002  \u73fe\u884c Java \u7248\u672c\u4e0d\u652f\u63f4\u61c9\u7528\u7a0b\u5f0f Spring Boot \u7248\u672c\u3002
+warning.unsupported.spring.java.version.useraction=\u8acb\u5c07 Java \u7248\u672c\u8b8a\u66f4\u70ba\u6240\u9700\u7684\u7248\u672c\uff0c\u6216\u4f7f\u7528\u4e0d\u540c\u7684 Spring Boot \u7248\u672c\u4f86\u91cd\u5efa\u61c9\u7528\u7a0b\u5f0f\u3002
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u7121\u6548\u3002
 error.invalid.packaged.liberty.jar.explanation=Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u907a\u6f0f Server-Name \u8cc7\u8a0a\u6e05\u55ae\u6a19\u982d\u3001\u4f3a\u670d\u5668\u6839\u76ee\u9304\u9805\u76ee\u6216 lib.index.cache \u76ee\u9304\u9805\u76ee\u3002
@@ -98,9 +147,3 @@ error.invalid.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u76
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5728 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5167\u627e\u4e0d\u5230 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.explanation=Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5fc5\u9808\u5305\u542b\u6240\u914d\u7f6e\u7684 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u7684 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u3002
-
-#SB3
-
-error.need.springboot.version.30=CWWKC0267E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e\u4e86 springBoot-1.5 \u6216 springBoot-2.0 \u7279\u6027\u3002 \u61c9\u7528\u7a0b\u5f0f\u9700\u8981\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002
-error.need.springboot.version.30.explanation=\u61c9\u7528\u7a0b\u5f0f\u9700\u8981 springBoot-3.0 \u7279\u6027\u3002 \u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u76ee\u524d\u6240\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002  
-error.need.springboot.version.30.useraction=\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002 \u8acb\u79fb\u9664\u5176\u4ed6\u4efb\u4f55 Spring Boot \u7279\u6027\u3002

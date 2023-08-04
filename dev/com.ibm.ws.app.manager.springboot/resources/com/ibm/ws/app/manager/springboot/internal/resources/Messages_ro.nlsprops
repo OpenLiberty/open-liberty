@@ -37,17 +37,48 @@ warning.could.not.thin.application=CWWKC0251W: Nu s-a putut converti aplica\u016
 warning.could.not.thin.application.explanation=Aplica\u0163ia nu a putut fi convertit\u0103 la o aplica\u0163ie sub\u0163ire. Aplica\u0163ia va continua s\u0103 ruleze din JAR-ul original. 
 warning.could.not.thin.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia. 
 
-error.need.springboot.version.15=CWWKC0252E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-2.0. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5.
-error.need.springboot.version.15.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
-error.need.springboot.version.15.useraction=Configura\u0163i caracteristica springBoot-1.5 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
+#UPDATED for SpringBoot 3.0:
+# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-1.5. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0.
-error.need.springboot.version.20.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
-error.need.springboot.version.20.useraction=Configura\u0163i caracteristica springBoot-2.0 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.15=CWWKC0252E: Trebuie s\u0103 fie configurat\u0103 caracteristica {0} \u00een fi\u0219ierul server.xml. Este configurat\u0103 caracteristica {1} \u0219i aplica\u021bia are con\u021binut Spring {2}.
+error.spring.required.15.explanation=Caracteristica Spring Boot configurat\u0103 \u00een prezent nu este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+error.spring.required.15.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
 
-error.missing.servlet=CWWKC0254E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
-error.missing.servlet.explanation=Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
-error.missing.servlet.useraction=Configura\u0163i o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
+#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.20=CWWKC0253E: Trebuie s\u0103 fie configurat\u0103 caracteristica {0} \u00een fi\u0219ierul server.xml. Este configurat\u0103 caracteristica {1} \u0219i aplica\u021bia are con\u021binut Spring {2}.
+error.spring.required.20.explanation=Caracteristica Spring Boot configurat\u0103 \u00een prezent nu este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+error.spring.required.20.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.required=CWWKC0273E: Trebuie s\u0103 fie configurat\u0103 caracteristica springBoot-3.0. Este configurat\u0103 caracteristica springBoot-1.5 sau springBoot-2.0 \u0219i aplica\u021bia are con\u021binut Spring 3.0.
+error.spring3.required.explanation=Caracteristica Spring Boot configurat\u0103 \u00een prezent nu este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+error.spring3.required.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+
+#UPDATED for SpringBoot 3.0:
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
+
+error.spring2.requires.servlet31.application=CWWKC0254E: Trebuie s\u0103 fie configurat\u0103 caracteristica servlet-3.1 sau servlet-4.0. Este configurat\u0103 caracteristica springBoot-1.5 sau springBoot-2.0 \u0219i aplica\u021bia utilizeaz\u0103 servleturi.
+error.spring2.requires.servlet31.application.explanation=Aplica\u021bia utilizeaz\u0103 servleturi, dar nu este configurat\u0103 nicio caracteristic\u0103 de servlet.
+error.spring2.requires.servlet31.application.useraction=Configura\u021bi una dintre caracteristicile de servlet specificate.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.servlet6.application=CWWKC0274E: Trebuie s\u0103 fie configurat\u0103 caracteristica servlet-6.0. Este configurat\u0103 caracteristica springBoot-3.0 \u0219i aplica\u021bia utilizeaz\u0103 servleturi.
+error.spring3.requires.servlet6.application.explanation=Aplica\u021bia utilizeaz\u0103 servleturi, dar este configurat\u0103 o caracteristic\u0103 ce nu este de servlet.
+error.spring3.requires.servlet6.application.useraction=Configura\u021bi caracteristica de servlet specificat\u0103.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Aplica\u0163ia Spring Boot {0} nu poate fi pornit\u0103 deoarece aplica\u0163ia {1} este deja activ\u0103. Nu pute\u0163i configura mai multe aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server.
 error.multiple.applications.not.allowed.explanation=Configurarea mai multor aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server nu este suportat\u0103.
@@ -65,9 +96,19 @@ error.missing.ssl=CWWKC0258E: Pornirea aplica\u0163iei an e\u015fuat, deoarece a
 error.missing.ssl.explanation=Aplica\u0163ia este o aplica\u0163ie securizat\u0103 \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 SSL \u00een fi\u015fierul server.xml.
 error.missing.ssl.useraction=Configura\u0163i caracteristica transportSecurity-1.0 \u00een fi\u015fierul server.xml.
 
-error.missing.websocket=CWWKC0259E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
-error.missing.websocket.explanation=Aplica\u0163ia este o aplica\u0163ie socket web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
-error.missing.websocket.useraction=Configura\u0163i o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
+#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.spring2.requires.websocket1.application=CWWKC0259E: Trebuie s\u0103 fie configurat\u0103 caracteristica websocket-1.0 sau websocket-1.1: Este configurat\u0103 caracteristica springBoot-1.5 sau springBoot-2.0 \u0219i aplica\u021bia utilizeaz\u0103 WebSocket-uri.
+error.spring2.requires.websocket1.application.explanation=Aplica\u021bia utilizeaz\u0103 WebSocket-uri, dar nu este configurat\u0103 nicio caracteristic\u0103 de WebSocket.
+error.spring2.requires.websocket1.application.useraction=Configura\u021bi una dintre caracteristicile de WebSocket specificate.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.websocket2.application=CWWKC0275E: Trebuie s\u0103 fie configurat\u0103 caracteristica websocket-2.0: Este configurat\u0103 caracteristica springBoot-3.0 \u0219i aplica\u021bia utilizeaz\u0103 WebSocket-uri.
+error.spring3.requires.websocket2.application.explanation=Aplica\u021bia utilizeaz\u0103 WebSocket-uri, dar nu este configurat\u0103 nicio caracteristic\u0103 de WebSocket.
+error.spring3.requires.websocket2.application.useraction=Configura\u021bi caracteristica de WebSocket specificat\u0103.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -87,9 +128,17 @@ warning.application.started.event.timeout=CWWKC0264W: Aplica\u0163ia {0} nu a em
 warning.application.started.event.timeout.explanation=Aplica\u0163ia nu a emis evenimentul de pornire \u00een timpul a\u015fteptat. Serverul ar putea fi supra\u00eenc\u0103rcat sau aplica\u0163ia este prea mare. Dac\u0103 aplica\u0163ia porne\u015fte ca parte a pornirii serverului, pornirea serverului se poate finaliza f\u0103r\u0103 a se a\u015ftepta ca aplica\u0163ia s\u0103 porneasc\u0103.
 warning.application.started.event.timeout.useraction=Dac\u0103 aplica\u0163ia porne\u015fte p\u00e2n\u0103 la urm\u0103, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 aplica\u0163ia nu porne\u015fte, verifica\u0163i istoricele serverului pentru a vedea dac\u0103 alte mesaje indic\u0103 o cauz\u0103.
 
-warning.java.version.not.supported=CWWKC0265W: Versiunea curent\u0103 de Java {0} nu este suportat\u0103 de Spring Boot versiunea {1}. Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
-warning.java.version.not.supported.explanation=Versiunile Java mai mari dec\u00e2t 1.8 nu sunt suportate de Spring Boot versiunile 1.5.x \u015fi mai mici.
-warning.java.version.not.supported.useraction=Moderniza\u0163i versiunea Spring Boot a aplica\u0163iei la 2.0.x sau mai nou\u0103.
+#UPDATED for SpringBoot 3.0
+#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+#0: The current Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
+warning.unsupported.spring.java.version=CWWKC0265W: Versiunea Java curent\u0103 {0} nu suport\u0103 Spring Boot versiunea {1}: Este necesar\u0103 versiunea Java {2}.
+warning.unsupported.spring.java.version.explanation=Spring Boot are cerin\u021be specifice privind versiunea Java.  Versiunea Java curent\u0103 nu suport\u0103 versiunea Spring Boot a aplica\u021biei.
+warning.unsupported.spring.java.version.useraction=Fie modifica\u021bi versiunea Java la o versiune necesar\u0103, fie reconstrui\u021bi aplica\u021bia folosind alt\u0103 versiune Spring Boot.
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: Pornirea aplica\u0163iei a e\u015fuat, deoarece fi\u015fierul JAR al serverului Liberty \u00eempachetat nu este valid.
 error.invalid.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat nu are un antet de manifest Server-Name, intr\u0103ri pentru r\u0103d\u0103cina de server sau intr\u0103ri pentru directorul lib.index.cache.
@@ -98,9 +147,3 @@ error.invalid.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JA
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Pornirea aplica\u0163iei a e\u015fuat, deoarece nu a fost g\u0103sit\u0103 aplica\u0163ia Spring Boot \u00een fi\u015fierul JAR de server Liberty.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat trebuie s\u0103 con\u0163in\u0103 o aplica\u0163ie Spring Boot configurat\u0103.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.
-
-#SB3
-
-error.need.springboot.version.30=CWWKC0267E: Nu a reu\u0219it pornirea aplica\u021biei, deoarece este configurat\u0103 caracteristica springBoot-1.5 sau springBoot-2.0 \u00een fi\u0219ierul server.xml. Aplica\u021bia necesit\u0103 s\u0103 fie configurat\u0103 caracteristica springBoot-3.0.
-error.need.springboot.version.30.explanation=Aplica\u021bia necesit\u0103 caracteristica springBoot-3.0. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
-error.need.springboot.version.30.useraction=Configura\u021bi caracteristica springBoot-3.0 \u00een fi\u0219ierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.

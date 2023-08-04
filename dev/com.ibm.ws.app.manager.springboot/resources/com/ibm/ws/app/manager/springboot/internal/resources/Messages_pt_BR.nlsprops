@@ -37,17 +37,48 @@ warning.could.not.thin.application=CWWKC0251W: N\u00e3o foi poss\u00edvel conver
 warning.could.not.thin.application.explanation=O aplicativo n\u00e3o p\u00f4de ser convertido em um aplicativo thin. O aplicativo continuar\u00e1 a ser executado a partir do JAR original. 
 warning.could.not.thin.application.useraction=Tente resolver o problema na mensagem de exce\u00e7\u00e3o e reinicie o servidor ou atualize o aplicativo. 
 
-error.need.springboot.version.15=CWWKC0252E: O aplicativo falhou ao iniciar porque o recurso springBoot-2.0 est\u00e1 configurado no arquivo server.xml. O aplicativo requer que o recurso springBoot-1.5 seja configurado.
-error.need.springboot.version.15.explanation=O aplicativo requer o recurso springBoot-1.5. Verifique a vers\u00e3o do recurso Spring Boot que est\u00e1 atualmente configurado no arquivo server.xml.  
-error.need.springboot.version.15.useraction=Configure o recurso springBoot-1.5 no arquivo server.xml. Remova qualquer outro Spring Boot recursos.
+#UPDATED for SpringBoot 3.0:
+# error.need.springboot.version.15=CWWKC0252E: The application failed to start because the springBoot-2.0 feature is configured in the server.xml file. The application requires the springBoot-1.5 feature to be configured.
+#error.need.springboot.version.15.explanation=The application requires the springBoot-1.5 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.  
+#error.need.springboot.version.15.useraction=Configure the springBoot-1.5 feature in the server.xml file. Remove any other Spring Boot features.
 
-error.need.springboot.version.20=CWWKC0253E: O aplicativo falhou ao iniciar porque o recurso springBoot-1.5 est\u00e1 configurado no arquivo server.xml. O aplicativo requer que o recurso springBoot-2.0 seja configurado.
-error.need.springboot.version.20.explanation=O aplicativo requer o recurso springBoot-2.0. Verifique a vers\u00e3o do recurso Spring Boot que est\u00e1 atualmente configurado no arquivo server.xml.  
-error.need.springboot.version.20.useraction=Configure o recurso springBoot-2.0 no arquivo server.xml. Remova qualquer outro Spring Boot recursos.
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.15=CWWKC0252E: O recurso {0} deve ser configurado no arquivo server.xml. O recurso {1} est\u00e1 configurado e o aplicativo tem o conte\u00fado do Spring {2}.
+error.spring.required.15.explanation=O recurso Spring Boot configurado atualmente n\u00e3o \u00e9 compat\u00edvel com o conte\u00fado do aplicativo.
+error.spring.required.15.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
 
-error.missing.servlet=CWWKC0254E: O aplicativo falhou ao iniciar porque ele requer que um recurso de servlet seja configurado no arquivo server.xml.
-error.missing.servlet.explanation=O aplicativo \u00e9 um aplicativo da web e requer que um recurso de servlet seja configurado no arquivo server.xml.
-error.missing.servlet.useraction=Configure um recurso de servlet no arquivo server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.need.springboot.version.20=CWWKC0253E: The application failed to start because the springBoot-1.5 feature is configured in the server.xml file. The application requires the springBoot-2.0 feature to be configured.
+#error.need.springboot.version.20.explanation=The application requires the springBoot-2.0 feature. Check the version of the Spring Boot feature that is currently configured in the server.xml file.
+#error.need.springboot.version.20.useraction=Configure the springBoot-2.0 feature in the server.xml file. Remove any other Spring Boot features.
+
+#0: The required spring feature.
+#1: The current spring feature.
+#2: The version of spring content found in the application.
+error.spring.required.20=CWWKC0253E: O recurso {0} deve ser configurado no arquivo server.xml. O recurso {1} est\u00e1 configurado e o aplicativo tem o conte\u00fado do Spring {2}.
+error.spring.required.20.explanation=O recurso Spring Boot configurado atualmente n\u00e3o \u00e9 compat\u00edvel com o conte\u00fado do aplicativo.
+error.spring.required.20.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.required=CWWKC0273E: O recurso springBoot-3.0 deve ser configurado. O recurso springBoot-1.5 ou springBoot-2.0 est\u00e1 configurado e o aplicativo tem conte\u00fado do Spring 3.0.
+error.spring3.required.explanation=O recurso Spring Boot configurado atualmente n\u00e3o \u00e9 compat\u00edvel com o conte\u00fado do aplicativo.
+error.spring3.required.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
+
+#UPDATED for SpringBoot 3.0:
+#error.missing.servlet=CWWKC0254E: The application failed to start because it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.explanation=The application is a web application, and it requires a Servlet feature to be configured in the server.xml file.
+#error.missing.servlet.useraction=Configure a Servlet feature in the server.xml file.
+
+error.spring2.requires.servlet31.application=CWWKC0254E: O recurso servlet-3.1 ou servlet-4.0 deve ser configurado. O recurso springBoot-1.5 ou springBoot-2.0 est\u00e1 configurado e o aplicativo usa Servlets.
+error.spring2.requires.servlet31.application.explanation=O aplicativo usa Servlets mas nenhum recurso de Servlet est\u00e1 configurado.
+error.spring2.requires.servlet31.application.useraction=Configure um dos recursos de Servlet especificados.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.servlet6.application=CWWKC0274E: O recurso servlet-6.0 deve ser configurado. O recurso springBoot-3.0 est\u00e1 configurado e o aplicativo usa servlets.
+error.spring3.requires.servlet6.application.explanation=O aplicativo usa Servlets mas nenhum recurso de Servlet est\u00e1 configurado.
+error.spring3.requires.servlet6.application.useraction=Configure o recurso de Servlet especificado.
 
 error.multiple.applications.not.allowed=CWWKC0255E: O aplicativo de inicializa\u00e7\u00e3o de Spring {0} n\u00e3o pode ser iniciado porque o aplicativo {1} j\u00e1 est\u00e1 ativo. N\u00e3o \u00e9 poss\u00edvel configurar v\u00e1rios aplicativos de inicializa\u00e7\u00e3o de Spring na mesma configura\u00e7\u00e3o do servidor.
 error.multiple.applications.not.allowed.explanation=A configura\u00e7\u00e3o de v\u00e1rios aplicativos de inicializa\u00e7\u00e3o de Spring na mesma configura\u00e7\u00e3o do servidor n\u00e3o \u00e9 suportada.
@@ -65,9 +96,19 @@ error.missing.ssl=CWWKC0258E: O aplicativo falhou ao iniciar porque ele requer q
 error.missing.ssl.explanation=O aplicativo \u00e9 um aplicativo seguro e requer que um recurso SSL seja configurado no arquivo server.xml.
 error.missing.ssl.useraction=Configure o recurso transportSecurity-1.0 no arquivo server.xml.
 
-error.missing.websocket=CWWKC0259E: O aplicativo falhou ao iniciar porque ele requer que um recurso websocket seja configurado no arquivo server.xml.
-error.missing.websocket.explanation=O aplicativo \u00e9 um aplicativo de soquete da web, que requer que um recurso websocket seja configurado no arquivo server.xml.
-error.missing.websocket.useraction=Configure um recurso websocket no arquivo server.xml.
+#UPDATED for SpringBoot 3.0:
+#error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+#error.missing.websocket.explanation=The application is a Web Socket application, and it requires a Web Socket feature to be configured in the server.xml file.
+#error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.spring2.requires.websocket1.application=CWWKC0259E: O recurso websocket-1.0 ou websocket-1.1 deve ser configurado: o recurso springBoot-1.5 ou springBoot-2.0 est\u00e1 configurado e o aplicativo usa Web Sockets.
+error.spring2.requires.websocket1.application.explanation=O aplicativo usa Web Sockets, mas nenhum recurso de Web Socket est\u00e1 configurado.
+error.spring2.requires.websocket1.application.useraction=Configure um dos recursos de Web Socket especificados.
+
+#ADDED for SpringBoot 3.0:
+error.spring3.requires.websocket2.application=CWWKC0275E: O recurso websocket-2.0 deve ser configurado: o recurso springBoot-3.0 est\u00e1 configurado e o aplicativo usa Web Sockets.
+error.spring3.requires.websocket2.application.explanation=O aplicativo usa Web Sockets, mas nenhum recurso de Web Socket est\u00e1 configurado.
+error.spring3.requires.websocket2.application.useraction=Configure o recurso de Web Socket especificado.
 
 # CWWKC0260E: GOT REMOVED
 
@@ -87,9 +128,17 @@ warning.application.started.event.timeout=CWWKC0264W: O aplicativo {0} n\u00e3o 
 warning.application.started.event.timeout.explanation=O aplicativo n\u00e3o emitiu o evento de in\u00edcio no hor\u00e1rio esperado. O servidor pode estar sobrecarregado ou o aplicativo pode ser muito grande. Se o aplicativo estiver sendo iniciado como parte da inicializa\u00e7\u00e3o do servidor, a inicializa\u00e7\u00e3o do servidor poder\u00e1 ser conclu\u00edda sem aguardar o in\u00edcio do aplicativo.
 warning.application.started.event.timeout.useraction=Se o aplicativo for iniciado, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o aplicativo n\u00e3o for iniciado, verifique os logs do servidor para ver se outras mensagens indicam uma causa.
 
-warning.java.version.not.supported=CWWKC0265W: A vers\u00e3o Java atual {0} n\u00e3o \u00e9 suportada pela vers\u00e3o do Spring Boot {1}. Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.
-warning.java.version.not.supported.explanation=As vers\u00f5es Java superiores a 1.8 n\u00e3o s\u00e3o suportadas pelas vers\u00f5es 1.5.x e abaixo do Spring Boot.
-warning.java.version.not.supported.useraction=Fa\u00e7a upgrade da vers\u00e3o do aplicativo Spring Boot para a 2.0.x ou superior.
+#UPDATED for SpringBoot 3.0
+#warning.java.version.not.supported=CWWKC0265W: The current Java version {0} is not supported by the Spring Boot version {1}. Upgrade the Spring Boot version of the application to 2.0.x or later.
+#warning.java.version.not.supported.explanation=Java versions higher than 1.8 are not supported by the Spring Boot versions 1.5.x and below.
+#warning.java.version.not.supported.useraction=Upgrade the Spring Boot version of the application to 2.0.x or later.
+
+#0: The current Java version
+#1: The configured Spring Boot version.
+#2: The Java version required for the configured Spring Boot version
+warning.unsupported.spring.java.version=CWWKC0265W: A vers\u00e3o Java atual {0} n\u00e3o suporta a vers\u00e3o Spring Boot {1}: a vers\u00e3o Java {2} \u00e9 necess\u00e1ria.
+warning.unsupported.spring.java.version.explanation=O Spring Boot tem requisitos de vers\u00e3o Java espec\u00edficos.  A vers\u00e3o atual do Java n\u00e3o suporta a vers\u00e3o do aplicativo Spring Boot.
+warning.unsupported.spring.java.version.useraction=Mude a vers\u00e3o Java para uma vers\u00e3o necess\u00e1ria ou reconstrua o aplicativo usando uma vers\u00e3o diferente do Spring Boot.
 
 error.invalid.packaged.liberty.jar=CWWKC0265E: O aplicativo falhou ao iniciar porque o arquivo JAR do servidor Liberty empacotado n\u00e3o \u00e9 v\u00e1lido.
 error.invalid.packaged.liberty.jar.explanation=O arquivo JAR do servidor Liberty empacotado est\u00e1 sem um cabe\u00e7alho de manifest Server-Name, sem entradas para a raiz do servidor ou sem entradas para o diret\u00f3rio lib.index.cache.
@@ -98,9 +147,3 @@ error.invalid.packaged.liberty.jar.useraction=Configure um arquivo JAR do servid
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: O aplicativo falhou ao iniciar porque o aplicativo Spring Boot n\u00e3o foi localizado dentro do arquivo JAR do Liberty Server empacotado.
 error.application.not.found.inside.packaged.liberty.jar.explanation=O arquivo JAR do Liberty Server empacotado deve conter um aplicativo Spring Boot configurado.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure um arquivo JAR do servidor Liberty compactado v\u00e1lido.
-
-#SB3
-
-error.need.springboot.version.30=CWWKC0267E: O aplicativo falhou ao iniciar pois o recurso springBoot-1.5 ou springBoot-2.0 est\u00e1 configurado no arquivo server.xml. O aplicativo requer que o recurso springBoot-3.0 seja configurado.
-error.need.springboot.version.30.explanation=O aplicativo requer o recurso springBoot-3.0. Verifique a vers\u00e3o do recurso Spring Boot que est\u00e1 atualmente configurado no arquivo server.xml.  
-error.need.springboot.version.30.useraction=Configure o recurso springBoot-3.0 no arquivo server.xml. Remova qualquer outro Spring Boot recursos.

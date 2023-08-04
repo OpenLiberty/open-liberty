@@ -310,18 +310,6 @@ ERROR_SENDING_AUTHORIZATION_REQUEST=CWWKS1553E: Se ha producido un error en el c
 ERROR_SENDING_AUTHORIZATION_REQUEST.explanation=Puede que falte informaci\u00f3n en la configuraci\u00f3n del cliente de OpenID Connect o que se haya producido un error en el cliente al comunicarse con el proveedor de OpenID Connect.
 ERROR_SENDING_AUTHORIZATION_REQUEST.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
 
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR=CWWKS1554E: El cliente de [{0}] OpenID Connect ha encontrado un error al configurar la autenticaci\u00f3n de cliente para el punto final de se\u00f1al para el m\u00e9todo de autenticaci\u00f3n [{1}]. {2}
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.explanation=El punto final de se\u00f1al de OpenID Connect requiere autenticaci\u00f3n de cliente, pero es posible que al cliente de OpenID Connect le falte informaci\u00f3n, o que el cliente haya encontrado otro error al configurar los datos de autenticaci\u00f3n.
-TOKEN_ENDPOINT_AUTH_METHOD_SETTINGS_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
-
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME=CWWKS1555E: El cliente de [{0}] OpenID Connect no tiene configurado un nombre de alias de clave, por lo que el cliente no puede localizar la clave que se debe utilizar para firmar la se\u00f1al web JSON para la autenticaci\u00f3n de cliente.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.explanation=El cliente de OpenID Connect debe configurar un nombre de alias de clave para definir la clave que se utilizar\u00e1 para firmar el JWT.
-PRIVATE_KEY_JWT_MISSING_KEY_ALIAS_NAME.useraction=Verifique que el cliente de OpenID Connect tiene configurado un nombre de alias de clave.
-
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF=CWWKS1556E: El cliente de [{0}] OpenID Connect no tiene una referencia de almac\u00e9n de claves configurada, por lo que el cliente no puede localizar la clave que se debe utilizar para firmar la se\u00f1al web JSON para la autenticaci\u00f3n de cliente.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.explanation=El cliente de OpenID Connect debe configurar una referencia de almac\u00e9n de claves para definir d\u00f3nde buscar la clave que se debe utilizar para firmar el JWT.
-PRIVATE_KEY_JWT_MISSING_KEYSTORE_REF.useraction=Verifique que el cliente de OpenID Connect tiene una referencia de almac\u00e9n de claves configurada.
-
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
