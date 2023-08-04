@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -207,7 +207,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
         try {
             return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
         } catch (CloneNotSupportedException cnse) {
-            //Since implementation of clone is optional in Java, if clone does not work, just return a new instance.
+            //Since implementation of clone is optional in Java, if the clone does not work, just return a new instance.
             return MessageDigest.getInstance(SHA_512);
         }
     }
