@@ -570,7 +570,7 @@ public class HttpChannelConfig {
         parseAccessLog(props.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
         parseHeaderValidation(props.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
         parseStrictURLFormat(props.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
-        parseServerHeader(props.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE), props.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER));
+        parseServerHeader(props.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER), props.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE));
         parseDateHeaderRange(props.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
         parseCookieUpdate(props.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), props.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));//PI75280
         parseHeaderChangeLimit(props.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
@@ -1903,7 +1903,7 @@ public class HttpChannelConfig {
      *
      * @param props
      */
-    protected void parseServerHeader(Object optionServerHeader, Object optionServerHeaderValue) {
+    protected void parseServerHeader(Object optionRemoveServerHeader, Object optionServerHeaderValue) {
         // @PK15848
         String option = Objects.nonNull(optionServerHeaderValue) ? String.valueOf(optionServerHeaderValue) : null;
         if (Objects.isNull(option) || option.isEmpty()) {
@@ -1918,8 +1918,8 @@ public class HttpChannelConfig {
             }
         }
         // PM87013 (PM75371) End
-        if (Objects.nonNull(optionServerHeader)) {
-            this.bRemoveServerHeader = convertBoolean(optionServerHeader);
+        if (Objects.nonNull(optionRemoveServerHeader)) {
+            this.bRemoveServerHeader = convertBoolean(optionRemoveServerHeader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Config: remove server header is " + removeServerHeader());
             }

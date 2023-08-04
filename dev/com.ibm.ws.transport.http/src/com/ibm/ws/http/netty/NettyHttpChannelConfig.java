@@ -165,7 +165,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseReadTimeout(options.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
         parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
         parseRequestSmugglingProtection(options.get(HttpConfigConstants.PROPNAME_ENABLE_SMUGGLING_PROTECTION));
-        parseServerHeader(options.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE), options.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER));
+        parseServerHeader(options.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER), options.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE));
         parseSkipCookiePathQuotes(options.get(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE));
 
         parseWriteTimeout(options.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
