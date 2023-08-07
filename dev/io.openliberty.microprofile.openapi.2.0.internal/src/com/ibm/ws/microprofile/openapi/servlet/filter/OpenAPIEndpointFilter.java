@@ -60,6 +60,7 @@ public class OpenAPIEndpointFilter implements Filter {
                     // replace the default URL for the document endpoint with the value that is being used
                     content = content.replaceAll("/openapi", openAPIEndpointTracker.getService().getOpenAPIDocUrl());
                 }
+                resp.setContentLength(content.length());
                 resp.getWriter().write(content);
             }
         }
