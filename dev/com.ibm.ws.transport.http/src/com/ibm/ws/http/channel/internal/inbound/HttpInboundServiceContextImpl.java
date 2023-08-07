@@ -57,6 +57,7 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
+import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
@@ -122,6 +123,15 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         nettyContext = context;
 
         super.init(context);
+
+        boolean isSecure = context.channel().attr(NettyHttpConstants.IS_SECURE).get();
+
+        if (isSecure) {
+            getRequest().setScheme(SchemeValues.HTTPS);
+        } else {
+            getRequest().setScheme(SchemeValues.HTTP);
+        }
+
     }
 
     /**

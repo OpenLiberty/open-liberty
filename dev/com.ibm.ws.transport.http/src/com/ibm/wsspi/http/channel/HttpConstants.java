@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,4 +31,5 @@ public interface HttpConstants {
     String HTTPUnlimitedMessageMark = "UNLIMITED_HTTP_MESSAGE_SIZE";
     /** HTTP/2 MAGIC string */
     byte[] HTTP2PrefaceBytes = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n".getBytes();
+    String EMPTY_STRING = "";
 }
