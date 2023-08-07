@@ -20,6 +20,7 @@ import java.time.Duration;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -83,13 +84,28 @@ public class UIBasicTest {
 
     @Before
     public void setupTest() {
-        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
+        driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true));
+    }
+
+    @After
+    public void teardownTest() throws Exception {
+        //close the browser at end of test to ensure it no connections are kept open by client
+        driver.quit();
     }
 
     @Test
-    public void testUI() {
+    public void testHttpUI(){
         driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/openapi/ui");
+        testUI();
+    }
 
+    @Test
+    public void testHttpsUI(){
+        driver.get("https://host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/openapi/ui");
+        testUI();
+    }
+
+    public void testUI() {
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));

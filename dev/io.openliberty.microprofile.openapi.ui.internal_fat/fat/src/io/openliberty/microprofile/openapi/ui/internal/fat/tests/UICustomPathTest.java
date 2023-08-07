@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -92,6 +93,12 @@ public class UICustomPathTest {
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
+    @After
+    public void teardownTest() throws Exception {
+        // Close the browser after tests to ensure selenium is clean between tests
+        driver.quit();
+    }
+
     @Before
     public void setupTest() {
         driver = new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions());
@@ -100,7 +107,6 @@ public class UICustomPathTest {
 
     @Test
     public void testCustomUIPath() {
-
         // Check the title loads
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
