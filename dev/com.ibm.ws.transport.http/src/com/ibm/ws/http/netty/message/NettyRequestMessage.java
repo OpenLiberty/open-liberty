@@ -18,16 +18,20 @@ import java.util.Set;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
 import com.ibm.wsspi.http.HttpCookie;
+import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpTrailers;
+import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.ExpectValues;
@@ -39,36 +43,54 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpUtil;
 
 /**
  *
  */
-public class NettyRequestMessage extends HttpRequestMessageImpl {
+public class NettyRequestMessage implements HttpRequestMessage {
 
     private static final TraceComponent tc = Tr.register(NettyRequestMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final FullHttpRequest request;
+    private final HttpHeaders headers;
+    private final HttpInboundServiceContext context;
 
-    public NettyRequestMessage(FullHttpRequest request) {
+    private boolean isIncoming = Boolean.FALSE;
+    private boolean isCommitted = Boolean.FALSE;
+
+    private MethodValues method;
+    private SchemeValues scheme;
+
+    public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc) {
         Objects.requireNonNull(request);
+        Objects.requireNonNull(isc);
+
+        this.context = isc;
         this.request = request;
+        this.headers = request.headers();
+
+        if (isc instanceof HttpInboundServiceContextImpl) {
+            this.isIncoming = ((HttpInboundServiceContextImpl) isc).isInboundConnection();
+        }
+
     }
 
     @Override
     public boolean isIncoming() {
-        return this.getServiceContext().isInboundConnection();
+        return this.isIncoming;
     }
 
     @Override
     public boolean isCommitted() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isCommitted;
     }
 
     @Override
     public void setCommitted() {
-        // TODO Auto-generated method stub
+        this.isCommitted = Boolean.TRUE;
 
     }
 
@@ -84,10 +106,43 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
 
     }
 
+    /**
+     * Query whether a body is expected to be present with this message. Note
+     * that this is only an expectation and not a definitive answer. This will
+     * check the necessary headers, status codes, etc, to see if any indicate
+     * a body should be present. Without actually reading for a body, this
+     * cannot be sure however.
+     *
+     * @return boolean (true -- a body is expected to be present)
+     */
     @Override
     public boolean isBodyExpected() {
-        // TODO Auto-generated method stub
-        return false;
+        boolean result = Boolean.FALSE;
+
+        if (HttpUtil.isTransferEncodingChunked(request)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Msg says chunked encoding: " + this);
+            }
+
+            result = Boolean.TRUE;
+        }
+
+        else if (HttpUtil.isContentLengthSet(request)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Msg says content-length: " + getContentLength() + " " + this);
+            }
+            result = Boolean.TRUE;
+        }
+
+        if (result) {
+
+        }
+
+        else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No bodyExpected: " + this);
+            }
+        }
     }
 
     @Override
@@ -98,14 +153,14 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
 
     @Override
     public void setContentLength(long length) {
-        HttpUtil.setContentLength(request, length);
+        // TODO Auto-generated method stub
 
     }
 
     @Override
     public long getContentLength() {
         // TODO Auto-generated method stub
-        return HttpUtil.getContentLength(request);
+        return 0;
     }
 
     @Override
@@ -128,7 +183,8 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
 
     @Override
     public boolean isKeepAliveSet() {
-        return HttpUtil.isKeepAlive(request);
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
@@ -601,13 +657,28 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
 
     @Override
     public String getMethod() {
-        // TODO Auto-generated method stub
-        return null;
+        if (Objects.isNull(method)) {
+            method = MethodValues.UNDEF;
+
+        }
+
+        return method.getName();
+    }
+
+    @Override
+    public MethodValues getMethodValue() {
+
+        if (Objects.isNull(method)) {
+            method = MethodValues.UNDEF;
+        }
+
+        return method;
     }
 
     @Override
     public void setMethod(String method) throws UnsupportedMethodException {
-        // TODO Auto-generated method stub
+
+        request.setMethod(HttpMethod.valueOf(method));
 
     }
 
@@ -619,8 +690,20 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
 
     @Override
     public void setMethod(MethodValues method) {
-        // TODO Auto-generated method stub
+        Objects.requireNonNull(method);
 
+    }
+
+    @Override
+    public String getRequestURI() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public byte[] getRequestURIAsByteArray() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -630,7 +713,25 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
     }
 
     @Override
+    public String getRequestURLAsString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public byte[] getRequestURLAsByteArray() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public String getQueryString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public byte[] getQueryStringAsByteArray() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -684,6 +785,30 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
     }
 
     @Override
+    public String getURLHost() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getURLPort() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getVirtualHost() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getVirtualPort() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
     public void setQueryString(String query) {
         // TODO Auto-generated method stub
 
@@ -696,28 +821,89 @@ public class NettyRequestMessage extends HttpRequestMessageImpl {
     }
 
     @Override
-    public void setScheme(SchemeValues scheme) {
-        this.myScheme = scheme;
-        // Tr.debug(tc, "setScheme(v): " + (Objects.nonNull(scheme) ? scheme.getName() : null));
-
-    }
-
-    @Override
-    public HttpRequestMessage duplicate() {
+    public SchemeValues getSchemeValue() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
+    public String getScheme() {
+
+        return Objects.isNull(scheme) ? null : scheme.getName();
+    }
+
+    @Override
+    public void setScheme(SchemeValues scheme) {
+        Objects.requireNonNull(scheme);
+        this.scheme = scheme;
+        //TODO: first line changed needed?
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setScheme(v): " + scheme.getName());
+        }
+    }
+
+    @Override
+    public void setScheme(String scheme) throws UnsupportedSchemeException {
+        Objects.requireNonNull(scheme);
+        SchemeValues value = SchemeValues.match(scheme, 0, scheme.length());
+
+        if (Objects.isNull(value)) {
+            throw new UnsupportedSchemeException("Illegal scheme " + scheme);
+        }
+        setScheme(value);
+
+    }
+
+    @Override
+    public void setScheme(byte[] scheme) throws UnsupportedSchemeException {
+        Objects.requireNonNull(scheme);
+        SchemeValues value = SchemeValues.match(scheme, 0, scheme.length);
+        if (Objects.isNull(value)) {
+            throw new UnsupportedSchemeException("Illegal scheme " + GenericUtils.getEnglishString(scheme));
+        }
+        setScheme(value);
+
+    }
+
+    @Override
+    public HttpRequestMessage duplicate() {
+        throw new UnsupportedOperationException("The duplicate method is not supported.");
+
+    }
+
+    @Override
     public boolean isPushSupported() {
-        //Tr.debug(tc, "Use of HTTP/2 is delegated to Netty Pipeline Handler, returning false.");
-        return Boolean.FALSE;
+        throw new UnsupportedOperationException("HTTP/2 delegated to pipeline, isPushSupported method is not supported.");
     }
 
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) {
-        throw new UnsupportedOperationException("Use Netty HTTP/2 handler, not legacy Request Message");
+        throw new UnsupportedOperationException("HTTP/2 delegated to pipeline, pushNewRequest method is not supported.");
 
+    }
+
+    /**
+     *
+     * @return request start time with nanosecond precision (relative to the JVM instance as opposed to the time since epoch)
+     */
+    public long getStartTime() {
+        return context.getStartNanoTime();
+    }
+
+    /**
+     * Queries the Inbound Service Context for the remote user. If not set, an empty string
+     * is returned.
+     *
+     * @return
+     */
+    public String getRemoteUser() {
+
+        String remoteUser = null;
+
+        if (context instanceof HttpInboundServiceContextImpl) {
+            remoteUser = ((HttpInboundServiceContextImpl) context).getRemoteUser();
+        }
+        return Objects.nonNull(remoteUser) ? remoteUser : HttpConstants.EMPTY_STRING;
     }
 
 }

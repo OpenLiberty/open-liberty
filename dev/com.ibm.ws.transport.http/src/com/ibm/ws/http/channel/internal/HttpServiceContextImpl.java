@@ -55,6 +55,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -2959,10 +2960,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         setMessageSent();
-        MSP.log("set message");
-        synchWrite();
-        MSP.log("wrote");
-        MSP.log("sync write");
+        this.addBytesWritten(GenericUtils.sizeOf(wsbb));
+        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_BYTES_WRITTEN).set(numBytesWritten);
         this.nettyContext.channel().write(this.nettyResponse);
         DefaultHttpContent content;
         if (Objects.nonNull(wsbb)) {
