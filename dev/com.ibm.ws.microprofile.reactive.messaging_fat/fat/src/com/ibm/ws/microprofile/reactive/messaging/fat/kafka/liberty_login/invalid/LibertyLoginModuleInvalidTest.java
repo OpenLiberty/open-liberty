@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,14 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import componenttest.rules.repeater.RepeatTests;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,13 +53,17 @@ public class LibertyLoginModuleInvalidTest {
 
     private static final String APP_NAME = "kafkaLoginModuleInvalidTest";
     private static final String APP_GROUP_ID = "login-module-invalid-test-group";
+    private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     private static final String APP_START_CODE = "CWWKZ000[13]I";
     private static final String APP_FAIL_CODE = "CWWKZ000[24]E";
     private static final String INVALID_CIPHER_CODE = "CWWKS1857E";
 
-    @Server("SimpleRxMessagingServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
 
     @BeforeClass
     public static void setup() throws Exception {

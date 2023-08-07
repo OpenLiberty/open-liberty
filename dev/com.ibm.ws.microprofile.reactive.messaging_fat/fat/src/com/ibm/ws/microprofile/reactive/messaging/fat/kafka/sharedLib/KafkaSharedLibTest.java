@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.ka
 import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,6 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
@@ -89,6 +92,11 @@ public class KafkaSharedLibTest {
     @AfterClass
     public static void teardownTest() throws Exception {
         server.stopServer();
+    }
+
+    @AfterClass
+    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
+        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,10 +25,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
+import componenttest.rules.repeater.RepeatTests;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,9 +59,13 @@ public class KafkaBadConfigTest {
 
     private static final String APP_NAME = "KafkaBadConfig";
     private static final String APP_GROUP_ID = "bad-config-test-group";
+    private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
-    @Server("SimpleRxMessagingServer")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20, ReactiveMessagingActions.MP50, ReactiveMessagingActions.MP60, ReactiveMessagingActions.MP61);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -101,7 +108,12 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        assertThat(configErrorLines, hasSize(1));
+        //Due to logging changes older versions of OL emit the expected code less frequently
+        if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
+            assertThat(configErrorLines, hasSize(1));
+        } else {
+            assertThat(configErrorLines, hasSize(4));
+        }
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
@@ -137,7 +149,12 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1007E:", server.getDefaultLogFile());
-        assertThat(configErrorLines, hasSize(1));
+        //Due to logging changes older versions of OL emit the expected code less frequently
+        if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
+            assertThat(configErrorLines, hasSize(1));
+        } else {
+            assertThat(configErrorLines, hasSize(2));
+        }
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigIncomingBean.CHANNEL_NAME));
@@ -177,7 +194,12 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
-        assertThat(configErrorLines, hasSize(1));
+        //Due to logging changes older versions of OL emit the expected code less frequently
+        if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
+            assertThat(configErrorLines, hasSize(1));
+        } else {
+            assertThat(configErrorLines, hasSize(4));
+        }
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));
@@ -214,7 +236,12 @@ public class KafkaBadConfigTest {
 
         // Check that the bad config error was emitted
         List<String> configErrorLines = server.findStringsInLogsUsingMark("CWMRX1008E:", server.getDefaultLogFile());
-        assertThat(configErrorLines, hasSize(1));
+        //Due to logging changes older versions of OL emit the targetted code less frequently
+        if(server.getServerConfiguration().getFeatureManager().getFeatures().contains("mpReactiveMessaging-1.0")){
+            assertThat(configErrorLines, hasSize(1));
+        } else {
+            assertThat(configErrorLines, hasSize(2));
+        }
         String configErrorLine = configErrorLines.get(0);
         // ...and that it contained the channel name
         assertThat(configErrorLine, containsString(KafkaBadConfigOutgoingBean.CHANNEL_NAME));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -93,4 +96,8 @@ public class KafkaCustomKeySerializerTest {
         server.stopServer();
     }
 
+    @AfterClass
+    public static void teardownKafka() throws ExecutionException, InterruptedException, IOException {
+        KafkaUtils.cleanKafka(PlaintextTests.kafkaContainer);
+    }
 }
