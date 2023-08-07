@@ -10,17 +10,22 @@
 
 package io.openliberty.microprofile.openapi.internal.common;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 
 @Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true, configurationPid = "io.openliberty.microprofile.openapi")
 public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
