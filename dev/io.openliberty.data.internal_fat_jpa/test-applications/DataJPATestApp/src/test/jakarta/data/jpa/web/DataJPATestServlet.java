@@ -623,6 +623,12 @@ public class DataJPATestServlet extends FATServlet {
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
 
+        //FIXME oracle fails here
+        //JPQL query:         SELECT NEW test.jakarta.data.jpa.web.CityId(o.name, o.stateName) FROM City o WHERE (o.stateName=?1) ORDER BY o.name
+        //SQL query:          SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?)
+        //   UNNECESSARY? --> AND (STATENAME,NAME) IN (SELECT null,null FROM (SELECT null,null, ROWNUM rnum  FROM (SELECT NAME AS a1, STATENAME AS a2 FROM WLPCity WHERE (STATENAME = ?) ORDER BY null,null) WHERE ROWNUM <= ?) WHERE rnum > ? )
+        //                    ORDER BY NAME FOR UPDATE
+        //Resulting in an empty iterator being returned
         assertEquals(true, ids.hasNext());
         id = ids.next();
         assertEquals("South Dakota", id.stateName);
@@ -1111,6 +1117,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
+    // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
+    // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
+    // No customer workaround is available (so far as I can tell)
+    @SkipIfDataSourceProperties(ORACLE_JDBC)
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
 
@@ -1564,6 +1574,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
+    // JPA Feature does not include the Oracle extension and thus cannot map oracle.sql.TIMESTAMPTZ to java.time.OffsetDateTime
+    // This support is currently under feature review here: https://github.com/OpenLiberty/open-liberty/issues/14894
+    // No customer workaround is available (so far as I can tell)
+    @SkipIfDataSourceProperties(ORACLE_JDBC)
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
