@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ package com.ibm.tx.util;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * An implementation of a hash map that stores <code>Objects</code>
@@ -101,9 +102,8 @@ public class LongObjectHashMap {
      * @param loadFactor  the load factor of the hash map
      * @throws IllegalArgumentException Thrown if <code>initialSize</code> is not a power of 2
      */
+    @Trivial
     public LongObjectHashMap(int initialSize, int loadFactor) throws IllegalArgumentException {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "LongObjectHashMap", initialSize, loadFactor);
 
         if (loadFactor <= 0 || loadFactor > 100) {
             if (tc.isEntryEnabled())
@@ -128,10 +128,7 @@ public class LongObjectHashMap {
         _resizeThreshold = (int) (((float) _mapSize) * ((float) _loadFactor) / 100f);
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "resizeThreshold = " + _resizeThreshold);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "LongObjectHashMap", this);
+            Tr.debug(tc, "LongObjectHashMap", this, initialSize, loadFactor, _resizeThreshold);
     }
 
     /**
@@ -351,9 +348,9 @@ public class LongObjectHashMap {
     // (that is it contains null or DELETED), or that
     // contains a live entry whose key is the same as
     // the given one.
+    @Trivial
     private int getHashForNewEntry(long key) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getHashForNewEntry", key, this);
+
         int hash = getHashForKey(key);
 
         // Loop while the current bucket contains a live
@@ -363,23 +360,22 @@ public class LongObjectHashMap {
             hash = (hash + i) % _mapSize;
         }
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getHashForNewEntry", hash);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHashForNewEntry {0} {1} {2}", this, key, hash);
         return hash;
     }
 
     // Maps the given long key to a
     // suitable int index into the map
+    @Trivial
     private int getHashForKey(long key) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getHashForKey", key, this);
 
         int hash = (int) (key % _mapSize);
         if (hash < 0)
             hash = -hash;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getHashForKey", hash);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getHashForKey {0} {1} {2}", this, key, hash);
         return hash;
     }
 }

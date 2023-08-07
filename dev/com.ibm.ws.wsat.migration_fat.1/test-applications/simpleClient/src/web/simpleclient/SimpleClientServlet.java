@@ -34,6 +34,7 @@ import javax.xml.ws.BindingProvider;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
@@ -687,10 +688,7 @@ public class SimpleClientServlet extends HttpServlet {
 		BindingProvider bind = (BindingProvider) proxy;
 		bind.getRequestContext().put("javax.xml.ws.service.endpoint.address",
 				BASE_URL + "/simpleService/WSATSimpleService");
-		bind.getRequestContext().put("com.sun.xml.ws.connect.timeout", timeout);
-		bind.getRequestContext().put("com.sun.xml.ws.request.timeout", timeout);
-		bind.getRequestContext().put("javax.xml.ws.client.connectionTimeout", timeout);
-		bind.getRequestContext().put("javax.xml.ws.client.receiveTimeout", timeout);
+		TxTestUtils.setTimeouts(bind.getRequestContext(), timeout);
 		String response = "";
 		System.out.println("Set expectedDirection in callWebservice: " + expectedDirection);
 		System.out.println("XAResouces.length in callWebservice: " + XAResouces.length);

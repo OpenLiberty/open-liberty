@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,7 @@ import com.ibm.tx.remote.RemoteTransactionController;
 import com.ibm.tx.remote.Vote;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.wsat.Constants;
@@ -59,6 +60,7 @@ public class TranManagerImpl {
     private TransactionSynchronizationRegistry syncRegistry;
     private ClassLoadingService clService;
 
+    @Trivial
     public static TranManagerImpl getInstance() {
         return INSTANCE;
     }
@@ -70,6 +72,7 @@ public class TranManagerImpl {
         return localTranMgr;
     }
 
+    @Trivial
     public synchronized RemoteTransactionController getRemoteTranMgr() {
         if (remoteTranMgr == null) {
             remoteTranMgr = getService(RemoteTransactionController.class);
@@ -91,6 +94,7 @@ public class TranManagerImpl {
         return syncRegistry;
     }
 
+    @Trivial
     public synchronized ClassLoadingService getClassLoadingService() {
         if (clService == null) {
             clService = getService(ClassLoadingService.class);
@@ -98,6 +102,7 @@ public class TranManagerImpl {
         return clService;
     }
 
+    @Trivial
     private <T> T getService(Class<T> service) {
         T impl = null;
         BundleContext context = FrameworkUtil.getBundle(service).getBundleContext();
@@ -336,11 +341,29 @@ public class TranManagerImpl {
     /*
      * Class loading services
      */
+    @Trivial
     public ClassLoader getThreadClassLoader(Class<?> cl) {
         return getClassLoadingService().createThreadContextClassLoader(cl.getClassLoader());
     }
 
+    @Trivial
     public void destroyThreadClassLoader(ClassLoader loader) {
         getClassLoadingService().destroyThreadContextClassLoader(loader);
+    }
+
+    /**
+     * @return
+     */
+    public String getRecoveryId() {
+        return getRemoteTranMgr().getRecoveryId();
+    }
+
+    /**
+     * @param recoveryId
+     * @return
+     * @throws Exception
+     */
+    public String getAddress(String recoveryId) {
+        return getRemoteTranMgr().getAddress(recoveryId);
     }
 }

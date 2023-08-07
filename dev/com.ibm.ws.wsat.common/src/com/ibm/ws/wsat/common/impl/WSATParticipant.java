@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Represents a remote participant in a WSAT transaction.
- * 
+ *
  * Note this class must be serializable as instances of it will be passed to the
  * transaction manager as keys to build XAResrources for completion and recovery.
  */
@@ -46,6 +46,9 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
 
     public WSATParticipant(String tranId, String partId, EndpointReferenceType epr) {
         super(epr);
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "WSATParticipant:\nglobalId:\n{0}\nparticipantId:\n{1}\nEPR:\n{2}", tranId, partId, DebugUtils.printEPR(epr));
+        }
         globalId = tranId;
         participantId = partId;
     }

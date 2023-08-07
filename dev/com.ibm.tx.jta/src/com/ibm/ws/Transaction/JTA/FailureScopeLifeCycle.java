@@ -1,11 +1,10 @@
-
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,9 +13,9 @@
 
 package com.ibm.ws.Transaction.JTA;
 
+import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.tx.TranConstants;
 
 //------------------------------------------------------------------------------
 // Class: FailureScopeLifeCycle
@@ -56,11 +55,11 @@ public class FailureScopeLifeCycle {
     // NOTE this does not include active transactions.
     public synchronized boolean ifAcceptingWorkIncrementActivityCount() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "isAcceptingWork", new Boolean(!_disabled));
+            Tr.debug(tc, "isAcceptingWork", !_disabled);
         if (!_disabled) {
             _activityCount++;
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "_activityCount", new Object[] { this, new Integer(_activityCount) });
+                Tr.debug(tc, "_activityCount", new Object[] { this, _activityCount });
             return true;
         }
         return false;
@@ -75,12 +74,12 @@ public class FailureScopeLifeCycle {
             this.notifyAll();
         }
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "decrementActivityCount", new Object[] { this, new Integer(_activityCount) });
+            Tr.debug(tc, "decrementActivityCount", new Object[] { this, _activityCount });
     }
 
     public int getActivityCount() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getActivityCount", new Object[] { this, new Integer(_activityCount) });
+            Tr.debug(tc, "getActivityCount", new Object[] { this, _activityCount });
         return _activityCount;
     }
 

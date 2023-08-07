@@ -7285,4 +7285,12 @@ public class LibertyServer implements LogMonitorClient {
         }
         return this.openLibertyVersion;
     }
+
+    /**
+     * @param  var
+     * @return
+     */
+    public String getEnvVar(String var) {
+        return envVars.get(var);
+    }
 }
