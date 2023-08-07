@@ -15,6 +15,7 @@ package com.ibm.ws.http.channel.internal.values;
 import java.util.Objects;
 
 import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
@@ -58,6 +59,7 @@ public class AccessLogResponseSizeB extends AccessLogData {
             }
 
         }
+        MSP.log("%B access log directive set to: " + responseSize);
         return responseSize;
     }
 }

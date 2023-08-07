@@ -22,6 +22,7 @@ import com.ibm.ws.http.netty.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -97,6 +98,9 @@ public class HttpPipelineInitializer extends ChannelInitializer<Channel> {
         if (chain.isHttps()) {
             // SSLEngine engine = channel.newEngine(channel.alloc());
             // pipeline.addFirst("ssl", new SslHandler(engine, false));
+            channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        } else {
+            channel.attr(NettyHttpConstants.IS_SECURE).set(Boolean.FALSE);
         }
 
         if (httpConfig.isAccessLoggingEnabled()) {
