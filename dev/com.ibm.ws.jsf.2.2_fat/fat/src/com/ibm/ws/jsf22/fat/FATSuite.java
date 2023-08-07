@@ -56,6 +56,8 @@ import componenttest.topology.impl.JavaInfo;
 
 import  org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.TestContainerSuite;
+
 /**
  * JSF 2.2 Tests
  *
@@ -101,7 +103,7 @@ import  org.testcontainers.utility.DockerImageName;
                 JSF22AparTests.class,
                 JSF22ThirdPartyApiTests.class
 })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
