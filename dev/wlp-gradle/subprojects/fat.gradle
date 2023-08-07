@@ -381,12 +381,12 @@ task zipAutoFVT(type: Zip) {
   dependsOn customizeAutoFVT
   from autoFvtDir
   into 'autoFVT'
-  archiveName 'autoFVT.zip'
+  archiveFileName = 'autoFVT.zip'
 }
 
 task zipProjectFVT(type: Zip) {
   dependsOn zipAutoFVT
-  baseName project.name
+  archiveBaseName = project.name
   into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
   into project.name, {from 'build-test.xml'}
 }
@@ -410,7 +410,7 @@ task trySkipFat(type: JavaExec) {
   dependsOn ':build.changeDetector:assemble'
   inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
 
-  main = 'com.ibm.ws.infra.depchain.ChangeDetector'
+  mainClass = 'com.ibm.ws.infra.depchain.ChangeDetector'
   classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
 
   args '--wlp', project(':build.image').projectDir.toString() + '/wlp',

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ task validateNLS {
     javaexec {
       sourceSets.main.java.srcDirs = ['src/com/ibm/ws/i18n/conversion/tools']
       classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
-      main = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
+      mainClass = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
 
       args = [jar.archivePath, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -866,8 +866,8 @@ task helloWorld_JAR (type: Zip, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task TestBeans_WAR(type: War, dependsOn: classes) {
-  destinationDir file(appBuildDir)
-  archiveName "TestBeans.war"
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "TestBeans.war"
   classpath = classpath.filter{ false }
   
   manifest {

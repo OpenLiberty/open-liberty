@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************
  ******************************************************************/
 task JASPIBase_JAR(type: Jar, dependsOn: classes) { 
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIBase.jar"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "JASPIBase.jar"
 
   from ('build/classes/java/main') { 
     include 'web/FlexibleBaseServlet*.class'
@@ -58,8 +58,8 @@ task JASPIBase_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task JASPIServerAuthRegistrationTestServlet_WAR(type: War, dependsOn: JASPIBase_JAR) {
-  destinationDir file("${appBuildDir}")
-  archiveName "JASPIServerAuthRegistrationTestServlet.war"
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "JASPIServerAuthRegistrationTestServlet.war"
   classpath = classpath.filter{ false }
 
   from ('test-applications/JASPIServerAuthRegistrationTestServlet.war/resources') { 

@@ -408,7 +408,7 @@ task zipGradleBootstrap(type: Zip) {
     dependsOn createGeneratedReplacementProjects
     dependsOn createESALists
     dependsOn createIndex
-    baseName 'gradle-bootstrap'
+    archiveBaseName = 'gradle-bootstrap'
     into 'prereq.published/build', {
         from new File(project.buildDir, 'dependencies.gradle'),
              new File(project.buildDir, 'gaFeatures.txt'),
