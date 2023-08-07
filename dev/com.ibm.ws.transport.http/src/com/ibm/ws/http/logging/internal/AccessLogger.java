@@ -794,7 +794,7 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
      * LogRoller task to be run/scheduled in timed log rollover.
      */
     private class TimedLogRoller extends TimerTask {
-        private WorkerThread wt;
+        private final WorkerThread wt;
 
         TimedLogRoller(WorkerThread wt) {
             this.wt = wt;
