@@ -10,18 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.validation.web;
-
-import jakarta.data.repository.Repository;
-
 /**
- * Repository for a record with bean validation annotations.
+ * @version 1.0
  */
-@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
-public interface Rectangles {
-    int findWidthById(String id);
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "data", messageBundle = "io.openliberty.data.internal.persistence.resources.CWWKDMessages")
+package io.openliberty.data.internal.persistence.validation;
 
-    void save(Rectangle r);
-
-    void saveAll(Rectangle... rectangles);
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -47,7 +47,7 @@ public class Creature {
     public BigDecimal longitude;
 
     // begin with capital, then any number of characters or space, then space, then begin with lower case, then any number of characters or space
-    @Pattern(regexp = "[A-Z][a-zA-z\\s]*[\\s][a-z][a-zA-z\\s]*")
+    @Pattern(regexp = "[A-Z][a-zA-Z\\s]*[\\s][a-z][a-zA-Z\\s]*")
     public String scientificName;
 
     @Positive
