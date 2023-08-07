@@ -16,7 +16,7 @@ IBM-API-Package: org.jboss.weld;type="internal",\
   io.openliberty.cdi-4.1, \
   com.ibm.websphere.appserver.servlet-6.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
-  io.openliberty.jakarta.validation-3.0, \
+  io.openliberty.jakarta.validation-3.1, \
   io.openliberty.expressionLanguage-6.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.websocket-2.2

@@ -16,7 +16,7 @@ Subsystem-Name: Jakarta Concurrency 3.1
   com.ibm.websphere.appserver.injection-2.0, \
   io.openliberty.jakartaeePlatform-11.0, \
   io.openliberty.jakarta.concurrency-3.1, \
-  io.openliberty.jakarta.interceptor-2.1
+  io.openliberty.jakarta.interceptor-2.2
 -bundles=\
   io.openliberty.org.eclipse.microprofile.contextpropagation.1.3; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.3", \
   com.ibm.ws.concurrent.jakarta, \
