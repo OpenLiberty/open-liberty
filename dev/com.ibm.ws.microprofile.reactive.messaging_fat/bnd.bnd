@@ -17,7 +17,22 @@ src: \
 	fat/src
 
 
-tested.features: mpReactiveMessaging-1.0
+tested.features: mpReactiveMessaging-1.0, \
+                 mpReactiveMessaging-3.0, \
+                 mpReactiveStreams-1.0, \
+                 mpReactiveStreams-3.0, \
+                 jsonb-2.0, \
+                 jsonb-3.0, \
+                 concurrent-2.0, \
+                 concurrent-3.0, \
+                 mpConfig-3.0, \
+                 servlet-5.0, \
+                 servlet-6.0, \
+                 cdi-3.0, \
+                 cdi-4.0, \
+                 jsonp-2.0, \
+                 jsonp-2.1
+                 
 
 fat.project: true
 

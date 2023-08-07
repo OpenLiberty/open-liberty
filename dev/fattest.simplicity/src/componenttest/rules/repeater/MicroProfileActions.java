@@ -313,10 +313,12 @@ public class MicroProfileActions {
 
     private static final String[] STANDALONE9_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                  "mpGraphQL-2.0",
+                                                                 "mpReactiveMessaging-3.0",
                                                                  "mpReactiveStreams-3.0" };
 
     private static final String[] STANDALONE10_FEATURES_ARRAY = { "mpContextPropagation-1.3",
                                                                   "mpGraphQL-2.0",
+                                                                  "mpReactiveMessaging-3.0",
                                                                   "mpReactiveStreams-3.0" };
 
     private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
@@ -402,8 +404,8 @@ public class MicroProfileActions {
      * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
      * @return                          A RepeatTests instance
      */
-    private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
-                                      Collection<FeatureSet> otherFeatureSets) {
+    public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                     Collection<FeatureSet> otherFeatureSets) {
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
         int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();

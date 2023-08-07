@@ -882,6 +882,21 @@
       <version>2.2.0</version>
     </dependency>
     <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-converter-api</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-messaging-api</artifactId>
+      <version>4.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-messaging-provider</artifactId>
+      <version>4.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>jandex</artifactId>
       <version>3.0.5</version>

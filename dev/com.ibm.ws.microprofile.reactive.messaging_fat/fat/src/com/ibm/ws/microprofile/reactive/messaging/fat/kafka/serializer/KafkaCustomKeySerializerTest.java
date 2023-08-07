@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -32,12 +33,14 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -49,9 +52,14 @@ public class KafkaCustomKeySerializerTest {
 
     private static final String APP_NAME = "myDataKeyKafkaTest";
 
-    @Server("SimpleRxMessagingServer")
+    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+
+    @Server(SERVER_NAME)
     @TestServlet(contextRoot = APP_NAME, servlet = KafkaKeySerializerTestServlet.class)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20);
 
     @BeforeClass
     public static void setup() throws Exception {
