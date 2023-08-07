@@ -473,18 +473,15 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             // [CXF-6227] do not call connection.setFixedLengthStreamingMode(i)
             // to prevent https://bugs.openjdk.java.net/browse/JDK-8044726
         
-            // Liberty change for issue #25866-unexpected_EOF_from_server
+            // Liberty Change for issue #25866-unexpected_EOF_from_server
             // The bug [CXF-6227] is a performance bug observed for Java 7
             // In case of a performance drop is observed need to create a walk around
             if(isTrue("cxf.set.fixedlengthstreaming"))        {
                 connection.setFixedLengthStreamingMode(i);
-                LOG.fine("~setFixedLengthStreamingMode is called");
-            } else {
-                LOG.fine("~setFixedLengthStreamingMode is NOT called");
-            }
+            } // Liberty Change End
         }
 
-        // Liberty Change
+        // Liberty Change Begin
         private boolean isTrue(String propertyName)     {
            if(propertyName != null && !propertyName.isEmpty()) {
                String propertyValue = System.getProperty(propertyName);
@@ -494,6 +491,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
            }
            return false;
         }
+        // Liberty Change Begin
         @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
         protected void handleNoOutput() throws IOException {
             if ("POST".equals(getMethod())) {
