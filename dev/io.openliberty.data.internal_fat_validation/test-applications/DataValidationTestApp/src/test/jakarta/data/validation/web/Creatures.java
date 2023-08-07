@@ -20,4 +20,5 @@ import jakarta.data.repository.Repository;
  */
 @Repository(dataStore = "java:module/jdbc/DerbyDataSource")
 public interface Creatures extends CrudRepository<Creature, Long> {
+    boolean updateByIdSetWeight(long id, float newWeight);
 }
