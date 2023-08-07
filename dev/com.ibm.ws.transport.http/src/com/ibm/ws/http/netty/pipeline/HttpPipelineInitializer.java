@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.AccessLoggerHandler;
 import com.ibm.ws.http.netty.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
@@ -268,6 +267,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HttpDispatcherHandler.HTTP_DISPATCHER_HANDLER_NAME, null, new RemoteIpHandler(httpConfig));
         }
+        pipeline.addBefore(HttpDispatcherHandler.HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
     }
 
     public class NettyProtocolNegotiationHandler extends ApplicationProtocolNegotiationHandler {

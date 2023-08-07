@@ -9,20 +9,30 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.util.List;
+
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
-import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.http.DefaultHttpContent;
 
 /**
  *
  */
-public class BufferEncoder extends MessageToByteEncoder<WsByteBuffer> {
+//public class BufferEncoder extends MessageToByteEncoder<WsByteBuffer> {
+public class BufferEncoder extends MessageToMessageEncoder<WsByteBuffer> {
+
+//    @Override
+//    public void encode(ChannelHandlerContext context, WsByteBuffer message, ByteBuf out) throws Exception {
+//        out.writeBytes(message.getWrappedByteBuffer());
+//    }
 
     @Override
-    public void encode(ChannelHandlerContext context, WsByteBuffer message, ByteBuf out) throws Exception {
-        out.writeBytes(message.getWrappedByteBuffer());
+    protected void encode(ChannelHandlerContext context, WsByteBuffer message, List<Object> out) throws Exception {
+        // TODO Auto-generated method stub
+        out.add(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getWrappedByteBuffer())));
     }
 
 }

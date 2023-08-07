@@ -96,10 +96,10 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 
 /**
@@ -2226,6 +2226,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         synchWrite();
     }
 
+    final protected void sendHeaders(HttpResponse response) {
+        if (headersSent()) {
+            Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            return;
+        }
+        this.nettyContext.channel().write(this.nettyResponse);
+        this.setHeadersSent();
+
+    }
+
     /**
      * Prepare and send just the headers.
      *
@@ -2934,6 +2944,40 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     /**
+     * Send a full message out. If headers have not already been sent, they will
+     * be queued in front of the given body buffers, plus the "zero chunk" will
+     * be tacked on the end if this is chunked encoding.
+     *
+     * @param wsbb
+     * @param msg
+     * @throws IOException
+     */
+    final protected void sendFullOutgoing(WsByteBuffer[] wsbb) throws IOException {
+        this.isFinalWrite = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
+        }
+
+        setMessageSent();
+        MSP.log("set message");
+        synchWrite();
+        MSP.log("wrote");
+        MSP.log("sync write");
+        this.nettyContext.channel().write(this.nettyResponse);
+        DefaultHttpContent content;
+        if (Objects.nonNull(wsbb)) {
+            for (WsByteBuffer buffer : wsbb) {
+
+                this.nettyContext.channel().write(buffer);
+                //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
+
+            }
+            this.nettyContext.channel().flush();
+        }
+
+    }
+
+    /**
      * Send the full outgoing asynch with this body, possibly headers, and end
      * of body.
      *
@@ -3193,24 +3237,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         MSP.log("getting buff list");
         WsByteBuffer[] writeBuffers = getBuffList();
         MSP.log("is buff list null: " + Objects.isNull(writeBuffers));
-        System.out.println("Size of buffers: " + writeBuffers.length);
-        if (myChannelConfig.useNetty()) {
-            MSP.log("sync write");
-            this.nettyContext.channel().write(this.nettyResponse);
-            DefaultHttpContent content;
-            if (Objects.nonNull(writeBuffers)) {
-                for (WsByteBuffer buffer : writeBuffers) {
-                    content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
-                    System.out.println("Writing: " + content);
-                    this.nettyContext.channel().write(content);
-//                    this.nettyContext.channel().write(buffer);
-                    //content = new DefaultHttpContent(Unpooled.wrappedBuffer(buffer.getWrappedByteBuffer()));
-
-                }
-                this.nettyContext.channel().flush();
-            }
-            return;
-        }
 
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

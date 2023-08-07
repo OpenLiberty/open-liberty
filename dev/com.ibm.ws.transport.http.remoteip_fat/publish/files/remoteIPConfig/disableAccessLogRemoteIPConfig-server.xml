@@ -22,7 +22,8 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}">
+                  httpsPort="${bvt.prop.HTTP_default.secure}"
+                  useNettyTransport="true">
     		<remoteIp useRemoteIpInAccessLog="false"/>
     		<accessLogging logFormat='%a, %h, %H' />
     </httpEndpoint>

@@ -33,6 +33,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private NettyHttpChannelConfig(NettyConfigBuilder builder) {
+        Objects.nonNull(builder);
         this.useNetty = Boolean.TRUE;
         this.useCompressionOptions = builder.useCompression;
         this.useRemoteIpOptions = builder.useForwardingHeaders;
@@ -43,19 +44,12 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     }
 
-    public NettyHttpChannelConfig(Map<String, Object> config) {
-        super(config);
-        this.useNetty = Boolean.TRUE;
-    }
-
-    public NettyHttpChannelConfig() {
-        this.useNetty = Boolean.TRUE;
-    }
-
     private void parseConfig(Map<String, Object> config) {
 
         if (Objects.isNull(config) || config.isEmpty()) {
-            Tr.debug(tc, "config is null or empty, returning");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parseConfig", "The configuration provided was invalid, default values will be used.");
+            }
             return;
         }
 
@@ -92,7 +86,9 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             this.includedCompressionContentTypes.add("application/javascript");
             this.excludedCompressionContentTypes = new HashSet<String>();
 
-            Tr.event(tc, "Http Channel Config: compression has been enabled");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "parseCompressionOptions", "Http Channel Config: compression has been enabled");
+            }
 
             this.parseCompressionTypes(options.get(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES));
             this.parseCompressionPreferredAlgorithm(options.get(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM));
@@ -102,7 +98,10 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
     private void parseHeaderOptions(Map<String, Object> options) {
         String method = "parseHeaderOptions";
-        Tr.entry(tc, method);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, method);
+        }
 
         if (options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD) ||
             options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_SET) ||
@@ -115,7 +114,9 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             this.configuredHeadersToRemove = new HashMap<Integer, String>();
             this.configuredHeadersErrorSet = new HashSet<String>();
 
-            Tr.event(tc, "Http Channel Config: <headers> config has been enabled");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, method, "Http Channel Config: <headers> config has been enabled");
+            }
 
             parseHeadersToRemove(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE));
             parseHeadersToAdd(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_ADD));
@@ -124,27 +125,96 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             logHeadersConfig();
         }
 
-        Tr.exit(tc, method);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
     }
 
     private void parseHttpOptions(Map<String, Object> options) {
 
-        this.parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
-        //TODO - all all parse methods
+        //TODO -> Netty Needed
+
+        parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
+        parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
+        parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
+        parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
+        parseBinaryTransport(options.get(HttpConfigConstants.PROPNAME_BINARY_TRANSPORT));
+        parseBufferType(options.get(HttpConfigConstants.PROPNAME_DIRECT_BUFF));
+        parseByteCacheSize(options.get(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE));
+        parseCookieUpdate(options.get(HttpConfigConstants.PROPNAME_NO_CACHE_COOKIES_CONTROL), options.get(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE));
+        parseDateHeaderRange(options.get(HttpConfigConstants.PROPNAME_DATE_HEADER_RANGE));
+        parseDecompressionRatioLimit(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT));
+        parseDecompressionTolerance(options.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE));
+        parseDelayedExtract(options.get(HttpConfigConstants.PROPNAME_EXTRACT_VALUE));
+        parseDoNotAllowDuplicateSetCookies(options.get(HttpConfigConstants.PROPNAME_DO_NOT_ALLOW_DUPLICATE_SET_COOKIES));
+        parseHeaderChangeLimit(options.get(HttpConfigConstants.PROPNAME_HEADER_CHANGE_LIMIT));
+        parseHeaderValidation(options.get(HttpConfigConstants.PROPNAME_HEADER_VALIDATION));
+        parseIncomingBodyBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
+        parseIncomingHdrBufferSize(options.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
+        parseLimitFieldSize(options.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE));
+        parseLimitMessageSize(options.get(HttpConfigConstants.PROPNAME_MSG_SIZE_LIMIT));
+        parseLimitNumberHeaders(options.get(HttpConfigConstants.PROPNAME_LIMIT_NUMHEADERS));
+        parseLimitNumberResponses(options.get(HttpConfigConstants.PROPNAME_LIMIT_NUMBER_RESPONSES));
+        parseOutgoingBufferSize(options.get(HttpConfigConstants.PROPNAME_OUTGOING_HDR_BUFFSIZE));
+        parseOutgoingVersion(options.get(HttpConfigConstants.PROPNAME_OUTGOING_VERSION));
+        parsePersistTimeout(options.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
+        parsePersistence(options.get(HttpConfigConstants.PROPNAME_KEEPALIVE_ENABLED), options.get(HttpConfigConstants.PROPNAME_MAX_PERSIST));
+        parsePreventResponseSplit(options.get(HttpConfigConstants.PROPNAME_PREVENT_RESPONSE_SPLIT));
+        parseProtocolVersion(options.get(HttpConfigConstants.PROPNAME_PROTOCOL_VERSION));
+        parsePurgeRemainingResponseBody();
+        parseReadTimeout(options.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
+        parseRemoveCLHeaderInTempStatusRespRFC7230compat(options.get(HttpConfigConstants.REMOVE_CLHEADER_IN_TEMP_STATUS_RFC7230_COMPAT));
+        parseRequestSmugglingProtection(options.get(HttpConfigConstants.PROPNAME_ENABLE_SMUGGLING_PROTECTION));
+        parseServerHeader(options.get(HttpConfigConstants.PROPNAME_REMOVE_SERVER_HEADER), options.get(HttpConfigConstants.PROPNAME_SERVER_HEADER_VALUE));
+        parseSkipCookiePathQuotes(options.get(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE));
+
+        parseWriteTimeout(options.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
+        parsev0CookieDateRFC1123compat(options.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
+
+        //TODO -> Netty not needed
+
+        //parseStrictURLFormat(options.get(HttpConfigConstants.PROPNAME_STRICT_URL_FORMAT));
+        //parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS));
+        //parseWaitForEndOfMessage(options.get(HttpConfigConstants.PROPNAME_WAIT_FOR_END_OF_MESSAGE));
+
+        // HTTP/2 Options
+
+        parseH2ConnCloseTimeout(options.get(HttpConfigConstants.PROPNAME_H2_CONN_CLOSE_TIMEOUT));
+        parseH2ConnectionIdleTimeout(options.get(HttpConfigConstants.PROPNAME_H2_CONNECTION_IDLE_TIMEOUT));
+        parseH2ConnectionWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE));
+        parseH2LimitWindowUpdateFrames(options.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES));
+        parseH2MaxConcurrentStreams(options.get(HttpConfigConstants.PROPNAME_H2_MAX_CONCURRENT_STREAMS));
+        parseH2MaxFrameSize(options.get(HttpConfigConstants.PROPNAME_H2_MAX_FRAME_SIZE));
+        parseH2SettingsInitialWindowSize(options.get(HttpConfigConstants.PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE));
+
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {
-        Tr.entry(tc, "parseRemoteIpOptions");
+        String method = "parseRemoteIpOptions";
 
-        Tr.event(tc, "HTTP Channel Config: remoteIp has been enabled");
+        if (TraceComponent.isAnyTracingEnabled()) {
+
+            if (tc.isEntryEnabled()) {
+                Tr.entry(tc, method);
+            }
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, method, "HTTP Channel Config: remoteIp has been enabled");
+            }
+        }
+
         parseRemoteIpProxies(options.get("proxies"));
         parseRemoteIpAccessLog(options.get("useRemoteIpInAccessLog"));
 
-        Tr.exit(tc, "parseRemoteIpOptions");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
     }
 
     private void parseSameSiteOptions(Map<String, Object> options) {
-        Tr.entry(tc, "parseSameSiteOptions");
+        String method = "parseSameSiteOptions";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "parseSameSiteOptions");
+        }
 
         if (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
             options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
@@ -153,15 +223,18 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             this.sameSiteCookies = new HashMap<String, String>();
             this.sameSiteErrorCookies = new HashSet<String>();
             this.sameSiteStringPatterns = new HashMap<String, String>();
-            Tr.event(tc, "Http Channel Config: SameSite configuration has been enabled");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, method, "Http Channel Config: SameSite configuration has been enabled");
+            }
 
             parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
             parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
             parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
 
         }
-
-        Tr.exit(tc, "parseSameSiteOptions");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
     }
 
     public void disableRemoteIp() {
@@ -199,10 +272,15 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
 
         public NettyConfigBuilder with(ConfigElement config, Map<String, Object> options) {
-
             if (Objects.isNull(options) || options.isEmpty()) {
-                Tr.debug(tc, "No properties provided, exiting");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No properties provided, exiting");
+                }
                 return this;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Http Configuration - " + config);
             }
 
             switch (config) {
