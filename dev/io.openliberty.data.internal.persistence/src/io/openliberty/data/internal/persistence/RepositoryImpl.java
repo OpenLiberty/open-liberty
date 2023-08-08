@@ -16,6 +16,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -1816,8 +1817,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         em = entityInfo.persister.createEntityManager();
 
+                        List<Object> results;
                         if (queryInfo.saveParamType.isArray()) {
-                            ArrayList<Object> results = new ArrayList<>();
+                            results = new ArrayList<>();
                             Object a = args[0];
                             int length = Array.getLength(a);
                             if (validator != null)
@@ -1825,20 +1827,37 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             for (int i = 0; i < length; i++)
                                 results.add(em.merge(toEntity(Array.get(a, i))));
                             em.flush();
-                            returnValue = results;
                         } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
                             if (validator != null)
                                 validator.validate((Iterable<?>) args[0]);
-                            ArrayList<Object> results = new ArrayList<>();
+                            results = new ArrayList<>();
                             for (Object e : ((Iterable<?>) args[0]))
                                 results.add(em.merge(toEntity(e)));
                             em.flush();
-                            returnValue = results;
                         } else {
                             if (validator != null && args[0] != null)
                                 validator.validate(args[0]);
-                            returnValue = em.merge(toEntity(args[0]));
+                            results = List.of(em.merge(toEntity(args[0])));
                             em.flush();
+                        }
+
+                        if (queryInfo.returnArrayType != null) {
+                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                            returnValue = results.toArray(newArray);
+                        } else {
+                            Class<?> multiType = queryInfo.getMultipleResultType();
+                            if (multiType == null)
+                                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results?
+                            else if (multiType.isInstance(results))
+                                returnValue = results;
+                            else if (Stream.class.equals(multiType))
+                                returnValue = results.stream();
+                            else if (Iterable.class.isAssignableFrom(multiType))
+                                returnValue = toIterable(multiType, null, results);
+                            else if (Iterator.class.equals(multiType))
+                                returnValue = results.iterator();
+                            else
+                                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
                         }
 
                         if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
@@ -2013,36 +2032,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     returnValue = oneResult(results);
                                 } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
-                                } else if (Streamable.class.equals(multiType)) {
-                                    returnValue = new StreamableImpl<>(results);
                                 } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
-                                    try {
-                                        Collection<Object> list;
-                                        if (multiType.isInterface()) {
-                                            if (multiType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
-                                                list = new ArrayList<>(results.size());
-                                            else if (multiType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
-                                                list = new ArrayDeque<>(results.size());
-                                            else if (multiType.isAssignableFrom(LinkedHashSet.class)) // covers Set
-                                                list = new LinkedHashSet<>(results.size());
-                                            else
-                                                throw new UnsupportedOperationException(multiType + " is an unsupported return type.");
-                                        } else {
-                                            @SuppressWarnings("unchecked")
-                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) multiType.getConstructor();
-                                            list = c.newInstance();
-                                        }
-                                        if (results.size() == 1 && results.get(0) instanceof Object[]) {
-                                            Object[] a = (Object[]) results.get(0);
-                                            for (int i = 0; i < a.length; i++)
-                                                list.add(singleType.isInstance(a[i]) ? a[i] : to(singleType, a[i], true));
-                                        } else {
-                                            list.addAll(results);
-                                        }
-                                        returnValue = list;
-                                    } catch (NoSuchMethodException x) {
-                                        throw new UnsupportedOperationException(multiType + " lacks public zero parameter constructor.");
-                                    }
+                                    returnValue = toIterable(multiType, singleType, results);
                                 } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
@@ -2512,6 +2503,51 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return Integer.parseInt((String) o);
         else
             throw new IllegalArgumentException("Not representable as an int value: " + o.getClass().getName());
+    }
+
+    /**
+     * Convert the results list into an Iterable of the specified type.
+     *
+     * @param iterableType the desired type of Iterable.
+     * @param elementType  the type of each element if a find operation. Can be NULL if a save operation.
+     * @param results      results of a find or save operation.
+     * @return results converted to an Iterable of the specified type.
+     */
+    @Trivial
+    private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
+        if (Streamable.class.equals(iterableType))
+            return new StreamableImpl<>(results);
+        Collection<Object> list;
+        if (iterableType.isInterface()) {
+            if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
+                list = new ArrayList<>(results.size());
+            else if (iterableType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
+                list = new ArrayDeque<>(results.size());
+            else if (iterableType.isAssignableFrom(LinkedHashSet.class)) // covers Set
+                list = new LinkedHashSet<>(results.size());
+            else
+                throw new UnsupportedOperationException(iterableType + " is an unsupported return type."); // TODO NLS
+        } else {
+            try {
+                @SuppressWarnings("unchecked")
+                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) iterableType.getConstructor();
+                list = c.newInstance();
+            } catch (NoSuchMethodException x) {
+                throw new MappingException("The " + iterableType.getName() + " result type lacks a public zero parameter constructor.", x); // TODO NLS
+            } catch (IllegalAccessException | InstantiationException x) {
+                throw new MappingException("Unable to access the zero parameter constructor of the " + iterableType.getName() + " result type.", x); // TODO NLS
+            } catch (InvocationTargetException x) {
+                throw new MappingException("The constructor for the " + iterableType.getName() + " result type raised an error: " + x.getCause().getMessage(), x.getCause()); // TODO NLS
+            }
+        }
+        if (results.size() == 1 && results.get(0) instanceof Object[]) {
+            Object[] a = (Object[]) results.get(0);
+            for (int i = 0; i < a.length; i++)
+                list.add(elementType.isInstance(a[i]) ? a[i] : to(elementType, a[i], true));
+        } else {
+            list.addAll(results);
+        }
+        return list;
     }
 
     @Trivial

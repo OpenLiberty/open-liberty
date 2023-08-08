@@ -13,6 +13,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -41,4 +42,6 @@ public interface ShippingAddresses {
     long removeAll();
 
     void save(ShippingAddress entity);
+
+    Set<ShippingAddress> save(Set<ShippingAddress> addresses);
 }
