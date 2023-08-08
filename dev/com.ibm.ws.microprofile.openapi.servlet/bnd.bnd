@@ -12,7 +12,9 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
+Bundle-Name: MicroProfile OpenAPI Servlet
+Bundle-SymbolicName: com.ibm.ws.microprofile.openapi.servlet
+Bundle-Description: MicroProfile OpenAPI 1.x servlet, version ${bVersion}
 
 bVersion=1.0
 
