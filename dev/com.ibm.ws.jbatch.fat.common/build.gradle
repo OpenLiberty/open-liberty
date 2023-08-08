@@ -64,7 +64,7 @@ task buildBonusPayoutWar(type: War, dependsOn: buildCommonUtilJar) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
-  from("test-applications/${archiveFileName}/resources") {
+  from("test-applications/BonusPayout.war/resources") {
     include "**/*"
   }
   from ("build/classes/java/main") {
@@ -79,7 +79,7 @@ task buildBonusPayoutWar(type: War, dependsOn: buildCommonUtilJar) {
     include "**/CommonUtil.jar"
     into "WEB-INF/lib"
   }
-  from("test-applications/${archiveFileName}") {
+  from("test-applications/BonusPayout.war") {
     include "README.txt"
     into ""
   }
@@ -90,7 +90,7 @@ task buildBonusPayoutEAREar(type: Ear, dependsOn: buildBonusPayoutWar) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.ear"
 
-  from("test-applications/${archiveFileName}/resources") {
+  from("test-applications/BonusPayoutEAR.ear/resources") {
     include "**/*"
   }
   from ("build/libs/test-application") {
